@@ -41,12 +41,15 @@
       flex-shrink: 0;
     }
     .ktn-chat-header strong { font-size: 15px; letter-spacing: .01em; }
-    .ktn-chat-close {
+    .ktn-chat-header-actions { display: flex; align-items: center; gap: 8px; }
+    .ktn-chat-reset, .ktn-chat-close {
       background: none; border: none; color: var(--paper, #f4f1ea);
-      font-size: 22px; cursor: pointer; padding: 0 4px;
+      cursor: pointer; padding: 0 4px;
       line-height: 1; opacity: .7; transition: opacity .15s;
     }
-    .ktn-chat-close:hover { opacity: 1; }
+    .ktn-chat-reset { font-size: 16px; }
+    .ktn-chat-close { font-size: 22px; }
+    .ktn-chat-reset:hover, .ktn-chat-close:hover { opacity: 1; }
 
     .ktn-chat-messages {
       flex: 1; overflow-y: auto; padding: 18px;
@@ -148,7 +151,10 @@
   panel.innerHTML = `
     <div class="ktn-chat-header">
       <strong>KTN Studieassistent</strong>
-      <button class="ktn-chat-close" aria-label="Lukk chat">&times;</button>
+      <div class="ktn-chat-header-actions">
+        <button class="ktn-chat-reset" aria-label="Nullstill chat" title="Nullstill chat">&#x21bb;</button>
+        <button class="ktn-chat-close" aria-label="Lukk chat">&times;</button>
+      </div>
     </div>
     <div class="ktn-chat-messages"></div>
     <form class="ktn-chat-form" autocomplete="off">
@@ -165,6 +171,7 @@
   const input = panel.querySelector(".ktn-chat-input");
   const sendBtn = panel.querySelector(".ktn-chat-send");
   const closeBtn = panel.querySelector(".ktn-chat-close");
+  const resetBtn = panel.querySelector(".ktn-chat-reset");
 
   let history = [];
   let busy = false;
@@ -178,6 +185,11 @@
   closeBtn.addEventListener("click", () => {
     panel.classList.remove("open");
     toggle.style.display = "flex";
+  });
+
+  resetBtn.addEventListener("click", () => {
+    history = [];
+    messagesEl.innerHTML = "";
   });
 
   function getPageContext() {
