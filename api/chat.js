@@ -70,22 +70,38 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Missing question" });
     }
 
-    const queryEmbedding = await getEmbedding(question, apiKey);
+    let searchQuery = question;
+    if (page_context?.section?.title) {
+      searchQuery = `[${page_context.chapter} – ${page_context.section.title}] ${question}`;
+    } else if (page_context?.chapter) {
+      searchQuery = `[${page_context.chapter}] ${question}`;
+    }
+
+    const queryEmbedding = await getEmbedding(searchQuery, apiKey);
 
     const allChunks = loadChunks();
     const topChunks = findTopChunks(queryEmbedding, allChunks, 5);
     const bookContext = topChunks.map((c) => c.text).join("\n\n---\n\n");
 
+    let locationInfo = "";
+    if (page_context?.chapter) {
+      locationInfo = `\nBrukeren leser: ${page_context.chapter}`;
+      if (page_context.section?.title) {
+        locationInfo += ` — seksjon: «${page_context.section.title}»`;
+      }
+    }
+
     const systemPrompt = `Du er en hjelpsom studieassistent for TTM4100 – Kommunikasjon: Tjenester og nett (NTNU).
 Svar på norsk med mindre brukeren skriver på engelsk.
 Forklar konsepter tydelig og bruk eksempler fra pensum der det er relevant.
 Hvis du ikke finner svaret i konteksten under, si fra i stedet for å finne på noe.
+${locationInfo}
 
 ## Kontekst fra læreboken (Kurose & Ross):
 ${bookContext}
 
-## Kontekst fra nettsiden brukeren leser akkurat nå:
-${page_context || "(ingen)"}`;
+## Synlig tekst fra nettsiden brukeren leser akkurat nå:
+${page_context?.visible_text || "(ingen)"}`;
 
     const messages = [
       { role: "system", content: systemPrompt },

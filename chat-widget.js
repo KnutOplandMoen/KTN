@@ -213,18 +213,31 @@
   });
 
   function getPageContext() {
-    const main =
-      document.querySelector("main") ||
-      document.querySelector("article") ||
-      document.querySelector(".container");
-    const el = main || document.body;
+    const mainEl = document.querySelector("main");
+    const chapter = mainEl?.dataset.chapter
+      || document.querySelector(".eyebrow")?.textContent?.trim()
+      || document.title;
 
+    const sections = document.querySelectorAll("section[id]");
+    let currentSection = null;
+    for (const sec of sections) {
+      const rect = sec.getBoundingClientRect();
+      if (rect.top < window.innerHeight / 2) {
+        const h2 = sec.querySelector("h2");
+        currentSection = {
+          id: sec.id,
+          title: h2?.textContent?.trim() || sec.id
+        };
+      }
+    }
+
+    const el = mainEl || document.body;
     const blocks = el.querySelectorAll(
-      "p, li, h1, h2, h3, h4, h5, td, th, pre, blockquote, dt, dd, figcaption"
+      "p, li, h2, h3, h4, h5, td, th, pre, blockquote, dt, dd, figcaption"
     );
 
     const vh = window.innerHeight;
-    const margin = vh * 0.75;
+    const margin = vh * 0.5;
 
     const visible = [];
     for (const block of blocks) {
@@ -235,11 +248,14 @@
       }
     }
 
-    if (visible.length === 0) {
-      return el.innerText.substring(0, 8000);
-    }
-
-    return visible.join("\n\n").substring(0, 8000);
+    return {
+      chapter,
+      section: currentSection,
+      url: window.location.pathname,
+      visible_text: visible.length > 0
+        ? visible.join("\n\n").substring(0, 6000)
+        : el.innerText.substring(0, 6000)
+    };
   }
 
   function escapeHtml(str) {
