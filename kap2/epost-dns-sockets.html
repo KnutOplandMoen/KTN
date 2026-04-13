@@ -3,462 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kapittel 2 — E-post, DNS og Socket-programmering</title>
-<link rel="stylesheet" href="style.css">
-<style>
-:root {
-  --paper: #f4f1ea;
-  --paper-dark: #e8e3d6;
-  --ink: #1a1612;
-  --ink-soft: #3d3832;
-  --ink-faded: #6b6257;
-  --ink-ghost: #a39886;
-  --rust: #b04428;
-  --rust-dark: #8a3420;
-  --blue: #2d4a7a;
-  --green: #3d6b3a;
-  --ochre: #c68a1f;
-  --line: #c9c0ae;
-  --line-soft: #ddd5c4;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: 'Newsreader', Georgia, serif;
-  font-size: 18px;
-  line-height: 1.7;
-  color: var(--ink);
-  background: var(--paper);
-  -webkit-font-smoothing: antialiased;
-  position: relative;
-  font-feature-settings: "kern", "liga";
-}
-body::before {
-  content: "";
-  position: fixed; inset: 0;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/><feColorMatrix values='0 0 0 0 0.4  0 0 0 0 0.3  0 0 0 0 0.2  0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  opacity: 0.35;
-  pointer-events: none;
-  z-index: 1;
-  mix-blend-mode: multiply;
-}
-.container {
-  max-width: 820px;
-  margin: 0 auto;
-  padding: 0 32px;
-  position: relative;
-  z-index: 2;
-}
-.container.wide { max-width: 980px; }
-
-/* Hero */
-.hero {
-  padding: 100px 0 60px;
-  border-bottom: 1px solid var(--line);
-}
-.hero .eyebrow {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--rust);
-  margin-bottom: 24px;
-  animation: fadeUp 0.7s ease 0.0s both;
-}
-.hero h1 {
-  font-family: 'Newsreader', serif;
-  font-weight: 500;
-  font-size: clamp(44px, 7vw, 84px);
-  line-height: 1.0;
-  letter-spacing: -0.025em;
-  margin-bottom: 24px;
-  animation: fadeUp 0.7s ease 0.1s both;
-}
-.hero h1 em { font-style: italic; color: var(--rust); font-weight: 400; }
-.hero .subtitle {
-  font-style: italic;
-  font-size: 22px;
-  color: var(--ink-soft);
-  max-width: 640px;
-  line-height: 1.5;
-  animation: fadeUp 0.7s ease 0.2s both;
-}
-.hero .what-youll-learn {
-  margin-top: 48px;
-  padding: 24px 28px;
-  border-left: 3px solid var(--rust);
-  background: rgba(176, 68, 40, 0.04);
-  animation: fadeUp 0.7s ease 0.3s both;
-}
-.hero .what-youll-learn .label {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink-faded);
-  margin-bottom: 10px;
-}
-.hero .what-youll-learn ul {
-  list-style: none;
-  font-size: 16px;
-  color: var(--ink-soft);
-}
-.hero .what-youll-learn li {
-  padding: 4px 0;
-  padding-left: 18px;
-  position: relative;
-}
-.hero .what-youll-learn li::before {
-  content: "❋";
-  position: absolute; left: 0;
-  color: var(--rust);
-}
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Sections */
-section {
-  padding: 80px 0;
-  border-bottom: 1px solid var(--line-soft);
-}
-.section-badge {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--ink-faded);
-  display: inline-block;
-  padding: 6px 14px;
-  border: 1px solid var(--line);
-  border-radius: 2px;
-  margin-bottom: 24px;
-}
-h2 {
-  font-family: 'Newsreader', serif;
-  font-weight: 500;
-  font-size: clamp(32px, 4.5vw, 48px);
-  line-height: 1.1;
-  letter-spacing: -0.018em;
-  margin-bottom: 16px;
-}
-h2 em { font-style: italic; color: var(--rust); font-weight: 400; }
-.section-intro {
-  font-style: italic;
-  font-size: 20px;
-  color: var(--ink-soft);
-  margin-bottom: 40px;
-  line-height: 1.5;
-  max-width: 680px;
-}
-h3 {
-  font-family: 'Newsreader', serif;
-  font-weight: 500;
-  font-size: 26px;
-  line-height: 1.3;
-  margin: 48px 0 16px;
-  letter-spacing: -0.01em;
-}
-p { margin-bottom: 20px; }
-p strong { font-weight: 600; color: var(--ink); }
-p em { font-style: italic; }
-.lead::first-letter {
-  font-family: 'Newsreader', serif;
-  font-size: 5.4em;
-  float: left;
-  line-height: 0.85;
-  padding: 8px 10px 0 0;
-  color: var(--rust);
-  font-weight: 500;
-}
-code, .mono {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.88em;
-  background: var(--paper-dark);
-  padding: 1px 6px;
-  border-radius: 2px;
-  color: var(--rust-dark);
-}
-
-/* Margin note */
-.margin-note {
-  border-left: 3px solid var(--ochre);
-  padding: 4px 0 4px 18px;
-  margin: 28px 0;
-  font-style: italic;
-  font-size: 16px;
-  color: var(--ink-soft);
-}
-
-/* Info / problem boxes */
-.box {
-  padding: 24px 28px;
-  margin: 32px 0;
-  border: 1px solid var(--line);
-  background: rgba(255,255,255,0.35);
-}
-.box .label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-  color: var(--rust);
-}
-.box.problem .label { color: var(--rust); }
-.box.solution { border-left: 3px solid var(--green); }
-.box.solution .label { color: var(--green); }
-.box.note { border-left: 3px solid var(--blue); }
-.box.note .label { color: var(--blue); }
-
-/* Code block */
-pre {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 14px;
-  line-height: 1.6;
-  background: #2a2520;
-  color: #e8e3d6;
-  padding: 22px 26px;
-  border-radius: 3px;
-  overflow-x: auto;
-  margin: 28px 0;
-}
-pre .c-srv { color: #9ec19a; }
-pre .c-cli { color: #e8b560; }
-pre .c-key { color: #d97757; }
-pre .c-cmt { color: #6b6257; font-style: italic; }
-
-/* Comparison table */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 32px 0;
-  font-size: 16px;
-}
-th, td {
-  text-align: left;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--line-soft);
-  vertical-align: top;
-}
-th {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-faded);
-  border-bottom: 2px solid var(--line);
-}
-td.label-col {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  color: var(--rust-dark);
-}
-
-/* Figures */
-figure {
-  margin: 40px 0;
-  padding: 24px;
-  background: rgba(255,255,255,0.35);
-  border: 1px solid var(--line-soft);
-}
-figure svg { display: block; width: 100%; height: auto; }
-figcaption {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 13px;
-  color: var(--ink-faded);
-  text-align: center;
-  margin-top: 14px;
-  font-style: italic;
-}
-
-/* Divider */
-.divider {
-  text-align: center;
-  font-size: 18px;
-  color: var(--rust);
-  letter-spacing: 1em;
-  margin: 60px 0;
-}
-
-/* Quiz */
-.quiz {
-  border: 1px solid var(--line);
-  background: rgba(45, 74, 122, 0.04);
-  border-left: 3px solid var(--blue);
-  padding: 28px;
-  margin: 40px 0;
-}
-.quiz .label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--blue);
-  margin-bottom: 12px;
-}
-.quiz .q {
-  font-size: 19px;
-  font-weight: 500;
-  margin-bottom: 18px;
-  line-height: 1.4;
-}
-.quiz .options { display: flex; flex-direction: column; gap: 10px; }
-.quiz button.opt {
-  font-family: 'Newsreader', serif;
-  font-size: 16px;
-  text-align: left;
-  padding: 12px 16px;
-  background: var(--paper);
-  border: 1px solid var(--line);
-  cursor: pointer;
-  color: var(--ink);
-  transition: all 0.15s ease;
-}
-.quiz button.opt:hover { background: var(--paper-dark); transform: translateX(3px); }
-.quiz button.opt.correct {
-  background: rgba(61, 107, 58, 0.15);
-  border-color: var(--green);
-  color: var(--green);
-}
-.quiz button.opt.wrong {
-  background: rgba(176, 68, 40, 0.1);
-  border-color: var(--rust);
-  color: var(--rust-dark);
-}
-.quiz .feedback {
-  margin-top: 16px;
-  padding: 14px 18px;
-  font-style: italic;
-  font-size: 16px;
-  color: var(--ink-soft);
-  background: var(--paper-dark);
-  border-left: 2px solid var(--ochre);
-  display: none;
-}
-.quiz .feedback.show { display: block; }
-
-/* Stepper */
-.stepper {
-  border: 1px solid var(--line);
-  background: rgba(255,255,255,0.4);
-  padding: 28px;
-  margin: 40px 0;
-}
-.stepper .label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--rust);
-  margin-bottom: 16px;
-}
-.stepper .stage-svg { min-height: 280px; }
-.stepper .controls {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-top: 20px;
-  padding-top: 18px;
-  border-top: 1px solid var(--line-soft);
-}
-.stepper button {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 14px;
-  padding: 8px 18px;
-  background: var(--ink);
-  color: var(--paper);
-  border: none;
-  cursor: pointer;
-  letter-spacing: 0.04em;
-}
-.stepper button:disabled { background: var(--ink-ghost); cursor: not-allowed; }
-.stepper .step-counter {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  color: var(--ink-faded);
-}
-.stepper .description {
-  font-style: italic;
-  color: var(--ink-soft);
-  margin-top: 14px;
-  font-size: 16px;
-  min-height: 48px;
-}
-
-/* Reveal */
-.reveal {
-  border: 1px dashed var(--line);
-  background: rgba(198, 138, 31, 0.06);
-  padding: 22px 26px;
-  margin: 32px 0;
-}
-.reveal .prompt {
-  font-style: italic;
-  font-size: 17px;
-  color: var(--ink-soft);
-  margin-bottom: 14px;
-}
-.reveal button {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 13px;
-  padding: 7px 16px;
-  background: transparent;
-  border: 1px solid var(--ochre);
-  color: var(--ochre);
-  cursor: pointer;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-.reveal button:hover { background: var(--ochre); color: var(--paper); }
-.reveal .answer {
-  margin-top: 18px;
-  padding-top: 16px;
-  border-top: 1px solid var(--line-soft);
-  display: none;
-}
-.reveal .answer.show { display: block; }
-
-/* Footer */
-footer {
-  padding: 80px 0 60px;
-  text-align: center;
-  color: var(--ink-faded);
-  font-style: italic;
-}
-footer .ornament { color: var(--rust); margin-bottom: 24px; letter-spacing: 0.6em; }
-
-/* Responsive */
-@media (max-width: 768px) {
-  body { font-size: 17px; }
-  .container, .container.wide { padding: 0 22px; }
-  .hero { padding: 60px 0 40px; }
-  section { padding: 60px 0; }
-  .hero h1 { font-size: 42px; }
-  .hero .subtitle { font-size: 19px; }
-  pre { font-size: 12px; padding: 16px 18px; }
-  figure { padding: 16px; }
-  .lead::first-letter { font-size: 4.4em; }
-}
-</style>
+<title>E-post, DNS og Socket-programmering — Kapittel 2</title>
+<link rel="stylesheet" href="../style.css">
 </head>
 <body>
 
 <nav class="site-nav">
   <div class="container">
-    <a href="index.html" class="brand">TTM4100</a>
-    <a href="index.html" class="nav-back">&larr; Alle kapitler</a>
+    <a href="../" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Kapittel 2</a>
   </div>
 </nav>
 
 <main data-chapter="Kapittel 2: E-post, DNS og Socket-programmering">
 <header class="hero">
   <div class="container">
-    <div class="eyebrow">Kapittel 2 · Applikasjonslaget</div>
+    <div class="eyebrow">Kapittel 2 · Del 3</div>
     <h1>Hvordan internett <em>snakker</em>: e-post, navn og sokler</h1>
-    <p class="subtitle">En grundig gjennomgang av tre av applikasjonslagets viktigste byggesteiner — protokollene som flytter e-posten din, oversetter navn til adresser, og lar prosesser snakke sammen på tvers av jordkloden.</p>
+    <p class="lede">En grundig gjennomgang av tre av applikasjonslagets viktigste byggesteiner — protokollene som flytter e-posten din, oversetter navn til adresser, og lar prosesser snakke sammen på tvers av jordkloden.</p>
     <div class="what-youll-learn">
       <div class="label">Det du sitter igjen med</div>
       <ul>
@@ -494,37 +56,26 @@ footer .ornament { color: var(--rust); margin-bottom: 24px; letter-spacing: 0.6e
             <path d="M0,0 L10,5 L0,10 z" fill="#b04428"/>
           </marker>
         </defs>
-        <!-- Alice -->
         <circle cx="60" cy="130" r="22" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
         <text x="60" y="135" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">Alice</text>
         <text x="60" y="180" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">user agent</text>
-
-        <!-- Server 1 -->
         <rect x="200" y="95" width="120" height="70" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
         <text x="260" y="125" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">Alice sin</text>
         <text x="260" y="143" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">mail-server</text>
         <text x="260" y="180" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">utgående kø</text>
-
-        <!-- Server 2 -->
         <rect x="440" y="95" width="120" height="70" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
         <text x="500" y="125" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">Bob sin</text>
         <text x="500" y="143" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">mail-server</text>
         <text x="500" y="180" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">postkasse</text>
-
-        <!-- Bob -->
         <circle cx="700" cy="130" r="22" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
         <text x="700" y="135" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">Bob</text>
         <text x="700" y="180" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">user agent</text>
-
-        <!-- Arrows -->
         <line x1="85" y1="130" x2="195" y2="130" stroke="#b04428" stroke-width="1.8" marker-end="url(#arr)"/>
         <line x1="325" y1="130" x2="435" y2="130" stroke="#b04428" stroke-width="1.8" marker-end="url(#arr)"/>
         <line x1="565" y1="130" x2="675" y2="130" stroke="#b04428" stroke-width="1.8" marker-end="url(#arr)"/>
-
         <text x="140" y="120" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">SMTP/HTTPS</text>
         <text x="380" y="120" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">SMTP</text>
         <text x="620" y="120" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">IMAP/HTTPS</text>
-
         <text x="380" y="240" text-anchor="middle" font-family="Newsreader" font-style="italic" font-size="13" fill="#6b6257">Tre etapper, tre roller. Avsenderens server snakker med mottakerens server.</text>
       </svg>
     </figure>
@@ -558,14 +109,14 @@ footer .ornament { color: var(--rust); margin-bottom: 24px; letter-spacing: 0.6e
 
     <div class="quiz" id="quiz1">
       <div class="label">Sjekk forståelsen</div>
-      <div class="q">Hvorfor bruker e-post to forskjellige protokoller (SMTP og IMAP) i stedet for bare én?</div>
+      <div class="q-text">Hvorfor bruker e-post to forskjellige protokoller (SMTP og IMAP) i stedet for bare én?</div>
       <div class="options">
-        <button class="opt" data-correct="false">Fordi SMTP er for gammel til å håndtere moderne e-post</button>
-        <button class="opt" data-correct="true">Fordi sending («push») og henting («pull») er fundamentalt forskjellige bruksmønstre</button>
-        <button class="opt" data-correct="false">Fordi SMTP ikke støtter kryptering, mens IMAP gjør det</button>
-        <button class="opt" data-correct="false">Fordi de kjører på forskjellige operativsystemer</button>
+        <button class="option" data-correct="false">Fordi SMTP er for gammel til å håndtere moderne e-post</button>
+        <button class="option" data-correct="true">Fordi sending («push») og henting («pull») er fundamentalt forskjellige bruksmønstre</button>
+        <button class="option" data-correct="false">Fordi SMTP ikke støtter kryptering, mens IMAP gjør det</button>
+        <button class="option" data-correct="false">Fordi de kjører på forskjellige operativsystemer</button>
       </div>
-      <div class="feedback">SMTP er designet for at avsenderen skal kunne dytte en melding frem til mottakerens server. Når mottakeren senere skal hente posten sin — kanskje fra en mobiltelefon, kanskje senere i dag, kanskje fra flere enheter — er det et helt annet behov. IMAP løser <em>det</em> problemet: tilgang til en postkasse som ligger lagret på en server.</div>
+      <div class="explanation">SMTP er designet for at avsenderen skal kunne dytte en melding frem til mottakerens server. Når mottakeren senere skal hente posten sin — kanskje fra en mobiltelefon, kanskje senere i dag, kanskje fra flere enheter — er det et helt annet behov. IMAP løser <em>det</em> problemet: tilgang til en postkasse som ligger lagret på en server.</div>
     </div>
 
     <h3>SMTP vs HTTP — så like, og likevel så ulike</h3>
@@ -594,7 +145,7 @@ footer .ornament { color: var(--rust); margin-bottom: 24px; letter-spacing: 0.6e
     <h3>Hvordan moderne webmail egentlig ser ut</h3>
     <p>I praksis ser ikke trafikken din ut akkurat som læreboken. Når du bruker Gmail eller Outlook på web, er det ikke SMTP du snakker fra nettleseren din ut til serveren — det er HTTPS. Først når Gmails servere skal levere meldingen videre til mottakerens server, kommer SMTP inn i bildet. Og når mottakeren — også på web — leser den, er det igjen HTTPS hele veien til nettleseren.</p>
 
-    <div class="box note">
+    <div class="callout callout-blue">
       <div class="label">Oppsummert</div>
       Webmail = HTTPS fra deg til din server, SMTP mellom serverne, HTTPS fra mottakerens server til mottakeren. Tradisjonell e-postklient (Outlook, Apple Mail) = SMTP fra deg ut, SMTP mellom serverne, IMAP fra mottakerens server til mottakeren. Blanding av disse er normalen.
     </div>
@@ -615,7 +166,7 @@ footer .ornament { color: var(--rust); margin-bottom: 24px; letter-spacing: 0.6e
     <h3>Hvorfor ikke bare én stor tabell?</h3>
     <p>La oss starte med den naive løsningen, som er pedagogisk verdifull nettopp fordi den ikke fungerer. Hva om vi hadde én sentral server et sted i verden, med en gigantisk tabell over alle navn-til-IP-mappinger? Klienten spør, serveren svarer, ferdig.</p>
 
-    <div class="box problem">
+    <div class="problem-box">
       <div class="label">Problemet med sentralisering</div>
       Comcast sine DNS-servere alene håndterer rundt 600 milliarder forespørsler hver dag. En sentral server ville (1) være et enkeltpunkt for feil — hele internett dør om den ryker, (2) ha umulig trafikkmengde, (3) være langt unna for de fleste brukere, og (4) være et mareritt å vedlikeholde. Det skalerer rett og slett ikke.
     </div>
@@ -627,53 +178,35 @@ footer .ornament { color: var(--rust); margin-bottom: 24px; letter-spacing: 0.6e
 
     <figure>
       <svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg">
-        <!-- Root -->
         <rect x="330" y="20" width="100" height="40" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
         <text x="380" y="45" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">Root</text>
-
-        <!-- TLDs -->
         <rect x="120" y="120" width="100" height="40" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
         <text x="170" y="145" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">.com</text>
-
         <rect x="330" y="120" width="100" height="40" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
         <text x="380" y="145" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">.org</text>
-
         <rect x="540" y="120" width="100" height="40" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
         <text x="590" y="145" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">.edu</text>
-
-        <!-- Authoritative -->
         <rect x="40" y="220" width="120" height="40" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5"/>
         <text x="100" y="245" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">amazon.com</text>
-
         <rect x="180" y="220" width="120" height="40" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5"/>
         <text x="240" y="245" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">yahoo.com</text>
-
         <rect x="320" y="220" width="120" height="40" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5"/>
         <text x="380" y="245" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">pbs.org</text>
-
         <rect x="460" y="220" width="120" height="40" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5"/>
         <text x="520" y="245" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">nyu.edu</text>
-
         <rect x="600" y="220" width="120" height="40" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5"/>
         <text x="660" y="245" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">umass.edu</text>
-
-        <!-- Lines from root -->
         <line x1="380" y1="60" x2="170" y2="120" stroke="#6b6257" stroke-width="1"/>
         <line x1="380" y1="60" x2="380" y2="120" stroke="#6b6257" stroke-width="1"/>
         <line x1="380" y1="60" x2="590" y2="120" stroke="#6b6257" stroke-width="1"/>
-
-        <!-- Lines TLD to authoritative -->
         <line x1="170" y1="160" x2="100" y2="220" stroke="#6b6257" stroke-width="1"/>
         <line x1="170" y1="160" x2="240" y2="220" stroke="#6b6257" stroke-width="1"/>
         <line x1="380" y1="160" x2="380" y2="220" stroke="#6b6257" stroke-width="1"/>
         <line x1="590" y1="160" x2="520" y2="220" stroke="#6b6257" stroke-width="1"/>
         <line x1="590" y1="160" x2="660" y2="220" stroke="#6b6257" stroke-width="1"/>
-
-        <!-- Labels -->
         <text x="20" y="45" font-family="Newsreader" font-style="italic" font-size="12" fill="#6b6257">Nivå 1</text>
         <text x="20" y="145" font-family="Newsreader" font-style="italic" font-size="12" fill="#6b6257">TLD</text>
         <text x="20" y="245" font-family="Newsreader" font-style="italic" font-size="12" fill="#6b6257">Autoritativ</text>
-
         <text x="380" y="300" text-anchor="middle" font-family="Newsreader" font-style="italic" font-size="13" fill="#6b6257">Hierarkiet — ingen enkelt server vet alt, men hver server vet hvor du skal gå videre.</text>
       </svg>
     </figure>
@@ -690,37 +223,26 @@ footer .ornament { color: var(--rust); margin-bottom: 24px; letter-spacing: 0.6e
 
     <div class="stepper" id="stepper-dns">
       <div class="label">Steg-for-steg — iterativ DNS-oppslag</div>
-      <div class="stage-svg">
+      <div class="stage">
         <svg viewBox="0 0 760 280" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
               <path d="M0,0 L10,5 L0,10 z" fill="#b04428"/>
             </marker>
           </defs>
-          <!-- Host -->
           <rect x="30" y="125" width="100" height="40" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
           <text x="80" y="148" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#1a1612">requesting host</text>
           <text x="80" y="180" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">engineering.nyu.edu</text>
-
-          <!-- Local -->
           <rect x="200" y="125" width="100" height="40" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
           <text x="250" y="148" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#1a1612">local DNS</text>
           <text x="250" y="180" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">dns.nyu.edu</text>
-
-          <!-- Root -->
           <rect x="370" y="20" width="100" height="40" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
           <text x="420" y="44" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#1a1612">root DNS</text>
-
-          <!-- TLD -->
           <rect x="540" y="80" width="100" height="40" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
           <text x="590" y="104" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#1a1612">.edu TLD</text>
-
-          <!-- Authoritative -->
           <rect x="540" y="200" width="120" height="40" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5"/>
           <text x="600" y="224" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#b04428">authoritative</text>
           <text x="600" y="260" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">dns.cs.umass.edu</text>
-
-          <!-- Animated step lines -->
           <g id="step-lines">
             <line class="step-line" data-step="1" x1="130" y1="145" x2="195" y2="145" stroke="#b04428" stroke-width="2" marker-end="url(#arr2)" opacity="0"/>
             <line class="step-line" data-step="2" x1="295" y1="135" x2="375" y2="60" stroke="#b04428" stroke-width="2" marker-end="url(#arr2)" opacity="0"/>
@@ -733,10 +255,10 @@ footer .ornament { color: var(--rust); margin-bottom: 24px; letter-spacing: 0.6e
           </g>
         </svg>
       </div>
-      <div class="description" id="dns-desc">Trykk «Neste» for å se hvert steg i en iterativ DNS-oppslag.</div>
+      <div class="step-desc" id="dns-desc">Trykk «Neste» for å se hvert steg i en iterativ DNS-oppslag.</div>
       <div class="controls">
         <button id="dns-prev" disabled>‹ Forrige</button>
-        <span class="step-counter" id="dns-counter">Steg 0 / 8</span>
+        <span class="progress" id="dns-counter">Steg 0 / 8</span>
         <button id="dns-next">Neste ›</button>
       </div>
     </div>
@@ -770,7 +292,7 @@ footer .ornament { color: var(--rust); margin-bottom: 24px; letter-spacing: 0.6e
     <p>Bakdelen er at cachede svar kan bli utdatert. Hvis du flytter en tjeneste til en ny IP-adresse, vil ikke endringen være synlig overalt på internett før alle relevante TTL-er har utløpt. Dette er hvorfor DNS-endringer ofte tar timer eller dager å «forplante seg» — det er ikke en feil, det er TTL-en som gjør jobben sin.</p>
 
     <div class="reveal" id="reveal-mx">
-      <div class="prompt">Hva tror du skjer hvis du sender e-post til <code>noen@example.com</code>, men <code>example.com</code> ikke har noen MX-post i DNS?</div>
+      <div class="q">Hva tror du skjer hvis du sender e-post til <code>noen@example.com</code>, men <code>example.com</code> ikke har noen MX-post i DNS?</div>
       <button onclick="document.getElementById('reveal-mx-ans').classList.add('show')">Vis svar</button>
       <div class="answer" id="reveal-mx-ans">
         <p>Mailserveren din vil først spørre etter MX-posten for <code>example.com</code>. Hvis den ikke finner noen, vil den i de fleste implementasjoner falle tilbake på å spørre etter en A-post for <code>example.com</code> direkte og prøve å levere til den IP-adressen. Dette er en historisk fallback fra tidlig SMTP. I praksis bør alle domener som mottar e-post ha MX-poster — uten dem er du avhengig av at avsendere implementerer fallbacken, og noen gjør ikke det.</p>
@@ -785,24 +307,24 @@ footer .ornament { color: var(--rust); margin-bottom: 24px; letter-spacing: 0.6e
     <h3>DNS-sikkerhet</h3>
     <p>DNS er kritisk infrastruktur, og det betyr at noen vil angripe det. De vanligste angrepstypene er:</p>
 
-    <ul style="margin: 20px 0 28px 24px;">
-      <li style="margin-bottom: 10px;"><strong>DDoS</strong> — bombardere root- eller TLD-serverne med trafikk. Har vært forsøkt mange ganger; har hittil aldri klart å lamme internett, blant annet på grunn av caching og trafikkfiltrering.</li>
-      <li style="margin-bottom: 10px;"><strong>DNS-poisoning</strong> — sende falske svar til en navneserver slik at den cacher feil informasjon, og sender brukere til feil sted.</li>
-      <li style="margin-bottom: 10px;"><strong>DNS-amplifisering</strong> — sende DNS-spørsmål med forfalsket avsenderadresse, slik at svarene (som er mye større enn spørsmålene) sendes til offeret. Brukes som DDoS-våpen.</li>
+    <ul>
+      <li><strong>DDoS</strong> — bombardere root- eller TLD-serverne med trafikk. Har vært forsøkt mange ganger; har hittil aldri klart å lamme internett, blant annet på grunn av caching og trafikkfiltrering.</li>
+      <li><strong>DNS-poisoning</strong> — sende falske svar til en navneserver slik at den cacher feil informasjon, og sender brukere til feil sted.</li>
+      <li><strong>DNS-amplifisering</strong> — sende DNS-spørsmål med forfalsket avsenderadresse, slik at svarene (som er mye større enn spørsmålene) sendes til offeret. Brukes som DDoS-våpen.</li>
     </ul>
 
     <p>Forsvaret heter <strong>DNSSEC</strong> (RFC 4033), som legger digitale signaturer på DNS-svar slik at klienten kan verifisere at svaret faktisk kommer fra en autoritativ kilde. Det er ikke universelt utrullet ennå, men det er den langsiktige løsningen.</p>
 
     <div class="quiz" id="quiz2">
       <div class="label">Sjekk forståelsen</div>
-      <div class="q">Hvorfor blir root-serverne sjelden faktisk kontaktet, selv om de teknisk sett er øverst i hierarkiet?</div>
+      <div class="q-text">Hvorfor blir root-serverne sjelden faktisk kontaktet, selv om de teknisk sett er øverst i hierarkiet?</div>
       <div class="options">
-        <button class="opt" data-correct="false">Fordi de er for trege til å håndtere normal trafikk</button>
-        <button class="opt" data-correct="true">Fordi lokale navneservere cacher TLD-serveradresser, og de sjelden endres</button>
-        <button class="opt" data-correct="false">Fordi ICANN har deaktivert dem som sikkerhetstiltak</button>
-        <button class="opt" data-correct="false">Fordi DNS bare bruker dem for nye domener</button>
+        <button class="option" data-correct="false">Fordi de er for trege til å håndtere normal trafikk</button>
+        <button class="option" data-correct="true">Fordi lokale navneservere cacher TLD-serveradresser, og de sjelden endres</button>
+        <button class="option" data-correct="false">Fordi ICANN har deaktivert dem som sikkerhetstiltak</button>
+        <button class="option" data-correct="false">Fordi DNS bare bruker dem for nye domener</button>
       </div>
-      <div class="feedback">Lokale navneservere har stort sett alltid TLD-servernes adresser i cachen sin, så den iterative oppslagsprosessen kan hoppe rett til TLD og videre derfra. Root blir dermed «kontakt-av-siste-utvei» — viktig at den finnes, men sjelden faktisk forespurt.</div>
+      <div class="explanation">Lokale navneservere har stort sett alltid TLD-servernes adresser i cachen sin, så den iterative oppslagsprosessen kan hoppe rett til TLD og videre derfra. Root blir dermed «kontakt-av-siste-utvei» — viktig at den finnes, men sjelden faktisk forespurt.</div>
     </div>
   </div>
 </section>
@@ -820,46 +342,32 @@ footer .ornament { color: var(--rust); margin-bottom: 24px; letter-spacing: 0.6e
 
     <figure>
       <svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg">
-        <!-- Left stack -->
         <rect x="60" y="40" width="160" height="50" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
         <text x="140" y="70" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">application</text>
         <circle cx="140" cy="80" r="14" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5"/>
         <text x="140" y="84" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428">proc</text>
-
         <rect x="60" y="100" width="160" height="40" fill="#ddd5c4" stroke="#1a1612" stroke-width="1.5"/>
         <text x="140" y="125" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#3d3832">transport</text>
         <rect x="125" y="95" width="30" height="14" fill="#b04428"/>
-
         <rect x="60" y="140" width="160" height="35" fill="#ddd5c4" stroke="#1a1612" stroke-width="1.5"/>
         <text x="140" y="162" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#3d3832">network</text>
-
         <rect x="60" y="175" width="160" height="35" fill="#ddd5c4" stroke="#1a1612" stroke-width="1.5"/>
         <text x="140" y="197" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#3d3832">link / physical</text>
-
-        <!-- Internet cloud -->
         <ellipse cx="360" cy="135" rx="80" ry="40" fill="#f4f1ea" stroke="#6b6257" stroke-width="1.5" stroke-dasharray="3,3"/>
         <text x="360" y="140" text-anchor="middle" font-family="Newsreader" font-style="italic" font-size="14" fill="#6b6257">Internett</text>
-
-        <!-- Right stack -->
         <rect x="500" y="40" width="160" height="50" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
         <text x="580" y="70" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">application</text>
         <circle cx="580" cy="80" r="14" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5"/>
         <text x="580" y="84" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428">proc</text>
-
         <rect x="500" y="100" width="160" height="40" fill="#ddd5c4" stroke="#1a1612" stroke-width="1.5"/>
         <text x="580" y="125" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#3d3832">transport</text>
         <rect x="565" y="95" width="30" height="14" fill="#b04428"/>
-
         <rect x="500" y="140" width="160" height="35" fill="#ddd5c4" stroke="#1a1612" stroke-width="1.5"/>
         <text x="580" y="162" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#3d3832">network</text>
-
         <rect x="500" y="175" width="160" height="35" fill="#ddd5c4" stroke="#1a1612" stroke-width="1.5"/>
         <text x="580" y="197" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#3d3832">link / physical</text>
-
-        <!-- Labels -->
         <text x="140" y="245" text-anchor="middle" font-family="Newsreader" font-style="italic" font-size="12" fill="#b04428">styres av deg</text>
         <text x="140" y="262" text-anchor="middle" font-family="Newsreader" font-style="italic" font-size="12" fill="#6b6257">styres av OS</text>
-
         <text x="155" y="100" font-family="IBM Plex Mono" font-size="10" fill="#b04428">socket</text>
         <text x="595" y="100" font-family="IBM Plex Mono" font-size="10" fill="#b04428">socket</text>
       </svg>
@@ -871,7 +379,7 @@ footer .ornament { color: var(--rust); margin-bottom: 24px; letter-spacing: 0.6e
     <h3>Et lite eksempelprogram</h3>
     <p>Gjennom resten av denne delen skal vi bygge en helt enkel applikasjon, både i UDP-versjon og TCP-versjon, slik at forskjellen kommer tydelig frem. Applikasjonen er bevisst trivielt:</p>
 
-    <div class="box">
+    <div class="callout">
       <div class="label">Spesifikasjon</div>
       Klienten leser en linje fra tastaturet og sender den til serveren. Serveren konverterer linjen til store bokstaver og sender den tilbake. Klienten skriver ut svaret. Det er det. Hele protokollen.
     </div>
@@ -1000,14 +508,14 @@ while True:
 
     <div class="quiz" id="quiz3">
       <div class="label">Sjekk forståelsen</div>
-      <div class="q">Hvorfor må TCP-serveren ha to sokler — en «velkomstsokkel» og en «forbindelsessokkel» — mens UDP-serveren klarer seg med én?</div>
+      <div class="q-text">Hvorfor må TCP-serveren ha to sokler — en «velkomstsokkel» og en «forbindelsessokkel» — mens UDP-serveren klarer seg med én?</div>
       <div class="options">
-        <button class="opt" data-correct="false">Fordi TCP er nyere enn UDP og bruker derfor mer minne</button>
-        <button class="opt" data-correct="true">Fordi TCP er forbindelsesorientert, og hver forbindelse trenger sin egen «kanal» som kan eksistere parallelt med andre</button>
-        <button class="opt" data-correct="false">Fordi UDP ikke kan håndtere flere klienter samtidig</button>
-        <button class="opt" data-correct="false">For å gjøre koden mer komplisert</button>
+        <button class="option" data-correct="false">Fordi TCP er nyere enn UDP og bruker derfor mer minne</button>
+        <button class="option" data-correct="true">Fordi TCP er forbindelsesorientert, og hver forbindelse trenger sin egen «kanal» som kan eksistere parallelt med andre</button>
+        <button class="option" data-correct="false">Fordi UDP ikke kan håndtere flere klienter samtidig</button>
+        <button class="option" data-correct="false">For å gjøre koden mer komplisert</button>
       </div>
-      <div class="feedback">UDP behandler hvert datagram som en isolert hendelse — serveren bruker den samme sokkelen til å motta fra alle klienter. TCP, derimot, har en vedvarende forbindelse per klient, og hver av dem trenger sin egen sokkel slik at OS kan rute innkommende bytes til riktig samtale. Velkomstsokkelen sin eneste jobb er å «føde» nye forbindelsessokler.</div>
+      <div class="explanation">UDP behandler hvert datagram som en isolert hendelse — serveren bruker den samme sokkelen til å motta fra alle klienter. TCP, derimot, har en vedvarende forbindelse per klient, og hver av dem trenger sin egen sokkel slik at OS kan rute innkommende bytes til riktig samtale. Velkomstsokkelen sin eneste jobb er å «føde» nye forbindelsessokler.</div>
     </div>
   </div>
 </section>
@@ -1027,17 +535,24 @@ while True:
 
     <p>Det fjerde og siste temaet er <strong>pålitelig vs upålitelig</strong> meldingsoverføring — og innsikten at det ikke finnes ett riktig valg. TCP og UDP eksisterer side om side fordi de løser forskjellige problemer. Det samme gjelder oppover i stakken: SMTP er bygget på TCP fordi e-post må komme frem, mens DNS er bygget på UDP fordi raske oppslag som kan gjentas er bedre enn pålitelige oppslag som er trege.</p>
 
-    <div class="box solution">
+    <div class="callout callout-green">
       <div class="label">Det viktigste å ta med seg</div>
       Protokoller er ikke magi. Hver eneste designvalg du har sett — push vs pull, hierarki vs sentralisering, datagram vs strøm — ble tatt fordi alternativet ikke ville fungert i den skalaen eller med de begrensningene som fantes. Når du forstår hvilket problem en protokoll løser, blir formen den tar nesten uunngåelig.
     </div>
   </div>
 </section>
+</main>
+
+<nav class="page-nav">
+  <div class="container">
+    <a href="p2p-video-cdn.html" class="prev"><span class="nav-label">&larr; Forrige</span><span class="nav-title">P2P, video og CDN</span></a>
+  </div>
+</nav>
 
 <footer>
   <div class="container">
-    <div class="ornament">❋ ❋ ❋</div>
-    <p>Basert på forelesningsfoiler fra Kapittel 2, Kurose &amp; Ross<br>(Computer Networking: A Top-Down Approach, 8. utgave)</p>
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Vår 2026</p>
   </div>
 </footer>
 
@@ -1045,15 +560,14 @@ while True:
 // Quiz logic
 (function() {
   document.querySelectorAll('.quiz').forEach(function(quiz) {
-    var buttons = quiz.querySelectorAll('button.opt');
-    var feedback = quiz.querySelector('.feedback');
+    var buttons = quiz.querySelectorAll('button.option');
+    var feedback = quiz.querySelector('.explanation');
     buttons.forEach(function(btn) {
       btn.addEventListener('click', function() {
-        var isCorrect = btn.dataset.correct === 'true';
         buttons.forEach(function(b) {
           b.disabled = true;
           if (b.dataset.correct === 'true') b.classList.add('correct');
-          else if (b === btn) b.classList.add('wrong');
+          else if (b === btn) b.classList.add('incorrect');
         });
         if (feedback) feedback.classList.add('show');
       });
@@ -1103,8 +617,7 @@ while True:
 })();
 </script>
 
-</main>
-<script src="chat-widget.js"></script>
+<script src="../chat-widget.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

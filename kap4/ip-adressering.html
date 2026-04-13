@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kapittel 4b — IP og adressering</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="../" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Kapittel 4</a>
+  </div>
+</nav>
+
+<main data-chapter="Kapittel 4: Nettverkslaget – Dataplanet">
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">Kapittel 4b &middot; Nettverkslaget</div>
+    <h1>IP og <em>adressering</em></h1>
+    <p class="lede">IP-datagrammer, CIDR, DHCP, NAT, IPv6 og Internetts arkitekturprinsipper &mdash; alt om hvordan adresser og pakker fungerer.</p>
+  </div>
+</header>
+
+<!-- ============ 09 IP DATAGRAM ============ -->
+<section id="ip">
+  <div class="container wide">
+    <div class="section-badge">09 &middot; IP-datagrammet</div>
+    <h2>Formatet som <em>b&aelig;rer alt</em></h2>
+    <p class="section-intro">Alt vi har sett s&aring; langt er generisk. N&aring; m&oslash;ter vi det konkrete: hva en faktisk IPv4-pakke ser ut som, og hvorfor hvert felt er der det er.</p>
+  </div>
+
+  <div class="container wide">
+    <figure>
+      <div class="packet">
+        <div class="cell c4"><div><strong>Ver</strong><small>4 bit</small></div></div>
+        <div class="cell c4"><div><strong>HLen</strong><small>4 bit</small></div></div>
+        <div class="cell c8"><div><strong>Type of Service</strong><small>diffserv + ECN</small></div></div>
+        <div class="cell c16"><div><strong>Total Length</strong><small>16 bit &middot; bytes</small></div></div>
+
+        <div class="cell c16"><div><strong>16-bit Identifier</strong><small>fragmentering</small></div></div>
+        <div class="cell c3"><div><strong>Flg</strong><small>3b</small></div></div>
+        <div class="cell c13"><div><strong>Fragment Offset</strong><small>13 bit</small></div></div>
+
+        <div class="cell c8"><div><strong>TTL</strong><small>8 bit</small></div></div>
+        <div class="cell c8"><div><strong>Protocol</strong><small>8 bit</small></div></div>
+        <div class="cell c16"><div><strong>Header Checksum</strong><small>16 bit</small></div></div>
+
+        <div class="cell c32 hl"><div><strong>Source IP Address</strong><small>32 bit</small></div></div>
+        <div class="cell c32 hl"><div><strong>Destination IP Address</strong><small>32 bit</small></div></div>
+
+        <div class="cell c32"><div><strong>Options</strong><small>variabel (sjelden brukt)</small></div></div>
+        <div class="cell c32 data"><div>Payload (typisk TCP- eller UDP-segment)</div></div>
+      </div>
+      <figcaption>IPv4-headeren. Minimum 20 bytes, pluss en valgfri options-del. Overhead: 20 IP + 20 TCP = 40 bytes per pakke.</figcaption>
+    </figure>
+  </div>
+
+  <div class="container">
+    <table>
+      <thead><tr><th>Felt</th><th>Hva det gj&oslash;r</th></tr></thead>
+      <tbody>
+        <tr><td class="mono-cell">Version</td><td>4 for IPv4, 6 for IPv6. To helt forskjellige formater.</td></tr>
+        <tr><td class="mono-cell">HLen</td><td>Header-lengde i 32-bits ord. Oftest 5 (= 20 bytes, ingen options).</td></tr>
+        <tr><td class="mono-cell">Type of Service</td><td>Differensierte tjenester (Diffserv bits 0&ndash;5) og congestion-notifikasjon (ECN bits 6&ndash;7).</td></tr>
+        <tr><td class="mono-cell">Total Length</td><td>Hele datagrammet inkludert payload. Maks 65&nbsp;535 bytes, typisk &le; 1500.</td></tr>
+        <tr><td class="mono-cell">TTL</td><td>Dekrementeres med 1 i hver router. Ved 0: pakken droppes + ICMP-feil. Forhindrer evige l&oslash;kker. Brukes av <code>traceroute</code>.</td></tr>
+        <tr><td class="mono-cell">Protocol</td><td>Hva ligger i payloaden? 6 = TCP, 17 = UDP, 1 = ICMP.</td></tr>
+        <tr><td class="mono-cell">Header Checksum</td><td>Beskytter bare headeren (ikke data). M&aring; reberegnes i hver router fordi TTL endres. Droppet i IPv6.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ 10 ADDRESSING ============ -->
+<section id="addressing">
+  <div class="container">
+    <div class="section-badge">10 &middot; IP-adresser &amp; subnett</div>
+    <h2>Adresser er bundet til <em>grensesnitt</em></h2>
+    <p class="section-intro">En IP-adresse identifiserer ikke en maskin &mdash; den identifiserer et grensesnitt. En router med &aring;tte porter har &aring;tte adresser.</p>
+
+    <p class="dropcap">En IP-adresse er 32 bit, skrevet som fire desimaltall atskilt med punktum (<em>dotted decimal</em>). Men den er bundet til et <strong>grensesnitt</strong> (interface), ikke en maskin. Din b&aelig;rbare har to grensesnitt (Ethernet + WiFi) og f&aring;r to forskjellige IP-adresser.</p>
+
+    <h3>Subnett: &laquo;samme nabolag&raquo;</h3>
+    <p>Et <strong>subnett</strong> er et sett med grensesnitt som kan n&aring; hverandre direkte uten &aring; passere gjennom en router. Alle maskiner p&aring; samme Ethernet-svitsj eller WiFi er p&aring; samme subnett.</p>
+
+    <p>Oppskriften for &aring; identifisere subnett: ta av alle grensesnitt fra routere og verter. De sammenhengende &laquo;&oslash;yene&raquo; som er igjen er subnettene.</p>
+
+    <p>Adressene p&aring; et subnett deler en felles <strong>nettverksdel</strong> (h&oslash;yordensbit) og varierer bare i <strong>vertsdelen</strong> (lavordensbit). For eksempel: <code>223.1.1.0/24</code> har 24 bits nettverksdel og 8 bits vertsdel (256 adresser).</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 620 250" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="130" cy="85" rx="95" ry="52" fill="rgba(61,107,58,0.1)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="130" y="35" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="var(--green)">223.1.1.0/24</text>
+          <circle cx="85" cy="78" r="5" fill="var(--ink-soft)"/><text x="85" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">.1</text>
+          <circle cx="125" cy="72" r="5" fill="var(--ink-soft)"/><text x="125" y="94" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">.2</text>
+          <circle cx="165" cy="90" r="5" fill="var(--ink-soft)"/><text x="165" y="112" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">.3</text>
+
+          <rect x="280" y="100" width="60" height="38" fill="var(--paper-dark)" stroke="var(--rust)" stroke-width="1.5" rx="3"/>
+          <text x="310" y="124" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="600">R</text>
+
+          <ellipse cx="490" cy="85" rx="95" ry="52" fill="rgba(61,107,58,0.1)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="490" y="35" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="var(--green)">223.1.2.0/24</text>
+          <circle cx="450" cy="78" r="5" fill="var(--ink-soft)"/><text x="450" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">.1</text>
+          <circle cx="495" cy="90" r="5" fill="var(--ink-soft)"/><text x="495" y="112" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">.2</text>
+          <circle cx="535" cy="72" r="5" fill="var(--ink-soft)"/><text x="535" y="94" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">.9</text>
+
+          <ellipse cx="310" cy="200" rx="85" ry="40" fill="rgba(61,107,58,0.1)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="310" y="244" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="var(--green)">223.1.3.0/24</text>
+          <circle cx="280" cy="198" r="5" fill="var(--ink-soft)"/>
+          <circle cx="340" cy="198" r="5" fill="var(--ink-soft)"/>
+
+          <line x1="220" y1="95" x2="280" y2="112" stroke="var(--rust)" stroke-width="1.5"/>
+          <line x1="340" y1="112" x2="400" y2="95" stroke="var(--rust)" stroke-width="1.5"/>
+          <line x1="310" y1="138" x2="310" y2="165" stroke="var(--rust)" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <figcaption>Tre subnett bundet sammen av &eacute;n router. Routeren har tre forskjellige IP-adresser &mdash; &eacute;n per grensesnitt.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ 11 CIDR ============ -->
+<section id="cidr">
+  <div class="container">
+    <div class="section-badge">11 &middot; CIDR</div>
+    <h2>Klassel&oslash;s <em>adressering</em></h2>
+    <p class="section-intro">De gamle klassene (/8, /16, /24) kastet bort enorme mengder adresser. CIDR lar nettverksdelen v&aelig;re et hvilket som helst tall mellom 0 og 32.</p>
+
+    <p class="dropcap"><strong>CIDR</strong> &mdash; Classless Inter-Domain Routing &mdash; dropper de faste klassene og lar prefikslengden v&aelig;re vilk&aring;rlig. <code>200.23.16.0/23</code> betyr &laquo;de f&oslash;rste 23 bitene er nettverksdelen, de siste 9 er vertsdelen&raquo;, som gir 2&#8313; = 512 adresser.</p>
+
+    <div class="slider-box">
+      <div class="slabel">Utforsk CIDR</div>
+      <h4>Flytt p&aring; prefikslengden og se hvor mange adresser du f&aring;r:</h4>
+      <input type="range" id="cidr-slider" min="8" max="30" value="24">
+      <div class="addr-display" id="cidr-display"></div>
+      <div class="stats">
+        <div><div class="k">Prefiks</div><div class="v" id="cidr-prefix">/24</div></div>
+        <div><div class="k">Subnet-maske</div><div class="v" id="cidr-mask" style="font-size:13px">255.255.255.0</div></div>
+        <div><div class="k">Antall adresser</div><div class="v" id="cidr-count">256</div></div>
+      </div>
+    </div>
+
+    <h3>Rute-aggregering</h3>
+    <p>CIDR muliggj&oslash;r <strong>hierarkisk adressering</strong>. En ISP som eier <code>200.23.16.0/20</code> kan annonsere den ene ruten til resten av Internett, selv om den internt deler rommet i &aring;tte /23-blokker for &aring;tte kundeorganisasjoner. Resten av Internett trenger ikke vite om underoppdelingen &mdash; bare at &laquo;alt som begynner med 200.23.16.0/20 sendes til denne ISP-en.&raquo;</p>
+
+    <p>N&aring;r en organisasjon bytter ISP, annonserer den nye ISP-en en mer spesifikk rute (lengre prefiks), og takket v&aelig;re LPM finner trafikken fram riktig. Systemet fungerer selvrepererende.</p>
+
+    <h3>Hvem deler ut adresser?</h3>
+    <p><strong>ICANN</strong> (Internet Corporation for Assigned Names and Numbers) allokerer IP-adresseblokker gjennom fem regionale registre (RIR-er). ICANN tildelte den siste IPv4-blokken til et RIR i 2011 &mdash; den globale poolen er tom.</p>
+  </div>
+</section>
+
+<!-- ============ 12 DHCP ============ -->
+<section id="dhcp">
+  <div class="container">
+    <div class="section-badge">12 &middot; DHCP</div>
+    <h2>F&aring; en adresse <em>automatisk</em></h2>
+    <p class="section-intro">DHCP &mdash; Dynamic Host Configuration Protocol &mdash; lar en maskin be om og motta en IP-adresse n&aring;r den kobler seg p&aring; nettverket.</p>
+
+    <p class="dropcap">Manuell konfigurering fungerer for servere, men er umulig for b&aelig;rbare som stadig bytter nettverk. DHCP l&oslash;ser dette med en dans i fire trinn &mdash; alle sendt som broadcast, fordi klienten i starten ikke engang kjenner sin egen adresse.</p>
+
+    <div class="stepper" id="stepper-dhcp">
+      <div class="slabel">DHCP-sekvensen</div>
+      <h4>Fire meldinger, alle broadcast</h4>
+      <div class="stage-svg" id="dhcp-svg"></div>
+      <div class="desc" id="dhcp-desc"></div>
+      <div class="ctrls">
+        <button id="dhcp-prev" disabled>&larr; Forrige</button>
+        <span class="progress" id="dhcp-prog">0 / 4</span>
+        <button id="dhcp-next">Neste &rarr;</button>
+      </div>
+    </div>
+
+    <p>DHCP leverer mer enn bare en IP-adresse. Svaret inneholder vanligvis ogs&aring;: adresse til <strong>f&oslash;rste-hop-router</strong> (default gateway), adresse til <strong>DNS-server</strong>, og <strong>subnet-maske</strong>.</p>
+
+    <div class="quiz">
+      <p class="q-text">Hvorfor sendes DHCP request som broadcast, selv n&aring;r klienten kjenner serveradressen?</p>
+      <div class="options">
+        <button class="option" data-correct="false">Fordi klienten fortsatt ikke har en egen IP-adresse &aring; svare fra.</button>
+        <button class="option" data-correct="false">Fordi unicast ikke er st&oslash;ttet p&aring; dette tidspunktet i protokollen.</button>
+        <button class="option" data-correct="true">For &aring; la andre DHCP-servere som ogs&aring; sendte tilbud, vite at deres tilbud ble avsl&aring;tt &mdash; s&aring; de kan frigj&oslash;re reserverte adresser.</button>
+        <button class="option" data-correct="false">Fordi routere filtrerer unicast-trafikk til DHCP-servere.</button>
+      </div>
+      <div class="explanation"><strong>Riktig!</strong> Broadcast i trinn 3 signaliserer til <em>alle</em> DHCP-servere: &laquo;Jeg valgte denne serveren, de andre kan slippe sine reservasjoner.&raquo;</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 13 NAT ============ -->
+<section id="nat">
+  <div class="container">
+    <div class="section-badge">13 &middot; NAT</div>
+    <h2>Hvorfor hele hjemmet deler <em>&eacute;n IP</em></h2>
+    <p class="section-intro">Network Address Translation lar et helt privat nettverk dele &eacute;n offentlig IP-adresse. Det reddet IPv4 &mdash; men bryter end-to-end-prinsippet.</p>
+
+    <p class="dropcap">IPv4 har 2&sup3;&sup2; &asymp; 4,3 milliarder adresser. Det er ikke nok for alle verdens enheter. <strong>NAT</strong> l&oslash;ser dette ved at alle maskiner p&aring; et privat nettverk (typisk <code>10.0.0.0/8</code> eller <code>192.168.0.0/16</code>) deler &eacute;n offentlig adresse utad.</p>
+
+    <p>Trikset ligger i <strong>portnumrene</strong>. N&aring;r maskinen din sender en pakke ut, omskriver NAT-routeren kildeadressen til sin offentlige IP og endrer kildeporten til et unikt nummer som den lagrer i en <strong>NAT-tabell</strong>. N&aring;r svaret kommer tilbake, sl&aring;r den opp i tabellen og sender pakken til riktig intern maskin.</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 620 230" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="120" cy="110" rx="88" ry="75" fill="rgba(61,107,58,0.08)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="120" y="38" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-style="italic" fill="var(--green)">privat nett</text>
+          <circle cx="80" cy="95" r="5" fill="var(--ink-soft)"/>
+          <text x="80" y="85" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">10.0.0.1</text>
+          <circle cx="150" cy="90" r="5" fill="var(--ink-soft)"/>
+          <text x="150" y="80" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">10.0.0.2</text>
+          <circle cx="100" cy="140" r="5" fill="var(--ink-soft)"/>
+          <text x="100" y="158" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">10.0.0.3</text>
+
+          <rect x="250" y="88" width="120" height="48" fill="var(--paper-dark)" stroke="var(--rust)" stroke-width="1.5" rx="3"/>
+          <text x="310" y="109" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">NAT</text>
+          <text x="310" y="126" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--rust)">138.76.29.7</text>
+
+          <ellipse cx="520" cy="110" rx="68" ry="55" fill="var(--paper-dark)" stroke="var(--blue)" stroke-width="1.5"/>
+          <text x="520" y="115" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-style="italic" fill="var(--blue)">Internett</text>
+
+          <line x1="205" y1="112" x2="250" y2="112" stroke="var(--ink-soft)" stroke-width="1.5"/>
+          <line x1="370" y1="112" x2="455" y2="112" stroke="var(--ink-soft)" stroke-width="1.5"/>
+
+          <g font-family="IBM Plex Mono" font-size="9">
+            <rect x="225" y="160" width="170" height="56" fill="var(--paper)" stroke="var(--line)" stroke-dasharray="3 3"/>
+            <text x="310" y="174" text-anchor="middle" fill="var(--ink-faded)">NAT-tabell</text>
+            <text x="232" y="190">10.0.0.1:3345 &harr; :5001</text>
+            <text x="232" y="204">10.0.0.2:4500 &harr; :5002</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>NAT holder en oversettelsestabell som lar mange interne flows dele &eacute;n offentlig adresse. N&oslash;kkelen er &aring; omskrive portnummer.</figcaption>
+    </figure>
+
+    <div class="callout">
+      <span class="label">NAT er kontroversielt</span>
+      <p>NAT bryter <strong>end-to-end-prinsippet</strong>: en maskin bak NAT kan ikke uten videre ta imot innkommende forbindelser. Det krever &laquo;port forwarding&raquo; for &aring; kj&oslash;re en server hjemme, og peer-to-peer-protokoller m&aring; bruke &laquo;hole punching.&raquo; Routere &laquo;b&oslash;r&raquo; bare prosessere opp til lag 3, men NAT manipulerer portnumre (lag 4). Likevel: NAT er her for &aring; bli, bredt brukt i hjemmenett, bedrifter og 4G/5G-nett.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 14 IPv6 ============ -->
+<section id="ipv6">
+  <div class="container">
+    <div class="section-badge">14 &middot; IPv6</div>
+    <h2>128-bit adresser og en <em>enklere</em> header</h2>
+    <p class="section-intro">IPv6 ble spesifisert i 1998. Motivasjonen: 32-bit adresser ville g&aring; tomt. L&oslash;sningen: 128-bit adresser &mdash; nok til &aring; gi hvert sandkorn p&aring; jorden sin egen adresse flere tusen milliarder ganger.</p>
+
+    <p class="dropcap">IPv6 har to fordeler utover det st&oslash;rre adresserommet. F&oslash;rst: en <strong>fast 40-byte header</strong> uten options eller variable felt, som gj&oslash;r forwarding raskere. Deretter: st&oslash;tte for <strong>flow labels</strong> som lar routere behandle flows forskjellig.</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 620 160" xmlns="http://www.w3.org/2000/svg">
+          <g font-family="IBM Plex Mono" font-size="10">
+            <text x="40" y="20" font-family="IBM Plex Sans" font-size="12" font-weight="600">IPv6-header (fast 40 byte)</text>
+
+            <rect x="40" y="32" width="50" height="24" fill="var(--paper-dark)" stroke="var(--ink-soft)"/>
+            <rect x="90" y="32" width="90" height="24" fill="var(--paper-dark)" stroke="var(--ink-soft)"/>
+            <rect x="180" y="32" width="300" height="24" fill="var(--paper-dark)" stroke="var(--ink-soft)"/>
+            <text x="65" y="48" text-anchor="middle">ver</text>
+            <text x="135" y="48" text-anchor="middle">traffic class</text>
+            <text x="330" y="48" text-anchor="middle">flow label</text>
+
+            <rect x="40" y="56" width="160" height="24" fill="var(--paper-dark)" stroke="var(--ink-soft)"/>
+            <rect x="200" y="56" width="160" height="24" fill="var(--paper-dark)" stroke="var(--ink-soft)"/>
+            <rect x="360" y="56" width="120" height="24" fill="var(--paper-dark)" stroke="var(--ink-soft)"/>
+            <text x="120" y="72" text-anchor="middle">payload length</text>
+            <text x="280" y="72" text-anchor="middle">next header</text>
+            <text x="420" y="72" text-anchor="middle">hop limit</text>
+
+            <rect x="40" y="80" width="440" height="24" fill="rgba(176,68,40,0.12)" stroke="var(--rust)" stroke-width="1.5"/>
+            <text x="260" y="96" text-anchor="middle" font-weight="600">source address (128 bit)</text>
+
+            <rect x="40" y="104" width="440" height="24" fill="rgba(176,68,40,0.12)" stroke="var(--rust)" stroke-width="1.5"/>
+            <text x="260" y="120" text-anchor="middle" font-weight="600">destination address (128 bit)</text>
+
+            <text x="500" y="50" font-family="Newsreader" font-size="10" fill="var(--ink-faded)">ingen</text>
+            <text x="500" y="62" font-family="Newsreader" font-size="10" fill="var(--ink-faded)">fragment-felt!</text>
+            <text x="500" y="96" font-family="Newsreader" font-size="10" fill="var(--ink-faded)">4&times; s&aring; lange</text>
+            <text x="500" y="108" font-family="Newsreader" font-size="10" fill="var(--ink-faded)">adresser</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>IPv6-headeren er enklere enn IPv4 tross lengre adresser: ingen checksum, ingen options inline, ingen fragmentering i routere.</figcaption>
+    </figure>
+
+    <h3>Hva er fjernet fra IPv4?</h3>
+    <ul>
+      <li><strong>Ingen header checksum</strong> &mdash; sparer tid i routere (transportlaget har sin egen).</li>
+      <li><strong>Ingen fragmentering i routere</strong> &mdash; hvis pakken er for stor, sender routeren ICMP &laquo;Packet Too Big&raquo; tilbake. Senderen m&aring; fragmentere selv.</li>
+      <li><strong>Ingen options</strong> &mdash; erstattet av extension headers som kj&oslash;res som &laquo;next header&raquo;-kjeder.</li>
+    </ul>
+
+    <h3>Overgang: tunneling og dual stack</h3>
+    <p>IPv6 og IPv4 er <em>ikke</em> bakoverkompatible. Overgangen krever <strong>dual stack</strong> (kj&oslash;re begge samtidig) og <strong>tunneling</strong> (pakke IPv6-datagrammer inn i IPv4-payloads for &aring; krysse IPv4-nettverk).</p>
+
+    <p>I 2026 er vi rundt 45&ndash;47% IPv6-trafikk globalt &mdash; etter over 25 &aring;r med gradvis migrasjon. NAT holdt IPv4 p&aring; livst&oslash;tte, og fjernet presset for en rask overgang.</p>
+  </div>
+</section>
+
+<!-- ============ 15 HOURGLASS ============ -->
+<section id="hourglass">
+  <div class="container">
+    <div class="section-badge">15 &middot; Timeglasset &amp; end-to-end</div>
+    <h2>Internetts <em>arkitekturprinsipper</em></h2>
+    <p class="section-intro">IP er Internetts &laquo;smale midje&raquo; &mdash; det eneste som alle m&aring; implementere. Kompleksiteten lever i kantene. Dette er et bevisst designvalg.</p>
+
+    <h3>IP-timeglasset</h3>
+    <p>Internett har mange protokoller i applikasjons-, transport-, lenke- og fysisk lag &mdash; men bare <strong>&eacute;n</strong> nettverkslagsprotokoll: IP. Denne &laquo;smale midjen&raquo; er det som gj&oslash;r interoperabilitet mulig: enhver enhet som implementerer IP kan kommunisere med enhver annen.</p>
+
+    <p>I &laquo;middelalderen&raquo; har Internett f&aring;tt &laquo;love handles&raquo;: mellombokser (firewalls, NAT, caches) som opererer inne i nettverket og bryter den rene timeglassmodellen.</p>
+
+    <h3>Arkitekturprinsipper (RFC 1958)</h3>
+
+    <div class="callout callout-blue">
+      <span class="label">&#9733; RFC 1958</span>
+      <p>&laquo;The goal is connectivity, the tool is the Internet Protocol, and the intelligence is end to end rather than hidden in the network.&raquo;</p>
+      <p style="margin-top:12px">Tre hj&oslash;rnesteiner: <strong>enkel konnektivitet</strong>, <strong>IP som den smale midjen</strong>, og <strong>intelligens i kantene</strong>.</p>
+    </div>
+
+    <h3>End-to-end-argumentet</h3>
+    <p>Saltzer, Reed og Clark (1981) formulerte det slik: en funksjon kan <em>kun</em> implementeres fullstendig og korrekt med kunnskap fra applikasjonen i endepunktene. &Aring; bygge den inn i nettverket selv er ikke mulig. En ufullstendig versjon i nettverket <em>kan</em> v&aelig;re nyttig som ytelsesoptimalisering, men kan aldri erstatte endepunktimplementeringen.</p>
+
+    <p>Konkret: p&aring;litelig dataoverf&oslash;ring kan enten implementeres hop-by-hop i nettverket (dyrt, komplekst) eller end-to-end i endesystemene (TCP). Internett valgte end-to-end &mdash; og det har skalert bedre enn alle alternativene.</p>
+
+    <div class="quiz">
+      <p class="q-text">Hva betyr end-to-end-argumentet i praksis for nettverksdesign?</p>
+      <div class="options">
+        <button class="option" data-correct="false">At routere b&oslash;r kryptere all trafikk for sikkerhet.</button>
+        <button class="option" data-correct="true">At funksjoner som p&aring;litelighet best implementeres i endesystemene, ikke i nettverket.</button>
+        <button class="option" data-correct="false">At alle enheter m&aring; kj&oslash;re samme operativsystem.</button>
+        <button class="option" data-correct="false">At pakker alltid f&oslash;lger den korteste ruten.</button>
+      </div>
+      <div class="explanation"><strong>Riktig!</strong> Intelligensen &mdash; p&aring;litelighet, kryptering, ordnede leveranser &mdash; h&oslash;rer hjemme i endesystemene. Nettverket holdes enkelt og fokusert p&aring; best-effort-levering.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 16 SUMMARY ============ -->
+<section id="summary">
+  <div class="container">
+    <div class="section-badge">16 &middot; Oppsummering</div>
+    <h2>Enkelt <em>med vilje</em></h2>
+
+    <p class="dropcap">Hvis det er &eacute;n ting &aring; ta med seg fra dette kapittelet: Internetts nettverkslag er enkelt med vilje. Hver designbeslutning &mdash; best-effort, dumme routere, hierarkisk adressering, destinasjonsbasert forwarding &mdash; er et valg <em>mot</em> kompleksitet.</p>
+
+    <p>Kompleksiteten er ikke borte &mdash; den har bare flyttet seg:</p>
+    <ul>
+      <li>Til <strong>endesystemene</strong>: TCP s&oslash;rger for p&aring;litelighet, QUIC for lav latens.</li>
+      <li>Til <strong>control plane</strong>: BGP er et av de mest komplekse systemene mennesker har bygd.</li>
+      <li>Til <strong>mellombokser</strong>: NAT, brannmurer, load balancers, deep packet inspection.</li>
+    </ul>
+
+    <p>Data plane har holdt seg relativt enkelt &mdash; og derfor har det kunnet fly. N&aring;r vi neste gang &aring;pner control plane-delen, ser vi <em>hvordan</em> forwarding-tabellene faktisk fylles ut: rutingalgoritmer, OSPF, BGP, og ICMP.</p>
+  </div>
+</section>
+
+<div class="container">
+  <nav class="page-nav">
+    <a href="rutere-videresending.html">
+      <span class="nav-label">&larr; Forrige</span>
+      <span class="nav-title">Rutere og videresending</span>
+    </a>
+  </nav>
+</div>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10038; &#10038; &#10038;</div>
+    <p>NTNU &middot; TTM4100 &middot; V&aring;r 2026</p>
+  </div>
+</footer>
+
+<script>
+// === Quiz handlers ===
+document.querySelectorAll('.quiz').forEach(function(quiz) {
+  var fb = quiz.querySelector('.explanation');
+  quiz.querySelectorAll('button.option').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var correct = btn.dataset.correct === 'true';
+      quiz.querySelectorAll('button.option').forEach(function(b) {
+        b.disabled = true;
+        if (b.dataset.correct === 'true') b.classList.add('correct');
+        else if (b === btn) b.classList.add('incorrect');
+      });
+      if (fb) fb.classList.add('show');
+    });
+  });
+});
+
+// === CIDR slider ===
+(function() {
+  var slider = document.getElementById('cidr-slider');
+  var display = document.getElementById('cidr-display');
+  var prefixEl = document.getElementById('cidr-prefix');
+  var maskEl = document.getElementById('cidr-mask');
+  var countEl = document.getElementById('cidr-count');
+
+  function toMask(bits) {
+    var full = '';
+    for (var i = 0; i < 32; i++) full += i < bits ? '1' : '0';
+    var octets = [];
+    for (var i = 0; i < 4; i++) octets.push(parseInt(full.substr(i * 8, 8), 2));
+    return octets.join('.');
+  }
+
+  function update() {
+    var bits = parseInt(slider.value);
+    var addr = '11001000000101110001000000000000';
+    var html = '';
+    for (var i = 0; i < 32; i++) {
+      if (i > 0 && i % 8 === 0) html += ' ';
+      var cls = i < bits ? 'net' : 'host';
+      html += '<span class="' + cls + '">' + addr[i] + '</span>';
+    }
+    html += '<br>200.23.16.0/' + bits;
+    display.innerHTML = html;
+    prefixEl.textContent = '/' + bits;
+    maskEl.textContent = toMask(bits);
+    var count = Math.pow(2, 32 - bits);
+    countEl.textContent = count >= 1e6 ? (count / 1e6).toFixed(1) + 'M' : count.toLocaleString('no');
+  }
+
+  slider.addEventListener('input', update);
+  update();
+})();
+
+// === DHCP stepper ===
+(function() {
+  var descs = [
+    'Klikk \u00abNeste\u00bb for \u00e5 se DHCP-meldingsutvekslingen trinn for trinn.',
+    'Klienten vet ingenting \u2014 ikke sin egen adresse, ikke serverens. Den broadcaster \u00abfinnes det en DHCP-server der ute?\u00bb (DHCP Discover) til hele subnettet. Kildeadresse: 0.0.0.0. Destinasjon: 255.255.255.255.',
+    'Serveren svarer med et tilbud: \u00abHer er en adresse du kan bruke: 223.1.2.4\u00bb (DHCP Offer). Ogs\u00e5 dette sendes som broadcast. Inkluderer lease-tid.',
+    'Klienten broadcaster tilbake: \u00abJeg tar .4!\u00bb (DHCP Request). Broadcast fordi andre DHCP-servere som ogs\u00e5 sendte tilbud, m\u00e5 f\u00e5 vite at de ble avsl\u00e5tt.',
+    'Serveren bekrefter: \u00abOK, den er din\u00bb (DHCP ACK). N\u00e5 er leien tildelt, og klienten vet sin IP, gateway, DNS-server og subnet-maske.'
+  ];
+
+  function buildSvg(step) {
+    var s = '<svg viewBox="0 0 580 240" xmlns="http://www.w3.org/2000/svg">';
+    s += '<defs><marker id="darr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="var(--rust)"/></marker>';
+    s += '<marker id="darrg" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="var(--green)"/></marker></defs>';
+    s += '<rect x="30" y="20" width="90" height="34" fill="var(--paper-dark)" stroke="var(--ink-soft)" rx="3"/>';
+    s += '<text x="75" y="42" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">Klient</text>';
+    s += '<line x1="75" y1="54" x2="75" y2="230" stroke="var(--ink-ghost)" stroke-dasharray="2 3"/>';
+    s += '<rect x="430" y="20" width="110" height="34" fill="var(--paper-dark)" stroke="var(--ink-soft)" rx="3"/>';
+    s += '<text x="485" y="42" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">DHCP-server</text>';
+    s += '<line x1="485" y1="54" x2="485" y2="230" stroke="var(--ink-ghost)" stroke-dasharray="2 3"/>';
+
+    var msgs = [
+      { y: 85, label: '1. DHCP Discover', dir: 'r', color: 'var(--rust)', marker: 'darr' },
+      { y: 125, label: '2. DHCP Offer', dir: 'l', color: 'var(--green)', marker: 'darrg' },
+      { y: 165, label: '3. DHCP Request', dir: 'r', color: 'var(--rust)', marker: 'darr' },
+      { y: 205, label: '4. DHCP ACK', dir: 'l', color: 'var(--green)', marker: 'darrg' }
+    ];
+
+    for (var i = 0; i < msgs.length; i++) {
+      var m = msgs[i];
+      var op = i < step ? '1' : '0.12';
+      var x1 = m.dir === 'r' ? 75 : 485;
+      var x2 = m.dir === 'r' ? 485 : 75;
+      s += '<g opacity="' + op + '">';
+      s += '<line x1="' + x1 + '" y1="' + m.y + '" x2="' + x2 + '" y2="' + m.y + '" stroke="' + m.color + '" stroke-width="2" marker-end="url(#' + m.marker + ')"/>';
+      s += '<text x="280" y="' + (m.y - 8) + '" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="' + m.color + '">' + m.label + '</text>';
+      s += '</g>';
+    }
+    s += '</svg>';
+    return s;
+  }
+
+  var idx = 0;
+  var svgEl = document.getElementById('dhcp-svg');
+  var descEl = document.getElementById('dhcp-desc');
+  var progEl = document.getElementById('dhcp-prog');
+  var prevBtn = document.getElementById('dhcp-prev');
+  var nextBtn = document.getElementById('dhcp-next');
+
+  function render() {
+    svgEl.innerHTML = buildSvg(idx);
+    descEl.textContent = descs[idx];
+    progEl.textContent = idx + ' / 4';
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === descs.length - 1;
+  }
+  prevBtn.addEventListener('click', function() { if (idx > 0) { idx--; render(); } });
+  nextBtn.addEventListener('click', function() { if (idx < descs.length - 1) { idx++; render(); } });
+  render();
+})();
+</script>
+
+<script src="../chat-widget.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

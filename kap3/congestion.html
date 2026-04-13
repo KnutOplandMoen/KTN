@@ -4,414 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kapittel 3b — Metningskontroll og evolusjon</title>
-<link rel="stylesheet" href="style.css">
-<style>
-:root{
-  --paper:#f4f1ea;
-  --paper-dark:#e8e3d6;
-  --ink:#1a1612;
-  --ink-soft:#3d3832;
-  --ink-faded:#6b6257;
-  --ink-ghost:#a39886;
-  --rust:#b04428;
-  --rust-dark:#8a3420;
-  --blue:#2d4a7a;
-  --green:#3d6b3a;
-  --ochre:#c68a1f;
-  --line:#c9c0ae;
-  --line-soft:#ddd5c4;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{
-  font-family:'Newsreader',Georgia,serif;
-  font-size:18px;
-  line-height:1.65;
-  color:var(--ink);
-  background:var(--paper);
-  -webkit-font-smoothing:antialiased;
-  position:relative;
-  font-feature-settings:"kern","liga";
-}
-body::before{
-  content:"";
-  position:fixed;inset:0;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.36 0 0 0 0 0.27 0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  opacity:.35;
-  pointer-events:none;
-  z-index:1;
-  mix-blend-mode:multiply;
-}
-.container{
-  max-width:820px;
-  margin:0 auto;
-  padding:0 32px;
-  position:relative;
-  z-index:2;
-}
-.container.wide{max-width:980px}
-
-/* HERO */
-.hero{
-  padding:120px 0 80px;
-  border-bottom:1px solid var(--line);
-}
-.hero .eyebrow{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:13px;
-  letter-spacing:0.18em;
-  text-transform:uppercase;
-  color:var(--rust);
-  margin-bottom:24px;
-  display:flex;align-items:center;gap:14px;
-}
-.hero .eyebrow::after{
-  content:"";flex:1;height:1px;background:var(--line);max-width:200px;
-}
-.hero h1{
-  font-size:clamp(48px,8vw,92px);
-  line-height:1.0;
-  letter-spacing:-0.025em;
-  font-weight:500;
-  margin-bottom:28px;
-}
-.hero h1 em{font-style:italic;color:var(--rust);font-weight:400}
-.hero .sub{
-  font-size:22px;
-  font-style:italic;
-  color:var(--ink-soft);
-  max-width:640px;
-  line-height:1.45;
-  margin-bottom:48px;
-  font-weight:300;
-}
-.hero .toc{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:18px 36px;
-  border-top:1px solid var(--line);
-  padding-top:32px;
-}
-.hero .toc a{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:13px;
-  text-transform:uppercase;
-  letter-spacing:0.08em;
-  color:var(--ink-soft);
-  text-decoration:none;
-  display:flex;gap:14px;
-  border-bottom:1px dotted transparent;
-  padding-bottom:4px;
-  transition:color .2s, border-color .2s;
-}
-.hero .toc a:hover{color:var(--rust);border-color:var(--rust)}
-.hero .toc a span{color:var(--ink-ghost);font-weight:500}
-
-/* SECTIONS */
-section{
-  padding:90px 0;
-  border-bottom:1px solid var(--line);
-}
-.badge{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:12px;
-  letter-spacing:0.16em;
-  text-transform:uppercase;
-  color:var(--rust);
-  border:1px solid var(--rust);
-  padding:6px 14px;
-  display:inline-block;
-  margin-bottom:24px;
-}
-h2{
-  font-size:clamp(34px,5vw,56px);
-  line-height:1.05;
-  letter-spacing:-0.02em;
-  font-weight:500;
-  margin-bottom:18px;
-}
-h2 em{font-style:italic;color:var(--rust)}
-.section-intro{
-  font-size:21px;
-  font-style:italic;
-  color:var(--ink-faded);
-  margin-bottom:48px;
-  max-width:680px;
-  line-height:1.5;
-  font-weight:300;
-}
-h3{
-  font-size:26px;
-  line-height:1.25;
-  margin:56px 0 16px;
-  font-weight:500;
-  letter-spacing:-0.01em;
-}
-h3::before{
-  content:"§ ";
-  color:var(--rust);
-  font-weight:400;
-}
-p{margin-bottom:20px;color:var(--ink-soft)}
-p strong{color:var(--ink);font-weight:600}
-p em{font-style:italic}
-.lead::first-letter{
-  font-family:'Newsreader',serif;
-  font-size:5.2em;
-  float:left;
-  line-height:0.85;
-  padding:8px 10px 0 0;
-  color:var(--rust);
-  font-weight:500;
-}
-a{color:var(--rust);text-decoration:none;border-bottom:1px solid var(--rust)}
-
-/* MARGIN NOTE */
-.margin-note{
-  border-left:3px solid var(--rust);
-  padding:8px 0 8px 22px;
-  margin:32px 0;
-  font-style:italic;
-  color:var(--ink-faded);
-  font-size:17px;
-  background:rgba(176,68,40,0.04);
-}
-.margin-note strong{font-style:normal;color:var(--rust);display:block;font-family:'IBM Plex Sans',sans-serif;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:6px;font-weight:600}
-
-/* PROBLEM/SOLUTION BOX */
-.box{
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.35);
-  padding:28px 32px;
-  margin:36px 0;
-  position:relative;
-}
-.box.problem{border-left:4px solid var(--rust)}
-.box.solution{border-left:4px solid var(--green)}
-.box.insight{border-left:4px solid var(--ochre);background:rgba(198,138,31,0.06)}
-.box .label{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:11px;
-  letter-spacing:0.16em;
-  text-transform:uppercase;
-  margin-bottom:12px;
-  font-weight:600;
-}
-.box.problem .label{color:var(--rust)}
-.box.solution .label{color:var(--green)}
-.box.insight .label{color:var(--ochre)}
-.box p:last-child{margin-bottom:0}
-
-/* CODE / MONO */
-code, .mono{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:0.88em;
-  background:var(--paper-dark);
-  padding:2px 6px;
-  color:var(--ink);
-}
-
-/* FIGURES */
-figure{
-  margin:48px 0;
-}
-figcaption{
-  font-family:'IBM Plex Sans',sans-serif;
-  font-size:13px;
-  color:var(--ink-faded);
-  text-align:center;
-  margin-top:14px;
-  font-style:italic;
-}
-.svg-wrap{
-  background:rgba(255,255,255,0.45);
-  border:1px solid var(--line);
-  padding:24px;
-  overflow-x:auto;
-}
-.svg-wrap svg{display:block;margin:0 auto;max-width:100%;height:auto}
-
-/* COMPARISON TABLE */
-table.compare{
-  width:100%;
-  border-collapse:collapse;
-  margin:32px 0;
-  font-size:16px;
-}
-table.compare th, table.compare td{
-  text-align:left;
-  padding:14px 18px;
-  border-bottom:1px solid var(--line);
-  vertical-align:top;
-}
-table.compare th{
-  font-family:'IBM Plex Sans',sans-serif;
-  font-size:12px;
-  letter-spacing:0.1em;
-  text-transform:uppercase;
-  color:var(--rust);
-  font-weight:600;
-  border-bottom:2px solid var(--rust);
-}
-table.compare tr:last-child td{border-bottom:none}
-table.compare td:first-child{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:13px;
-  color:var(--ink);
-  width:30%;
-}
-
-/* QUIZ */
-.quiz{
-  border:1px solid var(--ochre);
-  background:rgba(198,138,31,0.05);
-  padding:32px;
-  margin:48px 0;
-}
-.quiz .qlabel{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:11px;
-  letter-spacing:0.16em;
-  text-transform:uppercase;
-  color:var(--ochre);
-  font-weight:600;
-  margin-bottom:14px;
-}
-.quiz h4{
-  font-size:21px;
-  font-weight:500;
-  margin-bottom:20px;
-  line-height:1.35;
-  color:var(--ink);
-}
-.quiz .opts{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
-.quiz button.opt{
-  text-align:left;
-  font-family:'Newsreader',serif;
-  font-size:17px;
-  padding:14px 18px;
-  background:rgba(255,255,255,0.5);
-  border:1px solid var(--line);
-  color:var(--ink-soft);
-  cursor:pointer;
-  transition:all .15s;
-}
-.quiz button.opt:hover{border-color:var(--ochre);background:rgba(255,255,255,0.8)}
-.quiz button.opt.correct{border-color:var(--green);background:rgba(61,107,58,0.12);color:var(--green)}
-.quiz button.opt.wrong{border-color:var(--rust);background:rgba(176,68,40,0.1);color:var(--rust);text-decoration:line-through}
-.quiz .feedback{
-  font-style:italic;
-  color:var(--ink-faded);
-  font-size:16px;
-  padding-top:14px;
-  border-top:1px dotted var(--line);
-  display:none;
-}
-.quiz .feedback.show{display:block}
-.quiz .feedback strong{font-style:normal;color:var(--ink)}
-
-/* STEPPER */
-.stepper{
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.45);
-  padding:28px;
-  margin:48px 0;
-}
-.stepper .slabel{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:11px;
-  letter-spacing:0.16em;
-  text-transform:uppercase;
-  color:var(--rust);
-  font-weight:600;
-  margin-bottom:8px;
-}
-.stepper h4{
-  font-size:22px;
-  font-weight:500;
-  margin-bottom:20px;
-}
-.stepper .stage-svg{
-  background:var(--paper);
-  border:1px solid var(--line-soft);
-  padding:18px;
-  margin-bottom:18px;
-  min-height:280px;
-  display:flex;align-items:center;justify-content:center;
-}
-.stepper .stage-svg svg{max-width:100%;height:auto}
-.stepper .desc{
-  font-style:italic;
-  font-size:17px;
-  color:var(--ink-soft);
-  min-height:60px;
-  padding:0 6px;
-  margin-bottom:20px;
-}
-.stepper .desc strong{font-style:normal;color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;display:block;margin-bottom:6px}
-.stepper .ctrls{display:flex;gap:12px;align-items:center;justify-content:space-between}
-.stepper button{
-  font-family:'IBM Plex Sans',sans-serif;
-  font-size:13px;
-  font-weight:600;
-  padding:10px 22px;
-  background:var(--ink);
-  color:var(--paper);
-  border:none;
-  cursor:pointer;
-  letter-spacing:0.05em;
-  text-transform:uppercase;
-}
-.stepper button:disabled{background:var(--ink-ghost);cursor:not-allowed}
-.stepper .progress{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:12px;
-  color:var(--ink-faded);
-  letter-spacing:0.1em;
-}
-
-/* ORNAMENT */
-.ornament{
-  text-align:center;
-  color:var(--rust);
-  font-size:18px;
-  letter-spacing:1em;
-  padding:40px 0 20px;
-}
-
-/* FOOTER */
-footer{
-  padding:80px 0 100px;
-  text-align:center;
-  font-family:'IBM Plex Mono',monospace;
-  font-size:12px;
-  color:var(--ink-faded);
-  letter-spacing:0.1em;
-  text-transform:uppercase;
-}
-footer p{margin-bottom:8px;color:var(--ink-faded);font-family:inherit}
-
-/* RESPONSIVE */
-@media (max-width:768px){
-  body{font-size:17px}
-  .container{padding:0 22px}
-  .hero{padding:80px 0 50px}
-  .hero h1{font-size:42px}
-  .hero .sub{font-size:18px}
-  .hero .toc{grid-template-columns:1fr;gap:14px}
-  section{padding:60px 0}
-  h2{font-size:32px}
-  h3{font-size:22px;margin:40px 0 14px}
-  .stepper, .quiz, .box{padding:20px}
-}
-</style>
+<link rel="stylesheet" href="../style.css">
 </head>
 <body>
 
 <nav class="site-nav">
   <div class="container">
-    <a href="index.html" class="brand">TTM4100</a>
-    <a href="index.html" class="nav-back">&larr; Alle kapitler</a>
+    <a href="../" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Kapittel 3</a>
   </div>
 </nav>
 
@@ -648,7 +248,7 @@ footer p{margin-bottom:8px;color:var(--ink-faded);font-family:inherit}
       <p style="font-family:'IBM Plex Mono',monospace;font-size:14px">
         ssthresh = cwnd / 2<br>
         cwnd = ssthresh + 3 MSS<br>
-        G&aring; til <strong>fast recovery</strong>
+        Gå til <strong>fast recovery</strong>
       </p>
     </div>
     <div class="box problem">
@@ -656,7 +256,7 @@ footer p{margin-bottom:8px;color:var(--ink-faded);font-family:inherit}
       <p style="font-family:'IBM Plex Mono',monospace;font-size:14px">
         ssthresh = cwnd / 2<br>
         cwnd = 1 MSS<br>
-        Start slow start p&aring; nytt
+        Start slow start på nytt
       </p>
     </div>
 
@@ -666,7 +266,7 @@ footer p{margin-bottom:8px;color:var(--ink-faded);font-family:inherit}
       <div class="label">Ny ACK i fast recovery</div>
       <p style="font-family:'IBM Plex Mono',monospace;font-size:14px">
         cwnd = ssthresh<br>
-        G&aring; til congestion avoidance
+        Gå til congestion avoidance
       </p>
     </div>
 
@@ -943,7 +543,7 @@ footer p{margin-bottom:8px;color:var(--ink-faded);font-family:inherit}
     </div>
 
     <div class="ornament">&#10038; &#10038; &#10038;</div>
-    <p>Med dette er hele kapittel 3 dekket: fra <a href="kapittel3-transport-udp.html">transportlagets tjenester og UDP</a>, gjennom <a href="kapittel3-tcp.html">TCPs pålitelige dataoverføring</a>, til metningskontroll, CUBIC og QUIC. Neste stopp er <a href="nettverkslaget.html">nettverkslaget</a> — kjernen i pakkesvitsjer og rutere.</p>
+    <p>Med dette er hele kapittel 3 dekket: fra <a href="transport-udp.html">transportlagets tjenester og UDP</a>, gjennom <a href="tcp.html">TCPs pålitelige dataoverføring</a>, til metningskontroll, CUBIC og QUIC.</p>
   </div>
 </section>
 
@@ -967,6 +567,13 @@ footer p{margin-bottom:8px;color:var(--ink-faded);font-family:inherit}
     </div>
   </div>
 </section>
+
+<nav class="page-nav">
+  <div class="container">
+    <a href="tcp.html" class="prev"><span class="nav-label">&larr; Forrige</span><span class="nav-title">TCP</span></a>
+    <span></span>
+  </div>
+</nav>
 
 <footer>
   <div class="container">
@@ -1124,6 +731,7 @@ document.querySelectorAll('.quiz').forEach(q => {
 </script>
 
 </main>
+<script src="../chat-widget.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

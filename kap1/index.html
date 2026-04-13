@@ -4,169 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kapittel 1 — Datanett og Internett</title>
-<link rel="stylesheet" href="style.css">
-<style>
-:root{
-  --paper:#f4f1ea;
-  --paper-dark:#e8e3d6;
-  --ink:#1a1612;
-  --ink-soft:#3d3832;
-  --ink-faded:#6b6257;
-  --ink-ghost:#a39886;
-  --rust:#b04428;
-  --rust-dark:#8a3420;
-  --blue:#2d4a7a;
-  --green:#3d6b3a;
-  --ochre:#c68a1f;
-  --line:#c9c0ae;
-  --line-soft:#ddd5c4;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{
-  font-family:'Newsreader',Georgia,serif;
-  font-size:18px;
-  line-height:1.7;
-  color:var(--ink);
-  background:var(--paper);
-  -webkit-font-smoothing:antialiased;
-  font-feature-settings:"ss01","onum";
-  position:relative;
-}
-body::before{
-  content:"";
-  position:fixed;inset:0;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/><feColorMatrix values='0 0 0 0 0.4  0 0 0 0 0.3  0 0 0 0 0.15  0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  opacity:0.08;pointer-events:none;z-index:1;mix-blend-mode:multiply;
-}
-.container{max-width:820px;margin:0 auto;padding:0 32px;position:relative;z-index:2}
-.container.wide{max-width:980px}
-
-/* HERO */
-.hero{padding:100px 0 60px;border-bottom:1px solid var(--line)}
-.hero .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:0.18em;text-transform:uppercase;color:var(--rust);margin-bottom:24px}
-.hero h1{
-  font-size:clamp(48px,8vw,92px);
-  line-height:1.0;letter-spacing:-0.025em;font-weight:500;
-  margin-bottom:24px;
-}
-.hero h1 em{font-style:italic;font-weight:400;color:var(--rust-dark)}
-.hero .lede{font-size:22px;line-height:1.5;color:var(--ink-soft);font-style:italic;max-width:650px;margin-bottom:40px}
-.toc{border-top:1px solid var(--line);padding-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:14px 40px}
-.toc a{color:var(--ink);text-decoration:none;font-family:'IBM Plex Sans',sans-serif;font-size:14px;display:flex;align-items:baseline;gap:14px;padding:6px 0;border-bottom:1px dotted transparent;transition:border-color .2s}
-.toc a:hover{border-bottom-color:var(--rust)}
-.toc a span{font-family:'IBM Plex Mono',monospace;color:var(--rust);font-size:12px;font-weight:500;min-width:24px}
-
-/* SECTIONS */
-section{padding:80px 0;border-bottom:1px solid var(--line)}
-.section-num{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:var(--rust);display:inline-block;padding:6px 12px;border:1px solid var(--line);margin-bottom:24px}
-h2{font-size:clamp(34px,5vw,56px);line-height:1.05;letter-spacing:-0.02em;font-weight:500;margin-bottom:16px}
-h2 em{font-style:italic;color:var(--rust-dark)}
-.subtitle{font-style:italic;font-size:20px;color:var(--ink-faded);margin-bottom:40px;max-width:680px}
-h3{font-size:26px;line-height:1.25;font-weight:500;margin:48px 0 16px;letter-spacing:-0.01em}
-h4{font-size:19px;font-weight:600;margin:28px 0 10px;font-family:'IBM Plex Sans',sans-serif;color:var(--ink-soft)}
-p{margin-bottom:20px;color:var(--ink-soft)}
-p strong{color:var(--ink);font-weight:600}
-p em{color:var(--rust-dark)}
-.intro-p::first-letter{
-  font-family:'Newsreader',serif;
-  font-size:5.2em;float:left;line-height:0.85;
-  padding:8px 12px 0 0;color:var(--rust);font-weight:500;
-}
-a{color:var(--rust);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
-
-/* CALLOUTS */
-.callout{border-left:3px solid var(--rust);background:var(--paper-dark);padding:22px 26px;margin:28px 0;border-radius:0 4px 4px 0}
-.callout .label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--rust);margin-bottom:8px;display:block;font-weight:600}
-.callout p:last-child{margin-bottom:0}
-.callout.blue{border-left-color:var(--blue)}
-.callout.blue .label{color:var(--blue)}
-.callout.green{border-left-color:var(--green)}
-.callout.green .label{color:var(--green)}
-.callout.ochre{border-left-color:var(--ochre)}
-.callout.ochre .label{color:var(--ochre)}
-
-/* MARGIN NOTE */
-.margin-note{font-style:italic;font-size:15px;color:var(--ink-faded);border-left:2px solid var(--ochre);padding:6px 16px;margin:24px 0}
-
-/* TABLES */
-.table-wrap{overflow-x:auto;margin:30px 0}
-table{width:100%;border-collapse:collapse;font-size:15px;font-family:'IBM Plex Sans',sans-serif}
-th{text-align:left;padding:12px 14px;border-bottom:2px solid var(--ink);font-weight:600;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink)}
-td{padding:12px 14px;border-bottom:1px solid var(--line-soft);color:var(--ink-soft)}
-tr:hover td{background:var(--paper-dark)}
-td.mono{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink)}
-
-/* FIGURES */
-figure{margin:36px 0;padding:24px;background:var(--paper-dark);border:1px solid var(--line);border-radius:2px}
-figure svg{display:block;max-width:100%;height:auto;margin:0 auto}
-figcaption{font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--ink-faded);margin-top:16px;text-align:center;font-style:italic}
-
-/* DIVIDER */
-.divider{text-align:center;color:var(--rust);font-size:18px;letter-spacing:1em;padding:40px 0;}
-
-/* QUIZ */
-.quiz{border:2px solid var(--ink);background:var(--paper);padding:28px 30px;margin:36px 0;position:relative}
-.quiz::before{content:"SPØRSMÅL";position:absolute;top:-11px;left:24px;background:var(--paper);padding:0 10px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.2em;color:var(--rust);font-weight:600}
-.quiz .q{font-size:18px;font-weight:500;color:var(--ink);margin-bottom:18px}
-.quiz .options{display:flex;flex-direction:column;gap:10px}
-.quiz button.opt{
-  text-align:left;padding:12px 16px;background:var(--paper-dark);border:1px solid var(--line);
-  font-family:inherit;font-size:16px;color:var(--ink-soft);cursor:pointer;border-radius:2px;
-  transition:all .15s;font-feature-settings:"ss01";
-}
-.quiz button.opt:hover{border-color:var(--rust);transform:translateX(3px)}
-.quiz button.opt.correct{background:#d9e6d4;border-color:var(--green);color:var(--ink)}
-.quiz button.opt.wrong{background:#e8d4cd;border-color:var(--rust);color:var(--ink)}
-.quiz button.opt:disabled{cursor:default}
-.quiz button.opt:disabled:hover{transform:none}
-.quiz .feedback{margin-top:16px;font-style:italic;font-size:15px;color:var(--ink-faded);min-height:1.5em}
-
-/* STEPPER */
-.stepper{border:1px solid var(--line);background:var(--paper-dark);padding:28px;margin:36px 0;border-radius:2px}
-.stepper .step-display{min-height:280px;padding:16px 0}
-.stepper .step-title{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--rust);margin-bottom:10px}
-.stepper .step-text{font-size:16px;color:var(--ink-soft);margin-bottom:18px}
-.stepper .controls{display:flex;align-items:center;gap:16px;justify-content:center;border-top:1px solid var(--line);padding-top:20px}
-.stepper button{font-family:'IBM Plex Sans',sans-serif;font-size:14px;padding:8px 18px;background:var(--ink);color:var(--paper);border:none;cursor:pointer;letter-spacing:0.05em}
-.stepper button:disabled{background:var(--ink-ghost);cursor:not-allowed}
-.stepper .indicator{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink-faded)}
-
-/* SLIDER */
-.slider-box{border:1px solid var(--line);background:var(--paper-dark);padding:26px;margin:36px 0;border-radius:2px}
-.slider-box label{display:block;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faded);margin-bottom:8px}
-.slider-box input[type=range]{width:100%;accent-color:var(--rust)}
-.slider-box .val{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--rust);font-weight:600}
-.slider-box .out{margin-top:18px;padding:14px 18px;background:var(--paper);border-left:3px solid var(--rust);font-size:15px;color:var(--ink-soft)}
-
-/* COMPARE GRID */
-.compare{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:32px 0}
-.compare > div{padding:22px;border:1px solid var(--line);background:var(--paper-dark)}
-.compare h4{margin-top:0;color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase}
-.compare ul{list-style:none;padding:0;font-size:15px}
-.compare li{padding:6px 0 6px 18px;position:relative;color:var(--ink-soft)}
-.compare li::before{content:"›";position:absolute;left:0;color:var(--rust)}
-
-/* FOOTER */
-footer{padding:60px 0;text-align:center;color:var(--ink-faded);font-size:14px;font-style:italic}
-
-@media(max-width:768px){
-  .container{padding:0 22px}
-  .hero{padding:60px 0 40px}
-  section{padding:60px 0}
-  .toc{grid-template-columns:1fr;gap:8px}
-  .compare{grid-template-columns:1fr}
-  h1{font-size:46px}
-  body{font-size:17px}
-}
-</style>
+<link rel="stylesheet" href="../style.css">
 </head>
 <body>
 
 <nav class="site-nav">
   <div class="container">
-    <a href="index.html" class="brand">TTM4100</a>
-    <a href="index.html" class="nav-back">&larr; Alle kapitler</a>
+    <a href="../" class="brand">TTM4100</a>
+    <a href="../" class="nav-back">&larr; Alle kapitler</a>
   </div>
 </nav>
 
@@ -191,18 +36,18 @@ footer{padding:60px 0;text-align:center;color:var(--ink-faded);font-size:14px;fo
 <!-- ============ INTRO ============ -->
 <section id="intro">
 <div class="container">
-  <div class="section-num">01 · Introduksjon</div>
+  <div class="section-badge">01 · Introduksjon</div>
   <h2>Hva er <em>Internett</em>?</h2>
-  <p class="subtitle">To komplementære måter å tenke på det samme nettverket.</p>
+  <p class="section-intro">To komplementære måter å tenke på det samme nettverket.</p>
 
-  <p class="intro-p">Internett er noe de fleste bruker i hundrevis av minutter hver dag, men svært få kan gi en presis definisjon av. Det finnes to måter å svare på spørsmålet "hva er Internett?" — og begge er like gyldige. Den første er <em>mutterne-og-boltene</em>-beskrivelsen: hva består det fysisk av? Den andre er <em>tjenestebeskrivelsen</em>: hva tilbyr det til applikasjoner som bruker det?</p>
+  <p class="dropcap">Internett er noe de fleste bruker i hundrevis av minutter hver dag, men svært få kan gi en presis definisjon av. Det finnes to måter å svare på spørsmålet "hva er Internett?" — og begge er like gyldige. Den første er <em>mutterne-og-boltene</em>-beskrivelsen: hva består det fysisk av? Den andre er <em>tjenestebeskrivelsen</em>: hva tilbyr det til applikasjoner som bruker det?</p>
 
   <h3>Mutterne-og-boltene-beskrivelsen</h3>
   <p>Internett er et nettverk av milliarder av <strong>endesystemer</strong> (også kalt <em>hosts</em>) koblet sammen via <strong>kommunikasjonslinker</strong> og <strong>pakkesvitsjer</strong>. Endesystemene er alt fra laptoper og smarttelefoner til servere, IoT-sensorer og smarte kjøleskap. Linkene — fiber, kobberkabel, radio — binder dem sammen, og pakkessvitsjene (primært <strong>rutere</strong> og <strong>linklagssvitsjer</strong>) videresender data mellom dem.</p>
 
   <p>Når et endesystem skal sende data, deles dataene opp i <strong>pakker</strong> — små biter med en header foran som forteller nettverket hvor de skal. Hver pakke reiser uavhengig gjennom nettverket, hopper fra svitsj til svitsj, og settes sammen igjen hos mottakeren. Endesystemene er koblet til Internett gjennom <strong>ISP-er</strong> (Internet Service Providers), som igjen er koblet sammen i et hierarki. Hele systemet drives av <strong>protokoller</strong> — regler for hvordan enheter kommuniserer — der <em>TCP</em> og <em>IP</em> er de to viktigste.</p>
 
-  <div class="callout blue">
+  <div class="callout callout-blue">
     <span class="label">Hva er en protokoll?</span>
     <p>En protokoll definerer <strong>formatet og rekkefølgen</strong> av meldinger som utveksles mellom to eller flere kommuniserende enheter, samt <strong>handlingene</strong> som utføres når en melding sendes eller mottas. Uten protokoller ville to maskiner sendt bits til hverandre uten å ha noen felles forståelse av hva de betyr.</p>
   </div>
@@ -210,7 +55,7 @@ footer{padding:60px 0;text-align:center;color:var(--ink-faded);font-size:14px;fo
   <h3>Tjenestebeskrivelsen</h3>
   <p>Fra et applikasjonsperspektiv er Internett en <strong>infrastruktur som tilbyr tjenester til distribuerte applikasjoner</strong>. E-post, web, videostrømming, nettspill, sosiale medier — alle kjører oppå Internett. Applikasjonene kjører på endesystemene, ikke inne i nettverket, og de kommuniserer med hverandre ved å bruke et <strong>socket-grensesnitt</strong>. Socketen er "døren" mellom applikasjonen og transportlaget — den lar applikasjonen be om at data skal leveres til en annen maskin, uten å måtte vite noe om rutere og linker underveis.</p>
 
-  <div class="callout green">
+  <div class="callout callout-green">
     <span class="label">Analogi</span>
     <p>Tenk på Internett som et postsystem. Du (applikasjonen) legger et brev i postkassen (socketen). Postsystemet (nettverket) tar seg av resten — sortering, transport, levering. Du trenger ikke vite hvilken rute brevet tar eller hvilke lastebiler som brukes. Du stoler på at det finnes et sett med regler (protokoller) som gjør at brevet kommer fram.</p>
   </div>
@@ -220,47 +65,36 @@ footer{padding:60px 0;text-align:center;color:var(--ink-faded);font-size:14px;fo
 <!-- ============ EDGE ============ -->
 <section id="edge">
 <div class="container">
-  <div class="section-num">02 · Ytterkanten</div>
+  <div class="section-badge">02 · Ytterkanten</div>
   <h2>Nettverkets <em>ytterkant</em></h2>
-  <p class="subtitle">Endesystemer, aksessnett og fysiske medier — der du og applikasjonene bor.</p>
+  <p class="section-intro">Endesystemer, aksessnett og fysiske medier — der du og applikasjonene bor.</p>
 
-  <p class="intro-p">Nettverkets ytterkant er der selve handlingen skjer. Det er her laptopen din kjører en nettleser, smarttelefonen strømmer video, og en server svarer på HTTP-forespørsler. Alle disse er <strong>endesystemer</strong> — de sitter i kanten av nettet og gjør det nyttige arbeidet. Rutere og svitsjer inne i nettverket gjør ingen ting applikasjonen bryr seg om; de bare videresender pakker.</p>
+  <p class="dropcap">Nettverkets ytterkant er der selve handlingen skjer. Det er her laptopen din kjører en nettleser, smarttelefonen strømmer video, og en server svarer på HTTP-forespørsler. Alle disse er <strong>endesystemer</strong> — de sitter i kanten av nettet og gjør det nyttige arbeidet. Rutere og svitsjer inne i nettverket gjør ingen ting applikasjonen bryr seg om; de bare videresender pakker.</p>
 
   <h3>Aksessnett — den siste milen</h3>
   <p>Aksessnettet er linken mellom endesystemet ditt og den <em>første ruteren</em> (edge router) i nettet. Det er ofte den trangeste og dyreste delen av hele forbindelsen, og det finnes en håndfull teknologier som brukes:</p>
 
-  <div class="table-wrap">
   <table>
     <tr><th>Teknologi</th><th>Medium</th><th>Typisk hastighet</th><th>Merknader</th></tr>
-    <tr><td class="mono">DSL</td><td>Eksisterende telefonlinje (kobber)</td><td>5–35 Mbps ned</td><td>Hastighet faller med avstand til sentralen</td></tr>
-    <tr><td class="mono">Kabel / HFC</td><td>Koaksialkabel + fiber</td><td>Opptil 1 Gbps ned</td><td>Delt medium — kapasiteten deles med naboene</td></tr>
-    <tr><td class="mono">FTTH</td><td>Fiber helt hjem</td><td>1–10 Gbps</td><td>Dedikert fiber, raskest tilgjengelig</td></tr>
-    <tr><td class="mono">WiFi (802.11)</td><td>Radio</td><td>Opptil 14 Gbps (WiFi 6)</td><td>Trådløs siste hopp, typisk til kabel/fiber bak</td></tr>
-    <tr><td class="mono">4G / 5G</td><td>Radio (mobilnett)</td><td>100 Mbps – 10 Gbps</td><td>Mobilbredbånd, dekker store områder</td></tr>
-    <tr><td class="mono">Satelitt</td><td>Radio (jordbane)</td><td>~100 Mbps (LEO)</td><td>Høy latens (GEO) eller lav (LEO, f.eks. Starlink)</td></tr>
+    <tr><td class="mono-cell">DSL</td><td>Eksisterende telefonlinje (kobber)</td><td>5–35 Mbps ned</td><td>Hastighet faller med avstand til sentralen</td></tr>
+    <tr><td class="mono-cell">Kabel / HFC</td><td>Koaksialkabel + fiber</td><td>Opptil 1 Gbps ned</td><td>Delt medium — kapasiteten deles med naboene</td></tr>
+    <tr><td class="mono-cell">FTTH</td><td>Fiber helt hjem</td><td>1–10 Gbps</td><td>Dedikert fiber, raskest tilgjengelig</td></tr>
+    <tr><td class="mono-cell">WiFi (802.11)</td><td>Radio</td><td>Opptil 14 Gbps (WiFi 6)</td><td>Trådløs siste hopp, typisk til kabel/fiber bak</td></tr>
+    <tr><td class="mono-cell">4G / 5G</td><td>Radio (mobilnett)</td><td>100 Mbps – 10 Gbps</td><td>Mobilbredbånd, dekker store områder</td></tr>
+    <tr><td class="mono-cell">Satelitt</td><td>Radio (jordbane)</td><td>~100 Mbps (LEO)</td><td>Høy latens (GEO) eller lav (LEO, f.eks. Starlink)</td></tr>
   </table>
-  </div>
 
   <h3>Fysiske medier</h3>
   <p>Uansett teknologi må bits til syvende og sist reise over et fysisk medium. Vi skiller mellom <strong>guidede medier</strong> (signalet følger en fysisk leder) og <strong>ikke-guidede medier</strong> (signalet sprer seg fritt):</p>
 
-  <div class="compare">
-    <div>
-      <h4>Guidede medier</h4>
-      <ul>
-        <li><strong>Tvunnet parkabel</strong> — billig, brukt i Ethernet og DSL, opptil 10 Gbps på kort avstand</li>
-        <li><strong>Koaksialkabel</strong> — brukt i kabel-TV-nett, delt medium, god båndbredde</li>
-        <li><strong>Fiberkabel</strong> — lyspulser i glass, enorm båndbredde, lav demping, immun mot elektromagnetisk interferens</li>
-      </ul>
-    </div>
-    <div>
-      <h4>Ikke-guidede medier</h4>
-      <ul>
-        <li><strong>Jordbølger (WiFi, Bluetooth)</strong> — kort rekkevidde, påvirkes av vegger og interferens</li>
-        <li><strong>Mikrobølger (4G/5G)</strong> — lengre rekkevidde, mye brukt i mobilnett</li>
-        <li><strong>Satellitt</strong> — global dekning mulig, men latens er en utfordring (GEO: ~280 ms RTT)</li>
-      </ul>
-    </div>
+  <div class="callout">
+    <span class="label">Guidede medier</span>
+    <p><strong>Tvunnet parkabel</strong> — billig, brukt i Ethernet og DSL, opptil 10 Gbps på kort avstand. <strong>Koaksialkabel</strong> — brukt i kabel-TV-nett, delt medium, god båndbredde. <strong>Fiberkabel</strong> — lyspulser i glass, enorm båndbredde, lav demping, immun mot elektromagnetisk interferens.</p>
+  </div>
+
+  <div class="callout callout-blue">
+    <span class="label">Ikke-guidede medier</span>
+    <p><strong>Jordbølger (WiFi, Bluetooth)</strong> — kort rekkevidde, påvirkes av vegger og interferens. <strong>Mikrobølger (4G/5G)</strong> — lengre rekkevidde, mye brukt i mobilnett. <strong>Satellitt</strong> — global dekning mulig, men latens er en utfordring (GEO: ~280 ms RTT).</p>
   </div>
 
   <div class="margin-note">Fiberkabel er det eneste mediet som ikke degraderes av elektromagnetisk støy. Derfor er det det foretrukne mediet for lange strekk og høye hastigheter — undersøiske kabler mellom kontinenter er nesten utelukkende fiber.</div>
@@ -270,11 +104,11 @@ footer{padding:60px 0;text-align:center;color:var(--ink-faded);font-size:14px;fo
 <!-- ============ CORE ============ -->
 <section id="core">
 <div class="container">
-  <div class="section-num">03 · Nettverkskjernen</div>
+  <div class="section-badge">03 · Nettverkskjernen</div>
   <h2>Nettverkets <em>kjerne</em></h2>
-  <p class="subtitle">Pakkesvitsjing vs. linjesvitsjing — to fundamentalt forskjellige måter å dele et nettverk.</p>
+  <p class="section-intro">Pakkesvitsjing vs. linjesvitsjing — to fundamentalt forskjellige måter å dele et nettverk.</p>
 
-  <p class="intro-p">Kjernen av Internett er et mesh av rutere koblet sammen med høyhastighets fiberlinker. Ingen endesystemer bor her — bare svitsjer som videresender pakker. Men <em>hvordan</em> de videresender, følger ett av to prinsipper som er verdt å forstå grundig, fordi de definerer alt som skjer oppover.</p>
+  <p class="dropcap">Kjernen av Internett er et mesh av rutere koblet sammen med høyhastighets fiberlinker. Ingen endesystemer bor her — bare svitsjer som videresender pakker. Men <em>hvordan</em> de videresender, følger ett av to prinsipper som er verdt å forstå grundig, fordi de definerer alt som skjer oppover.</p>
 
   <h3>Pakkesvitsjing (packet switching)</h3>
   <p>Internett bruker pakkesvitsjing. Data deles opp i <strong>pakker</strong> som sendes uavhengig gjennom nettverket. Hver ruter som mottar en pakke, lagrer den helt (<em>store</em>), sjekker destinasjonen, og sender den videre til neste ruter (<em>forward</em>). Dette kalles <strong>store-and-forward</strong>: hele pakken må være mottatt før den kan sendes videre.</p>
@@ -285,9 +119,9 @@ footer{padding:60px 0;text-align:center;color:var(--ink-faded);font-size:14px;fo
   </div>
 
   <div class="stepper" id="sfStepper">
-    <div class="step-display">
-      <div class="step-title" id="sfTitle">Steg 1 av 4</div>
-      <div class="step-text" id="sfText"></div>
+    <div class="stage">
+      <h5 id="sfTitle">Steg 1 av 4</h5>
+      <p id="sfText"></p>
       <svg id="sfSvg" viewBox="0 0 640 180" xmlns="http://www.w3.org/2000/svg">
         <text x="60" y="40" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">Kilde</text>
         <rect x="30" y="50" width="60" height="40" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="2"/>
@@ -309,7 +143,7 @@ footer{padding:60px 0;text-align:center;color:var(--ink-faded);font-size:14px;fo
     </div>
     <div class="controls">
       <button id="sfPrev">&larr; Forrige</button>
-      <span class="indicator" id="sfInd">1 / 4</span>
+      <span class="progress" id="sfInd">1 / 4</span>
       <button id="sfNext">Neste &rarr;</button>
     </div>
   </div>
@@ -319,29 +153,20 @@ footer{padding:60px 0;text-align:center;color:var(--ink-faded);font-size:14px;fo
 
   <p>Ressursene i en krets kan deles opp på to måter:</p>
 
-  <div class="compare">
-    <div>
-      <h4>FDM (Frequency Division)</h4>
-      <ul>
-        <li>Frekvensbåndet deles i smale bånd</li>
-        <li>Hver samtale får sitt eget frekvensbånd</li>
-        <li>Alle sender samtidig, men på ulike frekvenser</li>
-      </ul>
-    </div>
-    <div>
-      <h4>TDM (Time Division)</h4>
-      <ul>
-        <li>Tiden deles i rammer med faste tidsluker</li>
-        <li>Hver samtale får sin tidsluke i hver ramme</li>
-        <li>Alle deler samme frekvens, men sender i tur</li>
-      </ul>
-    </div>
+  <div class="callout">
+    <span class="label">FDM (Frequency Division)</span>
+    <p>Frekvensbåndet deles i smale bånd. Hver samtale får sitt eget frekvensbånd. Alle sender samtidig, men på ulike frekvenser.</p>
+  </div>
+
+  <div class="callout callout-blue">
+    <span class="label">TDM (Time Division)</span>
+    <p>Tiden deles i rammer med faste tidsluker. Hver samtale får sin tidsluke i hver ramme. Alle deler samme frekvens, men sender i tur.</p>
   </div>
 
   <h3>Hvorfor vant pakkesvitsjing?</h3>
   <p>Svaret er <strong>statistisk multipleksing</strong>. Brukere er sjelden aktive hele tiden — du veksler mellom å lese en side, klikke en link, vente. Med pakkesvitsjing deles nettverkets kapasitet dynamisk: når du er stille bruker andre kapasiteten. Med linjesvitsjing ville den reserverte kapasiteten ligge ubrukt. Resultatet er at pakkesvitsjing kan betjene <em>langt flere brukere</em> enn linjesvitsjing for samme mengde nettverksressurser.</p>
 
-  <div class="callout ochre">
+  <div class="callout">
     <span class="label">Eksempel</span>
     <p>En link med 1 Mbps kapasitet. Hver bruker trenger 100 kbps <em>når den er aktiv</em>, men er bare aktiv 10% av tiden. Med linjesvitsjing (TDM): 10 brukere maks. Med pakkesvitsjing: 35 brukere kan bruke linken, og sannsynligheten for at mer enn 10 er aktive samtidig er under 0,04%. Pakkesvitsjing vinner med 3,5× flere brukere — for et svært lite tap av garanti.</p>
   </div>
@@ -356,11 +181,11 @@ footer{padding:60px 0;text-align:center;color:var(--ink-faded);font-size:14px;fo
 <!-- ============ DELAY ============ -->
 <section id="delay">
 <div class="container">
-  <div class="section-num">04 · Forsinkelse</div>
+  <div class="section-badge">04 · Forsinkelse</div>
   <h2>Forsinkelse, <em>tap</em> og gjennomstrømning</h2>
-  <p class="subtitle">De fire komponentene som til sammen utgjør forsinkelsen — og hvorfor pakker noen ganger forsvinner.</p>
+  <p class="section-intro">De fire komponentene som til sammen utgjør forsinkelsen — og hvorfor pakker noen ganger forsvinner.</p>
 
-  <p class="intro-p">Når en pakke reiser fra A til B, bruker den tid. Denne forsinkelsen er ikke én ting — den er summen av fire forskjellige komponenter, hver med sin egen årsak og oppførsel. Å forstå disse fire er nøkkelen til å forstå hvorfor nettverket noen ganger føles tregt.</p>
+  <p class="dropcap">Når en pakke reiser fra A til B, bruker den tid. Denne forsinkelsen er ikke én ting — den er summen av fire forskjellige komponenter, hver med sin egen årsak og oppførsel. Å forstå disse fire er nøkkelen til å forstå hvorfor nettverket noen ganger føles tregt.</p>
 
   <h3>De fire forsinkelseskomponentene</h3>
 
@@ -369,50 +194,47 @@ footer{padding:60px 0;text-align:center;color:var(--ink-faded);font-size:14px;fo
     <p>Tiden ruteren bruker på å undersøke pakkens header, sjekke for bitfeil, og bestemme hvilken utgangslink pakken skal til. Typisk <strong>mikrosekunder</strong> — neglisjerbar i de fleste sammenhenger.</p>
   </div>
 
-  <div class="callout blue">
+  <div class="callout callout-blue">
     <span class="label">2. Køforsinkelse (d_queue)</span>
     <p>Tiden pakken venter i ruterkøen før den får slippe ut på linken. Avhenger av <em>hvor mange andre pakker</em> som allerede venter. Kan variere fra <strong>null</strong> (ingen kø) til <strong>millisekunder</strong> (lang kø), og er den eneste av de fire som er fundamentalt uforutsigbar.</p>
   </div>
 
-  <div class="callout green">
+  <div class="callout callout-green">
     <span class="label">3. Transmisjonsforsinkelse (d_trans)</span>
     <p>Tiden det tar å <em>presse alle bits ut på linken</em>. Avhenger av pakkens lengde <em>L</em> og linkens hastighet <em>R</em>: <strong>d_trans = L / R</strong>. En 1500 byte-pakke på en 1 Gbps-link: 12 µs. Samme pakke på en 1 Mbps-link: 12 ms — tusen ganger mer.</p>
   </div>
 
-  <div class="callout ochre">
+  <div class="callout">
     <span class="label">4. Propageringsforsinkelse (d_prop)</span>
     <p>Tiden signalet bruker på å reise fysisk gjennom mediet — i kobber eller fiber med omtrent 2 × 10⁸ m/s. <strong>d_prop = avstand / hastighet</strong>. Norge til USA (~6000 km): ~30 ms. Samme rom: neglisjerbar. Denne forsinkelsen kan du ikke redusere uten å flytte maskinene nærmere.</p>
   </div>
 
   <p>Total nodeforsinkelse for én ruter blir altså:</p>
-  <p style="font-family:'IBM Plex Mono',monospace;background:var(--paper-dark);padding:14px 18px;font-size:15px;margin:18px 0;border-left:3px solid var(--rust)">d_nodal = d_proc + d_queue + d_trans + d_prop</p>
+  <pre><code>d_nodal = d_proc + d_queue + d_trans + d_prop</code></pre>
 
   <div class="margin-note">Transmisjonsforsinkelse og propageringsforsinkelse er de to som oftest blandes sammen. Transmisjonen handler om <em>hvor raskt du skyver bits ut på linken</em> (avhengig av linkhastighet). Propageringen handler om <em>hvor lang tid bitsene bruker på å reise gjennom mediet</em> (avhengig av fysisk avstand). Det er to helt forskjellige ting.</div>
 
   <h3>Interaktiv kalkulator</h3>
 
   <div class="slider-box">
+    <div class="label">Forsinkelseskalkulator</div>
     <label>Pakkelengde (L): <span class="val" id="pktVal">1500 bytes</span></label>
     <input type="range" id="pktSlider" min="64" max="9000" value="1500" step="1">
-    <div style="margin-top:14px">
-      <label>Linkhastighet (R): <span class="val" id="rateVal">100 Mbps</span></label>
-      <input type="range" id="rateSlider" min="1" max="10000" value="100" step="1">
-    </div>
-    <div style="margin-top:14px">
-      <label>Avstand (d): <span class="val" id="distVal">500 km</span></label>
-      <input type="range" id="distSlider" min="1" max="15000" value="500" step="1">
-    </div>
-    <div class="out" id="delayOut"></div>
+    <label>Linkhastighet (R): <span class="val" id="rateVal">100 Mbps</span></label>
+    <input type="range" id="rateSlider" min="1" max="10000" value="100" step="1">
+    <label>Avstand (d): <span class="val" id="distVal">500 km</span></label>
+    <input type="range" id="distSlider" min="1" max="15000" value="500" step="1">
+    <div class="readout" id="delayOut"></div>
   </div>
 
   <h3>Køforsinkelse og trafikk-intensitet</h3>
   <p>Køforsinkelsen er den mest interessante av de fire, fordi den er den eneste som <em>eksploderer</em> under belastning. Vi måler belastningen med <strong>trafikk-intensiteten</strong>:</p>
-  <p style="font-family:'IBM Plex Mono',monospace;background:var(--paper-dark);padding:14px 18px;font-size:15px;margin:18px 0">Trafikk-intensitet = (L × a) / R</p>
+  <pre><code>Trafikk-intensitet = (L × a) / R</code></pre>
   <p>Der <em>a</em> er gjennomsnittlig antall pakker som ankommer per sekund. Når trafikk-intensiteten nærmer seg 1, vokser køforsinkelsen mot uendelig. Over 1 vokser køen raskere enn den tømmes — pakker <em>droppes</em> fordi bufferet er fullt. Dette er <strong>pakketap</strong>.</p>
 
   <h3>Ende-til-ende-forsinkelse</h3>
   <p>Over en hel rute med N linker (og N−1 rutere) summeres forsinkelsene. Hvis alle linker er like:</p>
-  <p style="font-family:'IBM Plex Mono',monospace;background:var(--paper-dark);padding:14px 18px;font-size:15px;margin:18px 0">d_end-to-end = N × (d_proc + d_queue + d_trans + d_prop)</p>
+  <pre><code>d_end-to-end = N × (d_proc + d_queue + d_trans + d_prop)</code></pre>
 
   <h3>Gjennomstrømning (throughput)</h3>
   <p>Gjennomstrømning er den effektive raten data leveres fra sender til mottaker, målt i bits per sekund. For en rute med flere linker er gjennomstrømningen begrenset av den <em>trangeste</em> linken — <strong>flaskehalsen</strong> (bottleneck link). Hvis du har en 1 Gbps-fiber hjemme men serveren sender over en 10 Mbps-link, er gjennomstrømningen din 10 Mbps.</p>
@@ -422,37 +244,35 @@ footer{padding:60px 0;text-align:center;color:var(--ink-faded);font-size:14px;fo
 </section>
 
 <div class="quiz" style="max-width:820px;margin:0 auto 60px;">
-  <p class="q">En pakke på 1000 bytes sendes over en link med kapasitet 10 Mbps. Hva er transmisjonsforsinkelsen?</p>
+  <p class="q-text">En pakke på 1000 bytes sendes over en link med kapasitet 10 Mbps. Hva er transmisjonsforsinkelsen?</p>
   <div class="options">
-    <button class="opt" data-correct="false">1 ms</button>
-    <button class="opt" data-correct="true">0,8 ms (800 µs)</button>
-    <button class="opt" data-correct="false">100 µs</button>
-    <button class="opt" data-correct="false">8 ms</button>
+    <button class="option" data-correct="false">1 ms</button>
+    <button class="option" data-correct="true">0,8 ms (800 µs)</button>
+    <button class="option" data-correct="false">100 µs</button>
+    <button class="option" data-correct="false">8 ms</button>
   </div>
-  <div class="feedback" id="qFeedback1"></div>
+  <div class="explanation" id="qFeedback1"></div>
 </div>
 
 <!-- ============ LAYERS ============ -->
 <section id="layers">
 <div class="container">
-  <div class="section-num">05 · Protokollag</div>
+  <div class="section-badge">05 · Protokollag</div>
   <h2>Protokoll-lag og <em>tjenestemodeller</em></h2>
-  <p class="subtitle">Hvorfor all nettverkskommunikasjon er organisert i en stabel av lag — og hva hvert lag gjør.</p>
+  <p class="section-intro">Hvorfor all nettverkskommunikasjon er organisert i en stabel av lag — og hva hvert lag gjør.</p>
 
-  <p class="intro-p">Et datanett er enormt komplekst: det må håndtere alt fra elektromagnetiske signaler i en kabel til videostrømming i en nettleser. For å temme denne kompleksiteten deler vi funksjonaliteten i <strong>lag</strong>, der hvert lag tilbyr en tjeneste til laget over, og bruker tjenestene til laget under. Det er som et postsystem der du aldri snakker med sjåføren — du legger brevet i postkassen, og hvert mellomledd tar seg av sin del.</p>
+  <p class="dropcap">Et datanett er enormt komplekst: det må håndtere alt fra elektromagnetiske signaler i en kabel til videostrømming i en nettleser. For å temme denne kompleksiteten deler vi funksjonaliteten i <strong>lag</strong>, der hvert lag tilbyr en tjeneste til laget over, og bruker tjenestene til laget under. Det er som et postsystem der du aldri snakker med sjåføren — du legger brevet i postkassen, og hvert mellomledd tar seg av sin del.</p>
 
   <h3>Internettets fem lag</h3>
 
-  <div class="table-wrap">
   <table>
     <tr><th>#</th><th>Lag</th><th>Protokoller (eksempler)</th><th>Ansvar</th></tr>
-    <tr><td class="mono">5</td><td><strong>Applikasjonslaget</strong></td><td>HTTP, SMTP, DNS, FTP</td><td>Meldinger mellom applikasjoner</td></tr>
-    <tr><td class="mono">4</td><td><strong>Transportlaget</strong></td><td>TCP, UDP</td><td>Ende-til-ende-datalevering mellom prosesser</td></tr>
-    <tr><td class="mono">3</td><td><strong>Nettverkslaget</strong></td><td>IP, ICMP</td><td>Ruting av pakker (datagrammer) fra kilde til mål</td></tr>
-    <tr><td class="mono">2</td><td><strong>Lenkelaget</strong></td><td>Ethernet, WiFi (802.11)</td><td>Overføring av rammer mellom nabonoder</td></tr>
-    <tr><td class="mono">1</td><td><strong>Fysisk lag</strong></td><td>—</td><td>Bits over et fysisk medium (spenninger, lyspulser, radiobølger)</td></tr>
+    <tr><td class="mono-cell">5</td><td><strong>Applikasjonslaget</strong></td><td>HTTP, SMTP, DNS, FTP</td><td>Meldinger mellom applikasjoner</td></tr>
+    <tr><td class="mono-cell">4</td><td><strong>Transportlaget</strong></td><td>TCP, UDP</td><td>Ende-til-ende-datalevering mellom prosesser</td></tr>
+    <tr><td class="mono-cell">3</td><td><strong>Nettverkslaget</strong></td><td>IP, ICMP</td><td>Ruting av pakker (datagrammer) fra kilde til mål</td></tr>
+    <tr><td class="mono-cell">2</td><td><strong>Lenkelaget</strong></td><td>Ethernet, WiFi (802.11)</td><td>Overføring av rammer mellom nabonoder</td></tr>
+    <tr><td class="mono-cell">1</td><td><strong>Fysisk lag</strong></td><td>—</td><td>Bits over et fysisk medium (spenninger, lyspulser, radiobølger)</td></tr>
   </table>
-  </div>
 
   <h3>OSI-modellen — syv lag</h3>
   <p>Den alternative <strong>OSI-referansemodellen</strong> (Open Systems Interconnection) har syv lag i stedet for fem. De to ekstra lagene — <em>presentasjonslaget</em> og <em>sesjonslaget</em> — ligger mellom applikasjons- og transportlaget. I Internett er disse funksjonene (datakompresjon, kryptering, sesjonsadministrasjon) overlatt til applikasjonen selv, og lagene eksisterer ikke som separate enheter. OSI er viktig som historisk referanse og i akademisk sammenheng, men i praksis er det femlagsmodellen som beskriver det virkelige Internett.</p>
@@ -462,19 +282,16 @@ footer{padding:60px 0;text-align:center;color:var(--ink-faded);font-size:14px;fo
 
   <figure>
     <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
-      <!-- Application -->
       <rect x="250" y="20" width="200" height="36" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/>
       <text x="350" y="43" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">Melding (data)</text>
       <text x="210" y="43" text-anchor="end" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">Applikasjon</text>
 
-      <!-- Transport -->
       <rect x="200" y="76" width="50" height="36" fill="#e8d4cd" stroke="#b04428" stroke-width="1.5"/>
       <text x="225" y="99" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">Ht</text>
       <rect x="250" y="76" width="200" height="36" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/>
       <text x="350" y="99" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">data</text>
       <text x="160" y="99" text-anchor="end" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">Transport</text>
 
-      <!-- Network -->
       <rect x="150" y="132" width="50" height="36" fill="#d4dce8" stroke="#2d4a7a" stroke-width="1.5"/>
       <text x="175" y="155" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">Hn</text>
       <rect x="200" y="132" width="50" height="36" fill="#e8d4cd" stroke="#b04428" stroke-width="1.5"/>
@@ -483,7 +300,6 @@ footer{padding:60px 0;text-align:center;color:var(--ink-faded);font-size:14px;fo
       <text x="350" y="155" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">data</text>
       <text x="110" y="155" text-anchor="end" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">Nettverk</text>
 
-      <!-- Link -->
       <rect x="100" y="188" width="50" height="36" fill="#d4e6d4" stroke="#3d6b3a" stroke-width="1.5"/>
       <text x="125" y="211" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">Hl</text>
       <rect x="150" y="188" width="50" height="36" fill="#d4dce8" stroke="#2d4a7a" stroke-width="1.5"/>
@@ -496,13 +312,12 @@ footer{padding:60px 0;text-align:center;color:var(--ink-faded);font-size:14px;fo
       <text x="470" y="211" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">Tl</text>
       <text x="60" y="211" text-anchor="end" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">Lenke</text>
 
-      <!-- Labels -->
       <text x="350" y="260" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">Hvert lag legger til sin header (og evt. trailer) rundt dataene fra laget over</text>
     </svg>
     <figcaption>Enkapsulering: applikasjonsdata pakkes lag for lag med headers. Mottakeren pakker ut i motsatt rekkefølge — hvert lag fjerner sin header og leverer resten oppover.</figcaption>
   </figure>
 
-  <div class="callout green">
+  <div class="callout callout-green">
     <span class="label">Hvorfor er dette så kraftig?</span>
     <p>Enkapsulering betyr at hvert lag er <strong>uavhengig</strong>. Du kan bytte ut Ethernet med WiFi på lenkelaget uten at TCP bryr seg. Du kan legge til kryptering i applikasjonen uten at IP vet om det. Lagene er som legoklossen — de kan kombineres fritt, så lenge grensesnittet mellom dem respekteres.</p>
   </div>
@@ -510,24 +325,24 @@ footer{padding:60px 0;text-align:center;color:var(--ink-faded);font-size:14px;fo
 </section>
 
 <div class="quiz" style="max-width:820px;margin:0 auto 60px;">
-  <p class="q">I Internettets femlagsmodell — hvilket lag er ansvarlig for å rute pakker fra kilde til destinasjon gjennom nettverket?</p>
+  <p class="q-text">I Internettets femlagsmodell — hvilket lag er ansvarlig for å rute pakker fra kilde til destinasjon gjennom nettverket?</p>
   <div class="options">
-    <button class="opt" data-correct="false">Transportlaget</button>
-    <button class="opt" data-correct="true">Nettverkslaget</button>
-    <button class="opt" data-correct="false">Lenkelaget</button>
-    <button class="opt" data-correct="false">Applikasjonslaget</button>
+    <button class="option" data-correct="false">Transportlaget</button>
+    <button class="option" data-correct="true">Nettverkslaget</button>
+    <button class="option" data-correct="false">Lenkelaget</button>
+    <button class="option" data-correct="false">Applikasjonslaget</button>
   </div>
-  <div class="feedback" id="qFeedback2"></div>
+  <div class="explanation" id="qFeedback2"></div>
 </div>
 
 <!-- ============ SECURITY ============ -->
 <section id="security">
 <div class="container">
-  <div class="section-num">06 · Sikkerhetstrusler</div>
+  <div class="section-badge">06 · Sikkerhetstrusler</div>
   <h2>Nettverk under <em>angrep</em></h2>
-  <p class="subtitle">Internett ble ikke designet med sikkerhet i tankene — og angriperne har utnyttet det fra starten.</p>
+  <p class="section-intro">Internett ble ikke designet med sikkerhet i tankene — og angriperne har utnyttet det fra starten.</p>
 
-  <p class="intro-p">De tidlige designerne av Internett tenkte på robusthet og åpenhet, ikke sikkerhet. Resultatet er at angrepsflatene er mange og alvorlige. Her er de viktigste kategoriene du bør kjenne til allerede nå — vi går dypere i kapittel 8.</p>
+  <p class="dropcap">De tidlige designerne av Internett tenkte på robusthet og åpenhet, ikke sikkerhet. Resultatet er at angrepsflatene er mange og alvorlige. Her er de viktigste kategoriene du bør kjenne til allerede nå — vi går dypere i kapittel 8.</p>
 
   <h3>Malware</h3>
   <p>Ondsinnet programvare som infiserer endesystemer. <strong>Virus</strong> sprer seg ved å legge seg inn i filer brukeren aktivt åpner. <strong>Ormer</strong> sprer seg selv uten brukerinteraksjon — de utnytter sårbarheter i nettverkstjenester og kan infisere tusenvis av maskiner på minutter. Når en maskin er infisert, kan den bli en del av et <strong>botnett</strong> — et nettverk av kompromitterte maskiner som fjernkontrolleres.</p>
@@ -551,11 +366,11 @@ footer{padding:60px 0;text-align:center;color:var(--ink-faded);font-size:14px;fo
 <!-- ============ HISTORY ============ -->
 <section id="history">
 <div class="container">
-  <div class="section-num">07 · Historien</div>
+  <div class="section-badge">07 · Historien</div>
   <h2>Internettets <em>historie</em></h2>
-  <p class="subtitle">Fra ARPANET med fire noder til et nettverk med milliarder av enheter — på femti år.</p>
+  <p class="section-intro">Fra ARPANET med fire noder til et nettverk med milliarder av enheter — på femti år.</p>
 
-  <p class="intro-p">Historien om Internett er historien om en idé som viste seg å være uovervinnelig: at man kunne bygge et pålitelig kommunikasjonssystem ut av upålitelige deler, ved å dele informasjonen i pakker og la dem finne sin egen vei. Idéen vokste fra militærforskning til verdens mest gjennomgripende infrastruktur.</p>
+  <p class="dropcap">Historien om Internett er historien om en idé som viste seg å være uovervinnelig: at man kunne bygge et pålitelig kommunikasjonssystem ut av upålitelige deler, ved å dele informasjonen i pakker og la dem finne sin egen vei. Idéen vokste fra militærforskning til verdens mest gjennomgripende infrastruktur.</p>
 
   <h3>1960-tallet: pakkesvitsjingens fødsel</h3>
   <p>Tre forskningsgrupper — MIT/DARPA i USA, NPL i England, og RAND i USA — kom uavhengig fram til idéen om pakkesvitsjing. I 1969 ble <strong>ARPANET</strong> satt i drift med fire noder (UCLA, SRI, UCSB, Utah). Det var verdens første pakkesvitsjede nettverk, og det fungerte.</p>
@@ -575,36 +390,35 @@ footer{padding:60px 0;text-align:center;color:var(--ink-faded);font-size:14px;fo
 </section>
 
 <div class="quiz" style="max-width:820px;margin:0 auto 60px;">
-  <p class="q">Hva er den viktigste fordelen med pakkesvitsjing over linjesvitsjing?</p>
+  <p class="q-text">Hva er den viktigste fordelen med pakkesvitsjing over linjesvitsjing?</p>
   <div class="options">
-    <button class="opt" data-correct="false">Pakkesvitsjing gir lavere latens i alle tilfeller</button>
-    <button class="opt" data-correct="false">Pakkesvitsjing garanterer ingen pakketap</button>
-    <button class="opt" data-correct="true">Pakkesvitsjing utnytter nettverksressursene bedre gjennom statistisk multipleksing — flere brukere kan dele kapasiteten</button>
-    <button class="opt" data-correct="false">Pakkesvitsjing trenger ikke rutere</button>
+    <button class="option" data-correct="false">Pakkesvitsjing gir lavere latens i alle tilfeller</button>
+    <button class="option" data-correct="false">Pakkesvitsjing garanterer ingen pakketap</button>
+    <button class="option" data-correct="true">Pakkesvitsjing utnytter nettverksressursene bedre gjennom statistisk multipleksing — flere brukere kan dele kapasiteten</button>
+    <button class="option" data-correct="false">Pakkesvitsjing trenger ikke rutere</button>
   </div>
-  <div class="feedback" id="qFeedback3"></div>
+  <div class="explanation" id="qFeedback3"></div>
 </div>
 
 <div class="quiz" style="max-width:820px;margin:0 auto 80px;">
-  <p class="q">Hva er enkapsulering i konteksten av nettverksprotokoller?</p>
+  <p class="q-text">Hva er enkapsulering i konteksten av nettverksprotokoller?</p>
   <div class="options">
-    <button class="opt" data-correct="false">En krypteringsteknikk som skjuler datainnholdet</button>
-    <button class="opt" data-correct="false">En metode for å komprimere pakker til mindre størrelse</button>
-    <button class="opt" data-correct="true">At hvert protokollag pakker inn data fra laget over ved å legge til sin egen header (og evt. trailer)</button>
-    <button class="opt" data-correct="false">At alle lag bruker samme headerformat for å sikre kompatibilitet</button>
+    <button class="option" data-correct="false">En krypteringsteknikk som skjuler datainnholdet</button>
+    <button class="option" data-correct="false">En metode for å komprimere pakker til mindre størrelse</button>
+    <button class="option" data-correct="true">At hvert protokollag pakker inn data fra laget over ved å legge til sin egen header (og evt. trailer)</button>
+    <button class="option" data-correct="false">At alle lag bruker samme headerformat for å sikre kompatibilitet</button>
   </div>
-  <div class="feedback" id="qFeedback4"></div>
+  <div class="explanation" id="qFeedback4"></div>
 </div>
 
 <footer>
   <div class="container">
-    <p>Basert på <em>Computer Networking: A Top-Down Approach</em>, 8. utgave, av Kurose &amp; Ross — kapittel 1. Denne siden dekker hele kapittelet og gir deg oversikten du trenger for resten av kurset.</p>
-    <p style="margin-top:20px;color:var(--rust);letter-spacing:0.6em">&#10043; &#10043; &#10043;</p>
+    <p>Basert på <em>Computer Networking: A Top-Down Approach</em>, 8. utgave, av Kurose &amp; Ross — kapittel 1.</p>
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
   </div>
 </footer>
 
 <script>
-// STORE-AND-FORWARD STEPPER
 (function(){
   var steps = [
     {title:'Steg 1: Kilden sender pakken', text:'Kilden begynner å transmittere en pakke med L bits ut på den første linken med hastighet R. Det tar L/R sekunder å skyve alle bitsene ut.', anim:'<rect x="95" y="58" width="90" height="24" fill="#b04428" opacity="0.7" rx="2"/><text x="140" y="74" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fff">L bits → R bps</text>'},
@@ -632,7 +446,6 @@ footer{padding:60px 0;text-align:center;color:var(--ink-faded);font-size:14px;fo
   render();
 })();
 
-// DELAY CALCULATOR
 (function(){
   var pktSlider = document.getElementById('pktSlider');
   var rateSlider = document.getElementById('rateSlider');
@@ -672,7 +485,6 @@ footer{padding:60px 0;text-align:center;color:var(--ink-faded);font-size:14px;fo
   update();
 })();
 
-// QUIZZES
 (function(){
   var feedback = {
     'qFeedback1': {
@@ -693,24 +505,25 @@ footer{padding:60px 0;text-align:center;color:var(--ink-faded);font-size:14px;fo
     }
   };
   document.querySelectorAll('.quiz').forEach(function(quiz){
-    var fbId = quiz.querySelector('.feedback').id;
-    var fb = quiz.querySelector('.feedback');
-    quiz.querySelectorAll('button.opt').forEach(function(btn){
+    var fbId = quiz.querySelector('.explanation').id;
+    var fb = quiz.querySelector('.explanation');
+    quiz.querySelectorAll('button.option').forEach(function(btn){
       btn.addEventListener('click',function(){
         var correct = btn.dataset.correct === 'true';
-        quiz.querySelectorAll('button.opt').forEach(function(b){
+        quiz.querySelectorAll('button.option').forEach(function(b){
           b.disabled = true;
           if (b.dataset.correct === 'true') b.classList.add('correct');
-          else if (b === btn) b.classList.add('wrong');
+          else if (b === btn) b.classList.add('incorrect');
         });
         fb.textContent = correct ? feedback[fbId].correct : feedback[fbId].wrong;
+        fb.classList.add('show');
       });
     });
   });
 })();
 </script>
 </main>
-<script src="chat-widget.js"></script>
+<script src="../chat-widget.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

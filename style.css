@@ -817,4 +817,104 @@ footer p {
   .sim-controls { grid-template-columns: 1fr; }
   p.lead::first-letter,
   .dropcap::first-letter { font-size: 4em; }
+  .page-nav { flex-direction: column; gap: 12px; }
+  .page-nav a { width: 100%; }
+  .subpage-list { grid-template-columns: 1fr; }
+}
+
+/* ---------- PAGE NAVIGATION (prev/next) ---------- */
+.page-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 60px 0;
+}
+.page-nav a {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px 24px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s, background 0.15s;
+  max-width: 48%;
+}
+.page-nav a:hover {
+  border-color: var(--rust);
+  background: var(--paper-dark);
+}
+.page-nav a.next { margin-left: auto; text-align: right; }
+.page-nav .nav-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-ghost);
+}
+.page-nav .nav-title {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* ---------- SUBPAGE LIST (chapter overview) ---------- */
+.subpage-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+.subpage-card {
+  display: grid;
+  grid-template-columns: 50px 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--line-soft);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s, padding 0.15s;
+}
+.subpage-card:first-child {
+  border-top: 1px solid var(--line-soft);
+}
+.subpage-card:hover {
+  background: var(--paper-dark);
+  padding-left: 16px;
+  padding-right: 16px;
+  margin-left: -16px;
+  margin-right: -16px;
+  border-radius: 4px;
+}
+.subpage-card .sp-icon {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--rust);
+  font-weight: 600;
+}
+.subpage-card .sp-info { min-width: 0; }
+.subpage-card .sp-title {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.subpage-card .sp-desc {
+  font-size: 14px;
+  color: var(--ink-faded);
+  font-style: italic;
+  line-height: 1.45;
+}
+.subpage-card .sp-arrow {
+  font-family: var(--mono);
+  font-size: 18px;
+  color: var(--ink-ghost);
+  transition: color 0.15s, transform 0.15s;
+}
+.subpage-card:hover .sp-arrow {
+  color: var(--rust);
+  transform: translateX(4px);
 }
