@@ -1,5 +1,5 @@
 ---
-description: Remind to update English translations in /en when editing Norwegian pages
+description: Remind to update English translations in /en when editing Norwegian pages and to update norwegian when editing english - they should match
 globs: "*.html"
 alwaysApply: true
 ---
