@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kapittel 3 — TCP: Den pålitelige strømmen</title>
+<link rel="stylesheet" href="style.css">
+<style>
+:root{
+  --paper:#f4f1ea;
+  --paper-dark:#e8e3d6;
+  --ink:#1a1612;
+  --ink-soft:#3d3832;
+  --ink-faded:#6b6257;
+  --ink-ghost:#a39886;
+  --rust:#b04428;
+  --rust-dark:#8a3420;
+  --blue:#2d4a7a;
+  --green:#3d6b3a;
+  --ochre:#c68a1f;
+  --line:#c9c0ae;
+  --line-soft:#ddd5c4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Newsreader',Georgia,serif;
+  font-size:18px;
+  line-height:1.65;
+  color:var(--ink);
+  background:var(--paper);
+  -webkit-font-smoothing:antialiased;
+  position:relative;
+  font-feature-settings:"kern","liga";
+}
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.36 0 0 0 0 0.27 0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  opacity:.35;
+  pointer-events:none;
+  z-index:1;
+  mix-blend-mode:multiply;
+}
+.container{
+  max-width:820px;
+  margin:0 auto;
+  padding:0 32px;
+  position:relative;
+  z-index:2;
+}
+.container.wide{max-width:980px}
+
+/* HERO */
+.hero{
+  padding:120px 0 80px;
+  border-bottom:1px solid var(--line);
+}
+.hero .eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--rust);
+  margin-bottom:24px;
+  display:flex;align-items:center;gap:14px;
+}
+.hero .eyebrow::after{
+  content:"";flex:1;height:1px;background:var(--line);max-width:200px;
+}
+.hero h1{
+  font-size:clamp(48px,8vw,92px);
+  line-height:1.0;
+  letter-spacing:-0.025em;
+  font-weight:500;
+  margin-bottom:28px;
+}
+.hero h1 em{font-style:italic;color:var(--rust);font-weight:400}
+.hero .sub{
+  font-size:22px;
+  font-style:italic;
+  color:var(--ink-soft);
+  max-width:640px;
+  line-height:1.45;
+  margin-bottom:48px;
+  font-weight:300;
+}
+.hero .toc{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:18px 36px;
+  border-top:1px solid var(--line);
+  padding-top:32px;
+}
+.hero .toc a{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  color:var(--ink-soft);
+  text-decoration:none;
+  display:flex;gap:14px;
+  border-bottom:1px dotted transparent;
+  padding-bottom:4px;
+  transition:color .2s, border-color .2s;
+}
+.hero .toc a:hover{color:var(--rust);border-color:var(--rust)}
+.hero .toc a span{color:var(--ink-ghost);font-weight:500}
+
+/* SECTIONS */
+section{
+  padding:90px 0;
+  border-bottom:1px solid var(--line);
+}
+.badge{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--rust);
+  border:1px solid var(--rust);
+  padding:6px 14px;
+  display:inline-block;
+  margin-bottom:24px;
+}
+h2{
+  font-size:clamp(34px,5vw,56px);
+  line-height:1.05;
+  letter-spacing:-0.02em;
+  font-weight:500;
+  margin-bottom:18px;
+}
+h2 em{font-style:italic;color:var(--rust)}
+.section-intro{
+  font-size:21px;
+  font-style:italic;
+  color:var(--ink-faded);
+  margin-bottom:48px;
+  max-width:680px;
+  line-height:1.5;
+  font-weight:300;
+}
+h3{
+  font-size:26px;
+  line-height:1.25;
+  margin:56px 0 16px;
+  font-weight:500;
+  letter-spacing:-0.01em;
+}
+h3::before{
+  content:"§ ";
+  color:var(--rust);
+  font-weight:400;
+}
+p{margin-bottom:20px;color:var(--ink-soft)}
+p strong{color:var(--ink);font-weight:600}
+p em{font-style:italic}
+.lead::first-letter{
+  font-family:'Newsreader',serif;
+  font-size:5.2em;
+  float:left;
+  line-height:0.85;
+  padding:8px 10px 0 0;
+  color:var(--rust);
+  font-weight:500;
+}
+a{color:var(--rust);text-decoration:none;border-bottom:1px solid var(--rust)}
+
+/* MARGIN NOTE */
+.margin-note{
+  border-left:3px solid var(--rust);
+  padding:8px 0 8px 22px;
+  margin:32px 0;
+  font-style:italic;
+  color:var(--ink-faded);
+  font-size:17px;
+  background:rgba(176,68,40,0.04);
+}
+.margin-note strong{font-style:normal;color:var(--rust);display:block;font-family:'IBM Plex Sans',sans-serif;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:6px;font-weight:600}
+
+/* PROBLEM/SOLUTION BOX */
+.box{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.35);
+  padding:28px 32px;
+  margin:36px 0;
+  position:relative;
+}
+.box.problem{border-left:4px solid var(--rust)}
+.box.solution{border-left:4px solid var(--green)}
+.box.insight{border-left:4px solid var(--ochre);background:rgba(198,138,31,0.06)}
+.box .label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  margin-bottom:12px;
+  font-weight:600;
+}
+.box.problem .label{color:var(--rust)}
+.box.solution .label{color:var(--green)}
+.box.insight .label{color:var(--ochre)}
+.box p:last-child{margin-bottom:0}
+
+/* CODE / MONO */
+code, .mono{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.88em;
+  background:var(--paper-dark);
+  padding:2px 6px;
+  color:var(--ink);
+}
+
+/* FIGURES */
+figure{
+  margin:48px 0;
+}
+figcaption{
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:13px;
+  color:var(--ink-faded);
+  text-align:center;
+  margin-top:14px;
+  font-style:italic;
+}
+.svg-wrap{
+  background:rgba(255,255,255,0.45);
+  border:1px solid var(--line);
+  padding:24px;
+  overflow-x:auto;
+}
+.svg-wrap svg{display:block;margin:0 auto;max-width:100%;height:auto}
+
+/* PACKET DIAGRAM */
+.packet{
+  display:grid;
+  grid-template-columns:repeat(32,1fr);
+  border:1px solid var(--ink);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  margin:24px 0;
+  background:rgba(255,255,255,0.45);
+}
+.packet .cell{
+  border:1px solid var(--line);
+  padding:12px 6px;
+  text-align:center;
+  color:var(--ink-soft);
+  display:flex;align-items:center;justify-content:center;
+  min-height:46px;
+}
+.packet .cell strong{display:block;color:var(--ink);font-size:11px;font-weight:600}
+.packet .cell small{display:block;color:var(--ink-ghost);font-size:9px;margin-top:2px;letter-spacing:0.05em}
+.packet .c2{grid-column:span 2}
+.packet .c4{grid-column:span 4}
+.packet .c6{grid-column:span 6}
+.packet .c8{grid-column:span 8}
+.packet .c9{grid-column:span 9}
+.packet .c11{grid-column:span 11}
+.packet .c16{grid-column:span 16}
+.packet .c32{grid-column:span 32}
+.packet .hl{background:rgba(176,68,40,0.12);color:var(--rust-dark)}
+.packet .hl strong{color:var(--rust-dark)}
+.packet .data{background:rgba(45,74,122,0.08);color:var(--blue);font-style:italic;padding:18px 6px}
+
+/* COMPARISON TABLE */
+table.compare{
+  width:100%;
+  border-collapse:collapse;
+  margin:32px 0;
+  font-size:16px;
+}
+table.compare th, table.compare td{
+  text-align:left;
+  padding:14px 18px;
+  border-bottom:1px solid var(--line);
+  vertical-align:top;
+}
+table.compare th{
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:12px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--rust);
+  font-weight:600;
+  border-bottom:2px solid var(--rust);
+}
+table.compare tr:last-child td{border-bottom:none}
+table.compare td:first-child{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  color:var(--ink);
+  width:30%;
+}
+
+/* QUIZ */
+.quiz{
+  border:1px solid var(--ochre);
+  background:rgba(198,138,31,0.05);
+  padding:32px;
+  margin:48px 0;
+}
+.quiz .qlabel{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--ochre);
+  font-weight:600;
+  margin-bottom:14px;
+}
+.quiz h4{
+  font-size:21px;
+  font-weight:500;
+  margin-bottom:20px;
+  line-height:1.35;
+  color:var(--ink);
+}
+.quiz .opts{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.quiz button.opt{
+  text-align:left;
+  font-family:'Newsreader',serif;
+  font-size:17px;
+  padding:14px 18px;
+  background:rgba(255,255,255,0.5);
+  border:1px solid var(--line);
+  color:var(--ink-soft);
+  cursor:pointer;
+  transition:all .15s;
+}
+.quiz button.opt:hover{border-color:var(--ochre);background:rgba(255,255,255,0.8)}
+.quiz button.opt.correct{border-color:var(--green);background:rgba(61,107,58,0.12);color:var(--green)}
+.quiz button.opt.wrong{border-color:var(--rust);background:rgba(176,68,40,0.1);color:var(--rust);text-decoration:line-through}
+.quiz .feedback{
+  font-style:italic;
+  color:var(--ink-faded);
+  font-size:16px;
+  padding-top:14px;
+  border-top:1px dotted var(--line);
+  display:none;
+}
+.quiz .feedback.show{display:block}
+.quiz .feedback strong{font-style:normal;color:var(--ink)}
+
+/* STEPPER */
+.stepper{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.45);
+  padding:28px;
+  margin:48px 0;
+}
+.stepper .slabel{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--rust);
+  font-weight:600;
+  margin-bottom:8px;
+}
+.stepper h4{
+  font-size:22px;
+  font-weight:500;
+  margin-bottom:20px;
+}
+.stepper .stage-svg{
+  background:var(--paper);
+  border:1px solid var(--line-soft);
+  padding:18px;
+  margin-bottom:18px;
+  min-height:280px;
+  display:flex;align-items:center;justify-content:center;
+}
+.stepper .stage-svg svg{max-width:100%;height:auto}
+.stepper .desc{
+  font-style:italic;
+  font-size:17px;
+  color:var(--ink-soft);
+  min-height:60px;
+  padding:0 6px;
+  margin-bottom:20px;
+}
+.stepper .desc strong{font-style:normal;color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;display:block;margin-bottom:6px}
+.stepper .ctrls{display:flex;gap:12px;align-items:center;justify-content:space-between}
+.stepper button{
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:13px;
+  font-weight:600;
+  padding:10px 22px;
+  background:var(--ink);
+  color:var(--paper);
+  border:none;
+  cursor:pointer;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+}
+.stepper button:disabled{background:var(--ink-ghost);cursor:not-allowed}
+.stepper .progress{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  color:var(--ink-faded);
+  letter-spacing:0.1em;
+}
+
+/* SLIDER */
+.slider-box{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.45);
+  padding:28px;
+  margin:48px 0;
+}
+.slider-box .slabel{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--blue);
+  font-weight:600;
+  margin-bottom:8px;
+}
+.slider-box h4{font-size:22px;font-weight:500;margin-bottom:20px}
+.slider-box .row{display:flex;align-items:center;gap:18px;margin-bottom:14px;font-family:'IBM Plex Mono',monospace;font-size:13px}
+.slider-box .row label{min-width:180px;color:var(--ink-soft)}
+.slider-box .row input[type=range]{flex:1;accent-color:var(--rust)}
+.slider-box .row .val{min-width:90px;text-align:right;color:var(--rust);font-weight:600}
+.slider-box .result{
+  margin-top:22px;
+  padding:18px 22px;
+  background:var(--paper-dark);
+  border-left:3px solid var(--rust);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:14px;
+  color:var(--ink);
+}
+.slider-box .result strong{color:var(--rust);font-size:18px}
+
+/* ORNAMENT */
+.ornament{
+  text-align:center;
+  color:var(--rust);
+  font-size:18px;
+  letter-spacing:1em;
+  padding:40px 0 20px;
+}
+
+/* FOOTER */
+footer{
+  padding:80px 0 100px;
+  text-align:center;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  color:var(--ink-faded);
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+}
+footer p{margin-bottom:8px;color:var(--ink-faded);font-family:inherit}
+
+/* RESPONSIVE */
+@media (max-width:768px){
+  body{font-size:17px}
+  .container{padding:0 22px}
+  .hero{padding:80px 0 50px}
+  .hero h1{font-size:42px}
+  .hero .sub{font-size:18px}
+  .hero .toc{grid-template-columns:1fr;gap:14px}
+  section{padding:60px 0}
+  h2{font-size:32px}
+  h3{font-size:22px;margin:40px 0 14px}
+  .packet{font-size:9px}
+  .packet .cell{padding:8px 3px;min-height:40px}
+  .stepper, .slider-box, .quiz, .box{padding:20px}
+  .slider-box .row{flex-wrap:wrap}
+  .slider-box .row label{min-width:auto;flex-basis:100%}
+}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="index.html" class="brand">TTM4100</a>
+    <a href="index.html" class="nav-back">&larr; Alle kapitler</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">Kapittel 3 · Transportlaget</div>
+    <h1>TCP — den <em>pålitelige</em><br>strømmen</h1>
+    <p class="sub">Hvordan to maskiner blir enige om å snakke, holder styr på hver eneste byte, og overlever et nettverk som mister, omorganiserer og forsinker pakker.</p>
+    <nav class="toc">
+      <a href="#intro"><span>00</span> Hva TCP egentlig lover</a>
+      <a href="#segment"><span>01</span> Segmentstrukturen</a>
+      <a href="#seq"><span>02</span> Sekvensnummer og ACK</a>
+      <a href="#rtt"><span>03</span> RTT og timeout</a>
+      <a href="#sender"><span>04</span> Senderlogikken</a>
+      <a href="#retransmit"><span>05</span> Retransmisjonsscenarier</a>
+      <a href="#fast"><span>06</span> Fast retransmit</a>
+      <a href="#flow"><span>07</span> Flow control</a>
+      <a href="#handshake"><span>08</span> 3-veis håndtrykk</a>
+      <a href="#close"><span>09</span> Lukke forbindelsen</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ INTRO ============ -->
+<section id="intro">
+  <div class="container">
+    <div class="badge">00 · Motivasjon</div>
+    <h2>Hva TCP egentlig <em>lover</em> deg</h2>
+    <p class="section-intro">IP-laget under TCP er upålitelig. Pakker forsvinner, kommer i feil rekkefølge, blir duplisert. TCP sin jobb er å skjule alt dette og gi applikasjonen en illusjon av en perfekt rørledning.</p>
+
+    <p class="lead">Tenk deg at du sender et brev gjennom et postsystem som av og til mister konvolutter, av og til leverer dem i feil rekkefølge, og noen ganger lager kopier av samme brev uten å si fra. Hvis du vil at mottakeren skal få teksten din i rett orden, fullstendig, og uten duplikater — så må <em>du</em> bygge et system rundt postsystemet. Du må nummerere sidene, du må be om kvitteringer, du må sende på nytt det som ikke kommer fram.</p>
+
+    <p>Det er nøyaktig dette TCP gjør oppå IP. IP er postsystemet som ikke garanterer noe. TCP er protokollen som sitter på toppen og bygger opp en pålitelig, ordnet bytestrøm av byggeklossene IP gir den.</p>
+
+    <div class="box insight">
+      <div class="label">★ Sentral innsikt</div>
+      <p>TCP er ikke <em>én</em> idé — det er en stabel av løsninger på en rekke konkrete problemer som dukker opp når man prøver å være pålitelig oppå et upålitelig nettverk. Hvert felt i headeren, hver tilstand i protokollen, er svaret på et spørsmål som måtte besvares.</p>
+    </div>
+
+    <h3>Hva TCP garanterer</h3>
+    <p>Fra et applikasjonsperspektiv tilbyr TCP fire ting som UDP ikke gir deg:</p>
+    <ul style="list-style:none;padding:0;margin:24px 0">
+      <li style="padding:14px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:13px;display:inline-block;width:180px">PÅLITELIG</strong> Ingen byte forsvinner. Det som sendes, ankommer.</li>
+      <li style="padding:14px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:13px;display:inline-block;width:180px">I RIKTIG REKKEFØLGE</strong> Bytes leveres til applikasjonen i samme rekkefølge som de ble sendt.</li>
+      <li style="padding:14px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:13px;display:inline-block;width:180px">FLOW-CONTROLLED</strong> Senderen overvelder ikke mottakerens buffer.</li>
+      <li style="padding:14px 0"><strong style="color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:13px;display:inline-block;width:180px">FORBINDELSESORIENTERT</strong> Begge parter blir enige om å snakke <em>før</em> data flyter.</li>
+    </ul>
+
+    <p>Legg merke til at TCP er en <strong>bytestrøm</strong> uten meldingsgrenser. Hvis applikasjonen skriver "Hei" og deretter "Verden" til en TCP-socket, kan TCP velge å sende dem i én pakke, to pakker, eller dele dem opp på et helt annet sted. Mottakeren får bare en strøm av bytes — ingen markeringer for hvor "Hei" sluttet og "Verden" begynte. Hvis du trenger meldingsgrenser, må applikasjonen din legge dem på selv.</p>
+  </div>
+</section>
+
+<!-- ============ SEGMENT ============ -->
+<section id="segment">
+  <div class="container wide">
+    <div class="badge">01 · Segmentstruktur</div>
+    <h2>Anatomien til et <em>segment</em></h2>
+    <p class="section-intro">Hvert TCP-segment er en liten konvolutt med et standardisert sett av felt foran selve datalasten. Hvert felt er svaret på et konkret problem.</p>
+  </div>
+
+  <div class="container wide">
+    <figure>
+      <div class="packet">
+        <div class="cell c16 hl"><div><strong>Source Port</strong><small>16 bit</small></div></div>
+        <div class="cell c16 hl"><div><strong>Dest Port</strong><small>16 bit</small></div></div>
+
+        <div class="cell c32"><div><strong>Sequence Number</strong><small>32 bit · byte-nummer i strømmen</small></div></div>
+
+        <div class="cell c32"><div><strong>Acknowledgement Number</strong><small>32 bit · neste forventede byte</small></div></div>
+
+        <div class="cell c4"><div><strong>HLen</strong><small>4 bit</small></div></div>
+        <div class="cell c4"><div><small>resv.</small></div></div>
+        <div class="cell c8"><div><strong>Flags</strong><small>CWR ECE URG ACK PSH RST SYN FIN</small></div></div>
+        <div class="cell c16"><div><strong>Receive Window</strong><small>16 bit · rwnd</small></div></div>
+
+        <div class="cell c16"><div><strong>Checksum</strong><small>16 bit</small></div></div>
+        <div class="cell c16"><div><strong>Urgent Pointer</strong><small>16 bit</small></div></div>
+
+        <div class="cell c32"><div><strong>Options</strong><small>variabel · MSS, window scale, timestamps…</small></div></div>
+
+        <div class="cell c32 data"><div>Application data — variabel lengde</div></div>
+      </div>
+      <figcaption>TCP-segmentet. Headeren er minst 20 bytes (uten options). Hvert felt løser et bestemt problem — vi går gjennom dem etter tur.</figcaption>
+    </figure>
+  </div>
+
+  <div class="container">
+    <h3>Hvorfor finnes hvert felt?</h3>
+    <table class="compare">
+      <thead><tr><th>Felt</th><th>Problemet det løser</th></tr></thead>
+      <tbody>
+        <tr><td>Source / Dest Port</td><td>IP-adressen identifiserer maskinen, men hvilken applikasjon på maskinen? Portnumrene gjør multipleksing/demultipleksing mulig.</td></tr>
+        <tr><td>Sequence Number</td><td>Hvor i bytestrømmen begynner denne lasten? Nødvendig for å oppdage tap, dupliseringer og rekkefølgefeil.</td></tr>
+        <tr><td>ACK Number</td><td>Hvilken byte forventer jeg neste? Lar senderen vite hva som har kommet fram (kumulativ ACK).</td></tr>
+        <tr><td>Receive Window (rwnd)</td><td>Hvor mye plass har jeg igjen i mottaksbufferet? Grunnlaget for flow control.</td></tr>
+        <tr><td>Flags (SYN, FIN, ACK…)</td><td>Kontrollmeldinger for å åpne, lukke og bekrefte forbindelser.</td></tr>
+        <tr><td>Checksum</td><td>Oppdager bit-feil i headeren eller dataene — IP gir ingen slik garanti.</td></tr>
+        <tr><td>HLen (Data offset)</td><td>Hvor lang er headeren? Trengs fordi options-feltet er variabelt.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="margin-note">
+      <strong>Det manglende feltet</strong>
+      Legg merke til hva som <em>ikke</em> finnes: noe "Payload Length"-felt. TCP-headeren forteller deg ikke hvor mye data segmentet inneholder. I stedet utleder OS-et det med subtraksjon: <code>Payload = Total IP Length − IP Header − TCP Header</code>. Lengden kommer fra laget under.
+    </div>
+
+    <h3>MSS — den maksimale segmentstørrelsen</h3>
+    <p><strong>MSS</strong> (Maximum Segment Size) er den største mengden applikasjonsdata som kan legges inn i ett TCP-segment. På et vanlig Ethernet-nettverk er MTU 1500 bytes, og når du trekker fra 20 bytes IP-header og 20 bytes TCP-header, sitter du igjen med <strong>1460 bytes</strong> som typisk MSS. Hvorfor bry seg? Fordi hvis TCP lager segmenter som er større enn det IP-laget kan håndtere uten fragmentering, må rutere stykke pakkene opp underveis — og det er både tregt og skjørt. MSS forhandles fram under det første håndtrykket nettopp for å unngå dette.</p>
+
+    <div class="quiz" data-correct="1">
+      <div class="qlabel">Sjekk forståelsen</div>
+      <h4>Hvis MTU på en lenke er 1500 bytes og man bruker IPv4 + standard TCP, hva blir typisk MSS?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">1500 bytes</button>
+        <button class="opt" data-i="1">1460 bytes</button>
+        <button class="opt" data-i="2">1480 bytes</button>
+        <button class="opt" data-i="3">1420 bytes</button>
+      </div>
+      <div class="feedback"><strong>Riktig:</strong> 1500 − 20 (IP-header) − 20 (TCP-header) = <strong>1460 bytes</strong>. Hadde headerene hatt options ville MSS vært enda mindre.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SEQ ============ -->
+<section id="seq">
+  <div class="container">
+    <div class="badge">02 · Sekvensnummer og ACK</div>
+    <h2>Hvordan TCP <em>teller</em> bytes</h2>
+    <p class="section-intro">Sekvensnummer er kjernen i hele påliteligheten. Misforstå dette og resten av TCP gir ikke mening.</p>
+
+    <p class="lead">Det vanligste misforståelsen er å tro at sekvensnummeret nummererer <em>segmenter</em> — segment 1, segment 2, segment 3. Det gjør det ikke. Sekvensnummeret er en peker inn i en bytestrøm. Hvis senderen skriver 1000 bytes inn i socketen sin og TCP velger å dele dem opp i to segmenter på 500 bytes hver, så får første segment <code>seq=0</code> (eller hva enn startnummeret er) og andre segment <code>seq=500</code> — fordi det andre segmentet inneholder bytene 500 til 999.</p>
+
+    <p>ACK-nummeret følger samme logikk, men fra mottakerens side: <strong>"den neste byten jeg forventer å se er denne."</strong> Hvis mottakeren har fått alle bytes opp til 999, sender hun <code>ACK=1000</code>. Dette er en <em>kumulativ</em> ACK — den bekrefter ikke bare den siste pakken, men <em>alt</em> opp til byte 1000.</p>
+
+    <div class="box insight">
+      <div class="label">★ Hvorfor kumulative ACKs?</div>
+      <p>Hvis en ACK forsvinner på veien, er det ikke en katastrofe — neste ACK overstyrer den uansett. <code>ACK=1000</code> forteller senderen at alt før byte 1000 er trygt framme, selv om den forrige <code>ACK=500</code> aldri kom fram. Dette gir robusthet uten ekstra arbeid.</p>
+    </div>
+
+    <h3>Et lite telnet-eksempel</h3>
+    <p>Brukeren på Host A skriver bokstaven 'C'. Den sendes til Host B, som ekkoer den tilbake. Følg sekvens- og ACK-numrene:</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="#1a1612"/>
+            </marker>
+          </defs>
+          <text x="100" y="30" font-family="IBM Plex Sans" font-size="14" font-weight="600" fill="#1a1612">Host A</text>
+          <text x="600" y="30" font-family="IBM Plex Sans" font-size="14" font-weight="600" fill="#1a1612">Host B</text>
+          <line x1="120" y1="40" x2="120" y2="340" stroke="#a39886" stroke-width="1.5"/>
+          <line x1="620" y1="40" x2="620" y2="340" stroke="#a39886" stroke-width="1.5"/>
+
+          <text x="20" y="80" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">Bruker skriver 'C'</text>
+
+          <line x1="120" y1="100" x2="615" y2="150" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ar)"/>
+          <text x="240" y="120" font-family="IBM Plex Mono" font-size="12" fill="#b04428" font-weight="600">Seq=42, ACK=79, data='C'</text>
+
+          <text x="635" y="170" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">B mottar 'C',</text>
+          <text x="635" y="186" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">ekkoer tilbake</text>
+
+          <line x1="615" y1="180" x2="125" y2="230" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ar)"/>
+          <text x="240" y="200" font-family="IBM Plex Mono" font-size="12" fill="#2d4a7a" font-weight="600">Seq=79, ACK=43, data='C'</text>
+
+          <text x="20" y="260" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">A bekrefter</text>
+          <text x="20" y="276" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">det ekkoede 'C'</text>
+
+          <line x1="120" y1="280" x2="615" y2="320" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ar)"/>
+          <text x="280" y="300" font-family="IBM Plex Mono" font-size="12" fill="#3d6b3a" font-weight="600">Seq=43, ACK=80</text>
+        </svg>
+      </div>
+      <figcaption>A starter med seq=42 (vilkårlig startnummer). 'C' er én byte, så B forventer neste byte på 43 og svarer ACK=43. B sin egen strøm starter på 79.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ RTT ============ -->
+<section id="rtt">
+  <div class="container">
+    <div class="badge">03 · RTT og timeout</div>
+    <h2>Hvor lenge skal vi <em>vente</em>?</h2>
+    <p class="section-intro">Hvis et segment går tapt må senderen sende det på nytt. Men hvor lenge skal hun vente før hun bestemmer seg for at det er tapt?</p>
+
+    <p class="lead">Dette er et overraskende delikat spørsmål. Vent for kort, og du sender ting unødvendig på nytt — du forverrer den allerede stressede situasjonen og belaster nettverket. Vent for lenge, og applikasjonen din føles treg og ubrukelig på forbindelser med tap. Det riktige svaret er "litt mer enn typisk RTT", men hva er typisk RTT på et nettverk hvor latency hopper opp og ned?</p>
+
+    <div class="box problem">
+      <div class="label">⚠ Problemet</div>
+      <p>RTT varierer fra øyeblikk til øyeblikk. En enkelt måling kan være atypisk — en tilfeldig topp, eller en uvanlig rask runde. Hvis vi setter timeout basert på siste måling alene, blir den voldsomt ustabil.</p>
+    </div>
+
+    <div class="box solution">
+      <div class="label">✓ Løsningen: EWMA</div>
+      <p>Vi glatter ut målingene med et eksponentielt vektet glidende gjennomsnitt. Hver nye måling påvirker estimatet litt — gamle målinger taper innflytelse eksponentielt fort.</p>
+      <p style="font-family:'IBM Plex Mono',monospace;background:var(--paper-dark);padding:14px 18px;font-size:14px;margin-top:14px">EstimatedRTT = (1 − α) × EstimatedRTT + α × SampleRTT</p>
+      <p style="margin-top:10px">Med <code>α = 0.125</code> bidrar hver ny måling med 12.5% til estimatet. Estimatet svinger mye mindre enn rådataene, men reagerer fortsatt på reelle endringer i nettverket.</p>
+    </div>
+
+    <h3>Sikkerhetsmargin: DevRTT</h3>
+    <p>Men EstimatedRTT alene er ikke nok. Hvis vi setter <code>Timeout = EstimatedRTT</code> ville halvparten av målingene ligget over og halvparten under — vi ville fått false timeouts hele tiden. Vi trenger en sikkerhetsmargin, og marginen bør være større når RTT-en svinger mye.</p>
+
+    <p>Løsningen er å estimere variansen — hvor mye SampleRTT typisk avviker fra estimatet:</p>
+
+    <p style="font-family:'IBM Plex Mono',monospace;background:var(--paper-dark);padding:14px 18px;font-size:14px;margin:18px 0">DevRTT = (1 − β) × DevRTT + β × |SampleRTT − EstimatedRTT|</p>
+
+    <p>Og så får TCP sin endelige timeout-formel:</p>
+
+    <p style="font-family:'IBM Plex Mono',monospace;background:var(--paper-dark);padding:14px 18px;font-size:14px;margin:18px 0;border-left:3px solid var(--rust)">TimeoutInterval = EstimatedRTT + 4 × DevRTT</p>
+
+    <p>Faktoren 4 er ikke magisk — den er en praktisk valgt verdi som gir en romslig margin uten å være absurd stor. Når RTT er stabil, blir DevRTT lite og timeouten ligger tett over EstimatedRTT. Når RTT begynner å svinge, vokser DevRTT og timeouten utvider seg automatisk.</p>
+
+    <!-- INTERAKTIV SLIDER -->
+    <div class="slider-box">
+      <div class="slabel">Interaktiv kalkulator</div>
+      <h4>Lek med TimeoutInterval-formelen</h4>
+      <p style="font-style:italic;color:var(--ink-faded);margin-bottom:18px;font-size:15px">Endre EstimatedRTT og DevRTT for å se hvordan timeout-verdien beveger seg.</p>
+      <div class="row">
+        <label>EstimatedRTT</label>
+        <input type="range" id="ertt" min="20" max="500" value="200" step="5">
+        <span class="val" id="erttv">200 ms</span>
+      </div>
+      <div class="row">
+        <label>DevRTT</label>
+        <input type="range" id="dev" min="0" max="200" value="25" step="1">
+        <span class="val" id="devv">25 ms</span>
+      </div>
+      <div class="result">
+        TimeoutInterval = <span id="ev">200</span> + 4 × <span id="dv">25</span> = <strong id="tv">300 ms</strong>
+        <div id="hint" style="font-family:'Newsreader',serif;font-style:italic;font-size:14px;margin-top:10px;color:var(--ink-faded)"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SENDER ============ -->
+<section id="sender">
+  <div class="container">
+    <div class="badge">04 · Senderlogikken</div>
+    <h2>Én timer per <em>forbindelse</em></h2>
+    <p class="section-intro">Den naive intuisjonen sier: én timer per pakke. Det er feil — og av en god grunn.</p>
+
+    <p class="lead">Hvis du tenker logisk på det, virker det fornuftig at hver enkelt pakke skal ha sin egen timer. Sender du tre pakker, så starter du tre stoppeklokker, og hvis en av dem renner ut vet du nøyaktig hvilken pakke som skal sendes på nytt. Klart, ryddig, intuitivt.</p>
+
+    <div class="box problem">
+      <div class="label">⚠ Hvorfor det ikke fungerer i praksis</div>
+      <p>En travel server kan ha 10 000 åpne forbindelser, hver med tusenvis av pakker i flukt. Det blir <em>millioner</em> av aktive timer-objekter. Bare det å vekke prosessen for å sjekke hver av dem ville kvelt CPU-en. Det skalerer ikke.</p>
+    </div>
+
+    <div class="box solution">
+      <div class="label">✓ TCPs design</div>
+      <p>Standard TCP-implementasjoner bruker <strong>én enkelt retransmisjons-timer per forbindelse</strong>. Den følger med på den eldste ubekreftede pakken — <code>SendBase</code>. Når en ACK kommer som flytter SendBase framover, restarter timeren (hvis det fortsatt finnes ubekreftede pakker). Hvis timeren renner ut, sendes <em>den eldste</em> ubekreftede pakken på nytt.</p>
+    </div>
+
+    <h3>Senderens tre hendelser</h3>
+    <p>Senderen reagerer på tre ting, og bare tre ting:</p>
+
+    <ol style="list-style:none;padding:0;counter-reset:steps">
+      <li style="padding:20px 0;border-bottom:1px solid var(--line);counter-increment:steps;position:relative;padding-left:60px">
+        <span style="position:absolute;left:0;top:20px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--rust);font-weight:600">01 ·</span>
+        <strong>Data fra applikasjonen.</strong> Lag et nytt segment med <code>seq = NextSeqNum</code>, send det til IP-laget, oppdater NextSeqNum. Hvis timeren ikke allerede er i gang, start den.
+      </li>
+      <li style="padding:20px 0;border-bottom:1px solid var(--line);counter-increment:steps;position:relative;padding-left:60px">
+        <span style="position:absolute;left:0;top:20px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--rust);font-weight:600">02 ·</span>
+        <strong>Timeout.</strong> Send det eldste ubekreftede segmentet på nytt. Restart timeren.
+      </li>
+      <li style="padding:20px 0;counter-increment:steps;position:relative;padding-left:60px">
+        <span style="position:absolute;left:0;top:20px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--rust);font-weight:600">03 ·</span>
+        <strong>ACK mottatt med verdi y.</strong> Hvis <code>y &gt; SendBase</code>, så har noe nytt blitt bekreftet — flytt SendBase til y. Hvis det fortsatt finnes ubekreftede segmenter, restart timeren; ellers stopp den.
+      </li>
+    </ol>
+
+    <div class="margin-note">
+      <strong>Send_base og NextSeqNum</strong>
+      Tenk på vinduet til senderen som en glidende boks: <code>SendBase</code> er venstre kant (eldste ubekreftede byte), <code>NextSeqNum</code> er høyre kant (neste byte som skal sendes). Alt mellom dem er "in flight" — sendt, men ikke bekreftet ennå.
+    </div>
+  </div>
+</section>
+
+<!-- ============ RETRANSMIT ============ -->
+<section id="retransmit">
+  <div class="container">
+    <div class="badge">05 · Retransmisjonsscenarier</div>
+    <h2>Når ting går <em>galt</em></h2>
+    <p class="section-intro">La oss se hva senderen faktisk gjør i tre vanlige uhell — og hvorfor det enkle regelsettet i forrige kapittel håndterer dem alle.</p>
+
+    <!-- STEPPER -->
+    <div class="stepper" id="stepper">
+      <div class="slabel">Steg-for-steg</div>
+      <h4>Tre retransmisjonsscenarier</h4>
+      <div class="stage-svg" id="stagesvg"></div>
+      <div class="desc" id="desc"></div>
+      <div class="ctrls">
+        <button id="prev">← Forrige</button>
+        <span class="progress" id="prog">1 / 6</span>
+        <button id="next">Neste →</button>
+      </div>
+    </div>
+
+    <h3>Hva disse tre scenariene viser</h3>
+    <p>Den tredje situasjonen er den vakre: selv om en ACK forsvinner på veien, redder den <em>neste</em> ACK alt — fordi ACK-er er kumulative. Senderen trenger ikke retransmittere noe i det hele tatt. Tap av en isolert ACK koster ingenting, så lenge en senere ACK kommer fram før timeouten.</p>
+
+    <p>Den andre situasjonen — premature timeout — er mer interessant. Senderen blir utålmodig og sender den første pakken på nytt før ACK-en rakk fram. Mottakeren ser et duplikat, som hun rolig kaster. ACK-ene som var underveis kommer fram en etter en, SendBase glir framover, og alt ender opp riktig. Litt sløsing med båndbredde, men ingen feil.</p>
+  </div>
+</section>
+
+<!-- ============ FAST RETRANSMIT ============ -->
+<section id="fast">
+  <div class="container">
+    <div class="badge">06 · Fast retransmit</div>
+    <h2>Ikke vent på <em>timeouten</em></h2>
+    <p class="section-intro">Timeouts er konservative — de er gjerne satt til hundrevis av millisekunder. Hvis vi har et tydelig hint om at en pakke er tapt, hvorfor ikke handle på det med en gang?</p>
+
+    <p class="lead">Mottakerens regel for ACK-generering, definert i RFC 5681, er enkel: hvis det kommer et segment ut av rekkefølge — altså med høyere sekvensnummer enn forventet — så skal mottakeren <em>umiddelbart</em> sende en duplikat ACK som gjentar nummeret på den byten hun fortsatt venter på. Hvert segment som ankommer etter hullet vil produsere en ny duplikat ACK med samme nummer.</p>
+
+    <p>Senderen som ser dette tenker: "Hvorfor får jeg den samme ACK-en om og om igjen? Det må bety at nyere segmenter har kommet fram, men noe gammelt mangler." Det er en sterk indikasjon på tap — sterkere enn å bare vente på timeout.</p>
+
+    <div class="box insight">
+      <div class="label">★ Tommelfingerregelen: tre duplikat-ACKs</div>
+      <p>Hvis senderen mottar <strong>tre duplikat-ACKs</strong> på rad for samme byte, retransmitterer hun det manglende segmentet umiddelbart — uten å vente på at timeren skal renne ut. Dette kalles <em>fast retransmit</em>.</p>
+    </div>
+
+    <h3>Hvorfor akkurat tre?</h3>
+    <p>Det er et godt spørsmål. Hvorfor ikke én? Eller fem? Svaret ligger i at duplikat-ACKs ikke alltid betyr tap. Nettverket kan også omorganisere pakker — pakke 5 kan komme fram før pakke 4 selv om begge er sendt korrekt. Hvis vi handlet på den første duplikat-ACK-en ville vi ofte retransmittere helt unødvendig, fordi den manglende pakken er på vei og bare ble litt forsinket.</p>
+
+    <p>Tre duplikat-ACKs er en empirisk valgt balanse: nok til at omorganisering sannsynligvis ikke er forklaringen, men ikke så mange at vi taper for mye tid før vi handler. Det er en konstant som har fått stå seg gjennom mer enn 20 år med erfaring med TCP-implementasjoner.</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 720 460" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="#1a1612"/>
+            </marker>
+          </defs>
+          <text x="100" y="30" font-family="IBM Plex Sans" font-size="14" font-weight="600" fill="#1a1612">Host A</text>
+          <text x="600" y="30" font-family="IBM Plex Sans" font-size="14" font-weight="600" fill="#1a1612">Host B</text>
+          <line x1="120" y1="40" x2="120" y2="440" stroke="#a39886" stroke-width="1.5"/>
+          <line x1="620" y1="40" x2="620" y2="440" stroke="#a39886" stroke-width="1.5"/>
+
+          <line x1="120" y1="60" x2="615" y2="80" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ar2)"/>
+          <text x="180" y="74" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">Seq=92, 8 bytes</text>
+
+          <line x1="120" y1="90" x2="510" y2="120" stroke="#b04428" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <text x="515" y="125" font-family="IBM Plex Mono" font-size="14" fill="#b04428" font-weight="700">×</text>
+          <text x="180" y="108" font-family="IBM Plex Mono" font-size="11" fill="#b04428">Seq=100, 20 bytes (TAPT)</text>
+
+          <line x1="120" y1="130" x2="615" y2="160" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ar2)"/>
+          <text x="180" y="148" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">Seq=120, ...</text>
+
+          <line x1="120" y1="170" x2="615" y2="200" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ar2)"/>
+          <text x="180" y="188" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">Seq=140, ...</text>
+
+          <line x1="120" y1="210" x2="615" y2="240" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ar2)"/>
+          <text x="180" y="228" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">Seq=160, ...</text>
+
+          <line x1="615" y1="100" x2="125" y2="270" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#ar2)"/>
+          <text x="280" y="240" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a">ACK=100</text>
+
+          <line x1="615" y1="180" x2="125" y2="310" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#ar2)"/>
+          <text x="280" y="290" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a">ACK=100 (dup 1)</text>
+
+          <line x1="615" y1="220" x2="125" y2="350" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#ar2)"/>
+          <text x="280" y="330" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a">ACK=100 (dup 2)</text>
+
+          <line x1="615" y1="260" x2="125" y2="390" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#ar2)"/>
+          <text x="280" y="370" font-family="IBM Plex Mono" font-size="11" fill="#b04428" font-weight="600">ACK=100 (dup 3) → fast retransmit!</text>
+
+          <line x1="120" y1="410" x2="615" y2="430" stroke="#b04428" stroke-width="2" marker-end="url(#ar2)"/>
+          <text x="180" y="425" font-family="IBM Plex Mono" font-size="11" fill="#b04428" font-weight="600">Seq=100 (resendt)</text>
+        </svg>
+      </div>
+      <figcaption>Mottakeren ber gjentatte ganger om byte 100. Etter tre duplikater handler senderen umiddelbart — uten å vente på timeout.</figcaption>
+    </figure>
+
+    <div class="quiz" data-correct="2">
+      <div class="qlabel">Sjekk forståelsen</div>
+      <h4>Hvorfor venter ikke TCP på bare én duplikat-ACK før den retransmitterer?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">Fordi RFC-en ikke tillater det</button>
+        <button class="opt" data-i="1">Fordi mottakeren ikke får sendt ACK-er fort nok</button>
+        <button class="opt" data-i="2">Fordi nettverket ofte omorganiserer pakker — én duplikat-ACK kan bare bety at en pakke ble litt forsinket</button>
+        <button class="opt" data-i="3">Fordi senderen må ha tid til å starte timeren på nytt</button>
+      </div>
+      <div class="feedback"><strong>Riktig.</strong> Pakkeomorganisering er vanlig nok at en enkelt duplikat-ACK ikke er sterkt nok bevis på tap. Tre på rad er et mye mer overbevisende signal.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FLOW CONTROL ============ -->
+<section id="flow">
+  <div class="container">
+    <div class="badge">07 · Flow control</div>
+    <h2>Ikke <em>drukne</em> mottakeren</h2>
+    <p class="section-intro">TCP er pålitelig på vegne av nettverket — men den må også beskytte mottakeren mot seg selv. Hva om senderen er raskere enn applikasjonen som skal lese dataene?</p>
+
+    <p class="lead">Forestill deg en server som strømmer data inn i en mottakers TCP-buffer mye raskere enn applikasjonen klarer å lese ut av den. Bufferet vokser. Til slutt er det fullt — og det neste segmentet som ankommer har ingen plass å være. Det blir kastet, må retransmitteres, og hele situasjonen blir verre. TCP løser dette ved å la mottakeren stadig fortelle senderen <em>nøyaktig hvor mye plass</em> hun har igjen.</p>
+
+    <div class="box solution">
+      <div class="label">✓ Receive Window (rwnd)</div>
+      <p>I hver eneste ACK forteller mottakeren senderen hvor mange ledige bytes hun har i mottaksbufferet sitt — verdien legges inn i <code>Receive Window</code>-feltet i headeren. Senderen forplikter seg til å aldri ha mer enn <code>rwnd</code> bytes "in flight" (sendt, men ikke bekreftet) samtidig.</p>
+    </div>
+
+    <p>Resultatet er en slags rytme: senderen sender data, mottakerens applikasjon leser data, og rwnd vokser og krymper i takt. Hvis applikasjonen plutselig stopper å lese, krymper rwnd raskt mot null, og senderen pauser automatisk. Når applikasjonen våkner og leser igjen, vokser rwnd og senderen får lov til å fortsette.</p>
+
+    <h3>16-bits flaskehalsen</h3>
+    <p>Det originale rwnd-feltet er bare 16 bits — maksimalt 65 535 bytes, eller 64 KB. På et raskt moderne nettverk er dette altfor lite. Hvis du har en linje på 1 Gbps med 100 ms ping, kan du bare ha 64 KB i flukt før du må vente på en ACK. Resultatet er at lenken står ledig mesteparten av tiden. Dette kalles "long fat networks"-problemet.</p>
+
+    <p>Løsningen er <strong>TCP Window Scale</strong> — en option som forhandles fram under det første håndtrykket. Den lar begge sider bli enige om en multiplikator (en bit-shift på opptil 14 bits). Med maksimal skalering kan rwnd representere opptil omtrent <strong>1 GB</strong>. Det er nok til å fylle selv ekstremt raske og høyforsinkede lenker.</p>
+
+    <div class="margin-note">
+      <strong>Forhandles bare i SYN</strong>
+      Window Scale-faktoren forhandles utelukkende i SYN-pakkene under det første håndtrykket. Det betyr at hvis SYN-pakken din ikke har optionen, kan ingen part bruke skalerte vinduer for resten av forbindelsen — det er nå eller aldri.
+    </div>
+
+    <div class="quiz" data-correct="2">
+      <div class="qlabel">Sjekk forståelsen</div>
+      <h4>Hva er forskjellen på flow control og congestion control?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">Det er to navn på samme ting</button>
+        <button class="opt" data-i="1">Flow control beskytter nettverket; congestion control beskytter mottakeren</button>
+        <button class="opt" data-i="2">Flow control beskytter mottakeren mot å bli overveldet; congestion control beskytter nettverket mot for mange senders samtidig</button>
+        <button class="opt" data-i="3">Flow control bruker timer; congestion control bruker ACKs</button>
+      </div>
+      <div class="feedback"><strong>Riktig.</strong> Flow control er en avtale mellom <em>én sender og én mottaker</em>. Congestion control er en avtale mellom <em>alle senders</em> og det delte nettverket. De løser to forskjellige problemer og bruker forskjellige signaler.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HANDSHAKE ============ -->
+<section id="handshake">
+  <div class="container">
+    <div class="badge">08 · Forbindelsesetablering</div>
+    <h2>Det <em>tre-veis</em> håndtrykket</h2>
+    <p class="section-intro">Før noen data kan flyte, må de to partene bli enige om at de skal snakke — og avtale parametere som startsekvensnummer. Hvorfor trenger vi tre meldinger for noe så enkelt?</p>
+
+    <p class="lead">Den naive løsningen er et to-veis håndtrykk: klienten sier "la oss snakke", serveren svarer "OK". Klart, enkelt — og dessverre ødelagt. Problemet er at meldinger kan forsinkes vilkårlig lenge i nettverket, og gamle meldinger kan dukke opp lenge etter at klienten har gitt opp og fortsatt videre.</p>
+
+    <div class="box problem">
+      <div class="label">⚠ Halvåpne forbindelser</div>
+      <p>Tenk deg at klienten sender <code>req_conn(x)</code>, men aldri får svar. Hun gir opp og lukker. I mellomtiden var <code>req_conn(x)</code> bare forsinket i nettverket — den ankommer endelig serveren, som glade åpner en forbindelse og venter på data. Klienten er borte. Serveren har en <em>halvåpen forbindelse</em> som aldri vil bli brukt — og potensielt mange av dem, hvis dette skjer ofte. Dette er en reell sårbarhet (SYN flooding-angrep utnytter nettopp dette).</p>
+    </div>
+
+    <div class="box problem">
+      <div class="label">⚠ Duplikate gamle data</div>
+      <p>Verre: en gammel <code>req_conn(x)</code> kombinert med gamle <code>data(x+1)</code>-pakker fra en avsluttet forbindelse kan forveksles med starten på en ny økt — og dataene blir akseptert som om de hørte til. Dette er ikke teoretisk; det er en reell måte protokoller har feilet på.</p>
+    </div>
+
+    <div class="box solution">
+      <div class="label">✓ Tre veier løser det</div>
+      <p>I et 3-veis håndtrykk velger <em>begge</em> parter et tilfeldig startsekvensnummer (x og y). Klienten må deretter bekrefte serverens y i en tredje melding før forbindelsen anses som etablert. Det betyr at serveren ikke åpner en forbindelse på alvor før hun har fått bevis på at klienten faktisk eksisterer og er aktivt klar — ikke bare en gjenganger fra fortiden.</p>
+    </div>
+
+    <h3>Selve dansen</h3>
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="#1a1612"/>
+            </marker>
+          </defs>
+          <text x="100" y="30" font-family="IBM Plex Sans" font-size="14" font-weight="600" fill="#1a1612">Klient</text>
+          <text x="600" y="30" font-family="IBM Plex Sans" font-size="14" font-weight="600" fill="#1a1612">Server</text>
+
+          <text x="20" y="60" font-family="IBM Plex Mono" font-size="10" fill="#a39886">LISTEN</text>
+          <text x="640" y="60" font-family="IBM Plex Mono" font-size="10" fill="#a39886">LISTEN</text>
+
+          <line x1="120" y1="40" x2="120" y2="360" stroke="#a39886" stroke-width="1.5"/>
+          <line x1="620" y1="40" x2="620" y2="360" stroke="#a39886" stroke-width="1.5"/>
+
+          <text x="20" y="100" font-family="Newsreader" font-size="12" font-style="italic" fill="#6b6257">velger x</text>
+          <line x1="120" y1="110" x2="615" y2="160" stroke="#1a1612" stroke-width="1.8" marker-end="url(#ar3)"/>
+          <text x="220" y="130" font-family="IBM Plex Mono" font-size="12" fill="#b04428" font-weight="600">SYN, Seq=x</text>
+
+          <text x="20" y="160" font-family="IBM Plex Mono" font-size="10" fill="#a39886">SYN_SENT</text>
+          <text x="640" y="180" font-family="IBM Plex Mono" font-size="10" fill="#a39886">SYN_RCVD</text>
+          <text x="640" y="195" font-family="Newsreader" font-size="12" font-style="italic" fill="#6b6257">velger y</text>
+
+          <line x1="615" y1="200" x2="125" y2="250" stroke="#1a1612" stroke-width="1.8" marker-end="url(#ar3)"/>
+          <text x="195" y="220" font-family="IBM Plex Mono" font-size="12" fill="#2d4a7a" font-weight="600">SYN+ACK, Seq=y, ACK=x+1</text>
+
+          <text x="20" y="260" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a" font-weight="600">ESTAB</text>
+
+          <line x1="120" y1="280" x2="615" y2="320" stroke="#1a1612" stroke-width="1.8" marker-end="url(#ar3)"/>
+          <text x="220" y="298" font-family="IBM Plex Mono" font-size="12" fill="#3d6b3a" font-weight="600">ACK, ACK=y+1 (+ kan bære data)</text>
+
+          <text x="640" y="335" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a" font-weight="600">ESTAB</text>
+        </svg>
+      </div>
+      <figcaption>Tre meldinger, ikke fordi vi liker tallet 3, men fordi det er det minste antallet som tillater begge sider å verifisere at den andre er levende og enig om sekvensnummer.</figcaption>
+    </figure>
+
+    <p>Legg merke til at den siste ACK-meldingen kan inneholde data — den trenger ikke være tom. Dette er en optimalisering: hvis klienten allerede vet hva hun vil si (for eksempel en HTTP-forespørsel), kan hun pakke den inn i den tredje håndtrykksmeldingen og spare en runde.</p>
+  </div>
+</section>
+
+<!-- ============ CLOSE ============ -->
+<section id="close">
+  <div class="container">
+    <div class="badge">09 · Lukke forbindelsen</div>
+    <h2>Et høflig <em>farvel</em></h2>
+    <p class="section-intro">Å lukke en forbindelse er ikke trivielt heller — begge sider kan ha mer data å sende, og siste melding kan bli borte.</p>
+
+    <p class="lead">Når en av partene er ferdig, sender hun et segment med <code>FIN</code>-flagget satt. Den andre siden svarer med en <code>ACK</code>. Men det er bare den ene retningen som er stengt — TCP er full duplex, så den andre siden kan fortsatt ha mer å si. Når også den siden er ferdig, sender hun sin egen FIN, og den første parten svarer med en ACK.</p>
+
+    <p>Fire meldinger totalt — selv om FIN og ACK fra samme side kan slås sammen til ett segment. Klienten som initierer lukkingen går inn i en spesiell <strong>TIME_WAIT</strong>-tilstand etter sin siste ACK, hvor hun blir værende i typisk 30 sekunder. Hvorfor? Fordi den siste ACK-en kan ha gått tapt. Hvis den gjorde det, vil serveren retransmittere sin FIN, og klienten må fortsatt være rundt for å svare på den. Først etter timeoutet utløper får klienten faktisk lov til å glemme forbindelsen helt.</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="#1a1612"/>
+            </marker>
+          </defs>
+          <text x="100" y="30" font-family="IBM Plex Sans" font-size="14" font-weight="600" fill="#1a1612">Klient</text>
+          <text x="600" y="30" font-family="IBM Plex Sans" font-size="14" font-weight="600" fill="#1a1612">Server</text>
+          <line x1="120" y1="40" x2="120" y2="360" stroke="#a39886" stroke-width="1.5"/>
+          <line x1="620" y1="40" x2="620" y2="360" stroke="#a39886" stroke-width="1.5"/>
+
+          <text x="20" y="80" font-family="Newsreader" font-size="12" font-style="italic" fill="#6b6257">close()</text>
+          <line x1="120" y1="90" x2="615" y2="130" stroke="#b04428" stroke-width="1.8" marker-end="url(#ar4)"/>
+          <text x="280" y="108" font-family="IBM Plex Mono" font-size="12" fill="#b04428" font-weight="600">FIN</text>
+
+          <line x1="615" y1="150" x2="125" y2="190" stroke="#2d4a7a" stroke-width="1.5" marker-end="url(#ar4)"/>
+          <text x="320" y="170" font-family="IBM Plex Mono" font-size="12" fill="#2d4a7a">ACK</text>
+
+          <text x="640" y="220" font-family="Newsreader" font-size="12" font-style="italic" fill="#6b6257">close()</text>
+          <line x1="615" y1="230" x2="125" y2="270" stroke="#b04428" stroke-width="1.8" marker-end="url(#ar4)"/>
+          <text x="280" y="248" font-family="IBM Plex Mono" font-size="12" fill="#b04428" font-weight="600">FIN</text>
+
+          <line x1="120" y1="290" x2="615" y2="330" stroke="#2d4a7a" stroke-width="1.5" marker-end="url(#ar4)"/>
+          <text x="320" y="310" font-family="IBM Plex Mono" font-size="12" fill="#2d4a7a">ACK</text>
+
+          <text x="20" y="305" font-family="IBM Plex Mono" font-size="10" fill="#c68a1f" font-weight="600">TIME_WAIT</text>
+          <text x="20" y="320" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">~30 s</text>
+        </svg>
+      </div>
+      <figcaption>Fire meldinger fordi begge retninger må stenges hver for seg. TIME_WAIT-tilstanden gir oss en sjanse til å redde tapte ACK-er.</figcaption>
+    </figure>
+
+    <div class="ornament">❋ ❋ ❋</div>
+
+    <h3>Det store bildet</h3>
+    <p>Vi har gått gjennom segmentstruktur, sekvensnummer, RTT-estimering, retransmisjonslogikk, fast retransmit, flow control, og forbindelsesetablering og -avslutning. Alt henger sammen: hver mekanisme finnes fordi en tidligere mekanisme ville feilet uten den. Sekvensnumre gjør ACK-er meningsfulle. Kumulative ACK-er gjør tapte ACK-er overlevelige. RTT-estimering gjør timeouts robuste. En enkelt timer per forbindelse gjør protokollen skalerbar. Tre-veis håndtrykk gjør forbindelser sikre mot gjengangere fra fortiden.</p>
+
+    <p>Det neste kapittelet — <em>congestion control</em> — handler om noe ganske annet: ikke hvordan man holder en enkelt forbindelse pålitelig, men hvordan tusenvis av forbindelser sammen kan dele et begrenset nettverk uten å kollapse det. Men det er en historie for en annen side.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>Kapittel 3 · Transportlaget</p>
+    <p>Basert på Kurose &amp; Ross — Computer Networking: A Top-Down Approach (8. utg.)</p>
+  </div>
+</footer>
+
+<script>
+// ============ QUIZ ============
+document.querySelectorAll('.quiz').forEach(q => {
+  const correct = parseInt(q.dataset.correct, 10);
+  const fb = q.querySelector('.feedback');
+  q.querySelectorAll('button.opt').forEach(b => {
+    b.addEventListener('click', () => {
+      const i = parseInt(b.dataset.i, 10);
+      q.querySelectorAll('button.opt').forEach(x => x.disabled = true);
+      if (i === correct) {
+        b.classList.add('correct');
+      } else {
+        b.classList.add('wrong');
+        q.querySelectorAll('button.opt')[correct].classList.add('correct');
+      }
+      fb.classList.add('show');
+    });
+  });
+});
+
+// ============ TIMEOUT SLIDER ============
+(function(){
+  const e = document.getElementById('ertt');
+  const d = document.getElementById('dev');
+  const ev = document.getElementById('ev');
+  const dv = document.getElementById('dv');
+  const tv = document.getElementById('tv');
+  const ev2 = document.getElementById('erttv');
+  const dv2 = document.getElementById('devv');
+  const hint = document.getElementById('hint');
+  function upd(){
+    const E = parseInt(e.value), D = parseInt(d.value);
+    const T = E + 4*D;
+    ev.textContent = E;
+    dv.textContent = D;
+    tv.textContent = T + ' ms';
+    ev2.textContent = E + ' ms';
+    dv2.textContent = D + ' ms';
+    let h = '';
+    if (D < 10) h = 'Veldig stabil RTT — timeoutet ligger tett på estimatet.';
+    else if (D < 50) h = 'Normal variasjon. Marginen gir en passe sikkerhet.';
+    else if (D < 120) h = 'Mye svingning. Timeoutet er nå romslig — vi tør ikke handle for tidlig.';
+    else h = 'Ekstrem variasjon. Timeoutet blir så stort at applikasjonen vil føles treg.';
+    hint.textContent = h;
+  }
+  e.addEventListener('input', upd);
+  d.addEventListener('input', upd);
+  upd();
+})();
+
+// ============ STEPPER ============
+(function(){
+  const stages = [
+    {
+      title: 'SCENARIO 1 · Lost ACK',
+      desc: 'Host A sender Seq=92, 8 bytes. Host B mottar dem og svarer ACK=100. Men ACK-en går tapt på veien tilbake.',
+      svg: stage1a()
+    },
+    {
+      title: 'SCENARIO 1 · Timeout og resend',
+      desc: 'A venter, ACK-en kommer aldri. Timeren renner ut. A retransmitterer Seq=92. B mottar, svarer ACK=100 igjen — denne gangen kommer den fram.',
+      svg: stage1b()
+    },
+    {
+      title: 'SCENARIO 2 · Premature timeout',
+      desc: 'A sender to segmenter raskt etter hverandre: Seq=92 (8 bytes) og Seq=100 (20 bytes). Begge kommer fram. B svarer med ACK=100, så ACK=120.',
+      svg: stage2a()
+    },
+    {
+      title: 'SCENARIO 2 · Timeren rant for tidlig',
+      desc: 'A sin timer rant ut før ACK-ene kom. A retransmitterer Seq=92. ACK-ene kommer fram, SendBase glir til 120. B mottar duplikatet, kaster det, og sender ACK=120 (det neste hun forventer).',
+      svg: stage2b()
+    },
+    {
+      title: 'SCENARIO 3 · Cumulative ACK redder dagen',
+      desc: 'A sender Seq=92 (8 bytes) og Seq=100 (20 bytes). Begge kommer fram. B svarer ACK=100, men den ACK-en går tapt!',
+      svg: stage3a()
+    },
+    {
+      title: 'SCENARIO 3 · Neste ACK overstyrer alt',
+      desc: 'B sin neste ACK er ACK=120 — som bekrefter ALT opp til byte 120. Den kommer fram i tide. A trenger aldri å vite at den første ACK-en gikk tapt. Kumulative ACK-er gjør protokollen robust.',
+      svg: stage3b()
+    }
+  ];
+
+  let i = 0;
+  const sv = document.getElementById('stagesvg');
+  const ds = document.getElementById('desc');
+  const pg = document.getElementById('prog');
+  const pv = document.getElementById('prev');
+  const nx = document.getElementById('next');
+
+  function render() {
+    const s = stages[i];
+    sv.innerHTML = s.svg;
+    ds.innerHTML = '<strong>' + s.title + '</strong>' + s.desc;
+    pg.textContent = (i+1) + ' / ' + stages.length;
+    pv.disabled = i === 0;
+    nx.disabled = i === stages.length - 1;
+  }
+  pv.addEventListener('click', () => { if (i > 0) { i--; render(); } });
+  nx.addEventListener('click', () => { if (i < stages.length - 1) { i++; render(); } });
+
+  function stageBase(content) {
+    return `<svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="m1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1a1612"/></marker></defs>
+      <text x="80" y="20" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612">Host A</text>
+      <text x="500" y="20" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612">Host B</text>
+      <line x1="100" y1="30" x2="100" y2="270" stroke="#a39886" stroke-width="1.5"/>
+      <line x1="520" y1="30" x2="520" y2="270" stroke="#a39886" stroke-width="1.5"/>
+      ${content}
+    </svg>`;
+  }
+  function arrow(x1,y1,x2,y2,color,label,labelX,labelY,extra){
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="1.5" marker-end="url(#m1)" ${extra||''}/>
+            <text x="${labelX}" y="${labelY}" font-family="IBM Plex Mono" font-size="11" fill="${color}" font-weight="600">${label}</text>`;
+  }
+  function lostArrow(x1,y1,x2,y2,label,labelX,labelY){
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#b04428" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <text x="${x2+5}" y="${y2+5}" font-family="IBM Plex Mono" font-size="14" fill="#b04428" font-weight="700">×</text>
+            <text x="${labelX}" y="${labelY}" font-family="IBM Plex Mono" font-size="11" fill="#b04428">${label}</text>`;
+  }
+
+  function stage1a(){
+    return stageBase(
+      arrow(100,60,515,110,'#1a1612','Seq=92, 8 bytes',150,82) +
+      lostArrow(515,130,300,200,'ACK=100 (TAPT)',180,180)
+    );
+  }
+  function stage1b(){
+    return stageBase(
+      `<text x="20" y="60" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">timeout</text>` +
+      arrow(100,80,515,130,'#b04428','Seq=92 (resendt)',150,102) +
+      arrow(515,150,105,210,'#2d4a7a','ACK=100',280,180)
+    );
+  }
+  function stage2a(){
+    return stageBase(
+      arrow(100,55,515,90,'#1a1612','Seq=92, 8 bytes',150,72) +
+      arrow(100,80,515,120,'#1a1612','Seq=100, 20 bytes',150,100) +
+      arrow(515,140,105,180,'#2d4a7a','ACK=100',270,158) +
+      arrow(515,170,105,210,'#2d4a7a','ACK=120',270,188)
+    );
+  }
+  function stage2b(){
+    return stageBase(
+      `<text x="20" y="55" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">premature</text>
+       <text x="20" y="68" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">timeout</text>` +
+      arrow(100,90,515,130,'#b04428','Seq=92 (resendt)',150,108) +
+      arrow(515,160,105,200,'#2d4a7a','ACK=120 (kumulativ)',230,178) +
+      `<text x="380" y="225" font-family="Newsreader" font-size="11" font-style="italic" fill="#3d6b3a">B kaster duplikatet</text>`
+    );
+  }
+  function stage3a(){
+    return stageBase(
+      arrow(100,55,515,90,'#1a1612','Seq=92, 8 bytes',150,72) +
+      arrow(100,80,515,120,'#1a1612','Seq=100, 20 bytes',150,100) +
+      lostArrow(515,140,300,200,'ACK=100 (TAPT)',180,178)
+    );
+  }
+  function stage3b(){
+    return stageBase(
+      arrow(100,55,515,90,'#1a1612','Seq=92, 8 bytes',150,72) +
+      arrow(100,80,515,120,'#1a1612','Seq=100, 20 bytes',150,100) +
+      lostArrow(515,140,300,200,'ACK=100 (TAPT)',180,178) +
+      arrow(515,210,105,250,'#3d6b3a','ACK=120 ✓',260,228)
+    );
+  }
+
+  render();
+})();
+</script>
+
+</body>
+</html>

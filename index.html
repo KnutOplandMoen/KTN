@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TTM4100 — Kommunikasjon: Tjenester og nett</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.index-hero {
+  padding: 120px 0 80px;
+  border-bottom: none;
+}
+.index-hero .course-code {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 20px;
+  display: inline-block;
+  padding: 6px 14px;
+  border: 1px solid var(--rust);
+  border-radius: 2px;
+}
+.index-hero h1 {
+  font-size: clamp(48px, 8vw, 96px);
+  font-weight: 500;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  margin-bottom: 32px;
+}
+.index-hero .lead {
+  font-size: 22px;
+  font-style: italic;
+  color: var(--ink-soft);
+  max-width: 600px;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+.chapter-grid {
+  padding: 60px 0 80px;
+}
+.chapter-grid .section-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-ghost);
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.chapters {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.chapter-card {
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  align-items: baseline;
+  gap: 24px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--line-soft);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s;
+}
+.chapter-card:first-child {
+  border-top: 1px solid var(--line-soft);
+}
+.chapter-card:hover {
+  background: var(--paper-dark);
+  padding-left: 16px;
+  padding-right: 16px;
+  margin-left: -16px;
+  margin-right: -16px;
+  border-radius: 4px;
+}
+.chapter-card .ch-num {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--rust);
+  font-weight: 500;
+  padding-top: 2px;
+}
+.chapter-card .ch-info {
+  min-width: 0;
+}
+.chapter-card .ch-title {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.25;
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+.chapter-card .ch-desc {
+  font-size: 15px;
+  color: var(--ink-faded);
+  font-style: italic;
+  line-height: 1.45;
+}
+.chapter-card .ch-arrow {
+  font-family: var(--mono);
+  font-size: 18px;
+  color: var(--ink-ghost);
+  transition: color 0.15s, transform 0.15s;
+  padding-top: 2px;
+}
+.chapter-card:hover .ch-arrow {
+  color: var(--rust);
+  transform: translateX(4px);
+}
+
+.info-section {
+  padding: 60px 0 100px;
+  border-top: 1px solid var(--line);
+}
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+.info-block h3 {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--rust);
+  margin: 0 0 16px;
+}
+.info-block p {
+  font-size: 15px;
+  color: var(--ink-faded);
+  line-height: 1.6;
+}
+.info-block ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.info-block li {
+  font-size: 15px;
+  color: var(--ink-faded);
+  padding: 6px 0;
+  border-bottom: 1px dotted var(--line-soft);
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .index-hero { padding: 80px 0 60px; }
+  .chapter-card { grid-template-columns: 40px 1fr auto; gap: 16px; }
+  .chapter-card .ch-title { font-size: 18px; }
+  .info-grid { grid-template-columns: 1fr; gap: 32px; }
+}
+</style>
+</head>
+<body>
+
+<header class="index-hero">
+  <div class="container">
+    <div class="course-code">TTM4100 · Vår 2026</div>
+    <h1>Kommunikasjon<br><em>Tjenester og nett</em></h1>
+    <p class="lead">Studienotater og oppsummeringer for datakommunikasjon — fra applikasjonslaget helt ned til trådløse og mobile nettverk.</p>
+  </div>
+</header>
+
+<main class="chapter-grid">
+  <div class="container">
+    <div class="section-label">Kapitler</div>
+    <div class="chapters">
+
+      <a href="kapittel2.html" class="chapter-card">
+        <span class="ch-num">Kap 2</span>
+        <div class="ch-info">
+          <div class="ch-title">Applikasjonslaget</div>
+          <div class="ch-desc">HTTP, klient-server, P2P, web-cache, videostrømming og CDN</div>
+        </div>
+        <span class="ch-arrow">&rarr;</span>
+      </a>
+
+      <a href="kapittel2_epost_dns_sockets.html" class="chapter-card">
+        <span class="ch-num">Kap 2b</span>
+        <div class="ch-info">
+          <div class="ch-title">E-post, DNS og Socket-programmering</div>
+          <div class="ch-desc">SMTP, IMAP, DNS-hierarkiet, iterative og rekursive oppslag, socket-API</div>
+        </div>
+        <span class="ch-arrow">&rarr;</span>
+      </a>
+
+      <a href="kapittel3-tcp.html" class="chapter-card">
+        <span class="ch-num">Kap 3</span>
+        <div class="ch-info">
+          <div class="ch-title">Transportlaget — TCP</div>
+          <div class="ch-desc">Pålitelig dataoverføring, TCP-segmenter, flytkontroll, metningskontroll</div>
+        </div>
+        <span class="ch-arrow">&rarr;</span>
+      </a>
+
+      <a href="nettverkslaget.html" class="chapter-card">
+        <span class="ch-num">Kap 4</span>
+        <div class="ch-info">
+          <div class="ch-title">Nettverkslaget</div>
+          <div class="ch-desc">IP-adressering, CIDR, NAT, IPv6, DHCP og videresending i rutere</div>
+        </div>
+        <span class="ch-arrow">&rarr;</span>
+      </a>
+
+      <a href="kapittel5_kontrollplanet.html" class="chapter-card">
+        <span class="ch-num">Kap 5</span>
+        <div class="ch-info">
+          <div class="ch-title">Kontrollplanet</div>
+          <div class="ch-desc">Rutingalgoritmer, OSPF, BGP, ICMP og nettverksstyring</div>
+        </div>
+        <span class="ch-arrow">&rarr;</span>
+      </a>
+
+      <a href="kapittel_6_lenkelaget_og_lan.html" class="chapter-card">
+        <span class="ch-num">Kap 6</span>
+        <div class="ch-info">
+          <div class="ch-title">Lenkelaget og LAN</div>
+          <div class="ch-desc">MAC-adresser, ARP, Ethernet, svitsjer, feildeteksjon og CRC</div>
+        </div>
+        <span class="ch-arrow">&rarr;</span>
+      </a>
+
+      <a href="kapittel7-tradlose-mobile-nettverk.html" class="chapter-card">
+        <span class="ch-num">Kap 7</span>
+        <div class="ch-info">
+          <div class="ch-title">Trådløse og mobile nettverk</div>
+          <div class="ch-desc">Wi-Fi, 4G/5G, mobilitet, handover og trådløse utfordringer</div>
+        </div>
+        <span class="ch-arrow">&rarr;</span>
+      </a>
+
+    </div>
+  </div>
+</main>
+
+<section class="info-section">
+  <div class="container">
+    <div class="info-grid">
+      <div class="info-block">
+        <h3>Om emnet</h3>
+        <p>TTM4100 dekker datakommunikasjon med ovenfra-ned-tilnærmingen — fra applikasjoner ned til det fysiske laget. Basert på Kurose &amp; Ross, 8. utgave.</p>
+      </div>
+      <div class="info-block">
+        <h3>Pensum</h3>
+        <ul>
+          <li>Kapittel 1 — Intro til datanett</li>
+          <li>Kapittel 2 — Applikasjonslaget</li>
+          <li>Kapittel 3 — Transportlaget</li>
+          <li>Kapittel 4 — Nettverkslaget: Dataplanet</li>
+          <li>Kapittel 5 — Nettverkslaget: Kontrollplanet (utvalg)</li>
+          <li>Kapittel 6 — Lenkelaget og LAN</li>
+          <li>Kapittel 7 — Trådløse og mobile nettverk</li>
+          <li>Kapittel 8 — Sikkerhet (utvalg)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10038; &#10038; &#10038;</div>
+    <p>NTNU · TTM4100 · Vår 2026</p>
+  </div>
+</footer>
+
+</body>
+</html>
