@@ -397,26 +397,101 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
-<script src="search-index.js"></script>
 <script>
 (function() {
+  var PAGES = [
+    'kap1/index.html',
+    'kap2/http-og-web.html', 'kap2/p2p-video-cdn.html', 'kap2/epost-dns-sockets.html',
+    'kap3/transport-udp.html', 'kap3/palitelig-dataoverforing.html', 'kap3/tcp.html', 'kap3/congestion.html',
+    'kap4/rutere-videresending.html', 'kap4/ip-adressering.html',
+    'kap5/index.html',
+    'kap6/grunnleggende-tilgang.html', 'kap6/ethernet-svitsjer.html',
+    'kap7/index.html',
+    'kap8/kryptografi.html', 'kap8/protokoller-brannmur.html',
+    'kap9/index.html'
+  ];
+
   var input = document.getElementById('site-search');
-  var results = document.getElementById('search-results');
+  var resultsEl = document.getElementById('search-results');
   var active = -1;
   var items = [];
   var debounceTimer;
+  var fuse = null;
 
-  var fuse = new Fuse(SEARCH_INDEX, {
-    keys: [
-      { name: 'title', weight: 0.4 },
-      { name: 'keywords', weight: 0.3 },
-      { name: 'body', weight: 0.2 },
-      { name: 'chapter', weight: 0.1 }
-    ],
-    threshold: 0.35,
-    includeMatches: true,
-    minMatchCharLength: 2
+  input.placeholder = 'Laster søkeindeks\u2026';
+  input.disabled = true;
+
+  function buildIndex() {
+    return Promise.all(PAGES.map(function(page) {
+      return fetch(page).then(function(r) { return r.text(); }).then(function(html) {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var mainEl = doc.querySelector('main');
+        var chapter = mainEl ? (mainEl.dataset.chapter || '') : '';
+        var h1 = doc.querySelector('h1');
+        var pageTitle = h1 ? h1.textContent.trim() : '';
+        var entries = [];
+        var sections = doc.querySelectorAll('section[id]');
+        if (sections.length) {
+          sections.forEach(function(sec) {
+            var h2 = sec.querySelector('h2');
+            entries.push({
+              title: h2 ? h2.textContent.trim() : pageTitle,
+              chapter: chapter,
+              url: page + '#' + sec.id,
+              body: sec.textContent.replace(/\s+/g, ' ').trim()
+            });
+          });
+        } else {
+          entries.push({
+            title: pageTitle,
+            chapter: chapter,
+            url: page,
+            body: (mainEl || doc.body).textContent.replace(/\s+/g, ' ').trim()
+          });
+        }
+        return entries;
+      });
+    })).then(function(arrays) {
+      var index = [];
+      arrays.forEach(function(a) { index = index.concat(a); });
+      return index;
+    });
+  }
+
+  buildIndex().then(function(searchIndex) {
+    fuse = new Fuse(searchIndex, {
+      keys: [
+        { name: 'title', weight: 0.45 },
+        { name: 'body', weight: 0.45 },
+        { name: 'chapter', weight: 0.1 }
+      ],
+      threshold: 0.3,
+      ignoreLocation: true,
+      includeMatches: true,
+      minMatchCharLength: 2
+    });
+    input.placeholder = 'S\u00f8k i alle kapitler\u2026';
+    input.disabled = false;
   });
+
+  function snippet(body, query, maxLen) {
+    var words = query.trim().split(/\s+/).filter(function(w) { return w.length > 1; });
+    if (words.length) {
+      var re = new RegExp(words.map(function(w) {
+        return w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      }).join('|'), 'i');
+      var match = re.exec(body);
+      if (match) {
+        var start = Math.max(0, match.index - 60);
+        var end = Math.min(body.length, match.index + match[0].length + maxLen - 60);
+        var s = body.substring(start, end);
+        if (start > 0) s = '\u2026' + s;
+        if (end < body.length) s = s + '\u2026';
+        return s;
+      }
+    }
+    return body.length > maxLen ? body.substring(0, maxLen) + '\u2026' : body;
+  }
 
   function highlight(text, query) {
     if (!query) return text;
@@ -431,8 +506,8 @@
   function render(hits, query) {
     active = -1;
     if (!hits.length) {
-      results.innerHTML = '<div class="sr-empty">Ingen treff for \u00ab' + query + '\u00bb</div>';
-      results.classList.add('active');
+      resultsEl.innerHTML = '<div class="sr-empty">Ingen treff for \u00ab' + query + '\u00bb</div>';
+      resultsEl.classList.add('active');
       items = [];
       return;
     }
@@ -440,29 +515,27 @@
     var max = Math.min(hits.length, 8);
     for (var i = 0; i < max; i++) {
       var item = hits[i].item;
-      var bodySnippet = item.body.length > 150 ? item.body.substring(0, 150) + '\u2026' : item.body;
+      var bodySnip = snippet(item.body, query, 150);
       html += '<a class="sr-item" href="' + item.url + '">' +
         '<div class="sr-chapter">' + item.chapter + '</div>' +
         '<div class="sr-title">' + highlight(item.title, query) + '</div>' +
-        '<div class="sr-body">' + highlight(bodySnippet, query) + '</div>' +
+        '<div class="sr-body">' + highlight(bodySnip, query) + '</div>' +
         '</a>';
     }
-    results.innerHTML = html;
-    results.classList.add('active');
-    items = results.querySelectorAll('.sr-item');
+    resultsEl.innerHTML = html;
+    resultsEl.classList.add('active');
+    items = resultsEl.querySelectorAll('.sr-item');
   }
 
   function close() {
-    results.classList.remove('active');
-    results.innerHTML = '';
+    resultsEl.classList.remove('active');
+    resultsEl.innerHTML = '';
     active = -1;
     items = [];
   }
 
   function setActive(idx) {
-    for (var i = 0; i < items.length; i++) {
-      items[i].classList.remove('sr-active');
-    }
+    for (var i = 0; i < items.length; i++) items[i].classList.remove('sr-active');
     if (idx >= 0 && idx < items.length) {
       items[idx].classList.add('sr-active');
       items[idx].scrollIntoView({ block: 'nearest' });
@@ -473,15 +546,14 @@
   input.addEventListener('input', function() {
     clearTimeout(debounceTimer);
     var q = input.value.trim();
-    if (q.length < 2) { close(); return; }
+    if (!fuse || q.length < 2) { close(); return; }
     debounceTimer = setTimeout(function() {
-      var hits = fuse.search(q);
-      render(hits, q);
+      render(fuse.search(q), q);
     }, 150);
   });
 
   input.addEventListener('keydown', function(e) {
-    if (!results.classList.contains('active') || !items.length) return;
+    if (!resultsEl.classList.contains('active') || !items.length) return;
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       setActive(active < items.length - 1 ? active + 1 : 0);
@@ -498,9 +570,7 @@
   });
 
   document.addEventListener('click', function(e) {
-    if (!results.contains(e.target) && e.target !== input) {
-      close();
-    }
+    if (!resultsEl.contains(e.target) && e.target !== input) close();
   });
 })();
 </script>
