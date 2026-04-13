@@ -130,12 +130,26 @@
       40% { opacity: 1; }
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 768px) {
       #ktn-chat-panel {
-        bottom: 0; right: 0;
-        width: 100vw; height: 100vh;
-        max-width: 100vw; max-height: 100vh;
+        top: 0; left: 0; bottom: 0; right: 0;
+        width: 100%; height: 100vh;
+        height: 100dvh;
+        max-width: 100%; max-height: 100%;
         border-radius: 0;
+      }
+      #ktn-chat-panel .ktn-chat-header {
+        padding-top: calc(14px + env(safe-area-inset-top, 0px));
+        padding-left: calc(18px + env(safe-area-inset-left, 0px));
+        padding-right: calc(18px + env(safe-area-inset-right, 0px));
+      }
+      #ktn-chat-panel .ktn-chat-form {
+        padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+        padding-left: calc(14px + env(safe-area-inset-left, 0px));
+        padding-right: calc(14px + env(safe-area-inset-right, 0px));
+      }
+      body.ktn-chat-open {
+        overflow: hidden !important;
       }
     }
   `;
@@ -176,15 +190,21 @@
   let history = [];
   let busy = false;
 
+  function isMobile() {
+    return window.matchMedia("(max-width: 768px)").matches;
+  }
+
   toggle.addEventListener("click", () => {
     panel.classList.add("open");
     toggle.style.display = "none";
+    if (isMobile()) document.body.classList.add("ktn-chat-open");
     input.focus();
   });
 
   closeBtn.addEventListener("click", () => {
     panel.classList.remove("open");
     toggle.style.display = "flex";
+    document.body.classList.remove("ktn-chat-open");
   });
 
   resetBtn.addEventListener("click", () => {
@@ -345,6 +365,26 @@
       sendBtn.disabled = false;
     }
   }
+
+  if (window.visualViewport && isMobile()) {
+    const onViewportResize = () => {
+      if (!panel.classList.contains("open") || !isMobile()) return;
+      const vvh = window.visualViewport.height;
+      const offset = window.visualViewport.offsetTop;
+      panel.style.height = vvh + "px";
+      panel.style.top = offset + "px";
+    };
+    window.visualViewport.addEventListener("resize", onViewportResize);
+    window.visualViewport.addEventListener("scroll", onViewportResize);
+  }
+
+  input.addEventListener("focus", () => {
+    if (!isMobile()) return;
+    setTimeout(() => {
+      input.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }, 300);
+  });
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
