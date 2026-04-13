@@ -532,7 +532,8 @@ pre .c-cli { color: #e8b560; }
   line-height: 1.4;
   color: var(--ink);
 }
-.quiz .options { display: flex; flex-direction: column; gap: 10px; }
+.quiz .options,
+.quiz .opts { display: flex; flex-direction: column; gap: 10px; }
 .quiz button.opt,
 .quiz button.option {
   font-family: var(--serif);
