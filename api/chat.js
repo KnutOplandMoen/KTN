@@ -41,13 +41,17 @@ async function getEmbedding(text, apiKey) {
   return data.data[0].embedding;
 }
 
-function findTopChunks(queryEmbedding, allChunks, n = 5) {
+function findTopChunks(queryEmbedding, allChunks, n = 5, chapterHint = null) {
+  const CHAPTER_BOOST = 0.03;
   const scored = allChunks
     .filter((c) => c.embedding)
-    .map((c) => ({
-      text: c.text,
-      score: cosineSimilarity(queryEmbedding, c.embedding),
-    }));
+    .map((c) => {
+      let score = cosineSimilarity(queryEmbedding, c.embedding);
+      if (chapterHint && c.chapter && c.chapter.toLowerCase().includes(chapterHint.toLowerCase())) {
+        score += CHAPTER_BOOST;
+      }
+      return { text: c.text, chapter: c.chapter, score };
+    });
   scored.sort((a, b) => b.score - a.score);
   return scored.slice(0, n);
 }
@@ -80,7 +84,8 @@ export default async function handler(req, res) {
     const queryEmbedding = await getEmbedding(searchQuery, apiKey);
 
     const allChunks = loadChunks();
-    const topChunks = findTopChunks(queryEmbedding, allChunks, 5);
+    const chapterHint = page_context?.chapter || null;
+    const topChunks = findTopChunks(queryEmbedding, allChunks, 5, chapterHint);
     const bookContext = topChunks.map((c) => c.text).join("\n\n---\n\n");
 
     let locationInfo = "";
