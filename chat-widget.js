@@ -122,12 +122,25 @@
     .ktn-chat-send:hover { background: var(--rust-dark, #8a3420); }
     .ktn-chat-send:disabled { opacity: .5; cursor: not-allowed; }
 
-    .ktn-typing-dot { display: inline-block; animation: ktnBlink 1.2s infinite; }
-    .ktn-typing-dot:nth-child(2) { animation-delay: .2s; }
-    .ktn-typing-dot:nth-child(3) { animation-delay: .4s; }
-    @keyframes ktnBlink {
-      0%, 80%, 100% { opacity: .25; }
-      40% { opacity: 1; }
+    .ktn-loading-text {
+      font-size: 13px; font-style: italic;
+      opacity: 0; transform: translateY(4px);
+      animation: ktnFadeIn .35s ease forwards;
+    }
+    @keyframes ktnFadeIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .ktn-loading-bar-track {
+      height: 3px; width: 100%; margin-top: 8px;
+      background: rgba(0,0,0,.08); border-radius: 2px; overflow: hidden;
+    }
+    .ktn-loading-bar-fill {
+      height: 100%; width: 0%; border-radius: 2px;
+      background: var(--rust, #b04428);
+      transition: width .4s ease;
+    }
+    .ktn-loading-timer {
+      font-size: 11px; opacity: .55; margin-top: 4px; text-align: right;
     }
 
     @media (max-width: 768px) {
@@ -303,16 +316,86 @@
     messagesEl.scrollTop = messagesEl.scrollHeight;
   }
 
-  function addTypingIndicator() {
+  const loadingMessages = [
+    "Sender SYN-pakke til serveren...",
+    "Venter på tre-veis håndtrykk...",
+    "Gjør DNS-oppslag for api.ktn.ntnu.no...",
+    "Ruter pakken gjennom nettverket...",
+    "Pakken passerer en NAT-gateway...",
+    "Sjekker sekvensnummer i TCP-segmentet...",
+    "Dekrypterer med RSA...",
+    "Beregner CRC-sjekksum...",
+    "Venter i sendevinduet (sliding window)...",
+    "Pakken står i kø hos ruteren...",
+    "Kjører Dijkstras algoritme...",
+    "Fragmenterer IP-datagrammet...",
+    "ARP-oppslag for MAC-adresse...",
+    "Leter i boka til Kurose & Ross...",
+    "Konsulterer RFC 2616...",
+    "Anvender CSMA/CD på lenkelaget...",
+    "Sjekker congestion window...",
+    "Go-Back-N: venter på ACK...",
+    "Slår opp i forwarding-tabellen...",
+    "HTTP 200 OK — svaret er nesten klart!",
+  ];
+
+  function addLoadingIndicator() {
+    const ESTIMATE_MS = 10000;
     const div = document.createElement("div");
     div.className = "ktn-msg ktn-msg-assistant";
-    div.innerHTML =
-      '<span class="ktn-typing-dot">&#9679;</span>' +
-      '<span class="ktn-typing-dot">&#9679;</span>' +
-      '<span class="ktn-typing-dot">&#9679;</span>';
+
+    const textEl = document.createElement("span");
+    textEl.className = "ktn-loading-text";
+    const firstIdx = Math.floor(Math.random() * (loadingMessages.length - 1));
+    textEl.textContent = loadingMessages[firstIdx];
+
+    const barTrack = document.createElement("div");
+    barTrack.className = "ktn-loading-bar-track";
+    const barFill = document.createElement("div");
+    barFill.className = "ktn-loading-bar-fill";
+    barTrack.appendChild(barFill);
+
+    const timerEl = document.createElement("div");
+    timerEl.className = "ktn-loading-timer";
+    timerEl.textContent = "~0s";
+
+    div.appendChild(textEl);
+    div.appendChild(barTrack);
+    div.appendChild(timerEl);
     messagesEl.appendChild(div);
     messagesEl.scrollTop = messagesEl.scrollHeight;
-    return div;
+
+    let msgIdx = firstIdx;
+    const startTime = Date.now();
+
+    const msgInterval = setInterval(() => {
+      msgIdx = (msgIdx + 1) % loadingMessages.length;
+      textEl.style.animation = "none";
+      textEl.offsetHeight; // reflow
+      textEl.style.animation = "";
+      textEl.textContent = loadingMessages[msgIdx];
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }, 2500);
+
+    const timerInterval = setInterval(() => {
+      const elapsed = Math.round((Date.now() - startTime) / 1000);
+      timerEl.textContent = "~" + elapsed + "s";
+      const pct = Math.min(90, (elapsed / (ESTIMATE_MS / 1000)) * 90);
+      barFill.style.width = pct + "%";
+    }, 500);
+
+    requestAnimationFrame(() => {
+      barFill.style.width = "5%";
+    });
+
+    return {
+      el: div,
+      remove() {
+        clearInterval(msgInterval);
+        clearInterval(timerInterval);
+        if (div.parentNode) div.parentNode.removeChild(div);
+      },
+    };
   }
 
   async function sendMessage(question) {
@@ -322,7 +405,7 @@
 
     addMessage("user", question);
 
-    const indicator = addTypingIndicator();
+    const loader = addLoadingIndicator();
 
     try {
       const resp = await fetch(API_URL, {
@@ -335,50 +418,21 @@
         }),
       });
 
-      messagesEl.removeChild(indicator);
+      const data = await resp.json().catch(() => null);
+
+      loader.remove();
 
       if (!resp.ok) {
-        const errData = await resp.json().catch(() => null);
-        throw new Error(errData?.error || `Server error (${resp.status})`);
+        throw new Error(data?.error || `Server error (${resp.status})`);
       }
 
-      const assistantDiv = addMessage("assistant", "");
-      const reader = resp.body.getReader();
-      const decoder = new TextDecoder();
-      let fullText = "";
-      let sseBuffer = "";
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        sseBuffer += decoder.decode(value, { stream: true });
-        const lines = sseBuffer.split("\n");
-        sseBuffer = lines.pop();
-
-        for (const line of lines) {
-          if (!line.startsWith("data: ")) continue;
-          const payload = line.slice(6).trim();
-          if (payload === "[DONE]") continue;
-
-          try {
-            const parsed = JSON.parse(payload);
-            const delta = parsed.choices?.[0]?.delta?.content;
-            if (delta) {
-              fullText += delta;
-              assistantDiv.innerHTML = renderMarkdown(fullText);
-              messagesEl.scrollTop = messagesEl.scrollHeight;
-            }
-          } catch {
-            // incomplete JSON, will be completed in next chunk
-          }
-        }
-      }
+      const content = data?.content || "";
+      addMessage("assistant", content);
 
       history.push({ role: "user", content: question });
-      history.push({ role: "assistant", content: fullText });
+      history.push({ role: "assistant", content });
     } catch (err) {
-      if (indicator.parentNode) messagesEl.removeChild(indicator);
+      loader.remove();
       addError("Noe gikk galt: " + err.message);
     } finally {
       busy = false;

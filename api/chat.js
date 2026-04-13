@@ -127,7 +127,7 @@ ${page_context?.visible_text || "(ingen)"}`;
         body: JSON.stringify({
           model: "nvidia/nemotron-3-super-120b-a12b:free",
           messages,
-          stream: true,
+          stream: false,
         }),
       }
     );
@@ -137,13 +137,9 @@ ${page_context?.visible_text || "(ingen)"}`;
       return jsonResponse({ error: `LLM request failed (${llmResp.status}): ${err}` }, 502);
     }
 
-    return new Response(llmResp.body, {
-      headers: {
-        "Content-Type": "text/event-stream",
-        "Cache-Control": "no-cache, no-transform",
-        "X-Content-Type-Options": "nosniff",
-      },
-    });
+    const data = await llmResp.json();
+    const content = data.choices?.[0]?.message?.content || "";
+    return jsonResponse({ content });
   } catch (err) {
     console.error("Chat API error:", err);
     return jsonResponse({ error: err.message }, 500);
