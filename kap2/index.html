@@ -21,6 +21,85 @@
   <p class="lede">Hvordan programmer på to vidt forskjellige maskiner — en mobil i Trondheim og en tjener i California — klarer å snakke sammen, sende websider, dele filer og strømme video. En reise gjennom prinsipper, protokoller og smarte triks.</p>
 </div>
 </header>
+
+<section>
+<div class="container">
+  <div class="section-badge">Overblikk</div>
+  <h2>Det store <em>bildet</em></h2>
+  <p class="section-intro">Applikasjonslaget er der all den nyttige kommunikasjonen faktisk skjer — resten av nettverksstakken eksisterer bare for å støtte det.</p>
+
+  <p class="lead">Tenk deg at du og en venn i et annet land snakker i telefon. Dere trenger ikke å vite noe om hvordan telefonnettverket fungerer — kobberkabler, sentraler, optiske fibrer — dere trenger bare å snakke <em>samme språk</em>. Applikasjonslaget er nettopp det: språkene datamaskiner snakker med hverandre. HTTP er språket for websider, SMTP er språket for e-post, og DNS er telefonkatalogen som lar deg slå opp hvem du vil snakke med. Under alt dette ligger transport-, nettverks- og linklaget — infrastrukturen — men applikasjonene dine trenger aldri å bry seg om detaljene der nede.</p>
+
+  <figure class="fig-frame">
+    <svg viewBox="0 0 720 370" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="ovarr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#b04428"/>
+        </marker>
+      </defs>
+
+      <!-- Client -->
+      <rect x="40" y="30" width="200" height="190" rx="6" fill="#fdfaf2" stroke="#c9c0ae"/>
+      <text x="140" y="54" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600" fill="#1a1612">KLIENT</text>
+      <rect x="55" y="66" width="170" height="50" rx="4" fill="#b04428" opacity="0.12" stroke="#b04428" stroke-width="1.5"/>
+      <text x="140" y="86" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="600" fill="#b04428">Applikasjonslaget</text>
+      <text x="140" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">nettleser · e-postklient</text>
+      <rect x="55" y="122" width="170" height="28" rx="3" fill="#e8e3d6" stroke="#c9c0ae"/>
+      <text x="140" y="141" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">transport (TCP/UDP)</text>
+      <rect x="55" y="155" width="170" height="28" rx="3" fill="#e8e3d6" stroke="#c9c0ae"/>
+      <text x="140" y="174" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#a39886">network · link · physical</text>
+      <rect x="55" y="188" width="170" height="22" rx="3" fill="#e8e3d6" stroke="#c9c0ae"/>
+      <text x="140" y="203" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#a39886">styres av OS</text>
+
+      <!-- Server -->
+      <rect x="480" y="30" width="200" height="190" rx="6" fill="#fdfaf2" stroke="#c9c0ae"/>
+      <text x="580" y="54" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600" fill="#1a1612">TJENER</text>
+      <rect x="495" y="66" width="170" height="50" rx="4" fill="#b04428" opacity="0.12" stroke="#b04428" stroke-width="1.5"/>
+      <text x="580" y="86" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="600" fill="#b04428">Applikasjonslaget</text>
+      <text x="580" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">webserver · mailserver</text>
+      <rect x="495" y="122" width="170" height="28" rx="3" fill="#e8e3d6" stroke="#c9c0ae"/>
+      <text x="580" y="141" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">transport (TCP/UDP)</text>
+      <rect x="495" y="155" width="170" height="28" rx="3" fill="#e8e3d6" stroke="#c9c0ae"/>
+      <text x="580" y="174" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#a39886">network · link · physical</text>
+      <rect x="495" y="188" width="170" height="22" rx="3" fill="#e8e3d6" stroke="#c9c0ae"/>
+      <text x="580" y="203" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#a39886">styres av OS</text>
+
+      <!-- Network cloud -->
+      <ellipse cx="360" cy="185" rx="75" ry="35" fill="none" stroke="#a39886" stroke-dasharray="4,3" stroke-width="1.2"/>
+      <text x="360" y="190" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">nettskyen</text>
+
+      <!-- Conversation arrows -->
+      <path d="M 225 72 Q 360 32 495 72" fill="none" stroke="#b04428" stroke-width="1.8" marker-end="url(#ovarr)"/>
+      <text x="360" y="42" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#b04428">HTTP</text>
+
+      <path d="M 225 82 Q 360 120 495 82" fill="none" stroke="#2d4a7a" stroke-width="1.5" marker-end="url(#ovarr)"/>
+      <text x="360" y="116" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#2d4a7a">SMTP</text>
+
+      <!-- DNS off to the side -->
+      <rect x="295" y="260" width="130" height="44" rx="4" fill="#fdfaf2" stroke="#3d6b3a" stroke-width="1.5"/>
+      <text x="360" y="280" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="600" fill="#3d6b3a">DNS-server</text>
+      <text x="360" y="296" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">«telefonkatalogen»</text>
+
+      <line x1="140" y1="220" x2="320" y2="260" stroke="#3d6b3a" stroke-width="1.3" stroke-dasharray="4,3"/>
+      <line x1="580" y1="220" x2="400" y2="260" stroke="#3d6b3a" stroke-width="1.3" stroke-dasharray="4,3"/>
+
+      <!-- Labels -->
+      <text x="360" y="345" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">Applikasjonslaget bryr seg ikke om hva som skjer inne i nettskyen — bare at meldinger kommer frem.</text>
+    </svg>
+    <figcaption>Applikasjonslagsprotokoller (HTTP, SMTP, DNS) kjører på endesystemene. Nettverksinfrastrukturen under er usynlig for applikasjonene.</figcaption>
+  </figure>
+
+  <p>Det er lett å tenke at Internett er én ting, men i virkeligheten er det en hel familie av protokoller som samarbeider. Når du skriver <code>ntnu.no</code> i nettleseren din, skjer det minst <em>tre</em> applikasjonslagsprotokoller: <strong>DNS</strong> finner IP-adressen til tjeneren, <strong>TCP</strong> oppretter en pålitelig forbindelse, og <strong>HTTP</strong> henter nettsiden. Alt dette skjer på under et sekund.</p>
+
+  <div class="callout callout-green">
+    <h4>Kapittelets kjerneidé</h4>
+    <p>Applikasjonsutviklere skriver bare kode for endesystemene — klienten og tjeneren. Ruterne i kjernen av nettverket kjører ingen brukerapplikasjoner; de bare videresender pakker. Det er derfor en student kan oppfinne en helt ny nettjeneste i kveld og rulle den ut over hele kloden i morgen, uten å endre noe som helst i nettverksinfrastrukturen.</p>
+  </div>
+
+  <p>I dette kapittelet ser vi på de viktigste mønstrene: <strong>klient–server</strong> vs. <strong>peer-to-peer</strong> (to helt forskjellige måter å organisere kommunikasjon på), protokollene <strong>HTTP</strong>, <strong>SMTP</strong> og <strong>DNS</strong> (som dekker web, e-post og navneoppslag), og til slutt <strong>socket-programmering</strong> — der du selv får skrive kode som snakker over nettverket.</p>
+</div>
+</section>
+
 <section>
 <div class="container">
   <div class="subpage-list">
@@ -51,6 +130,74 @@
   </div>
 </div>
 </section>
+
+<section>
+<div class="container">
+  <h2>Test deg selv</h2>
+  <p class="section-intro">Sjekk om du har forstått de viktigste konseptene fra dette kapittelet.</p>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 1</div>
+    <div class="q-text">Hva er den viktigste forskjellen mellom klient–server-arkitektur og peer-to-peer (P2P)?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Klient–server bruker TCP, mens P2P bruker UDP.</button>
+      <button class="option" data-correct="false">P2P er alltid raskere enn klient–server.</button>
+      <button class="option" data-correct="true">I klient–server er det én alltid-tilgjengelig tjener; i P2P kommuniserer vilkårlige endesystemer direkte og bidrar med egen kapasitet.</button>
+      <button class="option" data-correct="false">Klient–server krever at alle maskiner har fast IP-adresse.</button>
+    </div>
+    <div class="explanation">Kjerneforskjellen er arkitekturen: klient–server har én sentral tjener som betjener mange klienter, mens P2P lar peers snakke direkte med hverandre. P2P sin styrke er selv-skalering — hver ny peer bringer både etterspørsel og kapasitet.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 2</div>
+    <div class="q-text">Når du skriver <code>www.ntnu.no</code> i nettleseren, hva er DNS sin rolle?</div>
+    <div class="options">
+      <button class="option" data-correct="false">DNS krypterer forbindelsen mellom nettleseren og tjeneren.</button>
+      <button class="option" data-correct="true">DNS oversetter domenenavnet til en IP-adresse slik at nettleseren vet hvilken maskin den skal kontakte.</button>
+      <button class="option" data-correct="false">DNS sjekker om nettsiden er tilgjengelig og dirigerer trafikken rundt eventuelle feil.</button>
+      <button class="option" data-correct="false">DNS komprimerer websiden slik at den lastes raskere.</button>
+    </div>
+    <div class="explanation">DNS er Internetts «telefonkatalog» — den oversetter menneskelesbare domenenavn (som www.ntnu.no) til IP-adresser (som 129.241.56.116) som nettverket kan rute pakker til. Uten DNS måtte du husket tallene selv.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 3</div>
+    <div class="q-text">HTTP er en tilstandsløs protokoll. Hva betyr det i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">At webserveren ikke kan sende HTML-sider med dynamisk innhold.</button>
+      <button class="option" data-correct="false">At nettleseren ikke kan bruke persistente forbindelser.</button>
+      <button class="option" data-correct="false">At HTTP ikke kan brukes sammen med kryptering (TLS).</button>
+      <button class="option" data-correct="true">At tjeneren ikke husker noe om tidligere forespørsler fra samme klient — hver forespørsel er uavhengig.</button>
+    </div>
+    <div class="explanation">Tilstandsløshet betyr at tjeneren behandler hver forespørsel som en blank tavle. Den vet ikke om du nettopp besøkte en annen side på samme nettsted. For å gi en illusjon av tilstand (innlogging, handlekurv) brukes mekanismer som cookies, som legger identifikatoren på klientsiden.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 4</div>
+    <div class="q-text">Hvorfor bruker SMTP og HTTP forskjellige kommunikasjonsmodeller, selv om begge er TCP-baserte tekstprotokoller?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Fordi SMTP ble utviklet av en annen organisasjon enn HTTP.</button>
+      <button class="option" data-correct="false">Fordi e-post krever kryptering mens websider ikke gjør det.</button>
+      <button class="option" data-correct="true">Fordi HTTP er en pull-protokoll (klienten ber om data), mens SMTP er en push-protokoll (avsenderen dytter data frem) — to fundamentalt forskjellige bruksmønstre.</button>
+      <button class="option" data-correct="false">Fordi SMTP bruker binært format mens HTTP bruker ASCII.</button>
+    </div>
+    <div class="explanation">HTTP og SMTP løser forskjellige problemer. Når du henter en nettside, er du der akkurat nå og venter på svaret (pull). Når du sender e-post, skal mottakeren kanskje lese den om to dager — meldingen må kunne lagres, køes og leveres asynkront (push). Designforskjellene følger direkte av bruksmønsteret.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 5</div>
+    <div class="q-text">I socket-programmering med TCP har serveren to typer sokler. Hva er grunnen til dette?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Én sokkel for kryptert trafikk og én for ukryptert trafikk.</button>
+      <button class="option" data-correct="true">Én «velkomstsokkel» som venter på nye forbindelser, og én «forbindelsessokkel» per aktiv klient — fordi TCP er forbindelsesorientert.</button>
+      <button class="option" data-correct="false">Én for innkommende data og én for utgående data.</button>
+      <button class="option" data-correct="false">Fordi Python-biblioteket krever to sokler av tekniske grunner.</button>
+    </div>
+    <div class="explanation">TCP er forbindelsesorientert: hver klient har sin egen dedikerte «kanal». Velkomstsokkelen lytter etter nye klienter, og når en kobler til, oppretter OS en ny forbindelsessokkel for akkurat den klienten. Slik kan serveren snakke med mange klienter samtidig. UDP trenger bare én sokkel fordi hvert datagram er en selvstendig hendelse.</div>
+  </div>
+</div>
+</section>
+
 </main>
 <footer>
   <div class="container">
@@ -59,6 +206,7 @@
   </div>
 </footer>
 <script src="../chat-widget.js"></script>
+<script src="../quiz.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

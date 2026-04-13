@@ -21,6 +21,103 @@
   <p class="lede">Hvordan en pakke faktisk finner veien fra maskinen din til en server p&aring; andre siden av jorden &mdash; og alt som skjer inni routerne underveis.</p>
 </div>
 </header>
+
+<!-- ============ BIG PICTURE ============ -->
+<section>
+<div class="container">
+  <div class="section-badge">Overblikk</div>
+  <h2>Det store <em>bildet</em></h2>
+  <p class="section-intro">Nettverkslagets dataplan handler om &eacute;n ting: n&aring;r en pakke lander p&aring; en router, hvordan finner den riktig utgang &mdash; p&aring; nanosekunder?</p>
+
+  <p class="dropcap">Tenk p&aring; Internett som et enormt motorveisystem. Hver router er et veikryss, og forwarding-tabellen er veiskiltene. N&aring;r en pakke ankommer en router, leser den destinasjons-IP-en (som &aring; lese et veiskilt), sl&aring;r opp i forwarding-tabellen (som &aring; se p&aring; retningsskiltene), og sender pakken ut riktig port (tar riktig avkj&oslash;ring). IP-adresser fungerer som postnumre &mdash; CIDR-prefikset forteller deg regionen, og vertsdelen er det spesifikke huset.</p>
+
+  <figure>
+    <div class="svg-wrap">
+      <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="ov-arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L9,3 z" fill="var(--rust)"/>
+          </marker>
+          <marker id="ov-arr-g" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L9,3 z" fill="var(--green)"/>
+          </marker>
+        </defs>
+
+        <!-- Input ports -->
+        <rect x="30" y="70" width="100" height="30" fill="var(--paper-dark)" stroke="var(--blue)" stroke-width="1.5" rx="3"/>
+        <text x="80" y="89" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--blue)">Innport 0</text>
+        <rect x="30" y="115" width="100" height="30" fill="var(--paper-dark)" stroke="var(--blue)" stroke-width="1.5" rx="3"/>
+        <text x="80" y="134" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--blue)">Innport 1</text>
+        <rect x="30" y="160" width="100" height="30" fill="var(--paper-dark)" stroke="var(--blue)" stroke-width="1.5" rx="3"/>
+        <text x="80" y="179" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--blue)">Innport 2</text>
+
+        <!-- Switching fabric -->
+        <rect x="230" y="55" width="220" height="160" fill="var(--paper-dark)" stroke="var(--rust)" stroke-width="2" rx="6"/>
+        <text x="340" y="82" text-anchor="middle" font-family="IBM Plex Sans" font-size="14" font-weight="600" fill="var(--rust)">Switching Fabric</text>
+
+        <!-- Forwarding table inside fabric -->
+        <rect x="258" y="96" width="164" height="100" fill="var(--paper)" stroke="var(--line)" stroke-width="1" rx="3"/>
+        <text x="340" y="114" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-faded)">FORWARDING-TABELL</text>
+        <line x1="264" y1="120" x2="416" y2="120" stroke="var(--line)" stroke-width="0.5"/>
+        <text x="268" y="136" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-soft)">200.23.16.0/21</text>
+        <text x="395" y="136" font-family="IBM Plex Mono" font-size="9" fill="var(--green)">&rarr; 0</text>
+        <text x="268" y="152" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-soft)">200.23.18.0/23</text>
+        <text x="395" y="152" font-family="IBM Plex Mono" font-size="9" fill="var(--rust)">&rarr; 1</text>
+        <text x="268" y="168" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-soft)">0.0.0.0/0</text>
+        <text x="395" y="168" font-family="IBM Plex Mono" font-size="9" fill="var(--blue)">&rarr; 2</text>
+        <text x="268" y="184" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-faded)">(default)</text>
+
+        <!-- Output ports -->
+        <rect x="550" y="70" width="110" height="30" fill="var(--paper-dark)" stroke="var(--green)" stroke-width="1.5" rx="3"/>
+        <text x="605" y="89" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--green)">Utport 0</text>
+        <rect x="550" y="115" width="110" height="30" fill="var(--paper-dark)" stroke="var(--green)" stroke-width="1.5" rx="3"/>
+        <text x="605" y="134" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--green)">Utport 1</text>
+        <rect x="550" y="160" width="110" height="30" fill="var(--paper-dark)" stroke="var(--green)" stroke-width="1.5" rx="3"/>
+        <text x="605" y="179" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--green)">Utport 2</text>
+
+        <!-- Connections: input to fabric -->
+        <line x1="130" y1="85" x2="230" y2="100" stroke="var(--ink-soft)" stroke-width="1.2"/>
+        <line x1="130" y1="130" x2="230" y2="135" stroke="var(--ink-soft)" stroke-width="1.2"/>
+        <line x1="130" y1="175" x2="230" y2="170" stroke="var(--ink-soft)" stroke-width="1.2"/>
+
+        <!-- Connections: fabric to output -->
+        <line x1="450" y1="100" x2="550" y2="85" stroke="var(--ink-soft)" stroke-width="1.2"/>
+        <line x1="450" y1="135" x2="550" y2="130" stroke="var(--ink-soft)" stroke-width="1.2"/>
+        <line x1="450" y1="170" x2="550" y2="175" stroke="var(--ink-soft)" stroke-width="1.2"/>
+
+        <!-- Animated packet path -->
+        <rect x="5" y="120" width="22" height="16" fill="var(--rust)" opacity="0.8" rx="2"/>
+        <text x="16" y="131" text-anchor="middle" font-family="IBM Plex Mono" font-size="7" fill="#fff">PKT</text>
+        <line x1="27" y1="128" x2="30" y2="130" stroke="var(--rust)" stroke-width="1.5" marker-end="url(#ov-arr)"/>
+
+        <!-- Steps annotation -->
+        <text x="80" y="50" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--blue)" letter-spacing="1">&#10102; MOTTA</text>
+        <text x="340" y="42" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--rust)" letter-spacing="1">&#10103; SL&Aring; OPP</text>
+        <text x="605" y="50" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--green)" letter-spacing="1">&#10104; SEND VIDERE</text>
+
+        <!-- Packet exiting on port 1 -->
+        <rect x="663" y="120" width="22" height="16" fill="var(--green)" opacity="0.8" rx="2"/>
+        <text x="674" y="131" text-anchor="middle" font-family="IBM Plex Mono" font-size="7" fill="#fff">PKT</text>
+        <line x1="660" y1="130" x2="663" y2="128" stroke="var(--green)" stroke-width="1.5"/>
+
+        <!-- Bottom labels -->
+        <text x="340" y="248" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="var(--ink-soft)">Pakken ankommer &rarr; destinasjons-IP matches mot tabellen &rarr; sendes ut riktig port</text>
+        <text x="340" y="270" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--ink-faded)">Hele prosessen: nanosekunder</text>
+      </svg>
+    </div>
+    <figcaption>En forenklet router: innporter mottar pakker, switching fabric matcher destinasjons-IP mot forwarding-tabellen og sender pakken ut riktig utport.</figcaption>
+  </figure>
+
+  <div class="callout callout-blue">
+    <span class="label">&#9733; Et ekte eksempel</span>
+    <p>N&aring;r pakken din reiser fra Trondheim til en Netflix-server i Amsterdam, passerer den kanskje 12 rutere. P&aring; <em>hver</em> ruter skjer det samme: les destinasjons-IP, sl&aring; opp i tabellen, send pakken videre. Hele prosessen tar nanosekunder. Det som gj&oslash;r dette mulig er at nettverkslagets dataplan er ekstremt enkelt &mdash; match en adresse, velg en port, ferdig. All kompleksiteten (rutingalgoritmer, BGP, OSPF) lever i kontrollplanet, som kj&oslash;rer i bakgrunnen.</p>
+  </div>
+
+  <p>I dette kapittelet ser vi p&aring; <strong>hva som skjer inni routeren</strong>: arkitekturen med innporter, switching fabric og utporter; <strong>longest prefix match</strong> for &aring; velge riktig rute; k&oslash;er og scheduling n&aring;r det er kork; og s&aring; <strong>IP-protokollen</strong> selv &mdash; datagramformatet, CIDR-adressering, DHCP, NAT og IPv6.</p>
+</div>
+</section>
+
+<!-- ============ SUBPAGES ============ -->
 <section>
 <div class="container">
   <div class="subpage-list">
@@ -37,6 +134,61 @@
   </div>
 </div>
 </section>
+
+<!-- ============ QUIZ ============ -->
+<section>
+<div class="container">
+  <div class="section-badge">Test deg selv</div>
+  <h2>Hurtigquiz &mdash; kapittel <em>4</em></h2>
+  <p class="section-intro">Sjekk om du har f&aring;tt med deg det viktigste fra nettverkslagets dataplan.</p>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Sp&oslash;rsm&aring;l 1</div>
+    <p class="q-text">En router har f&oslash;lgende forwarding-tabell. Hvilken utport velges for en pakke med destinasjon <code>10.1.5.200</code>?</p>
+    <table style="margin-bottom:16px;">
+      <thead><tr><th>Prefiks</th><th>Utport</th></tr></thead>
+      <tbody>
+        <tr><td class="mono-cell">10.0.0.0/8</td><td>0</td></tr>
+        <tr><td class="mono-cell">10.1.0.0/16</td><td>1</td></tr>
+        <tr><td class="mono-cell">10.1.4.0/22</td><td>2</td></tr>
+        <tr><td class="mono-cell">0.0.0.0/0</td><td>3</td></tr>
+      </tbody>
+    </table>
+    <div class="options">
+      <button class="option" data-correct="false">Port 0 &mdash; /8 matcher og er den f&oslash;rste i tabellen.</button>
+      <button class="option" data-correct="false">Port 1 &mdash; /16 matcher og er mest spesifikk.</button>
+      <button class="option" data-correct="true">Port 2 &mdash; /22 er det lengste prefikset som matcher.</button>
+      <button class="option" data-correct="false">Port 3 &mdash; default-ruten brukes n&aring;r det er tvetydig.</button>
+    </div>
+    <div class="explanation"><strong>Riktig!</strong> Alle tre prefiksene (/8, /16, /22) matcher <code>10.1.5.200</code>, men <strong>longest prefix match</strong> velger /22 fordi det er det mest spesifikke. Adressen <code>10.1.5.200</code> = <code>10.1.0000&nbsp;01.11001000</code>, og de f&oslash;rste 22 bitene matcher prefikset <code>10.1.4.0/22</code> (10.1.0000&nbsp;01xx&nbsp;xxxx.xxxx&nbsp;xxxx). Default-ruten brukes bare n&aring;r ingen andre prefikser matcher.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Sp&oslash;rsm&aring;l 2</div>
+    <p class="q-text">Et hjemmenett med 5 enheter bruker NAT. Alle enhetene surfer p&aring; nettet samtidig. Hva ser en ekstern webserver som kilde-IP p&aring; alle foresp&oslash;rslene?</p>
+    <div class="options">
+      <button class="option" data-correct="false">Fem forskjellige offentlige IP-adresser &mdash; &eacute;n per enhet.</button>
+      <button class="option" data-correct="true">Samme offentlige IP-adresse, men med forskjellige kilde-portnumre.</button>
+      <button class="option" data-correct="false">De private adressene (f.eks. 192.168.1.x) &mdash; NAT er transparent.</button>
+      <button class="option" data-correct="false">Routerens MAC-adresse i stedet for IP-adresse.</button>
+    </div>
+    <div class="explanation"><strong>Riktig!</strong> NAT-routeren omskriver kilde-IP-en p&aring; alle utg&aring;ende pakker til sin ene offentlige adresse. For &aring; skille mellom de interne enhetene bruker den forskjellige <strong>kilde-portnumre</strong>, som den lagrer i NAT-tabellen. N&aring;r svaret kommer tilbake, sl&aring;r routeren opp portnummeret i tabellen og videresender til riktig intern enhet.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Sp&oslash;rsm&aring;l 3</div>
+    <p class="q-text">Hva er den viktigste forbedringen i IPv6 sammenlignet med IPv4 n&aring;r det gjelder forwarding-ytelse i routere?</p>
+    <div class="options">
+      <button class="option" data-correct="false">IPv6 har st&oslash;rre adresser, s&aring; routere kan adressere flere enheter.</button>
+      <button class="option" data-correct="true">IPv6 har en fast 40-byte header uten checksum &mdash; routere slipper &aring; reberegne checksum per hopp.</button>
+      <button class="option" data-correct="false">IPv6 bruker flow labels til &aring; eliminere behovet for forwarding-tabeller.</button>
+      <button class="option" data-correct="false">IPv6 krypterer alle pakker automatisk, s&aring; routere trenger ikke inspisere innholdet.</button>
+    </div>
+    <div class="explanation"><strong>Riktig!</strong> I IPv4 m&aring; header-checksum reberegnes i <em>hver eneste router</em> fordi TTL-feltet endres per hopp. IPv6 fjernet checksummen helt (transportlaget har sin egen), og headeren er fast p&aring; 40 bytes uten options. Resultatet er raskere forwarding i data plane.</div>
+  </div>
+</div>
+</section>
+
 </main>
 <footer>
   <div class="container">
@@ -44,6 +196,7 @@
     <p>NTNU &middot; TTM4100 &middot; V&aring;r 2026</p>
   </div>
 </footer>
+<script src="../quiz.js"></script>
 <script src="../chat-widget.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>

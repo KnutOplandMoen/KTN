@@ -7,607 +7,220 @@
 <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-
 <nav class="site-nav">
   <div class="container">
     <a href="../" class="brand">TTM4100</a>
     <a href="../" class="nav-back">&larr; Alle kapitler</a>
   </div>
 </nav>
-
 <main data-chapter="Kapittel 5: Nettverkslaget – Kontrollplanet">
 <header class="hero">
-  <div class="container">
-    <div class="eyebrow">Kapittel 5 · Computer Networking</div>
-    <h1>Nettverkslaget:<br><em>Kontrollplanet</em></h1>
-    <p class="section-intro">Hvordan rutere i et digert nettverk blir enige om hvor pakkene dine skal — og hvordan de roper om hjelp når noe går galt.</p>
-
-    <div class="learn-box">
-      <div class="label">I dette kapittelet lærer du</div>
-      <ul>
-        <li>Hva kontrollplanet faktisk er</li>
-        <li>Forskjellen på forwarding og routing</li>
-        <li>Per-router vs. sentralisert kontroll</li>
-        <li>Grunnleggende rutingprinsipper og klassifisering</li>
-        <li>Hvordan ICMP fungerer under panseret</li>
-        <li>Hvorfor <code>traceroute</code> er genialt</li>
-      </ul>
-    </div>
-
-    <div class="margin-note"><strong>Pensum fra kapittel 5:</strong> 5.1 Introduction, 5.2 Routing Algorithms (kun intro — ikke 5.2.1 Link-State eller 5.2.2 Distance-Vector), og 5.6 ICMP. Resten av stoffet på denne siden er utdypning og bakgrunn.</div>
-  </div>
+<div class="container">
+  <div class="eyebrow">Kapittel 5 · Nettverkslaget</div>
+  <h1>Nettverkslaget:<br><em>Kontrollplanet</em></h1>
+  <p class="lede">I kapittel 4 så vi hvordan en enkelt ruter flytter pakker fra inngang til utgang — dataplanet. Men hvem bestemmer <em>hvilken</em> utgang som er riktig? Det er kontrollplanets jobb: å sørge for at tusenvis av rutere er enige om veien, slik at pakken din faktisk kommer frem.</p>
+</div>
 </header>
 
-<!-- ============ SECTION 1: Introduction ============ -->
+<!-- ============ BIG PICTURE ============ -->
 <section>
-  <div class="container">
-    <div class="section-badge">01 · Utgangspunktet</div>
-    <h2>Problemet kontrollplanet løser</h2>
-    <p class="section-intro">Før vi snakker om algoritmer og protokoller: hvorfor trenger vi i det hele tatt et "kontrollplan"?</p>
+<div class="container">
+  <div class="section-badge">Helhetsbilde</div>
+  <h2>GPS-en inne i nettverket</h2>
+  <p class="section-intro">Kontrollplanet er den usynlige hjernen som beregner ruten — før dataplanet løfter en eneste pakke.</p>
 
-    <p class="lead">Tenk deg at du sender en e-post fra laptoppen din i Trondheim til en venn i Tokyo. Pakken din må gjennom titalls rutere — kanskje hundre — før den kommer frem. På hver eneste ruter underveis må noen ta en beslutning: <em>hvilken utgang skal denne pakken ut av?</em> Det er ikke én enkelt avgjørelse. Det er tusenvis av mikro-beslutninger som må være konsistente med hverandre, ellers havner pakken i en løkke eller i en blindvei.</p>
+  <p>Tenk på det slik: du sitter i en bil og skal fra Trondheim til Bergen. <strong>Dataplanet</strong> er selve bilen — rattet, pedalene, motoren som fysisk flytter deg langs veien. Men bilen alene er ubrukelig uten en plan for <em>hvilken</em> vei du skal ta. <strong>Kontrollplanet</strong> er GPS-en. Den samler inn kart over alle veiene, beregner den beste ruten, og forteller bilen ved hvert kryss: «sving til venstre her». Uten GPS-en ville bilen bare stått på tomgang i hvert eneste kryss, uten å vite hvilken retning den skulle.</p>
 
-    <p>Kurose og Ross deler derfor nettverkslaget i to deler, og skillet er helt essensielt for å forstå resten av kapittelet:</p>
+  <p>I et ekte nettverk er dette enda mer imponerende. Det finnes ikke bare én GPS som sitter på toppen og styrer alt. I det tradisjonelle internett kjører <em>hver eneste ruter sin egen GPS-beregning</em>. De snakker med naboruterne sine, utveksler informasjon om hvilke destinasjoner de kan nå og hva det koster, og gradvis — gjennom rutingalgoritmer — blir alle enige om en konsistent forwarding-tabell. Alternativet er SDN (Software Defined Networking), der én sentral kontroller fungerer som en super-GPS som beregner ruten for alle og dytter tabellene ned til ruterne.</p>
 
-    <div class="info-box">
-      <h4>De to planene</h4>
-      <p><strong>Dataplanet (data plane)</strong> gjør selve jobben: det flytter en pakke fra innganger på en ruter til riktig utgang. Dette skjer i <em>nanosekunder</em> — milliarder av ganger i sekundet på en stor ruter. Operasjonen er enkel fordi tabellen allerede ligger klar.</p>
-      <p><strong>Kontrollplanet (control plane)</strong> bygger den tabellen. Det bestemmer <em>hvilken</em> utgang som er riktig for hver mulige destinasjon. Dette skjer på en mye langsommere tidsskala — sekunder til minutter — og involverer at rutere snakker med hverandre for å bli enige om nettverkets form.</p>
-    </div>
-
-    <p>Analogien som hjelper: dataplanet er som en postsorterer som leser adressen på konvolutten og legger den i riktig binge. Kontrollplanet er rutelaget som <em>bestemte hvilken binge</em> som skal gå hvor — det er bakromjobben som ingen kunde ser, men uten den kaster postsortereren bare ting tilfeldig.</p>
-
-    <div class="margin-note"><strong>Merk terminologien.</strong> "Forwarding" er dataplanjobben (flytt pakken). "Routing" er kontrollplanjobben (finn ruten). På norsk sier vi ofte bare "ruting" for begge — men i dette kapittelet er skillet viktig.</div>
-
-    <h3>To måter å organisere kontrollplanet</h3>
-
-    <p>Det finnes grovt sett to filosofier for hvordan kontrollplanet skal bygges:</p>
-
-    <p><strong>1. Per-ruter kontroll (tradisjonell).</strong> Hver ruter kjører sin egen lille routing-algoritme, snakker med sine naboer, og bygger sin egen lokale forwarding-tabell. Ingen sjef. Alle er likeverdige. Dette er slik internett er bygget i dag, og det er det vi fokuserer på i dette kapittelet.</p>
-
-    <p><strong>2. Logisk sentralisert kontroll (Software Defined Networking, SDN).</strong> En sentral kontroller et sted i nettverket beregner alle forwarding-tabeller og dytter dem ut til alle ruterne. Ruterne blir "dumme" — de bare gjør det kontrolleren sier. Dette er moderne, og brukes i store datasentere, men er utenfor rammen for dette kapittelet.</p>
-
-    <!-- Figure: two planes -->
-    <figure>
-      <svg viewBox="0 0 640 340" xmlns="http://www.w3.org/2000/svg">
-        <!-- Router body -->
-        <rect x="120" y="40" width="400" height="260" fill="#e8e3d6" stroke="#1a1612" stroke-width="2" rx="4"/>
-
-        <!-- Control plane -->
-        <rect x="140" y="60" width="360" height="90" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5" rx="3"/>
-        <text x="320" y="85" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#2d4a7a" font-weight="600" letter-spacing="2">CONTROL PLANE</text>
-        <text x="320" y="108" text-anchor="middle" font-family="Newsreader" font-size="15" font-style="italic" fill="#3d3832">Routing-algoritme</text>
-        <text x="320" y="128" text-anchor="middle" font-family="Newsreader" font-size="13" fill="#6b6257">"Hvor skal pakker til X sendes?"</text>
-
-        <!-- Dashed separator -->
-        <line x1="140" y1="165" x2="500" y2="165" stroke="#6b6257" stroke-width="1.5" stroke-dasharray="6,4"/>
-
-        <!-- Data plane -->
-        <rect x="140" y="180" width="360" height="100" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5" rx="3"/>
-        <text x="320" y="205" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#b04428" font-weight="600" letter-spacing="2">DATA PLANE</text>
-        <text x="320" y="228" text-anchor="middle" font-family="Newsreader" font-size="15" font-style="italic" fill="#3d3832">Forwarding-tabell</text>
-        <text x="320" y="248" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">dst 10.0.1.0 → port 2</text>
-        <text x="320" y="264" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">dst 10.0.2.0 → port 3</text>
-
-        <!-- Arrow from control to data -->
-        <path d="M 470 150 Q 495 165 470 180" fill="none" stroke="#b04428" stroke-width="1.5" marker-end="url(#arrow1)"/>
-        <text x="540" y="170" font-family="IBM Plex Sans" font-size="10" fill="#b04428" font-style="italic">fyller inn</text>
-
-        <!-- Pakker som kommer og går -->
-        <rect x="30" y="215" width="60" height="22" fill="#c68a1f" stroke="#1a1612" stroke-width="1"/>
-        <text x="60" y="230" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">pakke</text>
-        <path d="M 95 226 L 135 226" stroke="#1a1612" stroke-width="1.5" marker-end="url(#arrow1)"/>
-
-        <rect x="545" y="215" width="60" height="22" fill="#c68a1f" stroke="#1a1612" stroke-width="1"/>
-        <text x="575" y="230" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">pakke</text>
-        <path d="M 505 226 L 540 226" stroke="#1a1612" stroke-width="1.5" marker-end="url(#arrow1)"/>
-
-        <!-- Router label -->
-        <text x="320" y="25" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257" letter-spacing="1">INNE I EN RUTER</text>
-
-        <defs>
-          <marker id="arrow1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="#1a1612"/>
-          </marker>
-        </defs>
-      </svg>
-      <figcaption>De to planene lever side om side inne i én og samme ruter. Kontrollplanet jobber sakte og tenksomt; dataplanet jobber lynraskt og mekanisk.</figcaption>
-    </figure>
-
-    <!-- QUIZ 1 -->
-    <div class="quiz" data-quiz="1">
-      <div class="q-label">Sjekkspørsmål</div>
-      <div class="q-text">En pakke ankommer en ruter, ruteren slår opp i forwarding-tabellen sin og sender pakken ut på port 3. Hvilket plan var involvert i denne handlingen?</div>
-      <div class="options">
-        <button class="option" data-correct="false">Kontrollplanet — ruteren måtte jo bestemme hvor pakken skulle</button>
-        <button class="option" data-correct="true">Dataplanet — tabellen lå allerede klar, det var bare et oppslag</button>
-        <button class="option" data-correct="false">Begge plan samtidig</button>
-      </div>
-      <div class="explanation">Riktig — selve flyttingen av pakken er en dataplan-operasjon. Kontrollplanet jobbet tidligere (kanskje minutter tidligere) med å bygge tabellen, men akkurat i øyeblikket pakken ankommer, er det bare et raskt oppslag.</div>
-    </div>
+  <div class="callout callout-blue">
+    <p>Når du sender en melding på Snapchat, må den gjennom kanskje 15 rutere. Kontrollplanet er det som sørger for at <strong>alle</strong> disse ruterne er enige om veien — før meldingen i det hele tatt forlater telefonen din. Hvis bare én ruter er uenig, kan pakken havne i en løkke, forsvinne, eller ta en omvei via Tokyo.</p>
   </div>
+
+  <p>Men hva skjer når noe går galt underveis — en ruter krasjer, en lenke faller ut, eller en pakke vandrer i ring? Da trenger nettverket et signalspråk for å si ifra. Det er der <strong>ICMP</strong> (Internet Control Message Protocol) kommer inn: et lite, beskjedent protokoll som lar rutere og verter rope «feil!» eller «er du der?» til hverandre. Det er også motoren bak verktøy som <code>ping</code> og <code>traceroute</code> — verktøyene du bruker for å feilsøke nettverk i den virkelige verden.</p>
+
+  <figure>
+    <svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#2d4a7a"/>
+        </marker>
+        <marker id="arrowRust" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#b04428"/>
+        </marker>
+        <marker id="arrowInk" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#1a1612"/>
+        </marker>
+      </defs>
+
+      <!-- Background regions -->
+      <rect x="30" y="20" width="660" height="120" rx="6" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <rect x="30" y="190" width="660" height="120" rx="6" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5" stroke-dasharray="6,3"/>
+
+      <!-- Region labels -->
+      <text x="60" y="46" font-family="IBM Plex Sans" font-size="11" fill="#2d4a7a" font-weight="600" letter-spacing="1.5">KONTROLLPLAN</text>
+      <text x="60" y="216" font-family="IBM Plex Sans" font-size="11" fill="#b04428" font-weight="600" letter-spacing="1.5">DATAPLAN</text>
+
+      <!-- Control plane routing agents (inside routers, but shown "above") -->
+      <rect x="100" y="60" width="90" height="55" rx="4" fill="#e8e3d6" stroke="#2d4a7a" stroke-width="1.5"/>
+      <text x="145" y="82" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">Ruting R1</text>
+      <text x="145" y="100" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">algoritme</text>
+
+      <rect x="265" y="60" width="90" height="55" rx="4" fill="#e8e3d6" stroke="#2d4a7a" stroke-width="1.5"/>
+      <text x="310" y="82" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">Ruting R2</text>
+      <text x="310" y="100" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">algoritme</text>
+
+      <rect x="430" y="60" width="90" height="55" rx="4" fill="#e8e3d6" stroke="#2d4a7a" stroke-width="1.5"/>
+      <text x="475" y="82" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">Ruting R3</text>
+      <text x="475" y="100" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">algoritme</text>
+
+      <rect x="595" y="60" width="90" height="55" rx="4" fill="#e8e3d6" stroke="#2d4a7a" stroke-width="1.5"/>
+      <text x="640" y="82" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">Ruting R4</text>
+      <text x="640" y="100" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">algoritme</text>
+
+      <!-- Control plane exchange arrows -->
+      <line x1="190" y1="80" x2="265" y2="80" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#arrowBlue)"/>
+      <line x1="265" y1="92" x2="190" y2="92" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#arrowBlue)"/>
+
+      <line x1="355" y1="80" x2="430" y2="80" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#arrowBlue)"/>
+      <line x1="430" y1="92" x2="355" y2="92" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#arrowBlue)"/>
+
+      <line x1="520" y1="80" x2="595" y2="80" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#arrowBlue)"/>
+      <line x1="595" y1="92" x2="520" y2="92" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#arrowBlue)"/>
+
+      <!-- Exchange label -->
+      <text x="360" y="50" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#2d4a7a" font-style="italic">utveksler rutinginfo</text>
+
+      <!-- Vertical arrows: control → data -->
+      <line x1="145" y1="115" x2="145" y2="195" stroke="#3d6b3a" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowInk)"/>
+      <line x1="310" y1="115" x2="310" y2="195" stroke="#3d6b3a" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowInk)"/>
+      <line x1="475" y1="115" x2="475" y2="195" stroke="#3d6b3a" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowInk)"/>
+      <line x1="640" y1="115" x2="640" y2="195" stroke="#3d6b3a" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowInk)"/>
+
+      <!-- Middle label -->
+      <text x="360" y="163" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#3d6b3a" font-style="italic">fyller forwarding-tabell</text>
+
+      <!-- Data plane forwarding boxes -->
+      <rect x="100" y="215" width="90" height="50" rx="4" fill="#e8e3d6" stroke="#b04428" stroke-width="1.5"/>
+      <text x="145" y="237" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">R1</text>
+      <text x="145" y="254" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">forwarding</text>
+
+      <rect x="265" y="215" width="90" height="50" rx="4" fill="#e8e3d6" stroke="#b04428" stroke-width="1.5"/>
+      <text x="310" y="237" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">R2</text>
+      <text x="310" y="254" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">forwarding</text>
+
+      <rect x="430" y="215" width="90" height="50" rx="4" fill="#e8e3d6" stroke="#b04428" stroke-width="1.5"/>
+      <text x="475" y="237" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">R3</text>
+      <text x="475" y="254" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">forwarding</text>
+
+      <rect x="595" y="215" width="90" height="50" rx="4" fill="#e8e3d6" stroke="#b04428" stroke-width="1.5"/>
+      <text x="640" y="237" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">R4</text>
+      <text x="640" y="254" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">forwarding</text>
+
+      <!-- Data plane packet flow -->
+      <line x1="190" y1="240" x2="265" y2="240" stroke="#b04428" stroke-width="1.8" marker-end="url(#arrowRust)"/>
+      <line x1="355" y1="240" x2="430" y2="240" stroke="#b04428" stroke-width="1.8" marker-end="url(#arrowRust)"/>
+      <line x1="520" y1="240" x2="595" y2="240" stroke="#b04428" stroke-width="1.8" marker-end="url(#arrowRust)"/>
+
+      <!-- Packet -->
+      <rect x="42" y="230" width="50" height="20" rx="2" fill="#c68a1f" stroke="#1a1612" stroke-width="1.2"/>
+      <text x="67" y="244" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#1a1612">pakke</text>
+      <line x1="92" y1="240" x2="100" y2="240" stroke="#1a1612" stroke-width="1.5" marker-end="url(#arrowInk)"/>
+
+      <!-- Packet flow label -->
+      <text x="360" y="290" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#b04428" font-style="italic">pakker flyttes hopp for hopp</text>
+
+      <!-- Bottom summary -->
+      <text x="360" y="330" text-anchor="middle" font-family="Newsreader" font-size="13" fill="#1a1612">Kontrollplanet beregner veien — dataplanet kjører den.</text>
+    </svg>
+    <figcaption>Fire rutere koblet sammen. Øverst utveksler kontrollplanet rutinginfo mellom ruterne. Resultatet fylles ned i forwarding-tabellene i dataplanet (nederst), som deretter flytter pakker hopp for hopp fra kilde til mål.</figcaption>
+  </figure>
+
+  <p>Samspillet mellom de to planene er kjernen i alt vi dekker i dette kapittelet. Kontrollplanet kan organiseres på to måter: <em>per-ruter kontroll</em>, der hver ruter uavhengig kjører sin egen rutingalgoritme (slik internett fungerer i dag), eller <em>sentralisert kontroll</em> (SDN), der én kontroller beregner alt og dytter tabellene ut. I tillegg gir ICMP nettverket et signalspråk for feilmeldinger — og gir oss verktøy som <code>traceroute</code> for å se akkurat hvilken vei pakkene tar.</p>
+</div>
 </section>
 
-<div class="divider">❋ &nbsp;❋ &nbsp;❋</div>
-
-<!-- ============ SECTION 2: Routing protocols ============ -->
+<!-- ============ SUBPAGE LIST ============ -->
 <section>
-  <div class="container">
-    <div class="section-badge">02 · Rutingprotokoller</div>
-    <h2>Hvordan rutere finner gode veier</h2>
-    <p class="section-intro">Målet er enkelt å beskrive, men fryktelig vanskelig å løse: finn en god vei fra avsender til mottaker gjennom et nettverk du ikke har oversikt over.</p>
-
-    <p class="lead">En rutingprotokoll har ett hovedmål: <em>bestemme gode ruter (paths) fra sendende verter til mottakende verter, gjennom nettverket av rutere</em>. La oss pakke opp den setningen nøye, for hvert ord betyr noe.</p>
-
-    <p>En <strong>rute</strong> (eller <em>path</em>) er rett og slett sekvensen av rutere en pakke passerer gjennom, fra startverten til destinasjonen. Hvis du sender en pakke fra laptoppen din og den går gjennom rutere R1 → R4 → R7 → R9 før den når målet, så er det <em>ruten</em>.</p>
-
-    <p>Men hva betyr "god"? Det kommer an på hva du optimerer for. Vanlige tolkninger er <strong>lavest kostnad</strong> (kanskje målt i antall hopp, kanskje i båndbredde, kanskje i pengeleieavtaler mellom ISP-er), <strong>raskest</strong> (minst forsinkelse), eller <strong>minst overbelastet</strong> (unngå lenker der det står i kø). Hver ruterprotokoll gjør sine egne valg om hva "god" betyr — og det er en del av grunnen til at ruting regnes som en av de klassiske "topp 10"-utfordringene innen nettverk.</p>
-
-    <div class="margin-note">Ruting er vanskelig fordi nettverket ikke står stille. Lenker går ned, kommer opp igjen, blir overbelastet, får ny kapasitet. Rutere kommer og går. En god algoritme må håndtere endringer <em>uten</em> at alt stopper opp mens den tenker.</div>
-
-    <h3>To akser for klassifisering</h3>
-
-    <p>Rutingalgoritmer kan klassifiseres langs to uavhengige akser. Forstår du disse to, forstår du grunnstrukturen til alt vi snakker om videre.</p>
-
-    <h4>Akse 1 — Global eller desentralisert informasjon?</h4>
-
-    <p><strong>Global</strong> betyr at alle rutere på en eller annen måte kjenner <em>hele</em> nettverkets topologi: hvilke rutere finnes, hvilke lenker de har mellom seg, og hva kostnaden på hver lenke er. Med full kunnskap kan hver ruter uavhengig beregne den beste stien til alle destinasjoner. Dette er ideen bak <strong>link-state</strong>-algoritmer.</p>
-
-    <p><strong>Desentralisert</strong> betyr at ingen har hele bildet. Hver ruter kjenner bare kostnaden til sine <em>direkte</em> naboer i starten. Så snakker rutere med naboene sine, utveksler det de vet, og gradvis blir alle enige om de beste stiene gjennom en iterativ prosess. Dette er ideen bak <strong>distance-vector</strong>-algoritmer.</p>
-
-    <h4>Akse 2 — Statisk eller dynamisk?</h4>
-
-    <p><strong>Statiske</strong> ruter endres sjelden (kanskje når en nettverksadministrator manuelt konfigurerer noe). <strong>Dynamiske</strong> ruter oppdateres fortløpende — enten med jevne mellomrom eller som respons på at en lenke endrer kostnad eller forsvinner. Moderne nettverk bruker nesten alltid dynamiske algoritmer, fordi internett endrer seg for ofte til å holde tritt manuelt.</p>
-
-    <div class="info-box">
-      <h4>Utdypning — utenfor pensum</h4>
-      <p>Det som følger om link-state og distance-vector er <em>ikke</em> pensum (5.2.1 og 5.2.2 er eksplisitt utelatt). Det er tatt med som nyttig bakgrunn for å forstå hvordan rutingalgoritmer faktisk fungerer i praksis.</p>
-    </div>
-
-    <h3>Link-state: "jeg har kartet"</h3>
-
-    <p>Link-state-algoritmer bygger på en enkel, men sterk idé: hvis hver ruter har et komplett kart over nettverket, kan hver enkelt beregne de beste stiene helt alene, uten å måtte spørre noen. Spørsmålet blir da: hvordan skaffer man seg det kartet?</p>
-
-    <p>Løsningen er <em>flooding</em>. Hver ruter lager en liten melding — en <strong>Link-State Advertisement</strong> (LSA) — som beskriver alle lenkene den selv har og hva de koster. Så sender den LSA-en til alle sine naboer. Naboene videresender den til sine naboer. Osv. Etter kort tid har <em>hver</em> ruter i nettverket mottatt LSA-er fra alle andre, og har dermed kunnskap om hele topologien.</p>
-
-    <p>Når en ruter har dette komplette kartet, kjører den en kortest-sti-algoritme (typisk Dijkstras algoritme) lokalt for å finne den beste stien til hver mulige destinasjon. Resultatet fylles inn i forwarding-tabellen, og dataplanet er klart til å flytte pakker.</p>
-
-    <div class="info-box blue">
-      <h4>Fordeler med link-state</h4>
-      <p><em>Rask konvergens:</em> Når noe endrer seg (en lenke går ned), sprer den nye informasjonen seg raskt gjennom hele nettverket, og alle rutere kan raskt oppdatere seg. <em>God skalering:</em> Håndterer store, komplekse nettverk godt. <em>Tilpasningsevne:</em> Egner seg for nettverk som endrer seg ofte.</p>
-    </div>
-
-    <h3>Distance-vector: "jeg stoler på naboene mine"</h3>
-
-    <p>Distance-vector-algoritmer tar en helt annen tilnærming. I stedet for at alle skal ha hele kartet, har hver ruter bare en <strong>distansevektor</strong> — en tabell som sier "til destinasjon X, er min beste avstand Y, og jeg sender pakken ut via nabo Z". Ruteren får ikke noe globalt overblikk; den får bare sin egen lille liste.</p>
-
-    <p>Slik fungerer det i praksis:</p>
-
-    <p><strong>Steg 1 — Informasjonsdeling.</strong> Hver ruter sender sin egen distansevektor til sine direkte naboer. "Slik ser verden ut fra mitt ståsted," sier den.</p>
-
-    <p><strong>Steg 2 — Oppdatering.</strong> Når en ruter mottar en naboene sine sin vektor, sammenligner den: "Hmm, nabo B sier den kan nå destinasjon X med kostnad 5. For å nå nabo B koster det meg 2. Så hvis jeg sender via B, kan jeg nå X med kostnad 7. Er det bedre enn det jeg hadde?" Hvis ja, oppdaterer den sin egen tabell.</p>
-
-    <p><strong>Steg 3 — Konvergens.</strong> Hver gang en ruters tabell endres, sender den ut sin nye vektor til naboene, som kanskje oppdaterer sine tabeller, som kanskje sender ut nye vektorer, osv. Etter en stund stabiliserer alt seg, og alle rutere har konsistente og (forhåpentligvis) optimale tabeller.</p>
-
-    <div class="margin-note"><strong>Analogien.</strong> Link-state er som å gi alle et GPS-kart over hele byen. Distance-vector er som å spørre naboene dine: "Hvor langt er det til butikken herfra?" — og de spør sine naboer — til dere alle har blitt enige om korteste rute.</div>
-
-    <h3>Sammenligning</h3>
-
-    <table class="compare-table">
-      <thead>
-        <tr>
-          <th>Egenskap</th>
-          <th>Link-State</th>
-          <th>Distance-Vector</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Kunnskap</td>
-          <td>Hele topologien (globalt)</td>
-          <td>Bare naboer (lokalt)</td>
-        </tr>
-        <tr>
-          <td>Beregning</td>
-          <td>Dijkstra lokalt hos hver ruter</td>
-          <td>Iterativ utveksling med naboer</td>
-        </tr>
-        <tr>
-          <td>Meldinger</td>
-          <td>LSA-er flood-es til alle</td>
-          <td>Vektorer sendes bare til naboer</td>
-        </tr>
-        <tr>
-          <td>Konvergens</td>
-          <td>Rask</td>
-          <td>Kan være tregere; kan ha "count to infinity"</td>
-        </tr>
-        <tr>
-          <td>Skalerbarhet</td>
-          <td>God for store nett</td>
-          <td>Best for mindre nett</td>
-        </tr>
-        <tr>
-          <td>Eksempel</td>
-          <td>OSPF</td>
-          <td>RIP</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- QUIZ 2 -->
-    <div class="quiz" data-quiz="2">
-      <div class="q-label">Sjekkspørsmål</div>
-      <div class="q-text">Et nytt ruter-nabopar oppdager at lenken mellom dem nettopp har fått dobbelt så stor forsinkelse. Hvilken algoritme-type vil typisk reagere raskest på denne endringen?</div>
-      <div class="options">
-        <button class="option" data-correct="true">Link-state, fordi LSA-en flood-es raskt til alle rutere i nettverket</button>
-        <button class="option" data-correct="false">Distance-vector, fordi den bare trenger å snakke med nærmeste nabo</button>
-        <button class="option" data-correct="false">Begge reagerer nøyaktig like raskt</button>
+<div class="container">
+  <div class="subpage-list">
+    <a href="innhold.html" class="subpage-card">
+      <span class="sp-icon">5</span>
+      <div class="sp-info">
+        <div class="sp-title">Kontrollplanet</div>
+        <div class="sp-desc">Kontroll vs. dataplan, rutingalgoritmer, per-ruter vs. SDN, og ICMP</div>
       </div>
-      <div class="explanation">Riktig — link-state sprer endringer via flooding, slik at alle rutere får vite det nesten umiddelbart og kan rekalkulere sine tabeller. Distance-vector kan ta lengre tid fordi informasjonen må "bølge" gjennom nettverket en nabo om gangen.</div>
-    </div>
+      <span class="sp-arrow">&rarr;</span>
+    </a>
   </div>
+</div>
 </section>
 
-<div class="divider">❋ &nbsp;❋ &nbsp;❋</div>
-
-<!-- ============ SECTION 3: ICMP ============ -->
+<!-- ============ QUIZ ============ -->
 <section>
-  <div class="container">
-    <div class="section-badge">03 · Internet Control Message Protocol</div>
-    <h2>ICMP: når nettverket må snakke med seg selv</h2>
-    <p class="section-intro">Rutingprotokoller bestemmer hvor pakker skal. Men hva skjer når noe går galt underveis? Det er her ICMP kommer inn.</p>
+<div class="container">
+  <h2>Test deg selv</h2>
+  <p class="section-intro">Sjekk om du har forstått de viktigste konseptene fra dette kapittelet.</p>
 
-    <p class="lead">Tenk deg at du sender en pakke til en IP-adresse som ikke finnes. Hva skjer? Noen må fortelle deg det — ellers sitter du og venter for alltid på et svar som aldri kommer. Eller: en pakke har levd for lenge i nettverket (kanskje den gikk i en løkke) og må kastes. Hvem gir beskjed til avsenderen? Svaret på begge spørsmål er <strong>ICMP</strong> — Internet Control Message Protocol.</p>
-
-    <p>ICMP er nettverkets signalspråk. Det brukes av verter og rutere til å utveksle <em>nettverks-nivå-informasjon</em> med hverandre. De to viktigste kategoriene av meldinger er:</p>
-
-    <p><strong>Feilrapportering.</strong> Når noe går galt — destinasjonsvert er utilgjengelig, nettverk er utilgjengelig, port er stengt, protokoll finnes ikke — sender en ruter eller vert en ICMP-melding tilbake til avsenderen som sier hva som gikk galt.</p>
-
-    <p><strong>Echo request/reply.</strong> Det er dette kommandoen <code>ping</code> bruker. Du sender en "er du der?"-melding, og hvis mottakeren lever, sender den et "ja!" tilbake.</p>
-
-    <h3>Hvor passer ICMP i stakken?</h3>
-
-    <p>Her er en detalj som ofte forvirrer: ICMP regnes som en del av nettverkslaget, men ICMP-meldinger transporteres <em>inni</em> IP-datagram. Så strengt tatt ligger ICMP <em>"oppå"</em> IP, selv om begge regnes som del av nettverkslaget. Tenk på ICMP som en liten hjelpeprotokoll som snylter på IP for å komme fram.</p>
-
-    <p>En ICMP-melding inneholder tre hovedfelter:</p>
-
-    <ul style="list-style: none; padding-left: 0; margin-bottom: 22px;">
-      <li style="padding: 10px 0; border-bottom: 1px dashed var(--line);"><strong>Type</strong> — hvilken kategori melding dette er (f.eks. 3 = "destination unreachable", 8 = "echo request")</li>
-      <li style="padding: 10px 0; border-bottom: 1px dashed var(--line);"><strong>Code</strong> — en underkategori som gir mer detaljer (f.eks. type 3 + code 1 = "host unreachable")</li>
-      <li style="padding: 10px 0;"><strong>De første 8 bytene av IP-datagrammet som forårsaket feilen</strong> — slik at avsenderen vet <em>hvilken</em> pakke ICMP-meldingen gjelder</li>
-    </ul>
-
-    <h3>De viktigste ICMP-typene</h3>
-
-    <p>Her er tabellen over de ICMP-meldingene du kommer til å møte oftest. Legg spesielt merke til type 0 og 8 (som <code>ping</code> bruker) og type 11 (som <code>traceroute</code> er avhengig av — mer om det snart).</p>
-
-    <table class="icmp-table">
-      <thead>
-        <tr><th>Type</th><th>Code</th><th>Beskrivelse</th></tr>
-      </thead>
-      <tbody>
-        <tr class="highlight"><td>0</td><td>0</td><td>echo reply (svaret på ping)</td></tr>
-        <tr><td>3</td><td>0</td><td>destinasjonsnett utilgjengelig</td></tr>
-        <tr><td>3</td><td>1</td><td>destinasjonsvert utilgjengelig</td></tr>
-        <tr><td>3</td><td>2</td><td>destinasjonsprotokoll utilgjengelig</td></tr>
-        <tr class="highlight"><td>3</td><td>3</td><td>destinasjonsport utilgjengelig</td></tr>
-        <tr><td>3</td><td>6</td><td>destinasjonsnett ukjent</td></tr>
-        <tr><td>3</td><td>7</td><td>destinasjonsvert ukjent</td></tr>
-        <tr><td>4</td><td>0</td><td>source quench (ikke i bruk)</td></tr>
-        <tr class="highlight"><td>8</td><td>0</td><td>echo request (selve ping-forespørselen)</td></tr>
-        <tr><td>9</td><td>0</td><td>route advertisement</td></tr>
-        <tr><td>10</td><td>0</td><td>router discovery</td></tr>
-        <tr class="highlight"><td>11</td><td>0</td><td>TTL expired (pakken levde for lenge)</td></tr>
-        <tr><td>12</td><td>0</td><td>feil i IP-headeren</td></tr>
-      </tbody>
-    </table>
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 1</div>
+    <div class="q-text">Hva er hovedoppgaven til kontrollplanet i nettverkslaget?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Å flytte pakker fra inngangsport til utgangsport i en ruter så raskt som mulig</button>
+      <button class="option" data-correct="true">Å bestemme hvilken vei pakkene skal ta gjennom nettverket, og fylle forwarding-tabellene</button>
+      <button class="option" data-correct="false">Å kryptere pakker slik at de ikke kan avlyttes underveis</button>
+      <button class="option" data-correct="false">Å dele opp store pakker i mindre fragmenter for transport</button>
+    </div>
+    <div class="explanation">Kontrollplanet handler om <em>ruting</em> — å beregne den beste veien gjennom nettverket og fylle inn forwarding-tabellen. Selve flyttingen av pakker (den raske per-pakke-operasjonen) er dataplanets jobb.</div>
   </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 2</div>
+    <div class="q-text">Hva er forskjellen mellom per-ruter kontroll og SDN (Software Defined Networking)?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Per-ruter kontroll bruker bare statiske ruter, mens SDN bruker dynamiske</button>
+      <button class="option" data-correct="false">SDN er eldre teknologi som ble erstattet av per-ruter kontroll</button>
+      <button class="option" data-correct="true">Med per-ruter kontroll beregner hver ruter sin egen tabell; med SDN beregner en sentral kontroller alle tabellene</button>
+      <button class="option" data-correct="false">Per-ruter kontroll fungerer bare i lokalnett, mens SDN brukes på internett</button>
+    </div>
+    <div class="explanation">I per-ruter kontroll kjører hver ruter sin egen rutingalgoritme og snakker med naboene for å bygge sin forwarding-tabell. I SDN gjør en logisk sentralisert kontroller all beregningen og distribuerer tabellene til «dumme» rutere som bare følger instruksjoner.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 3</div>
+    <div class="q-text">Kommandoen <code>ping</code> bruker ICMP. Hvilke to ICMP-meldingstyper er involvert?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Type 3 (destination unreachable) og type 11 (TTL expired)</button>
+      <button class="option" data-correct="false">Type 4 (source quench) og type 0 (echo reply)</button>
+      <button class="option" data-correct="true">Type 8 (echo request) og type 0 (echo reply)</button>
+      <button class="option" data-correct="false">Type 11 (TTL expired) og type 8 (echo request)</button>
+    </div>
+    <div class="explanation"><code>ping</code> sender en ICMP echo request (type 8) til målet. Hvis målet er tilgjengelig, svarer det med en ICMP echo reply (type 0). Rundtripptiden mellom disse to meldingene er det ping viser deg.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 4</div>
+    <div class="q-text">Hvordan klarer <code>traceroute</code> å finne adressen til hver ruter langs stien?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Den spør DNS om en liste over alle rutere mellom kilde og mål</button>
+      <button class="option" data-correct="false">Den sender en spesiell ICMP-forespørsel som hver ruter er pålagt å svare på</button>
+      <button class="option" data-correct="true">Den sender pakker med økende TTL-verdier, slik at hver ruter i tur og orden returnerer en «TTL expired»-melding med sin adresse</button>
+      <button class="option" data-correct="false">Den leser forwarding-tabellen til den lokale ruteren og følger pekerne</button>
+    </div>
+    <div class="explanation">Traceroute utnytter TTL-feltet i IP-headeren. Ved å sende pakker med TTL = 1, 2, 3, ... tvinger den hver ruter langs stien til å droppe pakken og sende en ICMP «TTL expired»-melding tilbake — og den meldingen avslører ruterens IP-adresse.</div>
+  </div>
+</div>
 </section>
 
-<div class="divider">❋ &nbsp;❋ &nbsp;❋</div>
-
-<!-- ============ SECTION 4: Traceroute ============ -->
-<section>
-  <div class="container-wide">
-    <div class="section-badge">04 · Traceroute</div>
-    <h2>Traceroute: et genialt hack</h2>
-    <p class="section-intro">Hvordan kan du finne ut hvilke rutere pakkene dine passerer gjennom på vei til en destinasjon — uten å ha tilgang til noen av dem? Svaret er et av nettverks-verdens fineste triks.</p>
-
-    <div class="container" style="padding: 0;">
-    <p class="lead">Kommandoen <code>traceroute</code> (og variantene <code>tracert</code> på Windows, <code>mtr</code> osv.) viser deg en liste over alle rutere en pakke passerer på vei til et mål. Det er utrolig nyttig når du feilsøker — men hvordan i all verden klarer den det? Du kan jo ikke spørre hver ruter underveis om navnet sitt. De vet ikke engang at du prøver å nå dem.</p>
-
-    <p>Trikset utnytter en feature som egentlig er laget for å hindre at pakker lever evig: <strong>TTL</strong>-feltet (Time To Live) i IP-headeren. TTL er et tall som dekrementeres med 1 hver gang en pakke passerer en ruter. Når TTL treffer 0, kaster ruteren pakken og sender en ICMP-melding tilbake til avsenderen: <em>"type 11, code 0 — TTL expired"</em>. Og — dette er nøkkelen — den meldingen inneholder ruterens egen IP-adresse.</p>
-
-    <p>Ser du hvor dette bærer?</p>
-
-    <div class="info-box green">
-      <h4>Traceroute-trikset</h4>
-      <p>Hvis du sender en pakke med <strong>TTL = 1</strong>, vil <em>første</em> ruter dekrementere det til 0 og returnere en TTL-expired-melding. Du får vite første ruters adresse.</p>
-      <p>Send så en pakke med <strong>TTL = 2</strong>. Den overlever første ruter, men blir droppet av den andre, som returnerer en TTL-expired-melding. Du får vite andre ruters adresse.</p>
-      <p>Fortsett til TTL = 3, 4, 5, ... og du har hele stien.</p>
-    </div>
-
-    <p>Det er så enkelt det er, og så vakkert. Traceroute misbruker TTL-mekanismen for å tvinge hver ruter på ruten til å "avsløre" seg selv, én etter én.</p>
-
-    <h3>Slik fungerer det steg for steg</h3>
-
-    <p>Kildemaskinen sender ut <em>sett</em> av UDP-segmenter (vanligvis tre per TTL-verdi, for å kunne måle RTT-variasjon). Hver pakke i et sett har samme TTL.</p>
-
-    <ul style="list-style: none; padding-left: 0;">
-      <li style="padding: 8px 0;"><strong>Sett 1</strong> har TTL = 1 → dør på ruter 1 → ruter 1 sender "TTL expired"</li>
-      <li style="padding: 8px 0;"><strong>Sett 2</strong> har TTL = 2 → dør på ruter 2 → ruter 2 sender "TTL expired"</li>
-      <li style="padding: 8px 0;"><strong>Sett 3</strong> har TTL = 3 → dør på ruter 3 → ruter 3 sender "TTL expired"</li>
-      <li style="padding: 8px 0;">... og så videre</li>
-    </ul>
-
-    <p>Når ICMP-meldingen kommer tilbake, registrerer avsenderen rundtrippstiden (RTT) og ruterens IP. Den viser dem fortløpende på skjermen din — det er det du ser mens <code>traceroute</code> kjører.</p>
-
-    <h4>Når stopper det?</h4>
-
-    <p>To ting kan skje som avslutter traceroute:</p>
-
-    <p><strong>1.</strong> UDP-segmentet når til slutt faktisk frem til destinasjonen (når TTL er stor nok). Nå er det ikke noen ruter som dropper den — men destinasjonen har sannsynligvis ikke en tjeneste som lytter på UDP-porten traceroute brukte (den velger bevisst en usannsynlig port). Så destinasjonen svarer med en ICMP "<em>destination port unreachable</em>"-melding (type 3, code 3).</p>
-
-    <p><strong>2.</strong> Kilden ser denne meldingen og skjønner: <em>aha, vi har nådd målet</em>. Den stopper.</p>
-
-    <div class="margin-note">Det vakre er at traceroute aldri egentlig "ba om" informasjonen. Den utnyttet bare to helt normale ICMP-mekanismer — TTL expired og port unreachable — til å tvinge frem et resultat ingen hadde tenkt den skulle få. Det er hackeråndens beste uttrykk.</div>
-    </div>
-
-    <!-- STEPPER -->
-    <div class="stepper" id="traceroute-stepper">
-      <div class="stepper-header">
-        <div class="stepper-title">Animasjon: traceroute steg for steg</div>
-        <div class="stepper-count">Steg <span id="step-num">1</span> / 6</div>
-      </div>
-      <div class="stepper-display">
-        <svg id="step-svg" viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
-          <!-- Routers -->
-          <g id="hosts-and-routers">
-            <!-- Source -->
-            <rect x="20" y="80" width="70" height="50" fill="#e8e3d6" stroke="#1a1612" stroke-width="2" rx="3"/>
-            <text x="55" y="110" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#1a1612" font-weight="600">kilde</text>
-
-            <!-- Router 1 -->
-            <circle cx="190" cy="105" r="28" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" id="r1"/>
-            <text x="190" y="110" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">R1</text>
-
-            <!-- Router 2 -->
-            <circle cx="320" cy="105" r="28" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" id="r2"/>
-            <text x="320" y="110" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">R2</text>
-
-            <!-- Router 3 -->
-            <circle cx="450" cy="105" r="28" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" id="r3"/>
-            <text x="450" y="110" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">R3</text>
-
-            <!-- Router 4 -->
-            <circle cx="580" cy="105" r="28" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" id="r4"/>
-            <text x="580" y="110" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">R4</text>
-
-            <!-- Destination -->
-            <rect x="680" y="80" width="70" height="50" fill="#e8e3d6" stroke="#1a1612" stroke-width="2" rx="3"/>
-            <text x="715" y="110" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#1a1612" font-weight="600">mål</text>
-
-            <!-- Lines -->
-            <line x1="90" y1="105" x2="162" y2="105" stroke="#6b6257" stroke-width="1.5"/>
-            <line x1="218" y1="105" x2="292" y2="105" stroke="#6b6257" stroke-width="1.5"/>
-            <line x1="348" y1="105" x2="422" y2="105" stroke="#6b6257" stroke-width="1.5"/>
-            <line x1="478" y1="105" x2="552" y2="105" stroke="#6b6257" stroke-width="1.5"/>
-            <line x1="608" y1="105" x2="680" y2="105" stroke="#6b6257" stroke-width="1.5"/>
-          </g>
-
-          <!-- Packet (animated) -->
-          <g id="packet" style="display:none;">
-            <rect x="0" y="0" width="50" height="20" fill="#c68a1f" stroke="#1a1612" stroke-width="1.5" rx="2"/>
-            <text x="25" y="14" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612" id="packet-label">TTL=1</text>
-          </g>
-
-          <!-- ICMP reply (animated) -->
-          <g id="icmp" style="display:none;">
-            <rect x="0" y="0" width="60" height="20" fill="#b04428" stroke="#1a1612" stroke-width="1.5" rx="2"/>
-            <text x="30" y="14" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#f4f1ea">TTL exp</text>
-          </g>
-        </svg>
-        <div class="stepper-caption" id="step-caption">
-          <strong>Start:</strong> Kilden er klar til å traceroute mot målet. Den vet ingenting om rutene mellom dem.
-        </div>
-      </div>
-      <div class="stepper-controls">
-        <button class="stepper-btn" id="prev-btn">← Forrige</button>
-        <button class="stepper-btn" id="next-btn">Neste →</button>
-      </div>
-    </div>
-
-    <div class="container" style="padding: 0;">
-    <!-- QUIZ 3 -->
-    <div class="quiz" data-quiz="3">
-      <div class="q-label">Sjekkspørsmål</div>
-      <div class="q-text">Hvorfor sender traceroute UDP-segmenter til en <em>usannsynlig høy portnummer</em> på destinasjonen?</div>
-      <div class="options">
-        <button class="option" data-correct="false">Fordi høye portnumre er raskere å rute</button>
-        <button class="option" data-correct="true">For å garantere at ingen tjeneste lytter på den porten, slik at destinasjonen svarer med "port unreachable" — som er signalet traceroute bruker for å vite at den er fremme</button>
-        <button class="option" data-correct="false">Fordi ICMP ikke fungerer på lave portnumre</button>
-      </div>
-      <div class="explanation">Helt riktig. Traceroute trenger et tydelig "slutt"-signal fra destinasjonen. Ved å sende til en port ingen lytter på, garanterer den at destinasjonen svarer med ICMP "port unreachable" (type 3, code 3) — noe som forteller traceroute at neste steg ikke er en mellomruter, men selve målet.</div>
-    </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider">❋ &nbsp;❋ &nbsp;❋</div>
-
-<!-- ============ SECTION 5: Network management ============ -->
-<section>
-  <div class="container">
-    <div class="section-badge">05 · Avslutning</div>
-    <h2>Og til slutt: nettverksadministrasjon</h2>
-    <p class="section-intro">Rutingalgoritmer og ICMP er byggesteinene. Men noen må sette alt sammen, overvåke det, og fikse det når det går i stykker.</p>
-
-    <div class="margin-note"><strong>Ikke pensum.</strong> Nettverksadministrasjon er ikke del av pensum for kapittel 5, men gir nyttig kontekst.</div>
-
-    <p class="lead">Et moderne <em>autonomt system</em> — det tekniske ordet for "et nettverk drevet av én organisasjon", for eksempel en ISP, et universitet eller en stor bedrift — består av tusenvis av samhandlende maskinvare- og programvarekomponenter. Å holde orden på noe så komplekst krever et eget fagfelt: <strong>nettverksadministrasjon</strong>.</p>
-
-    <p>Den klassiske definisjonen fra Saydam &amp; Magedanz (1996) fanger bredden godt: nettverksadministrasjon omfatter utrulling, integrering og koordinering av maskinvare, programvare og menneskelige elementer for å overvåke, teste, konfigurere, analysere, evaluere og kontrollere nettverket og dets ressurser — slik at kravene til ytelse og tjenestekvalitet møtes til en rimelig kostnad.</p>
-
-    <p>Oversatt til hverdagsspråk: noen må sørge for at lyset er på, at ingenting er på fyr, og at brukerne ikke ringer og klager. Andre komplekse systemer har samme type utfordring — et passasjerfly, et atomkraftverk, en stor fabrikk — alle må overvåkes og kontrolleres kontinuerlig for ikke å kollapse.</p>
-
-    <div class="info-box">
-      <h4>Hva tar du med deg fra dette kapittelet</h4>
-      <p>Nettverkslaget har to ansikter: <em>dataplanet</em> som raskt flytter pakker etter ferdige tabeller, og <em>kontrollplanet</em> som bygger disse tabellene ved at rutere snakker sammen via rutingprotokoller. Link-state-algoritmer gir alle hele kartet; distance-vector-algoritmer lar hver ruter lære av sine naboer. Og når noe går galt, eller når vi bare vil peke på stien pakken tok, fungerer ICMP som nettverkets indre signalspråk — lavmælt og diskret, men helt avgjørende.</p>
-    </div>
-  </div>
-</section>
-
+</main>
 <footer>
   <div class="container">
-    <div class="ornament">❋ &nbsp;❋ &nbsp;❋</div>
-    <p>Basert på <em>Computer Networking: A Top-Down Approach</em>, 8. utgave,</p>
-    <p>Jim Kurose &amp; Keith Ross, Kapittel 5.</p>
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Vår 2026</p>
   </div>
 </footer>
-
-<script>
-// ====== Quiz logic ======
-document.querySelectorAll('.quiz').forEach(quiz => {
-  const options = quiz.querySelectorAll('.option');
-  const feedback = quiz.querySelector('.explanation');
-  options.forEach(opt => {
-    opt.addEventListener('click', () => {
-      const isCorrect = opt.dataset.correct === 'true';
-      options.forEach(o => {
-        o.disabled = true;
-        if (o.dataset.correct === 'true') o.classList.add('correct');
-        else if (o === opt) o.classList.add('wrong');
-      });
-      feedback.classList.add('show');
-    });
-  });
-});
-
-// ====== Traceroute stepper ======
-(function() {
-  const steps = [
-    {
-      caption: '<strong>Start.</strong> Kilden er klar til å traceroute mot målet. Den vet ingenting om rutene mellom dem — bare at målet finnes et sted "der ute".',
-      packet: null,
-      icmp: null
-    },
-    {
-      caption: '<strong>Steg 1: Send TTL=1.</strong> Kilden sender et UDP-segment med TTL=1. Pakken når R1, som dekrementerer TTL til 0.',
-      packet: { from: 55, to: 190, label: 'TTL=1' },
-      icmp: null
-    },
-    {
-      caption: '<strong>R1 svarer.</strong> Siden TTL ble 0, kaster R1 pakken og sender en ICMP "TTL expired"-melding tilbake. Kilden lærer: R1 er første hopp.',
-      packet: null,
-      icmp: { from: 190, to: 55 },
-      highlight: 'r1'
-    },
-    {
-      caption: '<strong>Steg 2: Send TTL=2.</strong> Ny pakke, TTL=2. Overlever R1 (TTL→1), dør på R2 (TTL→0).',
-      packet: { from: 55, to: 320, label: 'TTL=2' },
-      icmp: null
-    },
-    {
-      caption: '<strong>R2 svarer.</strong> R2 sender TTL expired tilbake. Kilden lærer: R2 er andre hopp. Denne prosessen fortsetter for TTL=3, 4, ...',
-      packet: null,
-      icmp: { from: 320, to: 55 },
-      highlight: 'r2'
-    },
-    {
-      caption: '<strong>Endelig.</strong> Til slutt når en pakke målet. Målet svarer med ICMP "port unreachable" (type 3, code 3) — kilden vet at den er fremme og stopper.',
-      packet: { from: 55, to: 715, label: 'TTL=5' },
-      icmp: null,
-      highlight: 'all'
-    }
-  ];
-
-  let current = 0;
-  const numEl = document.getElementById('step-num');
-  const capEl = document.getElementById('step-caption');
-  const prevBtn = document.getElementById('prev-btn');
-  const nextBtn = document.getElementById('next-btn');
-  const svg = document.getElementById('step-svg');
-  const packet = document.getElementById('packet');
-  const packetLabel = document.getElementById('packet-label');
-  const icmp = document.getElementById('icmp');
-  const routers = ['r1', 'r2', 'r3', 'r4'];
-
-  function render() {
-    const step = steps[current];
-    numEl.textContent = current + 1;
-    capEl.innerHTML = step.caption;
-
-    // Reset router highlights
-    routers.forEach(r => {
-      const el = document.getElementById(r);
-      el.setAttribute('fill', '#f4f1ea');
-      el.setAttribute('stroke', '#1a1612');
-    });
-
-    // Highlight logic
-    if (step.highlight === 'r1') {
-      document.getElementById('r1').setAttribute('fill', '#c68a1f');
-    } else if (step.highlight === 'r2') {
-      document.getElementById('r1').setAttribute('fill', '#ddd5c4');
-      document.getElementById('r2').setAttribute('fill', '#c68a1f');
-    } else if (step.highlight === 'all') {
-      routers.forEach(r => document.getElementById(r).setAttribute('fill', '#ddd5c4'));
-    }
-
-    // Packet
-    if (step.packet) {
-      packet.style.display = 'block';
-      const x = step.packet.from - 25;
-      packet.setAttribute('transform', `translate(${x}, 45)`);
-      packetLabel.textContent = step.packet.label;
-      // Animate
-      const targetX = step.packet.to - 25;
-      let start = null;
-      const duration = 900;
-      function anim(ts) {
-        if (!start) start = ts;
-        const p = Math.min((ts - start) / duration, 1);
-        const cx = x + (targetX - x) * p;
-        packet.setAttribute('transform', `translate(${cx}, 45)`);
-        if (p < 1) requestAnimationFrame(anim);
-      }
-      requestAnimationFrame(anim);
-    } else {
-      packet.style.display = 'none';
-    }
-
-    // ICMP
-    if (step.icmp) {
-      icmp.style.display = 'block';
-      const x = step.icmp.from - 30;
-      const targetX = step.icmp.to - 30;
-      let start = null;
-      const duration = 900;
-      function anim(ts) {
-        if (!start) start = ts;
-        const p = Math.min((ts - start) / duration, 1);
-        const cx = x + (targetX - x) * p;
-        icmp.setAttribute('transform', `translate(${cx}, 140)`);
-        if (p < 1) requestAnimationFrame(anim);
-      }
-      requestAnimationFrame(anim);
-    } else {
-      icmp.style.display = 'none';
-    }
-
-    prevBtn.disabled = current === 0;
-    nextBtn.disabled = current === steps.length - 1;
-  }
-
-  prevBtn.addEventListener('click', () => { if (current > 0) { current--; render(); } });
-  nextBtn.addEventListener('click', () => { if (current < steps.length - 1) { current++; render(); } });
-
-  render();
-})();
-</script>
-</main>
 <script src="../chat-widget.js"></script>
+<script src="../quiz.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

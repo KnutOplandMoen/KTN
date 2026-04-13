@@ -21,6 +21,104 @@
   <p class="lede">Den siste etappen i reisen nedover protokollstabelen. Her møter vi de konkrete kablene, rammene og adressene som til slutt bærer bitene fra den ene maskinen til den andre.</p>
 </div>
 </header>
+
+<!-- ============================================ -->
+<!-- BIG PICTURE                                    -->
+<!-- ============================================ -->
+<section>
+<div class="container">
+  <div class="section-badge">Overblikk</div>
+  <h2>Det store bildet</h2>
+  <p class="section-intro">
+    Lenkelaget er den siste etappen — det som faktisk får bits fra én maskin til naboen over en fysisk lenke. Alt over (IP, TCP, HTTP) stoler blindt på at dette fungerer.
+  </p>
+
+  <div class="callout callout-green">
+    <span class="label">Analogi — postsystemet, siste meter</span>
+    <p>
+      Hvis nettverkslaget (IP) er som å adressere et brev med postnummer for riktig by, er lenkelaget den lokale postbudet som kjenner hvert hus i gaten. <strong>MAC-adresser</strong> er som husnummeret på én bestemt gate — de har bare lokal betydning. Når en pakke ankommer ditt lokale nettverk, har IP fått den til riktig «nabolag» (subnett), men det er <em>Ethernet</em> og <em>ARP</em> som finner den konkrete maskinen. Det er «den siste meteren» av leveransen.
+    </p>
+  </div>
+
+  <div class="callout callout-blue">
+    <span class="label">Analogi — det travle kontoret</span>
+    <p>
+      Tenk deg et travelt kontor med én delt printerkabel. Alle vil skrive ut samtidig. <strong>CSMA/CD</strong> er reglene de følger: lytt før du sender (<em>carrier sense</em>), ikke send hvis noen andre sender (<em>collision avoidance</em>), og hvis to sender samtidig, stopper begge, venter en tilfeldig tid, og prøver igjen (<em>collision detection + exponential backoff</em>). Ethernet bruker nøyaktig denne logikken.
+    </p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 700 370" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lokalt nettverk: svitsj koblet til fire maskiner med MAC-adresser og en Ethernet-ramme">
+      <style>
+        .s-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 10px; fill: #6b6257; }
+        .s-ttl { font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 600; fill: #1a1612; }
+        .s-mac { font-family: 'IBM Plex Mono', monospace; font-size: 9px; fill: #2d4a7a; }
+        .s-frm { font-family: 'IBM Plex Mono', monospace; font-size: 9px; fill: #fff; }
+        .s-note { font-family: 'IBM Plex Sans', sans-serif; font-size: 10px; fill: #6b6257; font-style: italic; }
+      </style>
+
+      <!-- Switch -->
+      <rect x="290" y="140" width="120" height="50" rx="8" fill="#2d4a7a" stroke="#1a1612" stroke-width="1.5"/>
+      <text x="350" y="170" text-anchor="middle" class="s-frm" style="font-size:13px">Svitsj</text>
+
+      <!-- Host A (top-left) -->
+      <rect x="60" y="30" width="100" height="50" rx="6" fill="#e8e3d6" stroke="#c9c0ae" stroke-width="1"/>
+      <text x="110" y="52" text-anchor="middle" class="s-ttl">Host A</text>
+      <text x="110" y="68" text-anchor="middle" class="s-mac">1A-2F-BB-76-09-AD</text>
+      <line x1="160" y1="55" x2="290" y2="155" stroke="#c9c0ae" stroke-width="1.5"/>
+
+      <!-- Host B (top-right) -->
+      <rect x="540" y="30" width="100" height="50" rx="6" fill="#e8e3d6" stroke="#c9c0ae" stroke-width="1"/>
+      <text x="590" y="52" text-anchor="middle" class="s-ttl">Host B</text>
+      <text x="590" y="68" text-anchor="middle" class="s-mac">3C-5A-B4-12-EE-01</text>
+      <line x1="540" y1="55" x2="410" y2="155" stroke="#c9c0ae" stroke-width="1.5"/>
+
+      <!-- Host C (bottom-left) -->
+      <rect x="60" y="260" width="100" height="50" rx="6" fill="#e8e3d6" stroke="#c9c0ae" stroke-width="1"/>
+      <text x="110" y="282" text-anchor="middle" class="s-ttl">Host C</text>
+      <text x="110" y="298" text-anchor="middle" class="s-mac">88-AA-01-C7-55-3F</text>
+      <line x1="160" y1="285" x2="290" y2="190" stroke="#c9c0ae" stroke-width="1.5"/>
+
+      <!-- Host D (bottom-right) -->
+      <rect x="540" y="260" width="100" height="50" rx="6" fill="#e8e3d6" stroke="#c9c0ae" stroke-width="1"/>
+      <text x="590" y="282" text-anchor="middle" class="s-ttl">Host D</text>
+      <text x="590" y="298" text-anchor="middle" class="s-mac">D4-BE-D9-FF-42-10</text>
+      <line x1="540" y1="285" x2="410" y2="190" stroke="#c9c0ae" stroke-width="1.5"/>
+
+      <!-- Ethernet frame traveling A → B -->
+      <rect x="200" y="95" width="180" height="28" rx="4" fill="#b04428" stroke="#8a2a18" stroke-width="1"/>
+      <text x="210" y="113" class="s-frm">dst: 3C-5A-B4-12-EE-01</text>
+      <text x="210" y="85" class="s-lbl">Ethernet-ramme fra A → B</text>
+      <!-- Arrow showing direction -->
+      <polygon points="385,109 395,104 395,114" fill="#b04428"/>
+
+      <!-- Switch table annotation -->
+      <rect x="430" y="140" width="160" height="68" rx="5" fill="#f4f1ea" stroke="#c9c0ae" stroke-width="1"/>
+      <text x="440" y="157" class="s-ttl">Svitsjens tabell</text>
+      <text x="440" y="172" class="s-lbl">MAC              Port</text>
+      <text x="440" y="184" class="s-mac">1A-2F-BB-..  → 1</text>
+      <text x="440" y="196" class="s-mac">3C-5A-B4-..  → 2</text>
+      <line x1="410" y1="165" x2="430" y2="165" stroke="#c9c0ae" stroke-width="1" stroke-dasharray="4"/>
+
+      <!-- Learning label -->
+      <text x="350" y="230" text-anchor="middle" class="s-note">Svitsjen lærer MAC → port ved å</text>
+      <text x="350" y="243" text-anchor="middle" class="s-note">observere avsenderadressen på innkommende rammer</text>
+    </svg>
+    <figcaption>Et lokalt nettverk med en svitsj og fire verter. Svitsjen videresender rammen fra A til B basert på sin selvlærte tabell over MAC-adresser og porter.</figcaption>
+  </figure>
+
+  <div class="callout">
+    <span class="label">I praksis — rett foran deg</span>
+    <p>
+      Når laptopen din sender en pakke til ruteren hjemme, bruker den Ethernet (via WiFi eller kabel). Den trenger ruterens MAC-adresse — og bruker ARP for å finne den. Laptopen sender en broadcast: «Hvem har IP 192.168.1.1?» Ruteren svarer med sin MAC-adresse. Alt dette skjer automatisk, uten at du merker det, hver gang du åpner en nettside.
+    </p>
+  </div>
+</div>
+</section>
+
+<!-- ============================================ -->
+<!-- SUBPAGES                                       -->
+<!-- ============================================ -->
 <section>
 <div class="container">
   <div class="subpage-list">
@@ -37,8 +135,53 @@
   </div>
 </div>
 </section>
+
+<!-- ============================================ -->
+<!-- QUIZ                                           -->
+<!-- ============================================ -->
+<section>
+<div class="container">
+  <div class="section-badge">Test deg selv</div>
+  <h2>Kjapt quiz</h2>
+
+  <div class="quiz" data-quiz="1">
+    <div class="q-label">Spørsmål 1</div>
+    <div class="q-text">Host A vil sende en IP-pakke til Host B på samme lokale nettverk (LAN). A kjenner B sin IP-adresse, men har ingen oppføring for B i ARP-cachen sin. Hva skjer?</div>
+    <div class="options">
+      <button class="option" data-correct="false">A sender pakken direkte med B sin IP-adresse som destinasjon i Ethernet-rammen</button>
+      <button class="option" data-correct="true">A sender en ARP-broadcast for å finne B sin MAC-adresse, og venter på svar før den sender IP-pakken i en Ethernet-ramme</button>
+      <button class="option" data-correct="false">A sender pakken til default gateway (ruteren), som videresender den til B</button>
+    </div>
+    <div class="explanation">Riktig! Ethernet-rammen trenger en MAC-adresse som destinasjon — ikke en IP-adresse. Når ARP-cachen er tom, sender A en ARP-request som broadcast (FF-FF-FF-FF-FF-FF). B gjenkjenner sin egen IP og svarer med sin MAC-adresse. Først da kan A sende den faktiske IP-pakken innkapslet i en Ethernet-ramme adressert til B sin MAC.</div>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <div class="q-label">Spørsmål 2</div>
+    <div class="q-text">Hva er den viktigste forskjellen mellom en MAC-adresse og en IP-adresse?</div>
+    <div class="options">
+      <button class="option" data-correct="false">MAC-adresser er kortere enn IP-adresser</button>
+      <button class="option" data-correct="false">MAC-adresser brukes bare på trådløse nettverk</button>
+      <button class="option" data-correct="true">MAC-adressen er fast knyttet til nettverkskortet og har lokal betydning, mens IP-adressen er logisk og avhenger av hvor i nettverket du er</button>
+    </div>
+    <div class="explanation">Riktig! MAC-adressen (48 bit) er «brent inn» i nettverkskortet og følger enheten uansett hvor den kobles til. IP-adressen er logisk — den endres når du bytter nettverk. Rutere bruker IP for å finne veien på tvers av internett; MAC-adresser brukes bare på den lokale lenken for å identifisere naboen.</div>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <div class="q-label">Spørsmål 3</div>
+    <div class="q-text">I CSMA/CD: hva gjør en stasjon som oppdager en kollisjon mens den sender?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Den fortsetter å sende og håper den andre stasjonen stopper</button>
+      <button class="option" data-correct="false">Den sender pakken på nytt umiddelbart</button>
+      <button class="option" data-correct="true">Den avbryter sendingen, sender et jam-signal, og venter en tilfeldig tid (binary exponential backoff) før den prøver igjen</button>
+    </div>
+    <div class="explanation">Riktig! Ved kollisjon stopper stasjonen umiddelbart, sender et kort jam-signal slik at alle vet at det var en kollisjon, og venter deretter en tilfeldig tid. Ventetiden velges med <em>binary exponential backoff</em>: etter n-te kollisjon velges ventetiden tilfeldig fra {0, 1, …, 2ⁿ−1} tidsslots. Dette sprer ut forsøkene og reduserer sjansen for ny kollisjon.</div>
+  </div>
+</div>
+</section>
+
 </main>
 <footer><div class="container"><div class="ornament">&#10043; &#10043; &#10043;</div><p>NTNU · TTM4100 · Vår 2026</p></div></footer>
+<script src="../quiz.js"></script>
 <script src="../chat-widget.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>

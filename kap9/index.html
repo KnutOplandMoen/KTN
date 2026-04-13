@@ -7,861 +7,196 @@
 <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-
 <nav class="site-nav">
   <div class="container">
     <a href="../" class="brand">TTM4100</a>
     <a href="../" class="nav-back">&larr; Alle kapitler</a>
   </div>
 </nav>
-
 <main data-chapter="Kapittel 9: Multimedia Networking">
 <header class="hero">
 <div class="container">
-  <div class="eyebrow">Kapittel 9 · Datakommunikasjon (7. utgave)</div>
+  <div class="eyebrow">Kapittel 9 · Datakommunikasjon</div>
   <h1>Multimedia <em>Networking</em></h1>
   <p class="lede">Hvordan lyd og video reiser over et nett som egentlig bare lover «best effort» — og hva som skjer når pakkene ikke kommer frem i tide.</p>
-  <nav class="toc">
-    <a href="#intro"><span>01</span> Lyd og video som bits</a>
-    <a href="#apptypes"><span>02</span> Tre typer applikasjoner</a>
-    <a href="#streaming"><span>03</span> Streaming av lagret video</a>
-    <a href="#udphttp"><span>04</span> UDP vs. HTTP-streaming</a>
-    <a href="#voip"><span>05</span> Voice-over-IP</a>
-    <a href="#jitter"><span>06</span> Jitter og playout-forsinkelse</a>
-    <a href="#fec"><span>07</span> Tapsgjenoppretting: FEC og interleaving</a>
-    <a href="#skype"><span>08</span> Skype: P2P VoIP i praksis</a>
-    <a href="#rtp"><span>09</span> RTP — Real-Time Protocol</a>
-  </nav>
 </div>
 </header>
 
-<!-- ============================================================ -->
-<!-- SECTION 1: Intro — audio & video basics                      -->
-<!-- ============================================================ -->
-<section id="intro">
+<section>
 <div class="container">
-  <div class="section-badge">01 · Grunnlaget</div>
-  <h2>Lyd og video som <em>bits</em></h2>
-  <p class="section-intro">Før vi kan sende multimedia over et nettverk, må vi forstå hvordan analoge signaler blir til en strøm av bits.</p>
+  <div class="section-badge">Det store bildet</div>
+  <h2>En live-konsert gjennom <em>postsystemet</em></h2>
+  <p class="section-intro">Internett ble designet for data som tåler forsinkelse. Multimedia krever noe helt annet — og hele kapittelet handler om hvordan vi fikser det gapet.</p>
 
-  <p class="dropcap">Lyd er trykkbølger i luften. Video er en sekvens av bilder som vises raskt nok til at øyet oppfatter bevegelse. Ingen av delene er naturlig «digitale» — de er kontinuerlige, analoge størrelser. For å sende dem over et pakkenett må vi først gjøre dem om til en strøm av bits, og det er der <strong>sampling</strong> og <strong>kvantisering</strong> kommer inn.</p>
+  <p class="dropcap">Tenk deg at du skal holde en live-konsert, men musikerne sitter spredt rundt i Norge — og den eneste måten å kommunisere på er postsystemet. Hvert noteark du sender kommer frem, men noen brev bruker én dag, andre bruker fem. For vanlig korrespondanse er det uproblematisk. Men for musikerne er det katastrofe: hvis trommenoten ankommer tre takter for sent, høres hele stykket forferdelig ut. <em>Det</em> er problemet med multimedia over Internett. Nettet garanterer bare «best effort» — pakkene kommer nok frem til slutt, men ingen lover <em>når</em>. For e-post og nettsider spiller det ingen rolle. For video og tale er timing alt.</p>
 
-  <h3>Audio: sampling og kvantisering</h3>
-  <p>Et analogt lydsignal samples ved en fast rate — verdien av signalet måles med jevne mellomrom. Hver måling <em>kvantiseres</em>, altså rundes av til nærmeste tillatte verdi. Hvis vi bruker 8 bits per sample, har vi 2<sup>8</sup> = 256 mulige verdier. Resultatet er en strøm av tall som representerer lyden.</p>
+  <p>Løsningen er overraskende elegant: vi kan ikke fikse nettverket (det vil alltid ha variabel forsinkelse), men vi kan bygge smarte mekanismer i endepunktene. Den viktigste idéen er <strong>playout-bufferen</strong> — en mellomlager hos mottakeren som samler opp pakker og spiller dem av med jevn rate, selv om de ankom med ujevne mellomrom. Det er som om konsertdirigenten venter med å starte stykket til tilstrekkelig mange noteark har kommet frem, slik at musikerne alltid har neste note klar.</p>
 
-  <div class="table-wrap">
-  <table>
-    <tr><th>Bruksområde</th><th>Sampling-rate</th><th>Bits/sample</th><th>Bitrate</th></tr>
-    <tr><td class="mono-cell">Telefon</td><td>8 000 samples/s</td><td>8</td><td>64 kbps</td></tr>
-    <tr><td class="mono-cell">CD-musikk</td><td>44 100 samples/s</td><td>16</td><td>1,411 Mbps</td></tr>
-    <tr><td class="mono-cell">MP3</td><td>44 100 samples/s</td><td>komp.</td><td>96–160 kbps</td></tr>
-    <tr><td class="mono-cell">Internett-telefoni</td><td>varierer</td><td>komp.</td><td>5,3 kbps og opp</td></tr>
-  </table>
-  </div>
-
-  <p>Legg merke til forskjellen: en CD bruker 1,4 Mbps for å representere musikk. MP3 komprimerer den ned til under 160 kbps ved å fjerne lyddetaljer som de fleste ikke hører. Internett-telefoni trenger bare 5–64 kbps fordi menneskelig tale er mye enklere enn musikk.</p>
-
-  <h3>Video: romlig og temporal koding</h3>
-  <p>En video er en sekvens av bilder (typisk 24–30 bilder per sekund), der hvert bilde er et rutenett av piksler. Rå video krever enorm båndbredde, men det finnes to typer redundans vi kan utnytte for å komprimere:</p>
-
-  <div class="callout">
-    <span class="label">Spatial (romlig) koding</span>
-    <p>Innenfor ett enkelt bilde er det store områder med samme farge. I stedet for å sende <em>N</em> like piksler, sender vi bare fargen og antallet — «200 piksler lilla». Dette er idéen bak all bildekomprimering.</p>
-  </div>
+  <figure>
+    <svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arw" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L6,4 L0,8 z" fill="#1a1612"/></marker>
+      </defs>
+      <!-- Source -->
+      <rect x="10" y="60" width="100" height="60" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="4"/>
+      <text x="60" y="87" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">Kilde</text>
+      <text x="60" y="103" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">(kamera/mikrofon)</text>
+      <!-- Arrow to encoder -->
+      <line x1="110" y1="90" x2="155" y2="90" stroke="#1a1612" stroke-width="2" marker-end="url(#arw)"/>
+      <!-- Encoder -->
+      <rect x="162" y="60" width="90" height="60" fill="#e8e3d6" stroke="#2d4a7a" stroke-width="2" rx="4"/>
+      <text x="207" y="87" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a">Encoder</text>
+      <text x="207" y="103" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">MPEG / PCM</text>
+      <!-- Arrow to network -->
+      <line x1="252" y1="90" x2="297" y2="90" stroke="#1a1612" stroke-width="2" marker-end="url(#arw)"/>
+      <!-- Network cloud -->
+      <ellipse cx="380" cy="90" rx="75" ry="42" fill="#f4f1ea" stroke="#b04428" stroke-width="2" stroke-dasharray="6 3"/>
+      <text x="380" y="85" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">Internett</text>
+      <text x="380" y="102" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428">variabel delay</text>
+      <!-- Jitter visualization: small packets with varying gaps -->
+      <rect x="315" y="42" width="6" height="10" fill="#b04428" rx="1"/>
+      <rect x="340" y="42" width="6" height="10" fill="#b04428" rx="1"/>
+      <rect x="350" y="42" width="6" height="10" fill="#b04428" rx="1"/>
+      <rect x="395" y="42" width="6" height="10" fill="#b04428" rx="1"/>
+      <rect x="425" y="42" width="6" height="10" fill="#b04428" rx="1"/>
+      <text x="380" y="38" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#b04428">jitter</text>
+      <!-- Arrow to buffer -->
+      <line x1="455" y1="90" x2="500" y2="90" stroke="#1a1612" stroke-width="2" marker-end="url(#arw)"/>
+      <!-- Playout buffer -->
+      <rect x="507" y="55" width="110" height="70" fill="#e8e3d6" stroke="#3d6b3a" stroke-width="2" rx="4"/>
+      <text x="562" y="85" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">Playout-</text>
+      <text x="562" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">buffer</text>
+      <!-- Even packets out of buffer -->
+      <rect x="524" y="130" width="8" height="10" fill="#3d6b3a" rx="1"/>
+      <rect x="540" y="130" width="8" height="10" fill="#3d6b3a" rx="1"/>
+      <rect x="556" y="130" width="8" height="10" fill="#3d6b3a" rx="1"/>
+      <rect x="572" y="130" width="8" height="10" fill="#3d6b3a" rx="1"/>
+      <rect x="588" y="130" width="8" height="10" fill="#3d6b3a" rx="1"/>
+      <text x="562" y="155" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#3d6b3a">jevn rate ut</text>
+      <!-- Arrow to display -->
+      <line x1="617" y1="90" x2="660" y2="90" stroke="#1a1612" stroke-width="2" marker-end="url(#arw)"/>
+      <!-- Display -->
+      <rect x="667" y="60" width="80" height="60" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="4"/>
+      <text x="707" y="87" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">Skjerm</text>
+      <text x="707" y="103" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">/ høyttaler</text>
+      <!-- Bottom label -->
+      <text x="380" y="188" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">Bufferen absorberer jitter: ujevne pakker inn → jevn avspilling ut</text>
+    </svg>
+    <figcaption>Multimedia-pipeline: kilden koder lyd/video, nettverket tilfører variabel forsinkelse (jitter), og playout-bufferen hos mottakeren jevner ut variasjonen slik at avspillingen blir jevn.</figcaption>
+  </figure>
 
   <div class="callout callout-blue">
-    <span class="label">Temporal koding</span>
-    <p>Mellom to påfølgende bilder er forskjellen ofte minimal — kanskje bare en liten bevegelse i ett hjørne. I stedet for å sende hele det neste bildet, sender vi bare <em>differansen</em> fra forrige bilde. Dette er grunnen til at MPEG-video er så mye mer effektiv enn å sende hvert bilde individuelt.</p>
+    <span class="label">Hvorfor Netflix plutselig blir pixlete</span>
+    <p>Når du ser Netflix og bildet plutselig blir pikselete, er det fordi DASH (Dynamic Adaptive Streaming over HTTP) har byttet til lavere kvalitet fordi nettverket ble tregere. Klienten din ber om videosegmenter i den oppløsningen den tror nettverket klarer akkurat nå. Blir det bedre igjen? Da bytter den tilbake til HD. Alt dette skjer automatisk, uten at du trykker på noe — og det er et direkte resultat av teknikkene i dette kapittelet.</p>
   </div>
 
-  <h3>CBR vs. VBR</h3>
-  <p>Når vi koder video, kan vi velge mellom to strategier:</p>
-  <ul style="margin:0 0 24px 24px;color:var(--ink-soft)">
-    <li style="margin-bottom:8px"><strong>CBR (Constant Bit Rate):</strong> Videoen kodes med en fast bitrate hele veien. Enkelt for nettverket å planlegge for, men kan gi unødvendig lav kvalitet i stille scener eller for dårlig kvalitet i komplekse scener.</li>
-    <li><strong>VBR (Variable Bit Rate):</strong> Bitraten varierer etter hvor komplekst innholdet er. En enkel scene med lite bevegelse bruker få bits, mens en actionscene bruker mange. Bedre kvalitet, men vanskeligere for nettverket å håndtere.</li>
-  </ul>
-
-  <div class="table-wrap">
-  <table>
-    <tr><th>Standard</th><th>Typisk bitrate</th><th>Bruk</th></tr>
-    <tr><td class="mono-cell">MPEG-1</td><td>1,5 Mbps</td><td>CD-ROM-video</td></tr>
-    <tr><td class="mono-cell">MPEG-2</td><td>3–6 Mbps</td><td>DVD</td></tr>
-    <tr><td class="mono-cell">MPEG-4</td><td>< 1 Mbps</td><td>Internett-video</td></tr>
-  </table>
-  </div>
+  <p>Kapittelet dekker hele spekteret: fra hvordan analog lyd og video blir til en bitstrøm (sampling, komprimering, CBR vs. VBR), via streaming-arkitekturer (HTTP/TCP mot UDP, DASH), til de spesielle utfordringene med sanntidssamtaler (VoIP). Der lærer vi at forsinkelse over 400 ms ødelegger en telefonsamtale, at <em>jitter</em> er farligere enn gjennomsnittlig forsinkelse, og at smarte teknikker som FEC (Forward Error Correction) og interleaving lar oss gjenopprette tapte pakker uten å vente på retransmisjon. Til slutt møter vi RTP — protokollen som gir multimedia-pakker det UDP mangler: tidsstempler, sekvensnummer og type-identifikasjon.</p>
 </div>
 </section>
 
-<!-- ============================================================ -->
-<!-- SECTION 2: Three application types                           -->
-<!-- ============================================================ -->
-<section id="apptypes">
+<section>
 <div class="container">
-  <div class="section-badge">02 · Applikasjonstyper</div>
-  <h2>Tre typer <em>multimedia-applikasjoner</em></h2>
-  <p class="section-intro">Ikke all multimedia har de samme kravene til nettverket.</p>
-
-  <p>Multimedia over nettverk kan deles inn i tre kategorier med vidt forskjellige nettverkskrav. Det er viktig å skille dem, fordi løsningene vi trenger er forskjellige for hver.</p>
-
-  <div class="compare">
-    <div>
-      <h4>1. Streaming av lagret innhold</h4>
-      <ul>
-        <li>Video/lyd er ferdig innspilt og lagret på en server</li>
-        <li>Klienten kan begynne avspilling <em>før</em> hele filen er lastet ned</li>
-        <li>Serveren kan sende raskere enn avspillingsraten — klienten bufrer</li>
-        <li>Eksempler: YouTube, Netflix, Spotify</li>
-      </ul>
-    </div>
-    <div>
-      <h4>2. Samtale (voice/video)</h4>
-      <ul>
-        <li>Interaktiv kommunikasjon mellom mennesker</li>
-        <li>Svært strenge krav til <em>forsinkelse</em> — over 400 ms ødelegger samtalen</li>
-        <li>Tåler noe pakketap, men ikke mye forsinkelse</li>
-        <li>Eksempler: Skype, Zoom, Teams, VoIP-telefoni</li>
-      </ul>
-    </div>
+  <div class="subpage-list">
+    <a href="innhold.html" class="subpage-card">
+      <span class="sp-icon">9</span>
+      <div class="sp-info">
+        <div class="sp-title">Multimedia Networking</div>
+        <div class="sp-desc">Lyd og video som bits, streaming, VoIP, jitter, playout-buffer, FEC og RTP</div>
+      </div>
+      <span class="sp-arrow">&rarr;</span>
+    </a>
   </div>
-
-  <div class="callout" style="margin-top:0">
-    <span class="label">3. Live streaming</span>
-    <p>En mellomting: innholdet strømmes i sanntid (fotballkamp, konsert), men er ikke interaktivt. Man tåler noen sekunders forsinkelse (det er derfor du av og til hører naboen juble før du ser målet). Kravene er omtrent som for lagret streaming, men man kan ikke spole fremover.</p>
-  </div>
-
-  <p>Den røde tråden er at alle tre typene har til felles at de er <strong>tidssensitive</strong> — bits som kommer for sent er verdiløse. En e-post som bruker 2 sekunder ekstra spiller ingen rolle, men 2 sekunder ekstra forsinkelse i en telefonsamtale gjør den ubrukelig. Hele resten av dette kapittelet handler om å takle denne tidsfølsomheten over et nettverk som bare lover «best effort».</p>
 </div>
 </section>
 
-<!-- ============================================================ -->
-<!-- SECTION 3: Streaming stored video                            -->
-<!-- ============================================================ -->
-<section id="streaming">
+<section>
 <div class="container">
-  <div class="section-badge">03 · Lagret video</div>
-  <h2>Streaming av <em>lagret</em> video</h2>
-  <p class="section-intro">Klienten spiller av den ene enden mens serveren fremdeles sender den andre — og bufferen i midten gjør det hele mulig.</p>
+  <h2>Test deg selv</h2>
+  <p class="section-intro">Sjekk om du har forstått de viktigste konseptene fra dette kapittelet.</p>
 
-  <p class="dropcap">Hovedutfordringen med streaming er enkel å forklare: videoen ble spilt inn med en fast rate (f.eks. 30 bilder per sekund), og den <em>må</em> spilles av med nøyaktig samme rate for at den skal se riktig ut. Men nettverket leverer pakker med variabel forsinkelse — noen ganger litt fortere, noen ganger litt tregere. Denne variabiliteten kalles <strong>jitter</strong>, og det er den klienten må kompensere for.</p>
-
-  <h3>Continuous playout constraint</h3>
-  <p>Når avspillingen først har begynt, må den fortsette med jevn rate. Hvis pakker som trengs for neste bilde ikke har kommet frem ennå, fryser videoen — den klassiske «buffering»-animasjonen vi alle hater. Vi kan ikke sende pakkene tilbake i tid, så den eneste strategien er å <em>vente litt med å starte avspillingen</em>, slik at vi bygger opp en buffer først.</p>
-
-  <h3>Klient-side buffering</h3>
-  <p>Idéen er elegant: klienten har en buffer med plass til en viss mengde video. Serveren fyller bufferen med variabel rate x(t) (påvirket av nettverksforhold), mens klienten tømmer bufferen med konstant avspillingsrate r.</p>
-
-  <figure>
-    <svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
-      <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L6,4 L0,8 z" fill="#1a1612"/></marker></defs>
-      <!-- server -->
-      <rect x="30" y="70" width="100" height="60" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="3"/>
-      <text x="80" y="105" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">Server</text>
-      <!-- arrow in -->
-      <line x1="130" y1="100" x2="260" y2="100" stroke="#1a1612" stroke-width="2" marker-end="url(#arr)"/>
-      <text x="195" y="88" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">x(t) variabel</text>
-      <!-- buffer -->
-      <rect x="268" y="60" width="160" height="80" fill="#e8e3d6" stroke="#1a1612" stroke-width="2" rx="3"/>
-      <text x="348" y="95" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">Buffer (B)</text>
-      <text x="348" y="115" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">Q(t)</text>
-      <!-- arrow out -->
-      <line x1="428" y1="100" x2="530" y2="100" stroke="#1a1612" stroke-width="2" marker-end="url(#arr)"/>
-      <text x="479" y="88" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">r konstant</text>
-      <!-- client -->
-      <rect x="538" y="70" width="130" height="60" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="3"/>
-      <text x="603" y="105" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">Avspilling</text>
-      <!-- labels -->
-      <text x="348" y="170" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">x(t) > r i snitt → bufferen tømmes aldri</text>
-      <text x="348" y="190" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">x(t) &lt; r → bufferen tømmes til slutt → frysing</text>
-    </svg>
-    <figcaption>Klient-side buffering: variabel fylling fra nettet, konstant tømming ved avspilling. Så lenge gjennomsnittlig x(t) > r og initiell forsinkelse er stor nok, unngår vi frysing.</figcaption>
-  </figure>
-
-  <h3>Avveiningen: playout-forsinkelse</h3>
-  <p>Jo lengre vi venter med å starte avspillingen, jo mer buffer bygger vi opp — og jo tryggere er vi mot korte perioder der nettverket er tregt. Men brukeren vil ikke vente. Denne avveiningen er fundamental:</p>
-
-  <div class="slider-box">
-    <label>Initial playout-forsinkelse: <span class="val" id="delayVal">2,0 s</span></label>
-    <input type="range" id="delaySlider" min="1" max="100" value="20">
-    <div class="out" id="delayOut"></div>
-  </div>
-  <p style="font-size:14px;color:var(--ink-faded);font-style:italic;margin-top:-20px">Dra slideren for å se hvordan initial playout-forsinkelse påvirker bufferrobusthet og brukeropplevelse. Modellen er forenklet, men illustrerer kjernen av trade-off-en.</p>
-
-  <div class="margin-note">Moderne tjenester som YouTube bruker <a href="../kap2/p2p-video-cdn.html#streaming">DASH (Dynamic Adaptive Streaming over HTTP)</a>, der klienten dynamisk ber om videosegmenter i den kvaliteten som passer til nettverksforholdene akkurat nå — men det grunnleggende prinsippet med buffering er det samme.</div>
-</div>
-</section>
-
-<!-- ============================================================ -->
-<!-- SECTION 4: UDP vs HTTP streaming                             -->
-<!-- ============================================================ -->
-<section id="udphttp">
-<div class="container">
-  <div class="section-badge">04 · Transportvalg</div>
-  <h2>UDP vs. <em>HTTP</em>-streaming</h2>
-  <p class="section-intro">To helt forskjellige strategier for å få videobits fra server til klient.</p>
-
-  <p>Historisk har det vært to hovedtilnærminger for å strømme video. I de tidlige dagene brukte man oftest UDP; i dag har HTTP/TCP vunnet nesten fullstendig. Det er verdt å forstå begge og hvorfor pendelen svingte.</p>
-
-  <div class="compare">
-    <div>
-      <h4>Streaming over UDP</h4>
-      <ul>
-        <li>Serveren sender med en rate som passer klienten, ofte lik kodingsraten (CBR)</li>
-        <li>Senderen bryr seg ikke om metning i nettet — kan «oversvømme» en flaskehals</li>
-        <li>Kort playout-forsinkelse (2–5 sek) for å fjerne jitter</li>
-        <li>Feilretting på applikasjonslaget om det er tid</li>
-        <li>Bruker RTP for multimediapayload</li>
-        <li>Blokkeres ofte av brannmurer (UDP-trafikk filtreres)</li>
-      </ul>
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 1</div>
+    <div class="q-text">Hva er «jitter» i konteksten av multimedia-nettverk?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Den totale forsinkelsen fra sender til mottaker</button>
+      <button class="option" data-correct="true">Variasjonen i forsinkelse mellom pakker — noen bruker lengre tid enn andre gjennom nettet</button>
+      <button class="option" data-correct="false">Pakketap forårsaket av metning i ruterbuffere</button>
+      <button class="option" data-correct="false">Støy som oppstår ved kvantisering av det analoge lydsignalet</button>
     </div>
-    <div>
-      <h4>Streaming over HTTP/TCP</h4>
-      <ul>
-        <li>Videofilen hentes med vanlig HTTP GET</li>
-        <li>TCP sørger for pålitelig, ordnet levering (retransmisjon)</li>
-        <li>Sende-raten varierer pga. TCPs metningskontroll</li>
-        <li>Større playout-buffer trengs for å jevne ut variasjonen</li>
-        <li>Passerer brannmurer uproblematisk (port 80/443)</li>
-        <li>Brukes av YouTube, Netflix, og stort sett alt i dag</li>
-      </ul>
+    <div class="explanation">Jitter er variasjonen i pakke-forsinkelse. Pakker sendes med jevne mellomrom, men ankommer med ujevne mellomrom. Det er dette playout-bufferen kompenserer for — selv om gjennomsnittlig forsinkelse er akseptabel, kan høy variasjon gjøre at pakker ankommer for sent til å spilles av.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 2</div>
+    <div class="q-text">Hvorfor bytter DASH (Dynamic Adaptive Streaming over HTTP) mellom forskjellige videokvaliteter under avspilling?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Fordi serveren bestemmer kvaliteten basert på hvor mye den kan sende</button>
+      <button class="option" data-correct="false">Fordi TCP automatisk tilpasser videokvaliteten i sine pakker</button>
+      <button class="option" data-correct="true">Fordi klienten selv velger kvalitet basert på målt nettverksbåndbredde, slik at bufferen ikke tømmes</button>
+      <button class="option" data-correct="false">Fordi videofilen er kodet med variabel bitrate (VBR) som endrer seg tilfeldig</button>
     </div>
+    <div class="explanation">I DASH er det klienten som styrer: den måler hvor raskt segmenter lastes ned, estimerer tilgjengelig båndbredde, og ber om neste segment i en kvalitet som nettverket klarer. Målet er å holde playout-bufferen fylt uten å be om høyere kvalitet enn nettverket kan levere.</div>
   </div>
 
-  <figure>
-    <svg viewBox="0 0 700 170" xmlns="http://www.w3.org/2000/svg">
-      <defs><marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L6,4 L0,8 z" fill="#1a1612"/></marker></defs>
-      <!-- server -->
-      <rect x="20" y="50" width="80" height="70" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="3"/>
-      <text x="60" y="78" text-anchor="middle" font-family="IBM Plex Mono" font-size="10">Video-</text>
-      <text x="60" y="93" text-anchor="middle" font-family="IBM Plex Mono" font-size="10">fil</text>
-      <!-- TCP send buf -->
-      <rect x="140" y="50" width="80" height="70" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5" rx="3"/>
-      <text x="180" y="82" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">TCP send</text>
-      <text x="180" y="95" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">buffer</text>
-      <!-- arrow -->
-      <line x1="100" y1="85" x2="138" y2="85" stroke="#1a1612" stroke-width="1.5" marker-end="url(#arr2)"/>
-      <!-- network -->
-      <line x1="220" y1="85" x2="350" y2="85" stroke="#2d4a7a" stroke-width="3" stroke-dasharray="6 4"/>
-      <text x="285" y="75" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">TCP / Internet</text>
-      <!-- TCP recv buf -->
-      <rect x="358" y="50" width="80" height="70" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5" rx="3"/>
-      <text x="398" y="82" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">TCP recv</text>
-      <text x="398" y="95" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">buffer</text>
-      <!-- arrow -->
-      <line x1="438" y1="85" x2="480" y2="85" stroke="#1a1612" stroke-width="1.5" marker-end="url(#arr2)"/>
-      <!-- app buffer -->
-      <rect x="488" y="50" width="90" height="70" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5" rx="3"/>
-      <text x="533" y="82" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">Playout</text>
-      <text x="533" y="95" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">buffer</text>
-      <!-- arrow out -->
-      <line x1="578" y1="85" x2="620" y2="85" stroke="#1a1612" stroke-width="1.5" marker-end="url(#arr2)"/>
-      <!-- labels -->
-      <text x="60" y="140" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">Server</text>
-      <text x="630" y="90" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">Spill av</text>
-      <text x="533" y="140" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">Klient</text>
-      <!-- rate label -->
-      <text x="285" y="55" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#b04428">variabel rate x(t)</text>
-    </svg>
-    <figcaption>HTTP/TCP-streaming: videofilen hentes med HTTP GET, bufres i TCP-mottakerbuffer og applikasjonsbuffer før avspilling. TCPs metningskontroll gjør at sende-raten varierer.</figcaption>
-  </figure>
-
-  <p>Grunnen til at HTTP/TCP vant er pragmatisk: det passerer brannmurer, det krever ingen spesiell serverinfrastruktur (vanlig webserver holder), og TCP gir pålitelig levering slik at man slipper å håndtere tap selv. Avveiningen er høyere playout-forsinkelse, men for streaming av lagret video er det akseptabelt.</p>
-</div>
-</section>
-
-<div class="divider">&#10043; &#10043; &#10043;</div>
-
-<!-- ============================================================ -->
-<!-- SECTION 5: Voice-over-IP                                     -->
-<!-- ============================================================ -->
-<section id="voip">
-<div class="container">
-  <div class="section-badge">05 · VoIP</div>
-  <h2>Voice-over-IP: <em>samtale</em> over pakkenett</h2>
-  <p class="section-intro">Kravene til interaktiv tale er fundamentalt annerledes enn for lagret video — forsinkelse er fienden.</p>
-
-  <p class="dropcap">Når to mennesker snakker sammen, forventer de et svar innen brøkdelen av et sekund. Hjernen vår er utrolig sensitiv for forsinkelser i samtaler — allerede ved 150 millisekunder merker vi at noe er «rart», og ved 400 ms bryter samtalen sammen i en pinlig dans av «snakket du? nei, du først». Denne forsinkelsessensitiviteten gjør VoIP til et mye vanskeligere problem enn streaming av video.</p>
-
-  <h3>VoIP-karakteristikker</h3>
-  <p>En typisk VoIP-strøm ser slik ut:</p>
-  <ul style="margin:0 0 24px 24px;color:var(--ink-soft)">
-    <li style="margin-bottom:8px">Taleren <strong>veksler mellom snakkefaser og stillhet</strong> (talk spurts vs. silence). Pakker genereres bare under snakkefaser.</li>
-    <li style="margin-bottom:8px">Under snakking: <strong>64 kbps</strong> (= 8 Kbytes/s) med PCM-koding.</li>
-    <li style="margin-bottom:8px">Lyden deles opp i <strong>20 ms biter</strong> — hver bit er 160 bytes med lyddata.</li>
-    <li style="margin-bottom:8px">Til hver bit legges en applikasjonsheader, og resultatet pakkes i et UDP- eller TCP-segment.</li>
-    <li>Applikasjonen sender én pakke hvert 20. millisekund under en snakkefase.</li>
-  </ul>
-
-  <h3>Krav til forsinkelse</h3>
-  <div class="callout callout-green">
-    <span class="label">Ende-til-ende-forsinkelse</span>
-    <p><strong>< 150 ms:</strong> bra — samtalen føles naturlig.<br>
-    <strong>150–400 ms:</strong> merkbar forsinkelse, men brukbart.<br>
-    <strong>> 400 ms:</strong> uakseptabelt — samtalen blir umulig.<br>
-    Forsinkelsen inkluderer alt: pakketisering, nettverksforsinkelse, playout-forsinkelse hos mottaker.</p>
-  </div>
-
-  <h3>Pakketap og forsinkelsestap</h3>
-  <p>VoIP må takle to typer tap:</p>
-  <div class="compare">
-    <div>
-      <h4>Nettverkstap</h4>
-      <ul>
-        <li>IP-datagram går tapt pga. metning i nettet (ruterbuffer-overflyt)</li>
-        <li>Den vanlige formen for tap vi kjenner fra TCP-verdenen</li>
-      </ul>
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 3</div>
+    <div class="q-text">Hva er den maksimale ende-til-ende-forsinkelsen for at en VoIP-samtale skal føles naturlig?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Under 50 millisekunder</button>
+      <button class="option" data-correct="true">Under 150 millisekunder</button>
+      <button class="option" data-correct="false">Under 400 millisekunder</button>
+      <button class="option" data-correct="false">Under 1 sekund</button>
     </div>
-    <div>
-      <h4>Forsinkelsestap</h4>
-      <ul>
-        <li>Pakken <em>kommer frem</em>, men for sent til å spilles av</li>
-        <li>Effektivt det samme som tap — biten er ubrukelig</li>
-        <li>Typisk maks tolerert forsinkelse: 400 ms</li>
-      </ul>
+    <div class="explanation">Under 150 ms føles samtalen naturlig. Mellom 150 og 400 ms er forsinkelsen merkbar men brukbar. Over 400 ms bryter samtalen sammen — man snakker i munnen på hverandre fordi begge tror det er stille.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 4</div>
+    <div class="q-text">Hva gjør playout-bufferen hos mottakeren i et multimedia-system?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Den komprimerer videoen til lavere bitrate for å spare båndbredde</button>
+      <button class="option" data-correct="false">Den sender tapte pakker på nytt til senderen</button>
+      <button class="option" data-correct="true">Den samler opp pakker som ankommer med variabel forsinkelse og spiller dem av med jevn rate</button>
+      <button class="option" data-correct="false">Den krypterer datastrømmen for sikker overføring</button>
     </div>
+    <div class="explanation">Playout-bufferen er nøkkelen til jevn avspilling. Pakker ankommer med ujevne mellomrom (jitter), men bufferen lar mottakeren vente til den har nok data, og deretter spille av med den konstante raten som trengs. Jo større buffer, jo mer jitter tåles — men forsinkelsen øker.</div>
   </div>
 
-  <p>Et viktig poeng: VoIP <strong>tåler noe tap</strong>. Avhengig av lydkoding og teknikker for å skjule tap (loss concealment), kan man tolerere 1–20% pakketap uten at samtalen blir uforståelig. Det er en dramatisk forskjell fra f.eks. filoverføring, der ethvert tapt byte er katastrofalt.</p>
-</div>
-</section>
-
-<!-- ============================================================ -->
-<!-- SECTION 6: Jitter and playout delay                          -->
-<!-- ============================================================ -->
-<section id="jitter">
-<div class="container">
-  <div class="section-badge">06 · Jitter</div>
-  <h2>Jitter og <em>playout-forsinkelse</em></h2>
-  <p class="section-intro">Konstant sende-rate inn i nettet, variabel forsinkelse gjennom det — og en buffer som retter opp igjen.</p>
-
-  <p>VoIP-senderen sender pakker med jevne mellomrom (hver 20. ms under en snakkefase). Men nettverket leverer dem med variabel forsinkelse — akkurat som med video-streaming. Denne variasjonen i forsinkelse er <strong>jitter</strong>, og den må kompenseres av mottakeren. Løsningen er, igjen, en buffer — men nå handler avveiningen om <em>millisekunder</em>, ikke sekunder.</p>
-
-  <h3>Fast playout-forsinkelse</h3>
-  <p>Den enkleste strategien: mottakeren bestemmer seg for en fast forsinkelse <em>q</em>, og spiller av hver lydbit nøyaktig <em>q</em> millisekunder etter at den ble generert av senderen.</p>
-
-  <ul style="margin:0 0 24px 24px;color:var(--ink-soft)">
-    <li style="margin-bottom:8px">Hvis en lydbit har tidsstempel <em>t</em>, spilles den av ved tid <em>t + q</em>.</li>
-    <li style="margin-bottom:8px">Hvis biten ankommer <em>etter</em> t + q → den er tapt (for sen).</li>
-    <li style="margin-bottom:8px"><strong>Stor q:</strong> færre pakker «for sene» → lavere tap, men lengre forsinkelse i samtalen.</li>
-    <li><strong>Liten q:</strong> bedre interaktivitet, men flere pakker rekker ikke frem i tide.</li>
-  </ul>
-
-  <figure>
-    <svg viewBox="0 0 700 230" xmlns="http://www.w3.org/2000/svg">
-      <defs><marker id="arr3" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L6,4 L0,8 z" fill="#1a1612"/></marker></defs>
-      <!-- time axis -->
-      <line x1="60" y1="200" x2="660" y2="200" stroke="#1a1612" stroke-width="1.5" marker-end="url(#arr3)"/>
-      <text x="670" y="204" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">tid</text>
-      <!-- generated -->
-      <text x="50" y="45" text-anchor="end" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">Generert</text>
-      <rect x="100" y="30" width="14" height="20" fill="#b04428" rx="1"/><rect x="120" y="30" width="14" height="20" fill="#b04428" rx="1"/><rect x="140" y="30" width="14" height="20" fill="#b04428" rx="1"/><rect x="160" y="30" width="14" height="20" fill="#b04428" rx="1"/><rect x="180" y="30" width="14" height="20" fill="#b04428" rx="1"/>
-      <!-- received (jittered) -->
-      <text x="50" y="95" text-anchor="end" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">Mottatt</text>
-      <rect x="200" y="80" width="14" height="20" fill="#2d4a7a" rx="1"/><rect x="230" y="80" width="14" height="20" fill="#2d4a7a" rx="1"/><rect x="240" y="80" width="14" height="20" fill="#2d4a7a" rx="1"/><rect x="280" y="80" width="14" height="20" fill="#2d4a7a" rx="1"/><rect x="320" y="80" width="14" height="20" fill="#2d4a7a" rx="1"/>
-      <!-- playout p -->
-      <text x="50" y="145" text-anchor="end" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">Playout p</text>
-      <rect x="260" y="130" width="14" height="20" fill="#3d6b3a" rx="1"/><rect x="280" y="130" width="14" height="20" fill="#3d6b3a" rx="1"/><rect x="300" y="130" width="14" height="20" fill="#3d6b3a" rx="1"/><rect x="320" y="130" width="14" height="20" fill="#3d6b3a" rx="1"/><rect x="340" y="130" width="14" height="20" fill="#3d6b3a" rx="1"/>
-      <!-- playout p' (shorter delay) -->
-      <text x="50" y="180" text-anchor="end" font-family="IBM Plex Mono" font-size="10" fill="#c68a1f">Playout p'</text>
-      <rect x="220" y="165" width="14" height="20" fill="#c68a1f" rx="1"/><rect x="240" y="165" width="14" height="20" fill="#c68a1f" rx="1"/><rect x="260" y="165" width="14" height="20" fill="#c68a1f" rx="1"/><rect x="280" y="165" width="14" height="20" fill="#c68a1f" rx="1"/>
-      <rect x="310" y="165" width="14" height="20" fill="none" stroke="#b04428" stroke-width="1.5" stroke-dasharray="3 2" rx="1"/>
-      <text x="338" y="178" font-family="IBM Plex Mono" font-size="9" fill="#b04428">tapt!</text>
-      <!-- r marker -->
-      <line x1="200" y1="70" x2="200" y2="205" stroke="#6b6257" stroke-width="1" stroke-dasharray="3 3"/>
-      <text x="200" y="218" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">r</text>
-      <!-- p marker -->
-      <line x1="260" y1="120" x2="260" y2="205" stroke="#3d6b3a" stroke-width="1" stroke-dasharray="3 3"/>
-      <text x="260" y="218" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">p</text>
-      <!-- p' marker -->
-      <line x1="220" y1="155" x2="220" y2="205" stroke="#c68a1f" stroke-width="1" stroke-dasharray="3 3"/>
-      <text x="220" y="218" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#c68a1f">p'</text>
-    </svg>
-    <figcaption>To playout-skjemaer: p (lang forsinkelse, ingen tap) og p' (kort forsinkelse, men siste pakke ble «for sen» og er tapt). Trade-off mellom forsinkelse og tap.</figcaption>
-  </figure>
-
-  <h3>Adaptiv playout-forsinkelse</h3>
-  <p>I stedet for å velge en fast q kan vi gjøre den <em>adaptiv</em>: vi estimerer nettverksforsinkelsen fortløpende og justerer playout-forsinkelsen ved starten av hver ny snakkefase. Stille perioder komprimeres eller forlenges litt for å ta igjen endringen — lytteren merker ikke dette.</p>
-
-  <p>Estimeringen bruker en <strong>EWMA (Exponentially Weighted Moving Average)</strong>, nøyaktig samme idé som TCP bruker for å estimere RTT:</p>
-
-  <div class="formula">
-    d<sub>i</sub> = (1 − &alpha;) &middot; d<sub>i-1</sub> + &alpha; &middot; (r<sub>i</sub> − t<sub>i</sub>)
-  </div>
-
-  <p>Her er d<sub>i</sub> det estimerte nettverksforsinkelsen etter den i-te pakken, &alpha; er en liten konstant (typisk 0,1), r<sub>i</sub> er tidspunktet pakken ble mottatt, og t<sub>i</sub> er tidsstempelet (når den ble sendt). Uttrykket (r<sub>i</sub> − t<sub>i</sub>) er den faktisk målte forsinkelsen for pakke i.</p>
-
-  <p>Men gjennomsnittlig forsinkelse alene er ikke nok — vi trenger også et mål på <em>variasjonen</em>. Vi estimerer avviket på samme måte:</p>
-
-  <div class="formula">
-    v<sub>i</sub> = (1 − &beta;) &middot; v<sub>i-1</sub> + &beta; &middot; |r<sub>i</sub> − t<sub>i</sub> − d<sub>i</sub>|
-  </div>
-
-  <p>Playout-tidspunktet for den første pakken <em>j</em> i en ny snakkefase settes da til:</p>
-
-  <div class="formula">
-    playout<sub>j</sub> = t<sub>j</sub> + d<sub>j</sub> + K &middot; v<sub>j</sub>
-  </div>
-
-  <p>Her er K en konstant (typisk 4). Legg merke til parallellen til TCP: der settes timeout til EstimatedRTT + 4 &middot; DevRTT — nøyaktig samme struktur. Gjennomsnittet fanger opp «normaltilstanden», og K &middot; v legger til en sikkerhetsmargin proporsjonalt med hvor mye forsinkelsen varierer. Alle etterfølgende pakker i samme snakkefase spilles av med faste 20 ms mellomrom fra dette utgangspunktet.</p>
-
-  <div class="stepper" id="ewmaStepper">
-    <div class="step-display">
-      <div class="step-title" id="ewmaTitle">Steg 1 av 5</div>
-      <div class="step-text" id="ewmaText"></div>
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 5</div>
+    <div class="q-text">Hvilken informasjon gir RTP-headeren som UDP-headeren mangler?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Pålitelig levering med retransmisjon</button>
+      <button class="option" data-correct="true">Payload-type, sekvensnummer og tidsstempel for mediedata</button>
+      <button class="option" data-correct="false">Garantert maksimal forsinkelse gjennom nettverket</button>
+      <button class="option" data-correct="false">Kryptering av payload-data</button>
     </div>
-    <div class="controls">
-      <button id="ewmaPrev">&larr; Forrige</button>
-      <span class="indicator" id="ewmaInd">1 / 5</span>
-      <button id="ewmaNext">Neste &rarr;</button>
+    <div class="explanation">RTP legger til tre ting UDP mangler: payload-type (hvilken koding brukes), sekvensnummer (for å oppdage tap og rekkefølgefeil) og tidsstempel (for å plassere pakkene riktig i tid ved avspilling). Men RTP gir ingen leveringsgarantier — all smarthet ligger i applikasjonen.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 6</div>
+    <div class="q-text">Hva er fordelen med piggyback FEC (lavkvalitetskopi av forrige lydbit i hver pakke) sammenlignet med enkel XOR-FEC?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Den krever ingen ekstra båndbredde i det hele tatt</button>
+      <button class="option" data-correct="false">Den kan gjenopprette tap av flere sammenhengende pakker</button>
+      <button class="option" data-correct="true">Den kan gjenopprette tap uten å vente på en hel pakkegruppe, og gir dermed lavere ekstra playout-forsinkelse</button>
+      <button class="option" data-correct="false">Den fungerer bare med TCP, ikke UDP</button>
     </div>
-  </div>
-
-  <h3>Detektere start av ny snakkefase</h3>
-  <p>Mottakeren må vite når en ny snakkefase starter, for det er da playout-forsinkelsen kan justeres. Uten pakketap er det enkelt: hvis forskjellen mellom to påfølgende tidsstempler er > 20 ms, har det vært en stillhetsperiode. Med mulig pakketap ser mottakeren på <em>både</em> tidsstempler og sekvensnummer — hvis tidsstempelgapet er > 20 ms <em>og</em> det ikke mangler sekvensnummer, er det en ny snakkefase.</p>
-</div>
-</section>
-
-<!-- ============================================================ -->
-<!-- SECTION 7: FEC & interleaving                                -->
-<!-- ============================================================ -->
-<section id="fec">
-<div class="container">
-  <div class="section-badge">07 · Tapshåndtering</div>
-  <h2>FEC og <em>interleaving</em></h2>
-  <p class="section-intro">Tre teknikker for å gjenopprette tapt lyd uten å vente på retransmisjon.</p>
-
-  <p>I VoIP har vi ikke tid til den vanlige TCP-metoden med å be om retransmisjon — en retransmisjon tar minst én RTT, og det kan fort overstige forsinkelsesbudsjettet vårt. Vi trenger teknikker som lar mottakeren gjenopprette tapte pakker <em>uten</em> hjelp fra senderen.</p>
-
-  <h3>1. Enkel FEC (XOR)</h3>
-  <p>For hver gruppe av <em>n</em> lydbiter lager senderen én ekstra redundant bit ved å XOR-e alle de <em>n</em> originale sammen. Senderen sender altså n+1 pakker i stedet for n, noe som øker båndbredden med en faktor 1/n.</p>
-
-  <div class="callout">
-    <span class="label">Eksempel</span>
-    <p>Med n = 4 sender vi 5 pakker per gruppe. Hvis <em>én</em> av de 5 pakkene går tapt, kan mottakeren rekonstruere den fra de 4 andre (XOR er reversibel). Hvis to eller flere går tapt, gir ikke denne metoden nok informasjon. Prisen: 25% ekstra båndbredde og økt playout-forsinkelse (vi må vente på hele gruppen).</p>
-  </div>
-
-  <h3>2. Piggyback med lavkvalitetsstrøm</h3>
-  <p>En mer elegant variant: senderen legger ved en <em>lavoppløselig kopi</em> av en tidligere lydbit i hver pakke. For eksempel kan den nominelle strømmen bruke PCM med 64 kbps, mens den redundante strømmen bruker GSM med 13 kbps.</p>
-
-  <figure>
-    <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
-      <!-- packets -->
-      <rect x="40" y="40" width="120" height="50" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="2"/>
-      <text x="100" y="60" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">Pkt 1: chunk 1</text>
-      <text x="100" y="78" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">64 kbps PCM</text>
-
-      <rect x="200" y="40" width="120" height="70" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="2"/>
-      <text x="260" y="60" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">Pkt 2: chunk 2</text>
-      <text x="260" y="78" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">64 kbps PCM</text>
-      <text x="260" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428">+ chunk 1 @ 13 kbps</text>
-
-      <rect x="360" y="40" width="120" height="70" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="2"/>
-      <text x="420" y="60" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">Pkt 3: chunk 3</text>
-      <text x="420" y="78" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">64 kbps PCM</text>
-      <text x="420" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428">+ chunk 2 @ 13 kbps</text>
-
-      <rect x="520" y="40" width="120" height="70" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="2"/>
-      <text x="580" y="60" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">Pkt 4: chunk 4</text>
-      <text x="580" y="78" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">64 kbps PCM</text>
-      <text x="580" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428">+ chunk 3 @ 13 kbps</text>
-
-      <!-- lost marker -->
-      <line x1="360" y1="30" x2="480" y2="120" stroke="#b04428" stroke-width="2.5"/>
-      <line x1="480" y1="30" x2="360" y2="120" stroke="#b04428" stroke-width="2.5"/>
-
-      <text x="350" y="155" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">Pkt 3 tapt → chunk 2 gjenopprettes fra pkt 4 (lavere kvalitet, men hørbart)</text>
-    </svg>
-    <figcaption>Piggyback FEC: hver pakke bærer en lav-kvalitets kopi av forrige chunk. Ikke-sammenhengende tap kan skjules med litt lavere lydkvalitet.</figcaption>
-  </figure>
-
-  <p>Hvis pakke 3 går tapt, mister vi chunk 3 i full kvalitet, men chunk 2 kan gjenopprettes fra den lave kopien i pakke 4. Resultatet er at bare <em>sammenhengende</em> tap gir hørbare hull. Overhead-en er beskjeden (13 kbps ekstra i dette eksempelet).</p>
-
-  <h3>3. Interleaving</h3>
-  <p>En tredje teknikk som ikke krever ekstra båndbredde i det hele tatt. Idéen: hver 20 ms lydbit deles opp i fire 5 ms enheter. Enhetene fra <em>forskjellige</em> biter blandes sammen i pakkene. Hvis én pakke går tapt, mister vi bare én liten 5 ms enhet fra fire forskjellige biter — i stedet for en hel sammenhengende 20 ms bit. Hvert hull er så kort at det nesten ikke høres.</p>
-
-  <div class="callout">
-    <span class="label">Trade-off</span>
-    <p>Interleaving gir <strong>ingen redundans-overhead</strong>, men krever at mottakeren venter på nok pakker til å sette sammen de originale bitene igjen. Det betyr <em>økt playout-forsinkelse</em> — det koster alltid noe.</p>
+    <div class="explanation">XOR-FEC krever at hele gruppen av n+1 pakker er mottatt før gjenoppretting kan skje, noe som øker playout-forsinkelsen. Piggyback FEC trenger bare neste pakke for å gjenopprette forrige — mye raskere, til prisen av litt lavere lydkvalitet på den gjennopprettede biten.</div>
   </div>
 </div>
 </section>
 
-<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
-  <p class="q-text">Hva er hovedfordelen med piggyback FEC (der man sender en lavkvalitetskopi av forrige lydbit sammen med nåværende) sammenlignet med enkel XOR-FEC?</p>
-  <div class="options">
-    <button class="option" data-correct="false">Den krever ingen ekstra båndbredde</button>
-    <button class="option" data-correct="true">Den kan gjenopprette tap uten å måtte vente på en hel gruppe pakker, og gir dermed lavere ekstra playout-forsinkelse</button>
-    <button class="option" data-correct="false">Den kan gjenopprette tap av flere sammenhengende pakker</button>
-    <button class="option" data-correct="false">Den fungerer bare over TCP, ikke UDP</button>
-  </div>
-  <div class="explanation" id="qFeedback1"></div>
-</div>
-
-<!-- ============================================================ -->
-<!-- SECTION 8: Skype                                             -->
-<!-- ============================================================ -->
-<section id="skype">
-<div class="container">
-  <div class="section-badge">08 · Skype</div>
-  <h2>Skype: <em>P2P</em> VoIP i praksis</h2>
-  <p class="section-intro">Et tidlig eksempel på storskala VoIP — med supernoder, overlay-nettverk og NAT-traversering.</p>
-
-  <p>Skype var i mange år det dominerende eksempelet på VoIP over Internett. Det brukte en proprietær, kryptert protokoll som ble reverseengineered av forskere. Arkitekturen er interessant fordi den kombinerer P2P-elementer med sentralisert kontroll.</p>
-
-  <h3>Arkitekturen</h3>
-  <ul style="margin:0 0 24px 24px;color:var(--ink-soft)">
-    <li style="margin-bottom:8px"><strong>Skype-klienter (SC):</strong> vanlige brukere som kjører Skype-applikasjonen. Under en samtale kobler to klienter seg direkte til hverandre for selve VoIP-datastrømmen.</li>
-    <li style="margin-bottom:8px"><strong>Supernoder (SN):</strong> utvalgte Skype-peers med spesielle funksjoner — de hjelper til med å lokalisere andre brukere og rute trafikk gjennom et overlay-nettverk.</li>
-    <li style="margin-bottom:8px"><strong>Overlay-nettverk:</strong> supernodene danner et overliggende nettverk seg imellom for å finne brukeres IP-adresser.</li>
-    <li><strong>Login-server:</strong> en sentralisert server for autentisering (brukernavn/passord).</li>
-  </ul>
-
-  <h3>Oppkobling av en samtale</h3>
-  <ol style="margin:20px 0 24px 24px;color:var(--ink-soft)">
-    <li style="margin-bottom:8px">Klienten kobler seg til en supernode (IP-adressen er cachet lokalt) via TCP.</li>
-    <li style="margin-bottom:8px">Logger inn mot den sentraliserte login-serveren.</li>
-    <li style="margin-bottom:8px">Får IP-adressen til den man vil ringe fra supernodenes overlay (eller fra kontaktlisten).</li>
-    <li>Initierer samtale direkte til den andre klienten.</li>
-  </ol>
-
-  <h3>NAT-problemet og relay-løsningen</h3>
-  <p>Det interessante problemet oppstår når <em>begge</em> samtalepartene sitter bak NAT. En NAT lar ikke utenforstående initiere en forbindelse inn til en enhet på innsiden — det er jo hele poenget med NAT. Så hvordan kobler to «innelåste» klienter seg til hverandre?</p>
-
-  <figure>
-    <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
-      <defs><marker id="arr4" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L6,4 L0,8 z" fill="#2d4a7a"/></marker></defs>
-      <!-- Alice -->
-      <rect x="30" y="140" width="80" height="50" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="3"/>
-      <text x="70" y="170" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">Alice</text>
-      <!-- NAT A -->
-      <rect x="140" y="120" width="60" height="90" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5" rx="3"/>
-      <text x="170" y="170" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">NAT</text>
-      <!-- SN A -->
-      <ellipse cx="300" cy="80" rx="40" ry="25" fill="#f4f1ea" stroke="#b04428" stroke-width="2"/>
-      <text x="300" y="85" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">SN-A</text>
-      <!-- SN B -->
-      <ellipse cx="440" cy="80" rx="40" ry="25" fill="#f4f1ea" stroke="#b04428" stroke-width="2"/>
-      <text x="440" y="85" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">SN-B</text>
-      <!-- NAT B -->
-      <rect x="540" y="120" width="60" height="90" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5" rx="3"/>
-      <text x="570" y="170" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">NAT</text>
-      <!-- Bob -->
-      <rect x="630" y="140" width="60" height="50" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="3"/>
-      <text x="660" y="170" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">Bob</text>
-      <!-- connections -->
-      <path d="M 110 155 Q 200 60 260 80" stroke="#2d4a7a" stroke-width="2" fill="none" marker-end="url(#arr4)"/>
-      <text x="160" y="90" font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a">1. TCP</text>
-      <line x1="340" y1="80" x2="400" y2="80" stroke="#b04428" stroke-width="2" marker-end="url(#arr4)"/>
-      <text x="370" y="70" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428">2. SN-SN</text>
-      <path d="M 480 80 Q 540 60 630 155" stroke="#2d4a7a" stroke-width="2" fill="none" marker-end="url(#arr4)"/>
-      <text x="570" y="90" font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a">3. TCP</text>
-      <!-- relay arrow -->
-      <path d="M 110 175 Q 370 260 630 175" stroke="#3d6b3a" stroke-width="2.5" fill="none" stroke-dasharray="8 4" marker-end="url(#arr4)"/>
-      <text x="370" y="250" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#3d6b3a">VoIP-data relayed via supernoder</text>
-    </svg>
-    <figcaption>Begge parter bak NAT: Alice og Bob holder åpne TCP-forbindelser til sine supernoder. Supernodene relayer datatrafikken mellom dem.</figcaption>
-  </figure>
-
-  <p>Løsningen: Alice og Bob holder begge en <em>åpen TCP-forbindelse</em> til sin respektive supernode (forbindelsen er initiert <em>innenfra</em> NAT-en, så den er tillatt). Når Alice vil ringe Bob, signalerer hun gjennom sin SN til Bobs SN, som bruker sin åpne forbindelse til Bob. Selve taledataene kan da relays gjennom supernodene. Det er ikke optimalt (dobbelt så mange hopp), men det fungerer selv når begge parter er bak NAT.</p>
-</div>
-</section>
-
-<div class="divider">&#10043; &#10043; &#10043;</div>
-
-<!-- ============================================================ -->
-<!-- SECTION 9: RTP                                               -->
-<!-- ============================================================ -->
-<section id="rtp">
-<div class="container">
-  <div class="section-badge">09 · RTP</div>
-  <h2>RTP — <em>Real-Time</em> Protocol</h2>
-  <p class="section-intro">En tynn protokoll som gir multimedia-pakker det de trenger: type-identifikasjon, sekvensnummer og tidsstempler.</p>
-
-  <p class="dropcap">RTP (RFC 3550) er protokollen som gir struktur til multimedia-pakker. Den er ikke en transportprotokoll i tradisjonell forstand — den kjører <em>oppå</em> UDP og gir et sett med felter som applikasjoner trenger for å håndtere sanntidsdata, men som UDP ikke tilbyr: informasjon om hva slags data pakken inneholder, i hvilken rekkefølge den hører hjemme, og nøyaktig når den ble generert.</p>
-
-  <h3>Hva RTP gir oss</h3>
-  <div class="callout callout-green">
-    <span class="label">RTP transporterer, men garanterer ikke</span>
-    <p>RTP gir <strong>payload-type-identifikasjon</strong>, <strong>sekvensnummerering</strong> og <strong>tidsstempling</strong>. Men det gir <em>ingen</em> garanti for rettidig levering, ingen garanti mot tap, og ingen garanti for rekkefølge. Det er bare et rammeverk som <em>applikasjonen</em> kan bruke for å gjøre sitt eget beste — for eksempel adaptiv playout-forsinkelse basert på tidsstemplene.</p>
-  </div>
-
-  <h3>RTP oppå UDP</h3>
-  <p>RTP-biblioteker tilbyr et transportgrensesnitt som <em>utvider</em> UDP med de feltene multimedia trenger. En RTP-pakke består av en RTP-header etterfulgt av lyddata (payload), og hele denne pakken pakkes inn i et UDP-segment. Fra nettverkets synspunkt er det bare en vanlig UDP-pakke — rutere underveis ser aldri RTP-headeren og behandler pakken med vanlig best-effort.</p>
-
-  <h3>Eksempel: 64 kbps PCM over RTP</h3>
-  <p>En VoIP-applikasjon som sender 64 kbps PCM-kodet tale over RTP gjør følgende:</p>
-  <ol style="margin:20px 0 24px 24px;color:var(--ink-soft)">
-    <li style="margin-bottom:8px">Samler inn 160 bytes lyddata hvert 20. millisekund (= 8000 bytes/s = 64 kbps).</li>
-    <li style="margin-bottom:8px">Legger til en RTP-header med payload-type, sekvensnummer og tidsstempel.</li>
-    <li style="margin-bottom:8px">Pakker alt inn i et UDP-segment og sender det.</li>
-    <li>Senderen kan <em>endre kodingstype midt i samtalen</em> — RTP-headeren forteller mottakeren om endringen via payload-type-feltet.</li>
-  </ol>
-
-  <h3>RTP-headeren i detalj</h3>
-
-  <figure>
-    <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
-      <!-- header fields -->
-      <rect x="30" y="30" width="130" height="50" fill="#f4f1ea" stroke="#1a1612" stroke-width="2"/>
-      <text x="95" y="50" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">Payload type</text>
-      <text x="95" y="68" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">7 bits</text>
-
-      <rect x="160" y="30" width="150" height="50" fill="#f4f1ea" stroke="#1a1612" stroke-width="2"/>
-      <text x="235" y="50" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">Sequence number</text>
-      <text x="235" y="68" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">16 bits</text>
-
-      <rect x="310" y="30" width="180" height="50" fill="#f4f1ea" stroke="#1a1612" stroke-width="2"/>
-      <text x="400" y="50" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">Timestamp</text>
-      <text x="400" y="68" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">32 bits</text>
-
-      <rect x="490" y="30" width="180" height="50" fill="#f4f1ea" stroke="#1a1612" stroke-width="2"/>
-      <text x="580" y="50" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#c68a1f">SSRC</text>
-      <text x="580" y="68" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">32 bits</text>
-
-      <!-- misc -->
-      <rect x="30" y="80" width="640" height="30" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
-      <text x="350" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">Diverse felter (versjon, padding, extension, CC, marker) + evt. CSRC-liste</text>
-
-      <!-- payload -->
-      <rect x="30" y="120" width="640" height="50" fill="#e8e3d6" stroke="#a39886" stroke-width="1.5"/>
-      <text x="350" y="150" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">Payload (lyddata / videodata)</text>
-    </svg>
-    <figcaption>RTP-headeren: fire hovedfelter gir mottakeren alt den trenger for å plassere pakkene riktig i tid og oppdage tap.</figcaption>
-  </figure>
-
-  <div class="table-wrap">
-  <table>
-    <tr><th>Felt</th><th>Størrelse</th><th>Funksjon</th></tr>
-    <tr>
-      <td class="mono-cell">Payload type</td>
-      <td>7 bits</td>
-      <td>Identifiserer hvilken koding som brukes. Senderen kan bytte koding midt i strømmen (f.eks. fra PCM til GSM), og mottakeren ser endringen her.</td>
-    </tr>
-    <tr>
-      <td class="mono-cell">Sequence number</td>
-      <td>16 bits</td>
-      <td>Øker med 1 for hver sendt RTP-pakke. Lar mottakeren oppdage pakketap og sette pakker i riktig rekkefølge.</td>
-    </tr>
-    <tr>
-      <td class="mono-cell">Timestamp</td>
-      <td>32 bits</td>
-      <td>Samplingsøyeblikket for første byte i pakken. For 8 kHz audio øker tidsstempelet med 1 per sample (125 &mu;s), altså med 160 per 20 ms pakke. Klokken tikker videre selv under stillhetsperioder.</td>
-    </tr>
-    <tr>
-      <td class="mono-cell">SSRC</td>
-      <td>32 bits</td>
-      <td>Synchronization Source — en unik identifikator for denne mediestrømmen i RTP-sesjonen. Tilfeldig valgt, slik at flere strømmer kan skilles fra hverandre.</td>
-    </tr>
-  </table>
-  </div>
-
-  <div class="table-wrap">
-  <table>
-    <tr><th>Payload type</th><th>Koding</th><th>Bitrate</th></tr>
-    <tr><td class="mono-cell">0</td><td>PCM &mu;-law</td><td>64 kbps</td></tr>
-    <tr><td class="mono-cell">3</td><td>GSM</td><td>13 kbps</td></tr>
-    <tr><td class="mono-cell">7</td><td>LPC</td><td>2,4 kbps</td></tr>
-    <tr><td class="mono-cell">26</td><td>Motion JPEG</td><td>variabel</td></tr>
-    <tr><td class="mono-cell">31</td><td>H.261</td><td>variabel</td></tr>
-    <tr><td class="mono-cell">33</td><td>MPEG-2 video</td><td>variabel</td></tr>
-  </table>
-  </div>
-
-  <h3>RTP og QoS</h3>
-  <p>Et viktig poeng til slutt: <strong>RTP gir ingen QoS-garantier</strong>. RTP-pakker er innkapslet i vanlige UDP-segmenter, og rutere i nettet ser bare et IP-datagram med en UDP-header. De gjør ingen spesiell innsats for å levere RTP-pakker raskere eller mer pålitelig enn andre pakker. All smarthet — adaptiv playout, FEC, jitterbuffer — ligger i endepunktene, ikke i nettverket.</p>
-
-  <div class="callout callout-blue">
-    <span class="label">Interoperabilitet</span>
-    <p>En av de store fordelene med RTP er at to VoIP-applikasjoner fra forskjellige leverandører <em>kan</em> snakke sammen, så lenge begge bruker RTP. Payload-type-feltet og de standardiserte kodingene gjør at mottakeren vet hvordan den skal dekode dataene, uavhengig av hvilken applikasjon som sendte dem.</p>
-  </div>
-</div>
-</section>
-
-<!-- ============================================================ -->
-<!-- QUIZZES                                                      -->
-<!-- ============================================================ -->
-<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
-  <p class="q-text">Hva er den maksimale ende-til-ende-forsinkelsen for at en VoIP-samtale skal føles naturlig?</p>
-  <div class="options">
-    <button class="option" data-correct="true">Under 150 millisekunder</button>
-    <button class="option" data-correct="false">Under 400 millisekunder</button>
-    <button class="option" data-correct="false">Under 1 sekund</button>
-    <button class="option" data-correct="false">Under 50 millisekunder</button>
-  </div>
-  <div class="explanation" id="qFeedback2"></div>
-</div>
-
-<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
-  <p class="q-text">Hvilken informasjon gir RTP-headeren som UDP-headeren mangler?</p>
-  <div class="options">
-    <button class="option" data-correct="false">Pålitelig levering med retransmisjon</button>
-    <button class="option" data-correct="false">Kryptering av payload-data</button>
-    <button class="option" data-correct="true">Payload-type, sekvensnummer og tidsstempel for mediedata</button>
-    <button class="option" data-correct="false">Garantert maksimal forsinkelse gjennom nettverket</button>
-  </div>
-  <div class="explanation" id="qFeedback3"></div>
-</div>
-
-<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
-  <p class="q-text">Hvorfor bruker streaming i dag nesten alltid HTTP/TCP i stedet for UDP?</p>
-  <div class="options">
-    <button class="option" data-correct="false">Fordi TCP har lavere forsinkelse enn UDP</button>
-    <button class="option" data-correct="false">Fordi UDP ikke støtter videoformat</button>
-    <button class="option" data-correct="true">Fordi HTTP/TCP passerer brannmurer enkelt, krever ingen spesiell server, og gir pålitelig levering</button>
-    <button class="option" data-correct="false">Fordi TCP aldri retransmitterer pakker under streaming</button>
-  </div>
-  <div class="explanation" id="qFeedback4"></div>
-</div>
-
-<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
-  <p class="q-text">I adaptiv playout-forsinkelse, når justeres playout-forsinkelsen?</p>
-  <div class="options">
-    <button class="option" data-correct="false">Kontinuerlig for hver enkelt pakke som mottas</button>
-    <button class="option" data-correct="true">Bare ved starten av en ny snakkefase — stillhetsperioder brukes til å absorbere endringen</button>
-    <button class="option" data-correct="false">Hvert 20. millisekund, synkronisert med sende-raten</button>
-    <button class="option" data-correct="false">Bare når pakketap oppdages via sekvensnummer-gap</button>
-  </div>
-  <div class="explanation" id="qFeedback5"></div>
-</div>
-
-<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
-  <p class="q-text">Hva er «jitter» i konteksten av multimedia-nettverk?</p>
-  <div class="options">
-    <button class="option" data-correct="false">Pakketap forårsaket av metning i ruterbuffere</button>
-    <button class="option" data-correct="false">Den totale ende-til-ende-forsinkelsen fra sender til mottaker</button>
-    <button class="option" data-correct="true">Variasjonen i forsinkelse mellom pakker — noen pakker bruker lengre tid enn andre</button>
-    <button class="option" data-correct="false">Feilraten i den digitale lydstrømmen etter kvantisering</button>
-  </div>
-  <div class="explanation" id="qFeedback6"></div>
-</div>
-
-<div class="quiz" style="max-width:820px;margin:0 auto 80px;">
-  <p class="q-text">Hva er forskjellen mellom CBR og VBR for videokoding?</p>
-  <div class="options">
-    <button class="option" data-correct="false">CBR bruker spatial koding, VBR bruker temporal koding</button>
-    <button class="option" data-correct="false">CBR sender video over TCP, VBR sender over UDP</button>
-    <button class="option" data-correct="true">CBR bruker en fast bitrate uansett innholdets kompleksitet, mens VBR varierer bitraten etter hvor komplekst innholdet er</button>
-    <button class="option" data-correct="false">CBR er nyere og mer effektivt enn VBR</button>
-  </div>
-  <div class="explanation" id="qFeedback7"></div>
-</div>
-
+</main>
 <footer>
   <div class="container">
-    <p>Basert på <em>Computer Networking: A Top-Down Approach</em>, 7. utgave, av Kurose &amp; Ross — kapittel 9 (9.1–9.4.1). Denne siden dekker pensum for TTM4100 og forklarer mekanismene bak multimedia over pakkenett.</p>
-    <p style="margin-top:20px;color:var(--rust);letter-spacing:0.6em">&#10043; &#10043; &#10043;</p>
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Vår 2026</p>
   </div>
 </footer>
-
-<script>
-// SLIDER: playout delay trade-off
-(function(){
-  var slider = document.getElementById('delaySlider');
-  var val = document.getElementById('delayVal');
-  var out = document.getElementById('delayOut');
-  function update(){
-    var d = parseInt(slider.value) / 10;
-    val.textContent = d.toFixed(1) + ' s';
-    var starvation, experience;
-    if (d < 0.5) {
-      starvation = 'svært høy';
-      experience = 'nesten umiddelbar start, men hyppig frysing — ubrukelig for de fleste';
-    } else if (d < 1.5) {
-      starvation = 'moderat';
-      experience = 'rask start, men merkbar risiko for frysing ved nettverksvariasjoner';
-    } else if (d < 3.0) {
-      starvation = 'lav';
-      experience = 'akseptabel ventetid, god buffer mot jitter — typisk valg for de fleste tjenester';
-    } else if (d < 6.0) {
-      starvation = 'svært lav';
-      experience = 'lang ventetid før avspilling starter, men nesten aldri frysing';
-    } else {
-      starvation = 'neglisjerbar';
-      experience = 'frustrerende lang ventetid — brukeren klikker bort lenge før videoen starter';
-    }
-    out.innerHTML = '<strong>Buffer-starvation-risiko:</strong> ' + starvation + '<br><strong>Brukeropplevelse:</strong> ' + experience;
-  }
-  slider.addEventListener('input', update);
-  update();
-})();
-
-// STEPPER: EWMA adaptive playout
-(function(){
-  var steps = [
-    {title:'Hva er problemet?', text:'Fast playout-forsinkelse q fungerer, men er et kompromiss: for stor q gir unødvendig forsinkelse i samtalen, for liten q gir for mange «for sene» pakker. Kan vi gjøre q adaptiv?'},
-    {title:'EWMA-estimering', text:'Vi bruker en eksponentielt vektet glidende gjennomsnitt (EWMA) for å estimere nettverksforsinkelsen: dᵢ = (1 − α) · dᵢ₋₁ + α · (rᵢ − tᵢ), der α typisk er 0,1. I tillegg estimerer vi avviket: vᵢ = (1 − β) · vᵢ₋₁ + β · |rᵢ − tᵢ − dᵢ|. Playout-tidspunktet for første pakke j i en ny snakkefase blir: tⱼ + dⱼ + K · vⱼ (K = 4). Nøyaktig samme struktur som TCPs RTO = EstimatedRTT + 4 · DevRTT.'},
-    {title:'Når justerer vi?', text:'Playout-forsinkelsen justeres bare ved starten av en ny snakkefase — aldri midt i en. Under en snakkefase spilles alle pakker av med fast 20 ms mellomrom. Mellom snakkefasene (stillheten) kan vi strekke eller komprimere pausen for å ta igjen den nye forsinkelsen.'},
-    {title:'Hvordan oppdage ny snakkefase?', text:'Uten pakketap: hvis tidsstempelforskjellen mellom to påfølgende pakker er > 20 ms, har det vært en stillhetsperiode. Med mulig tap: vi sjekker også sekvensnumrene — gap i tidsstempler uten gap i sekvensnummer betyr ny snakkefase, ikke pakketap.'},
-    {title:'Resultatet', text:'Adaptiv playout gir oss det beste fra to verdener: når nettverket er stabilt, holder vi forsinkelsen lav. Når jitteret øker, øker vi automatisk playout-bufferen for å unngå tap. Brukeren merker bare at «stillheten» mellom setninger er litt lengre eller kortere — noe som er helt umerkelig.'}
-  ];
-  var i = 0;
-  var title = document.getElementById('ewmaTitle');
-  var text = document.getElementById('ewmaText');
-  var ind = document.getElementById('ewmaInd');
-  var prev = document.getElementById('ewmaPrev');
-  var next = document.getElementById('ewmaNext');
-  function render(){
-    title.textContent = 'Steg ' + (i+1) + ' av ' + steps.length + ' \u2014 ' + steps[i].title;
-    text.textContent = steps[i].text;
-    ind.textContent = (i+1) + ' / ' + steps.length;
-    prev.disabled = (i === 0);
-    next.disabled = (i === steps.length - 1);
-  }
-  prev.addEventListener('click', function(){ if(i>0){i--;render();}});
-  next.addEventListener('click', function(){ if(i<steps.length-1){i++;render();}});
-  render();
-})();
-
-// QUIZ handler
-(function(){
-  var feedback = {
-    'qFeedback1': {
-      correct: 'Riktig! Piggyback FEC legger en lavkvalitetskopi av forrige chunk direkte i neste pakke, slik at gjenoppretting kan skje umiddelbart uten å vente på en hel gruppe.',
-      wrong: 'Ikke helt. Tenk på forskjellen i forsinkelse: XOR-FEC krever at hele gruppen av n+1 pakker er mottatt før gjenoppretting, mens piggyback bare trenger neste pakke.'
-    },
-    'qFeedback2': {
-      correct: 'Riktig! Under 150 ms regnes som «bra» for interaktiv tale. Mellom 150 og 400 ms er merkbart, og over 400 ms ødelegger samtalen.',
-      wrong: 'Tenk på hva lysbildene sier: < 150 ms er «good», > 400 ms er «bad». Spørsmålet er hva som føles naturlig.'
-    },
-    'qFeedback3': {
-      correct: 'Akkurat! RTP legger til payload-type (hvilken koding), sekvensnummer (for tapsdeteksjon) og tidsstempel (for playout-timing) — tre ting som UDP mangler fullstendig.',
-      wrong: 'RTP gir ingen garantier om levering eller QoS. Tenk på hva som trengs for å spille av sanntidsdata riktig: når ble pakken generert, hva slags data er det, og i hvilken rekkefølge?'
-    },
-    'qFeedback4': {
-      correct: 'Riktig! HTTP/TCP passerer brannmurer (port 80/443 er nesten alltid åpen), fungerer med standard webservere, og gir pålitelig levering. Større playout-buffer kompenserer for TCPs variable sende-rate.',
-      wrong: 'Tenk pragmatisk: hva er den praktiske barrieren som gjør at UDP-streaming feiler i mange nettverk?'
-    },
-    'qFeedback5': {
-      correct: 'Riktig! Playout-forsinkelsen justeres bare mellom snakkefaser. Under en snakkefase spilles alle pakker av med faste 20 ms mellomrom. Stillhetsperioder strekkes eller komprimeres umerkelig for å absorbere den nye forsinkelsen.',
-      wrong: 'Tenk på at å endre forsinkelsen midt i en snakkefase ville forstyrre lyden. Når er det naturlig å gjøre justeringen uten at lytteren merker det?'
-    },
-    'qFeedback6': {
-      correct: 'Akkurat! Jitter er variasjonen i pakke-forsinkelse. Selv om gjennomsnittlig forsinkelse er akseptabel, kan stor variasjon føre til at pakker ankommer for sent til å spilles av — og det er dette playout-bufferen kompenserer for.',
-      wrong: 'Jitter handler ikke om tap eller total forsinkelse, men om uforutsigbarheten i når pakker ankommer. Tenk: pakker sendes med jevne mellomrom, men ankommer med ujevne mellomrom.'
-    },
-    'qFeedback7': {
-      correct: 'Riktig! CBR (Constant Bit Rate) holder bitraten fast — enkelt for nettverket, men kan gi dårlig kvalitet i komplekse scener og sløse med bits i enkle scener. VBR (Variable Bit Rate) tilpasser seg innholdet og gir bedre kvalitet, men er vanskeligere for nettverket å håndtere.',
-      wrong: 'CBR og VBR handler om hvordan videoen kodes — med fast eller variabel bitrate. Tenk på forskjellen mellom en rolig scene og en actionscene: trenger de like mange bits?'
-    }
-  };
-  document.querySelectorAll('.quiz').forEach(function(quiz){
-    var fb = quiz.querySelector('.explanation');
-    var fbId = fb.id;
-    quiz.querySelectorAll('button.option').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var correct = btn.dataset.correct === 'true';
-        quiz.querySelectorAll('button.option').forEach(function(b){
-          b.disabled = true;
-          if (b.dataset.correct === 'true') b.classList.add('correct');
-          else if (b === btn) b.classList.add('wrong');
-        });
-        fb.textContent = correct ? feedback[fbId].correct : feedback[fbId].wrong;
-      });
-    });
-  });
-})();
-</script>
-</main>
 <script src="../chat-widget.js"></script>
+<script src="../quiz.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

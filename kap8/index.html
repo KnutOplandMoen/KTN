@@ -21,6 +21,92 @@
   <p class="lede">Hvordan kryptografi, digitale signaturer, TLS, IPsec og brannmurer samarbeider for å beskytte data som reiser gjennom et nettverk fullt av potensielle angripere.</p>
 </div>
 </header>
+
+<section>
+<div class="container">
+  <div class="section-badge">Overblikk</div>
+  <h2>Det store <em>bildet</em></h2>
+  <p class="section-intro">Nettverkssikkerhet handler om å beskytte data som reiser gjennom et nettverk fullt av potensielle angripere — med fire verktøy som hver løser ett bestemt problem.</p>
+
+  <p class="lead">Tenk deg at du skal sende en verdifull diamant gjennom et postsystem fullt av tyver. Du trenger: (1) en låst boks som bare mottakeren kan åpne (<em>kryptering</em>), (2) en forsegling som viser om noen har åpnet boksen underveis (<em>integritet / MAC</em>), (3) en måte å bevise at det virkelig er du som sendte den (<em>autentisering / digitale signaturer</em>), og (4) vakter ved døren som sjekker hver eneste pakke (<em>brannmurer</em>). Hvert sikkerhetsverktøy løser ett spesifikt problem.</p>
+
+  <figure class="fig-frame">
+    <svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#3d6b3a"/>
+        </marker>
+        <marker id="arrRust" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#b04428"/>
+        </marker>
+      </defs>
+
+      <!-- Alice -->
+      <circle cx="90" cy="130" r="36" fill="#f4f1ea" stroke="#1a1612" stroke-width="2"/>
+      <text x="90" y="125" text-anchor="middle" font-family="Newsreader" font-size="18" font-weight="600" fill="#1a1612">Alice</text>
+      <text x="90" y="143" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">avsender</text>
+
+      <!-- Bob -->
+      <circle cx="630" cy="130" r="36" fill="#f4f1ea" stroke="#1a1612" stroke-width="2"/>
+      <text x="630" y="125" text-anchor="middle" font-family="Newsreader" font-size="18" font-weight="600" fill="#1a1612">Bob</text>
+      <text x="630" y="143" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">mottaker</text>
+
+      <!-- Secure channel -->
+      <line x1="140" y1="130" x2="580" y2="130" stroke="#3d6b3a" stroke-width="2.5" marker-end="url(#arr)"/>
+
+      <!-- Message packet on the line -->
+      <rect x="290" y="108" width="140" height="44" rx="6" fill="#e8e3d6" stroke="#3d6b3a" stroke-width="1.5"/>
+      <!-- Lock icon (confidentiality) -->
+      <rect x="308" y="120" width="14" height="12" rx="2" fill="#2d4a7a"/>
+      <path d="M310 120 v-5 a5,5 0 0 1 10,0 v5" fill="none" stroke="#2d4a7a" stroke-width="1.8"/>
+      <!-- Checkmark icon (integrity) -->
+      <circle cx="345" cy="130" r="8" fill="none" stroke="#3d6b3a" stroke-width="1.5"/>
+      <polyline points="339,130 343,134 351,125" fill="none" stroke="#3d6b3a" stroke-width="1.8"/>
+      <!-- Signature icon (authentication) -->
+      <text x="370" y="135" font-family="Newsreader" font-size="18" font-style="italic" fill="#b04428">✎</text>
+
+      <!-- Labels under the icons -->
+      <text x="315" y="163" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">Konfidensialitet</text>
+      <text x="345" y="175" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#3d6b3a">Integritet</text>
+      <text x="395" y="163" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#b04428">Autentisering</text>
+
+      <!-- Labels on top of message -->
+      <text x="360" y="100" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="600" fill="#3d6b3a">kryptert melding</text>
+
+      <!-- Trudy (attacker) -->
+      <circle cx="360" cy="260" r="30" fill="#e8d4cd" stroke="#b04428" stroke-width="2"/>
+      <text x="360" y="255" text-anchor="middle" font-family="Newsreader" font-size="17" font-weight="600" fill="#b04428">Trudy</text>
+      <text x="360" y="272" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#b04428">angriper</text>
+
+      <!-- Trudy's attack lines -->
+      <path d="M 180 155 Q 260 240 330 255" stroke="#b04428" stroke-width="1.5" fill="none" stroke-dasharray="5 3" marker-end="url(#arrRust)"/>
+      <path d="M 540 155 Q 460 240 390 255" stroke="#b04428" stroke-width="1.5" fill="none" stroke-dasharray="5 3" marker-end="url(#arrRust)"/>
+      <text x="230" y="215" font-family="IBM Plex Mono" font-size="9" fill="#b04428">avlytting</text>
+      <text x="460" y="215" font-family="IBM Plex Mono" font-size="9" fill="#b04428">manipulering</text>
+
+      <!-- Firewall -->
+      <rect x="560" y="30" width="60" height="20" rx="3" fill="#b04428" opacity="0.15" stroke="#b04428" stroke-width="1"/>
+      <text x="590" y="44" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" font-weight="600" fill="#b04428">Brannmur</text>
+      <line x1="590" y1="50" x2="590" y2="90" stroke="#b04428" stroke-width="1" stroke-dasharray="3 2"/>
+    </svg>
+    <figcaption>Alice sender en kryptert, integritetssikret og autentisert melding til Bob. Trudy (angriperen) sitter i midten og forsøker å avlytte eller manipulere, men kryptering, MAC og digitale signaturer beskytter meldingen. En brannmur hos Bob filtrerer uønsket trafikk.</figcaption>
+  </figure>
+
+  <div class="callout callout-green">
+    <span class="label">Eksempel fra virkeligheten</span>
+    <p>Når du ser hengelåsen i nettleseren din på ntnu.no, betyr det at TLS er aktiv. Nettleseren og serveren har gjennomført et <em>handshake</em> der de ble enige om krypteringsnøkler — og nå er alt du sender kryptert slik at ingen på WiFi-nettverket kan lese det.</p>
+  </div>
+
+  <div class="callout">
+    <span class="label">Verktøykassen — fire lag med sikkerhet</span>
+    <p><strong>Symmetrisk kryptering</strong> (AES) — rask, men krever at begge parter har samme hemmelige nøkkel.</p>
+    <p><strong>Offentlig nøkkelkryptering</strong> (RSA) — løser nøkkelfordelingen, men er treg. Brukes til å utveksle sesjonsnøkler.</p>
+    <p><strong>Meldingsintegritet og digitale signaturer</strong> (HMAC, RSA-signatur) — garanterer at innholdet ikke er endret og at avsenderen er ekte.</p>
+    <p><strong>Brannmurer og IDS</strong> — filtrerer trafikk og oppdager mistenkelig aktivitet i nettverket.</p>
+  </div>
+</div>
+</section>
+
 <section>
 <div class="container">
   <div class="subpage-list">
@@ -37,8 +123,50 @@
   </div>
 </div>
 </section>
+
+<section>
+<div class="container">
+<div class="quiz" data-quiz style="max-width:820px;margin:0 auto;">
+  <div class="q-label">Spørsmål 1</div>
+  <div class="q-text">Alice vil sende en stor, konfidensiell fil til Bob. Hvorfor bruker hun ikke bare Bobs offentlige RSA-nøkkel til å kryptere hele filen direkte?</div>
+  <div class="options">
+    <button class="option" data-correct="false">Fordi RSA-nøkler bare fungerer for korte tekstmeldinger, ikke filer</button>
+    <button class="option" data-correct="true">Fordi asymmetrisk kryptering (RSA) er svært treg sammenlignet med symmetrisk kryptering — i praksis krypterer man filen med en rask symmetrisk nøkkel (f.eks. AES) og bruker RSA bare til å kryptere den korte symmetriske nøkkelen</button>
+    <button class="option" data-correct="false">Fordi Bobs offentlige nøkkel er tilgjengelig for alle, og hvem som helst kan dekryptere</button>
+    <button class="option" data-correct="false">Fordi RSA ikke gir integritetsbeskyttelse, og man derfor må bruke AES</button>
+  </div>
+  <div class="explanation">Asymmetrisk kryptering (som RSA) er størrelsesordener tregere enn symmetrisk kryptering (som AES). Derfor bruker man i praksis <strong>hybridkryptering</strong>: generer en tilfeldig symmetrisk sesjonsnøkkel K<sub>S</sub>, krypter filen med K<sub>S</sub> (raskt), og krypter bare K<sub>S</sub> med Bobs offentlige RSA-nøkkel. Bob dekrypterer K<sub>S</sub> med sin private nøkkel, og bruker den til å dekryptere filen. Dette er nøyaktig hva TLS og sikker e-post gjør.</div>
+</div>
+
+<div class="quiz" data-quiz style="max-width:820px;margin:0 auto;">
+  <div class="q-label">Spørsmål 2</div>
+  <div class="q-text">Hva er hovedforskjellen mellom en MAC (Message Authentication Code) og en digital signatur?</div>
+  <div class="options">
+    <button class="option" data-correct="false">En MAC krypterer meldingen, mens en digital signatur bare verifiserer avsenderen</button>
+    <button class="option" data-correct="false">En digital signatur bruker symmetriske nøkler, mens en MAC bruker offentlig nøkkelkryptografi</button>
+    <button class="option" data-correct="true">En MAC bruker en delt hemmelig nøkkel (begge parter kan lage og verifisere), mens en digital signatur bruker avsenderens private nøkkel (bare avsenderen kan signere, alle kan verifisere) — dette gir ikke-benektbarhet</button>
+    <button class="option" data-correct="false">Det er ingen forskjell — MAC og digital signatur er to navn for det samme</button>
+  </div>
+  <div class="explanation">En MAC baserer seg på en <strong>delt symmetrisk nøkkel</strong> — både Alice og Bob kan lage og verifisere MACen, men ingen av dem kan bevise overfor en tredjepart hvem som laget den. En digital signatur bruker <strong>avsenderens private nøkkel</strong>, slik at bare Alice kan signere, mens alle med hennes offentlige nøkkel kan verifisere. Dette gir <em>ikke-benektbarhet</em>: Alice kan ikke nekte for å ha signert meldingen.</div>
+</div>
+
+<div class="quiz" data-quiz style="max-width:820px;margin:0 auto;">
+  <div class="q-label">Spørsmål 3</div>
+  <div class="q-text">Under et TLS-handshake sender serveren sitt sertifikat til klienten. Hva inneholder dette sertifikatet, og hvorfor er det nødvendig?</div>
+  <div class="options">
+    <button class="option" data-correct="false">Sertifikatet inneholder serverens private nøkkel, slik at klienten kan dekryptere data</button>
+    <button class="option" data-correct="true">Sertifikatet inneholder serverens offentlige nøkkel, signert av en betrodd sertifiseringsinstans (CA) — slik at klienten kan verifisere at den snakker med riktig server og ikke en angriper</button>
+    <button class="option" data-correct="false">Sertifikatet inneholder en kopi av den symmetriske sesjonsnøkkelen for denne forbindelsen</button>
+    <button class="option" data-correct="false">Sertifikatet inneholder en liste over alle tillatte krypteringsalgoritmer</button>
+  </div>
+  <div class="explanation">Et TLS-sertifikat binder en <strong>offentlig nøkkel</strong> til en identitet (f.eks. ntnu.no), og denne bindingen er <strong>signert av en betrodd CA</strong>. Uten sertifikatet kunne Trudy utgi seg for å være serveren (man-in-the-middle-angrep). Klienten verifiserer CAs signatur med CAs offentlige nøkkel (som allerede er innebygd i nettleseren), og stoler deretter på at den offentlige nøkkelen i sertifikatet virkelig tilhører serveren.</div>
+</div>
+</div>
+</section>
+
 </main>
 <footer><div class="container"><div class="ornament">&#10043; &#10043; &#10043;</div><p>NTNU · TTM4100 · Vår 2026</p></div></footer>
+<script src="../quiz.js"></script>
 <script src="../chat-widget.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>

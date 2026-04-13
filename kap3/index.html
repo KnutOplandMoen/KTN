@@ -21,6 +21,73 @@
   <p class="lede">Fra enkel multipleksing og UDP til pålitelig TCP, metningskontroll og QUIC.</p>
 </div>
 </header>
+
+<section>
+<div class="container">
+  <div class="section-badge">Overblikk</div>
+  <h2>Det store <em>bildet</em></h2>
+  <p class="section-intro">Transportlaget bygger bro mellom det upålitelige nettverket og applikasjonene som krever orden og garantier.</p>
+
+  <p class="dropcap">Transportlaget er som forskjellen mellom å sende et <strong>postkort</strong> og et <strong>rekommandert brev</strong>. Et postkort er raskt og billig — du skriver det, putter det i postkassen, og håper det kommer frem. Du får aldri vite om mottakeren fikk det. Et rekommandert brev koster mer innsats (kvittering, sporing, signatur ved mottak), men du <em>vet</em> at det kom frem. I nettverksverdenen er UDP postkortet og TCP det rekommanderte brevet.</p>
+
+  <p>Nettverkslaget (IP) leverer pakker mellom maskiner — men det gir ingen garantier. Pakker kan forsvinne, komme i feil rekkefølge, eller dupliseres. Transportlaget sitter oppå IP og tilbyr to vidt forskjellige tjenester til applikasjonene: <strong>UDP</strong> legger bare til portnumre (slik at riktig prosess får pakken) og en enkel sjekksum, men arver ellers IP sin «best effort»-leveranse. <strong>TCP</strong> legger til pålitelig levering, rekkefølge-garanti, flytkontroll og metningskontroll — alt det IP mangler.</p>
+
+  <figure>
+    <svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg" style="max-width:720px;">
+      <!-- Host A -->
+      <rect x="40" y="30" width="200" height="280" rx="8" fill="#f4f1ea" stroke="#c9c0ae" stroke-width="1.5"/>
+      <text x="140" y="22" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="12" font-weight="600" fill="#1a1612">Vert A</text>
+      <rect x="60" y="50" width="160" height="44" rx="4" fill="#e8e3d6" stroke="#c9c0ae" stroke-width="1"/>
+      <text x="140" y="77" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="12" fill="#6b6257">Applikasjon</text>
+      <rect x="60" y="110" width="160" height="54" rx="4" fill="#e8d4cd" stroke="#b04428" stroke-width="1.5"/>
+      <text x="140" y="133" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="11" font-weight="600" fill="#b04428">Transportlaget</text>
+      <text x="140" y="150" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="10" fill="#b04428">UDP / TCP</text>
+      <rect x="60" y="180" width="160" height="44" rx="4" fill="#d4dce8" stroke="#2d4a7a" stroke-width="1"/>
+      <text x="140" y="207" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="12" fill="#2d4a7a">Nettverkslaget (IP)</text>
+      <rect x="60" y="240" width="160" height="44" rx="4" fill="#e8e3d6" stroke="#c9c0ae" stroke-width="1"/>
+      <text x="140" y="267" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="12" fill="#6b6257">Lenke + fysisk</text>
+
+      <!-- Host B -->
+      <rect x="480" y="30" width="200" height="280" rx="8" fill="#f4f1ea" stroke="#c9c0ae" stroke-width="1.5"/>
+      <text x="580" y="22" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="12" font-weight="600" fill="#1a1612">Vert B</text>
+      <rect x="500" y="50" width="160" height="44" rx="4" fill="#e8e3d6" stroke="#c9c0ae" stroke-width="1"/>
+      <text x="580" y="77" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="12" fill="#6b6257">Applikasjon</text>
+      <rect x="500" y="110" width="160" height="54" rx="4" fill="#e8d4cd" stroke="#b04428" stroke-width="1.5"/>
+      <text x="580" y="133" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="11" font-weight="600" fill="#b04428">Transportlaget</text>
+      <text x="580" y="150" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="10" fill="#b04428">UDP / TCP</text>
+      <rect x="500" y="180" width="160" height="44" rx="4" fill="#d4dce8" stroke="#2d4a7a" stroke-width="1"/>
+      <text x="580" y="207" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="12" fill="#2d4a7a">Nettverkslaget (IP)</text>
+      <rect x="500" y="240" width="160" height="44" rx="4" fill="#e8e3d6" stroke="#c9c0ae" stroke-width="1"/>
+      <text x="580" y="267" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="12" fill="#6b6257">Lenke + fysisk</text>
+
+      <!-- UDP arrow (top, simple one-way) -->
+      <line x1="220" y1="120" x2="480" y2="120" stroke="#3d6b3a" stroke-width="2" stroke-dasharray="6,4"/>
+      <polygon points="480,120 470,115 470,125" fill="#3d6b3a"/>
+      <text x="350" y="112" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" font-weight="600" fill="#3d6b3a">UDP: «fire and forget»</text>
+
+      <!-- TCP arrows (bottom, bidirectional with ACKs) -->
+      <line x1="220" y1="145" x2="480" y2="145" stroke="#2d4a7a" stroke-width="2"/>
+      <polygon points="480,145 470,140 470,150" fill="#2d4a7a"/>
+      <line x1="480" y1="155" x2="220" y2="155" stroke="#b04428" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <polygon points="220,155 230,150 230,160" fill="#b04428"/>
+      <text x="350" y="173" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" font-weight="600" fill="#2d4a7a">TCP: data + ACK (pålitelig)</text>
+
+      <!-- Network layer connection -->
+      <line x1="220" y1="202" x2="480" y2="202" stroke="#c9c0ae" stroke-width="1.5" stroke-dasharray="3,3"/>
+      <text x="350" y="220" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="10" fill="#6b6257">IP: «best effort» — ingen garantier</text>
+    </svg>
+    <figcaption>Transportlaget sitter mellom applikasjonen og nettverkslaget. UDP sender data rett av gårde uten å vente på svar. TCP bygger en pålitelig toveis-forbindelse med kvitteringer (ACK) og retransmisjon.</figcaption>
+  </figure>
+
+  <div class="callout callout-green">
+    <span class="label">Når brukes hva?</span>
+    <p>Når du laster ned en fil, brukes TCP fordi hver eneste byte må komme frem i riktig rekkefølge. Når du snakker på Discord, brukes UDP fordi det er viktigere at lyden kommer raskt enn at hvert eneste lydpakke kommer frem — en tapt pakke gir et lite hakk, men en forsinket pakke gjør samtalen ubrukelig.</p>
+  </div>
+
+  <p>Kapittelet bygger seg opp lag for lag: først multipleksing og UDP (det enkle), deretter prinsippene bak pålitelig dataoverføring (rdt-protokollene), så TCP med alt den innebærer, og til slutt metningskontroll — mekanismene som hindrer Internett i å kollapse under sin egen trafikk.</p>
+</div>
+</section>
+
 <section>
 <div class="container">
   <div class="subpage-list">
@@ -47,6 +114,35 @@
   </div>
 </div>
 </section>
+
+<section>
+<div class="container">
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål</div>
+    <p class="q-text">En applikasjon sender korte meldinger der lav forsinkelse er kritisk, men det er akseptabelt å miste noen meldinger. Hvilken transportprotokoll bør brukes?</p>
+    <div class="options">
+      <button class="option" data-correct="false">TCP — fordi den garanterer levering</button>
+      <button class="option" data-correct="true">UDP — fordi den gir lavere forsinkelse uten oppkoblings- og retransmisjonsoverhead</button>
+      <button class="option" data-correct="false">IP direkte — transportlaget trengs ikke</button>
+      <button class="option" data-correct="false">TCP med stor vindu — det løser forsinkelsesproblemet</button>
+    </div>
+    <div class="explanation">UDP er riktig valg her. TCP sin tre-veis håndtrykk, retransmisjon og flytkontroll legger til forsinkelse som er uønsket i sanntidsapplikasjoner. UDP sender data umiddelbart uten å vente på bekreftelse — perfekt for brukstilfeller som tale, spill og DNS-oppslag der hastighet trumfer pålitelighet.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål</div>
+    <p class="q-text">Hva er hovedforskjellen mellom Go-Back-N (GBN) og Selective Repeat (SR) når en pakke går tapt?</p>
+    <div class="options">
+      <button class="option" data-correct="false">GBN sender bare den tapte pakken på nytt, SR sender alle fra den tapte og utover</button>
+      <button class="option" data-correct="true">GBN sender alle pakker fra den tapte og utover på nytt, SR sender bare den ene tapte pakken</button>
+      <button class="option" data-correct="false">Begge sender bare den tapte pakken, men SR gjør det raskere</button>
+      <button class="option" data-correct="false">GBN bruker ikke vinduer, mens SR gjør det</button>
+    </div>
+    <div class="explanation">I Go-Back-N må senderen retransmittere den tapte pakken <em>og alle etterfølgende pakker</em> i vinduet, fordi mottakeren forkaster pakker som kommer «ut av rekkefølge». I Selective Repeat bufrer mottakeren ut-av-rekkefølge-pakker og senderen trenger bare å sende den ene tapte pakken på nytt — mer effektivt, men krever mer kompleks bufring hos mottakeren.</div>
+  </div>
+</div>
+</section>
+
 </main>
 <footer>
   <div class="container">
@@ -54,6 +150,7 @@
     <p>NTNU · TTM4100 · Vår 2026</p>
   </div>
 </footer>
+<script src="../quiz.js"></script>
 <script src="../chat-widget.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
