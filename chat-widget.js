@@ -186,7 +186,28 @@
       document.querySelector("article") ||
       document.querySelector(".container");
     const el = main || document.body;
-    return el.innerText.substring(0, 8000);
+
+    const blocks = el.querySelectorAll(
+      "p, li, h1, h2, h3, h4, h5, td, th, pre, blockquote, dt, dd, figcaption"
+    );
+
+    const vh = window.innerHeight;
+    const margin = vh * 0.75;
+
+    const visible = [];
+    for (const block of blocks) {
+      const rect = block.getBoundingClientRect();
+      if (rect.bottom > -margin && rect.top < vh + margin) {
+        const txt = block.innerText.trim();
+        if (txt) visible.push(txt);
+      }
+    }
+
+    if (visible.length === 0) {
+      return el.innerText.substring(0, 8000);
+    }
+
+    return visible.join("\n\n").substring(0, 8000);
   }
 
   function escapeHtml(str) {
