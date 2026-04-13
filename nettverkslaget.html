@@ -3,458 +3,535 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nettverkslaget — en dyp gjennomgang (Kapittel 4)</title>
+<title>Kapittel 4 — Nettverkslaget: Dataplanet</title>
 <link rel="stylesheet" href="style.css">
 <style>
-:root {
-  --paper: #f4ede0;
-  --paper-2: #ece3d1;
-  --ink: #1d1a14;
-  --ink-soft: #3b342a;
-  --muted: #746851;
-  --rule: #c9bea4;
-  --accent: #8a1c1c;
-  --accent-2: #1f4d3a;
-  --accent-3: #2b4a7a;
-  --highlight: #f5d76e;
-  --box: #ebe0c6;
-  --code-bg: #2a2418;
-  --code-fg: #f4ede0;
+:root{
+  --paper:#f4f1ea;
+  --paper-dark:#e8e3d6;
+  --ink:#1a1612;
+  --ink-soft:#3d3832;
+  --ink-faded:#6b6257;
+  --ink-ghost:#a39886;
+  --rust:#b04428;
+  --rust-dark:#8a3420;
+  --blue:#2d4a7a;
+  --green:#3d6b3a;
+  --ochre:#c68a1f;
+  --line:#c9c0ae;
+  --line-soft:#ddd5c4;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  background: var(--paper);
-  background-image:
-    radial-gradient(ellipse at top, rgba(255,255,255,0.4), transparent 60%),
-    radial-gradient(ellipse at bottom, rgba(139,90,43,0.05), transparent 70%);
-  color: var(--ink);
-  font-family: 'Lora', Georgia, serif;
-  font-size: 18px;
-  line-height: 1.7;
-  padding: 0;
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Newsreader',Georgia,serif;
+  font-size:18px;
+  line-height:1.65;
+  color:var(--ink);
+  background:var(--paper);
+  -webkit-font-smoothing:antialiased;
+  position:relative;
+  font-feature-settings:"kern","liga";
 }
-.wrap {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 60px 28px 120px;
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.36 0 0 0 0 0.27 0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  opacity:.35;
+  pointer-events:none;
+  z-index:1;
+  mix-blend-mode:multiply;
 }
-.hero {
-  border-bottom: 2px solid var(--ink);
-  padding-bottom: 36px;
-  margin-bottom: 56px;
+.container{
+  max-width:820px;
+  margin:0 auto;
+  padding:0 32px;
+  position:relative;
+  z-index:2;
 }
-.kicker {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 16px;
-}
-h1 {
-  font-family: 'Fraunces', Georgia, serif;
-  font-weight: 800;
-  font-size: clamp(38px, 6vw, 64px);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  margin-bottom: 20px;
-}
-.subtitle {
-  font-family: 'Fraunces', Georgia, serif;
-  font-style: italic;
-  font-size: 22px;
-  color: var(--ink-soft);
-  font-weight: 400;
-  max-width: 600px;
-}
-.meta {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 24px;
-  letter-spacing: 0.05em;
-}
-h2 {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 32px;
-  font-weight: 600;
-  margin-top: 72px;
-  margin-bottom: 8px;
-  letter-spacing: -0.01em;
-}
-h2 .num {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 14px;
-  color: var(--accent);
-  display: block;
-  letter-spacing: 0.15em;
-  margin-bottom: 6px;
-  font-weight: 400;
-}
-h3 {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 22px;
-  font-weight: 600;
-  margin-top: 36px;
-  margin-bottom: 10px;
-}
-p { margin-bottom: 18px; }
-p + p { text-indent: 0; }
-section > p:first-of-type::first-letter {
-  font-family: 'Fraunces', Georgia, serif;
-  font-weight: 800;
-  font-size: 68px;
-  float: left;
-  line-height: 0.85;
-  padding: 8px 10px 0 0;
-  color: var(--accent);
-}
-em, i { font-style: italic; color: var(--ink-soft); }
-strong { font-weight: 600; color: var(--ink); }
-a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
-code, .mono {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.88em;
-  background: var(--box);
-  padding: 1px 6px;
-  border-radius: 3px;
-  color: var(--accent-2);
-}
-pre {
-  background: var(--code-bg);
-  color: var(--code-fg);
-  padding: 18px 22px;
-  border-radius: 4px;
-  overflow-x: auto;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
-  line-height: 1.6;
-  margin: 22px 0;
-}
-pre code { background: none; color: inherit; padding: 0; }
+.container.wide{max-width:980px}
 
-.callout {
-  background: var(--box);
-  border-left: 4px solid var(--accent);
-  padding: 20px 26px;
-  margin: 28px 0;
-  border-radius: 2px;
+.hero{
+  padding:120px 0 80px;
+  border-bottom:1px solid var(--line);
 }
-.callout.insight { border-left-color: var(--accent-2); }
-.callout.warn { border-left-color: var(--accent); background: #f0dfcb; }
-.callout .label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: var(--accent);
-  display: block;
-  margin-bottom: 8px;
+.hero .eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--rust);
+  margin-bottom:24px;
+  display:flex;align-items:center;gap:14px;
 }
-.callout.insight .label { color: var(--accent-2); }
-.callout p:last-child { margin-bottom: 0; }
+.hero .eyebrow::after{
+  content:"";flex:1;height:1px;background:var(--line);max-width:200px;
+}
+.hero h1{
+  font-size:clamp(48px,8vw,92px);
+  line-height:1.0;
+  letter-spacing:-0.025em;
+  font-weight:500;
+  margin-bottom:28px;
+}
+.hero h1 em{font-style:italic;color:var(--rust);font-weight:400}
+.hero .sub{
+  font-size:22px;
+  font-style:italic;
+  color:var(--ink-soft);
+  max-width:640px;
+  line-height:1.45;
+  margin-bottom:48px;
+  font-weight:300;
+}
+.hero .toc{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:18px 36px;
+  border-top:1px solid var(--line);
+  padding-top:32px;
+}
+.hero .toc a{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  color:var(--ink-soft);
+  text-decoration:none;
+  display:flex;gap:14px;
+  border-bottom:1px dotted transparent;
+  padding-bottom:4px;
+  transition:color .2s, border-color .2s;
+}
+.hero .toc a:hover{color:var(--rust);border-color:var(--rust)}
+.hero .toc a span{color:var(--ink-ghost);font-weight:500}
 
-figure {
-  margin: 36px -20px;
-  padding: 24px 20px;
-  background: rgba(255,255,255,0.35);
-  border: 1px solid var(--rule);
-  border-radius: 3px;
+section{
+  padding:90px 0;
+  border-bottom:1px solid var(--line);
 }
-figcaption {
-  font-family: 'Fraunces', Georgia, serif;
-  font-style: italic;
-  font-size: 14px;
-  color: var(--muted);
-  text-align: center;
-  margin-top: 14px;
-  line-height: 1.5;
+.badge{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--rust);
+  border:1px solid var(--rust);
+  padding:6px 14px;
+  display:inline-block;
+  margin-bottom:24px;
 }
-svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+h2{
+  font-size:clamp(34px,5vw,56px);
+  line-height:1.05;
+  letter-spacing:-0.02em;
+  font-weight:500;
+  margin-bottom:18px;
+}
+h2 em{font-style:italic;color:var(--rust)}
+.section-intro{
+  font-size:21px;
+  font-style:italic;
+  color:var(--ink-faded);
+  margin-bottom:48px;
+  max-width:680px;
+  line-height:1.5;
+  font-weight:300;
+}
+h3{
+  font-size:26px;
+  line-height:1.25;
+  margin:56px 0 16px;
+  font-weight:500;
+  letter-spacing:-0.01em;
+}
+h3::before{
+  content:"§ ";
+  color:var(--rust);
+  font-weight:400;
+}
+p{margin-bottom:20px;color:var(--ink-soft)}
+p strong{color:var(--ink);font-weight:600}
+p em{font-style:italic}
+.lead::first-letter{
+  font-family:'Newsreader',serif;
+  font-size:5.2em;
+  float:left;
+  line-height:0.85;
+  padding:8px 10px 0 0;
+  color:var(--rust);
+  font-weight:500;
+}
+a{color:var(--rust);text-decoration:none;border-bottom:1px solid var(--rust)}
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 28px 0;
-  font-size: 15px;
+.margin-note{
+  border-left:3px solid var(--rust);
+  padding:8px 0 8px 22px;
+  margin:32px 0;
+  font-style:italic;
+  color:var(--ink-faded);
+  font-size:17px;
+  background:rgba(176,68,40,0.04);
 }
-th, td {
-  text-align: left;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--rule);
-}
-th {
-  font-family: 'Fraunces', Georgia, serif;
-  font-weight: 600;
-  background: var(--box);
-  border-bottom: 2px solid var(--ink);
-}
-td.mono { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; background: none; padding: 10px 14px; color: var(--ink); }
+.margin-note strong{font-style:normal;color:var(--rust);display:block;font-family:'IBM Plex Sans',sans-serif;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:6px;font-weight:600}
 
-/* TOC */
-.toc {
-  background: rgba(255,255,255,0.3);
-  border: 1px solid var(--rule);
-  padding: 24px 32px;
-  margin: 40px 0;
-  border-radius: 3px;
+.box{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.35);
+  padding:28px 32px;
+  margin:36px 0;
+  position:relative;
 }
-.toc h4 {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 14px;
-  font-weight: 400;
+.box.problem{border-left:4px solid var(--rust)}
+.box.solution{border-left:4px solid var(--green)}
+.box.insight{border-left:4px solid var(--ochre);background:rgba(198,138,31,0.06)}
+.box .label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  margin-bottom:12px;
+  font-weight:600;
 }
-.toc ol { list-style: none; counter-reset: toc; }
-.toc li {
-  counter-increment: toc;
-  padding: 5px 0;
-  border-bottom: 1px dotted var(--rule);
-}
-.toc li:last-child { border-bottom: none; }
-.toc li::before {
-  content: counter(toc, decimal-leading-zero);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  color: var(--accent);
-  margin-right: 14px;
-}
-.toc a { text-decoration: none; color: var(--ink); }
-.toc a:hover { color: var(--accent); }
+.box.problem .label{color:var(--rust)}
+.box.solution .label{color:var(--green)}
+.box.insight .label{color:var(--ochre)}
+.box p:last-child{margin-bottom:0}
 
-/* Quiz */
-.quiz {
-  background: var(--box);
-  border: 1px solid var(--rule);
-  padding: 24px 28px;
-  margin: 32px 0;
-  border-radius: 3px;
-}
-.quiz .label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--accent-2);
-  margin-bottom: 10px;
-}
-.quiz .question {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 19px;
-  margin-bottom: 16px;
-  color: var(--ink);
-}
-.quiz .options { display: flex; flex-direction: column; gap: 8px; }
-.quiz button.opt {
-  text-align: left;
-  padding: 11px 16px;
-  background: var(--paper);
-  border: 1px solid var(--rule);
-  font-family: 'Lora', serif;
-  font-size: 15.5px;
-  color: var(--ink);
-  cursor: pointer;
-  border-radius: 2px;
-  transition: background 0.15s, border-color 0.15s;
-}
-.quiz button.opt:hover { background: #fff; border-color: var(--ink); }
-.quiz button.opt.correct { background: #d4e4d2; border-color: var(--accent-2); }
-.quiz button.opt.wrong { background: #eacfc9; border-color: var(--accent); }
-.quiz .explain {
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid var(--rule);
-  font-size: 15px;
-  color: var(--ink-soft);
-  font-style: italic;
-  display: none;
-}
-.quiz .explain.show { display: block; }
-
-/* Stepper */
-.stepper {
-  background: rgba(255,255,255,0.4);
-  border: 1px solid var(--rule);
-  padding: 26px;
-  margin: 32px 0;
-  border-radius: 3px;
-}
-.stepper .label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--accent-2);
-  margin-bottom: 14px;
-}
-.stepper-controls {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 18px;
-  padding-top: 16px;
-  border-top: 1px solid var(--rule);
-}
-.stepper-controls button {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-  padding: 8px 16px;
-  background: var(--ink);
-  color: var(--paper);
-  border: none;
-  cursor: pointer;
-  border-radius: 2px;
-  letter-spacing: 0.05em;
-}
-.stepper-controls button:disabled { background: var(--muted); cursor: not-allowed; opacity: 0.5; }
-.stepper-controls .counter {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-  color: var(--muted);
-}
-.step-desc {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 17px;
-  font-style: italic;
-  color: var(--ink-soft);
-  min-height: 52px;
-  margin-top: 14px;
-  line-height: 1.5;
+code, .mono{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.88em;
+  background:var(--paper-dark);
+  padding:2px 6px;
+  color:var(--ink);
 }
 
-/* CIDR slider */
-.slider-box {
-  background: rgba(255,255,255,0.4);
-  border: 1px solid var(--rule);
-  padding: 26px;
-  margin: 32px 0;
-  border-radius: 3px;
+figure{margin:48px 0}
+figcaption{
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:13px;
+  color:var(--ink-faded);
+  text-align:center;
+  margin-top:14px;
+  font-style:italic;
 }
-.slider-box .label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--accent-2);
-  margin-bottom: 14px;
+.svg-wrap{
+  background:rgba(255,255,255,0.45);
+  border:1px solid var(--line);
+  padding:24px;
+  overflow-x:auto;
 }
-.slider-row { margin: 14px 0; }
-.slider-row input[type=range] { width: 100%; accent-color: var(--accent); }
-.addr-display {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 15px;
-  background: var(--code-bg);
-  color: var(--paper);
-  padding: 14px 18px;
-  border-radius: 3px;
-  margin: 12px 0;
-  overflow-x: auto;
-  white-space: nowrap;
+.svg-wrap svg{display:block;margin:0 auto;max-width:100%;height:auto}
+
+table.compare{
+  width:100%;
+  border-collapse:collapse;
+  margin:32px 0;
+  font-size:16px;
 }
-.addr-display .net { color: #f5d76e; }
-.addr-display .host { color: #8ab0ff; }
-.stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-top: 14px;
+table.compare th, table.compare td{
+  text-align:left;
+  padding:14px 18px;
+  border-bottom:1px solid var(--line);
+  vertical-align:top;
 }
-.stats div {
-  background: var(--box);
-  padding: 12px;
-  text-align: center;
-  border-radius: 2px;
+table.compare th{
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:12px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--rust);
+  font-weight:600;
+  border-bottom:2px solid var(--rust);
 }
-.stats .k {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  text-transform: uppercase;
-  color: var(--muted);
-  letter-spacing: 0.1em;
-}
-.stats .v {
-  font-family: 'Fraunces', serif;
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--accent);
-  margin-top: 4px;
+table.compare tr:last-child td{border-bottom:none}
+table.compare td:first-child{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  color:var(--ink);
+  width:30%;
 }
 
-/* Longest prefix match interactive */
-.lpm-box {
-  background: rgba(255,255,255,0.4);
-  border: 1px solid var(--rule);
-  padding: 24px;
-  margin: 32px 0;
-  border-radius: 3px;
+.quiz{
+  border:1px solid var(--ochre);
+  background:rgba(198,138,31,0.05);
+  padding:32px;
+  margin:48px 0;
 }
-.lpm-box .label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--accent-2);
-  margin-bottom: 14px;
+.quiz .qlabel{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--ochre);
+  font-weight:600;
+  margin-bottom:14px;
 }
-.lpm-table {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
-  margin: 14px 0;
+.quiz h4{
+  font-size:21px;
+  font-weight:500;
+  margin-bottom:20px;
+  line-height:1.35;
+  color:var(--ink);
 }
-.lpm-row {
-  display: flex;
-  gap: 14px;
-  padding: 8px 10px;
-  border-bottom: 1px solid var(--rule);
-  transition: background 0.2s;
+.quiz .opts{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.quiz button.opt{
+  text-align:left;
+  font-family:'Newsreader',serif;
+  font-size:17px;
+  padding:14px 18px;
+  background:rgba(255,255,255,0.5);
+  border:1px solid var(--line);
+  color:var(--ink-soft);
+  cursor:pointer;
+  transition:all .15s;
 }
-.lpm-row.match { background: #d4e4d2; }
-.lpm-row .prefix { flex: 1; }
-.lpm-row .iface {
-  font-weight: 600;
-  color: var(--accent);
+.quiz button.opt:hover{border-color:var(--ochre);background:rgba(255,255,255,0.8)}
+.quiz button.opt.correct{border-color:var(--green);background:rgba(61,107,58,0.12);color:var(--green)}
+.quiz button.opt.wrong{border-color:var(--rust);background:rgba(176,68,40,0.1);color:var(--rust);text-decoration:line-through}
+.quiz .feedback{
+  font-style:italic;
+  color:var(--ink-faded);
+  font-size:16px;
+  padding-top:14px;
+  border-top:1px dotted var(--line);
+  display:none;
 }
-.lpm-input-row { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
-.lpm-input-row button {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-  padding: 8px 14px;
-  background: var(--paper);
-  border: 1px solid var(--rule);
-  cursor: pointer;
-  border-radius: 2px;
+.quiz .feedback.show{display:block}
+.quiz .feedback strong{font-style:normal;color:var(--ink)}
+
+.stepper{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.45);
+  padding:28px;
+  margin:48px 0;
 }
-.lpm-input-row button:hover { border-color: var(--ink); }
-.lpm-input-row button.active { background: var(--ink); color: var(--paper); }
-.lpm-result {
-  margin-top: 14px;
-  padding: 12px;
-  background: var(--box);
-  font-family: 'Fraunces', serif;
-  font-size: 15px;
-  font-style: italic;
-  min-height: 40px;
+.stepper .slabel{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--rust);
+  font-weight:600;
+  margin-bottom:8px;
+}
+.stepper h4{
+  font-size:22px;
+  font-weight:500;
+  margin-bottom:20px;
+}
+.stepper .stage-svg{
+  background:var(--paper);
+  border:1px solid var(--line-soft);
+  padding:18px;
+  margin-bottom:18px;
+  min-height:240px;
+  display:flex;align-items:center;justify-content:center;
+}
+.stepper .stage-svg svg{max-width:100%;height:auto}
+.stepper .desc{
+  font-style:italic;
+  font-size:17px;
+  color:var(--ink-soft);
+  min-height:60px;
+  padding:0 6px;
+  margin-bottom:20px;
+}
+.stepper .desc strong{font-style:normal;color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;display:block;margin-bottom:6px}
+.stepper .ctrls{display:flex;gap:12px;align-items:center;justify-content:space-between}
+.stepper button{
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:13px;
+  font-weight:600;
+  padding:10px 22px;
+  background:var(--ink);
+  color:var(--paper);
+  border:none;
+  cursor:pointer;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+}
+.stepper button:disabled{background:var(--ink-ghost);cursor:not-allowed}
+.stepper .progress{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  color:var(--ink-faded);
+  letter-spacing:0.1em;
 }
 
-footer {
-  margin-top: 96px;
-  padding-top: 32px;
-  border-top: 2px solid var(--ink);
-  font-size: 14px;
-  color: var(--muted);
-  font-style: italic;
+.slider-box{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.45);
+  padding:28px;
+  margin:48px 0;
+}
+.slider-box .slabel{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--blue);
+  font-weight:600;
+  margin-bottom:8px;
+}
+.slider-box h4{font-size:22px;font-weight:500;margin-bottom:20px}
+.slider-box input[type=range]{width:100%;accent-color:var(--rust);margin:14px 0}
+.slider-box .addr-display{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:15px;
+  background:#1a1612;
+  color:var(--paper);
+  padding:14px 18px;
+  border-radius:3px;
+  margin:12px 0;
+  overflow-x:auto;
+  white-space:nowrap;
+}
+.slider-box .addr-display .net{color:#f5d76e}
+.slider-box .addr-display .host{color:#8ab0ff}
+.slider-box .stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:14px;
+}
+.slider-box .stats div{
+  background:var(--paper-dark);
+  padding:12px;
+  text-align:center;
+  border-radius:2px;
+}
+.slider-box .stats .k{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  text-transform:uppercase;
+  color:var(--ink-faded);
+  letter-spacing:0.1em;
+}
+.slider-box .stats .v{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:18px;
+  font-weight:700;
+  color:var(--rust);
+  margin-top:4px;
 }
 
-@media (max-width: 640px) {
-  body { font-size: 17px; }
-  .wrap { padding: 40px 20px 80px; }
-  figure { margin: 28px -12px; padding: 18px 10px; }
-  .stats { grid-template-columns: 1fr; }
-  h2 { font-size: 26px; }
+.lpm-box{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.45);
+  padding:28px;
+  margin:48px 0;
+}
+.lpm-box .slabel{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--blue);
+  font-weight:600;
+  margin-bottom:14px;
+}
+.lpm-table{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  margin:14px 0;
+}
+.lpm-row{
+  display:flex;
+  gap:14px;
+  padding:8px 10px;
+  border-bottom:1px solid var(--line);
+  transition:background 0.2s;
+}
+.lpm-row.match{background:rgba(61,107,58,0.15)}
+.lpm-row .prefix{flex:1}
+.lpm-row .iface{font-weight:600;color:var(--rust)}
+.lpm-input-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.lpm-input-row button{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  padding:8px 14px;
+  background:var(--paper);
+  border:1px solid var(--line);
+  cursor:pointer;
+  border-radius:2px;
+  transition:all .15s;
+}
+.lpm-input-row button:hover{border-color:var(--ink)}
+.lpm-input-row button.active{background:var(--ink);color:var(--paper)}
+.lpm-result{
+  margin-top:14px;
+  padding:12px 16px;
+  background:var(--paper-dark);
+  font-style:italic;
+  font-size:15px;
+  min-height:40px;
+  border-left:3px solid var(--blue);
+}
+
+.packet{
+  display:grid;
+  grid-template-columns:repeat(32,1fr);
+  border:1px solid var(--ink);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  margin:24px 0;
+  background:rgba(255,255,255,0.45);
+}
+.packet .cell{
+  border:1px solid var(--line);
+  padding:12px 6px;
+  text-align:center;
+  color:var(--ink-soft);
+  display:flex;align-items:center;justify-content:center;
+  min-height:46px;
+}
+.packet .cell strong{display:block;color:var(--ink);font-size:11px;font-weight:600}
+.packet .cell small{display:block;color:var(--ink-ghost);font-size:9px;margin-top:2px;letter-spacing:0.05em}
+.packet .c4{grid-column:span 4}
+.packet .c8{grid-column:span 8}
+.packet .c3{grid-column:span 3}
+.packet .c13{grid-column:span 13}
+.packet .c16{grid-column:span 16}
+.packet .c20{grid-column:span 20}
+.packet .c32{grid-column:span 32}
+.packet .hl{background:rgba(176,68,40,0.12);color:var(--rust-dark)}
+.packet .hl strong{color:var(--rust-dark)}
+.packet .data{background:rgba(45,74,122,0.08);color:var(--blue);font-style:italic;padding:18px 6px}
+
+.ornament{
+  text-align:center;
+  color:var(--rust);
+  font-size:18px;
+  letter-spacing:1em;
+  padding:40px 0 20px;
+}
+
+footer{
+  padding:80px 0 100px;
+  text-align:center;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  color:var(--ink-faded);
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+}
+footer p{margin-bottom:8px;color:var(--ink-faded);font-family:inherit}
+
+@media (max-width:768px){
+  body{font-size:17px}
+  .container{padding:0 22px}
+  .hero{padding:80px 0 50px}
+  .hero h1{font-size:42px}
+  .hero .sub{font-size:18px}
+  .hero .toc{grid-template-columns:1fr;gap:14px}
+  section{padding:60px 0}
+  h2{font-size:32px}
+  h3{font-size:22px;margin:40px 0 14px}
+  .packet{font-size:9px}
+  .packet .cell{padding:8px 3px;min-height:40px}
+  .stepper, .slider-box, .quiz, .box, .lpm-box{padding:20px}
+  .slider-box .stats{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -467,770 +544,765 @@ footer {
   </div>
 </nav>
 
-<div class="wrap">
-
 <header class="hero">
-  <div class="kicker">Kapittel 4 · Datamaskinnettverk</div>
-  <h1>Nettverkslaget, bygget opp fra grunnen</h1>
-  <p class="subtitle">Hvordan en pakke faktisk finner veien fra maskinen din til en server på andre siden av jorden — og hvorfor Internett bruker nettopp denne løsningen.</p>
-  <div class="meta">Basert på Kurose &amp; Ross, 8. utgave · Data plane</div>
+  <div class="container">
+    <div class="eyebrow">Kapittel 4 &middot; Nettverkslaget</div>
+    <h1>Nettverkslaget:<br><em>dataplanet</em></h1>
+    <p class="sub">Hvordan en pakke faktisk finner veien fra maskinen din til en server på andre siden av jorden &mdash; og alt som skjer inni routerne underveis.</p>
+    <nav class="toc">
+      <a href="#overview"><span>01</span> Oversikt</a>
+      <a href="#fwd-routing"><span>02</span> Forwarding vs. routing</a>
+      <a href="#planes"><span>03</span> Data &amp; control plane</a>
+      <a href="#service"><span>04</span> Best effort</a>
+      <a href="#router"><span>05</span> Inni en router</a>
+      <a href="#lpm"><span>06</span> Longest prefix match</a>
+      <a href="#fabric"><span>07</span> Switching fabric</a>
+      <a href="#queueing"><span>08</span> K&oslash;, buffere, scheduling</a>
+      <a href="#ip"><span>09</span> IP-datagrammet</a>
+      <a href="#addressing"><span>10</span> Adresser &amp; subnett</a>
+      <a href="#cidr"><span>11</span> CIDR</a>
+      <a href="#dhcp"><span>12</span> DHCP</a>
+      <a href="#nat"><span>13</span> NAT</a>
+      <a href="#ipv6"><span>14</span> IPv6</a>
+      <a href="#hourglass"><span>15</span> Timeglasset &amp; end-to-end</a>
+      <a href="#summary"><span>16</span> Oppsummering</a>
+    </nav>
+  </div>
 </header>
 
-<div class="toc">
-  <h4>Innhold</h4>
-  <ol>
-    <li><a href="#problem">Problemet nettverkslaget løser</a></li>
-    <li><a href="#forwarding-routing">Forwarding vs. routing</a></li>
-    <li><a href="#planes">Data plane og control plane</a></li>
-    <li><a href="#service">Tjenestemodellen: «best effort»</a></li>
-    <li><a href="#router">Inni en router</a></li>
-    <li><a href="#lpm">Longest prefix matching</a></li>
-    <li><a href="#fabric">Switching fabric</a></li>
-    <li><a href="#queueing">Kø, buffere og scheduling</a></li>
-    <li><a href="#ip">IP-datagrammet</a></li>
-    <li><a href="#addressing">IP-adresser og subnett</a></li>
-    <li><a href="#cidr">CIDR — klasseløs adressering</a></li>
-    <li><a href="#dhcp">DHCP: å få en adresse automatisk</a></li>
-    <li><a href="#nat">NAT — hvorfor hele hjemmet ditt deler én IP</a></li>
-    <li><a href="#ipv6">IPv6 — og hvorfor overgangen tok 30 år</a></li>
-    <li><a href="#takeaway">Hovedbudskapet</a></li>
-  </ol>
-</div>
+<!-- ============ 01 OVERVIEW ============ -->
+<section id="overview">
+  <div class="container">
+    <div class="badge">01 &middot; Oversikt</div>
+    <h2>Hva nettverkslaget <em>gjor</em></h2>
+    <p class="section-intro">Transportlaget gir deg en illusjon av en direkte forbindelse mellom to prosesser. Nettverkslaget er den som faktisk m&aring; flytte pakkene over et mylder av forskjellige nettverk for &aring; opprettholde den illusjonen.</p>
 
-<section id="problem">
-<h2><span class="num">01</span>Problemet nettverkslaget løser</h2>
+    <p class="lead">Nettverkslaget kj&oslash;rer i <em>hvert eneste</em> Internett-tilkoblet apparat &mdash; ikke bare i routere, men ogs&aring; i endesystemer. P&aring; sendersiden tar det imot segmenter fra transportlaget, kapsler dem inn i <strong>datagrammer</strong>, og leverer dem til lenkelaget under. P&aring; mottakersiden gj&oslash;r det det motsatte: trekker ut segmentet fra datagrammet og leverer det opp til transportlaget.</p>
 
-<p>Før vi snakker om IP, routere eller forwarding-tabeller, er det verdt å stoppe opp og spørre: <em>hva er det egentlig som må løses?</em> Transportlaget (TCP, UDP) gir deg en illusjon av at det finnes en direkte forbindelse mellom to prosesser — at data du sender inn den ene enden, kommer ut den andre. Men det er nettopp det: en illusjon. Mellom deg og serveren din ligger kanskje et dusin forskjellige nettverk, eid av forskjellige selskaper, bygget på forskjellige teknologier, på forskjellige kontinenter. Noen må faktisk sørge for at pakkene finner veien.</p>
+    <p>Men den virkelige jobben skjer i routerne. En router unders&oslash;ker headerfelter i hvert eneste datagram som passerer gjennom den, og bestemmer &mdash; p&aring; nanosekunder &mdash; hvilken utport pakken skal sendes videre p&aring;. Denne prosessen gjentas i router etter router helt til pakken n&aring;r m&aring;let.</p>
 
-<p>Det er jobben til nettverkslaget. Helt konkret: gitt en pakke som skal fra punkt A til punkt B, hvilken lenke skal den sendes ut på <em>akkurat nå</em>, fra <em>akkurat denne</em> routeren? Og litt mer abstrakt: hvordan bestemmer hele nettverket, samlet sett, hvilken vei pakker fra A til B skal ta?</p>
-
-<p>Disse to spørsmålene er beslektede, men ikke det samme — og skillet mellom dem er det første virkelige innsiktet i dette kapittelet.</p>
+    <div class="box insight">
+      <div class="label">&#9733; Everything over IP, IP everywhere</div>
+      <p>Nettverkslaget har bare &eacute;n protokoll: <strong>IP</strong>. Alle transportprotokoller (TCP, UDP, QUIC) kj&oslash;rer over IP, og IP kj&oslash;rer over alle lenkelag-teknologier (Ethernet, WiFi, 5G). Denne enkelheten &mdash; &eacute;n smal midje &mdash; er Internetts viktigste designbeslutning.</p>
+    </div>
+  </div>
 </section>
 
-<section id="forwarding-routing">
-<h2><span class="num">02</span>Forwarding vs. routing</h2>
+<!-- ============ 02 FORWARDING VS ROUTING ============ -->
+<section id="fwd-routing">
+  <div class="container">
+    <div class="badge">02 &middot; Forwarding vs. Routing</div>
+    <h2>To helt forskjellige <em>jobber</em></h2>
+    <p class="section-intro">Forwarding er det du gj&oslash;r i hvert veikryss: &laquo;gitt at m&aring;let er Roma, tar jeg h&oslash;yre.&raquo; Routing er &aring; planlegge hele turen fra Trondheim til Roma f&oslash;r du setter deg i bilen.</p>
 
-<p>Kurose &amp; Ross bruker en analogi som er verdt å holde fast ved: tenk deg at du skal kjøre fra Trondheim til Roma. Å <strong>rute</strong> er å planlegge turen — hvilke motorveier, hvilke grenser, hvilken rekkefølge. Å <strong>forwarde</strong> er det du gjør i hvert enkelt veikryss: gitt at du er <em>her nå</em>, og målet er Roma, hvilken avkjøring tar du?</p>
+    <p class="lead">Forskjellen mellom forwarding og routing er det f&oslash;rste virkelige innsiktet i dette kapittelet, og hele resten av stoffet organiseres rundt det.</p>
 
-<p>Rutingen skjer sjelden — en gang, når du setter deg i bilen, eller når kartet oppdateres. Forwarding skjer hele tiden — i hvert eneste kryss, under bråtidspress, uten tid til å tenke. I en router er forhold nøyaktig slik: <strong>forwarding</strong> er den lokale, nanosekund-raske operasjonen der én enkelt pakke flyttes fra en innport til riktig utport. <strong>Routing</strong> er den nettverksglobale beregningen som avgjør hvilke ruter som faktisk er fornuftige, og som fyller inn forwarding-tabellen som forwarding-operasjonen slår opp i.</p>
+    <p><strong>Forwarding</strong> er den lokale, per-pakke-operasjonen: en router mottar et datagram p&aring; en innport, sl&aring;r opp destinasjonsadressen i en <em>forwarding-tabell</em>, og sender pakken videre ut p&aring; riktig utport. Dette m&aring; skje ekstremt raskt &mdash; p&aring; nanosekunder &mdash; fordi en 100&nbsp;Gbps-lenke ikke venter p&aring; noen.</p>
 
-<div class="callout insight">
-<span class="label">Kjerneinnsikt</span>
-<p>Forwarding er <em>raskt og lokalt</em>. Routing er <em>langsomt og globalt</em>. Dette kapittelet handler om forwarding — routing kommer i kapittel 5.</p>
-</div>
+    <p><strong>Routing</strong> er den nettverksglobale prosessen som bestemmer <em>hvilke ruter som eksisterer</em> i nettverket, og som fyller forwarding-tabellen med oppf&oslash;ringer. Rutingalgoritmer (OSPF, BGP) kj&oslash;rer i bakgrunnen og oppdaterer tabellene n&aring;r topologien endres. Routing er langsomt &mdash; millisekunder til sekunder &mdash; men det er greit, fordi det skjer sjelden sammenlignet med forwarding.</p>
+
+    <table class="compare">
+      <thead><tr><th>Egenskap</th><th>Forwarding</th><th>Routing</th></tr></thead>
+      <tbody>
+        <tr><td>Omfang</td><td>Lokal (i &eacute;n router)</td><td>Global (hele nettverket)</td></tr>
+        <tr><td>Tidsskala</td><td>Nanosekunder</td><td>Millisekunder &ndash; sekunder</td></tr>
+        <tr><td>Implementasjon</td><td>Maskinvare (ASIC, TCAM)</td><td>Programvare (protokoller)</td></tr>
+        <tr><td>Analogi</td><td>Krysse &eacute;tt veikryss</td><td>Planlegge hele reiseruten</td></tr>
+      </tbody>
+    </table>
+  </div>
 </section>
 
+<!-- ============ 03 PLANES ============ -->
 <section id="planes">
-<h2><span class="num">03</span>Data plane og control plane</h2>
+  <div class="container">
+    <div class="badge">03 &middot; Data plane &amp; Control plane</div>
+    <h2>To <em>plan</em> i en router</h2>
+    <p class="section-intro">Det samme forwarding/routing-skillet manifesterer seg som en arkitektonisk deling inne i enhver moderne router: data plane for rask pakkeflytting, control plane for rutinglogikk.</p>
 
-<p>Det samme skillet — raskt/lokalt vs. langsomt/globalt — dukker opp som et arkitektonisk skille inne i enhver moderne router. <strong>Data plane</strong> er der pakker faktisk flyttes: dedikert maskinvare som opererer på nanosekunder, fordi en 100 Gbps-lenke ikke venter på noen. <strong>Control plane</strong> er hjernen: programvare som snakker med andre routere, beregner ruter, og skriver oppdaterte oppføringer inn i tabellen som data plane slår opp i.</p>
+    <p class="lead"><strong>Data plane</strong> er maskinvaren som faktisk flytter pakker fra innport til utport. Det opererer p&aring; nanosekunder, med dedikerte kretser som gj&oslash;r tabelloppslag og switching uten &aring; involvere routerens CPU.</p>
 
-<p>Historisk var control plane distribuert: hver router snakket med naboene sine og kom fram til ruter på egen hånd via protokoller som OSPF og BGP. Dette er fortsatt den dominerende modellen på Internett. Men de siste femten årene har en alternativ modell dukket opp: <strong>Software-Defined Networking (SDN)</strong>, der en sentral, fjernstyrt controller beregner rutene for en hel gruppe routere og pusher forwarding-tabeller ned til dem. SDN dominerer i datasentre, der en enkelt operatør eier hele nettverket og kan bestemme alt.</p>
+    <p><strong>Control plane</strong> er programvaren som bestemmer <em>hva</em> som skal st&aring; i forwarding-tabellen. To modeller finnes:</p>
+    <ul style="list-style:none;padding:0;margin:24px 0">
+      <li style="padding:14px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:13px;display:inline-block;width:200px">PER-ROUTER KONTROLL</strong> Hver router kj&oslash;rer sin egen rutingalgoritme og snakker med naboene via protokoller som OSPF og BGP. Den tradisjonelle modellen.</li>
+      <li style="padding:14px 0"><strong style="color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:13px;display:inline-block;width:200px">SDN (SENTRALISERT)</strong> En fjernkontroller beregner rutene for hele nettverket og pusher forwarding-tabeller ned til routerne. Dominerer i datasentre.</li>
+    </ul>
 
-<figure>
-<svg viewBox="0 0 680 280" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
-      <path d="M0,0 L0,6 L9,3 z" fill="#8a1c1c"/>
-    </marker>
-  </defs>
-  <!-- Control plane box -->
-  <rect x="20" y="20" width="640" height="90" fill="#ebe0c6" stroke="#1f4d3a" stroke-width="1.5" rx="3"/>
-  <text x="340" y="45" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#1f4d3a" letter-spacing="2">CONTROL PLANE · MILLISEKUNDER · PROGRAMVARE</text>
-  <text x="340" y="72" text-anchor="middle" font-family="Fraunces, serif" font-size="15" font-style="italic" fill="#3b342a">Rutingalgoritmer, protokoller (OSPF, BGP), SDN-controller</text>
-  <text x="340" y="94" text-anchor="middle" font-family="Fraunces, serif" font-size="13" fill="#746851">Beregner hvilke ruter som finnes i nettverket</text>
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 680 260" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L9,3 z" fill="var(--rust)"/>
+            </marker>
+          </defs>
+          <rect x="20" y="20" width="640" height="85" fill="var(--paper-dark)" stroke="var(--green)" stroke-width="1.5" rx="3"/>
+          <text x="340" y="42" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--green)" letter-spacing="2">CONTROL PLANE &middot; MILLISEKUNDER &middot; PROGRAMVARE</text>
+          <text x="340" y="66" text-anchor="middle" font-family="Newsreader" font-size="14" font-style="italic" fill="var(--ink-soft)">Rutingalgoritmer, protokoller (OSPF, BGP), SDN-controller</text>
+          <text x="340" y="88" text-anchor="middle" font-family="Newsreader" font-size="12" fill="var(--ink-faded)">Beregner ruter og skriver forwarding-tabeller</text>
 
-  <!-- Dashed separator -->
-  <line x1="20" y1="130" x2="660" y2="130" stroke="#746851" stroke-width="1" stroke-dasharray="4 4"/>
-  <text x="670" y="134" font-family="JetBrains Mono, monospace" font-size="9" fill="#746851" text-anchor="end" dy="-140">​</text>
+          <line x1="20" y1="125" x2="660" y2="125" stroke="var(--ink-faded)" stroke-width="1" stroke-dasharray="4 4"/>
 
-  <!-- Data plane box -->
-  <rect x="20" y="150" width="640" height="110" fill="#ebe0c6" stroke="#8a1c1c" stroke-width="1.5" rx="3"/>
-  <text x="340" y="175" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#8a1c1c" letter-spacing="2">DATA PLANE · NANOSEKUNDER · MASKINVARE</text>
-  <text x="340" y="202" text-anchor="middle" font-family="Fraunces, serif" font-size="15" font-style="italic" fill="#3b342a">Forwarding-tabell, switching fabric, lookup</text>
-  <text x="340" y="224" text-anchor="middle" font-family="Fraunces, serif" font-size="13" fill="#746851">Flytter hver enkelt pakke fra innport til utport</text>
+          <rect x="20" y="145" width="640" height="95" fill="var(--paper-dark)" stroke="var(--rust)" stroke-width="1.5" rx="3"/>
+          <text x="340" y="168" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--rust)" letter-spacing="2">DATA PLANE &middot; NANOSEKUNDER &middot; MASKINVARE</text>
+          <text x="340" y="195" text-anchor="middle" font-family="Newsreader" font-size="14" font-style="italic" fill="var(--ink-soft)">Forwarding-tabell, switching fabric, tabelloppslag</text>
+          <text x="340" y="218" text-anchor="middle" font-family="Newsreader" font-size="12" fill="var(--ink-faded)">Flytter hver enkelt pakke fra innport til utport</text>
 
-  <!-- Arrow from control to data -->
-  <line x1="340" y1="110" x2="340" y2="148" stroke="#8a1c1c" stroke-width="2" marker-end="url(#arr)"/>
-  <text x="355" y="133" font-family="Lora, serif" font-size="12" fill="#8a1c1c" font-style="italic">skriver tabeller</text>
-</svg>
-<figcaption>De to planene i en router. Control plane bestemmer hvilke ruter som finnes; data plane gjør den faktiske flyttingen av pakker.</figcaption>
-</figure>
+          <line x1="340" y1="105" x2="340" y2="143" stroke="var(--rust)" stroke-width="2" marker-end="url(#arr)"/>
+          <text x="358" y="128" font-family="Newsreader" font-size="11" fill="var(--rust)" font-style="italic">skriver tabeller</text>
+        </svg>
+      </div>
+      <figcaption>De to planene i en router. Control plane bestemmer rutene; data plane flytter pakkene.</figcaption>
+    </figure>
+  </div>
 </section>
 
+<!-- ============ 04 SERVICE MODEL ============ -->
 <section id="service">
-<h2><span class="num">04</span>Tjenestemodellen: hvorfor Internett er så «dumt»</h2>
+  <div class="container">
+    <div class="badge">04 &middot; Tjenestemodell</div>
+    <h2>Hvorfor Internett er s&aring; <em>&laquo;dumt&raquo;</em></h2>
+    <p class="section-intro">Man kunne tenkt seg et nettverk som garanterer levering, b&aring;ndbredde og lav forsinkelse. Internett gj&oslash;r ingen av delene. Det er &laquo;best effort&raquo; &mdash; og det er med vilje.</p>
 
-<p>Man kan tenke seg mange forskjellige tjenester et nettverkslag <em>kunne</em> tilby. Garantert levering. Garantert levering innen 40 millisekunder. Garantert minimum båndbredde. Ordenet levering. Ingen jitter. Telefonnettet (i den gamle ATM-æraen) prøvde faktisk å tilby flere av disse. Internett, derimot, tilbyr <strong>ingen</strong> av dem. Internett-modellen er «best effort»: vi prøver å levere pakken din, men vi lover ingenting om når, i hvilken rekkefølge, eller om i det hele tatt.</p>
+    <p class="lead">Internetts nettverkslag lover ingenting. Ingen garanti for at pakken kommer fram. Ingen garanti for rekkef&oslash;lge, timing, eller b&aring;ndbredde. IP-modellen er <strong>best effort</strong>: vi pr&oslash;ver &aring; levere pakken din, men vi lover ingenting.</p>
 
-<p>Ved første øyekast virker dette som et tap. Hvorfor skulle du ville ha et nettverk som lover mindre? Svaret er at enkelhet skalerer, og kompliserte garantier gjør det ikke. Et «best effort»-nettverk kan bygges med enkle routere som ikke trenger å holde per-flow-tilstand, og det kan utvides hvor som helst av hvem som helst. Garantier koster kompleksitet overalt — i hver eneste router, i hver eneste lenke — og den kompleksiteten hadde hindret Internett i å bli det det ble.</p>
+    <p>Dette stod i skarp kontrast til ATM-nettverkene som ble utviklet p&aring; 1990-tallet, som fors&oslash;kte &aring; gi rike garantier. Men historien ga Internett rett:</p>
 
-<p>Pragmatisk fungerer det også fordi tre ting har vist seg sanne over tid: båndbredden har blitt så billig at overprovisjonering fungerer, innhold kan replikeres nær brukerne via CDN-er, og TCPs egen congestion control hindrer nettverket fra å kollapse. Det er vanskelig å argumentere med suksess.</p>
+    <table class="compare">
+      <thead><tr><th>Arkitektur</th><th>B&aring;ndbredde</th><th>Tap</th><th>Rekkef&oslash;lge</th><th>Timing</th></tr></thead>
+      <tbody>
+        <tr><td>Internet best effort</td><td>ingen</td><td>ingen garanti</td><td>ingen</td><td>ingen</td></tr>
+        <tr><td>ATM CBR</td><td>konstant rate</td><td>garanti</td><td>ja</td><td>ja</td></tr>
+        <tr><td>ATM ABR</td><td>garantert min</td><td>nei</td><td>ja</td><td>nei</td></tr>
+        <tr><td>Intserv Guaranteed</td><td>ja</td><td>ja</td><td>ja</td><td>ja</td></tr>
+        <tr><td>Diffserv</td><td>mulig</td><td>mulig</td><td>mulig</td><td>nei</td></tr>
+      </tbody>
+    </table>
 
-<table>
-<thead><tr><th>Tjenestemodell</th><th>Båndbredde</th><th>Tap</th><th>Rekkefølge</th><th>Timing</th></tr></thead>
-<tbody>
-<tr><td>Internet «best effort»</td><td>ingen</td><td>ingen garanti</td><td>ingen</td><td>ingen</td></tr>
-<tr><td>ATM CBR</td><td>konstant rate</td><td>ja</td><td>ja</td><td>ja</td></tr>
-<tr><td>ATM ABR</td><td>garantert min</td><td>nei</td><td>ja</td><td>nei</td></tr>
-<tr><td>Intserv Guaranteed</td><td>ja</td><td>ja</td><td>ja</td><td>ja</td></tr>
-</tbody>
-</table>
+    <p>Tre ting forklarer hvorfor best effort fungerer:</p>
+    <ul style="margin:20px 0 20px 24px">
+      <li><strong>Enkelhet skalerer.</strong> Routere som bare sl&aring;r opp en destinasjon og sender videre kan bygges billig og raskt av hvem som helst.</li>
+      <li><strong>Overprovisjonering fungerer.</strong> B&aring;ndbredde har blitt billig nok til at real-time-applikasjoner som video og tale fungerer &laquo;godt nok, mesteparten av tiden.&raquo;</li>
+      <li><strong>CDN-er og congestion control hjelper.</strong> Innhold replikeres n&aelig;r brukerne, og TCP forhindrer nettverket fra &aring; kollapse.</li>
+    </ul>
 
-<div class="quiz" data-correct="1">
-<div class="label">Sjekk forståelsen</div>
-<div class="question">Hvorfor valgte Internett «best effort» framfor en rikere tjenestemodell som ATM CBR?</div>
-<div class="options">
-  <button class="opt">Fordi best effort gir bedre ytelse for videostrømming.</button>
-  <button class="opt">Fordi enkelhet i nettverket skalerer — kompleksitet i hver router hindrer vekst.</button>
-  <button class="opt">Fordi ATM ikke fantes da TCP/IP ble designet.</button>
-  <button class="opt">Fordi best effort gir lavere forsinkelse enn garanterte tjenester.</button>
-</div>
-<div class="explain">Enkelheten er kjernen. En router som bare trenger å slå opp en destinasjonsadresse og sende pakken videre kan bygges billig og raskt av hvem som helst. En router som må håndheve båndbreddegarantier må holde per-flow-tilstand, forhandle om ressurser, og avvise nye forbindelser når den er full — alt sammen ting som hindrer nettverket fra å vokse fritt.</div>
-</div>
+    <div class="quiz" data-correct="1">
+      <div class="qlabel">Sjekk forst&aring;elsen</div>
+      <h4>Hvorfor valgte Internett &laquo;best effort&raquo; framfor en rikere tjenestemodell som ATM CBR?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">Fordi best effort gir bedre ytelse for videostr&oslash;mming.</button>
+        <button class="opt" data-i="1">Fordi enkelhet i nettverket skalerer &mdash; kompleksitet i hver router hindrer vekst.</button>
+        <button class="opt" data-i="2">Fordi ATM ikke fantes da TCP/IP ble designet.</button>
+        <button class="opt" data-i="3">Fordi best effort gir lavere forsinkelse enn garanterte tjenester.</button>
+      </div>
+      <div class="feedback"><strong>Riktig!</strong> Enkelheten er kjernen. En router som bare trenger &aring; sl&aring; opp en destinasjonsadresse og sende pakken videre kan bygges billig av hvem som helst. Garantier krever per-flow-tilstand og ressursreservering i <em>hver</em> router, noe som hindrer vekst.</div>
+    </div>
+  </div>
 </section>
 
+<!-- ============ 05 ROUTER ============ -->
 <section id="router">
-<h2><span class="num">05</span>Inni en router</h2>
+  <div class="container">
+    <div class="badge">05 &middot; Inni en router</div>
+    <h2>Anatomien til en <em>router</em></h2>
+    <p class="section-intro">En router best&aring;r av fire hoveddeler: innporter, en switching fabric, utporter, og en routing-prosessor. De tre f&oslash;rste er data plane; den fjerde er control plane.</p>
 
-<p>En router, sett utenfra, er en boks med kabler i hver ende. Inni består den av fire funksjonelle deler: <strong>innporter</strong> som mottar pakker, en <strong>switching fabric</strong> som flytter pakker fra innport til utport, <strong>utporter</strong> som sender pakker videre, og en <strong>routing-prosessor</strong> som kjører control plane-programvaren. De tre første er data plane — maskinvare som jobber i nanosekunder. Den fjerde er control plane — programvare som jobber i millisekunder.</p>
+    <p class="lead">En innport gj&oslash;r tre ting f&oslash;r en pakke g&aring;r videre. F&oslash;rst <strong>linjeavslutning</strong> (mottak av bits fra fiberen). S&aring; <strong>link-lag-prosessering</strong> (pakke bits ut som Ethernet-rammer). Til slutt det viktige: <strong>oppslag i forwarding-tabellen</strong> for &aring; bestemme utport. Dette siste skjer lokalt i innporten, uten &aring; involvere CPU-en.</p>
 
-<figure>
-<svg viewBox="0 0 680 320" xmlns="http://www.w3.org/2000/svg">
-  <!-- Routing processor on top -->
-  <rect x="260" y="20" width="160" height="44" fill="#ebe0c6" stroke="#8a1c1c" stroke-width="1.5" rx="3"/>
-  <text x="340" y="40" text-anchor="middle" font-family="Fraunces, serif" font-size="13" font-weight="600">Routing</text>
-  <text x="340" y="56" text-anchor="middle" font-family="Fraunces, serif" font-size="13" font-weight="600">Processor</text>
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 680 280" xmlns="http://www.w3.org/2000/svg">
+          <rect x="260" y="15" width="160" height="44" fill="var(--paper-dark)" stroke="var(--rust)" stroke-width="1.5" rx="3"/>
+          <text x="340" y="35" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">Routing</text>
+          <text x="340" y="51" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">Processor</text>
+          <line x1="40" y1="80" x2="640" y2="80" stroke="var(--ink-faded)" stroke-width="1" stroke-dasharray="4 4"/>
+          <rect x="260" y="115" width="160" height="100" fill="var(--paper-dark)" stroke="var(--green)" stroke-width="1.5" rx="3"/>
+          <text x="340" y="162" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" font-weight="600">Switching</text>
+          <text x="340" y="180" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" font-weight="600">Fabric</text>
+          <g>
+            <rect x="40" y="120" width="70" height="22" fill="var(--paper)" stroke="var(--ink-faded)" stroke-width="1"/>
+            <rect x="40" y="148" width="70" height="22" fill="var(--paper)" stroke="var(--ink-faded)" stroke-width="1"/>
+            <rect x="40" y="190" width="70" height="22" fill="var(--paper)" stroke="var(--ink-faded)" stroke-width="1"/>
+            <text x="75" y="135" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-faded)">in 1</text>
+            <text x="75" y="163" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-faded)">in 2</text>
+            <text x="75" y="205" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-faded)">in N</text>
+            <text x="75" y="230" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" font-style="italic" fill="var(--ink-faded)">innporter</text>
+          </g>
+          <g>
+            <rect x="570" y="120" width="70" height="22" fill="var(--paper)" stroke="var(--ink-faded)" stroke-width="1"/>
+            <rect x="570" y="148" width="70" height="22" fill="var(--paper)" stroke="var(--ink-faded)" stroke-width="1"/>
+            <rect x="570" y="190" width="70" height="22" fill="var(--paper)" stroke="var(--ink-faded)" stroke-width="1"/>
+            <text x="605" y="135" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-faded)">out 1</text>
+            <text x="605" y="163" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-faded)">out 2</text>
+            <text x="605" y="205" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-faded)">out N</text>
+            <text x="605" y="230" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" font-style="italic" fill="var(--ink-faded)">utporter</text>
+          </g>
+          <line x1="110" y1="131" x2="260" y2="145" stroke="var(--ink-soft)" stroke-width="1"/>
+          <line x1="110" y1="159" x2="260" y2="165" stroke="var(--ink-soft)" stroke-width="1"/>
+          <line x1="110" y1="201" x2="260" y2="195" stroke="var(--ink-soft)" stroke-width="1"/>
+          <line x1="420" y1="145" x2="570" y2="131" stroke="var(--ink-soft)" stroke-width="1"/>
+          <line x1="420" y1="165" x2="570" y2="159" stroke="var(--ink-soft)" stroke-width="1"/>
+          <line x1="420" y1="195" x2="570" y2="201" stroke="var(--ink-soft)" stroke-width="1"/>
+          <line x1="340" y1="59" x2="340" y2="115" stroke="var(--rust)" stroke-width="2" stroke-dasharray="3 3"/>
+          <text x="180" y="94" font-family="IBM Plex Mono" font-size="9" fill="var(--green)">CONTROL PLANE (programvare, ms)</text>
+          <text x="180" y="260" font-family="IBM Plex Mono" font-size="9" fill="var(--rust)">DATA PLANE (maskinvare, ns)</text>
+        </svg>
+      </div>
+      <figcaption>Generisk router-arkitektur. Data plane (innporter, fabric, utporter) gj&oslash;r den raske jobben; control plane (routing-prosessor) oppdaterer tabellene.</figcaption>
+    </figure>
 
-  <!-- Dashed separator -->
-  <line x1="40" y1="88" x2="640" y2="88" stroke="#746851" stroke-width="1" stroke-dasharray="4 4"/>
-
-  <!-- Switching fabric -->
-  <rect x="260" y="130" width="160" height="110" fill="#ebe0c6" stroke="#1f4d3a" stroke-width="1.5" rx="3"/>
-  <text x="340" y="180" text-anchor="middle" font-family="Fraunces, serif" font-size="14" font-weight="600">Switching</text>
-  <text x="340" y="200" text-anchor="middle" font-family="Fraunces, serif" font-size="14" font-weight="600">Fabric</text>
-
-  <!-- Input ports -->
-  <g>
-    <rect x="40" y="130" width="70" height="24" fill="#f4ede0" stroke="#746851" stroke-width="1"/>
-    <rect x="40" y="160" width="70" height="24" fill="#f4ede0" stroke="#746851" stroke-width="1"/>
-    <rect x="40" y="210" width="70" height="24" fill="#f4ede0" stroke="#746851" stroke-width="1"/>
-    <text x="75" y="146" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9">in 1</text>
-    <text x="75" y="176" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9">in 2</text>
-    <text x="75" y="200" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="16" fill="#746851">·</text>
-    <text x="75" y="226" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9">in N</text>
-    <text x="75" y="260" text-anchor="middle" font-family="Fraunces, serif" font-size="11" font-style="italic" fill="#746851">innporter</text>
-  </g>
-
-  <!-- Output ports -->
-  <g>
-    <rect x="570" y="130" width="70" height="24" fill="#f4ede0" stroke="#746851" stroke-width="1"/>
-    <rect x="570" y="160" width="70" height="24" fill="#f4ede0" stroke="#746851" stroke-width="1"/>
-    <rect x="570" y="210" width="70" height="24" fill="#f4ede0" stroke="#746851" stroke-width="1"/>
-    <text x="605" y="146" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9">out 1</text>
-    <text x="605" y="176" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9">out 2</text>
-    <text x="605" y="200" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="16" fill="#746851">·</text>
-    <text x="605" y="226" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9">out N</text>
-    <text x="605" y="260" text-anchor="middle" font-family="Fraunces, serif" font-size="11" font-style="italic" fill="#746851">utporter</text>
-  </g>
-
-  <!-- Arrows from inputs to fabric -->
-  <line x1="110" y1="142" x2="260" y2="160" stroke="#3b342a" stroke-width="1"/>
-  <line x1="110" y1="172" x2="260" y2="180" stroke="#3b342a" stroke-width="1"/>
-  <line x1="110" y1="222" x2="260" y2="220" stroke="#3b342a" stroke-width="1"/>
-
-  <!-- Arrows from fabric to outputs -->
-  <line x1="420" y1="160" x2="570" y2="142" stroke="#3b342a" stroke-width="1"/>
-  <line x1="420" y1="180" x2="570" y2="172" stroke="#3b342a" stroke-width="1"/>
-  <line x1="420" y1="220" x2="570" y2="222" stroke="#3b342a" stroke-width="1"/>
-
-  <!-- Link from processor to fabric -->
-  <line x1="340" y1="64" x2="340" y2="130" stroke="#8a1c1c" stroke-width="2" stroke-dasharray="3 3"/>
-
-  <text x="180" y="100" font-family="JetBrains Mono, monospace" font-size="9" fill="#1f4d3a">CONTROL PLANE (programvare, ms)</text>
-  <text x="180" y="290" font-family="JetBrains Mono, monospace" font-size="9" fill="#8a1c1c">DATA PLANE (maskinvare, ns)</text>
-</svg>
-<figcaption>Generisk router-arkitektur. Data plane gjør den raske jobben med å flytte hver pakke; control plane oppdaterer tabellene data plane slår opp i.</figcaption>
-</figure>
-
-<p>En innport gjør tre ting før en pakke går videre til fabric-en. Først er det <em>linjeavslutning</em> (å motta bit for bit fra fiberen eller kabelen), så <em>link-lag-prosessering</em> (pakke bitene ut som Ethernet-rammer), og til slutt det viktige: <em>slå opp hvor pakken skal</em>. Dette tredje steget skjer lokalt i innporten, uten at routing-prosessoren blir involvert. Det må det, for at en router som håndterer 100 millioner pakker i sekundet i det hele tatt skal være mulig.</p>
-
-<p>Oppslaget følger et mønster som er så fundamentalt at det har fått et eget navn: <strong>match plus action</strong>. Se på et eller flere felt i headeren, finn en matchende rad i en tabell, utfør den tilhørende handlingen. Den klassiske handlingen er «send ut på interface nummer 3», men moderne routere gjør også mer — droppe pakken, omskrive headere, sende til en SDN-controller for inspeksjon. Men strukturen er alltid den samme: match felt, slå opp, gjør handlingen.</p>
+    <p>Oppslaget f&oslash;lger et m&oslash;nster som er fundamentalt for hele nettverkslaget: <strong>match plus action</strong>. Se p&aring; felt i headeren, finn en matchende rad i tabellen, utf&oslash;r handlingen (typisk &laquo;send ut p&aring; interface 3&raquo;). Denne strukturen finnes overalt &mdash; fra enkel destinasjonsbasert forwarding til mer avanserte regler i SDN.</p>
+  </div>
 </section>
 
+<!-- ============ 06 LPM ============ -->
 <section id="lpm">
-<h2><span class="num">06</span>Longest prefix matching</h2>
+  <div class="container">
+    <div class="badge">06 &middot; Longest Prefix Match</div>
+    <h2>Hvilken oppf&oslash;ring <em>vinner?</em></h2>
+    <p class="section-intro">Forwarding-tabellen inneholder prefikser, ikke enkeltadresser. N&aring;r flere prefikser matcher, vinner det lengste &mdash; fordi et lengre prefiks er mer spesifikt.</p>
 
-<p>Her møter vi en vri som ikke er åpenbar ved første øyekast. Forwarding-tabellen har typisk en kvart million oppføringer eller mer. Hver oppføring er egentlig en <em>prefiks</em> — ikke en enkelt adresse, men et adresserom, for eksempel <code>200.23.16.0/20</code>, som dekker alle adresser der de første 20 bitene matcher. Det store spørsmålet er: hva gjør routeren hvis en destinasjonsadresse matcher <em>flere</em> oppføringer samtidig?</p>
+    <p class="lead">En forwarding-tabell har typisk en kvart million oppf&oslash;ringer. Hver oppf&oslash;ring er et <em>prefiks</em> &mdash; for eksempel <code>200.23.16.0/20</code> &mdash; som dekker alle adresser der de f&oslash;rste 20 bitene matcher. Det store sp&oslash;rsm&aring;let er: hva gj&oslash;r routeren hvis en destinasjonsadresse matcher <em>flere</em> oppf&oslash;ringer?</p>
 
-<p>Svaret er konsistent og elegant: velg den oppføringen med <strong>lengst prefiks</strong>. Logikken er at et lengre prefiks er mer spesifikt — en /24-oppføring gjelder for 256 adresser, en /28 gjelder for bare 16. Hvis en adresse matcher begge, er /28-en en mer presis angivelse av «hvor hører denne adressen egentlig til», så den vinner. Dette er longest prefix matching (LPM), og det er måten hierarkisk adressering og route-aggregering i det hele tatt kan fungere på.</p>
+    <p>Svaret: velg oppf&oslash;ringen med <strong>lengst prefiks</strong>. En /24 gjelder 256 adresser; en /28 gjelder bare 16. Hvis begge matcher, er /28 mer presis og vinner. Dette er <strong>longest prefix matching (LPM)</strong>, og det er det som gj&oslash;r hierarkisk adressering og rute-aggregering mulig.</p>
 
-<div class="lpm-box">
-<div class="label">Prøv selv — longest prefix matching</div>
-<div style="font-family: Lora, serif; font-size: 15px; margin-bottom: 10px;">Klikk på en destinasjonsadresse nedenfor og se hvilken oppføring som vinner:</div>
-<div class="lpm-table" id="lpm-table">
-  <div class="lpm-row" data-prefix="11001000 00010111 00010" data-iface="0"><span class="prefix">11001000 00010111 00010*** ********</span><span class="iface">→ 0</span></div>
-  <div class="lpm-row" data-prefix="11001000 00010111 00011000" data-iface="1"><span class="prefix">11001000 00010111 00011000 ********</span><span class="iface">→ 1</span></div>
-  <div class="lpm-row" data-prefix="11001000 00010111 00011" data-iface="2"><span class="prefix">11001000 00010111 00011*** ********</span><span class="iface">→ 2</span></div>
-  <div class="lpm-row" data-prefix="" data-iface="3"><span class="prefix">(ellers — default)</span><span class="iface">→ 3</span></div>
-</div>
-<div class="lpm-input-row">
-  <button data-addr="11001000 00010111 00010110 10100001">Adresse A</button>
-  <button data-addr="11001000 00010111 00011000 10101010">Adresse B</button>
-  <button data-addr="11001000 00010111 00011001 11110000">Adresse C</button>
-  <button data-addr="11001000 00010111 00100000 00000001">Adresse D</button>
-</div>
-<div class="lpm-result" id="lpm-result">Velg en adresse for å se hvilken linje som matcher.</div>
-</div>
+    <div class="lpm-box">
+      <div class="slabel">Pr&oslash;v selv &mdash; Longest prefix matching</div>
+      <h4>Klikk p&aring; en destinasjonsadresse og se hvilken oppf&oslash;ring som vinner:</h4>
+      <div class="lpm-table" id="lpm-table">
+        <div class="lpm-row" data-prefix="11001000 00010111 00010" data-iface="0"><span class="prefix">11001000 00010111 00010*** ********</span><span class="iface">&rarr; 0</span></div>
+        <div class="lpm-row" data-prefix="11001000 00010111 00011000" data-iface="1"><span class="prefix">11001000 00010111 00011000 ********</span><span class="iface">&rarr; 1</span></div>
+        <div class="lpm-row" data-prefix="11001000 00010111 00011" data-iface="2"><span class="prefix">11001000 00010111 00011*** ********</span><span class="iface">&rarr; 2</span></div>
+        <div class="lpm-row" data-prefix="" data-iface="3"><span class="prefix">(ellers &mdash; default)</span><span class="iface">&rarr; 3</span></div>
+      </div>
+      <div class="lpm-input-row">
+        <button data-addr="11001000 00010111 00010110 10100001">Adresse A</button>
+        <button data-addr="11001000 00010111 00011000 10101010">Adresse B</button>
+        <button data-addr="11001000 00010111 00011001 11110000">Adresse C</button>
+        <button data-addr="11001000 00010111 00100000 00000001">Adresse D</button>
+      </div>
+      <div class="lpm-result" id="lpm-result">Velg en adresse for &aring; se hvilken linje som matcher.</div>
+    </div>
 
-<p>I praksis gjøres LPM nesten alltid i maskinvare, i noe som heter <em>ternary content-addressable memory</em> (TCAM). En TCAM kan slå opp en adresse på én enkelt klokkesyklus uansett hvor stor tabellen er, fordi alle oppføringer sammenlignes parallelt. Dette er hemmeligheten bak routere som håndterer millioner av oppføringer uten at forwarding-hastigheten faller.</p>
+    <p>I praksis gj&oslash;res LPM i maskinvare, i <strong>ternary content-addressable memory (TCAM)</strong>. En TCAM sl&aring;r opp en adresse p&aring; &eacute;n klokkesyklus uansett tabellst&oslash;rrelse, fordi alle oppf&oslash;ringer sammenlignes parallelt. Cisco Catalyst-svitsjer har rundt 1&nbsp;million oppf&oslash;ringer i TCAM.</p>
+
+    <div class="quiz" data-correct="2">
+      <div class="qlabel">Sjekk forst&aring;elsen</div>
+      <h4>En router har oppf&oslash;ringene 10.0.0.0/8 &rarr; port 0 og 10.1.0.0/16 &rarr; port 1. Hvor sendes en pakke til 10.1.5.3?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">Port 0, fordi /8 er den f&oslash;rste matchen i tabellen.</button>
+        <button class="opt" data-i="1">Begge matcher, s&aring; routeren velger tilfeldig.</button>
+        <button class="opt" data-i="2">Port 1, fordi /16 er lengre prefiks enn /8.</button>
+        <button class="opt" data-i="3">Pakken droppes fordi det er tvetydig.</button>
+      </div>
+      <div class="feedback"><strong>Riktig!</strong> Begge prefikser matcher adressen, men /16 er mer spesifikk enn /8. Longest prefix matching velger alltid den mest spesifikke matchen.</div>
+    </div>
+  </div>
 </section>
 
+<!-- ============ 07 SWITCHING FABRIC ============ -->
 <section id="fabric">
-<h2><span class="num">07</span>Switching fabric: de tre arkitekturene</h2>
+  <div class="container">
+    <div class="badge">07 &middot; Switching fabric</div>
+    <h2>De tre <em>generasjonene</em></h2>
+    <p class="section-intro">N&aring;r innporten har bestemt utporten, m&aring; pakken fysisk flyttes dit. Switching fabric-en gj&oslash;r dette, og det finnes tre hoveddesign &mdash; en evolusjon fra tregt til ekstremt raskt.</p>
 
-<p>Når innporten har bestemt hvor pakken skal, må den faktisk flyttes dit. Dette er jobben til switching fabric-en, og det finnes tre hoveddesign — og de utgjør en ryddig evolusjon fra billig-og-tregt til dyrt-og-ekstremt-raskt.</p>
+    <p class="lead"><strong>Generasjon 1: via minne.</strong> Pakken kopieres fra innport til systemminnet, CPU-en sl&aring;r opp, og pakken kopieres til utporten. To busskrysninger per pakke &mdash; hastigheten begrenses av minneb&aring;ndbredden. Fungerte for noen f&aring; megabit i sekundet.</p>
 
-<p><strong>Den første generasjonen</strong> var rett og slett en vanlig datamaskin. Pakken ble kopiert fra innport til systemminnet, CPU-en slo opp i tabellen, og pakken ble kopiert videre til utporten. Hver pakke krysset systembussen to ganger, og hastigheten ble direkte begrenset av minnebåndbredden. Dette fungerte så lenge linjene var på noen få megabit i sekundet.</p>
+    <p><strong>Generasjon 2: via buss.</strong> Pakker overf&oslash;res direkte fra innport-minne til utport-minne over en delt buss, uten CPU-involvering. Men bussen er delt &mdash; <em>bus contention</em> &mdash; s&aring; bare &eacute;n pakke kan krysse om gangen. Cisco 5600 bruker en 32&nbsp;Gbps-buss.</p>
 
-<p><strong>Den andre generasjonen</strong> ga hver port sitt eget minne og la til en delt buss mellom dem. Pakker ble overført direkte fra innport-minne til utport-minne uten å involvere CPU-en. Bedre — men bussen var fortsatt delt, så hvis to pakker skulle sendes samtidig, måtte en vente. Dette er kjent som <em>bus contention</em>.</p>
+    <p><strong>Generasjon 3: sammenkoblingsnettverk.</strong> En crossbar eller flerstegs-svitsj lar flere pakker krysse <em>parallelt</em>, s&aring; lenge de g&aring;r til forskjellige utporter. For enda h&oslash;yere ytelse deler moderne routere pakker opp i celler og sender dem over <em>flere parallelle fabric planes</em> samtidig. Cisco CRS: 8 planes, hundrevis av Tbps.</p>
 
-<p><strong>Den tredje generasjonen</strong> erstattet bussen med et sammenkoblingsnettverk — en <em>crossbar</em> eller et flerstegs-nettverk bygget av små svitsjer. Nå kan flere pakker krysse samtidig, så lenge de skal til forskjellige utporter. For å presse ytelsen enda høyere deler moderne routere som Cisco CRS opp pakker i faste celler og sender dem over <em>flere parallelle fabric planes</em> samtidig. Det er slik man kommer opp i hundrevis av terabit per sekund.</p>
-
-<figure>
-<svg viewBox="0 0 680 180" xmlns="http://www.w3.org/2000/svg">
-  <!-- Memory -->
-  <g>
-    <text x="95" y="20" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#8a1c1c">GEN 1</text>
-    <rect x="40" y="30" width="110" height="90" fill="none" stroke="#746851" stroke-width="1"/>
-    <rect x="75" y="60" width="40" height="30" fill="#8a1c1c" opacity="0.7"/>
-    <text x="95" y="80" text-anchor="middle" font-family="Lora, serif" font-size="10" fill="#fff">mem</text>
-    <line x1="40" y1="45" x2="75" y2="60" stroke="#3b342a"/>
-    <line x1="40" y1="75" x2="75" y2="70" stroke="#3b342a"/>
-    <line x1="40" y1="105" x2="75" y2="85" stroke="#3b342a"/>
-    <line x1="115" y1="60" x2="150" y2="45" stroke="#3b342a"/>
-    <line x1="115" y1="75" x2="150" y2="75" stroke="#3b342a"/>
-    <line x1="115" y1="85" x2="150" y2="105" stroke="#3b342a"/>
-    <text x="95" y="145" text-anchor="middle" font-family="Fraunces, serif" font-size="11" font-style="italic" fill="#3b342a">via minne</text>
-    <text x="95" y="162" text-anchor="middle" font-family="Lora, serif" font-size="10" fill="#746851">CPU i loopen</text>
-  </g>
-
-  <!-- Bus -->
-  <g>
-    <text x="290" y="20" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#8a1c1c">GEN 2</text>
-    <rect x="235" y="30" width="110" height="90" fill="none" stroke="#746851" stroke-width="1"/>
-    <rect x="285" y="40" width="10" height="70" fill="#8a1c1c"/>
-    <line x1="235" y1="50" x2="285" y2="55" stroke="#3b342a"/>
-    <line x1="235" y1="75" x2="285" y2="75" stroke="#3b342a"/>
-    <line x1="235" y1="100" x2="285" y2="95" stroke="#3b342a"/>
-    <line x1="295" y1="55" x2="345" y2="50" stroke="#3b342a"/>
-    <line x1="295" y1="75" x2="345" y2="75" stroke="#3b342a"/>
-    <line x1="295" y1="95" x2="345" y2="100" stroke="#3b342a"/>
-    <text x="290" y="145" text-anchor="middle" font-family="Fraunces, serif" font-size="11" font-style="italic" fill="#3b342a">via buss</text>
-    <text x="290" y="162" text-anchor="middle" font-family="Lora, serif" font-size="10" fill="#746851">én pakke om gangen</text>
-  </g>
-
-  <!-- Crossbar -->
-  <g>
-    <text x="485" y="20" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#8a1c1c">GEN 3</text>
-    <rect x="430" y="30" width="110" height="90" fill="none" stroke="#746851" stroke-width="1"/>
-    <g stroke="#8a1c1c" stroke-width="1.2">
-      <line x1="450" y1="50" x2="530" y2="50"/>
-      <line x1="450" y1="75" x2="530" y2="75"/>
-      <line x1="450" y1="100" x2="530" y2="100"/>
-      <line x1="465" y1="40" x2="465" y2="110"/>
-      <line x1="490" y1="40" x2="490" y2="110"/>
-      <line x1="515" y1="40" x2="515" y2="110"/>
-    </g>
-    <circle cx="465" cy="50" r="3" fill="#1f4d3a"/>
-    <circle cx="490" cy="75" r="3" fill="#1f4d3a"/>
-    <circle cx="515" cy="100" r="3" fill="#1f4d3a"/>
-    <text x="485" y="145" text-anchor="middle" font-family="Fraunces, serif" font-size="11" font-style="italic" fill="#3b342a">crossbar</text>
-    <text x="485" y="162" text-anchor="middle" font-family="Lora, serif" font-size="10" fill="#746851">parallell overføring</text>
-  </g>
-</svg>
-<figcaption>Tre generasjoner switching fabric. Hver generasjon fjerner en flaskehals som den forrige led under.</figcaption>
-</figure>
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 680 170" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <text x="95" y="18" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--rust)">GEN 1: MINNE</text>
+            <rect x="40" y="28" width="110" height="85" fill="none" stroke="var(--ink-faded)" stroke-width="1"/>
+            <rect x="75" y="55" width="40" height="28" fill="var(--rust)" opacity="0.7" rx="2"/>
+            <text x="95" y="73" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#fff">CPU</text>
+            <line x1="40" y1="42" x2="75" y2="55" stroke="var(--ink-soft)"/>
+            <line x1="40" y1="70" x2="75" y2="65" stroke="var(--ink-soft)"/>
+            <line x1="40" y1="100" x2="75" y2="80" stroke="var(--ink-soft)"/>
+            <line x1="115" y1="55" x2="150" y2="42" stroke="var(--ink-soft)"/>
+            <line x1="115" y1="70" x2="150" y2="70" stroke="var(--ink-soft)"/>
+            <line x1="115" y1="80" x2="150" y2="100" stroke="var(--ink-soft)"/>
+            <text x="95" y="135" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="var(--ink-soft)">2 busskrysninger</text>
+            <text x="95" y="152" text-anchor="middle" font-family="Newsreader" font-size="10" fill="var(--ink-faded)">tregt</text>
+          </g>
+          <g>
+            <text x="290" y="18" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--rust)">GEN 2: BUSS</text>
+            <rect x="235" y="28" width="110" height="85" fill="none" stroke="var(--ink-faded)" stroke-width="1"/>
+            <rect x="285" y="35" width="10" height="70" fill="var(--rust)"/>
+            <line x1="235" y1="46" x2="285" y2="50" stroke="var(--ink-soft)"/>
+            <line x1="235" y1="70" x2="285" y2="70" stroke="var(--ink-soft)"/>
+            <line x1="235" y1="96" x2="285" y2="90" stroke="var(--ink-soft)"/>
+            <line x1="295" y1="50" x2="345" y2="46" stroke="var(--ink-soft)"/>
+            <line x1="295" y1="70" x2="345" y2="70" stroke="var(--ink-soft)"/>
+            <line x1="295" y1="90" x2="345" y2="96" stroke="var(--ink-soft)"/>
+            <text x="290" y="135" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="var(--ink-soft)">1 pakke om gangen</text>
+            <text x="290" y="152" text-anchor="middle" font-family="Newsreader" font-size="10" fill="var(--ink-faded)">bus contention</text>
+          </g>
+          <g>
+            <text x="485" y="18" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--rust)">GEN 3: CROSSBAR</text>
+            <rect x="430" y="28" width="110" height="85" fill="none" stroke="var(--ink-faded)" stroke-width="1"/>
+            <g stroke="var(--rust)" stroke-width="1.2">
+              <line x1="450" y1="46" x2="530" y2="46"/>
+              <line x1="450" y1="70" x2="530" y2="70"/>
+              <line x1="450" y1="94" x2="530" y2="94"/>
+              <line x1="465" y1="35" x2="465" y2="106"/>
+              <line x1="490" y1="35" x2="490" y2="106"/>
+              <line x1="515" y1="35" x2="515" y2="106"/>
+            </g>
+            <circle cx="465" cy="46" r="3" fill="var(--green)"/>
+            <circle cx="490" cy="70" r="3" fill="var(--green)"/>
+            <circle cx="515" cy="94" r="3" fill="var(--green)"/>
+            <text x="485" y="135" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="var(--ink-soft)">parallell overf&oslash;ring</text>
+            <text x="485" y="152" text-anchor="middle" font-family="Newsreader" font-size="10" fill="var(--ink-faded)">hundrevis av Tbps</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>Tre generasjoner switching fabric. Hver generasjon fjerner en flaskehals fra den forrige.</figcaption>
+    </figure>
+  </div>
 </section>
 
+<!-- ============ 08 QUEUEING ============ -->
 <section id="queueing">
-<h2><span class="num">08</span>Kø, buffere og scheduling</h2>
+  <div class="container">
+    <div class="badge">08 &middot; K&oslash;, buffere &amp; scheduling</div>
+    <h2>N&aring;r pakker m&aring; <em>vente</em></h2>
+    <p class="section-intro">Selv med en perfekt switching fabric oppst&aring;r k&oslash;er. Det som skjer i k&oslash;ene &mdash; hvem som droppes og hvem som g&aring;r f&oslash;rst &mdash; er der nettverksn&oslash;ytralitet f&aring;r teknisk innhold.</p>
 
-<p>Selv med en perfekt switching fabric oppstår kø. Hvorfor? Forestill deg at tre innporter på 10 Gbps alle vil sende til <em>samme</em> utport, samtidig. Utporten kan sende ut bare 10 Gbps. Noe må vente. Det samme skjer hver gang pakker strømmer inn i fabric-en raskere enn utlenken kan sende dem videre. Resultatet er en kø ved utporten.</p>
+    <h3>Input-k&oslash;er og HOL-blokkering</h3>
+    <p>Hvis switching fabric er tregere enn summen av innportene, kan k&oslash;er bygge seg opp ved <em>innportene</em>. Det verste som da skjer er <strong>Head-of-Line (HOL) blocking</strong>: pakken f&oslash;rst i k&oslash;en venter p&aring; en opptatt utport, og blokkerer dermed pakkene bak seg &mdash; selv om <em>deres</em> utporter er ledige.</p>
 
-<p>Køer er der ting blir filosofisk. To spørsmål dukker opp umiddelbart: (1) hvilken pakke skal droppes når køen er full, og (2) når det er plass til å sende én pakke, hvilken av de køende skal gå først? Det første spørsmålet heter <strong>buffer management</strong>, det andre <strong>scheduling</strong>. Og det er i svaret på det andre spørsmålet at nettverksnøytralitet faktisk får et teknisk innhold.</p>
+    <h3>Output-k&oslash;er</h3>
+    <p>Den vanligste k&oslash;typen er ved <em>utporten</em>. N&aring;r tre innporter p&aring; 10&nbsp;Gbps alle vil sende til <em>samme</em> utport, m&aring; noe vente. Her oppst&aring;r to sp&oslash;rsm&aring;l: (1) hva droppes n&aring;r k&oslash;en er full? (2) hvilken pakke sendes f&oslash;rst?</p>
 
-<h3>Buffer management: hvor mye, og hva å droppe</h3>
+    <h3>Bufferstorrelse</h3>
+    <p>En gammel tommelfingerregel (RFC 3439) sier at bufferen b&oslash;r v&aelig;re omtrent <strong>RTT &times; C</strong> (for eksempel 250&nbsp;ms &times; 10&nbsp;Gbps = 2,5&nbsp;Gbit). Nyere forskning anbefaler RTT&middot;C&nbsp;/&nbsp;&radic;N der N er antall flows &mdash; fordi for store buffere skaper <em>bufferbloat</em> og &oslash;delegger latens for real-time-trafikk.</p>
 
-<p>En gammel tommelfingerregel (RFC 3439) sier at bufferen bør være omtrent lik en typisk RTT ganger lenke-kapasiteten. For en 10 Gbps-lenke med 250 ms RTT gir det 2,5 gigabit. Dette er hvorfor routere historisk har hatt så mye RAM. Men nyere forskning viser at så store buffere <em>skader</em> real-time-trafikk — en pakke som henger i kø bak en megabit med andre pakker lever ikke opp til noen som helst latens-budsjett. «Bufferbloat» er begrepet for akkurat dette problemet, og nyere anbefalinger er at bufferen kun skal være RTT·C delt på kvadratroten av antall flows.</p>
+    <h3>Buffer management</h3>
+    <p><strong>Tail drop:</strong> dropp pakken som nettopp ankom. <strong>RED (Random Early Detection):</strong> dropp pakker tilfeldig <em>f&oslash;r</em> k&oslash;en er full for &aring; signalisere congestion. <strong>ECN:</strong> marker pakker uten &aring; droppe dem.</p>
 
-<p>Når bufferen først er full, må noe droppes. Den enkleste regelen er <em>tail drop</em>: dropp pakken som nettopp ankom. Mer avanserte policyer dropper pakker tidlig for å signalisere congestion til sendere (RED — Random Early Detection), eller markerer pakker uten å droppe dem (ECN — Explicit Congestion Notification).</p>
+    <h3>Scheduling &mdash; hvem g&aring;r f&oslash;rst?</h3>
 
-<h3>Scheduling: hvem går først?</h3>
+    <div class="stepper" id="stepper-sched">
+      <div class="slabel">Schedulerene, steg for steg</div>
+      <h4 id="sched-title">FCFS / FIFO</h4>
+      <div class="stage-svg" id="sched-svg"></div>
+      <div class="desc" id="sched-desc"></div>
+      <div class="ctrls">
+        <button id="sched-prev" disabled>&larr; Forrige</button>
+        <span class="progress" id="sched-prog">1 / 4</span>
+        <button id="sched-next">Neste &rarr;</button>
+      </div>
+    </div>
 
-<p>Hvis alle pakker er like, er svaret enkelt: førstemann til mølla, FIFO. Men hvis noen pakker er viktigere enn andre — telefonsamtaler fremfor epost, for eksempel — trenger vi noe mer raffinert. Tre hovedpolitikker dukker opp i praksis:</p>
+    <p><strong>Weighted Fair Queueing (WFQ)</strong> generaliserer round robin ved &aring; gi hver klasse en vekt w<sub>i</sub>, slik at klasse <em>i</em> f&aring;r andelen w<sub>i</sub>&nbsp;/&nbsp;&Sigma;w<sub>j</sub> av lenkekapasiteten. Det er slik du kan garantere minimum b&aring;ndbredde til en gitt trafikktype uten &aring; sulte de andre.</p>
 
-<div class="stepper" id="stepper-sched">
-<div class="label">Steg gjennom schedulerne</div>
-<svg viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg" id="sched-svg">
-  <!-- Arrivals -->
-  <text x="40" y="30" font-family="JetBrains Mono, monospace" font-size="10" fill="#746851">ankomst</text>
-  <g id="sched-arrivals"></g>
-  <!-- Classifier -->
-  <polygon points="170,90 210,110 170,130" fill="#ebe0c6" stroke="#3b342a"/>
-  <text x="160" y="155" font-family="Lora, serif" font-size="10" text-anchor="middle" fill="#3b342a">classify</text>
-  <!-- Queues -->
-  <g id="sched-queues">
-    <rect x="240" y="55" width="140" height="22" fill="none" stroke="#8a1c1c" stroke-width="1.2"/>
-    <rect x="240" y="100" width="140" height="22" fill="none" stroke="#1f4d3a" stroke-width="1.2"/>
-    <rect x="240" y="145" width="140" height="22" fill="none" stroke="#2b4a7a" stroke-width="1.2"/>
-  </g>
-  <!-- Server -->
-  <circle cx="440" cy="111" r="22" fill="#ebe0c6" stroke="#3b342a" stroke-width="1.5"/>
-  <text x="440" y="116" text-anchor="middle" font-family="Fraunces, serif" font-size="14" font-weight="600">R</text>
-  <!-- Departures -->
-  <line x1="462" y1="111" x2="560" y2="111" stroke="#3b342a" stroke-width="1.5" marker-end="url(#arr2)"/>
-  <text x="560" y="100" font-family="JetBrains Mono, monospace" font-size="10" fill="#746851">avgang →</text>
-  <defs>
-    <marker id="arr2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
-      <path d="M0,0 L0,6 L8,3 z" fill="#3b342a"/>
-    </marker>
-  </defs>
-  <!-- classify arrows -->
-  <line x1="210" y1="105" x2="240" y2="66" stroke="#8a1c1c"/>
-  <line x1="210" y1="111" x2="240" y2="111" stroke="#1f4d3a"/>
-  <line x1="210" y1="117" x2="240" y2="156" stroke="#2b4a7a"/>
-  <!-- server arrows -->
-  <line x1="380" y1="66" x2="420" y2="100" stroke="#8a1c1c"/>
-  <line x1="380" y1="111" x2="420" y2="111" stroke="#1f4d3a"/>
-  <line x1="380" y1="156" x2="420" y2="122" stroke="#2b4a7a"/>
-  <!-- label -->
-  <text x="310" y="200" text-anchor="middle" font-family="Fraunces, serif" font-size="14" font-style="italic" fill="#3b342a" id="sched-label">FCFS — én kø, én regel</text>
-</svg>
-<div class="step-desc" id="sched-desc">Første ankom, første sendt. Enkelt og rettferdig — i den forstand at ingen får fortrinnsbehandling. Men en enkelt stor nedlastning kan gjøre Skype-samtalen din ubrukelig.</div>
-<div class="stepper-controls">
-<button id="sched-prev" disabled>← Forrige</button>
-<span class="counter"><span id="sched-idx">1</span> / 4</span>
-<button id="sched-next">Neste →</button>
-</div>
-</div>
-
-<p>FCFS er basislinja. <strong>Priority scheduling</strong> deler pakker i klasser og sender alltid fra den høyeste klassen som har noe i kø — dette gir lav latens til viktige flows, men kan sulte lavprioriterte helt ut. <strong>Round robin</strong> besøker hver klasse i tur og orden, noe som garanterer at ingen blir sultet, men alle får lik tilgang. <strong>Weighted fair queueing (WFQ)</strong> generaliserer round robin ved å gi hver klasse en vekt w<sub>i</sub>, slik at klasse <em>i</em> får en andel w<sub>i</sub> / Σw<sub>j</sub> av lenkekapasiteten — det er slik du kan garantere minimum båndbredde til en gitt trafikktype uten å sulte de andre.</p>
-
-<div class="callout">
-<span class="label">Nettnøytralitet, teknisk sett</span>
-<p>Nettnøytralitet er ikke bare politikk — det er et spørsmål om <em>hvilke scheduling- og buffer-regler</em> ISP-en bruker. FCFS er «nøytralt». Priority scheduling basert på betalende kunder er definisjonen på «paid prioritization» som 2015 FCC-regelverket forbød. Mekanismen og policyen er den samme greia.</p>
-</div>
+    <div class="box problem">
+      <div class="label">Nettverksn&oslash;ytralitet &mdash; teknisk sett</div>
+      <p>FCFS er &laquo;n&oslash;ytralt&raquo;. Priority scheduling basert p&aring; betalende kunder er &laquo;paid prioritization&raquo; &mdash; det 2015 FCC-regelverket forbydde. Scheduling- og buffer-regler er <em>mekanismene</em> der nettn&oslash;ytralitetspolitikk f&aring;r teknisk innhold.</p>
+    </div>
+  </div>
 </section>
 
+<!-- ============ 09 IP DATAGRAM ============ -->
 <section id="ip">
-<h2><span class="num">09</span>IP-datagrammet: formatet som bærer alt</h2>
+  <div class="container wide">
+    <div class="badge">09 &middot; IP-datagrammet</div>
+    <h2>Formatet som <em>b&aelig;rer alt</em></h2>
+    <p class="section-intro">Alt vi har sett s&aring; langt er generisk. N&aring; m&oslash;ter vi det konkrete: hva en faktisk IPv4-pakke ser ut som, og hvorfor hvert felt er der det er.</p>
+  </div>
 
-<p>Alt vi har snakket om så langt — forwarding, oppslag, switching, køer — er generisk. Det kunne gjaldt en hvilken som helst pakke i et hvilket som helst pakkesvitsjet nettverk. Nå skal vi møte det konkrete: hva en faktisk IP-pakke ser ut som, og hvorfor hvert felt er der det er.</p>
+  <div class="container wide">
+    <figure>
+      <div class="packet">
+        <div class="cell c4"><div><strong>Ver</strong><small>4 bit</small></div></div>
+        <div class="cell c4"><div><strong>HLen</strong><small>4 bit</small></div></div>
+        <div class="cell c8"><div><strong>Type of Service</strong><small>diffserv + ECN</small></div></div>
+        <div class="cell c16"><div><strong>Total Length</strong><small>16 bit &middot; bytes</small></div></div>
 
-<figure>
-<svg viewBox="0 0 620 340" xmlns="http://www.w3.org/2000/svg">
-  <!-- header row 1: ver | hlen | tos | total length -->
-  <g font-family="JetBrains Mono, monospace" font-size="10">
-    <rect x="40" y="40" width="40" height="30" fill="#ebe0c6" stroke="#3b342a"/>
-    <rect x="80" y="40" width="40" height="30" fill="#ebe0c6" stroke="#3b342a"/>
-    <rect x="120" y="40" width="80" height="30" fill="#ebe0c6" stroke="#3b342a"/>
-    <rect x="200" y="40" width="320" height="30" fill="#ebe0c6" stroke="#3b342a"/>
-    <text x="60" y="59" text-anchor="middle">ver</text>
-    <text x="100" y="59" text-anchor="middle">hlen</text>
-    <text x="160" y="59" text-anchor="middle">type of service</text>
-    <text x="360" y="59" text-anchor="middle">total length (bytes)</text>
+        <div class="cell c16"><div><strong>16-bit Identifier</strong><small>fragmentering</small></div></div>
+        <div class="cell c3"><div><strong>Flg</strong><small>3b</small></div></div>
+        <div class="cell c13"><div><strong>Fragment Offset</strong><small>13 bit</small></div></div>
 
-    <!-- row 2: id | flags | frag offset -->
-    <rect x="40" y="70" width="240" height="30" fill="#ebe0c6" stroke="#3b342a"/>
-    <rect x="280" y="70" width="40" height="30" fill="#ebe0c6" stroke="#3b342a"/>
-    <rect x="320" y="70" width="200" height="30" fill="#ebe0c6" stroke="#3b342a"/>
-    <text x="160" y="89" text-anchor="middle">16-bit identifier</text>
-    <text x="300" y="89" text-anchor="middle">flags</text>
-    <text x="420" y="89" text-anchor="middle">fragment offset</text>
+        <div class="cell c8"><div><strong>TTL</strong><small>8 bit</small></div></div>
+        <div class="cell c8"><div><strong>Protocol</strong><small>8 bit</small></div></div>
+        <div class="cell c16"><div><strong>Header Checksum</strong><small>16 bit</small></div></div>
 
-    <!-- row 3: TTL | protocol | checksum -->
-    <rect x="40" y="100" width="80" height="30" fill="#ebe0c6" stroke="#3b342a"/>
-    <rect x="120" y="100" width="80" height="30" fill="#ebe0c6" stroke="#3b342a"/>
-    <rect x="200" y="100" width="320" height="30" fill="#ebe0c6" stroke="#3b342a"/>
-    <text x="80" y="119" text-anchor="middle">TTL</text>
-    <text x="160" y="119" text-anchor="middle">protocol</text>
-    <text x="360" y="119" text-anchor="middle">header checksum</text>
+        <div class="cell c32 hl"><div><strong>Source IP Address</strong><small>32 bit</small></div></div>
+        <div class="cell c32 hl"><div><strong>Destination IP Address</strong><small>32 bit</small></div></div>
 
-    <!-- row 4: source -->
-    <rect x="40" y="130" width="480" height="30" fill="#f0dfcb" stroke="#8a1c1c" stroke-width="1.5"/>
-    <text x="280" y="149" text-anchor="middle" font-size="11" font-weight="600">32-bit source IP address</text>
+        <div class="cell c32"><div><strong>Options</strong><small>variabel (sjelden brukt)</small></div></div>
+        <div class="cell c32 data"><div>Payload (typisk TCP- eller UDP-segment)</div></div>
+      </div>
+      <figcaption>IPv4-headeren. Minimum 20 bytes, pluss en valgfri options-del. Overhead: 20 IP + 20 TCP = 40 bytes per pakke.</figcaption>
+    </figure>
+  </div>
 
-    <!-- row 5: dest -->
-    <rect x="40" y="160" width="480" height="30" fill="#f0dfcb" stroke="#8a1c1c" stroke-width="1.5"/>
-    <text x="280" y="179" text-anchor="middle" font-size="11" font-weight="600">32-bit destination IP address</text>
-
-    <!-- row 6: options -->
-    <rect x="40" y="190" width="480" height="24" fill="#ebe0c6" stroke="#3b342a" stroke-dasharray="3 3"/>
-    <text x="280" y="206" text-anchor="middle">options (if any)</text>
-
-    <!-- payload -->
-    <rect x="40" y="220" width="480" height="80" fill="#d4e4d2" stroke="#1f4d3a"/>
-    <text x="280" y="250" text-anchor="middle" font-family="Fraunces, serif" font-size="13" font-style="italic">payload</text>
-    <text x="280" y="268" text-anchor="middle" font-family="Lora, serif" font-size="11" fill="#3b342a">(som oftest et TCP- eller UDP-segment)</text>
-  </g>
-
-  <!-- 32-bit ruler -->
-  <line x1="40" y1="25" x2="520" y2="25" stroke="#746851"/>
-  <line x1="40" y1="20" x2="40" y2="30" stroke="#746851"/>
-  <line x1="520" y1="20" x2="520" y2="30" stroke="#746851"/>
-  <text x="280" y="17" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#746851">32 bit</text>
-
-  <!-- annotation on TTL -->
-  <text x="550" y="115" font-family="Fraunces, serif" font-size="10" font-style="italic" fill="#8a1c1c">TTL ↓</text>
-</svg>
-<figcaption>IPv4-headeren. 20 byte i minimum, pluss en valgfri options-del.</figcaption>
-</figure>
-
-<p>La oss gå gjennom de feltene som faktisk betyr noe. <strong>Version</strong> sier at dette er IPv4 (4) eller IPv6 (6) — to helt forskjellige formater, selv om de løser samme problem. <strong>Header length</strong> trengs fordi options gjør headeren variabel i lengde; oftest er dette tallet 5, som betyr 5 × 4 = 20 byte. <strong>Type of service</strong> brukes for differensierte tjenester (Diffserv) og congestion-notifikasjon (ECN). <strong>Total length</strong> er hele datagrammet inkludert payload; maksimum er 65 535 byte, typisk er under 1500 for å passe inn i én Ethernet-ramme.</p>
-
-<p><strong>TTL</strong> — time to live — er et av de viktigste feltene. Hver router som videresender pakken dekrementerer denne med 1. Når den treffer 0, droppes pakken og routeren sender en ICMP-feilmelding tilbake til avsenderen. Uten TTL ville en pakke som fanges i en ruting-løkke sirkle for alltid. Det er også TTL som <code>traceroute</code> utnytter: ved å sende pakker med økende TTL, får du routerne underveis til å svare ICMP-meldinger, og du kan kartlegge stien.</p>
-
-<p><strong>Protocol</strong> sier hva som ligger i payload-en — 6 for TCP, 17 for UDP, 1 for ICMP. <strong>Header checksum</strong> beskytter bare headeren (ikke data), og må reberegnes ved hver router fordi TTL endres. Dette er en av grunnene til at IPv6 droppet headersjekken helt — transportlaget har sin egen, og det sparer router-arbeid.</p>
-
-<div class="callout warn">
-<span class="label">Overhead å huske</span>
-<p>20 byte IP + 20 byte TCP = <strong>40 byte overhead per pakke</strong>, før applikasjonslaget legger på sitt. For en tom ACK er dette hele pakken. Det er derfor fragmentering av små applikasjonsmeldinger er ineffektivt, og hvorfor protokoller som QUIC prøver å pakke ting tettere.</p>
-</div>
+  <div class="container">
+    <table class="compare">
+      <thead><tr><th>Felt</th><th>Hva det gj&oslash;r</th></tr></thead>
+      <tbody>
+        <tr><td>Version</td><td>4 for IPv4, 6 for IPv6. To helt forskjellige formater.</td></tr>
+        <tr><td>HLen</td><td>Header-lengde i 32-bits ord. Oftest 5 (= 20 bytes, ingen options).</td></tr>
+        <tr><td>Type of Service</td><td>Differensierte tjenester (Diffserv bits 0&ndash;5) og congestion-notifikasjon (ECN bits 6&ndash;7).</td></tr>
+        <tr><td>Total Length</td><td>Hele datagrammet inkludert payload. Maks 65&nbsp;535 bytes, typisk &le; 1500.</td></tr>
+        <tr><td>TTL</td><td>Dekrementeres med 1 i hver router. Ved 0: pakken droppes + ICMP-feil. Forhindrer evige l&oslash;kker. Brukes av <code>traceroute</code>.</td></tr>
+        <tr><td>Protocol</td><td>Hva ligger i payloaden? 6 = TCP, 17 = UDP, 1 = ICMP.</td></tr>
+        <tr><td>Header Checksum</td><td>Beskytter bare headeren (ikke data). M&aring; reberegnes i hver router fordi TTL endres. Droppet i IPv6.</td></tr>
+      </tbody>
+    </table>
+  </div>
 </section>
 
+<!-- ============ 10 ADDRESSING ============ -->
 <section id="addressing">
-<h2><span class="num">10</span>IP-adresser og subnett</h2>
+  <div class="container">
+    <div class="badge">10 &middot; IP-adresser &amp; subnett</div>
+    <h2>Adresser er bundet til <em>grensesnitt</em></h2>
+    <p class="section-intro">En IP-adresse identifiserer ikke en maskin &mdash; den identifiserer et grensesnitt. En router med &aring;tte porter har &aring;tte adresser.</p>
 
-<p>En IP-adresse er 32 bit. Men den er ikke bundet til en <em>maskin</em> — den er bundet til et <strong>grensesnitt</strong>. Dette er et poeng som er verdt å dvele ved. Din bærbare har to grensesnitt (Ethernet og WiFi), og får da to forskjellige IP-adresser hvis begge er i bruk. En router med åtte porter har åtte adresser. Adressen identifiserer «hvor i nettverket er dette pluggpunktet», ikke «hvilken boks er dette».</p>
+    <p class="lead">En IP-adresse er 32 bit, skrevet som fire desimaltall atskilt med punktum (<em>dotted decimal</em>). Men den er bundet til et <strong>grensesnitt</strong> (interface), ikke en maskin. Din b&aelig;rbare har to grensesnitt (Ethernet + WiFi) og f&aring;r to forskjellige IP-adresser.</p>
 
-<p>Hvorfor? Fordi nettverkslaget må ta ruting-beslutninger basert på <em>hvor</em> en pakke skal, og «hvor» er et spørsmål om topologi, ikke om identitet. To grensesnitt på samme maskin kan være på helt forskjellige subnett og krever forskjellige ruter.</p>
+    <h3>Subnett: &laquo;samme nabolag&raquo;</h3>
+    <p>Et <strong>subnett</strong> er et sett med grensesnitt som kan n&aring; hverandre direkte uten &aring; passere gjennom en router. Alle maskiner p&aring; samme Ethernet-svitsj eller WiFi er p&aring; samme subnett.</p>
 
-<h3>Subnett: «samme nabolag»</h3>
+    <p>Oppskriften for &aring; identifisere subnett: ta av alle grensesnitt fra routere og verter. De sammenhengende &laquo;&oslash;yene&raquo; som er igjen er subnettene.</p>
 
-<p>Et subnett er et sett med grensesnitt som kan nå hverandre direkte, uten å passere gjennom en router. Alle maskiner på samme Ethernet-switch, eller samme WiFi-nettverk, er på samme subnett. Trikset for å kjenne igjen et subnett i et diagram er å «ta av» alle grensesnitt fra sine routere og verter; det som er igjen av sammenhengende øyer er subnettene.</p>
+    <p>Adressene p&aring; et subnett deler en felles <strong>nettverksdel</strong> (h&oslash;yordensbit) og varierer bare i <strong>vertsdelen</strong> (lavordensbit). For eksempel: <code>223.1.1.0/24</code> har 24 bits nettverksdel og 8 bits vertsdel (256 adresser).</p>
 
-<p>Adressene på et subnett deler en felles <em>høyordens</em>-del — <strong>nettverksdelen</strong> — og varierer bare i den lavere <strong>verts-delen</strong>. For eksempel er <code>223.1.1.0/24</code> et subnett der de første 24 bitene er nettverksdelen, og de siste 8 bitene identifiserer verten (256 adresser, men to er reservert: <code>.0</code> for selve nettverket og <code>.255</code> for broadcast).</p>
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 620 250" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="130" cy="85" rx="95" ry="52" fill="rgba(61,107,58,0.1)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="130" y="35" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="var(--green)">223.1.1.0/24</text>
+          <circle cx="85" cy="78" r="5" fill="var(--ink-soft)"/><text x="85" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">.1</text>
+          <circle cx="125" cy="72" r="5" fill="var(--ink-soft)"/><text x="125" y="94" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">.2</text>
+          <circle cx="165" cy="90" r="5" fill="var(--ink-soft)"/><text x="165" y="112" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">.3</text>
 
-<figure>
-<svg viewBox="0 0 620 280" xmlns="http://www.w3.org/2000/svg">
-  <!-- Subnet 1 -->
-  <ellipse cx="130" cy="90" rx="95" ry="55" fill="#d4e4d2" stroke="#1f4d3a" stroke-width="1.5"/>
-  <text x="130" y="40" text-anchor="middle" font-family="Fraunces, serif" font-size="12" font-weight="600" fill="#1f4d3a">223.1.1.0/24</text>
-  <circle cx="85" cy="80" r="6" fill="#3b342a"/>
-  <circle cx="125" cy="75" r="6" fill="#3b342a"/>
-  <circle cx="165" cy="95" r="6" fill="#3b342a"/>
-  <text x="85" y="102" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8">.1</text>
-  <text x="125" y="97" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8">.2</text>
-  <text x="165" y="117" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8">.3</text>
+          <rect x="280" y="100" width="60" height="38" fill="var(--paper-dark)" stroke="var(--rust)" stroke-width="1.5" rx="3"/>
+          <text x="310" y="124" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="600">R</text>
 
-  <!-- Router -->
-  <rect x="280" y="110" width="60" height="40" fill="#ebe0c6" stroke="#8a1c1c" stroke-width="1.5" rx="3"/>
-  <text x="310" y="135" text-anchor="middle" font-family="Fraunces, serif" font-size="11" font-weight="600">R</text>
+          <ellipse cx="490" cy="85" rx="95" ry="52" fill="rgba(61,107,58,0.1)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="490" y="35" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="var(--green)">223.1.2.0/24</text>
+          <circle cx="450" cy="78" r="5" fill="var(--ink-soft)"/><text x="450" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">.1</text>
+          <circle cx="495" cy="90" r="5" fill="var(--ink-soft)"/><text x="495" y="112" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">.2</text>
+          <circle cx="535" cy="72" r="5" fill="var(--ink-soft)"/><text x="535" y="94" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">.9</text>
 
-  <!-- Subnet 2 -->
-  <ellipse cx="490" cy="90" rx="95" ry="55" fill="#d4e4d2" stroke="#1f4d3a" stroke-width="1.5"/>
-  <text x="490" y="40" text-anchor="middle" font-family="Fraunces, serif" font-size="12" font-weight="600" fill="#1f4d3a">223.1.2.0/24</text>
-  <circle cx="450" cy="80" r="6" fill="#3b342a"/>
-  <circle cx="495" cy="95" r="6" fill="#3b342a"/>
-  <circle cx="535" cy="75" r="6" fill="#3b342a"/>
-  <text x="450" y="102" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8">.1</text>
-  <text x="495" y="117" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8">.2</text>
-  <text x="535" y="97" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8">.9</text>
+          <ellipse cx="310" cy="200" rx="85" ry="40" fill="rgba(61,107,58,0.1)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="310" y="244" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="var(--green)">223.1.3.0/24</text>
+          <circle cx="280" cy="198" r="5" fill="var(--ink-soft)"/>
+          <circle cx="340" cy="198" r="5" fill="var(--ink-soft)"/>
 
-  <!-- Subnet 3 (bottom) -->
-  <ellipse cx="310" cy="220" rx="90" ry="45" fill="#d4e4d2" stroke="#1f4d3a" stroke-width="1.5"/>
-  <text x="310" y="265" text-anchor="middle" font-family="Fraunces, serif" font-size="12" font-weight="600" fill="#1f4d3a">223.1.3.0/24</text>
-  <circle cx="280" cy="218" r="6" fill="#3b342a"/>
-  <circle cx="340" cy="218" r="6" fill="#3b342a"/>
-
-  <!-- Router links -->
-  <line x1="220" y1="100" x2="280" y2="120" stroke="#8a1c1c" stroke-width="1.5"/>
-  <line x1="340" y1="120" x2="400" y2="100" stroke="#8a1c1c" stroke-width="1.5"/>
-  <line x1="310" y1="150" x2="310" y2="180" stroke="#8a1c1c" stroke-width="1.5"/>
-
-  <!-- Router interface labels -->
-  <text x="260" y="115" font-family="JetBrains Mono, monospace" font-size="8" fill="#8a1c1c">.4</text>
-  <text x="355" y="115" font-family="JetBrains Mono, monospace" font-size="8" fill="#8a1c1c">.9</text>
-  <text x="317" y="170" font-family="JetBrains Mono, monospace" font-size="8" fill="#8a1c1c">.27</text>
-</svg>
-<figcaption>Tre subnett, bundet sammen av én router. Legg merke til at routeren har tre forskjellige IP-adresser — én per grensesnitt.</figcaption>
-</figure>
+          <line x1="220" y1="95" x2="280" y2="112" stroke="var(--rust)" stroke-width="1.5"/>
+          <line x1="340" y1="112" x2="400" y2="95" stroke="var(--rust)" stroke-width="1.5"/>
+          <line x1="310" y1="138" x2="310" y2="165" stroke="var(--rust)" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <figcaption>Tre subnett bundet sammen av &eacute;n router. Routeren har tre forskjellige IP-adresser &mdash; &eacute;n per grensesnitt.</figcaption>
+    </figure>
+  </div>
 </section>
 
+<!-- ============ 11 CIDR ============ -->
 <section id="cidr">
-<h2><span class="num">11</span>CIDR — klasseløs adressering</h2>
+  <div class="container">
+    <div class="badge">11 &middot; CIDR</div>
+    <h2>Klassel&oslash;s <em>adressering</em></h2>
+    <p class="section-intro">De gamle klassene (/8, /16, /24) kastet bort enorme mengder adresser. CIDR lar nettverksdelen v&aelig;re et hvilket som helst tall mellom 0 og 32.</p>
 
-<p>I begynnelsen delte Internett adresserommet i faste klasser: /8 for «store» organisasjoner, /16 for mellomstore, /24 for små. Problemet var at dette ikke passet noen: en organisasjon med 300 maskiner passet ikke i en /24 (256 adresser) og fikk i stedet en /16 (65 536 adresser), hvorav 65 236 ble kastet bort. På 1990-tallet ville dette systemet tømt adresserommet fullstendig innen få år.</p>
+    <p class="lead"><strong>CIDR</strong> &mdash; Classless Inter-Domain Routing &mdash; dropper de faste klassene og lar prefikslengden v&aelig;re vilk&aring;rlig. <code>200.23.16.0/23</code> betyr &laquo;de f&oslash;rste 23 bitene er nettverksdelen, de siste 9 er vertsdelen&raquo;, som gir 2&#8313; = 512 adresser.</p>
 
-<p><strong>CIDR</strong> — Classless Inter-Domain Routing — var løsningen. Dropp klassene; la lengden av nettverksdelen være et hvilket som helst tall mellom 0 og 32. Skriv den etter en skråstrek: <code>200.23.16.0/23</code> betyr «de første 23 bitene er nettverksdelen, de siste 9 er vertsdelen», som gir 2⁹ = 512 adresser. Nå kan en organisasjon få et adresserom som faktisk passer størrelsen sin.</p>
+    <div class="slider-box">
+      <div class="slabel">Utforsk CIDR</div>
+      <h4>Flytt p&aring; prefikslengden og se hvor mange adresser du f&aring;r:</h4>
+      <input type="range" id="cidr-slider" min="8" max="30" value="24">
+      <div class="addr-display" id="cidr-display"></div>
+      <div class="stats">
+        <div><div class="k">Prefiks</div><div class="v" id="cidr-prefix">/24</div></div>
+        <div><div class="k">Subnet-maske</div><div class="v" id="cidr-mask" style="font-size:13px">255.255.255.0</div></div>
+        <div><div class="k">Antall adresser</div><div class="v" id="cidr-count">256</div></div>
+      </div>
+    </div>
 
-<div class="slider-box">
-<div class="label">Utforsk CIDR</div>
-<div style="font-family: Lora, serif; font-size: 15px;">Flytt på prefiks-lengden og se hvor mange adresser du får:</div>
-<div class="slider-row">
-  <input type="range" id="cidr-slider" min="8" max="30" value="24">
-</div>
-<div class="addr-display" id="cidr-display"></div>
-<div class="stats">
-  <div><div class="k">Prefiks</div><div class="v" id="cidr-prefix">/24</div></div>
-  <div><div class="k">Subnet-maske</div><div class="v" id="cidr-mask" style="font-size:13px;">255.255.255.0</div></div>
-  <div><div class="k">Antall adresser</div><div class="v" id="cidr-count">256</div></div>
-</div>
-</div>
+    <h3>Rute-aggregering</h3>
+    <p>CIDR muliggj&oslash;r <strong>hierarkisk adressering</strong>. En ISP som eier <code>200.23.16.0/20</code> kan annonsere den ene ruten til resten av Internett, selv om den internt deler rommet i &aring;tte /23-blokker for &aring;tte kundeorganisasjoner. Resten av Internett trenger ikke vite om underoppdelingen &mdash; bare at &laquo;alt som begynner med 200.23.16.0/20 sendes til denne ISP-en.&raquo;</p>
 
-<p>CIDR gjorde også <em>rute-aggregering</em> mulig. En ISP som eier <code>200.23.16.0/20</code> kan annonsere bare den ene ruten til resten av Internett, selv om den internt deler rommet opp i åtte /23-blokker for åtte forskjellige kundeorganisasjoner. Resten av Internett trenger ikke vite om underoppdelingen — de trenger bare vite at «alt som begynner med 200.23.16.0/20 sendes til denne ISP-en». Dette holder kjerneruternes forwarding-tabeller innen håndterbar størrelse.</p>
+    <p>N&aring;r en organisasjon bytter ISP, annonserer den nye ISP-en en mer spesifikk rute (lengre prefiks), og takket v&aelig;re LPM finner trafikken fram riktig. Systemet fungerer selvrepererende.</p>
 
-<p>Når en organisasjon bytter ISP, oppstår et interessant unntak: den nye ISP-en annonserer en mer spesifikk rute (lengre prefiks) for den enkelt kunden, og takket være longest prefix matching vil trafikken finne fram til den nye ISP-en selv om den gamle fortsatt annonserer sin aggregerte blokk. Systemet fungerer selvreparerende.</p>
+    <h3>Hvem deler ut adresser?</h3>
+    <p><strong>ICANN</strong> (Internet Corporation for Assigned Names and Numbers) allokerer IP-adresseblokker gjennom fem regionale registre (RIR-er). ICANN tildelte den siste IPv4-blokken til et RIR i 2011 &mdash; den globale poolen er tom.</p>
+  </div>
 </section>
 
+<!-- ============ 12 DHCP ============ -->
 <section id="dhcp">
-<h2><span class="num">12</span>DHCP: å få en adresse automatisk</h2>
+  <div class="container">
+    <div class="badge">12 &middot; DHCP</div>
+    <h2>F&aring; en adresse <em>automatisk</em></h2>
+    <p class="section-intro">DHCP &mdash; Dynamic Host Configuration Protocol &mdash; lar en maskin be om og motta en IP-adresse n&aring;r den kobler seg p&aring; nettverket.</p>
 
-<p>En adresse er fin å ha, men hvordan får en maskin den? To svar finnes. Den gamle måten er at systemadministratoren koder den inn i en konfigurasjonsfil. Det fungerer for servere som aldri flytter seg, men er umulig for bærbare som stadig bytter nettverk. Den moderne måten er <strong>DHCP</strong> — Dynamic Host Configuration Protocol — der maskinen ber om en adresse når den kobler seg på, og får den levert automatisk.</p>
+    <p class="lead">Manuell konfigurering fungerer for servere, men er umulig for b&aelig;rbare som stadig bytter nettverk. DHCP l&oslash;ser dette med en dans i fire trinn &mdash; alle sendt som broadcast, fordi klienten i starten ikke engang kjenner sin egen adresse.</p>
 
-<p>DHCP er en dans i fire trinn, alle kringkastet (broadcast) fordi klienten i starten ikke engang kjenner sin egen adresse — og heller ikke adressen til DHCP-serveren.</p>
+    <div class="stepper" id="stepper-dhcp">
+      <div class="slabel">DHCP-sekvensen</div>
+      <h4>Fire meldinger, alle broadcast</h4>
+      <div class="stage-svg" id="dhcp-svg"></div>
+      <div class="desc" id="dhcp-desc"></div>
+      <div class="ctrls">
+        <button id="dhcp-prev" disabled>&larr; Forrige</button>
+        <span class="progress" id="dhcp-prog">0 / 4</span>
+        <button id="dhcp-next">Neste &rarr;</button>
+      </div>
+    </div>
 
-<div class="stepper" id="stepper-dhcp">
-<div class="label">DHCP-sekvensen</div>
-<svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg" id="dhcp-svg">
-  <!-- Client -->
-  <rect x="40" y="30" width="100" height="40" fill="#ebe0c6" stroke="#3b342a" rx="3"/>
-  <text x="90" y="55" text-anchor="middle" font-family="Fraunces, serif" font-size="13" font-weight="600">Klient</text>
-  <line x1="90" y1="70" x2="90" y2="240" stroke="#746851" stroke-dasharray="2 3"/>
+    <p>DHCP leverer mer enn bare en IP-adresse. Svaret inneholder vanligvis ogs&aring;: adresse til <strong>f&oslash;rste-hop-router</strong> (default gateway), adresse til <strong>DNS-server</strong>, og <strong>subnet-maske</strong>.</p>
 
-  <!-- Server -->
-  <rect x="480" y="30" width="100" height="40" fill="#ebe0c6" stroke="#3b342a" rx="3"/>
-  <text x="530" y="55" text-anchor="middle" font-family="Fraunces, serif" font-size="13" font-weight="600">DHCP-server</text>
-  <line x1="530" y1="70" x2="530" y2="240" stroke="#746851" stroke-dasharray="2 3"/>
-
-  <!-- Messages (all initially hidden) -->
-  <g id="dhcp-msg-1" opacity="0">
-    <line x1="90" y1="100" x2="530" y2="100" stroke="#8a1c1c" stroke-width="2" marker-end="url(#arr3)"/>
-    <rect x="200" y="82" width="220" height="22" fill="#f4ede0" stroke="#8a1c1c" rx="2"/>
-    <text x="310" y="97" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11">1. DHCP discover (broadcast)</text>
-  </g>
-  <g id="dhcp-msg-2" opacity="0">
-    <line x1="530" y1="140" x2="90" y2="140" stroke="#1f4d3a" stroke-width="2" marker-end="url(#arr3g)"/>
-    <rect x="200" y="122" width="220" height="22" fill="#f4ede0" stroke="#1f4d3a" rx="2"/>
-    <text x="310" y="137" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11">2. DHCP offer (her er .4)</text>
-  </g>
-  <g id="dhcp-msg-3" opacity="0">
-    <line x1="90" y1="180" x2="530" y2="180" stroke="#8a1c1c" stroke-width="2" marker-end="url(#arr3)"/>
-    <rect x="200" y="162" width="220" height="22" fill="#f4ede0" stroke="#8a1c1c" rx="2"/>
-    <text x="310" y="177" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11">3. DHCP request (jeg tar .4)</text>
-  </g>
-  <g id="dhcp-msg-4" opacity="0">
-    <line x1="530" y1="220" x2="90" y2="220" stroke="#1f4d3a" stroke-width="2" marker-end="url(#arr3g)"/>
-    <rect x="200" y="202" width="220" height="22" fill="#f4ede0" stroke="#1f4d3a" rx="2"/>
-    <text x="310" y="217" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11">4. DHCP ack (bekreftet)</text>
-  </g>
-  <defs>
-    <marker id="arr3" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#8a1c1c"/></marker>
-    <marker id="arr3g" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#1f4d3a"/></marker>
-  </defs>
-</svg>
-<div class="step-desc" id="dhcp-desc">Klikk «Neste» for å se DHCP-meldingsutvekslingen trinn for trinn.</div>
-<div class="stepper-controls">
-<button id="dhcp-prev" disabled>← Forrige</button>
-<span class="counter"><span id="dhcp-idx">0</span> / 4</span>
-<button id="dhcp-next">Neste →</button>
-</div>
-</div>
-
-<p>Det interessante spørsmålet — og et vanlig eksamensspørsmål — er hvorfor <em>trinn 3</em> (DHCP request) også sendes som broadcast, når klienten på det tidspunktet allerede kjenner adressen til serveren fra trinn 2. Svaret er at det kan være flere DHCP-servere på nettverket, og alle sendte kanskje hver sitt tilbud i trinn 2. Ved å broadcaste request-en lar klienten de <em>andre</em> serverne vite at tilbudet deres ble avslått, slik at de kan frigjøre den adressen de hadde reservert. Hadde klienten sendt direkte til den valgte serveren, ville de andre sittet med reservasjoner som aldri ble brukt.</p>
-
-<p>DHCP leverer mer enn bare en IP-adresse. Svaret inneholder vanligvis også adressen til standard-gateway (første-hop-router), adressen til DNS-serveren, og subnet-masken. Med ett eneste protokollskall har den nylig ankomne maskinen alt den trenger for å begynne å kommunisere.</p>
-
-<div class="quiz" data-correct="2">
-<div class="label">Sjekk forståelsen</div>
-<div class="question">Hvorfor sendes DHCP request som broadcast, selv når klienten kjenner server-adressen?</div>
-<div class="options">
-  <button class="opt">Fordi klienten fortsatt ikke har en egen IP-adresse å svare fra.</button>
-  <button class="opt">Fordi unicast ikke er støttet på dette tidspunktet i protokollen.</button>
-  <button class="opt">For å la andre DHCP-servere som kom med tilbud vite at tilbudene ble avslått, så de kan frigjøre reserverte adresser.</button>
-  <button class="opt">Fordi routere filtrerer unicast-trafikk til DHCP-servere.</button>
-</div>
-<div class="explain">Broadcasting i trinn 3 er et signal til hele nettverket: «Jeg valgte denne serveren, de andre kan slippe sine reservasjoner.» Uten det ville andre servere sittet med bundne adresser helt til timeouten deres gikk ut.</div>
-</div>
+    <div class="quiz" data-correct="2">
+      <div class="qlabel">Sjekk forst&aring;elsen</div>
+      <h4>Hvorfor sendes DHCP request som broadcast, selv n&aring;r klienten kjenner serveradressen?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">Fordi klienten fortsatt ikke har en egen IP-adresse &aring; svare fra.</button>
+        <button class="opt" data-i="1">Fordi unicast ikke er st&oslash;ttet p&aring; dette tidspunktet i protokollen.</button>
+        <button class="opt" data-i="2">For &aring; la andre DHCP-servere som ogs&aring; sendte tilbud, vite at deres tilbud ble avsl&aring;tt &mdash; s&aring; de kan frigj&oslash;re reserverte adresser.</button>
+        <button class="opt" data-i="3">Fordi routere filtrerer unicast-trafikk til DHCP-servere.</button>
+      </div>
+      <div class="feedback"><strong>Riktig!</strong> Broadcast i trinn 3 signaliserer til <em>alle</em> DHCP-servere: &laquo;Jeg valgte denne serveren, de andre kan slippe sine reservasjoner.&raquo;</div>
+    </div>
+  </div>
 </section>
 
+<!-- ============ 13 NAT ============ -->
 <section id="nat">
-<h2><span class="num">13</span>NAT — hvorfor hele hjemmet ditt deler én IP</h2>
+  <div class="container">
+    <div class="badge">13 &middot; NAT</div>
+    <h2>Hvorfor hele hjemmet deler <em>&eacute;n IP</em></h2>
+    <p class="section-intro">Network Address Translation lar et helt privat nettverk dele &eacute;n offentlig IP-adresse. Det reddet IPv4 &mdash; men bryter end-to-end-prinsippet.</p>
 
-<p>Her er et tema som bøkene behandler, men som slidene du ga meg bare nevner i forbifarten. Det er verdt å bruke noen minutter på. IPv4 har 2³² ≈ 4,3 milliarder adresser. Det høres mye ut helt til du tenker på at det finnes mange milliarder enheter som vil ha en hver — og da ville vi vært tomme for lenge siden. Likevel fungerer Internett. Hvordan?</p>
+    <p class="lead">IPv4 har 2&sup3;&sup2; &asymp; 4,3 milliarder adresser. Det er ikke nok for alle verdens enheter. <strong>NAT</strong> l&oslash;ser dette ved at alle maskiner p&aring; et privat nettverk (typisk <code>10.0.0.0/8</code> eller <code>192.168.0.0/16</code>) deler &eacute;n offentlig adresse utad.</p>
 
-<p>Svaret er <strong>NAT</strong> — Network Address Translation. Ideen er at et helt privat nettverk (hjemmet ditt, et kontor, et mobilnettverk) deler <em>én</em> offentlig IP-adresse utad. Innad bruker alle maskinene private adresser fra et spesielt reservert område (typisk <code>192.168.0.0/16</code> eller <code>10.0.0.0/8</code>), som aldri dukker opp på det offentlige Internett. NAT-boksen — som regel din hjemmeruter — oversetter mellom de private adressene og den delte offentlige.</p>
+    <p>Trikset ligger i <strong>portnumrene</strong>. N&aring;r maskinen din sender en pakke ut, omskriver NAT-routeren kildeadressen til sin offentlige IP og endrer kildeporten til et unikt nummer som den lagrer i en <strong>NAT-tabell</strong>. N&aring;r svaret kommer tilbake, sl&aring;r den opp i tabellen og sender pakken til riktig intern maskin.</p>
 
-<p>Trikset ligger i portnumrene. Når maskinen din sender en pakke ut, omskriver NAT-boksen kildeadressen til sin egen offentlige IP, og endrer også kildeporten til et unikt nummer som den husker i en tabell: «port 50123 på utsiden betyr 192.168.1.14:54321 på innsiden». Når svaret kommer tilbake til port 50123, slår NAT-boksen opp i tabellen og sender pakken videre til riktig maskin innenfor. En offentlig adresse kan dermed multiplexe tusenvis av interne flows samtidig.</p>
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 620 230" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="120" cy="110" rx="88" ry="75" fill="rgba(61,107,58,0.08)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="120" y="38" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-style="italic" fill="var(--green)">privat nett</text>
+          <circle cx="80" cy="95" r="5" fill="var(--ink-soft)"/>
+          <text x="80" y="85" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">10.0.0.1</text>
+          <circle cx="150" cy="90" r="5" fill="var(--ink-soft)"/>
+          <text x="150" y="80" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">10.0.0.2</text>
+          <circle cx="100" cy="140" r="5" fill="var(--ink-soft)"/>
+          <text x="100" y="158" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">10.0.0.3</text>
 
-<figure>
-<svg viewBox="0 0 620 240" xmlns="http://www.w3.org/2000/svg">
-  <!-- Private network cloud -->
-  <ellipse cx="120" cy="120" rx="90" ry="80" fill="#d4e4d2" stroke="#1f4d3a" stroke-width="1.5"/>
-  <text x="120" y="40" text-anchor="middle" font-family="Fraunces, serif" font-size="12" font-style="italic" fill="#1f4d3a">privat nett</text>
-  <circle cx="80" cy="100" r="6" fill="#3b342a"/>
-  <text x="80" y="90" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8">192.168.1.14</text>
-  <circle cx="150" cy="95" r="6" fill="#3b342a"/>
-  <text x="150" y="85" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8">192.168.1.15</text>
-  <circle cx="100" cy="150" r="6" fill="#3b342a"/>
-  <text x="100" y="168" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8">192.168.1.16</text>
+          <rect x="250" y="88" width="120" height="48" fill="var(--paper-dark)" stroke="var(--rust)" stroke-width="1.5" rx="3"/>
+          <text x="310" y="109" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">NAT</text>
+          <text x="310" y="126" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--rust)">138.76.29.7</text>
 
-  <!-- NAT box -->
-  <rect x="250" y="95" width="120" height="50" fill="#ebe0c6" stroke="#8a1c1c" stroke-width="1.5" rx="3"/>
-  <text x="310" y="117" text-anchor="middle" font-family="Fraunces, serif" font-size="13" font-weight="600">NAT</text>
-  <text x="310" y="133" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#8a1c1c">203.0.113.7</text>
+          <ellipse cx="520" cy="110" rx="68" ry="55" fill="var(--paper-dark)" stroke="var(--blue)" stroke-width="1.5"/>
+          <text x="520" y="115" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-style="italic" fill="var(--blue)">Internett</text>
 
-  <!-- Public cloud -->
-  <ellipse cx="520" cy="120" rx="70" ry="60" fill="#ebe0c6" stroke="#2b4a7a" stroke-width="1.5"/>
-  <text x="520" y="125" text-anchor="middle" font-family="Fraunces, serif" font-size="13" font-style="italic" fill="#2b4a7a">Internett</text>
+          <line x1="205" y1="112" x2="250" y2="112" stroke="var(--ink-soft)" stroke-width="1.5"/>
+          <line x1="370" y1="112" x2="455" y2="112" stroke="var(--ink-soft)" stroke-width="1.5"/>
 
-  <!-- Links -->
-  <line x1="210" y1="120" x2="250" y2="120" stroke="#3b342a" stroke-width="1.5"/>
-  <line x1="370" y1="120" x2="455" y2="120" stroke="#3b342a" stroke-width="1.5"/>
+          <g font-family="IBM Plex Mono" font-size="9">
+            <rect x="225" y="160" width="170" height="56" fill="var(--paper)" stroke="var(--line)" stroke-dasharray="3 3"/>
+            <text x="310" y="174" text-anchor="middle" fill="var(--ink-faded)">NAT-tabell</text>
+            <text x="232" y="190">10.0.0.1:3345 &harr; :5001</text>
+            <text x="232" y="204">10.0.0.2:4500 &harr; :5002</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>NAT holder en oversettelsestabell som lar mange interne flows dele &eacute;n offentlig adresse. N&oslash;kkelen er &aring; omskrive portnummer.</figcaption>
+    </figure>
 
-  <!-- Translation table -->
-  <g font-family="JetBrains Mono, monospace" font-size="9">
-    <rect x="220" y="170" width="180" height="60" fill="#f4ede0" stroke="#746851" stroke-dasharray="3 3"/>
-    <text x="310" y="184" text-anchor="middle" fill="#746851">NAT-tabell</text>
-    <text x="228" y="199">192.168.1.14:54321 ↔ :50123</text>
-    <text x="228" y="213">192.168.1.15:33100 ↔ :50124</text>
-    <text x="228" y="227">192.168.1.16:48000 ↔ :50125</text>
-  </g>
-</svg>
-<figcaption>NAT holder en oversettelsestabell som lar mange interne flows dele én offentlig adresse. Nøkkelen er å omskrive portnummer, ikke bare adresser.</figcaption>
-</figure>
-
-<p>NAT er en hack. Den bryter end-to-end-prinsippet som lå til grunn for Internett: ideen om at to maskiner skulle kunne snakke direkte med hverandre uten at mellomliggende bokser modifiserte innholdet. NAT gjør også innkommende forbindelser vanskelige — en maskin bak NAT kan ikke uten videre ta imot en forbindelse utenfra, siden det ikke finnes noen oppføring i tabellen før en utgående pakke har blitt sendt først. Det er derfor du trenger «port forwarding» for å kjøre en server hjemme, og hvorfor peer-to-peer-protokoller må gjøre forunderlige dansetrinn med «hole punching» for å fungere.</p>
-
-<p>Men NAT reddet IPv4. Uten den ville adresserommet kollapset tidlig på 2000-tallet, og presset for å migrere til IPv6 ville vært mye høyere. Ironisk nok er det akkurat denne suksessen som har gjort overgangen til IPv6 så treg.</p>
+    <div class="box problem">
+      <div class="label">NAT er kontroversielt</div>
+      <p>NAT bryter <strong>end-to-end-prinsippet</strong>: en maskin bak NAT kan ikke uten videre ta imot innkommende forbindelser. Det krever &laquo;port forwarding&raquo; for &aring; kj&oslash;re en server hjemme, og peer-to-peer-protokoller m&aring; bruke &laquo;hole punching.&raquo; Routere &laquo;b&oslash;r&raquo; bare prosessere opp til lag 3, men NAT manipulerer portnumre (lag 4). Likevel: NAT er her for &aring; bli, bredt brukt i hjemmenett, bedrifter og 4G/5G-nett.</p>
+    </div>
+  </div>
 </section>
 
+<!-- ============ 14 IPv6 ============ -->
 <section id="ipv6">
-<h2><span class="num">14</span>IPv6 — og hvorfor overgangen tok 30 år</h2>
+  <div class="container">
+    <div class="badge">14 &middot; IPv6</div>
+    <h2>128-bit adresser og en <em>enklere</em> header</h2>
+    <p class="section-intro">IPv6 ble spesifisert i 1998. Motivasjonen: 32-bit adresser ville g&aring; tomt. L&oslash;sningen: 128-bit adresser &mdash; nok til &aring; gi hvert sandkorn p&aring; jorden sin egen adresse flere tusen milliarder ganger.</p>
 
-<p>IPv6 ble spesifisert i 1998. Motivasjonen var enkel: 32-bits adresser kommer ikke til å rekke. Løsningen var enda enklere: bruk 128-bits adresser i stedet. Det gir 2¹²⁸ adresser — omtrent 3,4 × 10³⁸, eller «nok til å gi hver sandkorn på jorden sin egen adresse flere tusen milliarder ganger over». Problemet med adresserom er løst, permanent.</p>
+    <p class="lead">IPv6 har to fordeler utover det st&oslash;rre adresserommet. F&oslash;rst: en <strong>fast 40-byte header</strong> uten options eller variable felt, som gj&oslash;r forwarding raskere. Deretter: st&oslash;tte for <strong>flow labels</strong> som lar routere behandle flows forskjellig.</p>
 
-<p>IPv6 forenklet også headeren sammenlignet med IPv4. Ingen header-sjekksum (transportlaget gjør sin egen). Ingen fragmentering i routere — hvis en pakke er for stor, sendes en ICMP-feil tilbake til avsenderen som må fragmentere selv. Faste 40 byte header-størrelse. Extension headers for valgfrie ting. Alt sammen gjør routerens forwarding-jobb enklere og raskere.</p>
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 620 160" xmlns="http://www.w3.org/2000/svg">
+          <g font-family="IBM Plex Mono" font-size="10">
+            <text x="40" y="20" font-family="IBM Plex Sans" font-size="12" font-weight="600">IPv6-header (fast 40 byte)</text>
 
-<figure>
-<svg viewBox="0 0 620 180" xmlns="http://www.w3.org/2000/svg">
-  <g font-family="JetBrains Mono, monospace" font-size="10">
-    <text x="40" y="25" font-family="Fraunces, serif" font-size="13" font-weight="600">IPv6-header (fast 40 byte)</text>
+            <rect x="40" y="32" width="50" height="24" fill="var(--paper-dark)" stroke="var(--ink-soft)"/>
+            <rect x="90" y="32" width="90" height="24" fill="var(--paper-dark)" stroke="var(--ink-soft)"/>
+            <rect x="180" y="32" width="300" height="24" fill="var(--paper-dark)" stroke="var(--ink-soft)"/>
+            <text x="65" y="48" text-anchor="middle">ver</text>
+            <text x="135" y="48" text-anchor="middle">traffic class</text>
+            <text x="330" y="48" text-anchor="middle">flow label</text>
 
-    <!-- Row 1 -->
-    <rect x="40" y="40" width="50" height="26" fill="#ebe0c6" stroke="#3b342a"/>
-    <rect x="90" y="40" width="90" height="26" fill="#ebe0c6" stroke="#3b342a"/>
-    <rect x="180" y="40" width="300" height="26" fill="#ebe0c6" stroke="#3b342a"/>
-    <text x="65" y="57" text-anchor="middle">ver</text>
-    <text x="135" y="57" text-anchor="middle">traffic class</text>
-    <text x="330" y="57" text-anchor="middle">flow label</text>
+            <rect x="40" y="56" width="160" height="24" fill="var(--paper-dark)" stroke="var(--ink-soft)"/>
+            <rect x="200" y="56" width="160" height="24" fill="var(--paper-dark)" stroke="var(--ink-soft)"/>
+            <rect x="360" y="56" width="120" height="24" fill="var(--paper-dark)" stroke="var(--ink-soft)"/>
+            <text x="120" y="72" text-anchor="middle">payload length</text>
+            <text x="280" y="72" text-anchor="middle">next header</text>
+            <text x="420" y="72" text-anchor="middle">hop limit</text>
 
-    <!-- Row 2 -->
-    <rect x="40" y="66" width="160" height="26" fill="#ebe0c6" stroke="#3b342a"/>
-    <rect x="200" y="66" width="160" height="26" fill="#ebe0c6" stroke="#3b342a"/>
-    <rect x="360" y="66" width="120" height="26" fill="#ebe0c6" stroke="#3b342a"/>
-    <text x="120" y="83" text-anchor="middle">payload length</text>
-    <text x="280" y="83" text-anchor="middle">next header</text>
-    <text x="420" y="83" text-anchor="middle">hop limit</text>
+            <rect x="40" y="80" width="440" height="24" fill="rgba(176,68,40,0.12)" stroke="var(--rust)" stroke-width="1.5"/>
+            <text x="260" y="96" text-anchor="middle" font-weight="600">source address (128 bit)</text>
 
-    <!-- Source -->
-    <rect x="40" y="92" width="440" height="26" fill="#f0dfcb" stroke="#8a1c1c" stroke-width="1.5"/>
-    <text x="260" y="109" text-anchor="middle" font-weight="600">source address (128 bit)</text>
+            <rect x="40" y="104" width="440" height="24" fill="rgba(176,68,40,0.12)" stroke="var(--rust)" stroke-width="1.5"/>
+            <text x="260" y="120" text-anchor="middle" font-weight="600">destination address (128 bit)</text>
 
-    <!-- Dest -->
-    <rect x="40" y="118" width="440" height="26" fill="#f0dfcb" stroke="#8a1c1c" stroke-width="1.5"/>
-    <text x="260" y="135" text-anchor="middle" font-weight="600">destination address (128 bit)</text>
+            <text x="500" y="50" font-family="Newsreader" font-size="10" fill="var(--ink-faded)">ingen</text>
+            <text x="500" y="62" font-family="Newsreader" font-size="10" fill="var(--ink-faded)">fragment-felt!</text>
+            <text x="500" y="96" font-family="Newsreader" font-size="10" fill="var(--ink-faded)">4&times; s&aring; lange</text>
+            <text x="500" y="108" font-family="Newsreader" font-size="10" fill="var(--ink-faded)">adresser</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>IPv6-headeren er enklere enn IPv4 tross lengre adresser: ingen checksum, ingen options inline, ingen fragmentering i routere.</figcaption>
+    </figure>
 
-    <text x="500" y="57" font-family="Lora, serif" font-size="10" fill="#746851">ingen</text>
-    <text x="500" y="70" font-family="Lora, serif" font-size="10" fill="#746851">fragment-</text>
-    <text x="500" y="83" font-family="Lora, serif" font-size="10" fill="#746851">felt!</text>
-    <text x="500" y="109" font-family="Lora, serif" font-size="10" fill="#746851">4× så</text>
-    <text x="500" y="122" font-family="Lora, serif" font-size="10" fill="#746851">lange</text>
-    <text x="500" y="135" font-family="Lora, serif" font-size="10" fill="#746851">adresser</text>
-  </g>
-</svg>
-<figcaption>IPv6-headeren er enklere enn IPv4 tross lengre adresser: ingen checksum, ingen options inline, ingen fragmentering i routere.</figcaption>
-</figure>
+    <h3>Hva er fjernet fra IPv4?</h3>
+    <ul style="margin:20px 0 20px 24px">
+      <li><strong>Ingen header checksum</strong> &mdash; sparer tid i routere (transportlaget har sin egen).</li>
+      <li><strong>Ingen fragmentering i routere</strong> &mdash; hvis pakken er for stor, sender routeren ICMP &laquo;Packet Too Big&raquo; tilbake. Senderen m&aring; fragmentere selv.</li>
+      <li><strong>Ingen options</strong> &mdash; erstattet av extension headers som kj&oslash;res som &laquo;next header&raquo;-kjeder.</li>
+    </ul>
 
-<p>Så hvorfor er vi fortsatt ikke ferdige med migrasjonen, 28 år senere? Fordi IPv6 og IPv4 ikke er bakoverkompatible. En IPv6-host kan ikke snakke med en IPv4-host uten en eksplisitt oversettelsesmekanisme. Internett kan ikke «byttes» over en natt; det måtte migreres gradvis, og i mellomtiden måtte alle både kunne snakke IPv4 og IPv6 — en tilstand som heter <em>dual stack</em>.</p>
+    <h3>Overgang: tunneling og dual stack</h3>
+    <p>IPv6 og IPv4 er <em>ikke</em> bakoverkompatible. Overgangen krever <strong>dual stack</strong> (kj&oslash;re begge samtidig) og <strong>tunneling</strong> (pakke IPv6-datagrammer inn i IPv4-payloads for &aring; krysse IPv4-nettverk).</p>
 
-<p>Den dominerende overgangsstrategien er <strong>tunneling</strong>: to IPv6-øyer koblet sammen over et IPv4-hav ved å pakke IPv6-pakker inn i IPv4-payloads. Det fungerer, men legger til kompleksitet. Og så lenge NAT holder IPv4-adresserommet på livsstøtte, er det lite press for å faktisk fullføre migrasjonen. I 2026 er vi rundt 45 % IPv6-trafikk globalt — et tall som gradvis stiger, men altså fortsatt har en veldig lang vei igjen.</p>
-
-<div class="callout insight">
-<span class="label">Lekse fra IPv6</span>
-<p>Selv om en ny protokoll er teknisk overlegen, er det ikke nok. Hvis den ikke er bakoverkompatibel, må den konkurrere med alle løsninger som fikser det gamle «godt nok». NAT var god nok til å gjøre IPv6 til en tiår-lang migrasjonsøvelse.</p>
-</div>
+    <p>I 2026 er vi rundt 45&ndash;47% IPv6-trafikk globalt &mdash; etter over 25 &aring;r med gradvis migrasjon. NAT holdt IPv4 p&aring; livst&oslash;tte, og fjernet presset for en rask overgang.</p>
+  </div>
 </section>
 
-<section id="takeaway">
-<h2><span class="num">15</span>Hovedbudskapet</h2>
+<!-- ============ 15 HOURGLASS ============ -->
+<section id="hourglass">
+  <div class="container">
+    <div class="badge">15 &middot; Timeglasset &amp; end-to-end</div>
+    <h2>Internetts <em>arkitekturprinsipper</em></h2>
+    <p class="section-intro">IP er Internetts &laquo;smale midje&raquo; &mdash; det eneste som alle m&aring; implementere. Kompleksiteten lever i kantene. Dette er et bevisst designvalg.</p>
 
-<p>Hvis det er én ting å ta med seg fra dette kapittelet, så er det dette: <em>Internetts nettverkslag er enkelt med vilje</em>. Hver designbeslutning — best-effort-modellen, dum-routerne, hierarkisk adressering, destinasjonsbasert forwarding — er et valg mot kompleksitet. Og det er akkurat denne enkelheten som har gjort det mulig for nettverket å vokse fra noen få universitetsnoder til en planetomspennende infrastruktur på omtrent førti år.</p>
+    <h3>IP-timeglasset</h3>
+    <p>Internett har mange protokoller i applikasjons-, transport-, lenke- og fysisk lag &mdash; men bare <strong>&eacute;n</strong> nettverkslagsprotokoll: IP. Denne &laquo;smale midjen&raquo; er det som gj&oslash;r interoperabilitet mulig: enhver enhet som implementerer IP kan kommunisere med enhver annen.</p>
 
-<p>Kompleksiteten er ikke borte — den har bare flyttet seg. Den er i endesystemene (TCP sørger for pålitelighet, QUIC for lav latens). Den er i control plane (BGP er et av de mest byzantine systemene mennesker noen gang har bygd). Den er i mellom-bokser (NAT, brannmurer, load balancers, deep packet inspection). Data plane har holdt seg relativt enkelt, og derfor har det kunnet fly.</p>
+    <p>I &laquo;middelalderen&raquo; har Internett f&aring;tt &laquo;love handles&raquo;: mellombokser (firewalls, NAT, caches) som opererer inne i nettverket og bryter den rene timeglassmodellen.</p>
 
-<p>Når vi neste gang åpner control plane-delen av kapittelet, kommer vi til å se <em>hvordan</em> forwarding-tabellene faktisk blir fylt ut — rutingalgoritmene, protokollene, og SDN. Det er der kompleksiteten lever, og det er der Internett virkelig blir politisk.</p>
+    <h3>Arkitekturprinsipper (RFC 1958)</h3>
+
+    <div class="box insight">
+      <div class="label">&#9733; RFC 1958</div>
+      <p>&laquo;The goal is connectivity, the tool is the Internet Protocol, and the intelligence is end to end rather than hidden in the network.&raquo;</p>
+      <p style="margin-top:12px">Tre hj&oslash;rnesteiner: <strong>enkel konnektivitet</strong>, <strong>IP som den smale midjen</strong>, og <strong>intelligens i kantene</strong>.</p>
+    </div>
+
+    <h3>End-to-end-argumentet</h3>
+    <p>Saltzer, Reed og Clark (1981) formulerte det slik: en funksjon kan <em>kun</em> implementeres fullstendig og korrekt med kunnskap fra applikasjonen i endepunktene. &Aring; bygge den inn i nettverket selv er ikke mulig. En ufullstendig versjon i nettverket <em>kan</em> v&aelig;re nyttig som ytelsesoptimalisering, men kan aldri erstatte endepunktimplementeringen.</p>
+
+    <p>Konkret: p&aring;litelig dataoverf&oslash;ring kan enten implementeres hop-by-hop i nettverket (dyrt, komplekst) eller end-to-end i endesystemene (TCP). Internett valgte end-to-end &mdash; og det har skalert bedre enn alle alternativene.</p>
+
+    <div class="quiz" data-correct="1">
+      <div class="qlabel">Sjekk forst&aring;elsen</div>
+      <h4>Hva betyr end-to-end-argumentet i praksis for nettverksdesign?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">At routere b&oslash;r kryptere all trafikk for sikkerhet.</button>
+        <button class="opt" data-i="1">At funksjoner som p&aring;litelighet best implementeres i endesystemene, ikke i nettverket.</button>
+        <button class="opt" data-i="2">At alle enheter m&aring; kj&oslash;re samme operativsystem.</button>
+        <button class="opt" data-i="3">At pakker alltid f&oslash;lger den korteste ruten.</button>
+      </div>
+      <div class="feedback"><strong>Riktig!</strong> Intelligensen &mdash; p&aring;litelighet, kryptering, ordnede leveranser &mdash; h&oslash;rer hjemme i endesystemene. Nettverket holdes enkelt og fokusert p&aring; best-effort-levering.</div>
+    </div>
+  </div>
 </section>
+
+<!-- ============ 16 SUMMARY ============ -->
+<section id="summary">
+  <div class="container">
+    <div class="badge">16 &middot; Oppsummering</div>
+    <h2>Enkelt <em>med vilje</em></h2>
+
+    <p class="lead">Hvis det er &eacute;n ting &aring; ta med seg fra dette kapittelet: Internetts nettverkslag er enkelt med vilje. Hver designbeslutning &mdash; best-effort, dumme routere, hierarkisk adressering, destinasjonsbasert forwarding &mdash; er et valg <em>mot</em> kompleksitet.</p>
+
+    <p>Kompleksiteten er ikke borte &mdash; den har bare flyttet seg:</p>
+    <ul style="margin:20px 0 20px 24px">
+      <li>Til <strong>endesystemene</strong>: TCP s&oslash;rger for p&aring;litelighet, QUIC for lav latens.</li>
+      <li>Til <strong>control plane</strong>: BGP er et av de mest komplekse systemene mennesker har bygd.</li>
+      <li>Til <strong>mellombokser</strong>: NAT, brannmurer, load balancers, deep packet inspection.</li>
+    </ul>
+
+    <p>Data plane har holdt seg relativt enkelt &mdash; og derfor har det kunnet fly. N&aring;r vi neste gang &aring;pner control plane-delen, ser vi <em>hvordan</em> forwarding-tabellene faktisk fylles ut: rutingalgoritmer, OSPF, BGP, og ICMP.</p>
+  </div>
+</section>
+
+<div class="ornament">&#10038; &#10038; &#10038;</div>
 
 <footer>
-Basert på Kurose &amp; Ross, <em>Computer Networking: A Top-Down Approach</em>, 8. utgave, kapittel 4. Suppleringer om NAT, IPv6 og praktiske eksempler er lagt til for å fylle ut områder som slidedekket berørte kort.
+  <p>Basert p&aring; Kurose &amp; Ross, 8. utgave, kapittel 4</p>
+  <p>TTM4100 &middot; NTNU &middot; V&aring;r 2026</p>
 </footer>
-
-</div>
 
 <script>
 // === Quiz handlers ===
-document.querySelectorAll('.quiz').forEach(q => {
-  const correct = parseInt(q.dataset.correct);
-  const opts = q.querySelectorAll('.opt');
-  const explain = q.querySelector('.explain');
-  opts.forEach((btn, i) => {
-    btn.addEventListener('click', () => {
-      opts.forEach(b => b.disabled = true);
+document.querySelectorAll('.quiz').forEach(function(q) {
+  var correct = parseInt(q.dataset.correct);
+  var opts = q.querySelectorAll('.opt');
+  var fb = q.querySelector('.feedback');
+  opts.forEach(function(btn, i) {
+    btn.addEventListener('click', function() {
+      opts.forEach(function(b) { b.disabled = true; });
       if (i === correct) {
         btn.classList.add('correct');
       } else {
         btn.classList.add('wrong');
         opts[correct].classList.add('correct');
       }
-      if (explain) explain.classList.add('show');
+      if (fb) fb.classList.add('show');
     });
   });
 });
 
-// === Longest prefix match interactive ===
+// === LPM interactive ===
 (function() {
-  const rows = document.querySelectorAll('#lpm-table .lpm-row');
-  const buttons = document.querySelectorAll('.lpm-input-row button');
-  const result = document.getElementById('lpm-result');
+  var rows = document.querySelectorAll('#lpm-table .lpm-row');
+  var buttons = document.querySelectorAll('.lpm-input-row button');
+  var result = document.getElementById('lpm-result');
 
   function matchPrefix(addr, prefix) {
-    if (!prefix) return true; // default
-    const a = addr.replace(/ /g, '');
-    const p = prefix.replace(/ /g, '');
-    return a.startsWith(p);
+    if (!prefix) return true;
+    var a = addr.replace(/ /g, '');
+    var p = prefix.replace(/ /g, '');
+    return a.substring(0, p.length) === p;
   }
 
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      buttons.forEach(b => b.classList.remove('active'));
+  buttons.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      buttons.forEach(function(b) { b.classList.remove('active'); });
       btn.classList.add('active');
-      const addr = btn.dataset.addr;
-      let best = null, bestLen = -1;
-      rows.forEach(r => r.classList.remove('match'));
-      rows.forEach(r => {
-        const p = r.dataset.prefix;
+      var addr = btn.dataset.addr;
+      var best = null, bestLen = -1;
+      rows.forEach(function(r) { r.classList.remove('match'); });
+      rows.forEach(function(r) {
+        var p = r.dataset.prefix;
         if (matchPrefix(addr, p)) {
-          const len = p.replace(/ /g, '').length;
+          var len = p.replace(/ /g, '').length;
           if (len > bestLen) { best = r; bestLen = len; }
         }
       });
       if (best) {
         best.classList.add('match');
-        const iface = best.dataset.iface;
-        const prefixText = best.dataset.prefix || 'default';
-        result.innerHTML = `Adressen <span style="font-family:JetBrains Mono, monospace;font-size:12px">${addr}</span> matcher prefikset <strong>${prefixText || '(default)'}</strong> og sendes til interface <strong>${iface}</strong>.`;
+        var iface = best.dataset.iface;
+        var prefixText = best.dataset.prefix || 'default';
+        result.innerHTML = 'Adressen <code style="font-size:12px">' + addr + '</code> matcher prefikset <strong>' + (prefixText || '(default)') + '</strong> og sendes til interface <strong>' + iface + '</strong>.';
       }
     });
   });
@@ -1238,96 +1310,226 @@ document.querySelectorAll('.quiz').forEach(q => {
 
 // === CIDR slider ===
 (function() {
-  const slider = document.getElementById('cidr-slider');
-  const display = document.getElementById('cidr-display');
-  const prefixEl = document.getElementById('cidr-prefix');
-  const maskEl = document.getElementById('cidr-mask');
-  const countEl = document.getElementById('cidr-count');
+  var slider = document.getElementById('cidr-slider');
+  var display = document.getElementById('cidr-display');
+  var prefixEl = document.getElementById('cidr-prefix');
+  var maskEl = document.getElementById('cidr-mask');
+  var countEl = document.getElementById('cidr-count');
 
   function toMask(bits) {
-    const full = '1'.repeat(bits) + '0'.repeat(32 - bits);
-    const octets = [];
-    for (let i = 0; i < 4; i++) {
-      octets.push(parseInt(full.substr(i*8, 8), 2));
-    }
+    var full = '';
+    for (var i = 0; i < 32; i++) full += i < bits ? '1' : '0';
+    var octets = [];
+    for (var i = 0; i < 4; i++) octets.push(parseInt(full.substr(i * 8, 8), 2));
     return octets.join('.');
   }
 
   function update() {
-    const bits = parseInt(slider.value);
-    const addr = '11001000000101110001000000000000'; // 200.23.16.0
-    let html = '';
-    for (let i = 0; i < 32; i++) {
+    var bits = parseInt(slider.value);
+    var addr = '11001000000101110001000000000000';
+    var html = '';
+    for (var i = 0; i < 32; i++) {
       if (i > 0 && i % 8 === 0) html += ' ';
-      const cls = i < bits ? 'net' : 'host';
-      html += `<span class="${cls}">${addr[i]}</span>`;
+      var cls = i < bits ? 'net' : 'host';
+      html += '<span class="' + cls + '">' + addr[i] + '</span>';
     }
-    html += `<br>200.23.16.0/${bits}`;
+    html += '<br>200.23.16.0/' + bits;
     display.innerHTML = html;
     prefixEl.textContent = '/' + bits;
     maskEl.textContent = toMask(bits);
-    const count = Math.pow(2, 32 - bits);
-    countEl.textContent = count >= 1e6 ? (count/1e6).toFixed(1) + 'M' : count.toLocaleString('no');
+    var count = Math.pow(2, 32 - bits);
+    countEl.textContent = count >= 1e6 ? (count / 1e6).toFixed(1) + 'M' : count.toLocaleString('no');
   }
 
   slider.addEventListener('input', update);
   update();
 })();
 
-// === Scheduler stepper ===
+// === Scheduling stepper ===
 (function() {
-  const steps = [
-    { label: 'FCFS — én kø, én regel', desc: 'Første ankom, første sendt. Enkelt og rettferdig — i den forstand at ingen får fortrinnsbehandling. Men en enkelt stor nedlastning kan gjøre Skype-samtalen din ubrukelig.' },
-    { label: 'Priority — klasser, høyest vinner', desc: 'Pakker klassifiseres, og serveren sender alltid fra den høyeste klassen som har noe i kø. Lav latens til viktige flows, men lavprioriterte kan bli helt sultet ut.' },
-    { label: 'Round Robin — alle i tur', desc: 'Serveren går gjennom køene i rekkefølge og tar én pakke fra hver som har noe. Ingen blir sultet, men alle får lik tilgang — uansett hvor mye de faktisk trenger.' },
-    { label: 'WFQ — vektet fordeling', desc: 'Hver klasse har en vekt w_i og får andelen w_i / Σw_j av kapasiteten. Du kan garantere minimum båndbredde per klasse uten å sulte noen. Dette er standarden for QoS.' }
+  var stages = [
+    {
+      title: 'FCFS / FIFO',
+      desc: 'Pakker sendes i ankomstrekkefølge. Enkelt og rettferdig, men en stor nedlastning kan gjøre en Skype-samtale ubrukelig. Ingen differensiering mellom trafikktyper.',
+      svg: function() {
+        return '<svg viewBox="0 0 580 160" xmlns="http://www.w3.org/2000/svg">' +
+          '<text x="40" y="25" font-family="IBM Plex Mono" font-size="10" fill="' + 'var(--ink-faded)' + '">ankomst</text>' +
+          '<rect x="40" y="55" width="180" height="30" fill="none" stroke="' + 'var(--rust)' + '" stroke-width="1.5" rx="2"/>' +
+          '<rect x="45" y="60" width="25" height="20" fill="' + 'var(--rust)' + '" opacity="0.6" rx="1"/>' +
+          '<rect x="75" y="60" width="25" height="20" fill="' + 'var(--blue)' + '" opacity="0.6" rx="1"/>' +
+          '<rect x="105" y="60" width="25" height="20" fill="' + 'var(--rust)' + '" opacity="0.6" rx="1"/>' +
+          '<rect x="135" y="60" width="25" height="20" fill="' + 'var(--green)' + '" opacity="0.6" rx="1"/>' +
+          '<rect x="165" y="60" width="25" height="20" fill="' + 'var(--blue)' + '" opacity="0.6" rx="1"/>' +
+          '<text x="130" y="50" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="' + 'var(--ink-faded)' + '">én kø</text>' +
+          '<line x1="220" y1="70" x2="310" y2="70" stroke="' + 'var(--ink-soft)' + '" stroke-width="1.5" marker-end="url(#sarr)"/>' +
+          '<circle cx="330" cy="70" r="18" fill="' + 'var(--paper-dark)' + '" stroke="' + 'var(--ink-soft)' + '" stroke-width="1.5"/>' +
+          '<text x="330" y="75" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">R</text>' +
+          '<line x1="348" y1="70" x2="430" y2="70" stroke="' + 'var(--ink-soft)' + '" stroke-width="1.5" marker-end="url(#sarr)"/>' +
+          '<text x="450" y="75" font-family="IBM Plex Mono" font-size="10" fill="' + 'var(--ink-faded)' + '">ut</text>' +
+          '<defs><marker id="sarr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="' + 'var(--ink-soft)' + '"/></marker></defs>' +
+          '</svg>';
+      }
+    },
+    {
+      title: 'Priority Scheduling',
+      desc: 'Pakker klassifiseres i prioritetsklasser. Serveren sender alltid fra den høyeste klassen som har noe i kø. Gir lav latens til viktige flows, men lavprioriterte kan bli helt sultet ut.',
+      svg: function() {
+        return '<svg viewBox="0 0 580 160" xmlns="http://www.w3.org/2000/svg">' +
+          '<rect x="40" y="30" width="120" height="24" fill="none" stroke="' + 'var(--rust)' + '" stroke-width="1.2" rx="2"/>' +
+          '<text x="100" y="22" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="' + 'var(--rust)' + '">HØY PRIORITET</text>' +
+          '<rect x="45" y="34" width="18" height="16" fill="' + 'var(--rust)' + '" opacity="0.7" rx="1"/>' +
+          '<rect x="66" y="34" width="18" height="16" fill="' + 'var(--rust)' + '" opacity="0.7" rx="1"/>' +
+          '<rect x="40" y="80" width="120" height="24" fill="none" stroke="' + 'var(--blue)' + '" stroke-width="1.2" rx="2"/>' +
+          '<text x="100" y="72" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="' + 'var(--blue)' + '">LAV PRIORITET</text>' +
+          '<rect x="45" y="84" width="18" height="16" fill="' + 'var(--blue)' + '" opacity="0.6" rx="1"/>' +
+          '<rect x="66" y="84" width="18" height="16" fill="' + 'var(--blue)' + '" opacity="0.6" rx="1"/>' +
+          '<rect x="87" y="84" width="18" height="16" fill="' + 'var(--blue)' + '" opacity="0.6" rx="1"/>' +
+          '<line x1="160" y1="42" x2="300" y2="68" stroke="' + 'var(--rust)' + '" stroke-width="1.2"/>' +
+          '<line x1="160" y1="92" x2="300" y2="72" stroke="' + 'var(--blue)' + '" stroke-width="1.2" stroke-dasharray="4 3"/>' +
+          '<circle cx="320" cy="70" r="18" fill="' + 'var(--paper-dark)' + '" stroke="' + 'var(--ink-soft)' + '" stroke-width="1.5"/>' +
+          '<text x="320" y="75" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">R</text>' +
+          '<line x1="338" y1="70" x2="420" y2="70" stroke="' + 'var(--ink-soft)' + '" stroke-width="1.5" marker-end="url(#sarr)"/>' +
+          '<text x="330" y="120" text-anchor="middle" font-family="Newsreader" font-size="10" font-style="italic" fill="' + 'var(--ink-faded)' + '">høy først, alltid</text>' +
+          '</svg>';
+      }
+    },
+    {
+      title: 'Round Robin',
+      desc: 'Serveren besøker hver klasse i tur og tar én pakke fra hver. Ingen sultes ut, men alle får lik tilgang — uansett behov. Garanterer rettferdighet, men ingen differensiering.',
+      svg: function() {
+        return '<svg viewBox="0 0 580 160" xmlns="http://www.w3.org/2000/svg">' +
+          '<rect x="40" y="20" width="120" height="24" fill="none" stroke="' + 'var(--rust)' + '" stroke-width="1.2" rx="2"/>' +
+          '<rect x="45" y="24" width="18" height="16" fill="' + 'var(--rust)' + '" opacity="0.7" rx="1"/>' +
+          '<rect x="66" y="24" width="18" height="16" fill="' + 'var(--rust)' + '" opacity="0.7" rx="1"/>' +
+          '<rect x="40" y="56" width="120" height="24" fill="none" stroke="' + 'var(--green)' + '" stroke-width="1.2" rx="2"/>' +
+          '<rect x="45" y="60" width="18" height="16" fill="' + 'var(--green)' + '" opacity="0.7" rx="1"/>' +
+          '<rect x="40" y="92" width="120" height="24" fill="none" stroke="' + 'var(--blue)' + '" stroke-width="1.2" rx="2"/>' +
+          '<rect x="45" y="96" width="18" height="16" fill="' + 'var(--blue)' + '" opacity="0.7" rx="1"/>' +
+          '<rect x="66" y="96" width="18" height="16" fill="' + 'var(--blue)' + '" opacity="0.7" rx="1"/>' +
+          '<rect x="87" y="96" width="18" height="16" fill="' + 'var(--blue)' + '" opacity="0.7" rx="1"/>' +
+          '<line x1="160" y1="32" x2="290" y2="62" stroke="' + 'var(--rust)' + '" stroke-width="1"/>' +
+          '<line x1="160" y1="68" x2="290" y2="68" stroke="' + 'var(--green)' + '" stroke-width="1"/>' +
+          '<line x1="160" y1="104" x2="290" y2="74" stroke="' + 'var(--blue)' + '" stroke-width="1"/>' +
+          '<circle cx="310" cy="68" r="18" fill="' + 'var(--paper-dark)' + '" stroke="' + 'var(--ink-soft)' + '" stroke-width="1.5"/>' +
+          '<text x="310" y="73" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">R</text>' +
+          '<path d="M325,54 A20,20 0 1,1 295,54" fill="none" stroke="' + 'var(--ochre)' + '" stroke-width="1.5" stroke-dasharray="3 2"/>' +
+          '<line x1="328" y1="68" x2="420" y2="68" stroke="' + 'var(--ink-soft)' + '" stroke-width="1.5" marker-end="url(#sarr)"/>' +
+          '<text x="310" y="120" text-anchor="middle" font-family="Newsreader" font-size="10" font-style="italic" fill="' + 'var(--ink-faded)' + '">én fra hver, i tur</text>' +
+          '</svg>';
+      }
+    },
+    {
+      title: 'Weighted Fair Queueing (WFQ)',
+      desc: 'Hver klasse får en vekt w_i og får andelen w_i / Σw_j av kapasiteten. Du kan garantere minimum båndbredde per klasse uten å sulte noen. Standarden for QoS i praksis.',
+      svg: function() {
+        return '<svg viewBox="0 0 580 160" xmlns="http://www.w3.org/2000/svg">' +
+          '<rect x="40" y="20" width="120" height="24" fill="none" stroke="' + 'var(--rust)' + '" stroke-width="1.2" rx="2"/>' +
+          '<text x="170" y="36" font-family="IBM Plex Mono" font-size="10" fill="' + 'var(--rust)' + '">w=3</text>' +
+          '<rect x="45" y="24" width="18" height="16" fill="' + 'var(--rust)' + '" opacity="0.7" rx="1"/>' +
+          '<rect x="66" y="24" width="18" height="16" fill="' + 'var(--rust)' + '" opacity="0.7" rx="1"/>' +
+          '<rect x="40" y="56" width="120" height="24" fill="none" stroke="' + 'var(--green)' + '" stroke-width="1.2" rx="2"/>' +
+          '<text x="170" y="72" font-family="IBM Plex Mono" font-size="10" fill="' + 'var(--green)' + '">w=2</text>' +
+          '<rect x="45" y="60" width="18" height="16" fill="' + 'var(--green)' + '" opacity="0.7" rx="1"/>' +
+          '<rect x="40" y="92" width="120" height="24" fill="none" stroke="' + 'var(--blue)' + '" stroke-width="1.2" rx="2"/>' +
+          '<text x="170" y="108" font-family="IBM Plex Mono" font-size="10" fill="' + 'var(--blue)' + '">w=1</text>' +
+          '<rect x="45" y="96" width="18" height="16" fill="' + 'var(--blue)' + '" opacity="0.7" rx="1"/>' +
+          '<rect x="66" y="96" width="18" height="16" fill="' + 'var(--blue)' + '" opacity="0.7" rx="1"/>' +
+          '<line x1="195" y1="32" x2="290" y2="62" stroke="' + 'var(--rust)' + '" stroke-width="1"/>' +
+          '<line x1="195" y1="68" x2="290" y2="68" stroke="' + 'var(--green)' + '" stroke-width="1"/>' +
+          '<line x1="195" y1="104" x2="290" y2="74" stroke="' + 'var(--blue)' + '" stroke-width="1"/>' +
+          '<circle cx="310" cy="68" r="18" fill="' + 'var(--paper-dark)' + '" stroke="' + 'var(--ink-soft)' + '" stroke-width="1.5"/>' +
+          '<text x="310" y="73" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">R</text>' +
+          '<line x1="328" y1="68" x2="420" y2="68" stroke="' + 'var(--ink-soft)' + '" stroke-width="1.5" marker-end="url(#sarr)"/>' +
+          '<text x="370" y="40" font-family="IBM Plex Mono" font-size="10" fill="' + 'var(--ochre)' + '">w_i / Σw_j</text>' +
+          '<text x="310" y="120" text-anchor="middle" font-family="Newsreader" font-size="10" font-style="italic" fill="' + 'var(--ink-faded)' + '">vektet, rettferdig fordeling</text>' +
+          '</svg>';
+      }
+    }
   ];
-  let idx = 0;
-  const prev = document.getElementById('sched-prev');
-  const next = document.getElementById('sched-next');
-  const desc = document.getElementById('sched-desc');
-  const label = document.getElementById('sched-label');
-  const idxEl = document.getElementById('sched-idx');
+
+  var idx = 0;
+  var svgEl = document.getElementById('sched-svg');
+  var descEl = document.getElementById('sched-desc');
+  var titleEl = document.getElementById('sched-title');
+  var progEl = document.getElementById('sched-prog');
+  var prevBtn = document.getElementById('sched-prev');
+  var nextBtn = document.getElementById('sched-next');
+
   function render() {
-    desc.textContent = steps[idx].desc;
-    label.textContent = steps[idx].label;
-    idxEl.textContent = idx + 1;
-    prev.disabled = idx === 0;
-    next.disabled = idx === steps.length - 1;
+    var s = stages[idx];
+    titleEl.textContent = s.title;
+    svgEl.innerHTML = s.svg();
+    descEl.innerHTML = s.desc;
+    progEl.textContent = (idx + 1) + ' / ' + stages.length;
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === stages.length - 1;
   }
-  prev.addEventListener('click', () => { if (idx > 0) { idx--; render(); } });
-  next.addEventListener('click', () => { if (idx < steps.length - 1) { idx++; render(); } });
+  prevBtn.addEventListener('click', function() { if (idx > 0) { idx--; render(); } });
+  nextBtn.addEventListener('click', function() { if (idx < stages.length - 1) { idx++; render(); } });
   render();
 })();
 
 // === DHCP stepper ===
 (function() {
-  const steps = [
+  var descs = [
     'Klikk «Neste» for å se DHCP-meldingsutvekslingen trinn for trinn.',
-    'Klienten vet ingenting — ikke sin egen adresse, ikke serverens. Den broadcaster «finnes det en DHCP-server der ute?» til hele subnettet.',
-    'Serveren svarer med et tilbud: «Her er en adresse du kan bruke: 223.1.2.4». Også dette sendes som broadcast, siden klienten fortsatt ikke har en adresse å motta unicast på.',
-    'Klienten broadcaster tilbake: «Jeg tar .4!». Broadcast fordi andre DHCP-servere som også sendte tilbud må få vite at deres tilbud ble avslått.',
-    'Serveren bekrefter med en ack. Nå er leien formelt tildelt, og klienten kan begynne å snakke.'
+    'Klienten vet ingenting — ikke sin egen adresse, ikke serverens. Den broadcaster «finnes det en DHCP-server der ute?» (DHCP Discover) til hele subnettet. Kildeadresse: 0.0.0.0. Destinasjon: 255.255.255.255.',
+    'Serveren svarer med et tilbud: «Her er en adresse du kan bruke: 223.1.2.4» (DHCP Offer). Også dette sendes som broadcast. Inkluderer lease-tid.',
+    'Klienten broadcaster tilbake: «Jeg tar .4!» (DHCP Request). Broadcast fordi andre DHCP-servere som også sendte tilbud, må få vite at de ble avslått.',
+    'Serveren bekrefter: «OK, den er din» (DHCP ACK). Nå er leien tildelt, og klienten vet sin IP, gateway, DNS-server og subnet-maske.'
   ];
-  let idx = 0;
-  const prev = document.getElementById('dhcp-prev');
-  const next = document.getElementById('dhcp-next');
-  const desc = document.getElementById('dhcp-desc');
-  const idxEl = document.getElementById('dhcp-idx');
-  function render() {
-    desc.textContent = steps[idx];
-    idxEl.textContent = idx;
-    prev.disabled = idx === 0;
-    next.disabled = idx === steps.length - 1;
-    for (let i = 1; i <= 4; i++) {
-      const el = document.getElementById('dhcp-msg-' + i);
-      el.setAttribute('opacity', i <= idx ? '1' : '0');
+
+  function buildSvg(step) {
+    var s = '<svg viewBox="0 0 580 240" xmlns="http://www.w3.org/2000/svg">';
+    s += '<defs><marker id="darr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="var(--rust)"/></marker>';
+    s += '<marker id="darrg" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="var(--green)"/></marker></defs>';
+    s += '<rect x="30" y="20" width="90" height="34" fill="var(--paper-dark)" stroke="var(--ink-soft)" rx="3"/>';
+    s += '<text x="75" y="42" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">Klient</text>';
+    s += '<line x1="75" y1="54" x2="75" y2="230" stroke="var(--ink-ghost)" stroke-dasharray="2 3"/>';
+    s += '<rect x="430" y="20" width="110" height="34" fill="var(--paper-dark)" stroke="var(--ink-soft)" rx="3"/>';
+    s += '<text x="485" y="42" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">DHCP-server</text>';
+    s += '<line x1="485" y1="54" x2="485" y2="230" stroke="var(--ink-ghost)" stroke-dasharray="2 3"/>';
+
+    var msgs = [
+      { y: 85, label: '1. DHCP Discover', dir: 'r', color: 'var(--rust)', marker: 'darr' },
+      { y: 125, label: '2. DHCP Offer', dir: 'l', color: 'var(--green)', marker: 'darrg' },
+      { y: 165, label: '3. DHCP Request', dir: 'r', color: 'var(--rust)', marker: 'darr' },
+      { y: 205, label: '4. DHCP ACK', dir: 'l', color: 'var(--green)', marker: 'darrg' }
+    ];
+
+    for (var i = 0; i < msgs.length; i++) {
+      var m = msgs[i];
+      var op = i < step ? '1' : '0.12';
+      var x1 = m.dir === 'r' ? 75 : 485;
+      var x2 = m.dir === 'r' ? 485 : 75;
+      s += '<g opacity="' + op + '">';
+      s += '<line x1="' + x1 + '" y1="' + m.y + '" x2="' + x2 + '" y2="' + m.y + '" stroke="' + m.color + '" stroke-width="2" marker-end="url(#' + m.marker + ')"/>';
+      s += '<text x="280" y="' + (m.y - 8) + '" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="' + m.color + '">' + m.label + '</text>';
+      s += '</g>';
     }
+    s += '</svg>';
+    return s;
   }
-  prev.addEventListener('click', () => { if (idx > 0) { idx--; render(); } });
-  next.addEventListener('click', () => { if (idx < steps.length - 1) { idx++; render(); } });
+
+  var idx = 0;
+  var svgEl = document.getElementById('dhcp-svg');
+  var descEl = document.getElementById('dhcp-desc');
+  var progEl = document.getElementById('dhcp-prog');
+  var prevBtn = document.getElementById('dhcp-prev');
+  var nextBtn = document.getElementById('dhcp-next');
+
+  function render() {
+    svgEl.innerHTML = buildSvg(idx);
+    descEl.textContent = descs[idx];
+    progEl.textContent = idx + ' / 4';
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === descs.length - 1;
+  }
+  prevBtn.addEventListener('click', function() { if (idx > 0) { idx--; render(); } });
+  nextBtn.addEventListener('click', function() { if (idx < descs.length - 1) { idx++; render(); } });
   render();
 })();
 </script>
+
 </body>
 </html>
