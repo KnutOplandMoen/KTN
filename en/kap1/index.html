@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 1 — Computer Networks and the Internet</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="../" class="nav-back">&larr; All chapters</a>
+  </div>
+</nav>
+<main data-chapter="Chapter 1: Computer Networks and the Internet">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Chapter 1 · Data Communications</div>
+  <h1>Computer Networks and the <em>Internet</em></h1>
+  <p class="lede">What exactly is the Internet? How does data travel from A to B, what does it cost in time — and why is everything organized in layers?</p>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">01</span><a href="#overblikk">Overview</a></li>
+    <li><span class="toc-num">02</span><a href="#deler">Parts</a></li>
+    <li><span class="toc-num">03</span><a href="#quiz">Test yourself</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ============ BIG PICTURE ============ -->
+<section id="overblikk">
+<div class="container">
+  <h2>The big picture</h2>
+  <p class="section-intro">Before you dive into the details — here is the map of the terrain.</p>
+
+  <p>When you open Netflix, your laptop sends small chunks of data — <strong>packets</strong> — that travel through perhaps ten to fifteen routers before reaching a Netflix server somewhere else in the world. The server sends video packets back, and they find their way through an entirely different set of routers. All of this happens in a few tens of milliseconds, governed by a set of rules called <strong>protocols</strong>. Chapter 1 is about understanding this machinery at a high level: what is the Internet made of, how does data move, and why is everything organized the way it is?</p>
+
+  <div class="callout callout-green">
+    <span class="label">The analogy you need</span>
+    <p>Think of the Internet as a <strong>postal system</strong>. Your house and mine are <em>end systems</em> (hosts). The post offices are <em>routers</em> that sort and forward. The letters are <em>packets</em> — data divided into manageable chunks with an address label (header) at the front. And the shared rules for how to address, stamp, and deliver mail are <em>protocols</em>. You drop the letter in the mailbox (the socket) and trust that the system delivers — without knowing which route it takes.</p>
+  </div>
+
+  <p>A crucial insight is that the Internet uses <strong>packet switching</strong>, not circuit switching. This means that a dedicated connection is never set up between you and the server — your packets share the links with everyone else, and capacity is allocated dynamically. This is why the Internet can serve billions of users without reserving a line for every single conversation. The price is that delays can vary and packets can be lost — but the gain in efficiency is enormous.</p>
+
+  <p>To manage all this complexity, network communication is organized into <strong>five layers</strong>, where each layer has one job and does not concern itself with the details of the layers below. This layering is the very foundation upon which the rest of the course is built:</p>
+
+  <figure>
+    <svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg" style="max-width:600px;margin:0 auto;display:block;">
+      <!-- Layer 5: Application -->
+      <rect x="140" y="16" width="400" height="48" rx="6" fill="#f4f1ea" stroke="#b04428" stroke-width="2"/>
+      <text x="200" y="45" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="600" fill="#b04428">5</text>
+      <text x="226" y="45" font-family="'IBM Plex Sans', sans-serif" font-size="14" fill="#1a1612">Application layer</text>
+      <text x="430" y="45" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#6b6257">HTTP, SMTP, DNS</text>
+
+      <!-- Arrow -->
+      <line x1="340" y1="64" x2="340" y2="78" stroke="#c9c0ae" stroke-width="1.5" marker-end="url(#arrowDown)"/>
+
+      <!-- Layer 4: Transport -->
+      <rect x="140" y="78" width="400" height="48" rx="6" fill="#f4f1ea" stroke="#b04428" stroke-width="2"/>
+      <text x="200" y="107" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="600" fill="#b04428">4</text>
+      <text x="226" y="107" font-family="'IBM Plex Sans', sans-serif" font-size="14" fill="#1a1612">Transport layer</text>
+      <text x="430" y="107" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#6b6257">TCP, UDP</text>
+
+      <!-- Arrow -->
+      <line x1="340" y1="126" x2="340" y2="140" stroke="#c9c0ae" stroke-width="1.5"/>
+
+      <!-- Layer 3: Network -->
+      <rect x="140" y="140" width="400" height="48" rx="6" fill="#d4dce8" stroke="#2d4a7a" stroke-width="2"/>
+      <text x="200" y="169" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="600" fill="#2d4a7a">3</text>
+      <text x="226" y="169" font-family="'IBM Plex Sans', sans-serif" font-size="14" fill="#1a1612">Network layer</text>
+      <text x="430" y="169" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#6b6257">IP, ICMP</text>
+
+      <!-- Arrow -->
+      <line x1="340" y1="188" x2="340" y2="202" stroke="#c9c0ae" stroke-width="1.5"/>
+
+      <!-- Layer 2: Link -->
+      <rect x="140" y="202" width="400" height="48" rx="6" fill="#d4e6d4" stroke="#3d6b3a" stroke-width="2"/>
+      <text x="200" y="231" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="600" fill="#3d6b3a">2</text>
+      <text x="226" y="231" font-family="'IBM Plex Sans', sans-serif" font-size="14" fill="#1a1612">Link layer</text>
+      <text x="430" y="231" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#6b6257">Ethernet, WiFi</text>
+
+      <!-- Arrow -->
+      <line x1="340" y1="250" x2="340" y2="264" stroke="#c9c0ae" stroke-width="1.5"/>
+
+      <!-- Layer 1: Physical -->
+      <rect x="140" y="264" width="400" height="48" rx="6" fill="#e8e3d6" stroke="#1a1612" stroke-width="2"/>
+      <text x="200" y="293" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="600" fill="#1a1612">1</text>
+      <text x="226" y="293" font-family="'IBM Plex Sans', sans-serif" font-size="14" fill="#1a1612">Physical layer</text>
+      <text x="430" y="293" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#6b6257">Bits over cable/radio</text>
+
+      <!-- Side labels -->
+      <text x="126" y="170" text-anchor="end" font-family="'IBM Plex Sans', sans-serif" font-size="11" fill="#6b6257" transform="rotate(-90 126 170)">Protocol stack</text>
+
+      <!-- Right-side bracket with annotation -->
+      <line x1="554" y1="24" x2="568" y2="24" stroke="#c9c0ae" stroke-width="1.2"/>
+      <line x1="568" y1="24" x2="568" y2="120" stroke="#c9c0ae" stroke-width="1.2"/>
+      <line x1="554" y1="120" x2="568" y2="120" stroke="#c9c0ae" stroke-width="1.2"/>
+      <text x="578" y="68" font-family="'IBM Plex Sans', sans-serif" font-size="10" fill="#6b6257">Only on</text>
+      <text x="578" y="80" font-family="'IBM Plex Sans', sans-serif" font-size="10" fill="#6b6257">end systems</text>
+
+      <line x1="554" y1="148" x2="568" y2="148" stroke="#c9c0ae" stroke-width="1.2"/>
+      <line x1="568" y1="148" x2="568" y2="304" stroke="#c9c0ae" stroke-width="1.2"/>
+      <line x1="554" y1="304" x2="568" y2="304" stroke="#c9c0ae" stroke-width="1.2"/>
+      <text x="578" y="218" font-family="'IBM Plex Sans', sans-serif" font-size="10" fill="#6b6257">Also in routers</text>
+      <text x="578" y="230" font-family="'IBM Plex Sans', sans-serif" font-size="10" fill="#6b6257">and switches</text>
+
+      <!-- Arrow marker definition -->
+      <defs>
+        <marker id="arrowDown" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+          <path d="M1,1 L4,6 L7,1" fill="none" stroke="#c9c0ae" stroke-width="1.2"/>
+        </marker>
+      </defs>
+    </svg>
+    <figcaption>The Internet's five-layer protocol stack. Each layer has one task and offers services to the layer above. The application and transport layers exist only on end systems, while the three lower layers are also present in routers and switches inside the network.</figcaption>
+  </figure>
+
+  <div class="callout callout-blue">
+    <span class="label">Why does this matter?</span>
+    <p>Everything you learn in the rest of the course — HTTP, TCP, IP, Ethernet — is <em>one layer in this stack</em>. Once you understand the layering, you also understand why the course is structured the way it is: we start at the top (applications you know) and work our way down to the bits on the wire. Chapter 1 gives you the entire map; the remaining chapters zoom in on each layer.</p>
+  </div>
+</div>
+</section>
+
+<!-- ============ SUBPAGE LIST ============ -->
+<section id="deler">
+<div class="container">
+  <div class="section-badge">Parts</div>
+  <h2>Explore the <em>chapter</em></h2>
+  <div class="subpage-list">
+    <a href="innhold.html" class="subpage-card">
+      <span class="sp-icon">1</span>
+      <div class="sp-info">
+        <div class="sp-title">Computer Networks and the Internet</div>
+        <div class="sp-desc">What is the Internet, the network edge and core, delay and loss, protocol layers, security, and history</div>
+      </div>
+      <span class="sp-arrow">&rarr;</span>
+    </a>
+  </div>
+</div>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section id="quiz">
+<div class="container">
+  <h2>Test yourself</h2>
+  <p class="section-intro">Check whether you have understood the most important concepts from this chapter.</p>
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 1</div>
+    <div class="q-text">What is the key difference between packet switching and circuit switching?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Packet switching requires a dedicated connection to be established before data can be sent</button>
+      <button class="option" data-correct="false">Circuit switching divides data into packets that are sent independently through the network</button>
+      <button class="option" data-correct="true">In packet switching, network resources are shared dynamically among all users, while circuit switching reserves dedicated resources for each connection</button>
+      <button class="option" data-correct="false">Packet switching guarantees that data arrives without delay, while circuit switching does not</button>
+    </div>
+    <div class="explanation">In packet switching, capacity is shared dynamically through <em>statistical multiplexing</em> — packets from different users are interleaved and share the links. In circuit switching, a fixed portion of capacity (frequency band or time slot) is reserved for the entire call, even when the user is idle. Packet switching is more efficient but provides no guarantees for delay or loss.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 2</div>
+    <div class="q-text">What defines a network protocol?</div>
+    <div class="options">
+      <button class="option" data-correct="false">The speed at which data can be sent over a particular link</button>
+      <button class="option" data-correct="true">The format and order of messages exchanged, as well as the actions taken upon sending and receiving</button>
+      <button class="option" data-correct="false">The physical cable connecting two machines</button>
+      <button class="option" data-correct="false">The IP address of a device on the network</button>
+    </div>
+    <div class="explanation">A protocol is a set of rules that defines the <em>format</em>, <em>order</em>, and <em>actions</em> associated with message exchange between two or more communicating entities. Without protocols, machines would send bits with no shared understanding of what they mean.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 3</div>
+    <div class="q-text">Which of the four delay components is fundamentally unpredictable and depends on network traffic?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Processing delay (d_proc)</button>
+      <button class="option" data-correct="true">Queuing delay (d_queue)</button>
+      <button class="option" data-correct="false">Transmission delay (d_trans)</button>
+      <button class="option" data-correct="false">Propagation delay (d_prop)</button>
+    </div>
+    <div class="explanation">Queuing delay is the only one of the four components that is fundamentally unpredictable. It depends on how many other packets are already waiting in the router queue — something that varies with network traffic. The other three are either constant (processing, propagation) or determined by known values (transmission = L/R).</div>
+  </div>
+</div>
+</section>
+
+</main>
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Spring 2026</p>
+  </div>
+</footer>
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script src="../../quiz.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 8 — Network Security</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="../" class="nav-back">&larr; All chapters</a>
+  </div>
+</nav>
+<main data-chapter="Chapter 8: Network Security">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Chapter 8 · Security</div>
+  <h1>Network <em>Security</em></h1>
+  <p class="lede">How cryptography, digital signatures, TLS, IPsec, and firewalls work together to protect data traveling through a network full of potential attackers.</p>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">01</span><a href="#overblikk">Overview</a></li>
+    <li><span class="toc-num">02</span><a href="#deler">Parts</a></li>
+    <li><span class="toc-num">03</span><a href="#quiz">Test yourself</a></li>
+  </ol>
+</div>
+</nav>
+
+<section id="overblikk">
+<div class="container">
+  <div class="section-badge">Overview</div>
+  <h2>The big <em>picture</em></h2>
+  <p class="section-intro">Network security is about protecting data traveling through a network full of potential attackers — using four tools that each solve one specific problem.</p>
+
+  <p class="lead">Imagine you need to send a valuable diamond through a postal system full of thieves. You need: (1) a locked box that only the recipient can open (<em>encryption</em>), (2) a seal that shows if someone has opened the box en route (<em>integrity / MAC</em>), (3) a way to prove that it really is you who sent it (<em>authentication / digital signatures</em>), and (4) guards at the door who inspect every single package (<em>firewalls</em>). Each security tool solves one specific problem.</p>
+
+  <figure class="fig-frame">
+    <svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#3d6b3a"/>
+        </marker>
+        <marker id="arrRust" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#b04428"/>
+        </marker>
+      </defs>
+
+      <!-- Alice -->
+      <circle cx="90" cy="130" r="36" fill="#f4f1ea" stroke="#1a1612" stroke-width="2"/>
+      <text x="90" y="125" text-anchor="middle" font-family="Newsreader" font-size="18" font-weight="600" fill="#1a1612">Alice</text>
+      <text x="90" y="143" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">sender</text>
+
+      <!-- Bob -->
+      <circle cx="630" cy="130" r="36" fill="#f4f1ea" stroke="#1a1612" stroke-width="2"/>
+      <text x="630" y="125" text-anchor="middle" font-family="Newsreader" font-size="18" font-weight="600" fill="#1a1612">Bob</text>
+      <text x="630" y="143" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">receiver</text>
+
+      <!-- Secure channel -->
+      <line x1="140" y1="130" x2="580" y2="130" stroke="#3d6b3a" stroke-width="2.5" marker-end="url(#arr)"/>
+
+      <!-- Message packet on the line -->
+      <rect x="290" y="108" width="140" height="44" rx="6" fill="#e8e3d6" stroke="#3d6b3a" stroke-width="1.5"/>
+      <!-- Lock icon (confidentiality) -->
+      <rect x="308" y="120" width="14" height="12" rx="2" fill="#2d4a7a"/>
+      <path d="M310 120 v-5 a5,5 0 0 1 10,0 v5" fill="none" stroke="#2d4a7a" stroke-width="1.8"/>
+      <!-- Checkmark icon (integrity) -->
+      <circle cx="345" cy="130" r="8" fill="none" stroke="#3d6b3a" stroke-width="1.5"/>
+      <polyline points="339,130 343,134 351,125" fill="none" stroke="#3d6b3a" stroke-width="1.8"/>
+      <!-- Signature icon (authentication) -->
+      <text x="370" y="135" font-family="Newsreader" font-size="18" font-style="italic" fill="#b04428">✎</text>
+
+      <!-- Labels under the icons -->
+      <text x="315" y="163" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">Confidentiality</text>
+      <text x="345" y="175" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#3d6b3a">Integrity</text>
+      <text x="395" y="163" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#b04428">Authentication</text>
+
+      <!-- Labels on top of message -->
+      <text x="360" y="100" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="600" fill="#3d6b3a">encrypted message</text>
+
+      <!-- Trudy (attacker) -->
+      <circle cx="360" cy="260" r="30" fill="#e8d4cd" stroke="#b04428" stroke-width="2"/>
+      <text x="360" y="255" text-anchor="middle" font-family="Newsreader" font-size="17" font-weight="600" fill="#b04428">Trudy</text>
+      <text x="360" y="272" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#b04428">attacker</text>
+
+      <!-- Trudy's attack lines -->
+      <path d="M 180 155 Q 260 240 330 255" stroke="#b04428" stroke-width="1.5" fill="none" stroke-dasharray="5 3" marker-end="url(#arrRust)"/>
+      <path d="M 540 155 Q 460 240 390 255" stroke="#b04428" stroke-width="1.5" fill="none" stroke-dasharray="5 3" marker-end="url(#arrRust)"/>
+      <text x="230" y="215" font-family="IBM Plex Mono" font-size="9" fill="#b04428">eavesdropping</text>
+      <text x="460" y="215" font-family="IBM Plex Mono" font-size="9" fill="#b04428">tampering</text>
+
+      <!-- Firewall -->
+      <rect x="560" y="30" width="60" height="20" rx="3" fill="#b04428" opacity="0.15" stroke="#b04428" stroke-width="1"/>
+      <text x="590" y="44" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" font-weight="600" fill="#b04428">Firewall</text>
+      <line x1="590" y1="50" x2="590" y2="90" stroke="#b04428" stroke-width="1" stroke-dasharray="3 2"/>
+    </svg>
+    <figcaption>Alice sends an encrypted, integrity-protected, and authenticated message to Bob. Trudy (the attacker) sits in the middle and attempts to eavesdrop or tamper, but encryption, MAC, and digital signatures protect the message. A firewall at Bob's end filters unwanted traffic.</figcaption>
+  </figure>
+
+  <div class="callout callout-green">
+    <span class="label">Real-world example</span>
+    <p>When you see the padlock in your browser on ntnu.no, it means TLS is active. The browser and server have completed a <em>handshake</em> where they agreed on encryption keys — and now everything you send is encrypted so that no one on the WiFi network can read it.</p>
+  </div>
+
+  <div class="callout">
+    <span class="label">The toolbox — four layers of security</span>
+    <p><strong>Symmetric encryption</strong> (AES) — fast, but requires both parties to share the same secret key.</p>
+    <p><strong>Public key cryptography</strong> (RSA) — solves the key distribution problem, but is slow. Used to exchange session keys.</p>
+    <p><strong>Message integrity and digital signatures</strong> (HMAC, RSA signature) — guarantees that the content has not been altered and that the sender is genuine.</p>
+    <p><strong>Firewalls and IDS</strong> — filter traffic and detect suspicious activity on the network.</p>
+  </div>
+</div>
+</section>
+
+<section id="deler">
+<div class="container">
+  <div class="section-badge">Parts</div>
+  <h2>Explore the <em>chapter</em></h2>
+  <div class="subpage-list">
+    <a href="kryptografi.html" class="subpage-card">
+      <span class="sp-icon">8a</span>
+      <div class="sp-info"><div class="sp-title">Cryptography and integrity</div><div class="sp-desc">Symmetric and public key cryptography, message integrity, and digital signatures</div></div>
+      <span class="sp-arrow">&rarr;</span>
+    </a>
+    <a href="protokoller-brannmur.html" class="subpage-card">
+      <span class="sp-icon">8b</span>
+      <div class="sp-info"><div class="sp-title">Protocols and firewalls</div><div class="sp-desc">Secure email, TLS, IPsec, wireless security, and firewalls</div></div>
+      <span class="sp-arrow">&rarr;</span>
+    </a>
+  </div>
+</div>
+</section>
+
+<section id="quiz">
+<div class="container">
+  <h2>Test yourself</h2>
+  <p class="section-intro">Check whether you have understood the most important concepts from this chapter.</p>
+
+<div class="quiz" data-quiz style="max-width:820px;margin:0 auto;">
+  <div class="q-label">Question 1</div>
+  <div class="q-text">Alice wants to send a large, confidential file to Bob. Why doesn't she simply use Bob's public RSA key to encrypt the entire file directly?</div>
+  <div class="options">
+    <button class="option" data-correct="false">Because RSA keys only work for short text messages, not files</button>
+    <button class="option" data-correct="true">Because asymmetric encryption (RSA) is extremely slow compared to symmetric encryption — in practice, one encrypts the file with a fast symmetric key (e.g., AES) and uses RSA only to encrypt the short symmetric key</button>
+    <button class="option" data-correct="false">Because Bob's public key is available to everyone, and anyone could decrypt</button>
+    <button class="option" data-correct="false">Because RSA does not provide integrity protection, so one must use AES instead</button>
+  </div>
+  <div class="explanation">Asymmetric encryption (such as RSA) is orders of magnitude slower than symmetric encryption (such as AES). Therefore, in practice <strong>hybrid encryption</strong> is used: generate a random symmetric session key K<sub>S</sub>, encrypt the file with K<sub>S</sub> (fast), and encrypt only K<sub>S</sub> with Bob's public RSA key. Bob decrypts K<sub>S</sub> with his private key, then uses it to decrypt the file. This is exactly what TLS and secure email do.</div>
+</div>
+
+<div class="quiz" data-quiz style="max-width:820px;margin:0 auto;">
+  <div class="q-label">Question 2</div>
+  <div class="q-text">What is the main difference between a MAC (Message Authentication Code) and a digital signature?</div>
+  <div class="options">
+    <button class="option" data-correct="false">A MAC encrypts the message, while a digital signature only verifies the sender</button>
+    <button class="option" data-correct="false">A digital signature uses symmetric keys, while a MAC uses public key cryptography</button>
+    <button class="option" data-correct="true">A MAC uses a shared secret key (both parties can create and verify), while a digital signature uses the sender's private key (only the sender can sign, anyone can verify) — this provides non-repudiation</button>
+    <button class="option" data-correct="false">There is no difference — MAC and digital signature are two names for the same thing</button>
+  </div>
+  <div class="explanation">A MAC is based on a <strong>shared symmetric key</strong> — both Alice and Bob can create and verify the MAC, but neither can prove to a third party who created it. A digital signature uses the <strong>sender's private key</strong>, so only Alice can sign, while anyone with her public key can verify. This provides <em>non-repudiation</em>: Alice cannot deny having signed the message.</div>
+</div>
+
+<div class="quiz" data-quiz style="max-width:820px;margin:0 auto;">
+  <div class="q-label">Question 3</div>
+  <div class="q-text">During a TLS handshake, the server sends its certificate to the client. What does this certificate contain, and why is it necessary?</div>
+  <div class="options">
+    <button class="option" data-correct="false">The certificate contains the server's private key, so that the client can decrypt data</button>
+    <button class="option" data-correct="true">The certificate contains the server's public key, signed by a trusted Certificate Authority (CA) — so the client can verify that it is talking to the correct server and not an attacker</button>
+    <button class="option" data-correct="false">The certificate contains a copy of the symmetric session key for this connection</button>
+    <button class="option" data-correct="false">The certificate contains a list of all permitted encryption algorithms</button>
+  </div>
+  <div class="explanation">A TLS certificate binds a <strong>public key</strong> to an identity (e.g., ntnu.no), and this binding is <strong>signed by a trusted CA</strong>. Without the certificate, Trudy could impersonate the server (man-in-the-middle attack). The client verifies the CA's signature using the CA's public key (which is already built into the browser), and then trusts that the public key in the certificate really belongs to the server.</div>
+</div>
+</div>
+</section>
+
+</main>
+<footer><div class="container"><div class="ornament">&#10043; &#10043; &#10043;</div><p>NTNU · TTM4100 · Spring 2026</p></div></footer>
+<script src="../../quiz.js"></script>
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8b — Protocols and firewalls · Network Security</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Chapter 8</a>
+  </div>
+</nav>
+
+<main data-chapter="Chapter 8: Network Security">
+
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">Chapter 8b · Security</div>
+    <h1>Protocols and <em>firewalls</em></h1>
+    <p class="lede">Secure email, TLS, IPsec, wireless security, and firewalls — from theory to practical security protocols.</p>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 5 — Secure email
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="epost">
+<div class="container">
+  <div class="section-badge">05 · Secure email</div>
+  <h2>Secure <em>email</em></h2>
+  <p class="section-intro">Three goals: confidentiality, integrity, and authentication — and Alice uses three different keys to achieve them all.</p>
+
+  <p class="dropcap">Email is the perfect example for putting together all the "puzzle pieces" we have learned so far. Imagine that Alice wants to send an email to Bob that is (1) confidential — only Bob can read it, (2) authenticated — Bob can verify that Alice wrote it, and (3) integrity-checked — the content cannot be altered en route. Let us build the solution step by step.</p>
+
+  <h3>Step 1: Confidentiality only</h3>
+  <p>Alice could encrypt the entire message with Bob's public key, but that is far too slow for a long email. Instead, she does something clever:</p>
+
+  <ol>
+    <li>Generate a random <strong>symmetric session key K<sub>S</sub></strong></li>
+    <li>Encrypt the message with K<sub>S</sub> (fast, using e.g., AES)</li>
+    <li>Encrypt K<sub>S</sub> with <strong>Bob's public key K<sub>B</sub><sup>+</sup></strong> (slow, but K<sub>S</sub> is short)</li>
+    <li>Send both K<sub>S</sub>(m) and K<sub>B</sub><sup>+</sup>(K<sub>S</sub>) to Bob</li>
+  </ol>
+
+  <p>Bob uses his private key to decrypt K<sub>S</sub>, and then uses K<sub>S</sub> to decrypt the message itself. This is <em>hybrid encryption</em> — the best of both worlds.</p>
+
+  <h3>Step 2: Integrity and authentication only</h3>
+  <p>Sometimes the message does not need to be secret, but the receiver should be able to verify who sent it. Alice computes H(m), signs the hash with <strong>her own private key K<sub>A</sub><sup>−</sup></strong>, and sends both the message (in plaintext) and the signature K<sub>A</sub><sup>−</sup>(H(m)). Bob verifies with Alice's public key.</p>
+
+  <h3>Step 3: All together</h3>
+  <p>For full security, Alice combines the two techniques. She uses three keys:</p>
+
+  <div class="callout callout-green">
+    <span class="label">Alice's three keys for secure email</span>
+    <p><strong>1. K<sub>A</sub><sup>−</sup></strong> (Alice's private key) — signs H(m) for integrity and authentication.</p>
+    <p><strong>2. K<sub>S</sub></strong> (random symmetric session key) — encrypts the message + signature for confidentiality.</p>
+    <p><strong>3. K<sub>B</sub><sup>+</sup></strong> (Bob's public key) — encrypts K<sub>S</sub> so that only Bob can decrypt.</p>
+  </div>
+
+  <p>Bob performs the complementary operations in reverse order: decrypt K<sub>S</sub> with his private key, decrypt the message with K<sub>S</sub>, verify the signature with Alice's public key.</p>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 6 — TLS
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="tls">
+<div class="container">
+  <div class="section-badge">06 · TLS</div>
+  <h2>TLS: securing <em>TCP connections</em></h2>
+  <p class="section-intro">The most widely deployed security layer on the Internet — what makes HTTPS possible.</p>
+
+  <p class="dropcap">Transport Layer Security (TLS) is the protocol that adds a security layer on top of TCP. When you see the padlock in the browser and "https" in the URL, it is TLS working under the hood. TLS provides the three classic properties — <strong>confidentiality</strong> (via symmetric encryption), <strong>integrity</strong> (via cryptographic hashing), and <strong>authentication</strong> (via public key cryptography and certificates) — using all the techniques we have already learned.</p>
+
+  <h3>Where does TLS sit in the protocol stack?</h3>
+  <p>TLS is not a separate layer in the traditional sense — it is a <strong>sublayer</strong> that sits between TCP and the application layer. The application (e.g., a browser) writes data to a "TLS socket" instead of a regular TCP socket. TLS encrypts the data and sends it down to TCP as ordinary TCP segments. To TCP and IP below, everything looks normal — they do not know the content is encrypted.</p>
+
+  <h3>Four phases of a TLS connection</h3>
+  <p>We can understand TLS by building a simplified "toy-TLS" (t-tls) and seeing what each phase needs:</p>
+
+  <div class="stepper" id="tlsStepper">
+    <div class="s-label">Interactive walkthrough — TLS phases</div>
+    <div class="stage">
+      <h5 id="tlsTitle">Phase 1 of 4</h5>
+      <p id="tlsText"></p>
+    </div>
+    <div class="controls">
+      <button id="tlsPrev">&larr; Previous</button>
+      <span class="progress" id="tlsInd">1 / 4</span>
+      <button id="tlsNext">Next &rarr;</button>
+    </div>
+  </div>
+
+  <h3>Key derivation</h3>
+  <p>After the handshake, Alice and Bob share a "master secret". But it is considered bad practice to use one key for everything. Therefore, they derive <strong>four separate keys</strong> from the master secret:</p>
+
+  <ul>
+    <li><strong>E<sub>A</sub></strong> — encryption key for data from Alice to Bob</li>
+    <li><strong>E<sub>B</sub></strong> — encryption key for data from Bob to Alice</li>
+    <li><strong>M<sub>A</sub></strong> — MAC key for data from Alice to Bob</li>
+    <li><strong>M<sub>B</sub></strong> — MAC key for data from Bob to Alice</li>
+  </ul>
+
+  <h3>Record-based encryption</h3>
+  <p>TCP provides a byte stream, but TLS cannot encrypt the stream continuously — because then the MAC would only come at the end, and the receiver could not check integrity until the entire connection closes. The solution: TLS divides the stream into <strong>records</strong>. Each record contains data, a MAC for integrity, and a length. The entire record is encrypted with the session key before being sent to TCP.</p>
+
+  <p>An important point: the MAC is not computed over just the data in the record — it also includes a <strong>sequence number</strong>. Even though the sequence number is not sent explicitly in the record, both parties maintain an internal counter. Without sequence numbers, Trudy could capture a record and replay it (replay attack), or rearrange the order of records without the receiver noticing. With the sequence number in the MAC computation, any such manipulation will cause the MAC verification to fail.</p>
+
+  <h3>TLS 1.3 and cipher suites</h3>
+  <p>A "cipher suite" is a set of algorithms used together: one for key exchange, one for encryption, one for MAC, and one for digital signature. TLS 1.3 (RFC 8446, 2018) is the latest version and has significantly tightened the choices.</p>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 7 — IPsec and VPN
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="ipsec">
+<div class="container">
+  <div class="section-badge">07 · IPsec</div>
+  <h2>IPsec and <em>VPN</em></h2>
+  <p class="section-intro">Security at the network layer — where entire IP datagrams are encrypted and authenticated.</p>
+
+  <p class="dropcap">TLS secures individual transport connections (one TCP connection at a time). But what if you want to secure <em>all</em> traffic between two networks — regardless of application, regardless of port? Then you need security at the network layer, and that is where <strong>IPsec</strong> comes in. IPsec provides encryption, authentication, and integrity checking at the datagram level, for both user data and control traffic (BGP, DNS, etc.).</p>
+
+  <h3>Security Association (SA)</h3>
+  <p>Before IPsec can send a single encrypted datagram, the two endpoints must establish a <strong>Security Association (SA)</strong> — a one-way logical connection that defines the security parameters for the traffic. Each SA is identified by three things:</p>
+
+  <ul>
+    <li><strong>SPI (Security Parameter Index):</strong> a 32-bit number included in every IPsec datagram, so the receiver knows which SA (and thus which keys and algorithms) the packet belongs to.</li>
+    <li><strong>Destination IP:</strong> the address of the other end of the SA.</li>
+    <li><strong>Protocol identifier:</strong> whether the SA uses AH or ESP.</li>
+  </ul>
+
+  <p>Because an SA is <em>one-way</em>, two SAs are needed for bidirectional communication — one in each direction, each with its own SPI and its own keys. All active SAs are stored in a <strong>SAD (Security Association Database)</strong> on both endpoints. When an IPsec datagram arrives, the receiver uses the SPI value in the header to look up the correct SA in the SAD and thus find the encryption key and algorithm needed to decrypt.</p>
+
+  <h3>Two modes</h3>
+
+  <table>
+    <tr><th>Mode</th><th>What is encrypted</th><th>Use</th></tr>
+    <tr>
+      <td class="mono-cell">Transport</td>
+      <td>Only the payload of the IP datagram</td>
+      <td>Between two endpoints (host-to-host)</td>
+    </tr>
+    <tr>
+      <td class="mono-cell">Tunnel</td>
+      <td>The entire original datagram, encapsulated in a new one</td>
+      <td>Between two gateways (VPN) — most common in practice</td>
+    </tr>
+  </table>
+
+  <p>Tunnel mode is the foundation for <strong>VPN (Virtual Private Network)</strong>. Consider a company with offices in Oslo and Trondheim. Both offices are connected to the Internet, and between the gateway routers at each office, an IPsec tunnel is set up. All traffic between the two office networks is encapsulated in encrypted IP datagrams and tunneled over the public Internet. To the user's PC, it looks as if it is on the same local network — but in reality, everything is encrypted in transit.</p>
+
+  <h3>Two protocols</h3>
+
+  <table>
+    <tr><th>Protocol</th><th>Authentication</th><th>Integrity</th><th>Confidentiality</th><th>Use</th></tr>
+    <tr>
+      <td class="mono-cell">AH</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>Rarely used alone</td>
+    </tr>
+    <tr>
+      <td class="mono-cell">ESP</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Most used — provides everything</td>
+    </tr>
+  </table>
+
+  <p>ESP is by far the most used of the two — it provides all three properties. AH provides only authentication and integrity (but no encryption), and is rarely used alone in modern networks.</p>
+</div>
+</section>
+
+<div class="divider">&#10043; &#10043; &#10043;</div>
+
+<!-- QUIZ 3 -->
+<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
+  <p class="q-text">What is the difference between IPsec transport mode and tunnel mode?</p>
+  <div class="options">
+    <button class="option" data-correct="false">Transport mode uses TCP and tunnel mode uses UDP</button>
+    <button class="option" data-correct="false">Transport mode encrypts the entire datagram, tunnel mode only the payload</button>
+    <button class="option" data-correct="true">Transport mode encrypts only the payload, tunnel mode encrypts the entire original datagram and encapsulates it in a new one</button>
+    <button class="option" data-correct="false">They are identical, just different names for the same mechanism</button>
+  </div>
+  <div class="explanation" id="qf3"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 8 — Wireless network security
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="tradlos">
+<div class="container">
+  <div class="section-badge">08 · Wireless security</div>
+  <h2>Security in <em>wireless</em> networks</h2>
+  <p class="section-intro">How WiFi (802.11) and mobile networks (4G/5G) authenticate devices and encrypt traffic over the air.</p>
+
+  <p class="dropcap">Everything we have seen so far — encryption, signatures, CAs — are general mechanisms. But wireless networks have a special need: the device connecting must authenticate itself <em>before</em> it gets any access to the network at all, and all traffic over the air must be encrypted because radio waves are trivially easy to eavesdrop on. Let us see how WiFi and 4G/5G solve this.</p>
+
+  <h3>802.11 WiFi: four steps to secure communication</h3>
+  <p>When a mobile device connects to a WiFi network with WPA3, it goes through four steps:</p>
+
+  <div class="stepper" id="wifiStepper">
+    <div class="s-label">Interactive walkthrough — WiFi authentication</div>
+    <div class="stage">
+      <h5 id="wifiTitle">Step 1 of 4</h5>
+      <p id="wifiText"></p>
+    </div>
+    <div class="controls">
+      <button id="wifiPrev">&larr; Previous</button>
+      <span class="progress" id="wifiInd">1 / 4</span>
+      <button id="wifiNext">Next &rarr;</button>
+    </div>
+  </div>
+
+  <h3>The WPA3 handshake in detail</h3>
+  <p>Step 2 (mutual authentication and key derivation) is the most interesting. In WPA3, it works as follows:</p>
+
+  <ol>
+    <li><strong>AS sends Nonce<sub>AS</sub></strong> — a random one-time-use number — to the mobile device.</li>
+    <li><strong>The mobile device generates Nonce<sub>M</sub></strong>, derives a symmetric session key K<sub>M-AP</sub> from both nonces, the pre-shared password, and the MAC addresses, and sends Nonce<sub>M</sub> plus an HMAC-signed value back.</li>
+    <li><strong>AS derives the same K<sub>M-AP</sub></strong> using the same ingredients, verifies the HMAC, and both parties now have a shared session key — without the password ever having been sent over the air.</li>
+  </ol>
+
+  <div class="margin-note">HMAC (Hash-based Message Authentication Code) is a variant of MAC that uses a cryptographic hash function (e.g., SHA-256) together with a secret key to verify integrity and authenticity.</div>
+
+  <h3>4G LTE: authentication with SIM cards</h3>
+  <p>Mobile networks are fundamentally different from WiFi because the identity resides in the <strong>SIM card</strong>, not in a password. The SIM card contains a globally unique identifier (IMSI) and a pre-shared secret key K<sub>HSS-M</sub> that only the SIM card and the home network's <strong>HSS (Home Subscriber Server)</strong> know.</p>
+
+  <p>The authentication flow in 4G involves several actors:</p>
+
+  <table>
+    <tr><th>Component</th><th>Role</th></tr>
+    <tr><td class="mono-cell">UE (mobile device)</td><td>Contains the SIM with IMSI and pre-shared key</td></tr>
+    <tr><td class="mono-cell">eNode-B (base station)</td><td>Relays authentication messages</td></tr>
+    <tr><td class="mono-cell">MME</td><td>Makes the authentication decision in the visited network</td></tr>
+    <tr><td class="mono-cell">HSS</td><td>Ultimate authority — knows all subscribers and their keys</td></tr>
+  </table>
+
+  <h4>Authentication flow (simplified)</h4>
+  <ol>
+    <li><strong>a)</strong> The mobile sends an <em>attach</em> message with IMSI via the base station and MME to the HSS in the home network.</li>
+    <li><strong>b)</strong> The HSS uses the pre-shared key K<sub>HSS-M</sub> to compute an <em>auth_token</em> and an expected response <em>xres<sub>HSS</sub></em>. The auth_token contains encrypted information that only the mobile device can verify. The HSS sends both to the MME.</li>
+    <li><strong>c)</strong> The MME forwards the auth_token to the mobile. The mobile verifies the auth_token with its own key — and thus knows the network is genuine. The mobile computes its own response <em>res<sub>M</sub></em> and sends it back.</li>
+    <li><strong>d)</strong> The MME compares res<sub>M</sub> with xres<sub>HSS</sub>. If they match, the mobile is authenticated. The MME informs the base station and generates session keys.</li>
+    <li><strong>e)</strong> The mobile and base station derive encryption keys K<sub>BS-M</sub> to encrypt all further communication over the 4G link (typically with AES).</li>
+  </ol>
+
+  <h3>From 4G to 5G: key changes</h3>
+  <table>
+    <tr><th></th><th>4G LTE</th><th>5G</th></tr>
+    <tr><td>Authentication decision</td><td>MME in visited network</td><td>Home network</td></tr>
+    <tr><td>Key type</td><td>Pre-shared keys</td><td>Also supports keys for IoT</td></tr>
+    <tr><td>IMSI protection</td><td>Sent in plaintext</td><td>Encrypted with public key</td></tr>
+  </table>
+
+  <p>The most notable improvement in 5G is that the IMSI is now encrypted — in 4G it was sent in plaintext, which enabled IMSI catchers (fake base stations that capture mobile identities).</p>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 9 — Firewalls
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="brannmur">
+<div class="container">
+  <div class="section-badge">09 · Operational security</div>
+  <h2><em>Firewalls</em></h2>
+  <p class="section-intro">The first line of defense between the internal network and the wild Internet.</p>
+
+  <p class="dropcap">Cryptography protects the content of communication, but that is not always enough. An organization also needs to control <em>which</em> traffic is allowed in and out of the network at all. That is the job of a <strong>firewall</strong>: it sits between the organization's internal network and the public Internet, filtering packets based on a set of rules.</p>
+
+  <figure>
+    <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="40" width="200" height="120" fill="#d9e6d4" stroke="#3d6b3a" stroke-width="2" rx="4"/>
+      <text x="130" y="100" text-anchor="middle" font-family="IBM Plex Sans" font-size="14" fill="#3d6b3a">Internal network</text>
+      <text x="130" y="120" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">"trusted"</text>
+      <rect x="300" y="30" width="100" height="140" fill="#e8d4cd" stroke="#b04428" stroke-width="2.5" rx="4"/>
+      <text x="350" y="90" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#b04428" font-weight="600">FIRE-</text>
+      <text x="350" y="108" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#b04428" font-weight="600">WALL</text>
+      <text x="350" y="150" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">filtering</text>
+      <rect x="470" y="40" width="200" height="120" fill="#e8e3d6" stroke="#6b6257" stroke-width="2" rx="4"/>
+      <text x="570" y="100" text-anchor="middle" font-family="IBM Plex Sans" font-size="14" fill="#6b6257">Internet</text>
+      <text x="570" y="120" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">"untrusted"</text>
+      <defs><marker id="arw2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L6,4 L0,8 z" fill="#1a1612"/></marker></defs>
+      <path d="M 230 100 L 300 100" stroke="#1a1612" stroke-width="2" marker-end="url(#arw2)"/>
+      <path d="M 400 100 L 470 100" stroke="#1a1612" stroke-width="2" marker-end="url(#arw2)"/>
+    </svg>
+    <figcaption>The firewall isolates the internal network from the public Internet and filters traffic in both directions.</figcaption>
+  </figure>
+
+  <h3>Why a firewall?</h3>
+  <ul>
+    <li><strong>Prevent DoS attacks:</strong> e.g., SYN flooding where an attacker fills up the server's connection resources with fake TCP requests.</li>
+    <li><strong>Prevent unauthorized access:</strong> block access to internal services that should not be exposed to the Internet.</li>
+    <li><strong>Allow only authorized traffic:</strong> restrict access to a set of approved users, protocols, and ports.</li>
+  </ul>
+
+  <h3>Three types of firewalls</h3>
+
+  <h4>1. Stateless packet filtering</h4>
+  <p>The simplest form: the firewall examines each packet <em>in isolation</em> and decides whether to let it through or drop it, based on information in the header:</p>
+
+  <ul>
+    <li>Source and destination IP address</li>
+    <li>Source and destination port number (TCP/UDP)</li>
+    <li>ICMP message type</li>
+    <li>TCP SYN and ACK flags</li>
+  </ul>
+
+  <p>The rules are expressed in an <strong>Access Control List (ACL)</strong> — a table where rules are checked from top to bottom, and the first match decides:</p>
+
+  <table>
+    <tr><th>Action</th><th>Source</th><th>Dest</th><th>Proto</th><th>Src port</th><th>Dest port</th><th>Flag</th></tr>
+    <tr><td class="mono-cell">allow</td><td>222.22/16</td><td>100.22/16</td><td>TCP</td><td>&gt;1023</td><td>80</td><td>any</td></tr>
+    <tr><td class="mono-cell">allow</td><td>100.22/16</td><td>222.22/16</td><td>TCP</td><td>80</td><td>&gt;1023</td><td>ACK</td></tr>
+    <tr><td class="mono-cell">allow</td><td>222.22/16</td><td>100.22/16</td><td>UDP</td><td>&gt;1023</td><td>53</td><td>---</td></tr>
+    <tr><td class="mono-cell">allow</td><td>100.22/16</td><td>222.22/16</td><td>UDP</td><td>53</td><td>&gt;1023</td><td>---</td></tr>
+    <tr><td class="mono-cell">deny</td><td>all</td><td>all</td><td>all</td><td>all</td><td>all</td><td>all</td></tr>
+  </table>
+
+  <div class="callout">
+    <span class="label">Filtering examples</span>
+    <p><strong>Block all incoming UDP:</strong> drop all packets with IP protocol field = 17. Result: no UDP traffic (e.g., DNS queries from outside) gets in.</p>
+    <p><strong>Block all Telnet:</strong> drop all TCP segments with destination port 23. Result: no one can establish Telnet connections to internal machines.</p>
+    <p><strong>Block incoming TCP connections:</strong> drop incoming TCP segments with ACK=0. Result: external clients cannot initiate TCP connections inward, but internal clients can connect out.</p>
+  </div>
+
+  <h4>2. Stateful packet filtering</h4>
+  <p>The problem with stateless filtering is that it is too coarse-grained. It lets through packets that "look right" but do not belong to any real connection — e.g., a packet with the ACK flag set that appears to be a response, but no request was ever sent.</p>
+
+  <p>A <strong>stateful firewall</strong> solves this by keeping track of <em>all active TCP connections</em>. It tracks setup (SYN), teardown (FIN), and timeout for inactive connections. An incoming packet is only let through if it belongs to a connection that has already been set up in the connection table.</p>
+
+  <h4>3. Application gateway</h4>
+  <p>An application gateway does not just filter on IP/TCP headers, but also inspects <em>application data</em>. For example: only selected internal users are allowed to use Telnet. All Telnet connections must go through the gateway, which verifies the user identity before setting up a forwarded connection to the final destination.</p>
+
+  <h3>Limitations</h3>
+  <p>Firewalls are no magic solution:</p>
+
+  <ul>
+    <li><strong>IP spoofing:</strong> the router cannot verify that the source IP is genuine.</li>
+    <li><strong>Scalability:</strong> each application that needs special treatment requires its own gateway.</li>
+    <li><strong>All-or-nothing for UDP:</strong> difficult to distinguish "good" from "bad" UDP traffic.</li>
+    <li><strong>Trade-off:</strong> the stricter the filtering, the more legitimate communication is also restricted.</li>
+  </ul>
+</div>
+</section>
+
+<!-- QUIZ 4 -->
+<div class="quiz" style="max-width:820px;margin:0 auto 80px;">
+  <p class="q-text">A stateless firewall lets through an incoming TCP packet with dest port 80 and the ACK flag set. What is the problem?</p>
+  <div class="options">
+    <button class="option" data-correct="false">The packet may contain a virus in the payload</button>
+    <button class="option" data-correct="true">The packet may be fabricated — there may be no active TCP connection it belongs to, but the stateless firewall does not check this</button>
+    <button class="option" data-correct="false">Port 80 is always blocked by firewalls</button>
+    <button class="option" data-correct="false">The ACK flag means the packet is encrypted and cannot be inspected</button>
+  </div>
+  <div class="explanation" id="qf4"></div>
+</div>
+
+</main>
+
+<div class="container">
+  <nav class="page-nav">
+    <a href="kryptografi.html">
+      <span class="nav-label">← Previous</span>
+      <span class="nav-title">Cryptography and integrity</span>
+    </a>
+  </nav>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Spring 2026</p>
+  </div>
+</footer>
+
+<script>
+// TLS STEPPER
+(function(){
+  var steps = [
+    {title:'Phase 1: Handshake', text:'Alice and Bob use certificates and public key cryptography to authenticate each other. Then they exchange a shared secret (master secret) — typically by having Alice generate a random Pre-Master Secret, encrypt it with Bob\'s public key (from the certificate), and send it over. Both derive the same master secret from this value.'},
+    {title:'Phase 2: Key derivation', text:'From the master secret, both derive four separate keys: two encryption keys (one per direction) and two MAC keys (one per direction). Different keys per direction and purpose is good cryptographic practice.'},
+    {title:'Phase 3: Data transfer', text:'Data is sent as a series of "records". Each record contains a chunk of data, a MAC for integrity checking, and a length. The entire record is encrypted with the direction-specific session key and sent as ordinary TCP segments. The receiver decrypts, checks the MAC, and delivers data to the application.'},
+    {title:'Phase 4: Connection teardown', text:'To close the connection securely, the parties send special messages. This is important because an attacker could otherwise force the connection closed by sending a TCP FIN — without the receiver knowing whether it is a genuine closure or an attack (truncation attack).'}
+  ];
+  var i = 0;
+  var title = document.getElementById('tlsTitle');
+  var text = document.getElementById('tlsText');
+  var ind = document.getElementById('tlsInd');
+  var prev = document.getElementById('tlsPrev');
+  var next = document.getElementById('tlsNext');
+  function render(){
+    title.textContent = steps[i].title;
+    text.textContent = steps[i].text;
+    ind.textContent = (i+1)+' / 4';
+    prev.disabled = (i===0);
+    next.disabled = (i===steps.length-1);
+  }
+  prev.addEventListener('click',function(){if(i>0){i--;render();}});
+  next.addEventListener('click',function(){if(i<steps.length-1){i++;render();}});
+  render();
+})();
+
+// WIFI AUTH STEPPER
+(function(){
+  var steps = [
+    {title:'Step 1: Discovery of security capabilities', text:'The AP announces its presence and which forms of authentication and encryption it supports. The mobile device selects the desired form. At this point, the device is not authenticated and has no encryption keys (apart from a pre-shared password).'},
+    {title:'Step 2: Mutual authentication and key derivation', text:'The Authentication Server (AS) and the mobile device use the pre-shared password, nonce values (one-time-use numbers), and cryptographic hashing to authenticate each other — without sending the password over the air. Both derive a shared symmetric session key K_M-AP.'},
+    {title:'Step 3: Distribution of session key', text:'The AS informs the AP about the shared symmetric session key, so the AP can encrypt traffic between itself and the mobile device.'},
+    {title:'Step 4: Encrypted communication', text:'The mobile device and the AP now use the symmetric session key (typically AES) to encrypt all further communication over the WiFi link. All traffic is now confidential.'}
+  ];
+  var i = 0;
+  var title = document.getElementById('wifiTitle');
+  var text = document.getElementById('wifiText');
+  var ind = document.getElementById('wifiInd');
+  var prev = document.getElementById('wifiPrev');
+  var next = document.getElementById('wifiNext');
+  function render(){
+    title.textContent = steps[i].title;
+    text.textContent = steps[i].text;
+    ind.textContent = (i+1)+' / 4';
+    prev.disabled = (i===0);
+    next.disabled = (i===steps.length-1);
+  }
+  prev.addEventListener('click',function(){if(i>0){i--;render();}});
+  next.addEventListener('click',function(){if(i<steps.length-1){i++;render();}});
+  render();
+})();
+
+// QUIZ LOGIC
+(function(){
+  var feedback = {
+    'qf3': {
+      correct: 'Correct! In transport mode, only the payload (data) is encrypted, while in tunnel mode the entire original datagram is encrypted and encapsulated in a new one with a new IP header.',
+      wrong: 'Think about what happens to the IP header in the two modes — in one it is visible, in the other it is encrypted.'
+    },
+    'qf4': {
+      correct: 'Exactly! A stateless firewall does not check whether the packet belongs to a real connection. A stateful firewall would check the connection table and drop the packet if no SYN setup was registered.',
+      wrong: 'Think about the difference between stateless and stateful filtering: one only checks header fields, the other tracks active connections.'
+    }
+  };
+  document.querySelectorAll('.quiz').forEach(function(quiz){
+    var fb = quiz.querySelector('.explanation');
+    var fbId = fb ? fb.id : null;
+    quiz.querySelectorAll('button.option').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var correct = btn.dataset.correct === 'true';
+        quiz.querySelectorAll('button.option').forEach(function(b){
+          b.disabled = true;
+          if (b.dataset.correct === 'true') b.classList.add('correct');
+          else if (b === btn) b.classList.add('incorrect');
+        });
+        if (fb && fbId && feedback[fbId]) {
+          fb.textContent = correct ? feedback[fbId].correct : feedback[fbId].wrong;
+          fb.classList.add('show');
+        }
+      });
+    });
+  });
+})();
+</script>
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 5 — The Network Layer: The Control Plane</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="../../en/" class="nav-back">&larr; All chapters</a>
+  </div>
+</nav>
+<main data-chapter="Chapter 5: The Network Layer – The Control Plane">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Chapter 5 · The Network Layer</div>
+  <h1>The Network Layer:<br><em>The Control Plane</em></h1>
+  <p class="lede">In chapter 4 we saw how a single router moves packets from input to output — the data plane. But who decides <em>which</em> output is correct? That is the control plane's job: to ensure that thousands of routers agree on the path, so that your packet actually arrives.</p>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">01</span><a href="#overblikk">Overview</a></li>
+    <li><span class="toc-num">02</span><a href="#deler">Parts</a></li>
+    <li><span class="toc-num">03</span><a href="#quiz">Test yourself</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ============ BIG PICTURE ============ -->
+<section id="overblikk">
+<div class="container">
+  <div class="section-badge">Overview</div>
+  <h2>The GPS inside the network</h2>
+  <p class="section-intro">The control plane is the invisible brain that computes the route — before the data plane lifts a single packet.</p>
+
+  <p>Think of it this way: you are sitting in a car and need to get from Trondheim to Bergen. The <strong>data plane</strong> is the car itself — the steering wheel, the pedals, the engine that physically moves you along the road. But the car alone is useless without a plan for <em>which</em> road to take. The <strong>control plane</strong> is the GPS. It gathers maps of all the roads, computes the best route, and tells the car at each intersection: "turn left here." Without the GPS, the car would just idle at every intersection, not knowing which direction to go.</p>
+
+  <p>In a real network, this is even more impressive. There is not just one GPS sitting on top and controlling everything. In the traditional Internet, <em>every single router runs its own GPS computation</em>. They talk to their neighboring routers, exchange information about which destinations they can reach and what it costs, and gradually — through routing algorithms — all agree on a consistent forwarding table. The alternative is SDN (Software Defined Networking), where one central controller acts as a super-GPS that computes the route for everyone and pushes the tables down to the routers.</p>
+
+  <div class="callout callout-blue">
+    <p>When you send a message on Snapchat, it may need to pass through 15 routers. The control plane is what ensures that <strong>all</strong> of these routers agree on the path — before your message even leaves your phone. If just one router disagrees, the packet can end up in a loop, disappear, or take a detour via Tokyo.</p>
+  </div>
+
+  <p>But what happens when something goes wrong along the way — a router crashes, a link goes down, or a packet wanders in circles? Then the network needs a signaling language to report the problem. That is where <strong>ICMP</strong> (Internet Control Message Protocol) comes in: a small, humble protocol that lets routers and hosts shout "error!" or "are you there?" to each other. It is also the engine behind tools like <code>ping</code> and <code>traceroute</code> — the tools you use to troubleshoot networks in the real world.</p>
+
+  <figure>
+    <svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#2d4a7a"/>
+        </marker>
+        <marker id="arrowRust" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#b04428"/>
+        </marker>
+        <marker id="arrowInk" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#1a1612"/>
+        </marker>
+      </defs>
+
+      <!-- Background regions -->
+      <rect x="30" y="20" width="660" height="120" rx="6" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <rect x="30" y="190" width="660" height="120" rx="6" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5" stroke-dasharray="6,3"/>
+
+      <!-- Region labels -->
+      <text x="60" y="46" font-family="IBM Plex Sans" font-size="11" fill="#2d4a7a" font-weight="600" letter-spacing="1.5">CONTROL PLANE</text>
+      <text x="60" y="216" font-family="IBM Plex Sans" font-size="11" fill="#b04428" font-weight="600" letter-spacing="1.5">DATA PLANE</text>
+
+      <!-- Control plane routing agents (inside routers, but shown "above") -->
+      <rect x="100" y="60" width="90" height="55" rx="4" fill="#e8e3d6" stroke="#2d4a7a" stroke-width="1.5"/>
+      <text x="145" y="82" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">Routing R1</text>
+      <text x="145" y="100" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">algorithm</text>
+
+      <rect x="265" y="60" width="90" height="55" rx="4" fill="#e8e3d6" stroke="#2d4a7a" stroke-width="1.5"/>
+      <text x="310" y="82" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">Routing R2</text>
+      <text x="310" y="100" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">algorithm</text>
+
+      <rect x="430" y="60" width="90" height="55" rx="4" fill="#e8e3d6" stroke="#2d4a7a" stroke-width="1.5"/>
+      <text x="475" y="82" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">Routing R3</text>
+      <text x="475" y="100" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">algorithm</text>
+
+      <rect x="595" y="60" width="90" height="55" rx="4" fill="#e8e3d6" stroke="#2d4a7a" stroke-width="1.5"/>
+      <text x="640" y="82" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">Routing R4</text>
+      <text x="640" y="100" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">algorithm</text>
+
+      <!-- Control plane exchange arrows -->
+      <line x1="190" y1="80" x2="265" y2="80" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#arrowBlue)"/>
+      <line x1="265" y1="92" x2="190" y2="92" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#arrowBlue)"/>
+
+      <line x1="355" y1="80" x2="430" y2="80" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#arrowBlue)"/>
+      <line x1="430" y1="92" x2="355" y2="92" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#arrowBlue)"/>
+
+      <line x1="520" y1="80" x2="595" y2="80" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#arrowBlue)"/>
+      <line x1="595" y1="92" x2="520" y2="92" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#arrowBlue)"/>
+
+      <!-- Exchange label -->
+      <text x="360" y="50" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#2d4a7a" font-style="italic">exchanges routing info</text>
+
+      <!-- Vertical arrows: control → data -->
+      <line x1="145" y1="115" x2="145" y2="195" stroke="#3d6b3a" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowInk)"/>
+      <line x1="310" y1="115" x2="310" y2="195" stroke="#3d6b3a" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowInk)"/>
+      <line x1="475" y1="115" x2="475" y2="195" stroke="#3d6b3a" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowInk)"/>
+      <line x1="640" y1="115" x2="640" y2="195" stroke="#3d6b3a" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowInk)"/>
+
+      <!-- Middle label -->
+      <text x="360" y="163" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#3d6b3a" font-style="italic">populates forwarding table</text>
+
+      <!-- Data plane forwarding boxes -->
+      <rect x="100" y="215" width="90" height="50" rx="4" fill="#e8e3d6" stroke="#b04428" stroke-width="1.5"/>
+      <text x="145" y="237" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">R1</text>
+      <text x="145" y="254" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">forwarding</text>
+
+      <rect x="265" y="215" width="90" height="50" rx="4" fill="#e8e3d6" stroke="#b04428" stroke-width="1.5"/>
+      <text x="310" y="237" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">R2</text>
+      <text x="310" y="254" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">forwarding</text>
+
+      <rect x="430" y="215" width="90" height="50" rx="4" fill="#e8e3d6" stroke="#b04428" stroke-width="1.5"/>
+      <text x="475" y="237" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">R3</text>
+      <text x="475" y="254" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">forwarding</text>
+
+      <rect x="595" y="215" width="90" height="50" rx="4" fill="#e8e3d6" stroke="#b04428" stroke-width="1.5"/>
+      <text x="640" y="237" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">R4</text>
+      <text x="640" y="254" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">forwarding</text>
+
+      <!-- Data plane packet flow -->
+      <line x1="190" y1="240" x2="265" y2="240" stroke="#b04428" stroke-width="1.8" marker-end="url(#arrowRust)"/>
+      <line x1="355" y1="240" x2="430" y2="240" stroke="#b04428" stroke-width="1.8" marker-end="url(#arrowRust)"/>
+      <line x1="520" y1="240" x2="595" y2="240" stroke="#b04428" stroke-width="1.8" marker-end="url(#arrowRust)"/>
+
+      <!-- Packet -->
+      <rect x="42" y="230" width="50" height="20" rx="2" fill="#c68a1f" stroke="#1a1612" stroke-width="1.2"/>
+      <text x="67" y="244" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#1a1612">packet</text>
+      <line x1="92" y1="240" x2="100" y2="240" stroke="#1a1612" stroke-width="1.5" marker-end="url(#arrowInk)"/>
+
+      <!-- Packet flow label -->
+      <text x="360" y="290" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#b04428" font-style="italic">packets are moved hop by hop</text>
+
+      <!-- Bottom summary -->
+      <text x="360" y="330" text-anchor="middle" font-family="Newsreader" font-size="13" fill="#1a1612">The control plane computes the path — the data plane executes it.</text>
+    </svg>
+    <figcaption>Four routers connected together. At the top, the control plane exchanges routing information between routers. The result is filled down into the forwarding tables in the data plane (bottom), which then moves packets hop by hop from source to destination.</figcaption>
+  </figure>
+
+  <p>The interplay between the two planes is the core of everything we cover in this chapter. The control plane can be organized in two ways: <em>per-router control</em>, where each router independently runs its own routing algorithm (how the Internet works today), or <em>centralized control</em> (SDN), where one controller computes everything and pushes the tables out. In addition, ICMP gives the network a signaling language for error messages — and gives us tools like <code>traceroute</code> to see exactly which path the packets take.</p>
+</div>
+</section>
+
+<!-- ============ SUBPAGE LIST ============ -->
+<section id="deler">
+<div class="container">
+  <div class="section-badge">Parts</div>
+  <h2>Explore the <em>chapter</em></h2>
+  <div class="subpage-list">
+    <a href="innhold.html" class="subpage-card">
+      <span class="sp-icon">5</span>
+      <div class="sp-info">
+        <div class="sp-title">The Control Plane</div>
+        <div class="sp-desc">Control vs. data plane, routing algorithms, per-router vs. SDN, and ICMP</div>
+      </div>
+      <span class="sp-arrow">&rarr;</span>
+    </a>
+  </div>
+</div>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section id="quiz">
+<div class="container">
+  <h2>Test yourself</h2>
+  <p class="section-intro">Check whether you have understood the most important concepts from this chapter.</p>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 1</div>
+    <div class="q-text">What is the main task of the control plane in the network layer?</div>
+    <div class="options">
+      <button class="option" data-correct="false">To move packets from input port to output port in a router as fast as possible</button>
+      <button class="option" data-correct="true">To determine which path packets should take through the network, and populate the forwarding tables</button>
+      <button class="option" data-correct="false">To encrypt packets so they cannot be intercepted en route</button>
+      <button class="option" data-correct="false">To split large packets into smaller fragments for transport</button>
+    </div>
+    <div class="explanation">The control plane is about <em>routing</em> — computing the best path through the network and filling in the forwarding table. The actual movement of packets (the fast per-packet operation) is the data plane's job.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 2</div>
+    <div class="q-text">What is the difference between per-router control and SDN (Software Defined Networking)?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Per-router control uses only static routes, while SDN uses dynamic ones</button>
+      <button class="option" data-correct="false">SDN is older technology that was replaced by per-router control</button>
+      <button class="option" data-correct="true">With per-router control, each router computes its own table; with SDN, a central controller computes all tables</button>
+      <button class="option" data-correct="false">Per-router control only works in local networks, while SDN is used on the Internet</button>
+    </div>
+    <div class="explanation">In per-router control, each router runs its own routing algorithm and talks to its neighbors to build its forwarding table. In SDN, a logically centralized controller does all the computation and distributes the tables to "dumb" routers that simply follow instructions.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 3</div>
+    <div class="q-text">The command <code>ping</code> uses ICMP. Which two ICMP message types are involved?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Type 3 (destination unreachable) and type 11 (TTL expired)</button>
+      <button class="option" data-correct="false">Type 4 (source quench) and type 0 (echo reply)</button>
+      <button class="option" data-correct="true">Type 8 (echo request) and type 0 (echo reply)</button>
+      <button class="option" data-correct="false">Type 11 (TTL expired) and type 8 (echo request)</button>
+    </div>
+    <div class="explanation"><code>ping</code> sends an ICMP echo request (type 8) to the target. If the target is reachable, it responds with an ICMP echo reply (type 0). The round-trip time between these two messages is what ping shows you.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 4</div>
+    <div class="q-text">How does <code>traceroute</code> manage to find the address of each router along the path?</div>
+    <div class="options">
+      <button class="option" data-correct="false">It queries DNS for a list of all routers between source and destination</button>
+      <button class="option" data-correct="false">It sends a special ICMP request that each router is obligated to answer</button>
+      <button class="option" data-correct="true">It sends packets with increasing TTL values, so that each router in turn returns a "TTL expired" message with its address</button>
+      <button class="option" data-correct="false">It reads the forwarding table of the local router and follows the pointers</button>
+    </div>
+    <div class="explanation">Traceroute exploits the TTL field in the IP header. By sending packets with TTL = 1, 2, 3, ... it forces each router along the path to drop the packet and send an ICMP "TTL expired" message back — and that message reveals the router's IP address.</div>
+  </div>
+</div>
+</section>
+
+</main>
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Spring 2026</p>
+  </div>
+</footer>
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script src="../../quiz.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

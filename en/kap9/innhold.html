@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 9 — Multimedia Networking</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Chapter 9</a>
+  </div>
+</nav>
+
+<main data-chapter="Chapter 9: Multimedia Networking">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Chapter 9 · Data Communications (7th edition)</div>
+  <h1>Multimedia <em>Networking</em></h1>
+  <p class="lede">How audio and video travel over a network that really only promises "best effort" — and what happens when the packets don't arrive on time.</p>
+  <nav class="toc">
+    <a href="#intro"><span>01</span> Audio and video as bits</a>
+    <a href="#apptypes"><span>02</span> Three types of applications</a>
+    <a href="#streaming"><span>03</span> Streaming stored video</a>
+    <a href="#udphttp"><span>04</span> UDP vs. HTTP streaming</a>
+    <a href="#voip"><span>05</span> Voice-over-IP</a>
+    <a href="#jitter"><span>06</span> Jitter and playout delay</a>
+    <a href="#fec"><span>07</span> Loss recovery: FEC and interleaving</a>
+    <a href="#skype"><span>08</span> Skype: P2P VoIP in practice</a>
+    <a href="#rtp"><span>09</span> RTP — Real-Time Protocol</a>
+  </nav>
+</div>
+</header>
+
+<!-- ============================================================ -->
+<!-- SECTION 1: Intro — audio & video basics                      -->
+<!-- ============================================================ -->
+<section id="intro">
+<div class="container">
+  <div class="section-badge">01 · Fundamentals</div>
+  <h2>Audio and video as <em>bits</em></h2>
+  <p class="section-intro">Before we can send multimedia over a network, we must understand how analog signals become a stream of bits.</p>
+
+  <p class="dropcap">Sound is pressure waves in the air. Video is a sequence of images displayed fast enough for the eye to perceive motion. Neither is naturally "digital" — they are continuous, analog quantities. To send them over a packet network, we must first convert them into a stream of bits, and that is where <strong>sampling</strong> and <strong>quantization</strong> come in.</p>
+
+  <h3>Audio: sampling and quantization</h3>
+  <p>An analog audio signal is sampled at a fixed rate — the value of the signal is measured at regular intervals. Each measurement is <em>quantized</em>, meaning rounded to the nearest permitted value. If we use 8 bits per sample, we have 2<sup>8</sup> = 256 possible values. The result is a stream of numbers representing the sound.</p>
+
+  <div class="table-wrap">
+  <table>
+    <tr><th>Application</th><th>Sampling rate</th><th>Bits/sample</th><th>Bit rate</th></tr>
+    <tr><td class="mono-cell">Telephone</td><td>8,000 samples/s</td><td>8</td><td>64 kbps</td></tr>
+    <tr><td class="mono-cell">CD music</td><td>44,100 samples/s</td><td>16</td><td>1.411 Mbps</td></tr>
+    <tr><td class="mono-cell">MP3</td><td>44,100 samples/s</td><td>comp.</td><td>96–160 kbps</td></tr>
+    <tr><td class="mono-cell">Internet telephony</td><td>varies</td><td>comp.</td><td>5.3 kbps and up</td></tr>
+  </table>
+  </div>
+
+  <p>Note the difference: a CD uses 1.4 Mbps to represent music. MP3 compresses it down to under 160 kbps by removing audio details that most people cannot hear. Internet telephony needs only 5–64 kbps because human speech is much simpler than music.</p>
+
+  <h3>Video: spatial and temporal coding</h3>
+  <p>A video is a sequence of images (typically 24–30 frames per second), where each image is a grid of pixels. Raw video requires enormous bandwidth, but there are two types of redundancy we can exploit for compression:</p>
+
+  <div class="callout">
+    <span class="label">Spatial coding</span>
+    <p>Within a single frame, there are large areas of the same color. Instead of sending <em>N</em> identical pixels, we send just the color and the count — "200 purple pixels". This is the idea behind all image compression.</p>
+  </div>
+
+  <div class="callout callout-blue">
+    <span class="label">Temporal coding</span>
+    <p>Between two consecutive frames, the difference is often minimal — perhaps just a small movement in one corner. Instead of sending the entire next frame, we send only the <em>difference</em> from the previous frame. This is why MPEG video is so much more efficient than sending each frame individually.</p>
+  </div>
+
+  <h3>CBR vs. VBR</h3>
+  <p>When encoding video, we can choose between two strategies:</p>
+  <ul style="margin:0 0 24px 24px;color:var(--ink-soft)">
+    <li style="margin-bottom:8px"><strong>CBR (Constant Bit Rate):</strong> The video is encoded at a fixed bit rate throughout. Simple for the network to plan for, but may give unnecessarily low quality in quiet scenes or too poor quality in complex scenes.</li>
+    <li><strong>VBR (Variable Bit Rate):</strong> The bit rate varies according to how complex the content is. A simple scene with little movement uses few bits, while an action scene uses many. Better quality, but harder for the network to handle.</li>
+  </ul>
+
+  <div class="table-wrap">
+  <table>
+    <tr><th>Standard</th><th>Typical bit rate</th><th>Use</th></tr>
+    <tr><td class="mono-cell">MPEG-1</td><td>1.5 Mbps</td><td>CD-ROM video</td></tr>
+    <tr><td class="mono-cell">MPEG-2</td><td>3–6 Mbps</td><td>DVD</td></tr>
+    <tr><td class="mono-cell">MPEG-4</td><td>< 1 Mbps</td><td>Internet video</td></tr>
+  </table>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 2: Three application types                           -->
+<!-- ============================================================ -->
+<section id="apptypes">
+<div class="container">
+  <div class="section-badge">02 · Application types</div>
+  <h2>Three types of <em>multimedia applications</em></h2>
+  <p class="section-intro">Not all multimedia has the same requirements from the network.</p>
+
+  <p>Multimedia over networks can be divided into three categories with widely different network requirements. It is important to distinguish them, because the solutions we need are different for each.</p>
+
+  <div class="compare">
+    <div>
+      <h4>1. Streaming stored content</h4>
+      <ul>
+        <li>Video/audio is pre-recorded and stored on a server</li>
+        <li>The client can begin playback <em>before</em> the entire file is downloaded</li>
+        <li>The server can send faster than the playback rate — the client buffers</li>
+        <li>Examples: YouTube, Netflix, Spotify</li>
+      </ul>
+    </div>
+    <div>
+      <h4>2. Conversation (voice/video)</h4>
+      <ul>
+        <li>Interactive communication between people</li>
+        <li>Very strict requirements on <em>delay</em> — over 400 ms ruins the conversation</li>
+        <li>Tolerates some packet loss, but not much delay</li>
+        <li>Examples: Skype, Zoom, Teams, VoIP telephony</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:0">
+    <span class="label">3. Live streaming</span>
+    <p>A middle ground: content is streamed in real time (football match, concert), but is not interactive. A few seconds of delay can be tolerated (that is why you sometimes hear your neighbor cheer before you see the goal). The requirements are roughly the same as for stored streaming, but you cannot fast-forward.</p>
+  </div>
+
+  <p>The common thread is that all three types are <strong>time-sensitive</strong> — bits that arrive too late are worthless. An email that takes 2 extra seconds does not matter, but 2 extra seconds of delay in a phone call makes it unusable. The rest of this chapter is about handling this time sensitivity over a network that only promises "best effort".</p>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 3: Streaming stored video                            -->
+<!-- ============================================================ -->
+<section id="streaming">
+<div class="container">
+  <div class="section-badge">03 · Stored video</div>
+  <h2>Streaming <em>stored</em> video</h2>
+  <p class="section-intro">The client plays one end while the server is still sending the other — and the buffer in the middle makes it all possible.</p>
+
+  <p class="dropcap">The main challenge with streaming is simple to explain: the video was recorded at a fixed rate (e.g., 30 frames per second), and it <em>must</em> be played back at exactly the same rate to look correct. But the network delivers packets with variable delay — sometimes a bit faster, sometimes a bit slower. This variability is called <strong>jitter</strong>, and it is what the client must compensate for.</p>
+
+  <h3>Continuous playout constraint</h3>
+  <p>Once playback has begun, it must continue at a steady rate. If packets needed for the next frame have not arrived yet, the video freezes — the classic "buffering" animation we all hate. We cannot send the packets back in time, so the only strategy is to <em>delay the start of playback</em>, so we build up a buffer first.</p>
+
+  <h3>Client-side buffering</h3>
+  <p>The idea is elegant: the client has a buffer with room for a certain amount of video. The server fills the buffer at variable rate x(t) (affected by network conditions), while the client drains the buffer at constant playback rate r.</p>
+
+  <figure>
+    <svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L6,4 L0,8 z" fill="#1a1612"/></marker></defs>
+      <!-- server -->
+      <rect x="30" y="70" width="100" height="60" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="3"/>
+      <text x="80" y="105" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">Server</text>
+      <!-- arrow in -->
+      <line x1="130" y1="100" x2="260" y2="100" stroke="#1a1612" stroke-width="2" marker-end="url(#arr)"/>
+      <text x="195" y="88" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">x(t) variable</text>
+      <!-- buffer -->
+      <rect x="268" y="60" width="160" height="80" fill="#e8e3d6" stroke="#1a1612" stroke-width="2" rx="3"/>
+      <text x="348" y="95" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">Buffer (B)</text>
+      <text x="348" y="115" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">Q(t)</text>
+      <!-- arrow out -->
+      <line x1="428" y1="100" x2="530" y2="100" stroke="#1a1612" stroke-width="2" marker-end="url(#arr)"/>
+      <text x="479" y="88" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">r constant</text>
+      <!-- client -->
+      <rect x="538" y="70" width="130" height="60" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="3"/>
+      <text x="603" y="105" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">Playback</text>
+      <!-- labels -->
+      <text x="348" y="170" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">x(t) > r on average → buffer never empties</text>
+      <text x="348" y="190" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">x(t) &lt; r → buffer eventually empties → freeze</text>
+    </svg>
+    <figcaption>Client-side buffering: variable filling from the network, constant draining during playback. As long as average x(t) > r and initial delay is large enough, we avoid freezing.</figcaption>
+  </figure>
+
+  <h3>The trade-off: playout delay</h3>
+  <p>The longer we wait before starting playback, the more buffer we build up — and the safer we are against short periods where the network is slow. But the user does not want to wait. This trade-off is fundamental:</p>
+
+  <div class="slider-box">
+    <label>Initial playout delay: <span class="val" id="delayVal">2.0 s</span></label>
+    <input type="range" id="delaySlider" min="1" max="100" value="20">
+    <div class="out" id="delayOut"></div>
+  </div>
+  <p style="font-size:14px;color:var(--ink-faded);font-style:italic;margin-top:-20px">Drag the slider to see how initial playout delay affects buffer robustness and user experience. The model is simplified, but illustrates the core trade-off.</p>
+
+  <div class="margin-note">Modern services like YouTube use <a href="../kap2/p2p-video-cdn.html#streaming">DASH (Dynamic Adaptive Streaming over HTTP)</a>, where the client dynamically requests video segments at the quality that suits the current network conditions — but the fundamental principle of buffering is the same.</div>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 4: UDP vs HTTP streaming                             -->
+<!-- ============================================================ -->
+<section id="udphttp">
+<div class="container">
+  <div class="section-badge">04 · Transport choice</div>
+  <h2>UDP vs. <em>HTTP</em> streaming</h2>
+  <p class="section-intro">Two entirely different strategies for getting video bits from server to client.</p>
+
+  <p>Historically, there have been two main approaches to streaming video. In the early days, UDP was most commonly used; today, HTTP/TCP has won almost completely. It is worth understanding both and why the pendulum swung.</p>
+
+  <div class="compare">
+    <div>
+      <h4>Streaming over UDP</h4>
+      <ul>
+        <li>Server sends at a rate suitable for the client, often equal to the encoding rate (CBR)</li>
+        <li>The sender does not care about congestion in the network — can "flood" a bottleneck</li>
+        <li>Short playout delay (2–5 sec) to remove jitter</li>
+        <li>Error correction at the application layer if there is time</li>
+        <li>Uses RTP for multimedia payload</li>
+        <li>Often blocked by firewalls (UDP traffic is filtered)</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Streaming over HTTP/TCP</h4>
+      <ul>
+        <li>Video file is fetched with a standard HTTP GET</li>
+        <li>TCP provides reliable, ordered delivery (retransmission)</li>
+        <li>Send rate varies due to TCP's congestion control</li>
+        <li>Larger playout buffer needed to smooth out the variation</li>
+        <li>Passes firewalls without issue (port 80/443)</li>
+        <li>Used by YouTube, Netflix, and virtually everything today</li>
+      </ul>
+    </div>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 700 170" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L6,4 L0,8 z" fill="#1a1612"/></marker></defs>
+      <!-- server -->
+      <rect x="20" y="50" width="80" height="70" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="3"/>
+      <text x="60" y="78" text-anchor="middle" font-family="IBM Plex Mono" font-size="10">Video</text>
+      <text x="60" y="93" text-anchor="middle" font-family="IBM Plex Mono" font-size="10">file</text>
+      <!-- TCP send buf -->
+      <rect x="140" y="50" width="80" height="70" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5" rx="3"/>
+      <text x="180" y="82" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">TCP send</text>
+      <text x="180" y="95" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">buffer</text>
+      <!-- arrow -->
+      <line x1="100" y1="85" x2="138" y2="85" stroke="#1a1612" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <!-- network -->
+      <line x1="220" y1="85" x2="350" y2="85" stroke="#2d4a7a" stroke-width="3" stroke-dasharray="6 4"/>
+      <text x="285" y="75" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">TCP / Internet</text>
+      <!-- TCP recv buf -->
+      <rect x="358" y="50" width="80" height="70" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5" rx="3"/>
+      <text x="398" y="82" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">TCP recv</text>
+      <text x="398" y="95" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">buffer</text>
+      <!-- arrow -->
+      <line x1="438" y1="85" x2="480" y2="85" stroke="#1a1612" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <!-- app buffer -->
+      <rect x="488" y="50" width="90" height="70" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5" rx="3"/>
+      <text x="533" y="82" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">Playout</text>
+      <text x="533" y="95" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">buffer</text>
+      <!-- arrow out -->
+      <line x1="578" y1="85" x2="620" y2="85" stroke="#1a1612" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <!-- labels -->
+      <text x="60" y="140" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">Server</text>
+      <text x="630" y="90" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">Play</text>
+      <text x="533" y="140" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">Client</text>
+      <!-- rate label -->
+      <text x="285" y="55" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#b04428">variable rate x(t)</text>
+    </svg>
+    <figcaption>HTTP/TCP streaming: the video file is fetched with HTTP GET, buffered in the TCP receive buffer and application buffer before playback. TCP's congestion control causes the send rate to vary.</figcaption>
+  </figure>
+
+  <p>The reason HTTP/TCP won is pragmatic: it passes firewalls, it requires no special server infrastructure (a regular web server suffices), and TCP provides reliable delivery so you do not have to handle loss yourself. The trade-off is higher playout delay, but for streaming stored video that is acceptable.</p>
+</div>
+</section>
+
+<div class="divider">&#10043; &#10043; &#10043;</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 5: Voice-over-IP                                     -->
+<!-- ============================================================ -->
+<section id="voip">
+<div class="container">
+  <div class="section-badge">05 · VoIP</div>
+  <h2>Voice-over-IP: <em>conversation</em> over packet networks</h2>
+  <p class="section-intro">The requirements for interactive speech are fundamentally different from stored video — delay is the enemy.</p>
+
+  <p class="dropcap">When two people talk together, they expect a response within a fraction of a second. Our brains are incredibly sensitive to delays in conversations — already at 150 milliseconds we notice something is "off", and at 400 ms the conversation breaks down into an awkward dance of "were you talking? no, you first". This delay sensitivity makes VoIP a much harder problem than streaming video.</p>
+
+  <h3>VoIP characteristics</h3>
+  <p>A typical VoIP stream looks like this:</p>
+  <ul style="margin:0 0 24px 24px;color:var(--ink-soft)">
+    <li style="margin-bottom:8px">The speaker <strong>alternates between talk spurts and silence</strong>. Packets are generated only during talk spurts.</li>
+    <li style="margin-bottom:8px">During talking: <strong>64 kbps</strong> (= 8 Kbytes/s) with PCM encoding.</li>
+    <li style="margin-bottom:8px">The audio is split into <strong>20 ms chunks</strong> — each chunk is 160 bytes of audio data.</li>
+    <li style="margin-bottom:8px">An application header is added to each chunk, and the result is packed into a UDP or TCP segment.</li>
+    <li>The application sends one packet every 20 milliseconds during a talk spurt.</li>
+  </ul>
+
+  <h3>Delay requirements</h3>
+  <div class="callout callout-green">
+    <span class="label">End-to-end delay</span>
+    <p><strong>< 150 ms:</strong> good — the conversation feels natural.<br>
+    <strong>150–400 ms:</strong> noticeable delay, but usable.<br>
+    <strong>> 400 ms:</strong> unacceptable — the conversation becomes impossible.<br>
+    The delay includes everything: packetization, network delay, playout delay at the receiver.</p>
+  </div>
+
+  <h3>Packet loss and delay loss</h3>
+  <p>VoIP must handle two types of loss:</p>
+  <div class="compare">
+    <div>
+      <h4>Network loss</h4>
+      <ul>
+        <li>IP datagrams are lost due to congestion in the network (router buffer overflow)</li>
+        <li>The usual form of loss we know from the TCP world</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Delay loss</h4>
+      <ul>
+        <li>The packet <em>does arrive</em>, but too late to be played out</li>
+        <li>Effectively the same as loss — the chunk is useless</li>
+        <li>Typical maximum tolerated delay: 400 ms</li>
+      </ul>
+    </div>
+  </div>
+
+  <p>An important point: VoIP <strong>tolerates some loss</strong>. Depending on audio encoding and techniques for loss concealment, one can tolerate 1–20% packet loss without the conversation becoming unintelligible. That is a dramatic difference from e.g., file transfer, where every lost byte is catastrophic.</p>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 6: Jitter and playout delay                          -->
+<!-- ============================================================ -->
+<section id="jitter">
+<div class="container">
+  <div class="section-badge">06 · Jitter</div>
+  <h2>Jitter and <em>playout delay</em></h2>
+  <p class="section-intro">Constant send rate into the network, variable delay through it — and a buffer that straightens it out again.</p>
+
+  <p>The VoIP sender sends packets at regular intervals (every 20 ms during a talk spurt). But the network delivers them with variable delay — just as with video streaming. This variation in delay is <strong>jitter</strong>, and it must be compensated by the receiver. The solution is, again, a buffer — but now the trade-off is about <em>milliseconds</em>, not seconds.</p>
+
+  <h3>Fixed playout delay</h3>
+  <p>The simplest strategy: the receiver decides on a fixed delay <em>q</em>, and plays out each audio chunk exactly <em>q</em> milliseconds after it was generated by the sender.</p>
+
+  <ul style="margin:0 0 24px 24px;color:var(--ink-soft)">
+    <li style="margin-bottom:8px">If an audio chunk has timestamp <em>t</em>, it is played out at time <em>t + q</em>.</li>
+    <li style="margin-bottom:8px">If the chunk arrives <em>after</em> t + q → it is lost (too late).</li>
+    <li style="margin-bottom:8px"><strong>Large q:</strong> fewer packets "too late" → lower loss, but longer delay in the conversation.</li>
+    <li><strong>Small q:</strong> better interactivity, but more packets do not make it in time.</li>
+  </ul>
+
+  <figure>
+    <svg viewBox="0 0 700 230" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="arr3" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L6,4 L0,8 z" fill="#1a1612"/></marker></defs>
+      <!-- time axis -->
+      <line x1="60" y1="200" x2="660" y2="200" stroke="#1a1612" stroke-width="1.5" marker-end="url(#arr3)"/>
+      <text x="670" y="204" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">time</text>
+      <!-- generated -->
+      <text x="50" y="45" text-anchor="end" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">Generated</text>
+      <rect x="100" y="30" width="14" height="20" fill="#b04428" rx="1"/><rect x="120" y="30" width="14" height="20" fill="#b04428" rx="1"/><rect x="140" y="30" width="14" height="20" fill="#b04428" rx="1"/><rect x="160" y="30" width="14" height="20" fill="#b04428" rx="1"/><rect x="180" y="30" width="14" height="20" fill="#b04428" rx="1"/>
+      <!-- received (jittered) -->
+      <text x="50" y="95" text-anchor="end" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">Received</text>
+      <rect x="200" y="80" width="14" height="20" fill="#2d4a7a" rx="1"/><rect x="230" y="80" width="14" height="20" fill="#2d4a7a" rx="1"/><rect x="240" y="80" width="14" height="20" fill="#2d4a7a" rx="1"/><rect x="280" y="80" width="14" height="20" fill="#2d4a7a" rx="1"/><rect x="320" y="80" width="14" height="20" fill="#2d4a7a" rx="1"/>
+      <!-- playout p -->
+      <text x="50" y="145" text-anchor="end" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">Playout p</text>
+      <rect x="260" y="130" width="14" height="20" fill="#3d6b3a" rx="1"/><rect x="280" y="130" width="14" height="20" fill="#3d6b3a" rx="1"/><rect x="300" y="130" width="14" height="20" fill="#3d6b3a" rx="1"/><rect x="320" y="130" width="14" height="20" fill="#3d6b3a" rx="1"/><rect x="340" y="130" width="14" height="20" fill="#3d6b3a" rx="1"/>
+      <!-- playout p' (shorter delay) -->
+      <text x="50" y="180" text-anchor="end" font-family="IBM Plex Mono" font-size="10" fill="#c68a1f">Playout p'</text>
+      <rect x="220" y="165" width="14" height="20" fill="#c68a1f" rx="1"/><rect x="240" y="165" width="14" height="20" fill="#c68a1f" rx="1"/><rect x="260" y="165" width="14" height="20" fill="#c68a1f" rx="1"/><rect x="280" y="165" width="14" height="20" fill="#c68a1f" rx="1"/>
+      <rect x="310" y="165" width="14" height="20" fill="none" stroke="#b04428" stroke-width="1.5" stroke-dasharray="3 2" rx="1"/>
+      <text x="338" y="178" font-family="IBM Plex Mono" font-size="9" fill="#b04428">lost!</text>
+      <!-- r marker -->
+      <line x1="200" y1="70" x2="200" y2="205" stroke="#6b6257" stroke-width="1" stroke-dasharray="3 3"/>
+      <text x="200" y="218" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">r</text>
+      <!-- p marker -->
+      <line x1="260" y1="120" x2="260" y2="205" stroke="#3d6b3a" stroke-width="1" stroke-dasharray="3 3"/>
+      <text x="260" y="218" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">p</text>
+      <!-- p' marker -->
+      <line x1="220" y1="155" x2="220" y2="205" stroke="#c68a1f" stroke-width="1" stroke-dasharray="3 3"/>
+      <text x="220" y="218" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#c68a1f">p'</text>
+    </svg>
+    <figcaption>Two playout schemes: p (long delay, no loss) and p' (short delay, but the last packet was "too late" and is lost). Trade-off between delay and loss.</figcaption>
+  </figure>
+
+  <h3>Adaptive playout delay</h3>
+  <p>Instead of choosing a fixed q, we can make it <em>adaptive</em>: we estimate the network delay continuously and adjust the playout delay at the start of each new talk spurt. Silent periods are slightly compressed or extended to absorb the change — the listener does not notice this.</p>
+
+  <p>The estimation uses an <strong>EWMA (Exponentially Weighted Moving Average)</strong>, exactly the same idea TCP uses to estimate RTT:</p>
+
+  <div class="formula">
+    d<sub>i</sub> = (1 − &alpha;) &middot; d<sub>i-1</sub> + &alpha; &middot; (r<sub>i</sub> − t<sub>i</sub>)
+  </div>
+
+  <p>Here d<sub>i</sub> is the estimated network delay after the i-th packet, &alpha; is a small constant (typically 0.1), r<sub>i</sub> is the time the packet was received, and t<sub>i</sub> is the timestamp (when it was sent). The expression (r<sub>i</sub> − t<sub>i</sub>) is the actual measured delay for packet i.</p>
+
+  <p>But average delay alone is not enough — we also need a measure of the <em>variation</em>. We estimate the deviation the same way:</p>
+
+  <div class="formula">
+    v<sub>i</sub> = (1 − &beta;) &middot; v<sub>i-1</sub> + &beta; &middot; |r<sub>i</sub> − t<sub>i</sub> − d<sub>i</sub>|
+  </div>
+
+  <p>The playout time for the first packet <em>j</em> in a new talk spurt is then set to:</p>
+
+  <div class="formula">
+    playout<sub>j</sub> = t<sub>j</sub> + d<sub>j</sub> + K &middot; v<sub>j</sub>
+  </div>
+
+  <p>Here K is a constant (typically 4). Note the parallel to TCP: there, the timeout is set to EstimatedRTT + 4 &middot; DevRTT — exactly the same structure. The average captures the "normal state", and K &middot; v adds a safety margin proportional to how much the delay varies. All subsequent packets in the same talk spurt are played out at fixed 20 ms intervals from this starting point.</p>
+
+  <div class="stepper" id="ewmaStepper">
+    <div class="step-display">
+      <div class="step-title" id="ewmaTitle">Step 1 of 5</div>
+      <div class="step-text" id="ewmaText"></div>
+    </div>
+    <div class="controls">
+      <button id="ewmaPrev">&larr; Previous</button>
+      <span class="indicator" id="ewmaInd">1 / 5</span>
+      <button id="ewmaNext">Next &rarr;</button>
+    </div>
+  </div>
+
+  <h3>Detecting start of a new talk spurt</h3>
+  <p>The receiver must know when a new talk spurt starts, because that is when the playout delay can be adjusted. Without packet loss, it is simple: if the difference between two consecutive timestamps is > 20 ms, there has been a silence period. With possible packet loss, the receiver looks at <em>both</em> timestamps and sequence numbers — if the timestamp gap is > 20 ms <em>and</em> no sequence numbers are missing, it is a new talk spurt.</p>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SECTION 7: FEC & interleaving                                -->
+<!-- ============================================================ -->
+<section id="fec">
+<div class="container">
+  <div class="section-badge">07 · Loss recovery</div>
+  <h2>FEC and <em>interleaving</em></h2>
+  <p class="section-intro">Three techniques for recovering lost audio without waiting for retransmission.</p>
+
+  <p>In VoIP, we do not have time for the usual TCP method of requesting retransmission — a retransmission takes at least one RTT, and that can easily exceed our delay budget. We need techniques that allow the receiver to recover lost packets <em>without</em> help from the sender.</p>
+
+  <h3>1. Simple FEC (XOR)</h3>
+  <p>For each group of <em>n</em> audio chunks, the sender creates one extra redundant chunk by XOR-ing all <em>n</em> originals together. The sender thus sends n+1 packets instead of n, increasing bandwidth by a factor of 1/n.</p>
+
+  <div class="callout">
+    <span class="label">Example</span>
+    <p>With n = 4 we send 5 packets per group. If <em>one</em> of the 5 packets is lost, the receiver can reconstruct it from the other 4 (XOR is reversible). If two or more are lost, this method does not provide enough information. The cost: 25% extra bandwidth and increased playout delay (we must wait for the entire group).</p>
+  </div>
+
+  <h3>2. Piggyback with low-quality stream</h3>
+  <p>A more elegant variant: the sender attaches a <em>low-resolution copy</em> of a previous audio chunk in each packet. For example, the nominal stream may use PCM at 64 kbps, while the redundant stream uses GSM at 13 kbps.</p>
+
+  <figure>
+    <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- packets -->
+      <rect x="40" y="40" width="120" height="50" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="2"/>
+      <text x="100" y="60" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">Pkt 1: chunk 1</text>
+      <text x="100" y="78" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">64 kbps PCM</text>
+
+      <rect x="200" y="40" width="120" height="70" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="2"/>
+      <text x="260" y="60" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">Pkt 2: chunk 2</text>
+      <text x="260" y="78" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">64 kbps PCM</text>
+      <text x="260" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428">+ chunk 1 @ 13 kbps</text>
+
+      <rect x="360" y="40" width="120" height="70" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="2"/>
+      <text x="420" y="60" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">Pkt 3: chunk 3</text>
+      <text x="420" y="78" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">64 kbps PCM</text>
+      <text x="420" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428">+ chunk 2 @ 13 kbps</text>
+
+      <rect x="520" y="40" width="120" height="70" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="2"/>
+      <text x="580" y="60" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">Pkt 4: chunk 4</text>
+      <text x="580" y="78" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">64 kbps PCM</text>
+      <text x="580" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428">+ chunk 3 @ 13 kbps</text>
+
+      <!-- lost marker -->
+      <line x1="360" y1="30" x2="480" y2="120" stroke="#b04428" stroke-width="2.5"/>
+      <line x1="480" y1="30" x2="360" y2="120" stroke="#b04428" stroke-width="2.5"/>
+
+      <text x="350" y="155" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">Pkt 3 lost → chunk 2 recovered from pkt 4 (lower quality, but audible)</text>
+    </svg>
+    <figcaption>Piggyback FEC: each packet carries a low-quality copy of the previous chunk. Non-consecutive losses can be concealed with slightly lower audio quality.</figcaption>
+  </figure>
+
+  <p>If packet 3 is lost, we lose chunk 3 in full quality, but chunk 2 can be recovered from the low copy in packet 4. The result is that only <em>consecutive</em> losses produce audible gaps. The overhead is modest (13 kbps extra in this example).</p>
+
+  <h3>3. Interleaving</h3>
+  <p>A third technique that requires no extra bandwidth at all. The idea: each 20 ms audio chunk is split into four 5 ms units. Units from <em>different</em> chunks are mixed together in the packets. If one packet is lost, we lose only one small 5 ms unit from four different chunks — instead of one entire contiguous 20 ms chunk. Each gap is so short it is almost inaudible.</p>
+
+  <div class="callout">
+    <span class="label">Trade-off</span>
+    <p>Interleaving provides <strong>no redundancy overhead</strong>, but requires the receiver to wait for enough packets to reassemble the original chunks. That means <em>increased playout delay</em> — it always costs something.</p>
+  </div>
+</div>
+</section>
+
+<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
+  <p class="q-text">What is the main advantage of piggyback FEC (sending a low-quality copy of the previous audio chunk along with the current one) compared to simple XOR FEC?</p>
+  <div class="options">
+    <button class="option" data-correct="false">It requires no additional bandwidth</button>
+    <button class="option" data-correct="true">It can recover from loss without having to wait for an entire group of packets, thus adding less extra playout delay</button>
+    <button class="option" data-correct="false">It can recover from the loss of several consecutive packets</button>
+    <button class="option" data-correct="false">It only works over TCP, not UDP</button>
+  </div>
+  <div class="explanation" id="qFeedback1"></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 8: Skype                                             -->
+<!-- ============================================================ -->
+<section id="skype">
+<div class="container">
+  <div class="section-badge">08 · Skype</div>
+  <h2>Skype: <em>P2P</em> VoIP in practice</h2>
+  <p class="section-intro">An early example of large-scale VoIP — with supernodes, overlay networks, and NAT traversal.</p>
+
+  <p>Skype was for many years the dominant example of VoIP over the Internet. It used a proprietary, encrypted protocol that was reverse-engineered by researchers. The architecture is interesting because it combines P2P elements with centralized control.</p>
+
+  <h3>Architecture</h3>
+  <ul style="margin:0 0 24px 24px;color:var(--ink-soft)">
+    <li style="margin-bottom:8px"><strong>Skype clients (SC):</strong> ordinary users running the Skype application. During a call, two clients connect directly to each other for the actual VoIP data stream.</li>
+    <li style="margin-bottom:8px"><strong>Supernodes (SN):</strong> selected Skype peers with special functions — they help locate other users and route traffic through an overlay network.</li>
+    <li style="margin-bottom:8px"><strong>Overlay network:</strong> the supernodes form an overlay network among themselves to find users' IP addresses.</li>
+    <li><strong>Login server:</strong> a centralized server for authentication (username/password).</li>
+  </ul>
+
+  <h3>Setting up a call</h3>
+  <ol style="margin:20px 0 24px 24px;color:var(--ink-soft)">
+    <li style="margin-bottom:8px">The client connects to a supernode (the IP address is cached locally) via TCP.</li>
+    <li style="margin-bottom:8px">Logs in to the centralized login server.</li>
+    <li style="margin-bottom:8px">Gets the IP address of the person to call from the supernodes' overlay (or from the contact list).</li>
+    <li>Initiates the call directly to the other client.</li>
+  </ol>
+
+  <h3>The NAT problem and the relay solution</h3>
+  <p>The interesting problem arises when <em>both</em> call participants are behind NAT. A NAT does not let outsiders initiate a connection to a device on the inside — that is the whole point of NAT. So how do two "locked-in" clients connect to each other?</p>
+
+  <figure>
+    <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="arr4" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L6,4 L0,8 z" fill="#2d4a7a"/></marker></defs>
+      <!-- Alice -->
+      <rect x="30" y="140" width="80" height="50" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="3"/>
+      <text x="70" y="170" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">Alice</text>
+      <!-- NAT A -->
+      <rect x="140" y="120" width="60" height="90" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5" rx="3"/>
+      <text x="170" y="170" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">NAT</text>
+      <!-- SN A -->
+      <ellipse cx="300" cy="80" rx="40" ry="25" fill="#f4f1ea" stroke="#b04428" stroke-width="2"/>
+      <text x="300" y="85" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">SN-A</text>
+      <!-- SN B -->
+      <ellipse cx="440" cy="80" rx="40" ry="25" fill="#f4f1ea" stroke="#b04428" stroke-width="2"/>
+      <text x="440" y="85" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">SN-B</text>
+      <!-- NAT B -->
+      <rect x="540" y="120" width="60" height="90" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5" rx="3"/>
+      <text x="570" y="170" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">NAT</text>
+      <!-- Bob -->
+      <rect x="630" y="140" width="60" height="50" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="3"/>
+      <text x="660" y="170" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">Bob</text>
+      <!-- connections -->
+      <path d="M 110 155 Q 200 60 260 80" stroke="#2d4a7a" stroke-width="2" fill="none" marker-end="url(#arr4)"/>
+      <text x="160" y="90" font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a">1. TCP</text>
+      <line x1="340" y1="80" x2="400" y2="80" stroke="#b04428" stroke-width="2" marker-end="url(#arr4)"/>
+      <text x="370" y="70" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428">2. SN-SN</text>
+      <path d="M 480 80 Q 540 60 630 155" stroke="#2d4a7a" stroke-width="2" fill="none" marker-end="url(#arr4)"/>
+      <text x="570" y="90" font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a">3. TCP</text>
+      <!-- relay arrow -->
+      <path d="M 110 175 Q 370 260 630 175" stroke="#3d6b3a" stroke-width="2.5" fill="none" stroke-dasharray="8 4" marker-end="url(#arr4)"/>
+      <text x="370" y="250" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#3d6b3a">VoIP data relayed via supernodes</text>
+    </svg>
+    <figcaption>Both parties behind NAT: Alice and Bob maintain open TCP connections to their supernodes. The supernodes relay the data traffic between them.</figcaption>
+  </figure>
+
+  <p>The solution: Alice and Bob both maintain an <em>open TCP connection</em> to their respective supernode (the connection is initiated <em>from inside</em> the NAT, so it is permitted). When Alice wants to call Bob, she signals through her SN to Bob's SN, which uses its open connection to Bob. The actual voice data can then be relayed through the supernodes. It is not optimal (twice as many hops), but it works even when both parties are behind NAT.</p>
+</div>
+</section>
+
+<div class="divider">&#10043; &#10043; &#10043;</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 9: RTP                                               -->
+<!-- ============================================================ -->
+<section id="rtp">
+<div class="container">
+  <div class="section-badge">09 · RTP</div>
+  <h2>RTP — <em>Real-Time</em> Protocol</h2>
+  <p class="section-intro">A thin protocol that gives multimedia packets what they need: type identification, sequence numbers, and timestamps.</p>
+
+  <p class="dropcap">RTP (RFC 3550) is the protocol that gives structure to multimedia packets. It is not a transport protocol in the traditional sense — it runs <em>on top of</em> UDP and provides a set of fields that applications need to handle real-time data, but that UDP does not offer: information about what kind of data the packet contains, in what order it belongs, and exactly when it was generated.</p>
+
+  <h3>What RTP gives us</h3>
+  <div class="callout callout-green">
+    <span class="label">RTP transports, but does not guarantee</span>
+    <p>RTP provides <strong>payload type identification</strong>, <strong>sequence numbering</strong>, and <strong>timestamping</strong>. But it provides <em>no</em> guarantee of timely delivery, no guarantee against loss, and no guarantee of ordering. It is just a framework that the <em>application</em> can use to do its best — for example, adaptive playout delay based on the timestamps.</p>
+  </div>
+
+  <h3>RTP on top of UDP</h3>
+  <p>RTP libraries offer a transport interface that <em>extends</em> UDP with the fields multimedia needs. An RTP packet consists of an RTP header followed by audio data (payload), and the entire packet is encapsulated in a UDP segment. From the network's perspective, it is just a regular UDP packet — routers along the way never see the RTP header and treat the packet with ordinary best-effort.</p>
+
+  <h3>Example: 64 kbps PCM over RTP</h3>
+  <p>A VoIP application sending 64 kbps PCM-encoded speech over RTP does the following:</p>
+  <ol style="margin:20px 0 24px 24px;color:var(--ink-soft)">
+    <li style="margin-bottom:8px">Collects 160 bytes of audio data every 20 milliseconds (= 8,000 bytes/s = 64 kbps).</li>
+    <li style="margin-bottom:8px">Adds an RTP header with payload type, sequence number, and timestamp.</li>
+    <li style="margin-bottom:8px">Packs everything into a UDP segment and sends it.</li>
+    <li>The sender can <em>change the encoding type mid-call</em> — the RTP header tells the receiver about the change via the payload type field.</li>
+  </ol>
+
+  <h3>The RTP header in detail</h3>
+
+  <figure>
+    <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- header fields -->
+      <rect x="30" y="30" width="130" height="50" fill="#f4f1ea" stroke="#1a1612" stroke-width="2"/>
+      <text x="95" y="50" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">Payload type</text>
+      <text x="95" y="68" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">7 bits</text>
+
+      <rect x="160" y="30" width="150" height="50" fill="#f4f1ea" stroke="#1a1612" stroke-width="2"/>
+      <text x="235" y="50" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">Sequence number</text>
+      <text x="235" y="68" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">16 bits</text>
+
+      <rect x="310" y="30" width="180" height="50" fill="#f4f1ea" stroke="#1a1612" stroke-width="2"/>
+      <text x="400" y="50" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">Timestamp</text>
+      <text x="400" y="68" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">32 bits</text>
+
+      <rect x="490" y="30" width="180" height="50" fill="#f4f1ea" stroke="#1a1612" stroke-width="2"/>
+      <text x="580" y="50" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#c68a1f">SSRC</text>
+      <text x="580" y="68" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">32 bits</text>
+
+      <!-- misc -->
+      <rect x="30" y="80" width="640" height="30" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
+      <text x="350" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">Misc. fields (version, padding, extension, CC, marker) + optional CSRC list</text>
+
+      <!-- payload -->
+      <rect x="30" y="120" width="640" height="50" fill="#e8e3d6" stroke="#a39886" stroke-width="1.5"/>
+      <text x="350" y="150" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">Payload (audio data / video data)</text>
+    </svg>
+    <figcaption>The RTP header: four main fields give the receiver everything it needs to place packets correctly in time and detect loss.</figcaption>
+  </figure>
+
+  <div class="table-wrap">
+  <table>
+    <tr><th>Field</th><th>Size</th><th>Function</th></tr>
+    <tr>
+      <td class="mono-cell">Payload type</td>
+      <td>7 bits</td>
+      <td>Identifies which encoding is used. The sender can change encoding mid-stream (e.g., from PCM to GSM), and the receiver sees the change here.</td>
+    </tr>
+    <tr>
+      <td class="mono-cell">Sequence number</td>
+      <td>16 bits</td>
+      <td>Increments by 1 for each sent RTP packet. Lets the receiver detect packet loss and put packets in the correct order.</td>
+    </tr>
+    <tr>
+      <td class="mono-cell">Timestamp</td>
+      <td>32 bits</td>
+      <td>The sampling instant of the first byte in the packet. For 8 kHz audio, the timestamp increments by 1 per sample (125 &mu;s), i.e., by 160 per 20 ms packet. The clock keeps ticking even during silence periods.</td>
+    </tr>
+    <tr>
+      <td class="mono-cell">SSRC</td>
+      <td>32 bits</td>
+      <td>Synchronization Source — a unique identifier for this media stream in the RTP session. Randomly chosen, so multiple streams can be distinguished from each other.</td>
+    </tr>
+  </table>
+  </div>
+
+  <div class="table-wrap">
+  <table>
+    <tr><th>Payload type</th><th>Encoding</th><th>Bit rate</th></tr>
+    <tr><td class="mono-cell">0</td><td>PCM &mu;-law</td><td>64 kbps</td></tr>
+    <tr><td class="mono-cell">3</td><td>GSM</td><td>13 kbps</td></tr>
+    <tr><td class="mono-cell">7</td><td>LPC</td><td>2.4 kbps</td></tr>
+    <tr><td class="mono-cell">26</td><td>Motion JPEG</td><td>variable</td></tr>
+    <tr><td class="mono-cell">31</td><td>H.261</td><td>variable</td></tr>
+    <tr><td class="mono-cell">33</td><td>MPEG-2 video</td><td>variable</td></tr>
+  </table>
+  </div>
+
+  <h3>RTP and QoS</h3>
+  <p>One final important point: <strong>RTP provides no QoS guarantees</strong>. RTP packets are encapsulated in ordinary UDP segments, and routers in the network see only an IP datagram with a UDP header. They make no special effort to deliver RTP packets faster or more reliably than other packets. All intelligence — adaptive playout, FEC, jitter buffer — resides in the endpoints, not in the network.</p>
+
+  <div class="callout callout-blue">
+    <span class="label">Interoperability</span>
+    <p>One of the great advantages of RTP is that two VoIP applications from different vendors <em>can</em> communicate, as long as both use RTP. The payload type field and the standardized encodings ensure that the receiver knows how to decode the data, regardless of which application sent it.</p>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- QUIZZES                                                      -->
+<!-- ============================================================ -->
+<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
+  <p class="q-text">What is the maximum end-to-end delay for a VoIP call to feel natural?</p>
+  <div class="options">
+    <button class="option" data-correct="true">Under 150 milliseconds</button>
+    <button class="option" data-correct="false">Under 400 milliseconds</button>
+    <button class="option" data-correct="false">Under 1 second</button>
+    <button class="option" data-correct="false">Under 50 milliseconds</button>
+  </div>
+  <div class="explanation" id="qFeedback2"></div>
+</div>
+
+<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
+  <p class="q-text">What information does the RTP header provide that the UDP header lacks?</p>
+  <div class="options">
+    <button class="option" data-correct="false">Reliable delivery with retransmission</button>
+    <button class="option" data-correct="false">Encryption of payload data</button>
+    <button class="option" data-correct="true">Payload type, sequence number, and timestamp for media data</button>
+    <button class="option" data-correct="false">Guaranteed maximum delay through the network</button>
+  </div>
+  <div class="explanation" id="qFeedback3"></div>
+</div>
+
+<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
+  <p class="q-text">Why does streaming today almost always use HTTP/TCP instead of UDP?</p>
+  <div class="options">
+    <button class="option" data-correct="false">Because TCP has lower latency than UDP</button>
+    <button class="option" data-correct="false">Because UDP does not support video formats</button>
+    <button class="option" data-correct="true">Because HTTP/TCP passes firewalls easily, requires no special server, and provides reliable delivery</button>
+    <button class="option" data-correct="false">Because TCP never retransmits packets during streaming</button>
+  </div>
+  <div class="explanation" id="qFeedback4"></div>
+</div>
+
+<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
+  <p class="q-text">In adaptive playout delay, when is the playout delay adjusted?</p>
+  <div class="options">
+    <button class="option" data-correct="false">Continuously for each individual packet received</button>
+    <button class="option" data-correct="true">Only at the start of a new talk spurt — silence periods are used to absorb the change</button>
+    <button class="option" data-correct="false">Every 20 milliseconds, synchronized with the send rate</button>
+    <button class="option" data-correct="false">Only when packet loss is detected via sequence number gaps</button>
+  </div>
+  <div class="explanation" id="qFeedback5"></div>
+</div>
+
+<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
+  <p class="q-text">What is "jitter" in the context of multimedia networking?</p>
+  <div class="options">
+    <button class="option" data-correct="false">Packet loss caused by congestion in router buffers</button>
+    <button class="option" data-correct="false">The total end-to-end delay from sender to receiver</button>
+    <button class="option" data-correct="true">The variation in delay between packets — some packets take longer than others</button>
+    <button class="option" data-correct="false">The error rate in the digital audio stream after quantization</button>
+  </div>
+  <div class="explanation" id="qFeedback6"></div>
+</div>
+
+<div class="quiz" style="max-width:820px;margin:0 auto 80px;">
+  <p class="q-text">What is the difference between CBR and VBR for video encoding?</p>
+  <div class="options">
+    <button class="option" data-correct="false">CBR uses spatial coding, VBR uses temporal coding</button>
+    <button class="option" data-correct="false">CBR sends video over TCP, VBR sends over UDP</button>
+    <button class="option" data-correct="true">CBR uses a fixed bit rate regardless of content complexity, while VBR varies the bit rate according to how complex the content is</button>
+    <button class="option" data-correct="false">CBR is newer and more efficient than VBR</button>
+  </div>
+  <div class="explanation" id="qFeedback7"></div>
+</div>
+
+<footer>
+  <div class="container">
+    <p>Based on <em>Computer Networking: A Top-Down Approach</em>, 7th edition, by Kurose &amp; Ross — Chapter 9 (9.1–9.4.1). This page covers the syllabus for TTM4100 and explains the mechanisms behind multimedia over packet networks.</p>
+    <p style="margin-top:20px;color:var(--rust);letter-spacing:0.6em">&#10043; &#10043; &#10043;</p>
+  </div>
+</footer>
+
+<script>
+// SLIDER: playout delay trade-off
+(function(){
+  var slider = document.getElementById('delaySlider');
+  var val = document.getElementById('delayVal');
+  var out = document.getElementById('delayOut');
+  function update(){
+    var d = parseInt(slider.value) / 10;
+    val.textContent = d.toFixed(1) + ' s';
+    var starvation, experience;
+    if (d < 0.5) {
+      starvation = 'very high';
+      experience = 'near-instant start, but frequent freezing — unusable for most';
+    } else if (d < 1.5) {
+      starvation = 'moderate';
+      experience = 'fast start, but noticeable risk of freezing during network variations';
+    } else if (d < 3.0) {
+      starvation = 'low';
+      experience = 'acceptable wait time, good buffer against jitter — typical choice for most services';
+    } else if (d < 6.0) {
+      starvation = 'very low';
+      experience = 'long wait before playback starts, but almost never freezes';
+    } else {
+      starvation = 'negligible';
+      experience = 'frustratingly long wait — the user clicks away long before the video starts';
+    }
+    out.innerHTML = '<strong>Buffer starvation risk:</strong> ' + starvation + '<br><strong>User experience:</strong> ' + experience;
+  }
+  slider.addEventListener('input', update);
+  update();
+})();
+
+// STEPPER: EWMA adaptive playout
+(function(){
+  var steps = [
+    {title:'What is the problem?', text:'Fixed playout delay q works, but is a compromise: too large a q gives unnecessary delay in the conversation, too small a q gives too many "too late" packets. Can we make q adaptive?'},
+    {title:'EWMA estimation', text:'We use an Exponentially Weighted Moving Average (EWMA) to estimate network delay: dᵢ = (1 − α) · dᵢ₋₁ + α · (rᵢ − tᵢ), where α is typically 0.1. We also estimate the deviation: vᵢ = (1 − β) · vᵢ₋₁ + β · |rᵢ − tᵢ − dᵢ|. The playout time for the first packet j in a new talk spurt is: tⱼ + dⱼ + K · vⱼ (K = 4). Exactly the same structure as TCP\'s RTO = EstimatedRTT + 4 · DevRTT.'},
+    {title:'When do we adjust?', text:'The playout delay is adjusted only at the start of a new talk spurt — never in the middle of one. During a talk spurt, all packets are played out at fixed 20 ms intervals. Between talk spurts (the silence), we can stretch or compress the pause to absorb the new delay.'},
+    {title:'How to detect a new talk spurt?', text:'Without packet loss: if the timestamp difference between two consecutive packets is > 20 ms, there has been a silence period. With possible loss: we also check sequence numbers — a gap in timestamps without a gap in sequence numbers means a new talk spurt, not packet loss.'},
+    {title:'The result', text:'Adaptive playout gives us the best of both worlds: when the network is stable, we keep the delay low. When jitter increases, we automatically increase the playout buffer to avoid loss. The user only notices that the "silence" between sentences is slightly longer or shorter — which is completely imperceptible.'}
+  ];
+  var i = 0;
+  var title = document.getElementById('ewmaTitle');
+  var text = document.getElementById('ewmaText');
+  var ind = document.getElementById('ewmaInd');
+  var prev = document.getElementById('ewmaPrev');
+  var next = document.getElementById('ewmaNext');
+  function render(){
+    title.textContent = 'Step ' + (i+1) + ' of ' + steps.length + ' \u2014 ' + steps[i].title;
+    text.textContent = steps[i].text;
+    ind.textContent = (i+1) + ' / ' + steps.length;
+    prev.disabled = (i === 0);
+    next.disabled = (i === steps.length - 1);
+  }
+  prev.addEventListener('click', function(){ if(i>0){i--;render();}});
+  next.addEventListener('click', function(){ if(i<steps.length-1){i++;render();}});
+  render();
+})();
+
+// QUIZ handler
+(function(){
+  var feedback = {
+    'qFeedback1': {
+      correct: 'Correct! Piggyback FEC places a low-quality copy of the previous chunk directly in the next packet, so recovery can happen immediately without waiting for an entire group.',
+      wrong: 'Not quite. Think about the difference in delay: XOR FEC requires the entire group of n+1 packets to be received before recovery, while piggyback only needs the next packet.'
+    },
+    'qFeedback2': {
+      correct: 'Correct! Under 150 ms is considered "good" for interactive speech. Between 150 and 400 ms is noticeable, and over 400 ms ruins the conversation.',
+      wrong: 'Think about what the slides say: < 150 ms is "good", > 400 ms is "bad". The question asks what feels natural.'
+    },
+    'qFeedback3': {
+      correct: 'Exactly! RTP adds payload type (which encoding), sequence number (for loss detection), and timestamp (for playout timing) — three things UDP lacks entirely.',
+      wrong: 'RTP provides no guarantees about delivery or QoS. Think about what is needed to play back real-time data correctly: when was the packet generated, what kind of data is it, and in what order?'
+    },
+    'qFeedback4': {
+      correct: 'Correct! HTTP/TCP passes firewalls (port 80/443 is almost always open), works with standard web servers, and provides reliable delivery. A larger playout buffer compensates for TCP\'s variable send rate.',
+      wrong: 'Think pragmatically: what is the practical barrier that causes UDP streaming to fail on many networks?'
+    },
+    'qFeedback5': {
+      correct: 'Correct! The playout delay is adjusted only between talk spurts. During a talk spurt, all packets are played out at fixed 20 ms intervals. Silence periods are stretched or compressed imperceptibly to absorb the new delay.',
+      wrong: 'Think about how changing the delay in the middle of a talk spurt would disturb the audio. When is it natural to make the adjustment without the listener noticing?'
+    },
+    'qFeedback6': {
+      correct: 'Exactly! Jitter is the variation in packet delay. Even if average delay is acceptable, large variation can cause packets to arrive too late to be played out — and that is what the playout buffer compensates for.',
+      wrong: 'Jitter is not about loss or total delay, but about the unpredictability of when packets arrive. Think: packets are sent at regular intervals but arrive at uneven intervals.'
+    },
+    'qFeedback7': {
+      correct: 'Correct! CBR (Constant Bit Rate) keeps the bit rate fixed — simple for the network, but can give poor quality in complex scenes and waste bits in simple scenes. VBR (Variable Bit Rate) adapts to the content and gives better quality, but is harder for the network to handle.',
+      wrong: 'CBR and VBR are about how the video is encoded — with a fixed or variable bit rate. Think about the difference between a calm scene and an action scene: do they need the same number of bits?'
+    }
+  };
+  document.querySelectorAll('.quiz').forEach(function(quiz){
+    var fb = quiz.querySelector('.explanation');
+    var fbId = fb.id;
+    quiz.querySelectorAll('button.option').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var correct = btn.dataset.correct === 'true';
+        quiz.querySelectorAll('button.option').forEach(function(b){
+          b.disabled = true;
+          if (b.dataset.correct === 'true') b.classList.add('correct');
+          else if (b === btn) b.classList.add('wrong');
+        });
+        fb.textContent = correct ? feedback[fbId].correct : feedback[fbId].wrong;
+      });
+    });
+  });
+})();
+</script>
+</main>
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

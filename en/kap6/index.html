@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 6 — The Link Layer and LANs</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="../../en/" class="nav-back">&larr; All chapters</a>
+  </div>
+</nav>
+<main data-chapter="Chapter 6: The Link Layer and LANs">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Chapter 6 · The Link Layer</div>
+  <h1>The Link Layer and <em>LANs</em></h1>
+  <p class="lede">The final leg of the journey down the protocol stack. Here we encounter the actual cables, frames, and addresses that ultimately carry bits from one machine to another.</p>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">01</span><a href="#overblikk">Big Picture</a></li>
+    <li><span class="toc-num">02</span><a href="#deler">Sections</a></li>
+    <li><span class="toc-num">03</span><a href="#quiz">Test Yourself</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ============================================ -->
+<!-- BIG PICTURE                                    -->
+<!-- ============================================ -->
+<section id="overblikk">
+<div class="container">
+  <div class="section-badge">Overview</div>
+  <h2>The Big Picture</h2>
+  <p class="section-intro">
+    The link layer is the final leg — what actually gets bits from one machine to its neighbor over a physical link. Everything above (IP, TCP, HTTP) blindly trusts that this works.
+  </p>
+
+  <div class="callout callout-green">
+    <span class="label">Analogy — the postal system, the last meter</span>
+    <p>
+      If the network layer (IP) is like addressing a letter with a postal code for the right city, the link layer is the local mail carrier who knows every house on the street. <strong>MAC addresses</strong> are like the house number on a specific street — they only have local significance. When a packet arrives at your local network, IP has gotten it to the right "neighborhood" (subnet), but it is <em>Ethernet</em> and <em>ARP</em> that find the specific machine. It is "the last meter" of the delivery.
+    </p>
+  </div>
+
+  <div class="callout callout-blue">
+    <span class="label">Analogy — the busy office</span>
+    <p>
+      Imagine a busy office with one shared printer cable. Everyone wants to print at the same time. <strong>CSMA/CD</strong> is the rules they follow: listen before you send (<em>carrier sense</em>), don't send if someone else is sending (<em>collision avoidance</em>), and if two send simultaneously, both stop, wait a random time, and try again (<em>collision detection + exponential backoff</em>). Ethernet uses exactly this logic.
+    </p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 700 370" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Local network: switch connected to four hosts with MAC addresses and an Ethernet frame">
+      <style>
+        .s-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 10px; fill: #6b6257; }
+        .s-ttl { font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 600; fill: #1a1612; }
+        .s-mac { font-family: 'IBM Plex Mono', monospace; font-size: 9px; fill: #2d4a7a; }
+        .s-frm { font-family: 'IBM Plex Mono', monospace; font-size: 9px; fill: #fff; }
+        .s-note { font-family: 'IBM Plex Sans', sans-serif; font-size: 10px; fill: #6b6257; font-style: italic; }
+      </style>
+
+      <!-- Switch -->
+      <rect x="290" y="140" width="120" height="50" rx="8" fill="#2d4a7a" stroke="#1a1612" stroke-width="1.5"/>
+      <text x="350" y="170" text-anchor="middle" class="s-frm" style="font-size:13px">Switch</text>
+
+      <!-- Host A (top-left) -->
+      <rect x="60" y="30" width="100" height="50" rx="6" fill="#e8e3d6" stroke="#c9c0ae" stroke-width="1"/>
+      <text x="110" y="52" text-anchor="middle" class="s-ttl">Host A</text>
+      <text x="110" y="68" text-anchor="middle" class="s-mac">1A-2F-BB-76-09-AD</text>
+      <line x1="160" y1="55" x2="290" y2="155" stroke="#c9c0ae" stroke-width="1.5"/>
+
+      <!-- Host B (top-right) -->
+      <rect x="540" y="30" width="100" height="50" rx="6" fill="#e8e3d6" stroke="#c9c0ae" stroke-width="1"/>
+      <text x="590" y="52" text-anchor="middle" class="s-ttl">Host B</text>
+      <text x="590" y="68" text-anchor="middle" class="s-mac">3C-5A-B4-12-EE-01</text>
+      <line x1="540" y1="55" x2="410" y2="155" stroke="#c9c0ae" stroke-width="1.5"/>
+
+      <!-- Host C (bottom-left) -->
+      <rect x="60" y="260" width="100" height="50" rx="6" fill="#e8e3d6" stroke="#c9c0ae" stroke-width="1"/>
+      <text x="110" y="282" text-anchor="middle" class="s-ttl">Host C</text>
+      <text x="110" y="298" text-anchor="middle" class="s-mac">88-AA-01-C7-55-3F</text>
+      <line x1="160" y1="285" x2="290" y2="190" stroke="#c9c0ae" stroke-width="1.5"/>
+
+      <!-- Host D (bottom-right) -->
+      <rect x="540" y="260" width="100" height="50" rx="6" fill="#e8e3d6" stroke="#c9c0ae" stroke-width="1"/>
+      <text x="590" y="282" text-anchor="middle" class="s-ttl">Host D</text>
+      <text x="590" y="298" text-anchor="middle" class="s-mac">D4-BE-D9-FF-42-10</text>
+      <line x1="540" y1="285" x2="410" y2="190" stroke="#c9c0ae" stroke-width="1.5"/>
+
+      <!-- Ethernet frame traveling A → B -->
+      <rect x="200" y="95" width="180" height="28" rx="4" fill="#b04428" stroke="#8a2a18" stroke-width="1"/>
+      <text x="210" y="113" class="s-frm">dst: 3C-5A-B4-12-EE-01</text>
+      <text x="210" y="85" class="s-lbl">Ethernet frame from A → B</text>
+      <!-- Arrow showing direction -->
+      <polygon points="385,109 395,104 395,114" fill="#b04428"/>
+
+      <!-- Switch table annotation -->
+      <rect x="430" y="140" width="160" height="68" rx="5" fill="#f4f1ea" stroke="#c9c0ae" stroke-width="1"/>
+      <text x="440" y="157" class="s-ttl">Switch table</text>
+      <text x="440" y="172" class="s-lbl">MAC              Port</text>
+      <text x="440" y="184" class="s-mac">1A-2F-BB-..  → 1</text>
+      <text x="440" y="196" class="s-mac">3C-5A-B4-..  → 2</text>
+      <line x1="410" y1="165" x2="430" y2="165" stroke="#c9c0ae" stroke-width="1" stroke-dasharray="4"/>
+
+      <!-- Learning label -->
+      <text x="350" y="230" text-anchor="middle" class="s-note">The switch learns MAC → port by</text>
+      <text x="350" y="243" text-anchor="middle" class="s-note">observing the source address on incoming frames</text>
+    </svg>
+    <figcaption>A local network with a switch and four hosts. The switch forwards the frame from A to B based on its self-learned table of MAC addresses and ports.</figcaption>
+  </figure>
+
+  <div class="callout">
+    <span class="label">In practice — right in front of you</span>
+    <p>
+      When your laptop sends a packet to the router at home, it uses Ethernet (via WiFi or cable). It needs the router's MAC address — and uses ARP to find it. The laptop sends a broadcast: "Who has IP 192.168.1.1?" The router replies with its MAC address. All of this happens automatically, without you noticing, every time you open a web page.
+    </p>
+  </div>
+</div>
+</section>
+
+<!-- ============================================ -->
+<!-- SUBPAGES                                       -->
+<!-- ============================================ -->
+<section id="deler">
+<div class="container">
+  <div class="section-badge">Sections</div>
+  <h2>Explore the <em>chapter</em></h2>
+  <div class="subpage-list">
+    <a href="grunnleggende-tilgang.html" class="subpage-card">
+      <span class="sp-icon">6a</span>
+      <div class="sp-info"><div class="sp-title">Fundamentals and Media Access</div><div class="sp-desc">Link layer services, error detection, CRC, and access protocols</div></div>
+      <span class="sp-arrow">&rarr;</span>
+    </a>
+    <a href="ethernet-svitsjer.html" class="subpage-card">
+      <span class="sp-icon">6b</span>
+      <div class="sp-info"><div class="sp-title">Ethernet, Switches, and ARP</div><div class="sp-desc">MAC addresses, ARP, the Ethernet frame, switches, and a day in the life of a web request</div></div>
+      <span class="sp-arrow">&rarr;</span>
+    </a>
+  </div>
+</div>
+</section>
+
+<!-- ============================================ -->
+<!-- QUIZ                                           -->
+<!-- ============================================ -->
+<section id="quiz">
+<div class="container">
+  <div class="section-badge">Test Yourself</div>
+  <h2>Quick Quiz</h2>
+
+  <div class="quiz" data-quiz="1">
+    <div class="q-label">Question 1</div>
+    <div class="q-text">Host A wants to send an IP packet to Host B on the same local network (LAN). A knows B's IP address but has no entry for B in its ARP cache. What happens?</div>
+    <div class="options">
+      <button class="option" data-correct="false">A sends the packet directly using B's IP address as the destination in the Ethernet frame</button>
+      <button class="option" data-correct="true">A sends an ARP broadcast to find B's MAC address, and waits for a reply before sending the IP packet in an Ethernet frame</button>
+      <button class="option" data-correct="false">A sends the packet to the default gateway (the router), which forwards it to B</button>
+    </div>
+    <div class="explanation">Correct! The Ethernet frame needs a MAC address as the destination — not an IP address. When the ARP cache is empty, A sends an ARP request as a broadcast (FF-FF-FF-FF-FF-FF). B recognizes its own IP and replies with its MAC address. Only then can A send the actual IP packet encapsulated in an Ethernet frame addressed to B's MAC.</div>
+  </div>
+
+  <div class="quiz" data-quiz="2">
+    <div class="q-label">Question 2</div>
+    <div class="q-text">What is the most important difference between a MAC address and an IP address?</div>
+    <div class="options">
+      <button class="option" data-correct="false">MAC addresses are shorter than IP addresses</button>
+      <button class="option" data-correct="false">MAC addresses are only used on wireless networks</button>
+      <button class="option" data-correct="true">The MAC address is permanently tied to the network interface card and has local significance, while the IP address is logical and depends on where in the network you are</button>
+    </div>
+    <div class="explanation">Correct! The MAC address (48 bits) is "burned in" to the network interface card and follows the device no matter where it connects. The IP address is logical — it changes when you switch networks. Routers use IP to find the path across the internet; MAC addresses are only used on the local link to identify the neighbor.</div>
+  </div>
+
+  <div class="quiz" data-quiz="3">
+    <div class="q-label">Question 3</div>
+    <div class="q-text">In CSMA/CD: what does a station do when it detects a collision while transmitting?</div>
+    <div class="options">
+      <button class="option" data-correct="false">It continues transmitting and hopes the other station stops</button>
+      <button class="option" data-correct="false">It retransmits the packet immediately</button>
+      <button class="option" data-correct="true">It aborts the transmission, sends a jam signal, and waits a random time (binary exponential backoff) before trying again</button>
+    </div>
+    <div class="explanation">Correct! Upon collision, the station stops immediately, sends a short jam signal so that everyone knows a collision occurred, and then waits a random time. The waiting time is chosen using <em>binary exponential backoff</em>: after the n-th collision, the waiting time is chosen randomly from {0, 1, …, 2ⁿ−1} time slots. This spreads out the attempts and reduces the chance of another collision.</div>
+  </div>
+</div>
+</section>
+
+</main>
+<footer><div class="container"><div class="ornament">&#10043; &#10043; &#10043;</div><p>NTNU · TTM4100 · Spring 2026</p></div></footer>
+<script src="../../quiz.js"></script>
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

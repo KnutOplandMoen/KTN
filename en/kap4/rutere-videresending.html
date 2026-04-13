@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 4a — Routers and Forwarding</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Chapter 4</a>
+  </div>
+</nav>
+
+<main data-chapter="Chapter 4: The Network Layer – Data Plane">
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">Chapter 4a &middot; The Network Layer</div>
+    <h1>Routers and <em>forwarding</em></h1>
+    <p class="lede">Data plane vs. control plane, router architecture, longest prefix match and queues &mdash; everything that happens when a packet hits a router.</p>
+  </div>
+</header>
+
+<!-- ============ 01 OVERVIEW ============ -->
+<section id="overview">
+  <div class="container">
+    <div class="section-badge">01 &middot; Overview</div>
+    <h2>What the network layer <em>does</em></h2>
+    <p class="section-intro">The transport layer gives you the illusion of a direct connection between two processes. The network layer is the one that actually has to move packets across a multitude of different networks to maintain that illusion.</p>
+
+    <p class="dropcap">The network layer runs in <em>every single</em> Internet-connected device &mdash; not just in routers, but also in end systems. On the sender side, it receives segments from the transport layer, encapsulates them in <strong>datagrams</strong>, and delivers them to the link layer below. On the receiver side, it does the reverse: extracts the segment from the datagram and delivers it up to the transport layer.</p>
+
+    <p>But the real work happens in routers. A router examines the header fields in every single datagram that passes through it, and determines &mdash; in nanoseconds &mdash; which output port the packet should be forwarded on. This process is repeated router after router until the packet reaches its destination.</p>
+
+    <div class="callout callout-blue">
+      <span class="label">&#9733; Everything over IP, IP everywhere</span>
+      <p>The network layer has only one protocol: <strong>IP</strong>. All transport protocols (TCP, UDP, QUIC) run over IP, and IP runs over all link-layer technologies (Ethernet, WiFi, 5G). This simplicity &mdash; a single narrow waist &mdash; is the Internet&rsquo;s most important design decision.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 FORWARDING VS ROUTING ============ -->
+<section id="fwd-routing">
+  <div class="container">
+    <div class="section-badge">02 &middot; Forwarding vs. Routing</div>
+    <h2>Two entirely different <em>jobs</em></h2>
+    <p class="section-intro">Forwarding is what you do at each intersection: &laquo;given that the destination is Rome, I turn right.&raquo; Routing is planning the entire trip from Trondheim to Rome before you get in the car.</p>
+
+    <p class="dropcap">The distinction between forwarding and routing is the first real insight of this chapter, and the rest of the material is organized around it.</p>
+
+    <p><strong>Forwarding</strong> is the local, per-packet operation: a router receives a datagram on an input port, looks up the destination address in a <em>forwarding table</em>, and sends the packet out on the correct output port. This must happen extremely fast &mdash; in nanoseconds &mdash; because a 100&nbsp;Gbps link does not wait for anyone.</p>
+
+    <p><strong>Routing</strong> is the network-global process that determines <em>which routes exist</em> in the network, and that populates the forwarding table with entries. Routing algorithms (OSPF, BGP) run in the background and update the tables when the topology changes. Routing is slow &mdash; milliseconds to seconds &mdash; but that is fine, because it happens infrequently compared to forwarding.</p>
+
+    <table>
+      <thead><tr><th>Property</th><th>Forwarding</th><th>Routing</th></tr></thead>
+      <tbody>
+        <tr><td class="mono-cell">Scope</td><td>Local (within one router)</td><td>Global (the entire network)</td></tr>
+        <tr><td class="mono-cell">Timescale</td><td>Nanoseconds</td><td>Milliseconds &ndash; seconds</td></tr>
+        <tr><td class="mono-cell">Implementation</td><td>Hardware (ASIC, TCAM)</td><td>Software (protocols)</td></tr>
+        <tr><td class="mono-cell">Analogy</td><td>Crossing one intersection</td><td>Planning the entire route</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ 03 PLANES ============ -->
+<section id="planes">
+  <div class="container">
+    <div class="section-badge">03 &middot; Data plane &amp; Control plane</div>
+    <h2>Two <em>planes</em> in a router</h2>
+    <p class="section-intro">The same forwarding/routing distinction manifests itself as an architectural division inside any modern router: the data plane for fast packet movement, the control plane for routing logic.</p>
+
+    <p class="dropcap"><strong>Data plane</strong> is the hardware that actually moves packets from input port to output port. It operates in nanoseconds, with dedicated circuits performing table lookups and switching without involving the router&rsquo;s CPU.</p>
+
+    <p><strong>Control plane</strong> is the software that determines <em>what</em> should be in the forwarding table. Two models exist:</p>
+    <ul>
+      <li><strong>Per-router control</strong> &mdash; Each router runs its own routing algorithm and communicates with its neighbors via protocols such as OSPF and BGP. The traditional model.</li>
+      <li><strong>SDN (centralized)</strong> &mdash; A remote controller computes routes for the entire network and pushes forwarding tables down to the routers. Dominant in data centers.</li>
+    </ul>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 680 260" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L9,3 z" fill="var(--rust)"/>
+            </marker>
+          </defs>
+          <rect x="20" y="20" width="640" height="85" fill="var(--paper-dark)" stroke="var(--green)" stroke-width="1.5" rx="3"/>
+          <text x="340" y="42" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--green)" letter-spacing="2">CONTROL PLANE &middot; MILLISECONDS &middot; SOFTWARE</text>
+          <text x="340" y="66" text-anchor="middle" font-family="Newsreader" font-size="14" font-style="italic" fill="var(--ink-soft)">Routing algorithms, protocols (OSPF, BGP), SDN controller</text>
+          <text x="340" y="88" text-anchor="middle" font-family="Newsreader" font-size="12" fill="var(--ink-faded)">Computes routes and writes forwarding tables</text>
+
+          <line x1="20" y1="125" x2="660" y2="125" stroke="var(--ink-faded)" stroke-width="1" stroke-dasharray="4 4"/>
+
+          <rect x="20" y="145" width="640" height="95" fill="var(--paper-dark)" stroke="var(--rust)" stroke-width="1.5" rx="3"/>
+          <text x="340" y="168" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--rust)" letter-spacing="2">DATA PLANE &middot; NANOSECONDS &middot; HARDWARE</text>
+          <text x="340" y="195" text-anchor="middle" font-family="Newsreader" font-size="14" font-style="italic" fill="var(--ink-soft)">Forwarding table, switching fabric, table lookups</text>
+          <text x="340" y="218" text-anchor="middle" font-family="Newsreader" font-size="12" fill="var(--ink-faded)">Moves each individual packet from input port to output port</text>
+
+          <line x1="340" y1="105" x2="340" y2="143" stroke="var(--rust)" stroke-width="2" marker-end="url(#arr)"/>
+          <text x="358" y="128" font-family="Newsreader" font-size="11" fill="var(--rust)" font-style="italic">writes tables</text>
+        </svg>
+      </div>
+      <figcaption>The two planes of a router. The control plane determines the routes; the data plane moves the packets.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ 04 SERVICE MODEL ============ -->
+<section id="service">
+  <div class="container">
+    <div class="section-badge">04 &middot; Service model</div>
+    <h2>Why the Internet is so <em>&laquo;dumb&raquo;</em></h2>
+    <p class="section-intro">One could imagine a network that guarantees delivery, bandwidth and low delay. The Internet does none of these things. It is &laquo;best effort&raquo; &mdash; and that is by design.</p>
+
+    <p class="dropcap">The Internet&rsquo;s network layer promises nothing. No guarantee that the packet will arrive. No guarantee of ordering, timing, or bandwidth. The IP model is <strong>best effort</strong>: we try to deliver your packet, but we promise nothing.</p>
+
+    <p>This stood in sharp contrast to the ATM networks developed in the 1990s, which attempted to provide rich guarantees. But history proved the Internet right:</p>
+
+    <table>
+      <thead><tr><th>Architecture</th><th>Bandwidth</th><th>Loss</th><th>Ordering</th><th>Timing</th></tr></thead>
+      <tbody>
+        <tr><td class="mono-cell">Internet best effort</td><td>none</td><td>no guarantee</td><td>none</td><td>none</td></tr>
+        <tr><td class="mono-cell">ATM CBR</td><td>constant rate</td><td>guaranteed</td><td>yes</td><td>yes</td></tr>
+        <tr><td class="mono-cell">ATM ABR</td><td>guaranteed min</td><td>no</td><td>yes</td><td>no</td></tr>
+        <tr><td class="mono-cell">Intserv Guaranteed</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td></tr>
+        <tr><td class="mono-cell">Diffserv</td><td>possible</td><td>possible</td><td>possible</td><td>no</td></tr>
+      </tbody>
+    </table>
+
+    <p>Three things explain why best effort works:</p>
+    <ul>
+      <li><strong>Simplicity scales.</strong> Routers that just look up a destination and forward can be built cheaply and quickly by anyone.</li>
+      <li><strong>Overprovisioning works.</strong> Bandwidth has become cheap enough that real-time applications like video and voice work &laquo;well enough, most of the time.&raquo;</li>
+      <li><strong>CDNs and congestion control help.</strong> Content is replicated near users, and TCP prevents the network from collapsing.</li>
+    </ul>
+
+    <div class="quiz">
+      <p class="q-text">Why did the Internet choose &laquo;best effort&raquo; over a richer service model like ATM CBR?</p>
+      <div class="options">
+        <button class="option" data-correct="false">Because best effort provides better performance for video streaming.</button>
+        <button class="option" data-correct="true">Because simplicity in the network scales &mdash; complexity in each router hinders growth.</button>
+        <button class="option" data-correct="false">Because ATM did not exist when TCP/IP was designed.</button>
+        <button class="option" data-correct="false">Because best effort provides lower delay than guaranteed services.</button>
+      </div>
+      <div class="explanation"><strong>Correct!</strong> Simplicity is the core reason. A router that only needs to look up a destination address and forward the packet can be built cheaply by anyone. Guarantees require per-flow state and resource reservation in <em>every</em> router, which hinders growth.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 ROUTER ============ -->
+<section id="router">
+  <div class="container">
+    <div class="section-badge">05 &middot; Inside a router</div>
+    <h2>The anatomy of a <em>router</em></h2>
+    <p class="section-intro">A router consists of four main components: input ports, a switching fabric, output ports, and a routing processor. The first three are data plane; the fourth is control plane.</p>
+
+    <p class="dropcap">An input port does three things before a packet moves on. First, <strong>line termination</strong> (receiving bits from the fiber). Then, <strong>link-layer processing</strong> (assembling bits into Ethernet frames). Finally, the critical step: <strong>looking up the forwarding table</strong> to determine the output port. This last step happens locally in the input port, without involving the CPU.</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 680 280" xmlns="http://www.w3.org/2000/svg">
+          <rect x="260" y="15" width="160" height="44" fill="var(--paper-dark)" stroke="var(--rust)" stroke-width="1.5" rx="3"/>
+          <text x="340" y="35" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">Routing</text>
+          <text x="340" y="51" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">Processor</text>
+          <line x1="40" y1="80" x2="640" y2="80" stroke="var(--ink-faded)" stroke-width="1" stroke-dasharray="4 4"/>
+          <rect x="260" y="115" width="160" height="100" fill="var(--paper-dark)" stroke="var(--green)" stroke-width="1.5" rx="3"/>
+          <text x="340" y="162" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" font-weight="600">Switching</text>
+          <text x="340" y="180" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" font-weight="600">Fabric</text>
+          <g>
+            <rect x="40" y="120" width="70" height="22" fill="var(--paper)" stroke="var(--ink-faded)" stroke-width="1"/>
+            <rect x="40" y="148" width="70" height="22" fill="var(--paper)" stroke="var(--ink-faded)" stroke-width="1"/>
+            <rect x="40" y="190" width="70" height="22" fill="var(--paper)" stroke="var(--ink-faded)" stroke-width="1"/>
+            <text x="75" y="135" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-faded)">in 1</text>
+            <text x="75" y="163" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-faded)">in 2</text>
+            <text x="75" y="205" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-faded)">in N</text>
+            <text x="75" y="230" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" font-style="italic" fill="var(--ink-faded)">input ports</text>
+          </g>
+          <g>
+            <rect x="570" y="120" width="70" height="22" fill="var(--paper)" stroke="var(--ink-faded)" stroke-width="1"/>
+            <rect x="570" y="148" width="70" height="22" fill="var(--paper)" stroke="var(--ink-faded)" stroke-width="1"/>
+            <rect x="570" y="190" width="70" height="22" fill="var(--paper)" stroke="var(--ink-faded)" stroke-width="1"/>
+            <text x="605" y="135" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-faded)">out 1</text>
+            <text x="605" y="163" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-faded)">out 2</text>
+            <text x="605" y="205" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-faded)">out N</text>
+            <text x="605" y="230" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" font-style="italic" fill="var(--ink-faded)">output ports</text>
+          </g>
+          <line x1="110" y1="131" x2="260" y2="145" stroke="var(--ink-soft)" stroke-width="1"/>
+          <line x1="110" y1="159" x2="260" y2="165" stroke="var(--ink-soft)" stroke-width="1"/>
+          <line x1="110" y1="201" x2="260" y2="195" stroke="var(--ink-soft)" stroke-width="1"/>
+          <line x1="420" y1="145" x2="570" y2="131" stroke="var(--ink-soft)" stroke-width="1"/>
+          <line x1="420" y1="165" x2="570" y2="159" stroke="var(--ink-soft)" stroke-width="1"/>
+          <line x1="420" y1="195" x2="570" y2="201" stroke="var(--ink-soft)" stroke-width="1"/>
+          <line x1="340" y1="59" x2="340" y2="115" stroke="var(--rust)" stroke-width="2" stroke-dasharray="3 3"/>
+          <text x="180" y="94" font-family="IBM Plex Mono" font-size="9" fill="var(--green)">CONTROL PLANE (software, ms)</text>
+          <text x="180" y="260" font-family="IBM Plex Mono" font-size="9" fill="var(--rust)">DATA PLANE (hardware, ns)</text>
+        </svg>
+      </div>
+      <figcaption>Generic router architecture. The data plane (input ports, fabric, output ports) does the fast work; the control plane (routing processor) updates the tables.</figcaption>
+    </figure>
+
+    <p>The lookup follows a pattern that is fundamental to the entire network layer: <strong>match plus action</strong>. Look at fields in the header, find a matching row in the table, perform the action (typically &laquo;send out on interface 3&raquo;). This structure appears everywhere &mdash; from simple destination-based forwarding to more advanced rules in SDN.</p>
+  </div>
+</section>
+
+<!-- ============ 06 LPM ============ -->
+<section id="lpm">
+  <div class="container">
+    <div class="section-badge">06 &middot; Longest Prefix Match</div>
+    <h2>Which entry <em>wins?</em></h2>
+    <p class="section-intro">The forwarding table contains prefixes, not individual addresses. When multiple prefixes match, the longest one wins &mdash; because a longer prefix is more specific.</p>
+
+    <p class="dropcap">A forwarding table typically has a quarter of a million entries. Each entry is a <em>prefix</em> &mdash; for example <code>200.23.16.0/20</code> &mdash; that covers all addresses where the first 20 bits match. The big question is: what does the router do if a destination address matches <em>multiple</em> entries?</p>
+
+    <p>The answer: select the entry with the <strong>longest prefix</strong>. A /24 covers 256 addresses; a /28 covers only 16. If both match, /28 is more precise and wins. This is <strong>longest prefix matching (LPM)</strong>, and it is what makes hierarchical addressing and route aggregation possible.</p>
+
+    <div class="lpm-box">
+      <div class="slabel">Try it yourself &mdash; Longest prefix matching</div>
+      <h4>Click on a destination address and see which entry wins:</h4>
+      <div class="lpm-table" id="lpm-table">
+        <div class="lpm-row" data-prefix="11001000 00010111 00010" data-iface="0"><span class="prefix">11001000 00010111 00010*** ********</span><span class="iface">&rarr; 0</span></div>
+        <div class="lpm-row" data-prefix="11001000 00010111 00011000" data-iface="1"><span class="prefix">11001000 00010111 00011000 ********</span><span class="iface">&rarr; 1</span></div>
+        <div class="lpm-row" data-prefix="11001000 00010111 00011" data-iface="2"><span class="prefix">11001000 00010111 00011*** ********</span><span class="iface">&rarr; 2</span></div>
+        <div class="lpm-row" data-prefix="" data-iface="3"><span class="prefix">(otherwise &mdash; default)</span><span class="iface">&rarr; 3</span></div>
+      </div>
+      <div class="lpm-input-row">
+        <button data-addr="11001000 00010111 00010110 10100001">Address A</button>
+        <button data-addr="11001000 00010111 00011000 10101010">Address B</button>
+        <button data-addr="11001000 00010111 00011001 11110000">Address C</button>
+        <button data-addr="11001000 00010111 00100000 00000001">Address D</button>
+      </div>
+      <div class="lpm-result" id="lpm-result">Select an address to see which entry matches.</div>
+    </div>
+
+    <p>In practice, LPM is performed in hardware, using <strong>ternary content-addressable memory (TCAM)</strong>. A TCAM looks up an address in a single clock cycle regardless of table size, because all entries are compared in parallel. Cisco Catalyst switches have around 1&nbsp;million entries in TCAM.</p>
+
+    <div class="quiz">
+      <p class="q-text">A router has the entries 10.0.0.0/8 &rarr; port 0 and 10.1.0.0/16 &rarr; port 1. Where is a packet to 10.1.5.3 sent?</p>
+      <div class="options">
+        <button class="option" data-correct="false">Port 0, because /8 is the first match in the table.</button>
+        <button class="option" data-correct="false">Both match, so the router chooses randomly.</button>
+        <button class="option" data-correct="true">Port 1, because /16 is a longer prefix than /8.</button>
+        <button class="option" data-correct="false">The packet is dropped because it is ambiguous.</button>
+      </div>
+      <div class="explanation"><strong>Correct!</strong> Both prefixes match the address, but /16 is more specific than /8. Longest prefix matching always selects the most specific match.</div>
+    </div>
+
+    <div class="reveal" data-reveal>
+      <div class="q">Why is forwarding implemented in hardware (ASIC/TCAM) rather than software?</div>
+      <button>Show answer</button>
+      <div class="answer">A 100&nbsp;Gbps link delivers a 64-byte packet roughly every 5 nanoseconds. Software on a general-purpose CPU cannot perform a table lookup that quickly. That is why purpose-built circuits (ASICs) and TCAM are used, which can look up among hundreds of thousands of prefixes in a single clock cycle &mdash; independent of table size. Without hardware acceleration, routers would become the bottleneck of the Internet.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 SWITCHING FABRIC ============ -->
+<section id="fabric">
+  <div class="container">
+    <div class="section-badge">07 &middot; Switching fabric</div>
+    <h2>The three <em>generations</em></h2>
+    <p class="section-intro">Once the input port has determined the output port, the packet must be physically moved there. The switching fabric does this, and there are three main designs &mdash; an evolution from slow to extremely fast.</p>
+
+    <p class="dropcap"><strong>Generation 1: via memory.</strong> The packet is copied from the input port to system memory, the CPU performs the lookup, and the packet is copied to the output port. Two bus crossings per packet &mdash; speed is limited by memory bandwidth. Worked for a few megabits per second.</p>
+
+    <p><strong>Generation 2: via bus.</strong> Packets are transferred directly from input port memory to output port memory over a shared bus, without CPU involvement. But the bus is shared &mdash; <em>bus contention</em> &mdash; so only one packet can cross at a time. The Cisco 5600 uses a 32&nbsp;Gbps bus.</p>
+
+    <p><strong>Generation 3: interconnection network.</strong> A crossbar or multi-stage switch allows multiple packets to cross <em>in parallel</em>, as long as they are going to different output ports. For even higher throughput, modern routers split packets into cells and send them over <em>multiple parallel fabric planes</em> simultaneously. Cisco CRS: 8 planes, hundreds of Tbps.</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 680 170" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <text x="95" y="18" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--rust)">GEN 1: MEMORY</text>
+            <rect x="40" y="28" width="110" height="85" fill="none" stroke="var(--ink-faded)" stroke-width="1"/>
+            <rect x="75" y="55" width="40" height="28" fill="var(--rust)" opacity="0.7" rx="2"/>
+            <text x="95" y="73" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#fff">CPU</text>
+            <line x1="40" y1="42" x2="75" y2="55" stroke="var(--ink-soft)"/>
+            <line x1="40" y1="70" x2="75" y2="65" stroke="var(--ink-soft)"/>
+            <line x1="40" y1="100" x2="75" y2="80" stroke="var(--ink-soft)"/>
+            <line x1="115" y1="55" x2="150" y2="42" stroke="var(--ink-soft)"/>
+            <line x1="115" y1="70" x2="150" y2="70" stroke="var(--ink-soft)"/>
+            <line x1="115" y1="80" x2="150" y2="100" stroke="var(--ink-soft)"/>
+            <text x="95" y="135" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="var(--ink-soft)">2 bus crossings</text>
+            <text x="95" y="152" text-anchor="middle" font-family="Newsreader" font-size="10" fill="var(--ink-faded)">slow</text>
+          </g>
+          <g>
+            <text x="290" y="18" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--rust)">GEN 2: BUS</text>
+            <rect x="235" y="28" width="110" height="85" fill="none" stroke="var(--ink-faded)" stroke-width="1"/>
+            <rect x="285" y="35" width="10" height="70" fill="var(--rust)"/>
+            <line x1="235" y1="46" x2="285" y2="50" stroke="var(--ink-soft)"/>
+            <line x1="235" y1="70" x2="285" y2="70" stroke="var(--ink-soft)"/>
+            <line x1="235" y1="96" x2="285" y2="90" stroke="var(--ink-soft)"/>
+            <line x1="295" y1="50" x2="345" y2="46" stroke="var(--ink-soft)"/>
+            <line x1="295" y1="70" x2="345" y2="70" stroke="var(--ink-soft)"/>
+            <line x1="295" y1="90" x2="345" y2="96" stroke="var(--ink-soft)"/>
+            <text x="290" y="135" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="var(--ink-soft)">1 packet at a time</text>
+            <text x="290" y="152" text-anchor="middle" font-family="Newsreader" font-size="10" fill="var(--ink-faded)">bus contention</text>
+          </g>
+          <g>
+            <text x="485" y="18" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--rust)">GEN 3: CROSSBAR</text>
+            <rect x="430" y="28" width="110" height="85" fill="none" stroke="var(--ink-faded)" stroke-width="1"/>
+            <g stroke="var(--rust)" stroke-width="1.2">
+              <line x1="450" y1="46" x2="530" y2="46"/>
+              <line x1="450" y1="70" x2="530" y2="70"/>
+              <line x1="450" y1="94" x2="530" y2="94"/>
+              <line x1="465" y1="35" x2="465" y2="106"/>
+              <line x1="490" y1="35" x2="490" y2="106"/>
+              <line x1="515" y1="35" x2="515" y2="106"/>
+            </g>
+            <circle cx="465" cy="46" r="3" fill="var(--green)"/>
+            <circle cx="490" cy="70" r="3" fill="var(--green)"/>
+            <circle cx="515" cy="94" r="3" fill="var(--green)"/>
+            <text x="485" y="135" text-anchor="middle" font-family="Newsreader" font-size="11" font-style="italic" fill="var(--ink-soft)">parallel transfer</text>
+            <text x="485" y="152" text-anchor="middle" font-family="Newsreader" font-size="10" fill="var(--ink-faded)">hundreds of Tbps</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>Three generations of switching fabric. Each generation eliminates a bottleneck from the previous one.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ 08 QUEUEING ============ -->
+<section id="queueing">
+  <div class="container">
+    <div class="section-badge">08 &middot; Queues, buffers &amp; scheduling</div>
+    <h2>When packets must <em>wait</em></h2>
+    <p class="section-intro">Even with a perfect switching fabric, queues form. What happens in the queues &mdash; who gets dropped and who goes first &mdash; is where network neutrality gets its technical substance.</p>
+
+    <h3>Input queues and HOL blocking</h3>
+    <p>If the switching fabric is slower than the sum of the input ports, queues can build up at the <em>input ports</em>. The worst thing that then happens is <strong>Head-of-Line (HOL) blocking</strong>: the packet at the front of the queue is waiting for a busy output port, and thereby blocks the packets behind it &mdash; even if <em>their</em> output ports are free.</p>
+
+    <h3>Output queues</h3>
+    <p>The most common queue type is at the <em>output port</em>. When three input ports at 10&nbsp;Gbps all want to send to the <em>same</em> output port, something must wait. Here two questions arise: (1) what is dropped when the queue is full? (2) which packet is sent first?</p>
+
+    <h3>Buffer sizing</h3>
+    <p>An old rule of thumb (RFC 3439) states that the buffer should be approximately <strong>RTT &times; C</strong> (for example, 250&nbsp;ms &times; 10&nbsp;Gbps = 2.5&nbsp;Gbit). More recent research recommends RTT&middot;C&nbsp;/&nbsp;&radic;N where N is the number of flows &mdash; because overly large buffers create <em>bufferbloat</em> and ruin latency for real-time traffic.</p>
+
+    <h3>Buffer management</h3>
+    <p><strong>Tail drop:</strong> drop the packet that just arrived. <strong>RED (Random Early Detection):</strong> drop packets randomly <em>before</em> the queue is full to signal congestion. <strong>ECN:</strong> mark packets without dropping them.</p>
+
+    <h3>Scheduling &mdash; who goes first?</h3>
+
+    <div class="stepper" id="stepper-sched">
+      <div class="slabel">Schedulers, step by step</div>
+      <h4 id="sched-title">FCFS / FIFO</h4>
+      <div class="stage-svg" id="sched-svg"></div>
+      <div class="desc" id="sched-desc"></div>
+      <div class="ctrls">
+        <button id="sched-prev" disabled>&larr; Previous</button>
+        <span class="progress" id="sched-prog">1 / 4</span>
+        <button id="sched-next">Next &rarr;</button>
+      </div>
+    </div>
+
+    <p><strong>Weighted Fair Queueing (WFQ)</strong> generalizes round robin by giving each class a weight w<sub>i</sub>, such that class <em>i</em> receives the share w<sub>i</sub>&nbsp;/&nbsp;&Sigma;w<sub>j</sub> of the link capacity. This is how you can guarantee minimum bandwidth to a given traffic type without starving the others.</p>
+
+    <div class="callout">
+      <span class="label">Network neutrality &mdash; technically speaking</span>
+      <p>FCFS is &laquo;neutral.&raquo; Priority scheduling based on paying customers is &laquo;paid prioritization&raquo; &mdash; what the 2015 FCC rules prohibited. Scheduling and buffer rules are the <em>mechanisms</em> where net neutrality policy takes on technical substance.</p>
+    </div>
+
+    <div class="reveal" data-reveal>
+      <div class="q">What happens to latency if the buffers in a router are too large?</div>
+      <button>Show answer</button>
+      <div class="answer"><strong>Bufferbloat.</strong> With overly large buffers, fewer packets are dropped, so the loss rate looks good &mdash; but packets sit in the queue for a long time before being forwarded. The result is high and variable latency that ruins interactive applications (VoIP, gaming, video conferencing). TCP does not detect the loss soon enough and does not reduce its window, so the queues remain full. More recent research recommends RTT&middot;C&nbsp;/&nbsp;&radic;N instead of the old RTT&middot;C rule, precisely to avoid bufferbloat.</div>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <nav class="page-nav">
+    <a href="ip-adressering.html" class="next">
+      <span class="nav-label">Next &rarr;</span>
+      <span class="nav-title">IP and addressing</span>
+    </a>
+  </nav>
+</div>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10038; &#10038; &#10038;</div>
+    <p>NTNU &middot; TTM4100 &middot; Spring 2026</p>
+  </div>
+</footer>
+
+<script>
+// === Quiz handlers ===
+document.querySelectorAll('.quiz').forEach(function(quiz) {
+  var fb = quiz.querySelector('.explanation');
+  quiz.querySelectorAll('button.option').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var correct = btn.dataset.correct === 'true';
+      quiz.querySelectorAll('button.option').forEach(function(b) {
+        b.disabled = true;
+        if (b.dataset.correct === 'true') b.classList.add('correct');
+        else if (b === btn) b.classList.add('incorrect');
+      });
+      if (fb) fb.classList.add('show');
+    });
+  });
+});
+
+// === LPM interactive ===
+(function() {
+  var rows = document.querySelectorAll('#lpm-table .lpm-row');
+  var buttons = document.querySelectorAll('.lpm-input-row button');
+  var result = document.getElementById('lpm-result');
+
+  function matchPrefix(addr, prefix) {
+    if (!prefix) return true;
+    var a = addr.replace(/ /g, '');
+    var p = prefix.replace(/ /g, '');
+    return a.substring(0, p.length) === p;
+  }
+
+  buttons.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      buttons.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var addr = btn.dataset.addr;
+      var best = null, bestLen = -1;
+      rows.forEach(function(r) { r.classList.remove('match'); });
+      rows.forEach(function(r) {
+        var p = r.dataset.prefix;
+        if (matchPrefix(addr, p)) {
+          var len = p.replace(/ /g, '').length;
+          if (len > bestLen) { best = r; bestLen = len; }
+        }
+      });
+      if (best) {
+        best.classList.add('match');
+        var iface = best.dataset.iface;
+        var prefixText = best.dataset.prefix || 'default';
+        result.innerHTML = 'The address <code style="font-size:12px">' + addr + '</code> matches the prefix <strong>' + (prefixText || '(default)') + '</strong> and is sent to interface <strong>' + iface + '</strong>.';
+      }
+    });
+  });
+})();
+
+// === Scheduling stepper ===
+(function() {
+  var stages = [
+    {
+      title: 'FCFS / FIFO',
+      desc: 'Packets are sent in arrival order. Simple and fair, but a large download can make a Skype call unusable. No differentiation between traffic types.',
+      svg: function() {
+        return '<svg viewBox="0 0 580 160" xmlns="http://www.w3.org/2000/svg">' +
+          '<text x="40" y="25" font-family="IBM Plex Mono" font-size="10" fill="var(--ink-faded)">arrival</text>' +
+          '<rect x="40" y="55" width="180" height="30" fill="none" stroke="var(--rust)" stroke-width="1.5" rx="2"/>' +
+          '<rect x="45" y="60" width="25" height="20" fill="var(--rust)" opacity="0.6" rx="1"/>' +
+          '<rect x="75" y="60" width="25" height="20" fill="var(--blue)" opacity="0.6" rx="1"/>' +
+          '<rect x="105" y="60" width="25" height="20" fill="var(--rust)" opacity="0.6" rx="1"/>' +
+          '<rect x="135" y="60" width="25" height="20" fill="var(--green)" opacity="0.6" rx="1"/>' +
+          '<rect x="165" y="60" width="25" height="20" fill="var(--blue)" opacity="0.6" rx="1"/>' +
+          '<text x="130" y="50" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="var(--ink-faded)">one queue</text>' +
+          '<line x1="220" y1="70" x2="310" y2="70" stroke="var(--ink-soft)" stroke-width="1.5" marker-end="url(#sarr)"/>' +
+          '<circle cx="330" cy="70" r="18" fill="var(--paper-dark)" stroke="var(--ink-soft)" stroke-width="1.5"/>' +
+          '<text x="330" y="75" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">R</text>' +
+          '<line x1="348" y1="70" x2="430" y2="70" stroke="var(--ink-soft)" stroke-width="1.5" marker-end="url(#sarr)"/>' +
+          '<text x="450" y="75" font-family="IBM Plex Mono" font-size="10" fill="var(--ink-faded)">out</text>' +
+          '<defs><marker id="sarr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="var(--ink-soft)"/></marker></defs>' +
+          '</svg>';
+      }
+    },
+    {
+      title: 'Priority Scheduling',
+      desc: 'Packets are classified into priority classes. The server always sends from the highest class that has something in queue. Provides low latency for important flows, but low-priority flows can be completely starved.',
+      svg: function() {
+        return '<svg viewBox="0 0 580 160" xmlns="http://www.w3.org/2000/svg">' +
+          '<rect x="40" y="30" width="120" height="24" fill="none" stroke="var(--rust)" stroke-width="1.2" rx="2"/>' +
+          '<text x="100" y="22" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--rust)">HIGH PRIORITY</text>' +
+          '<rect x="45" y="34" width="18" height="16" fill="var(--rust)" opacity="0.7" rx="1"/>' +
+          '<rect x="66" y="34" width="18" height="16" fill="var(--rust)" opacity="0.7" rx="1"/>' +
+          '<rect x="40" y="80" width="120" height="24" fill="none" stroke="var(--blue)" stroke-width="1.2" rx="2"/>' +
+          '<text x="100" y="72" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--blue)">LOW PRIORITY</text>' +
+          '<rect x="45" y="84" width="18" height="16" fill="var(--blue)" opacity="0.6" rx="1"/>' +
+          '<rect x="66" y="84" width="18" height="16" fill="var(--blue)" opacity="0.6" rx="1"/>' +
+          '<rect x="87" y="84" width="18" height="16" fill="var(--blue)" opacity="0.6" rx="1"/>' +
+          '<line x1="160" y1="42" x2="300" y2="68" stroke="var(--rust)" stroke-width="1.2"/>' +
+          '<line x1="160" y1="92" x2="300" y2="72" stroke="var(--blue)" stroke-width="1.2" stroke-dasharray="4 3"/>' +
+          '<circle cx="320" cy="70" r="18" fill="var(--paper-dark)" stroke="var(--ink-soft)" stroke-width="1.5"/>' +
+          '<text x="320" y="75" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">R</text>' +
+          '<line x1="338" y1="70" x2="420" y2="70" stroke="var(--ink-soft)" stroke-width="1.5" marker-end="url(#sarr)"/>' +
+          '<text x="330" y="120" text-anchor="middle" font-family="Newsreader" font-size="10" font-style="italic" fill="var(--ink-faded)">high first, always</text>' +
+          '</svg>';
+      }
+    },
+    {
+      title: 'Round Robin',
+      desc: 'The server visits each class in turn and takes one packet from each. No class is starved, but all get equal access \u2014 regardless of need. Guarantees fairness, but no differentiation.',
+      svg: function() {
+        return '<svg viewBox="0 0 580 160" xmlns="http://www.w3.org/2000/svg">' +
+          '<rect x="40" y="20" width="120" height="24" fill="none" stroke="var(--rust)" stroke-width="1.2" rx="2"/>' +
+          '<rect x="45" y="24" width="18" height="16" fill="var(--rust)" opacity="0.7" rx="1"/>' +
+          '<rect x="66" y="24" width="18" height="16" fill="var(--rust)" opacity="0.7" rx="1"/>' +
+          '<rect x="40" y="56" width="120" height="24" fill="none" stroke="var(--green)" stroke-width="1.2" rx="2"/>' +
+          '<rect x="45" y="60" width="18" height="16" fill="var(--green)" opacity="0.7" rx="1"/>' +
+          '<rect x="40" y="92" width="120" height="24" fill="none" stroke="var(--blue)" stroke-width="1.2" rx="2"/>' +
+          '<rect x="45" y="96" width="18" height="16" fill="var(--blue)" opacity="0.7" rx="1"/>' +
+          '<rect x="66" y="96" width="18" height="16" fill="var(--blue)" opacity="0.7" rx="1"/>' +
+          '<rect x="87" y="96" width="18" height="16" fill="var(--blue)" opacity="0.7" rx="1"/>' +
+          '<line x1="160" y1="32" x2="290" y2="62" stroke="var(--rust)" stroke-width="1"/>' +
+          '<line x1="160" y1="68" x2="290" y2="68" stroke="var(--green)" stroke-width="1"/>' +
+          '<line x1="160" y1="104" x2="290" y2="74" stroke="var(--blue)" stroke-width="1"/>' +
+          '<circle cx="310" cy="68" r="18" fill="var(--paper-dark)" stroke="var(--ink-soft)" stroke-width="1.5"/>' +
+          '<text x="310" y="73" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">R</text>' +
+          '<path d="M325,54 A20,20 0 1,1 295,54" fill="none" stroke="var(--ochre)" stroke-width="1.5" stroke-dasharray="3 2"/>' +
+          '<line x1="328" y1="68" x2="420" y2="68" stroke="var(--ink-soft)" stroke-width="1.5" marker-end="url(#sarr)"/>' +
+          '<text x="310" y="120" text-anchor="middle" font-family="Newsreader" font-size="10" font-style="italic" fill="var(--ink-faded)">one from each, in turn</text>' +
+          '</svg>';
+      }
+    },
+    {
+      title: 'Weighted Fair Queueing (WFQ)',
+      desc: 'Each class gets a weight w_i and receives the share w_i / \u03a3w_j of the capacity. You can guarantee minimum bandwidth per class without starving anyone. The standard for QoS in practice.',
+      svg: function() {
+        return '<svg viewBox="0 0 580 160" xmlns="http://www.w3.org/2000/svg">' +
+          '<rect x="40" y="20" width="120" height="24" fill="none" stroke="var(--rust)" stroke-width="1.2" rx="2"/>' +
+          '<text x="170" y="36" font-family="IBM Plex Mono" font-size="10" fill="var(--rust)">w=3</text>' +
+          '<rect x="45" y="24" width="18" height="16" fill="var(--rust)" opacity="0.7" rx="1"/>' +
+          '<rect x="66" y="24" width="18" height="16" fill="var(--rust)" opacity="0.7" rx="1"/>' +
+          '<rect x="40" y="56" width="120" height="24" fill="none" stroke="var(--green)" stroke-width="1.2" rx="2"/>' +
+          '<text x="170" y="72" font-family="IBM Plex Mono" font-size="10" fill="var(--green)">w=2</text>' +
+          '<rect x="45" y="60" width="18" height="16" fill="var(--green)" opacity="0.7" rx="1"/>' +
+          '<rect x="40" y="92" width="120" height="24" fill="none" stroke="var(--blue)" stroke-width="1.2" rx="2"/>' +
+          '<text x="170" y="108" font-family="IBM Plex Mono" font-size="10" fill="var(--blue)">w=1</text>' +
+          '<rect x="45" y="96" width="18" height="16" fill="var(--blue)" opacity="0.7" rx="1"/>' +
+          '<rect x="66" y="96" width="18" height="16" fill="var(--blue)" opacity="0.7" rx="1"/>' +
+          '<line x1="195" y1="32" x2="290" y2="62" stroke="var(--rust)" stroke-width="1"/>' +
+          '<line x1="195" y1="68" x2="290" y2="68" stroke="var(--green)" stroke-width="1"/>' +
+          '<line x1="195" y1="104" x2="290" y2="74" stroke="var(--blue)" stroke-width="1"/>' +
+          '<circle cx="310" cy="68" r="18" fill="var(--paper-dark)" stroke="var(--ink-soft)" stroke-width="1.5"/>' +
+          '<text x="310" y="73" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">R</text>' +
+          '<line x1="328" y1="68" x2="420" y2="68" stroke="var(--ink-soft)" stroke-width="1.5" marker-end="url(#sarr)"/>' +
+          '<text x="370" y="40" font-family="IBM Plex Mono" font-size="10" fill="var(--ochre)">w_i / \u03a3w_j</text>' +
+          '<text x="310" y="120" text-anchor="middle" font-family="Newsreader" font-size="10" font-style="italic" fill="var(--ink-faded)">weighted, fair allocation</text>' +
+          '</svg>';
+      }
+    }
+  ];
+
+  var idx = 0;
+  var svgEl = document.getElementById('sched-svg');
+  var descEl = document.getElementById('sched-desc');
+  var titleEl = document.getElementById('sched-title');
+  var progEl = document.getElementById('sched-prog');
+  var prevBtn = document.getElementById('sched-prev');
+  var nextBtn = document.getElementById('sched-next');
+
+  function render() {
+    var s = stages[idx];
+    titleEl.textContent = s.title;
+    svgEl.innerHTML = s.svg();
+    descEl.innerHTML = s.desc;
+    progEl.textContent = (idx + 1) + ' / ' + stages.length;
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === stages.length - 1;
+  }
+  prevBtn.addEventListener('click', function() { if (idx > 0) { idx--; render(); } });
+  nextBtn.addEventListener('click', function() { if (idx < stages.length - 1) { idx++; render(); } });
+  render();
+})();
+
+// === Reveal handlers ===
+document.querySelectorAll('.reveal').forEach(function(r) {
+  var btn = r.querySelector('button');
+  var ans = r.querySelector('.answer');
+  btn.addEventListener('click', function() {
+    ans.classList.toggle('show');
+    btn.textContent = ans.classList.contains('show') ? 'Hide answer' : 'Show answer';
+  });
+});
+</script>
+
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

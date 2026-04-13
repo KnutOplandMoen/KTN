@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 3 — The Transport Layer</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="../../en/" class="nav-back">&larr; All chapters</a>
+  </div>
+</nav>
+<main data-chapter="Chapter 3: The Transport Layer">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Chapter 3 · The Transport Layer</div>
+  <h1>The Transport <em>Layer</em></h1>
+  <p class="lede">From simple multiplexing and UDP to reliable TCP, congestion control, and QUIC.</p>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">01</span><a href="#overblikk">Overview</a></li>
+    <li><span class="toc-num">02</span><a href="#deler">Parts</a></li>
+    <li><span class="toc-num">03</span><a href="#quiz">Test yourself</a></li>
+  </ol>
+</div>
+</nav>
+
+<section id="overblikk">
+<div class="container">
+  <div class="section-badge">Overview</div>
+  <h2>The big <em>picture</em></h2>
+  <p class="section-intro">The transport layer bridges the gap between the unreliable network and the applications that demand order and guarantees.</p>
+
+  <p class="dropcap">The transport layer is like the difference between sending a <strong>postcard</strong> and a <strong>registered letter</strong>. A postcard is quick and cheap — you write it, drop it in the mailbox, and hope it arrives. You never find out whether the recipient got it. A registered letter costs more effort (receipt, tracking, signature upon delivery), but you <em>know</em> it got there. In the networking world, UDP is the postcard and TCP is the registered letter.</p>
+
+  <p>The network layer (IP) delivers packets between machines — but it provides no guarantees. Packets can disappear, arrive out of order, or be duplicated. The transport layer sits on top of IP and offers two vastly different services to applications: <strong>UDP</strong> merely adds port numbers (so the right process receives the packet) and a simple checksum, but otherwise inherits IP's "best effort" delivery. <strong>TCP</strong> adds reliable delivery, ordering guarantees, flow control, and congestion control — everything IP lacks.</p>
+
+  <figure>
+    <svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg" style="max-width:720px;">
+      <!-- Host A -->
+      <rect x="40" y="30" width="200" height="280" rx="8" fill="#f4f1ea" stroke="#c9c0ae" stroke-width="1.5"/>
+      <text x="140" y="22" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="12" font-weight="600" fill="#1a1612">Host A</text>
+      <rect x="60" y="50" width="160" height="44" rx="4" fill="#e8e3d6" stroke="#c9c0ae" stroke-width="1"/>
+      <text x="140" y="77" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="12" fill="#6b6257">Application</text>
+      <rect x="60" y="110" width="160" height="54" rx="4" fill="#e8d4cd" stroke="#b04428" stroke-width="1.5"/>
+      <text x="140" y="133" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="11" font-weight="600" fill="#b04428">Transport Layer</text>
+      <text x="140" y="150" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="10" fill="#b04428">UDP / TCP</text>
+      <rect x="60" y="180" width="160" height="44" rx="4" fill="#d4dce8" stroke="#2d4a7a" stroke-width="1"/>
+      <text x="140" y="207" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="12" fill="#2d4a7a">Network Layer (IP)</text>
+      <rect x="60" y="240" width="160" height="44" rx="4" fill="#e8e3d6" stroke="#c9c0ae" stroke-width="1"/>
+      <text x="140" y="267" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="12" fill="#6b6257">Link + Physical</text>
+
+      <!-- Host B -->
+      <rect x="480" y="30" width="200" height="280" rx="8" fill="#f4f1ea" stroke="#c9c0ae" stroke-width="1.5"/>
+      <text x="580" y="22" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="12" font-weight="600" fill="#1a1612">Host B</text>
+      <rect x="500" y="50" width="160" height="44" rx="4" fill="#e8e3d6" stroke="#c9c0ae" stroke-width="1"/>
+      <text x="580" y="77" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="12" fill="#6b6257">Application</text>
+      <rect x="500" y="110" width="160" height="54" rx="4" fill="#e8d4cd" stroke="#b04428" stroke-width="1.5"/>
+      <text x="580" y="133" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="11" font-weight="600" fill="#b04428">Transport Layer</text>
+      <text x="580" y="150" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="10" fill="#b04428">UDP / TCP</text>
+      <rect x="500" y="180" width="160" height="44" rx="4" fill="#d4dce8" stroke="#2d4a7a" stroke-width="1"/>
+      <text x="580" y="207" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="12" fill="#2d4a7a">Network Layer (IP)</text>
+      <rect x="500" y="240" width="160" height="44" rx="4" fill="#e8e3d6" stroke="#c9c0ae" stroke-width="1"/>
+      <text x="580" y="267" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="12" fill="#6b6257">Link + Physical</text>
+
+      <!-- UDP arrow (top, simple one-way) -->
+      <line x1="220" y1="120" x2="480" y2="120" stroke="#3d6b3a" stroke-width="2" stroke-dasharray="6,4"/>
+      <polygon points="480,120 470,115 470,125" fill="#3d6b3a"/>
+      <text x="350" y="112" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" font-weight="600" fill="#3d6b3a">UDP: "fire and forget"</text>
+
+      <!-- TCP arrows (bottom, bidirectional with ACKs) -->
+      <line x1="220" y1="145" x2="480" y2="145" stroke="#2d4a7a" stroke-width="2"/>
+      <polygon points="480,145 470,140 470,150" fill="#2d4a7a"/>
+      <line x1="480" y1="155" x2="220" y2="155" stroke="#b04428" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <polygon points="220,155 230,150 230,160" fill="#b04428"/>
+      <text x="350" y="173" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" font-weight="600" fill="#2d4a7a">TCP: data + ACK (reliable)</text>
+
+      <!-- Network layer connection -->
+      <line x1="220" y1="202" x2="480" y2="202" stroke="#c9c0ae" stroke-width="1.5" stroke-dasharray="3,3"/>
+      <text x="350" y="220" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="10" fill="#6b6257">IP: "best effort" — no guarantees</text>
+    </svg>
+    <figcaption>The transport layer sits between the application and the network layer. UDP sends data straight away without waiting for a response. TCP builds a reliable two-way connection with acknowledgements (ACK) and retransmission.</figcaption>
+  </figure>
+
+  <div class="callout callout-green">
+    <span class="label">When is each used?</span>
+    <p>When you download a file, TCP is used because every single byte must arrive in the correct order. When you talk on Discord, UDP is used because it is more important that the audio arrives quickly than that every single audio packet arrives — a lost packet causes a small glitch, but a delayed packet makes the conversation unusable.</p>
+  </div>
+
+  <p>The chapter builds up layer by layer: first multiplexing and UDP (the simple part), then the principles of reliable data transfer (the rdt protocols), then TCP with everything it entails, and finally congestion control — the mechanisms that prevent the Internet from collapsing under its own traffic.</p>
+</div>
+</section>
+
+<section id="deler">
+<div class="container">
+  <div class="section-badge">Parts</div>
+  <h2>Explore the <em>chapter</em></h2>
+  <div class="subpage-list">
+    <a href="transport-udp.html" class="subpage-card">
+      <span class="sp-icon">3a</span>
+      <div class="sp-info"><div class="sp-title">Services, mux/demux, and UDP</div><div class="sp-desc">The transport layer's role, multiplexing and demultiplexing, UDP segments and the checksum</div></div>
+      <span class="sp-arrow">&rarr;</span>
+    </a>
+    <a href="palitelig-dataoverforing.html" class="subpage-card">
+      <span class="sp-icon">3b</span>
+      <div class="sp-info"><div class="sp-title">Reliable data transfer</div><div class="sp-desc">The rdt protocols, pipelining, Go-Back-N, and Selective Repeat</div></div>
+      <span class="sp-arrow">&rarr;</span>
+    </a>
+    <a href="tcp.html" class="subpage-card">
+      <span class="sp-icon">3c</span>
+      <div class="sp-info"><div class="sp-title">TCP</div><div class="sp-desc">Reliable data transfer, TCP segments, flow control, handshake, and connection management</div></div>
+      <span class="sp-arrow">&rarr;</span>
+    </a>
+    <a href="congestion.html" class="subpage-card">
+      <span class="sp-icon">3d</span>
+      <div class="sp-info"><div class="sp-title">Congestion control and evolution</div><div class="sp-desc">Slow start, AIMD, TCP Reno/Tahoe/CUBIC, fairness, and QUIC</div></div>
+      <span class="sp-arrow">&rarr;</span>
+    </a>
+  </div>
+</div>
+</section>
+
+<section id="quiz">
+<div class="container">
+  <h2>Test yourself</h2>
+  <p class="section-intro">Check whether you have understood the most important concepts from this chapter.</p>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question</div>
+    <p class="q-text">An application sends short messages where low latency is critical, but it is acceptable to lose some messages. Which transport protocol should be used?</p>
+    <div class="options">
+      <button class="option" data-correct="false">TCP — because it guarantees delivery</button>
+      <button class="option" data-correct="true">UDP — because it provides lower latency without connection setup and retransmission overhead</button>
+      <button class="option" data-correct="false">IP directly — the transport layer is not needed</button>
+      <button class="option" data-correct="false">TCP with a large window — that solves the latency problem</button>
+    </div>
+    <div class="explanation">UDP is the right choice here. TCP's three-way handshake, retransmission, and flow control add latency that is undesirable in real-time applications. UDP sends data immediately without waiting for confirmation — perfect for use cases like voice, gaming, and DNS lookups where speed trumps reliability.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question</div>
+    <p class="q-text">What is the main difference between Go-Back-N (GBN) and Selective Repeat (SR) when a packet is lost?</p>
+    <div class="options">
+      <button class="option" data-correct="false">GBN retransmits only the lost packet; SR retransmits all packets from the lost one onward</button>
+      <button class="option" data-correct="true">GBN retransmits all packets from the lost one onward; SR retransmits only the single lost packet</button>
+      <button class="option" data-correct="false">Both retransmit only the lost packet, but SR does it faster</button>
+      <button class="option" data-correct="false">GBN does not use windows, whereas SR does</button>
+    </div>
+    <div class="explanation">In Go-Back-N, the sender must retransmit the lost packet <em>and all subsequent packets</em> in the window, because the receiver discards packets that arrive out of order. In Selective Repeat, the receiver buffers out-of-order packets and the sender only needs to retransmit the single lost packet — more efficient, but requires more complex buffering at the receiver.</div>
+  </div>
+</div>
+</section>
+
+</main>
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Spring 2026</p>
+  </div>
+</footer>
+<script src="../../quiz.js"></script>
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

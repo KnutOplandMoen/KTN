@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 3b — Congestion control and evolution</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Chapter 3</a>
+  </div>
+</nav>
+
+<main data-chapter="Chapter 3: Congestion control and evolution">
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">Chapter 3 · The Transport Layer</div>
+    <h1>Congestion control<br>and <em>evolution</em></h1>
+    <p class="sub">How thousands of TCP connections share a limited network without collapsing it — from slow start to CUBIC and QUIC.</p>
+    <nav class="toc">
+      <a href="#intro"><span>00</span> Congestion control — why?</a>
+      <a href="#slowstart"><span>01</span> Slow start</a>
+      <a href="#aimd"><span>02</span> AIMD and congestion avoidance</a>
+      <a href="#fastrecovery"><span>03</span> Fast recovery and Reno vs. Tahoe</a>
+      <a href="#cubic"><span>04</span> TCP CUBIC</a>
+      <a href="#fairness"><span>05</span> Fairness</a>
+      <a href="#quic"><span>06</span> QUIC and evolution</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ INTRO ============ -->
+<section id="intro">
+  <div class="container">
+    <div class="badge">00 · Motivation</div>
+    <h2>Why <em>congestion control</em>?</h2>
+    <p class="section-intro">Flow control protects one receiver. Congestion control protects the shared network between all senders.</p>
+
+    <p class="lead">Imagine a motorway where each driver decides their own speed. Without any form of regulation — traffic lights, speed limits, on-ramps — the road will eventually gridlock. Congestion control in TCP is the traffic light: a mechanism that lets the sender adjust her speed based on how full the network appears to be, without any central authority managing it.</p>
+
+    <h3>Two windows, one constraint</h3>
+    <p>The TCP sender is governed by <em>two</em> windows that both impose constraints:</p>
+
+    <table class="compare">
+      <thead><tr><th>Window</th><th>What it protects</th></tr></thead>
+      <tbody>
+        <tr><td>rwnd</td><td><strong>Receive window</strong> — set by the receiver in the TCP header. Protects the receiver's buffer from overflow.</td></tr>
+        <tr><td>cwnd</td><td><strong>Congestion window</strong> — maintained by the sender locally, invisible in the header. Protects the network from overload.</td></tr>
+      </tbody>
+    </table>
+
+    <p>The rule is simple:</p>
+    <div class="box insight">
+      <div class="label">The sender's law</div>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:15px;text-align:center;padding:12px 0">
+        LastByteSent − LastByteAcked &le; min(cwnd, rwnd)
+      </p>
+      <p>The sender can never have more data "in flight" than the smaller of the two windows. In practice, when the network is the bottleneck, <code>cwnd &lt; rwnd</code>, and it is cwnd that governs.</p>
+    </div>
+
+    <p>TCP's sending rate then becomes approximately:</p>
+    <div class="box solution">
+      <div class="label">Sending rate</div>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:16px;text-align:center;padding:8px 0">
+        rate &asymp; cwnd / RTT &nbsp;bytes/sec
+      </p>
+    </div>
+
+    <div class="margin-note">
+      <strong>cwnd is invisible</strong>
+      Note that <code>rwnd</code> is advertised in the TCP header and can be observed in a packet capture. <code>cwnd</code>, on the other hand, exists only internally at the sender — it is never visible on the wire.
+    </div>
+
+    <h3>The bottleneck link</h3>
+    <p>When TCP increases the sending rate, eventually one link in the path becomes saturated — the <strong>bottleneck link</strong>. The router's output queue fills up, and packets begin to be dropped. The key insight:</p>
+    <div class="box insight">
+      <div class="label">Two insights about the bottleneck</div>
+      <p><strong>1.</strong> Increasing the sending rate beyond the bottleneck capacity does <em>not</em> give higher throughput — it only gives more packet loss.</p>
+      <p><strong>2.</strong> Increasing the sending rate beyond the bottleneck capacity <em>increases</em> RTT, because packets wait longer in the queue.</p>
+      <p style="margin-top:12px;font-weight:600;color:var(--ink)">The goal: "Keep the end-to-end pipe just full, but not fuller."</p>
+    </div>
+
+    <h3>Two approaches to congestion control</h3>
+    <p>There are two fundamentally different ways to attack the congestion problem:</p>
+
+    <table class="compare">
+      <thead><tr><th>Approach</th><th>How it works</th></tr></thead>
+      <tbody>
+        <tr><td>End-to-end</td><td>The network provides <strong>no explicit feedback</strong> about congestion. The sender must infer the state on her own — based on observed loss (timeout or duplicate ACKs) and delay. <em>TCP uses this approach.</em></td></tr>
+        <tr><td>Network-assisted</td><td>Routers provide <strong>explicit feedback</strong> to the sender about congestion levels — for example via special control messages, or by setting bits in the packet header that signal a link is approaching congestion.</td></tr>
+      </tbody>
+    </table>
+
+    <p>The Internet's TCP has traditionally been purely end-to-end: the IP layer provides no help, and the sender is left to her own devices. All information about the network's state must be inferred indirectly — from ACKs that fail to arrive, from delays that increase, or from packets that vanish. This is precisely what makes TCP congestion control such an elegant and challenging problem.</p>
+  </div>
+</section>
+
+<!-- ============ SLOW START ============ -->
+<section id="slowstart">
+  <div class="container">
+    <div class="badge">01 · Slow start</div>
+    <h2>Exponential <em>ramp-up</em></h2>
+    <p class="section-intro">The name is misleading — slow start is actually the fastest phase of TCP. The window doubles every RTT.</p>
+
+    <p class="lead">When a TCP connection has just been established, the sender knows nothing about the network's capacity. Sending too much immediately could cause congestion. Sending too little wastes time. The solution is to start cautiously and <em>double</em> the sending rate every RTT until a limit is hit.</p>
+
+    <h3>The mechanism</h3>
+    <div class="box solution">
+      <div class="label">The slow start algorithm</div>
+      <p><strong>1.</strong> Start with <code>cwnd = 1 MSS</code>.<br>
+      <strong>2.</strong> For <em>each received ACK</em>, increase <code>cwnd</code> by 1 MSS: <code>cwnd = cwnd + MSS</code>.<br>
+      <strong>3.</strong> The effect: cwnd doubles per RTT (exponential growth).</p>
+    </div>
+
+    <h3>Example</h3>
+    <p>With <code>MSS = 1500 bytes</code> and <code>RTT = 200 ms</code>:</p>
+    <table class="compare">
+      <thead><tr><th>RTT</th><th>cwnd</th><th>Segments sent</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>1 MSS</td><td>1</td></tr>
+        <tr><td>1</td><td>2 MSS</td><td>2</td></tr>
+        <tr><td>2</td><td>4 MSS</td><td>4</td></tr>
+        <tr><td>3</td><td>8 MSS</td><td>8</td></tr>
+        <tr><td>4</td><td>16 MSS</td><td>16</td></tr>
+      </tbody>
+    </table>
+    <p>Initial rate: <code>1500 / 0.2 = 7.5 kB/s</code>. After 4 RTTs: <code>24,000 / 0.2 = 120 kB/s</code>. Exponential growth quickly ramps up to available capacity.</p>
+
+    <h3>When does slow start end?</h3>
+    <p>Slow start terminates upon one of three events:</p>
+    <ul style="list-style:none;padding:0;margin:24px 0">
+      <li style="padding:12px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">Timeout</strong> — cwnd is reset to 1 MSS, <code>ssthresh = cwnd/2</code>, and slow start restarts.</li>
+      <li style="padding:12px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">cwnd &ge; ssthresh</strong> — transition to <em>congestion avoidance</em> (linear growth).</li>
+      <li style="padding:12px 0"><strong style="color:var(--rust)">3 duplicate ACKs</strong> — transition to <em>fast recovery</em>.</li>
+    </ul>
+
+    <div class="margin-note">
+      <strong>ssthresh</strong>
+      <code>ssthresh</code> (slow start threshold) is a variable that remembers approximately where things went wrong last time. It typically starts at a high value (e.g., 64 KB) and is halved on each loss. It marks the boundary between exponential and linear growth.
+    </div>
+
+    <div class="quiz" data-correct="2">
+      <div class="qlabel">Check your understanding</div>
+      <h4>During slow start with cwnd = 4 MSS, TCP sends 4 segments and receives 4 ACKs. What is the new cwnd?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">5 MSS (linear increase)</button>
+        <button class="opt" data-i="1">6 MSS</button>
+        <button class="opt" data-i="2">8 MSS (doubling)</button>
+        <button class="opt" data-i="3">16 MSS</button>
+      </div>
+      <div class="feedback"><strong>Correct.</strong> In slow start, cwnd increases by 1 MSS for <em>each ACK</em>. With 4 ACKs: 4 + 4 = 8 MSS. Cwnd doubles per RTT.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AIMD ============ -->
+<section id="aimd">
+  <div class="container">
+    <div class="badge">02 · Congestion avoidance</div>
+    <h2>Additive increase, <em>multiplicative</em> decrease</h2>
+    <p class="section-intro">When cwnd has reached ssthresh, TCP shifts from exponential to cautious linear growth — and cuts brutally on loss.</p>
+
+    <p class="lead">AIMD (Additive Increase, Multiplicative Decrease) is the core of TCP's congestion control. The idea is beautiful in its asymmetry: grow slowly upward, cut rapidly downward. This asymmetry provides stability and fairness — properties that pure exponential growth could never deliver.</p>
+
+    <h3>Additive increase</h3>
+    <p>In the congestion avoidance phase, cwnd increases by <strong>1 MSS per RTT</strong> — not per ACK as in slow start. The formula per ACK is:</p>
+    <div class="box solution">
+      <div class="label">Congestion avoidance — per ACK</div>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:15px;text-align:center;padding:8px 0">
+        cwnd = cwnd + MSS &times; (MSS / cwnd)
+      </p>
+      <p>Since approximately <code>cwnd/MSS</code> ACKs arrive per RTT, this gives a total increase of 1 MSS per RTT — linear growth.</p>
+    </div>
+
+    <h3>Multiplicative decrease</h3>
+    <p>Upon packet loss, TCP halves the window:</p>
+    <div class="box problem">
+      <div class="label">Upon loss</div>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:15px">
+        ssthresh = cwnd / 2<br>
+        cwnd = ssthresh &nbsp;(upon 3 dup-ACKs, TCP Reno)<br>
+        cwnd = 1 MSS &nbsp;(upon timeout, all variants)
+      </p>
+    </div>
+
+    <h3>The sawtooth pattern</h3>
+    <p>The result is the characteristic sawtooth pattern: cwnd grows linearly upward, drops sharply on loss, grows linearly again. TCP continuously "probes" for more bandwidth.</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg">
+          <text x="10" y="20" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">cwnd (KB)</text>
+          <text x="650" y="245" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">time</text>
+
+          <line x1="50" y1="20" x2="50" y2="220" stroke="#c9c0ae" stroke-width="1"/>
+          <line x1="50" y1="220" x2="680" y2="220" stroke="#c9c0ae" stroke-width="1"/>
+
+          <polyline points="50,200 130,100 135,160 210,60 215,130 300,40 305,120 390,30 395,115 480,25 485,112 570,20 575,110 660,15" fill="none" stroke="#b04428" stroke-width="2.5"/>
+
+          <text x="90" y="165" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a">additive increase</text>
+          <text x="130" y="140" font-family="IBM Plex Mono" font-size="9" fill="#b04428">loss!</text>
+          <line x1="132" y1="100" x2="132" y2="155" stroke="#b04428" stroke-width="1" stroke-dasharray="3,2"/>
+        </svg>
+      </div>
+      <figcaption>The AIMD sawtooth. Linear increase, sharp halving on loss, linear increase again. TCP continuously tries to find the right sending rate.</figcaption>
+    </figure>
+
+    <h3>Worked example: congestion avoidance</h3>
+    <div class="box insight">
+      <div class="label">Example</div>
+      <p>Assume <code>cwnd = 3000 bytes</code> and <code>MSS = 1500 bytes</code>. That means 2 segments in flight, hence 2 ACKs per RTT.</p>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:13px;margin-top:12px">
+        ACK 1: cwnd = 3000 + 1500×(1500/3000) = 3750<br>
+        ACK 2: cwnd = 3750 + 1500×(1500/3750) = 4350
+      </p>
+      <p style="margin-top:8px">Net increase over the entire RTT: approximately 1 MSS (from 3000 to ~4500). Linear growth, as expected.</p>
+    </div>
+
+    <div class="quiz" data-correct="0">
+      <div class="qlabel">Check your understanding</div>
+      <h4>In congestion avoidance with cwnd = 10 MSS, how much does cwnd grow in one RTT?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">1 MSS</button>
+        <button class="opt" data-i="1">10 MSS (doubling)</button>
+        <button class="opt" data-i="2">2 MSS</button>
+        <button class="opt" data-i="3">0.1 MSS</button>
+      </div>
+      <div class="feedback"><strong>Correct.</strong> In congestion avoidance, growth is always 1 MSS per RTT, regardless of cwnd size. That is precisely what makes it linear.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAST RECOVERY ============ -->
+<section id="fastrecovery">
+  <div class="container">
+    <div class="badge">03 · Fast recovery</div>
+    <h2>Reno vs. <em>Tahoe</em></h2>
+    <p class="section-intro">Not all packet losses are equally severe. Three duplicate ACKs mean that something is still getting through — and TCP can react more mildly.</p>
+
+    <p class="lead">There is an important difference between a timeout and three duplicate ACKs. A timeout means: "I haven't heard anything at all for a long time — the network might be completely down." Three duplicate ACKs mean: "One segment was lost, but other segments <em>are getting through</em> — because the receiver is sending ACKs." TCP Reno exploits this difference.</p>
+
+    <h3>TCP Tahoe (the original)</h3>
+    <p>TCP Tahoe (1988) treats all losses the same:</p>
+    <div class="box problem">
+      <div class="label">Tahoe — upon any loss</div>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:14px">
+        ssthresh = cwnd / 2<br>
+        cwnd = 1 MSS<br>
+        Restart slow start
+      </p>
+    </div>
+
+    <h3>TCP Reno (the improvement)</h3>
+    <p>TCP Reno (1990) differentiates:</p>
+    <div class="box solution">
+      <div class="label">Reno — upon 3 duplicate ACKs</div>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:14px">
+        ssthresh = cwnd / 2<br>
+        cwnd = ssthresh + 3 MSS<br>
+        Enter <strong>fast recovery</strong>
+      </p>
+    </div>
+    <div class="box problem">
+      <div class="label">Reno — upon timeout</div>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:14px">
+        ssthresh = cwnd / 2<br>
+        cwnd = 1 MSS<br>
+        Restart slow start
+      </p>
+    </div>
+
+    <h3>What happens in fast recovery?</h3>
+    <p>During fast recovery, cwnd increases by 1 MSS for each <em>duplicate</em> ACK that arrives (these indicate that subsequent segments are getting through). When a <strong>new ACK</strong> arrives (acknowledging the retransmitted segment), fast recovery ends:</p>
+    <div class="box solution">
+      <div class="label">New ACK in fast recovery</div>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:14px">
+        cwnd = ssthresh<br>
+        Enter congestion avoidance
+      </p>
+    </div>
+
+    <h3>Comparison</h3>
+    <table class="compare">
+      <thead><tr><th>Event</th><th>TCP Tahoe</th><th>TCP Reno</th></tr></thead>
+      <tbody>
+        <tr><td>Timeout</td><td>cwnd &rarr; 1 MSS, slow start</td><td>cwnd &rarr; 1 MSS, slow start</td></tr>
+        <tr><td>3 dup-ACKs</td><td>cwnd &rarr; 1 MSS, slow start</td><td>cwnd &rarr; ssthresh+3, fast recovery</td></tr>
+      </tbody>
+    </table>
+
+    <p>Reno avoids the costly trip back to 1 MSS upon duplicate ACKs — which can save many RTTs of low throughput.</p>
+
+    <div class="quiz" data-correct="1">
+      <div class="qlabel">Check your understanding</div>
+      <h4>TCP Reno detects 3 duplicate ACKs while cwnd = 20 MSS. What happens?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">cwnd is set to 1 MSS and slow start begins</button>
+        <button class="opt" data-i="1">ssthresh is set to 10, cwnd to 13 MSS, fast recovery starts</button>
+        <button class="opt" data-i="2">cwnd is doubled to 40 MSS</button>
+        <button class="opt" data-i="3">cwnd is halved to 10 MSS and congestion avoidance begins directly</button>
+      </div>
+      <div class="feedback"><strong>Correct.</strong> ssthresh = 20/2 = 10. cwnd = ssthresh + 3 = 13 MSS. Reno enters fast recovery instead of slow start.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CUBIC ============ -->
+<section id="cubic">
+  <div class="container">
+    <div class="badge">04 · TCP CUBIC</div>
+    <h2>Faster recovery with a <em>cubic</em> function</h2>
+    <p class="section-intro">AIMD is fair, but slow. CUBIC uses a smarter curve to exploit capacity faster.</p>
+
+    <p class="lead">Classic TCP uses AIMD: linear increase of 1 MSS per RTT. On a link with high capacity and long delay, it can take <em>many</em> RTTs to fill the link after a loss. CUBIC asks the question: can we do better?</p>
+
+    <h3>The insight</h3>
+    <div class="box insight">
+      <div class="label">The CUBIC principle</div>
+      <p>Let <strong>W<sub>max</sub></strong> be the sending rate when the last loss occurred. After a loss, we know the network probably has not changed much. Then it is safe to quickly approach W<sub>max</sub> again — but we should be cautious near W<sub>max</sub>, because that is <em>where</em> things went wrong last time.</p>
+    </div>
+
+    <h3>Cubic growth</h3>
+    <p>CUBIC increases cwnd as a function of <em>time</em> since the last loss, not of RTT:</p>
+    <ul style="list-style:none;padding:0;margin:24px 0">
+      <li style="padding:12px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">Far from W<sub>max</sub></strong> — large, rapid increases (the curve is steep).</li>
+      <li style="padding:12px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">Near W<sub>max</sub></strong> — cautious, small increases (the curve flattens out).</li>
+      <li style="padding:12px 0"><strong style="color:var(--rust)">Beyond W<sub>max</sub></strong> — cautiously probes for new capacity (the curve rises again).</li>
+    </ul>
+
+    <p>The point <strong>K</strong> is the time at which cwnd would reach W<sub>max</sub>. K is tunable. The curve is symmetric around K — it resembles a cubic function (hence the name).</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
+          <text x="10" y="20" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">cwnd</text>
+          <text x="650" y="270" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">time</text>
+
+          <line x1="50" y1="20" x2="50" y2="250" stroke="#c9c0ae" stroke-width="1"/>
+          <line x1="50" y1="250" x2="680" y2="250" stroke="#c9c0ae" stroke-width="1"/>
+
+          <!-- Wmax line -->
+          <line x1="50" y1="60" x2="680" y2="60" stroke="#c9c0ae" stroke-width="1" stroke-dasharray="6,4"/>
+          <text x="685" y="64" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">W_max</text>
+
+          <!-- Classic TCP (linear AIMD) -->
+          <polyline points="80,200 180,140 280,80 380,60 385,130 485,70 580,50" fill="none" stroke="#a39886" stroke-width="1.5" stroke-dasharray="6,3"/>
+          <text x="300" y="95" font-family="IBM Plex Mono" font-size="10" fill="#a39886">classic TCP</text>
+
+          <!-- CUBIC -->
+          <path d="M80,200 C120,170 140,130 170,95 C200,70 240,62 300,60 C360,58 400,55 430,50 C435,130 460,100 490,80 C520,65 550,58 600,55 C630,53 660,48 680,42" fill="none" stroke="#b04428" stroke-width="2.5"/>
+          <text x="440" y="108" font-family="IBM Plex Mono" font-size="10" fill="#b04428" font-weight="600">TCP CUBIC</text>
+
+          <!-- K marker -->
+          <line x1="300" y1="55" x2="300" y2="260" stroke="#2d4a7a" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="290" y="272" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a" font-weight="600">K</text>
+
+          <!-- Loss marker -->
+          <text x="430" y="145" font-family="IBM Plex Mono" font-size="10" fill="#b04428">loss</text>
+        </svg>
+      </div>
+      <figcaption>TCP CUBIC vs. classic AIMD. CUBIC grows quickly far from W<sub>max</sub>, slows near W<sub>max</sub>, and cautiously probes beyond. The result: higher throughput.</figcaption>
+    </figure>
+
+    <div class="margin-note">
+      <strong>Default in Linux</strong>
+      TCP CUBIC is the default congestion control algorithm in Linux and is the most widely used variant among popular web servers today.
+    </div>
+
+    <div class="quiz" data-correct="2">
+      <div class="qlabel">Check your understanding</div>
+      <h4>What is the main advantage of CUBIC over classic AIMD?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">CUBIC uses less memory</button>
+        <button class="opt" data-i="1">CUBIC gives lower latency</button>
+        <button class="opt" data-i="2">CUBIC exploits available capacity faster by ramping up quickly toward W_max but slowing cautiously near it</button>
+        <button class="opt" data-i="3">CUBIC only works on wireless networks</button>
+      </div>
+      <div class="feedback"><strong>Correct.</strong> CUBIC combines aggressive growth (far from W<sub>max</sub>) with caution (near W<sub>max</sub>), and thus exploits capacity more efficiently than pure linear AIMD.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAIRNESS ============ -->
+<section id="fairness">
+  <div class="container">
+    <div class="badge">05 · Fairness</div>
+    <h2>Is TCP <em>fair</em>?</h2>
+    <p class="section-intro">If K TCP sessions share a bottleneck with capacity R, each should ideally get R/K.</p>
+
+    <p class="lead">Fairness is not just an academic question — it concerns the fundamental functioning of the Internet. If one connection could take everything, all others would starve. AIMD has an elegant property: under idealized conditions, parallel TCP connections converge toward equal allocation.</p>
+
+    <h3>AIMD convergence</h3>
+    <p>Consider two TCP sessions sharing a bottleneck with capacity R. Plot the throughput of session 1 on the x-axis and session 2 on the y-axis:</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1a1612"/></marker></defs>
+
+          <line x1="50" y1="450" x2="470" y2="450" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ar3)"/>
+          <line x1="50" y1="450" x2="50" y2="30" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ar3)"/>
+          <text x="400" y="475" font-family="IBM Plex Sans" font-size="12" fill="#1a1612">Session 1</text>
+          <text x="10" y="40" font-family="IBM Plex Sans" font-size="12" fill="#1a1612">Session 2</text>
+
+          <!-- R line (capacity) -->
+          <line x1="50" y1="50" x2="450" y2="450" stroke="#c9c0ae" stroke-width="1.5" stroke-dasharray="6,4"/>
+          <text x="455" y="445" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">x1+x2=R</text>
+
+          <!-- Fair share line -->
+          <line x1="50" y1="450" x2="400" y2="100" stroke="#3d6b3a" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="370" y="80" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">equal share</text>
+
+          <!-- AIMD trajectory -->
+          <circle cx="120" cy="400" r="4" fill="#b04428"/>
+          <text x="100" y="420" font-family="IBM Plex Mono" font-size="10" fill="#b04428">A</text>
+          <line x1="120" y1="400" x2="220" y2="300" stroke="#b04428" stroke-width="2" marker-end="url(#ar3)"/>
+          <text x="160" y="340" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a">add. incr.</text>
+
+          <circle cx="220" cy="300" r="4" fill="#b04428"/>
+          <text x="225" y="295" font-family="IBM Plex Mono" font-size="10" fill="#b04428">B</text>
+          <line x1="220" y1="300" x2="160" y2="330" stroke="#2d4a7a" stroke-width="2" marker-end="url(#ar3)"/>
+          <text x="180" y="325" font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a">halve</text>
+
+          <circle cx="160" cy="330" r="4" fill="#b04428"/>
+          <text x="140" y="345" font-family="IBM Plex Mono" font-size="10" fill="#b04428">C</text>
+          <line x1="160" y1="330" x2="260" y2="230" stroke="#b04428" stroke-width="2" marker-end="url(#ar3)"/>
+
+          <circle cx="260" cy="230" r="4" fill="#b04428"/>
+          <text x="265" y="225" font-family="IBM Plex Mono" font-size="10" fill="#b04428">D</text>
+        </svg>
+      </div>
+      <figcaption>AIMD convergence: Additive increase gives slope 1 (45°). Multiplicative decrease pulls toward the origin. Over time they converge toward equal allocation.</figcaption>
+    </figure>
+
+    <p><strong>A &rarr; B:</strong> both sessions increase additively (slope 45°) until they hit the capacity boundary.<br>
+    <strong>B &rarr; C:</strong> both halve cwnd (pull toward origin), but this moves the point closer to the green line.<br>
+    Repeat — the point converges toward equal allocation.</p>
+
+    <h3>The assumptions</h3>
+    <div class="box insight">
+      <div class="label">Fairness holds under idealized assumptions</div>
+      <p><strong>Same RTT</strong> — connections with lower RTT increase faster and get more bandwidth in practice.<br>
+      <strong>Fixed number of sessions</strong> — in reality, connections come and go.<br>
+      <strong>Only congestion avoidance</strong> — the proof assumes linear growth, not slow start.</p>
+    </div>
+
+    <h3>Fairness and UDP</h3>
+    <p>UDP applications (e.g., video streaming) do not participate in congestion control. They can send as fast as they want and thereby take more than their "fair" share. There is no "Internet police" enforcing fairness.</p>
+
+    <h3>Parallel TCP connections</h3>
+    <p>A browser that opens 10 parallel TCP connections to a server effectively gets 10 &times; its fair share compared to an application using one connection. This is a "legal" way to cheat — and it is widespread.</p>
+  </div>
+</section>
+
+<!-- ============ QUIC ============ -->
+<section id="quic">
+  <div class="container">
+    <div class="badge">06 · Evolution</div>
+    <h2>From Tahoe to <em>QUIC</em></h2>
+    <p class="section-intro">TCP has evolved for 40 years. The most recent evolution moves transport functionality up to the application layer.</p>
+
+    <p class="lead">TCP and UDP have been the two transport protocols for over four decades. During that time, TCP has been improved repeatedly — from Tahoe via Reno to CUBIC. But the most radical change is an entirely new approach: QUIC, which builds transport functionality on top of UDP.</p>
+
+    <h3>TCP's evolution</h3>
+    <table class="compare">
+      <thead><tr><th>Year</th><th>Milestone</th></tr></thead>
+      <tbody>
+        <tr><td>1981</td><td>RFC 793 — original TCP specification</td></tr>
+        <tr><td>1988</td><td>TCP Tahoe — slow start and congestion avoidance (Jacobson)</td></tr>
+        <tr><td>1990</td><td>TCP Reno — fast retransmit and fast recovery</td></tr>
+        <tr><td>2005</td><td>BIC TCP</td></tr>
+        <tr><td>2008</td><td>TCP CUBIC — cubic growth function, default in Linux since 2006 (RFC 8312 published 2018)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Different scenarios, different challenges</h3>
+    <table class="compare">
+      <thead><tr><th>Scenario</th><th>Challenge</th></tr></thead>
+      <tbody>
+        <tr><td>Large transfers</td><td>Many packets "in flight"; one loss stalls the entire pipeline</td></tr>
+        <tr><td>Wireless</td><td>Loss due to noise is confused with congestion — TCP reduces unnecessarily</td></tr>
+        <tr><td>Long delays</td><td>Extremely long RTT makes AIMD ramp-up painful</td></tr>
+        <tr><td>Data centers</td><td>Latency-critical services where even milliseconds of queuing delay matter</td></tr>
+      </tbody>
+    </table>
+
+    <h3>QUIC: Quick UDP Internet Connections</h3>
+    <p>QUIC is an application-layer protocol built on top of UDP. It implements reliability, congestion control, encryption, and multiplexing — all in user space, without waiting for OS updates.</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg">
+          <!-- TCP/TLS/HTTP2 stack -->
+          <text x="140" y="25" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612" text-anchor="middle">HTTP/2 over TCP</text>
+          <rect x="50" y="35" width="180" height="40" rx="3" fill="rgba(45,74,122,0.12)" stroke="#2d4a7a" stroke-width="1.5"/>
+          <text x="140" y="60" font-family="IBM Plex Mono" font-size="12" fill="#2d4a7a" text-anchor="middle">HTTP/2</text>
+          <rect x="50" y="80" width="180" height="40" rx="3" fill="rgba(61,107,58,0.12)" stroke="#3d6b3a" stroke-width="1.5"/>
+          <text x="140" y="105" font-family="IBM Plex Mono" font-size="12" fill="#3d6b3a" text-anchor="middle">TLS</text>
+          <rect x="50" y="125" width="180" height="40" rx="3" fill="rgba(176,68,40,0.12)" stroke="#b04428" stroke-width="1.5"/>
+          <text x="140" y="150" font-family="IBM Plex Mono" font-size="12" fill="#b04428" text-anchor="middle">TCP</text>
+          <rect x="50" y="170" width="180" height="35" rx="3" fill="rgba(201,192,174,0.3)" stroke="#a39886" stroke-width="1"/>
+          <text x="140" y="192" font-family="IBM Plex Mono" font-size="11" fill="#6b6257" text-anchor="middle">IP</text>
+
+          <!-- Labels -->
+          <text x="250" y="62" font-family="IBM Plex Sans" font-size="10" fill="#6b6257">Application</text>
+          <text x="250" y="107" font-family="IBM Plex Sans" font-size="10" fill="#6b6257">Security</text>
+          <text x="250" y="152" font-family="IBM Plex Sans" font-size="10" fill="#6b6257">Transport</text>
+          <text x="250" y="192" font-family="IBM Plex Sans" font-size="10" fill="#6b6257">Network</text>
+
+          <!-- Arrow -->
+          <text x="370" y="120" font-family="Newsreader" font-size="28" fill="#a39886">&rarr;</text>
+
+          <!-- QUIC stack -->
+          <text x="540" y="25" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612" text-anchor="middle">HTTP/3 over QUIC</text>
+          <rect x="430" y="35" width="220" height="40" rx="3" fill="rgba(45,74,122,0.12)" stroke="#2d4a7a" stroke-width="1.5"/>
+          <text x="540" y="60" font-family="IBM Plex Mono" font-size="12" fill="#2d4a7a" text-anchor="middle">HTTP/3</text>
+          <rect x="430" y="80" width="220" height="85" rx="3" fill="rgba(176,68,40,0.12)" stroke="#b04428" stroke-width="2"/>
+          <text x="540" y="110" font-family="IBM Plex Mono" font-size="13" fill="#b04428" text-anchor="middle" font-weight="600">QUIC</text>
+          <text x="540" y="130" font-family="IBM Plex Sans" font-size="10" fill="#b04428" text-anchor="middle">reliability + encryption + congestion control</text>
+          <text x="540" y="150" font-family="IBM Plex Sans" font-size="10" fill="#b04428" text-anchor="middle">per stream</text>
+          <rect x="430" y="170" width="220" height="35" rx="3" fill="rgba(201,192,174,0.3)" stroke="#a39886" stroke-width="1"/>
+          <text x="540" y="187" font-family="IBM Plex Mono" font-size="11" fill="#6b6257" text-anchor="middle">UDP / IP</text>
+        </svg>
+      </div>
+      <figcaption>HTTP/2 over TCP requires separate handshakes for TCP and TLS. QUIC combines everything in one handshake over UDP.</figcaption>
+    </figure>
+
+    <h3>QUIC's advantages</h3>
+    <table class="compare">
+      <thead><tr><th>Property</th><th>Advantage over TCP</th></tr></thead>
+      <tbody>
+        <tr><td>1-RTT handshake</td><td>TCP + TLS requires 2 serial handshakes. QUIC does everything in one RTT — reliability, congestion control, authentication, and encryption.</td></tr>
+        <tr><td>Per-stream reliability</td><td>TCP has head-of-line (HOL) blocking: one lost segment blocks <em>all</em> data behind it. QUIC multiplexes multiple streams independently — loss in one stream does not block the others.</td></tr>
+        <tr><td>In user space</td><td>Updates do not require OS changes. Google rolls out improvements in Chrome without waiting for kernel changes.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>QUIC and head-of-line blocking</h3>
+    <p>With TCP and HTTP/2: three GET requests share one TCP connection. If a segment belonging to request 1 is lost, <em>all three</em> must wait for the retransmission — even though data for requests 2 and 3 has already been received.</p>
+    <p>With QUIC: each request has its own stream with independent reliable delivery. Loss in stream 1 blocks only stream 1 — streams 2 and 3 are delivered undisturbed.</p>
+
+    <div class="quiz" data-correct="2">
+      <div class="qlabel">Check your understanding</div>
+      <h4>What is the main advantage of QUIC's per-stream reliability?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">Lower overhead because QUIC has no headers</button>
+        <button class="opt" data-i="1">QUIC uses less bandwidth than TCP</button>
+        <button class="opt" data-i="2">Loss in one stream does not block delivery of other streams (no HOL blocking)</button>
+        <button class="opt" data-i="3">QUIC only supports HTTP/3 and no other protocols</button>
+      </div>
+      <div class="feedback"><strong>Correct.</strong> TCP's single-stream model means one lost segment blocks everything behind it. QUIC solves this with independent streams, which eliminates head-of-line blocking between requests.</div>
+    </div>
+
+    <div class="ornament">&#10038; &#10038; &#10038;</div>
+    <p>With this, all of Chapter 3 is covered: from <a href="transport-udp.html">transport layer services and UDP</a>, through <a href="tcp.html">TCP's reliable data transfer</a>, to congestion control, CUBIC, and QUIC.</p>
+  </div>
+</section>
+
+<!-- ============ CWND STEPPER ============ -->
+<section id="cwnd-sim" style="border-bottom:none">
+  <div class="container">
+    <div class="badge">Interactive</div>
+    <h2>cwnd through the <em>phases</em></h2>
+    <p class="section-intro">Follow the evolution of the congestion window step by step — from slow start, through congestion avoidance, to loss and recovery.</p>
+
+    <div class="stepper">
+      <div class="slabel">CWND evolution</div>
+      <h4 id="cwnd-title">Step-by-step simulation</h4>
+      <div class="stage-svg" id="cwndsvg"></div>
+      <div class="desc" id="cwnddesc"></div>
+      <div class="ctrls">
+        <button id="cprev">&larr; Previous</button>
+        <span class="progress" id="cprog"></span>
+        <button id="cnext">Next &rarr;</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<nav class="page-nav">
+  <div class="container">
+    <a href="tcp.html" class="prev"><span class="nav-label">&larr; Previous</span><span class="nav-title">TCP</span></a>
+    <span></span>
+  </div>
+</nav>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10038; &#10038; &#10038;</div>
+    <p>Based on Kurose &amp; Ross, <em>Computer Networking</em>, 8th edition — Chapter 3</p>
+    <p>NTNU · TTM4100 · Spring 2026</p>
+  </div>
+</footer>
+
+<script>
+// ============ QUIZ HANDLER ============
+document.querySelectorAll('.quiz').forEach(q => {
+  const correct = parseInt(q.dataset.correct);
+  const fb = q.querySelector('.feedback');
+  q.querySelectorAll('button.opt').forEach(b => {
+    b.addEventListener('click', () => {
+      q.querySelectorAll('button.opt').forEach(x => { x.disabled = true; });
+      const i = parseInt(b.dataset.i);
+      if (i === correct) {
+        b.classList.add('correct');
+      } else {
+        b.classList.add('wrong');
+        q.querySelectorAll('button.opt')[correct].classList.add('correct');
+      }
+      fb.classList.add('show');
+    });
+  });
+});
+
+// ============ CWND STEPPER ============
+(function(){
+  const W = 650, H = 300, PAD = 50;
+  const chartW = W - PAD * 2, chartH = H - PAD * 2;
+
+  const stages = [
+    {
+      title: 'RTT 0 — Startup (Slow Start)',
+      desc: 'The connection has just been established. cwnd = 1 MSS, ssthresh = 16 MSS. We are in the slow start phase — exponential growth.',
+      points: [[0,1]],
+      ssthresh: 16,
+      phase: 'slow start'
+    },
+    {
+      title: 'RTT 1-4 — Slow Start continues',
+      desc: 'cwnd doubles each RTT: 1 → 2 → 4 → 8 → 16. We are approaching ssthresh (16 MSS).',
+      points: [[0,1],[1,2],[2,4],[3,8],[4,16]],
+      ssthresh: 16,
+      phase: 'slow start'
+    },
+    {
+      title: 'RTT 4-8 — Congestion Avoidance',
+      desc: 'cwnd has reached ssthresh. We switch to linear growth: +1 MSS per RTT. cwnd: 16 → 17 → 18 → 19 → 20.',
+      points: [[0,1],[1,2],[2,4],[3,8],[4,16],[5,17],[6,18],[7,19],[8,20]],
+      ssthresh: 16,
+      phase: 'congestion avoidance'
+    },
+    {
+      title: 'RTT 8 — 3 duplicate ACKs! (Reno)',
+      desc: 'Three duplicate ACKs received at cwnd = 20. ssthresh = 20/2 = 10. cwnd = 10 + 3 = 13 (fast recovery). After new ACK: cwnd = ssthresh = 10.',
+      points: [[0,1],[1,2],[2,4],[3,8],[4,16],[5,17],[6,18],[7,19],[8,20],[8.2,10]],
+      ssthresh: 10,
+      phase: 'fast recovery → CA'
+    },
+    {
+      title: 'RTT 9-14 — New congestion avoidance',
+      desc: 'Linear growth again from cwnd = 10: 10 → 11 → 12 → 13 → 14 → 15. ssthresh is now 10.',
+      points: [[0,1],[1,2],[2,4],[3,8],[4,16],[5,17],[6,18],[7,19],[8,20],[8.2,10],[9,11],[10,12],[11,13],[12,14],[13,15]],
+      ssthresh: 10,
+      phase: 'congestion avoidance'
+    },
+    {
+      title: 'RTT 14 — Timeout!',
+      desc: 'Timeout at cwnd = 15. ssthresh = 15/2 ≈ 7. cwnd = 1 MSS. Back to slow start — this is the expensive type of loss.',
+      points: [[0,1],[1,2],[2,4],[3,8],[4,16],[5,17],[6,18],[7,19],[8,20],[8.2,10],[9,11],[10,12],[11,13],[12,14],[13,15],[13.2,1]],
+      ssthresh: 7,
+      phase: 'timeout → slow start'
+    },
+    {
+      title: 'RTT 15-17 — Slow start again',
+      desc: 'Exponential growth from 1: 1 → 2 → 4 → 8 (passes ssthresh=7). Then congestion avoidance.',
+      points: [[0,1],[1,2],[2,4],[3,8],[4,16],[5,17],[6,18],[7,19],[8,20],[8.2,10],[9,11],[10,12],[11,13],[12,14],[13,15],[13.2,1],[14,2],[15,4],[16,8]],
+      ssthresh: 7,
+      phase: 'slow start → CA'
+    }
+  ];
+
+  let idx = 0;
+  const svg = document.getElementById('cwndsvg');
+  const desc = document.getElementById('cwnddesc');
+  const prog = document.getElementById('cprog');
+  const prev = document.getElementById('cprev');
+  const next = document.getElementById('cnext');
+
+  function drawChart(stage) {
+    const pts = stage.points;
+    const maxX = 18;
+    const maxY = 22;
+    const scaleX = x => PAD + (x / maxX) * chartW;
+    const scaleY = y => PAD + chartH - (y / maxY) * chartH;
+
+    let s = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+
+    // Grid lines
+    for (let y = 0; y <= maxY; y += 4) {
+      s += `<line x1="${PAD}" y1="${scaleY(y)}" x2="${W-PAD}" y2="${scaleY(y)}" stroke="#ddd5c4" stroke-width="0.5"/>`;
+      s += `<text x="${PAD-8}" y="${scaleY(y)+4}" font-family="IBM Plex Mono" font-size="10" fill="#a39886" text-anchor="end">${y}</text>`;
+    }
+    for (let x = 0; x <= maxX; x += 2) {
+      s += `<line x1="${scaleX(x)}" y1="${PAD}" x2="${scaleX(x)}" y2="${PAD+chartH}" stroke="#ddd5c4" stroke-width="0.5"/>`;
+      s += `<text x="${scaleX(x)}" y="${PAD+chartH+16}" font-family="IBM Plex Mono" font-size="10" fill="#a39886" text-anchor="middle">${x}</text>`;
+    }
+
+    // Axes
+    s += `<line x1="${PAD}" y1="${PAD}" x2="${PAD}" y2="${PAD+chartH}" stroke="#1a1612" stroke-width="1.5"/>`;
+    s += `<line x1="${PAD}" y1="${PAD+chartH}" x2="${W-PAD}" y2="${PAD+chartH}" stroke="#1a1612" stroke-width="1.5"/>`;
+    s += `<text x="${PAD-5}" y="${PAD-8}" font-family="IBM Plex Sans" font-size="11" fill="#6b6257" text-anchor="end">cwnd (MSS)</text>`;
+    s += `<text x="${W-PAD}" y="${PAD+chartH+30}" font-family="IBM Plex Sans" font-size="11" fill="#6b6257" text-anchor="end">RTT</text>`;
+
+    // ssthresh line
+    const ssy = scaleY(stage.ssthresh);
+    s += `<line x1="${PAD}" y1="${ssy}" x2="${W-PAD}" y2="${ssy}" stroke="#2d4a7a" stroke-width="1.5" stroke-dasharray="6,4"/>`;
+    s += `<text x="${W-PAD+5}" y="${ssy+4}" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">ssthresh=${stage.ssthresh}</text>`;
+
+    // Data line
+    if (pts.length > 1) {
+      let polyPts = pts.map(p => `${scaleX(p[0])},${scaleY(p[1])}`).join(' ');
+      s += `<polyline points="${polyPts}" fill="none" stroke="#b04428" stroke-width="2.5" stroke-linejoin="round"/>`;
+    }
+
+    // Data points
+    pts.forEach((p, i) => {
+      s += `<circle cx="${scaleX(p[0])}" cy="${scaleY(p[1])}" r="${i === pts.length-1 ? 5 : 3}" fill="${i === pts.length-1 ? '#b04428' : '#1a1612'}"/>`;
+    });
+
+    // Phase label
+    s += `<text x="${W-PAD}" y="${PAD+15}" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a" text-anchor="end">${stage.phase}</text>`;
+
+    s += '</svg>';
+    return s;
+  }
+
+  function render() {
+    const s = stages[idx];
+    svg.innerHTML = drawChart(s);
+    desc.innerHTML = '<strong>' + s.title + '</strong>' + s.desc;
+    prog.textContent = (idx+1) + ' / ' + stages.length;
+    prev.disabled = idx === 0;
+    next.disabled = idx === stages.length - 1;
+  }
+
+  prev.addEventListener('click', () => { if (idx > 0) { idx--; render(); } });
+  next.addEventListener('click', () => { if (idx < stages.length - 1) { idx++; render(); } });
+  render();
+})();
+</script>
+
+</main>
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

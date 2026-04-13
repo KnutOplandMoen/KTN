@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 7 — Wireless and Mobile Networks</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="../../en/" class="nav-back">&larr; All chapters</a>
+  </div>
+</nav>
+<main data-chapter="Chapter 7: Wireless and Mobile Networks">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Chapter 7 · Data Communications</div>
+  <h1>Wireless and <em>Mobile</em> Networks</h1>
+  <p class="lede">For most people in the world today, the Internet <em>is</em> wireless. This chapter is about why it is so much harder to send bits through air than through a cable — and what happens when the receiver is also on the move.</p>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">01</span><a href="#overblikk">Big Picture</a></li>
+    <li><span class="toc-num">02</span><a href="#deler">Sections</a></li>
+    <li><span class="toc-num">03</span><a href="#quiz">Test Yourself</a></li>
+  </ol>
+</div>
+</nav>
+
+<section id="overblikk">
+<div class="container">
+  <div class="section-badge">Big Picture</div>
+  <h2>Like a conversation at a <em>noisy</em> party</h2>
+  <p class="section-intro">The entire chapter boils down to two challenges: being heard, and staying connected while you move.</p>
+
+  <p>Think about the difference between talking to someone through a tube versus shouting at them across a crowded party. Through the tube — a cable — the communication is private, clear, and undisturbed. You know the receiver hears you, and no one else interferes. But the wireless world is the party: your voice gets weaker with distance, others are shouting in the background on the same frequency, the sound reflects off walls and arrives as echoes, and if you walk into another room the person suddenly can't hear you. All of this is the physics behind wireless communication — signal loss, interference, and multipath propagation.</p>
+
+  <p>But the chapter doesn't stop there. There is a <em>second</em> challenge that is entirely independent of radio physics: <strong>mobility</strong>. What happens when you're not just standing at the party, but wandering from room to room — and expecting the conversation to continue uninterrupted? The network must route your voice to the right room at all times, without you noticing. That is exactly what mobile networks do: they build tunnels that can be moved in the background, so that your IP address remains the same regardless of which base station you are currently talking to.</p>
+
+  <div class="callout callout-blue">
+    <span class="label">Two challenges — one about physics, one about networking</span>
+    <p><strong>Challenge 1 — Wireless communication:</strong> How do we get bits across a radio link where the signal is attenuated, interfered with, and reflected? The solutions are CSMA/CA (avoid collisions instead of detecting them), rate adaptation (reduce speed when the signal weakens), and RTS/CTS (reserve the channel when hidden terminals can cause damage).</p>
+    <p><strong>Challenge 2 — Mobility:</strong> What happens when the device that is communicating moves between base stations, networks, or countries? The solution is tunneling (GTP) — packets are wrapped inside packets, so that the endpoint can be moved without changing the IP address and breaking the TCP connection.</p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 740 370" xmlns="http://www.w3.org/2000/svg">
+      <!-- Wired backbone -->
+      <rect x="220" y="280" width="300" height="50" rx="8" fill="#e8e3d6" stroke="#c9c0ae" stroke-width="2"/>
+      <text x="370" y="310" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="#1a1612" font-weight="600">Wired Internet backbone</text>
+
+      <!-- WiFi AP -->
+      <rect x="140" y="170" width="60" height="46" rx="6" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="2"/>
+      <text x="170" y="190" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a" font-weight="600">WiFi</text>
+      <text x="170" y="204" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a">AP</text>
+      <!-- WiFi antenna arcs -->
+      <path d="M 155 168 Q 170 148 185 168" stroke="#2d4a7a" stroke-width="1.5" fill="none"/>
+      <path d="M 148 162 Q 170 136 192 162" stroke="#2d4a7a" stroke-width="1.2" fill="none" opacity="0.5"/>
+
+      <!-- Cell tower -->
+      <rect x="500" y="140" width="40" height="76" rx="4" fill="#f4f1ea" stroke="#b04428" stroke-width="2"/>
+      <text x="520" y="175" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428" font-weight="600">4G/5G</text>
+      <text x="520" y="188" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#b04428">eNode-B</text>
+      <!-- Tower top -->
+      <line x1="520" y1="140" x2="520" y2="110" stroke="#b04428" stroke-width="2.5"/>
+      <line x1="510" y1="115" x2="530" y2="115" stroke="#b04428" stroke-width="2"/>
+      <line x1="505" y1="122" x2="535" y2="122" stroke="#b04428" stroke-width="1.5"/>
+      <!-- Tower radio arcs -->
+      <path d="M 540 108 Q 558 125 540 142" stroke="#b04428" stroke-width="1.5" fill="none"/>
+      <path d="M 548 100 Q 572 125 548 150" stroke="#b04428" stroke-width="1.2" fill="none" opacity="0.5"/>
+
+      <!-- Phone 1 (WiFi) -->
+      <rect x="50" y="50" width="30" height="50" rx="4" fill="#f4f1ea" stroke="#1a1612" stroke-width="2"/>
+      <line x1="60" y1="60" x2="74" y2="60" stroke="#c9c0ae" stroke-width="1"/>
+      <line x1="60" y1="66" x2="70" y2="66" stroke="#c9c0ae" stroke-width="1"/>
+      <circle cx="65" cy="90" r="3" fill="none" stroke="#1a1612" stroke-width="1.2"/>
+      <text x="65" y="120" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">Laptop</text>
+
+      <!-- Phone 2 (Cellular) -->
+      <rect x="610" y="30" width="26" height="44" rx="4" fill="#f4f1ea" stroke="#1a1612" stroke-width="2"/>
+      <circle cx="623" cy="64" r="2.5" fill="none" stroke="#1a1612" stroke-width="1"/>
+      <text x="623" y="92" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">Mobile</text>
+
+      <!-- Wireless link: Phone 1 → AP -->
+      <path d="M 80 70 C 110 70 130 140 150 175" stroke="#2d4a7a" stroke-width="2" fill="none" stroke-dasharray="6 4"/>
+      <text x="88" y="138" font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a" transform="rotate(-60 88 138)">wireless link</text>
+
+      <!-- Wireless link: Phone 2 → Tower -->
+      <path d="M 618 74 C 600 110 550 125 538 135" stroke="#b04428" stroke-width="2" fill="none" stroke-dasharray="6 4"/>
+      <text x="590" y="118" font-family="IBM Plex Mono" font-size="9" fill="#b04428" transform="rotate(30 590 118)">wireless link</text>
+
+      <!-- Wired: AP → backbone -->
+      <line x1="170" y1="216" x2="270" y2="280" stroke="#1a1612" stroke-width="2.5"/>
+      <text x="195" y="258" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a" transform="rotate(56 195 258)">cable</text>
+
+      <!-- Wired: Tower → backbone -->
+      <line x1="520" y1="216" x2="470" y2="280" stroke="#1a1612" stroke-width="2.5"/>
+      <text x="510" y="258" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a" transform="rotate(-56 510 258)">cable</text>
+
+      <!-- Labels for the two zones -->
+      <rect x="10" y="10" width="195" height="24" rx="4" fill="#2d4a7a" opacity="0.1"/>
+      <text x="107" y="27" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a" font-weight="600">Wireless hop (WiFi)</text>
+
+      <rect x="560" y="10" width="170" height="24" rx="4" fill="#b04428" opacity="0.1"/>
+      <text x="645" y="27" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428" font-weight="600">Wireless hop (4G)</text>
+
+      <rect x="235" y="340" width="270" height="24" rx="4" fill="#3d6b3a" opacity="0.1"/>
+      <text x="370" y="357" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a" font-weight="600">Wired backbone (Ethernet, fiber)</text>
+    </svg>
+    <figcaption>The wireless "last hop" is the hard part — whether it is WiFi to an access point or 4G/5G to a cell tower. Behind the base station, everything runs over standard wired infrastructure.</figcaption>
+  </figure>
+
+  <p>When you watch a YouTube video on the bus and it keeps playing even as the bus passes three different cell towers — that is mobility in action. Your phone switches base stations, the GTP tunnel is moved, but the P-GW (the gateway to the Internet) remains the same. The TCP connection notices nothing because the IP address never changes. It is an elegant piece of engineering that we take completely for granted, but which requires an entire architecture of tunnels, databases, and coordination behind the scenes.</p>
+
+  <p>WiFi solves the wireless problem with <strong>CSMA/CA</strong> — a collision avoidance strategy where nodes listen before sending and confirm receipt with ACK. Cellular networks (4G/5G) take an entirely different approach: the base station <em>allocates</em> time slots centrally instead of letting nodes compete, and builds a complete core network with authentication, mobility management, and tunneling on top. Both solve the same fundamental problem — sending bits reliably through air — but with entirely different philosophies.</p>
+</div>
+</section>
+
+<section id="deler">
+<div class="container">
+  <div class="section-badge">Sections</div>
+  <h2>Explore the <em>chapter</em></h2>
+  <div class="subpage-list">
+    <a href="innhold.html" class="subpage-card">
+      <span class="sp-icon">7</span>
+      <div class="sp-info">
+        <div class="sp-title">Wireless and Mobile Networks</div>
+        <div class="sp-desc">WiFi, CSMA/CA, 802.11 frames, cellular networks (4G/5G), wireless links, and mobility</div>
+      </div>
+      <span class="sp-arrow">&rarr;</span>
+    </a>
+  </div>
+</div>
+</section>
+
+<section id="quiz">
+<div class="container">
+  <h2>Test Yourself</h2>
+  <p class="section-intro">Check whether you have understood the key concepts from this chapter.</p>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 1</div>
+    <div class="q-text">What is the difference between "wireless" and "mobile"?</div>
+    <div class="options">
+      <button class="option" data-correct="false">They are the same — all wireless devices are mobile</button>
+      <button class="option" data-correct="false">Wireless means WiFi, mobile means 4G/5G</button>
+      <button class="option" data-correct="true">Wireless is about transmitting via radio; mobile is about moving between attachment points — a device can be one without the other</button>
+      <button class="option" data-correct="false">Mobile means the device has a battery, wireless means it has no cable</button>
+    </div>
+    <div class="explanation">A smart TV on WiFi is wireless but not mobile. A tablet with a USB cable can be mobile but not wireless. The two problems — radio communication and mobility management — are solved independently of each other.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 2</div>
+    <div class="q-text">Why does WiFi (802.11) use CSMA/CA instead of CSMA/CD like Ethernet does?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Because WiFi frames are too short for collisions to occur</button>
+      <button class="option" data-correct="true">Because the sender's own signal overwhelms the receiver, so collisions cannot be detected during transmission — and hidden terminals mean not all senders can hear each other</button>
+      <button class="option" data-correct="false">Because CSMA/CD requires full-duplex, which WiFi does not support</button>
+      <button class="option" data-correct="false">Because collisions never occur on wireless networks</button>
+    </div>
+    <div class="explanation">On a radio link, the sender's own signal is millions of times stronger than incoming signals, so the receiver is "blind" while transmitting. Additionally, the hidden terminal problem means two senders can collide at a third party without either of them knowing it. That is why WiFi must avoid collisions (CA) instead of detecting them (CD).</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 3</div>
+    <div class="q-text">Why does 4G LTE use GTP tunneling instead of regular IP routing through the core network?</div>
+    <div class="options">
+      <button class="option" data-correct="false">To encrypt traffic between the base station and the Internet</button>
+      <button class="option" data-correct="false">Because the IP protocol does not work over radio links</button>
+      <button class="option" data-correct="true">So that the phone's IP address remains the same even when it switches base stations — the tunnel endpoint is moved, but the TCP connection survives</button>
+      <button class="option" data-correct="false">To compress data packets and save bandwidth in the core network</button>
+    </div>
+    <div class="explanation">Regular IP routing binds addresses to subnets. Without tunneling, a base station switch would require a new IP address, and all TCP connections would break. GTP tunnels let the P-GW (the gateway) own the IP address, while only the tunnel endpoint is updated during handover — an elegant form of indirection.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 4</div>
+    <div class="q-text">What is the "hidden terminal problem" in wireless networks?</div>
+    <div class="options">
+      <button class="option" data-correct="false">That a terminal is hidden behind a firewall and cannot be reached from the Internet</button>
+      <button class="option" data-correct="true">That two senders cannot hear each other (e.g., due to distance or obstruction), and therefore transmit simultaneously — causing a collision at the receiver without either of them knowing</button>
+      <button class="option" data-correct="false">That a device connects to a hidden WiFi network without an SSID</button>
+      <button class="option" data-correct="false">That the base station hides from new devices to save bandwidth</button>
+    </div>
+    <div class="explanation">The hidden terminal problem occurs when nodes A and C are both within range of B, but not of each other. Both listen, hear silence, and transmit — but collide at B. CSMA alone does not solve this; it requires mechanisms like RTS/CTS where the base station reserves the channel on behalf of the sender.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 5</div>
+    <div class="q-text">What is the most important practical difference between the 5G frequency bands FR1 (under 6 GHz) and FR2 (millimeter waves, 24–52 GHz)?</div>
+    <div class="options">
+      <button class="option" data-correct="false">FR1 provides higher speed than FR2, but shorter range</button>
+      <button class="option" data-correct="false">FR2 penetrates walls better because the wavelength is shorter</button>
+      <button class="option" data-correct="true">FR2 provides enormously higher speed, but has very short range and is easily blocked by walls, rain, and human bodies</button>
+      <button class="option" data-correct="false">FR1 and FR2 provide equal performance, but FR2 is cheaper for operators</button>
+    </div>
+    <div class="explanation">FR2 (mmWave) offers up to 10 Gbps, but the signal is blocked by almost anything — walls, raindrops, human bodies. The range is typically 10–100 meters, which requires massive deployment of small pico cells. FR1 is more like traditional cellular frequencies with good range but moderate speeds.</div>
+  </div>
+</div>
+</section>
+
+</main>
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Spring 2026</p>
+  </div>
+</footer>
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script src="../../quiz.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

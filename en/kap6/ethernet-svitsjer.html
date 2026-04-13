@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6b — Ethernet, Switches, and ARP · The Link Layer and LANs</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Chapter 6</a>
+  </div>
+</nav>
+
+<main data-chapter="Chapter 6: The Link Layer and LANs">
+
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">Chapter 6b · The Link Layer</div>
+    <h1>Ethernet, Switches, and <em>ARP</em></h1>
+    <p class="lede">MAC addresses, the ARP protocol, the Ethernet frame structure, switch self-learning — and a complete journey through the protocol stack.</p>
+  </div>
+</header>
+
+<!-- ============================================ -->
+<!-- SECTION 4 — ADDRESSING & ARP                  -->
+<!-- ============================================ -->
+<section id="addressing">
+  <div class="container">
+    <div class="section-badge">04 · Addressing and ARP</div>
+    <h2>Two types of addresses, and the bridge between them</h2>
+    <p class="section-intro">
+      Every device on the internet has two addresses — an IP address and a MAC address. Why both? And how does a machine find the MAC address of another when it only knows the IP address?
+    </p>
+
+    <p class="dropcap">
+      The IP address is a <em>logical</em> address. It depends on where you are located in the network — if you move your laptop from the university to your home, you get a new IP. Routers use IP addresses to send packets across the entire internet. But on the link itself — the last hop from the router to you, or between two hosts on the same switch — it is not the IP address that is used. There, a physical, hardwired address is needed: the <strong>MAC address</strong>.
+    </p>
+
+    <p>
+      A MAC address is 48 bits long, typically written in hexadecimal with hyphens: <code>1A-2F-BB-76-09-AD</code>. It is (in theory) unique for every network interface card in the world — manufacturers are assigned address blocks by IEEE and burn the address into the ROM of the card. A good analogy: <em>the IP address is like a postal address</em> (changes if you move), <em>the MAC address is like a national ID number</em> (follows you).
+    </p>
+
+    <div class="margin-note">
+      On modern WiFi, the MAC address is often dynamic — iPhones and Android devices use a private, random MAC address per network to prevent tracking. The "burned-in" address is not always what you see.
+    </div>
+
+    <h3>Why do we need both?</h3>
+    <p>
+      Could we not just use IP all the way? In theory, but that breaks the layering. The link layer must be able to function without knowing anything about IP — on an Ethernet link, the packet inside might well be AppleTalk or IPX instead of IP. The link layer needs its own address type. And the MAC address has a practical property that IP does not: it is portable. You can move a network card between subnets without changing the MAC, but the IP must change.
+    </p>
+
+    <h3>The problem: IP does not know MAC</h3>
+    <p>
+      Here is the situation: host <em>A</em> wants to send an IP datagram to host <em>B</em> on the same LAN. A knows B's IP address (for example, from a DNS lookup). But to place the datagram in an Ethernet frame and send it on the cable, A needs B's MAC address. How does A find it?
+    </p>
+
+    <div class="box">
+      <span class="label">The solution</span>
+      <p><strong>ARP — Address Resolution Protocol.</strong> A tiny protocol that does exactly one thing: given an IP address on the same LAN, find the MAC address.</p>
+    </div>
+
+    <h3>How ARP works</h3>
+    <p>
+      Each node has a small table (the ARP cache) with entries like <code>&lt;IP, MAC, TTL&gt;</code>. TTL is typically 20 minutes. When A wants to send to B:
+    </p>
+    <ol>
+      <li><strong>Is B already in the cache?</strong> Yes — use the stored MAC and send. Done.</li>
+      <li><strong>No?</strong> A creates an <em>ARP query</em> asking "Who has IP 137.196.7.14? Tell me."</li>
+      <li>This message is encapsulated in an Ethernet frame with destination <code>FF-FF-FF-FF-FF-FF</code> — the broadcast address. Everyone on the LAN receives it.</li>
+      <li>All hosts check: "Is that my IP?" All say no, except B, which replies with an <em>ARP reply</em> containing its MAC address. The reply is not broadcast — it is unicast directly back to A.</li>
+      <li>A receives the reply, stores <code>&lt;B.IP, B.MAC, TTL=1200&gt;</code> in the cache, and can now send its original datagram.</li>
+    </ol>
+
+    <figure>
+      <svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ARP in action">
+        <style>
+          .ttl2 { font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; font-weight: 600; fill: #1a1612; }
+          .lbl2 { font-family: 'IBM Plex Mono', monospace; font-size: 11px; fill: #6b6257; }
+          .arr { fill: none; stroke: #b04428; stroke-width: 2; marker-end: url(#a2); }
+          .arr2 { fill: none; stroke: #3d6b3a; stroke-width: 2; marker-end: url(#a3); }
+        </style>
+        <defs>
+          <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#b04428"/>
+          </marker>
+          <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#3d6b3a"/>
+          </marker>
+        </defs>
+        <line x1="80" y1="150" x2="600" y2="150" stroke="#6b6257" stroke-width="3"/>
+        <text x="340" y="175" class="lbl2" text-anchor="middle">LAN 137.196.7.0/24</text>
+        <g>
+          <rect x="60" y="90" width="60" height="45" fill="#f4f1ea" stroke="#1a1612"/>
+          <text x="90" y="110" class="ttl2" text-anchor="middle">A</text>
+          <text x="90" y="125" class="lbl2" text-anchor="middle">.7.23</text>
+          <line x1="90" y1="135" x2="90" y2="150" stroke="#1a1612"/>
+        </g>
+        <g>
+          <rect x="220" y="90" width="60" height="45" fill="#f4f1ea" stroke="#1a1612"/>
+          <text x="250" y="110" class="ttl2" text-anchor="middle">C</text>
+          <text x="250" y="125" class="lbl2" text-anchor="middle">.7.88</text>
+          <line x1="250" y1="135" x2="250" y2="150" stroke="#1a1612"/>
+        </g>
+        <g>
+          <rect x="380" y="90" width="60" height="45" fill="#f4f1ea" stroke="#1a1612"/>
+          <text x="410" y="110" class="ttl2" text-anchor="middle">D</text>
+          <text x="410" y="125" class="lbl2" text-anchor="middle">.7.78</text>
+          <line x1="410" y1="135" x2="410" y2="150" stroke="#1a1612"/>
+        </g>
+        <g>
+          <rect x="540" y="90" width="60" height="45" fill="#fff4e0" stroke="#b04428" stroke-width="2"/>
+          <text x="570" y="110" class="ttl2" text-anchor="middle">B</text>
+          <text x="570" y="125" class="lbl2" text-anchor="middle">.7.14</text>
+          <line x1="570" y1="135" x2="570" y2="150" stroke="#1a1612"/>
+        </g>
+        <path class="arr" d="M 90 200 Q 340 250 570 200"/>
+        <text x="330" y="245" class="lbl2" text-anchor="middle" fill="#b04428">① ARP query: "Who has .7.14?" (broadcast)</text>
+        <path class="arr2" d="M 570 80 Q 330 30 90 80"/>
+        <text x="330" y="25" class="lbl2" text-anchor="middle" fill="#3d6b3a">② ARP reply: "That's me — MAC 58-23-D7-FA-20-B0" (unicast)</text>
+      </svg>
+      <figcaption><strong>Figure 3.</strong> ARP exchange: A asks via broadcast, B replies via unicast. All the others hear the question but ignore it.</figcaption>
+    </figure>
+
+    <h3>What if the destination is not on the same LAN?</h3>
+    <p>
+      ARP only works within a single LAN — you cannot ARP your way to a server on the other side of the internet. If A wants to send to an IP that is in a different subnet, A does not send the frame directly to the destination host. Instead, A sends the frame to the <strong>first-hop router</strong> (default gateway). The frame has the <em>router's</em> MAC address as destination — but the IP datagram inside still has the <em>final host's</em> IP address as the target.
+    </p>
+    <p>
+      The router receives the frame, extracts the IP datagram, looks up in its routing table where the datagram should go next, encapsulates it in a <em>new</em> frame with new source and destination MACs (ARP on the next link), and forwards it. The IP addresses remain unchanged the entire way. The MAC addresses change at every hop.
+    </p>
+
+    <div class="box ochre">
+      <span class="label">Key insight</span>
+      <p>IP addresses are end-to-end. MAC addresses are hop-by-hop. The datagram's IP header sees the same addresses all the way from A to B. But the frame itself is re-encapsulated — with new MAC addresses — at every single router along the way.</p>
+    </div>
+
+    <div class="reveal" data-reveal>
+      <div class="q">If an attacker sends fake ARP reply messages on a LAN claiming to have the IP address of the default gateway router, what happens?</div>
+      <button>Show answer</button>
+      <div class="answer">This is <em>ARP spoofing</em> (or ARP poisoning) — a classic Man-in-the-Middle attack. The victims' ARP tables are poisoned with the attacker's MAC address, and all packets intended for the "router" are instead sent to the attacker, who can read them and optionally forward them to the real router. ARP has no authentication — that was not part of the design in the 1970s. That is why ARP spoofing is used by both attackers and security researchers.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 5 — ETHERNET                          -->
+<!-- ============================================ -->
+<section id="ethernet">
+  <div class="container">
+    <div class="section-badge">05 · Ethernet</div>
+    <h2>The victorious LAN technology</h2>
+    <p class="section-intro">
+      Ethernet was invented by Robert Metcalfe in the 1970s. It should have died out long ago — competitors were more sophisticated, faster, better designed. But Ethernet outlived them all. Why?
+    </p>
+
+    <p class="dropcap">
+      The answer: <strong>simplicity and low cost</strong>. Ethernet was never the most technically refined solution, but it was "good enough" and very easy to implement. While Token Ring and ATM struggled with complex protocols, Ethernet scaled from 10 Mbit/s up to 400 Gbit/s without fundamentally changing the frame structure or addressing system. Today, Ethernet is the dominant wired LAN technology — and has been for several decades.
+    </p>
+
+    <h3>From bus to star</h3>
+    <p>
+      Originally, Ethernet was a <em>bus technology</em>: all machines were connected to one long coaxial cable, and everyone heard everything. Collisions were common — hence CSMA/CD. This worked, but it gave one <em>collision domain</em> for the entire network, and the bandwidth was shared among all.
+    </p>
+    <p>
+      Modern Ethernet is <em>switched</em>: each host has its own dedicated cable to a central switch. Each link is a separate collision domain with only two endpoints — the host and the switch. Collisions become practically impossible, and full-duplex is the standard: both sides can send simultaneously without interfering with each other. CSMA/CD still exists in the specification, but it is activated only in rare cases where a host goes into half-duplex mode.
+    </p>
+
+    <h3>The Ethernet frame</h3>
+    <figure>
+      <svg viewBox="0 0 680 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ethernet frame structure">
+        <style>
+          .ftt { font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; font-weight: 600; fill: #fff; }
+          .fla { font-family: 'IBM Plex Mono', monospace; font-size: 11px; fill: #6b6257; }
+          .fda { font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; fill: #1a1612; }
+        </style>
+        <g transform="translate(20,40)">
+          <rect x="0" y="0" width="80" height="50" fill="#c68a1f" stroke="#1a1612"/>
+          <text x="40" y="30" text-anchor="middle" class="ftt">Preamble</text>
+          <text x="40" y="105" text-anchor="middle" class="fla">8 bytes</text>
+          <rect x="80" y="0" width="80" height="50" fill="#b04428" stroke="#1a1612"/>
+          <text x="120" y="22" text-anchor="middle" class="ftt">Dest</text>
+          <text x="120" y="38" text-anchor="middle" class="ftt">MAC</text>
+          <text x="120" y="105" text-anchor="middle" class="fla">6 bytes</text>
+          <rect x="160" y="0" width="80" height="50" fill="#b04428" stroke="#1a1612"/>
+          <text x="200" y="22" text-anchor="middle" class="ftt">Src</text>
+          <text x="200" y="38" text-anchor="middle" class="ftt">MAC</text>
+          <text x="200" y="105" text-anchor="middle" class="fla">6 bytes</text>
+          <rect x="240" y="0" width="50" height="50" fill="#2d4a7a" stroke="#1a1612"/>
+          <text x="265" y="30" text-anchor="middle" class="ftt">Type</text>
+          <text x="265" y="105" text-anchor="middle" class="fla">2 bytes</text>
+          <rect x="290" y="0" width="260" height="50" fill="#e8e3d6" stroke="#1a1612"/>
+          <text x="420" y="30" text-anchor="middle" class="fda">Data (payload — the IP datagram goes here)</text>
+          <text x="420" y="105" text-anchor="middle" class="fla">46–1500 bytes</text>
+          <rect x="550" y="0" width="80" height="50" fill="#3d6b3a" stroke="#1a1612"/>
+          <text x="590" y="30" text-anchor="middle" class="ftt">CRC-32</text>
+          <text x="590" y="105" text-anchor="middle" class="fla">4 bytes</text>
+        </g>
+      </svg>
+      <figcaption><strong>Figure 4.</strong> The Ethernet frame. The preamble synchronizes the receiver's clock; the MAC addresses say where it should go; the type field says what is inside (almost always IP); CRC-32 catches errors.</figcaption>
+    </figure>
+
+    <p>
+      Let us look at each field:
+    </p>
+    <ul>
+      <li><strong>Preamble (8 bytes).</strong> Seven bytes of <code>10101010</code> followed by one byte of <code>10101011</code>. Used to synchronize the receiver's clock with the sender's — the last two bits "11" signal that the frame starts now.</li>
+      <li><strong>Destination MAC (6 bytes).</strong> Who should receive it. If the NIC sees its own address (or the broadcast <code>FF-FF-FF-FF-FF-FF</code>), it delivers the contents up to the network layer. Otherwise, the frame is discarded.</li>
+      <li><strong>Source MAC (6 bytes).</strong> Who sent it.</li>
+      <li><strong>Type (2 bytes).</strong> Which protocol is inside? <code>0x0800</code> = IP, <code>0x0806</code> = ARP, etc. The receiver's NIC uses this to demultiplex upward — the correct protocol at the network layer gets the packet.</li>
+      <li><strong>Data (46–1500 bytes).</strong> The payload. Minimum 46 bytes — shorter packets must be padded — because CSMA/CD needs a minimum length to detect collisions. Maximum 1500 bytes is the <em>MTU</em> limit (Maximum Transmission Unit).</li>
+      <li><strong>CRC (4 bytes).</strong> CRC-32 over the entire frame. Error → the frame is discarded immediately.</li>
+    </ul>
+
+    <h3>Unreliable and connectionless</h3>
+    <p>
+      Ethernet is <em>connectionless</em>: there is no handshake between the NICs before data is sent. And it is <em>unreliable</em>: the receiver does not send an ACK on success and no NAK on error — it simply discards frames with errors. If data is lost, it is up to higher layers (TCP) to detect and retransmit. This is entirely deliberate. On modern wired links, the error rate is so low that end-to-end reliability is far more efficient than per-hop reliability.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 6 — SWITCHES                          -->
+<!-- ============================================ -->
+<section id="switches">
+  <div class="container">
+    <div class="section-badge">06 · Switches</div>
+    <h2>The humble, invisible hero</h2>
+    <p class="section-intro">
+      If you have an Ethernet LAN today, you have at least one switch. They are "plug-and-play," teach themselves, and hosts don't even know they exist. The magic lies in how they discover where things are.
+    </p>
+
+    <p class="dropcap">
+      A <strong>switch</strong> is a link-layer device — layer 2 — that forwards frames based on MAC addresses. It receives a frame on one port, looks at the destination MAC, and sends the frame out only on the single port where it knows the recipient is located. All other ports remain untouched. This means that multiple pairs of hosts can communicate simultaneously without interfering with each other. A switch with six ports can have three independent conversations going on at once.
+    </p>
+
+    <p>
+      Switches are <em>transparent</em>: hosts do not see them. You do not need to configure the host to talk through a switch. You don't need to configure the switch either — it teaches itself. Plug in, and it works. This "plug-and-play" property is one of the main reasons switches displaced hubs and old bus networks.
+    </p>
+
+    <h3>The switch table</h3>
+    <p>
+      The heart of the switch is the <strong>forwarding table</strong>. Each entry is a triple <code>(MAC address, port, timestamp)</code>. It tells the switch: "The host with this MAC address is reached via this port, and I learned this at this time." The timestamp lets old entries expire — if a host has been silent for a long time (typically a few minutes), it is deleted from the table.
+    </p>
+
+    <h3>How the switch learns — the self-learning algorithm</h3>
+    <p>
+      The switch starts with a completely empty table. When it receives a frame:
+    </p>
+    <ol>
+      <li><strong>Learn.</strong> Look at the <em>source MAC</em> and the port the frame arrived on. Store this mapping in the table (or update the timestamp if it already exists).</li>
+      <li><strong>Look up.</strong> Look at the <em>destination MAC</em>. Is it in the table?</li>
+      <li><strong>If yes:</strong> If the destination is on the same port the frame arrived from — discard it (the recipient has already heard it). Otherwise, forward it only on the port where the recipient is.</li>
+      <li><strong>If no:</strong> <em>Flood.</em> Send the frame out on all ports except the one it arrived on. The recipient will reply, and then the switch learns where the recipient is.</li>
+    </ol>
+
+    <div class="margin-note">
+      Note that the switch learns only from source addresses — never from destination addresses. This is because the source address is verified ("whoever sent the frame obviously came from that port"), while the destination is merely a hope about where the frame should go.
+    </div>
+
+    <div class="stepper" id="sw-stepper">
+      <div class="s-label">Interactive walkthrough — the switch learns</div>
+      <div class="stage" id="sw-stage">
+        <h5 id="sw-title">Step 1 of 5</h5>
+        <p id="sw-body">Start here.</p>
+      </div>
+      <div class="controls">
+        <button id="sw-prev">← Previous</button>
+        <span class="progress" id="sw-progress">1 / 5</span>
+        <button id="sw-next">Next →</button>
+      </div>
+    </div>
+
+    <h3>Interconnecting switches</h3>
+    <p>
+      Self-learning works exactly the same when multiple switches are connected together in a tree hierarchy. Each switch learns on its own, through its own ports, which direction a given MAC address lies. If host A on the far left wants to send to host G on the far right, the first switch floods the frame out, and along the way all switches learn where A is (because they see the source MAC). When G finally replies, all switches learn where G is (from G's source MAC in the reply). After one round-trip exchange, the route is fully established, and future frames are sent directly.
+    </p>
+
+    <h3>Switches vs. routers</h3>
+    <p>
+      This often causes confusion. Both switches and routers are "store-and-forward" devices — they receive a packet, think, and forward it. But they operate at different layers and with different addresses.
+    </p>
+
+    <table>
+      <thead>
+        <tr><th></th><th>Switch</th><th>Router</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Operates at</td><td>Layer 2 (link)</td><td>Layer 3 (network)</td></tr>
+        <tr><td>Looks at</td><td>MAC addresses</td><td>IP addresses</td></tr>
+        <tr><td>Builds table with</td><td>Self-learning (passive)</td><td>Routing algorithms (active — OSPF, BGP)</td></tr>
+        <tr><td>Configuration</td><td>Plug-and-play</td><td>Must be configured</td></tr>
+        <tr><td>Scope</td><td>Within a single LAN</td><td>Across subnets, across the entire internet</td></tr>
+      </tbody>
+    </table>
+
+    <div class="quiz" data-quiz="3">
+      <div class="q-label">Knowledge Check</div>
+      <div class="q-text">A switch receives a frame on port 3. The destination MAC is not in the table. What does the switch do?</div>
+      <div class="options">
+        <button class="option" data-correct="false">Discards the frame since the destination is unknown.</button>
+        <button class="option" data-correct="false">Sends an ARP request to find the destination.</button>
+        <button class="option" data-correct="true">Forwards the frame out on all ports except port 3 (flooding).</button>
+        <button class="option" data-correct="false">Sends the frame back out on port 3.</button>
+      </div>
+      <div class="explanation">Flooding is the fallback strategy when the switch does not know where something is. All ports except the one the frame arrived from receive a copy. One of them leads to the right destination, and that host will reply — and at that moment the switch learns where the destination is. Therefore, the first few frames in a new conversation are "expensive" (flooding), but the rest are targeted.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 7 — DAY IN THE LIFE                   -->
+<!-- ============================================ -->
+<section id="day">
+  <div class="container">
+    <div class="section-badge">07 · Synthesis</div>
+    <h2>A day in the life of a web request</h2>
+    <p class="section-intro">
+      Now we tie everything together. A student connects a laptop to the university network and opens google.com in the browser. It seems simple. Let's see how many protocols are actually set in motion.
+    </p>
+
+    <p class="dropcap">
+      The scenario is this: a new laptop connects to a wired Ethernet on campus. The user types <code>www.google.com</code> in the browser and presses Enter. We trace everything that happens — from the moment the cable is plugged in, to the first pixel of the Google logo appearing on the screen.
+    </p>
+
+    <h3>Step 1 — Get an IP address with DHCP</h3>
+    <p>
+      Before the laptop can send anything out on the internet, it must have an IP address. It also needs to know the IP address of the first-hop router (default gateway) and the IP address of a DNS server. <strong>DHCP</strong> (Dynamic Host Configuration Protocol) solves all of this.
+    </p>
+    <p>
+      The laptop creates a DHCP request, encapsulates it in UDP, then IP, then an Ethernet frame. The destination MAC is <code>FF-FF-FF-FF-FF-FF</code> — broadcast — because the laptop does not know who the DHCP server is yet. The frame is flooded through the LAN to the router (which runs the DHCP server). It replies with the laptop's new IP address, subnet mask, default gateway, and DNS server. After this single exchange, the laptop has everything it needs to be on the network.
+    </p>
+
+    <h3>Step 2 — Find the router's MAC with ARP</h3>
+    <p>
+      The laptop will eventually need to reach a server outside its own LAN. All such packets must go through the router. To send the first frame to the router, the laptop needs the router's <em>MAC address</em>. It only has the IP address from the DHCP response.
+    </p>
+    <p>
+      ARP solves this. The laptop broadcasts: "Who has IP 68.80.2.1?" The router replies with its MAC. Now the laptop is ready.
+    </p>
+
+    <h3>Step 3 — Find Google's IP with DNS</h3>
+    <p>
+      The user typed <code>www.google.com</code>, not an IP address. The laptop must convert the name to an IP. It creates a DNS query, encapsulates it in UDP / IP / Ethernet, and sends it toward the default gateway. The frame has the router's MAC as destination, but the IP datagram inside has the <em>DNS server's</em> IP as the target.
+    </p>
+    <p>
+      The router receives the frame, extracts the IP datagram, looks up in the routing table (built by protocols like OSPF and BGP), and forwards it toward the DNS server — typically through the ISP's network. The DNS server replies with Google's IP address, for example 64.233.169.105. The reply takes the return path through multiple routers and eventually arrives back at the laptop.
+    </p>
+
+    <div class="margin-note">
+      Notice how the IP addresses in the IP header remain stable the entire way — they are source and destination end-to-end. But the MAC addresses change at <em>every</em> router. Each hop has its own frame, each with new MACs.
+    </div>
+
+    <h3>Step 4 — Set up the TCP connection</h3>
+    <p>
+      Now the laptop knows Google's IP. The browser opens a TCP socket and starts the three-way handshake: <em>SYN</em> → <em>SYNACK</em> → <em>ACK</em>. Each of the three messages travels as a separate IP datagram, encapsulated in Ethernet frames at each hop, through perhaps 15 routers across the internet. When the handshake is complete, there is a reliable TCP connection between the laptop and Google's server.
+    </p>
+
+    <h3>Step 5 — HTTP request and response</h3>
+    <p>
+      The browser writes an HTTP request into the TCP socket: <code>GET / HTTP/1.1</code>. It is divided into segments by TCP, each segment becomes an IP datagram, each datagram becomes a frame at each hop. Google's server receives the request, generates the HTML response, and sends it back through the same TCP connection. The browser parses the HTML, requests images and stylesheets (more HTTP requests), renders the page — and finally the user sees the Google logo.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The protocol stack in action during a web request">
+        <style>
+          .pn { font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; font-weight: 600; fill: #1a1612; }
+          .pl { font-family: 'IBM Plex Mono', monospace; font-size: 10px; fill: #6b6257; }
+        </style>
+        <line x1="40" y1="40" x2="40" y2="310" stroke="#c9c0ae" stroke-width="2"/>
+        <text x="30" y="25" class="pl" text-anchor="end">time</text>
+        <g transform="translate(60,40)">
+          <rect x="0" y="0" width="100" height="30" fill="#c68a1f" stroke="#1a1612"/>
+          <text x="50" y="20" text-anchor="middle" class="pn" fill="#fff">DHCP</text>
+          <text x="170" y="20" class="pl">Get IP, gateway, DNS server</text>
+        </g>
+        <g transform="translate(60,80)">
+          <rect x="0" y="0" width="100" height="30" fill="#b04428" stroke="#1a1612"/>
+          <text x="50" y="20" text-anchor="middle" class="pn" fill="#fff">ARP</text>
+          <text x="170" y="20" class="pl">Find the router's MAC</text>
+        </g>
+        <g transform="translate(60,120)">
+          <rect x="0" y="0" width="100" height="30" fill="#3d6b3a" stroke="#1a1612"/>
+          <text x="50" y="20" text-anchor="middle" class="pn" fill="#fff">DNS</text>
+          <text x="170" y="20" class="pl">Look up google.com → IP address</text>
+        </g>
+        <g transform="translate(60,160)">
+          <rect x="0" y="0" width="100" height="30" fill="#2d4a7a" stroke="#1a1612"/>
+          <text x="50" y="20" text-anchor="middle" class="pn" fill="#fff">TCP SYN</text>
+          <text x="170" y="20" class="pl">Start three-way handshake</text>
+        </g>
+        <g transform="translate(60,200)">
+          <rect x="0" y="0" width="100" height="30" fill="#2d4a7a" stroke="#1a1612"/>
+          <text x="50" y="20" text-anchor="middle" class="pn" fill="#fff">TCP SYNACK</text>
+          <text x="170" y="20" class="pl">Server accepts</text>
+        </g>
+        <g transform="translate(60,240)">
+          <rect x="0" y="0" width="100" height="30" fill="#8a3420" stroke="#1a1612"/>
+          <text x="50" y="20" text-anchor="middle" class="pn" fill="#fff">HTTP GET</text>
+          <text x="170" y="20" class="pl">Request the page</text>
+        </g>
+        <g transform="translate(60,280)">
+          <rect x="0" y="0" width="100" height="30" fill="#8a3420" stroke="#1a1612"/>
+          <text x="50" y="20" text-anchor="middle" class="pn" fill="#fff">HTTP 200</text>
+          <text x="170" y="20" class="pl">Server sends HTML → page renders</text>
+        </g>
+      </svg>
+      <figcaption><strong>Figure 5.</strong> The sequence of protocols that must run before the user sees a single pixel of google.com. DHCP and ARP run only the first time; the DNS lookup is cached; TCP and HTTP are what happen repeatedly.</figcaption>
+    </figure>
+
+    <div class="box green">
+      <span class="label">The big takeaway</span>
+      <p>What looks like a single action — "open a web page" — actually involves <em>seven</em> different protocols working together: DHCP, ARP, DNS, IP, TCP, Ethernet, and HTTP. Each of them solves one specific problem. None of them could do the job alone. And thanks to layering, none of them knew the others existed. That is what the internet <em>is</em>.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<div class="container">
+  <nav class="page-nav">
+    <a href="grunnleggende-tilgang.html">
+      <span class="nav-label">← Previous</span>
+      <span class="nav-title">Fundamentals and Media Access</span>
+    </a>
+  </nav>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Spring 2026</p>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('.quiz').forEach(quiz => {
+  const buttons = quiz.querySelectorAll('.option');
+  const explanation = quiz.querySelector('.explanation');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const correct = btn.dataset.correct === 'true';
+      buttons.forEach(b => {
+        b.disabled = true;
+        if (b.dataset.correct === 'true') b.classList.add('correct');
+      });
+      if (!correct) btn.classList.add('incorrect');
+      if (explanation) explanation.classList.add('show');
+    });
+  });
+});
+
+document.querySelectorAll('.reveal').forEach(r => {
+  const btn = r.querySelector('button');
+  const ans = r.querySelector('.answer');
+  btn.addEventListener('click', () => {
+    ans.classList.toggle('show');
+    btn.textContent = ans.classList.contains('show') ? 'Hide answer' : 'Show answer';
+  });
+});
+
+(function() {
+  const steps = [
+    {
+      title: 'Step 1 — The switch is empty',
+      body: 'A brand new switch has nothing in its table. Nobody knows where anyone is. Four hosts — A, B, C, D — are connected to ports 1, 2, 3, and 4.'
+    },
+    {
+      title: 'Step 2 — A sends to D',
+      body: 'A (port 1) sends a frame with destination D. The switch sees the frame arrive on port 1, source MAC = A. It adds (A, port 1) to the table.'
+    },
+    {
+      title: 'Step 3 — Unknown destination → flood',
+      body: 'Destination D is not in the table. The switch has no choice: it floods the frame out on ports 2, 3, and 4. All hosts receive the frame, but only D cares about it.'
+    },
+    {
+      title: 'Step 4 — D replies',
+      body: 'D (port 4) sends a reply to A. The switch sees source MAC = D on port 4 and adds (D, port 4). Now it knows both. Destination A is in the table → the reply is sent <em>only</em> on port 1.'
+    },
+    {
+      title: 'Step 5 — Targeted communication',
+      body: 'All future frames between A and D go directly, never flooding. If B now wants to talk to C, that is a completely independent conversation on ports 2 and 3 — simultaneous and without collision.'
+    }
+  ];
+  let i = 0;
+  const title = document.getElementById('sw-title');
+  const body = document.getElementById('sw-body');
+  const prog = document.getElementById('sw-progress');
+  const prev = document.getElementById('sw-prev');
+  const next = document.getElementById('sw-next');
+  function render() {
+    title.textContent = steps[i].title;
+    body.innerHTML = steps[i].body;
+    prog.textContent = (i+1) + ' / ' + steps.length;
+    prev.disabled = i === 0;
+    next.disabled = i === steps.length - 1;
+  }
+  prev.addEventListener('click', () => { if (i > 0) { i--; render(); } });
+  next.addEventListener('click', () => { if (i < steps.length - 1) { i++; render(); } });
+  render();
+})();
+</script>
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

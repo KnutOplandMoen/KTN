@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 4 — The Network Layer: Data Plane</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="../../en/" class="nav-back">&larr; All chapters</a>
+  </div>
+</nav>
+<main data-chapter="Chapter 4: The Network Layer – Data Plane">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Chapter 4 &middot; The Network Layer</div>
+  <h1>The Network <em>Layer</em></h1>
+  <p class="lede">How a packet actually finds its way from your machine to a server on the other side of the globe &mdash; and everything that happens inside the routers along the way.</p>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">01</span><a href="#overblikk">Overview</a></li>
+    <li><span class="toc-num">02</span><a href="#deler">Parts</a></li>
+    <li><span class="toc-num">03</span><a href="#quiz">Test yourself</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ============ BIG PICTURE ============ -->
+<section id="overblikk">
+<div class="container">
+  <div class="section-badge">Overview</div>
+  <h2>The big <em>picture</em></h2>
+  <p class="section-intro">The network layer data plane is about one thing: when a packet lands on a router, how does it find the correct output &mdash; in nanoseconds?</p>
+
+  <p class="dropcap">Think of the Internet as an enormous highway system. Each router is an intersection, and the forwarding table is the road signs. When a packet arrives at a router, it reads the destination IP (like reading a road sign), looks it up in the forwarding table (like checking the directional signs), and sends the packet out the correct port (takes the right exit). IP addresses function like postal codes &mdash; the CIDR prefix tells you the region, and the host part is the specific house.</p>
+
+  <figure>
+    <div class="svg-wrap">
+      <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="ov-arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L9,3 z" fill="var(--rust)"/>
+          </marker>
+          <marker id="ov-arr-g" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L9,3 z" fill="var(--green)"/>
+          </marker>
+        </defs>
+
+        <!-- Input ports -->
+        <rect x="30" y="70" width="100" height="30" fill="var(--paper-dark)" stroke="var(--blue)" stroke-width="1.5" rx="3"/>
+        <text x="80" y="89" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--blue)">Input 0</text>
+        <rect x="30" y="115" width="100" height="30" fill="var(--paper-dark)" stroke="var(--blue)" stroke-width="1.5" rx="3"/>
+        <text x="80" y="134" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--blue)">Input 1</text>
+        <rect x="30" y="160" width="100" height="30" fill="var(--paper-dark)" stroke="var(--blue)" stroke-width="1.5" rx="3"/>
+        <text x="80" y="179" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--blue)">Input 2</text>
+
+        <!-- Switching fabric -->
+        <rect x="230" y="55" width="220" height="160" fill="var(--paper-dark)" stroke="var(--rust)" stroke-width="2" rx="6"/>
+        <text x="340" y="82" text-anchor="middle" font-family="IBM Plex Sans" font-size="14" font-weight="600" fill="var(--rust)">Switching Fabric</text>
+
+        <!-- Forwarding table inside fabric -->
+        <rect x="258" y="96" width="164" height="100" fill="var(--paper)" stroke="var(--line)" stroke-width="1" rx="3"/>
+        <text x="340" y="114" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-faded)">FORWARDING TABLE</text>
+        <line x1="264" y1="120" x2="416" y2="120" stroke="var(--line)" stroke-width="0.5"/>
+        <text x="268" y="136" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-soft)">200.23.16.0/21</text>
+        <text x="395" y="136" font-family="IBM Plex Mono" font-size="9" fill="var(--green)">&rarr; 0</text>
+        <text x="268" y="152" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-soft)">200.23.18.0/23</text>
+        <text x="395" y="152" font-family="IBM Plex Mono" font-size="9" fill="var(--rust)">&rarr; 1</text>
+        <text x="268" y="168" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-soft)">0.0.0.0/0</text>
+        <text x="395" y="168" font-family="IBM Plex Mono" font-size="9" fill="var(--blue)">&rarr; 2</text>
+        <text x="268" y="184" font-family="IBM Plex Mono" font-size="9" fill="var(--ink-faded)">(default)</text>
+
+        <!-- Output ports -->
+        <rect x="550" y="70" width="110" height="30" fill="var(--paper-dark)" stroke="var(--green)" stroke-width="1.5" rx="3"/>
+        <text x="605" y="89" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--green)">Output 0</text>
+        <rect x="550" y="115" width="110" height="30" fill="var(--paper-dark)" stroke="var(--green)" stroke-width="1.5" rx="3"/>
+        <text x="605" y="134" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--green)">Output 1</text>
+        <rect x="550" y="160" width="110" height="30" fill="var(--paper-dark)" stroke="var(--green)" stroke-width="1.5" rx="3"/>
+        <text x="605" y="179" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--green)">Output 2</text>
+
+        <!-- Connections: input to fabric -->
+        <line x1="130" y1="85" x2="230" y2="100" stroke="var(--ink-soft)" stroke-width="1.2"/>
+        <line x1="130" y1="130" x2="230" y2="135" stroke="var(--ink-soft)" stroke-width="1.2"/>
+        <line x1="130" y1="175" x2="230" y2="170" stroke="var(--ink-soft)" stroke-width="1.2"/>
+
+        <!-- Connections: fabric to output -->
+        <line x1="450" y1="100" x2="550" y2="85" stroke="var(--ink-soft)" stroke-width="1.2"/>
+        <line x1="450" y1="135" x2="550" y2="130" stroke="var(--ink-soft)" stroke-width="1.2"/>
+        <line x1="450" y1="170" x2="550" y2="175" stroke="var(--ink-soft)" stroke-width="1.2"/>
+
+        <!-- Animated packet path -->
+        <rect x="5" y="120" width="22" height="16" fill="var(--rust)" opacity="0.8" rx="2"/>
+        <text x="16" y="131" text-anchor="middle" font-family="IBM Plex Mono" font-size="7" fill="#fff">PKT</text>
+        <line x1="27" y1="128" x2="30" y2="130" stroke="var(--rust)" stroke-width="1.5" marker-end="url(#ov-arr)"/>
+
+        <!-- Steps annotation -->
+        <text x="80" y="50" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--blue)" letter-spacing="1">&#10102; RECEIVE</text>
+        <text x="340" y="42" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--rust)" letter-spacing="1">&#10103; LOOK UP</text>
+        <text x="605" y="50" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--green)" letter-spacing="1">&#10104; FORWARD</text>
+
+        <!-- Packet exiting on port 1 -->
+        <rect x="663" y="120" width="22" height="16" fill="var(--green)" opacity="0.8" rx="2"/>
+        <text x="674" y="131" text-anchor="middle" font-family="IBM Plex Mono" font-size="7" fill="#fff">PKT</text>
+        <line x1="660" y1="130" x2="663" y2="128" stroke="var(--green)" stroke-width="1.5"/>
+
+        <!-- Bottom labels -->
+        <text x="340" y="248" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="var(--ink-soft)">Packet arrives &rarr; destination IP matched against table &rarr; sent out correct port</text>
+        <text x="340" y="270" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--ink-faded)">The entire process: nanoseconds</text>
+      </svg>
+    </div>
+    <figcaption>A simplified router: input ports receive packets, the switching fabric matches the destination IP against the forwarding table and sends the packet out the correct output port.</figcaption>
+  </figure>
+
+  <div class="callout callout-blue">
+    <span class="label">&#9733; A real-world example</span>
+    <p>When your packet travels from Trondheim to a Netflix server in Amsterdam, it may pass through 12 routers. At <em>each</em> router, the same thing happens: read the destination IP, look it up in the table, forward the packet. The entire process takes nanoseconds. What makes this possible is that the network layer data plane is extremely simple &mdash; match an address, choose a port, done. All the complexity (routing algorithms, BGP, OSPF) lives in the control plane, which runs in the background.</p>
+  </div>
+
+  <p>In this chapter we look at <strong>what happens inside the router</strong>: the architecture of input ports, switching fabric and output ports; <strong>longest prefix match</strong> for selecting the correct route; queues and scheduling when there is congestion; and then the <strong>IP protocol</strong> itself &mdash; the datagram format, CIDR addressing, DHCP, NAT and IPv6.</p>
+</div>
+</section>
+
+<!-- ============ SUBPAGES ============ -->
+<section id="deler">
+<div class="container">
+  <div class="section-badge">Parts</div>
+  <h2>Explore the <em>chapter</em></h2>
+  <div class="subpage-list">
+    <a href="rutere-videresending.html" class="subpage-card">
+      <span class="sp-icon">4a</span>
+      <div class="sp-info"><div class="sp-title">Routers and forwarding</div><div class="sp-desc">Data plane vs. control plane, router architecture, longest prefix match and queues</div></div>
+      <span class="sp-arrow">&rarr;</span>
+    </a>
+    <a href="ip-adressering.html" class="subpage-card">
+      <span class="sp-icon">4b</span>
+      <div class="sp-info"><div class="sp-title">IP and addressing</div><div class="sp-desc">IP datagrams, CIDR, DHCP, NAT, IPv6 and the Internet&rsquo;s architectural principles</div></div>
+      <span class="sp-arrow">&rarr;</span>
+    </a>
+  </div>
+</div>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section id="quiz">
+<div class="container">
+  <div class="section-badge">Test yourself</div>
+  <h2>Quick quiz &mdash; chapter <em>4</em></h2>
+  <p class="section-intro">Check whether you have grasped the essentials of the network layer data plane.</p>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 1</div>
+    <p class="q-text">A router has the following forwarding table. Which output port is selected for a packet with destination <code>10.1.5.200</code>?</p>
+    <table style="margin-bottom:16px;">
+      <thead><tr><th>Prefix</th><th>Output port</th></tr></thead>
+      <tbody>
+        <tr><td class="mono-cell">10.0.0.0/8</td><td>0</td></tr>
+        <tr><td class="mono-cell">10.1.0.0/16</td><td>1</td></tr>
+        <tr><td class="mono-cell">10.1.4.0/22</td><td>2</td></tr>
+        <tr><td class="mono-cell">0.0.0.0/0</td><td>3</td></tr>
+      </tbody>
+    </table>
+    <div class="options">
+      <button class="option" data-correct="false">Port 0 &mdash; /8 matches and is the first entry in the table.</button>
+      <button class="option" data-correct="false">Port 1 &mdash; /16 matches and is the most specific.</button>
+      <button class="option" data-correct="true">Port 2 &mdash; /22 is the longest prefix that matches.</button>
+      <button class="option" data-correct="false">Port 3 &mdash; the default route is used when there is ambiguity.</button>
+    </div>
+    <div class="explanation"><strong>Correct!</strong> All three prefixes (/8, /16, /22) match <code>10.1.5.200</code>, but <strong>longest prefix match</strong> selects /22 because it is the most specific. The address <code>10.1.5.200</code> = <code>10.1.0000&nbsp;01.11001000</code>, and the first 22 bits match the prefix <code>10.1.4.0/22</code> (10.1.0000&nbsp;01xx&nbsp;xxxx.xxxx&nbsp;xxxx). The default route is only used when no other prefixes match.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 2</div>
+    <p class="q-text">A home network with 5 devices uses NAT. All devices are browsing the web simultaneously. What does an external web server see as the source IP on all requests?</p>
+    <div class="options">
+      <button class="option" data-correct="false">Five different public IP addresses &mdash; one per device.</button>
+      <button class="option" data-correct="true">The same public IP address, but with different source port numbers.</button>
+      <button class="option" data-correct="false">The private addresses (e.g. 192.168.1.x) &mdash; NAT is transparent.</button>
+      <button class="option" data-correct="false">The router&rsquo;s MAC address instead of an IP address.</button>
+    </div>
+    <div class="explanation"><strong>Correct!</strong> The NAT router rewrites the source IP on all outgoing packets to its single public address. To distinguish between internal devices, it uses different <strong>source port numbers</strong>, which it stores in the NAT table. When the reply comes back, the router looks up the port number in the table and forwards the packet to the correct internal device.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 3</div>
+    <p class="q-text">What is the most important improvement in IPv6 compared to IPv4 in terms of forwarding performance in routers?</p>
+    <div class="options">
+      <button class="option" data-correct="false">IPv6 has larger addresses, so routers can address more devices.</button>
+      <button class="option" data-correct="true">IPv6 has a fixed 40-byte header without a checksum &mdash; routers do not need to recompute a checksum at each hop.</button>
+      <button class="option" data-correct="false">IPv6 uses flow labels to eliminate the need for forwarding tables.</button>
+      <button class="option" data-correct="false">IPv6 encrypts all packets automatically, so routers do not need to inspect the contents.</button>
+    </div>
+    <div class="explanation"><strong>Correct!</strong> In IPv4, the header checksum must be recomputed at <em>every single router</em> because the TTL field changes at each hop. IPv6 removed the checksum entirely (the transport layer has its own), and the header is fixed at 40 bytes with no options. The result is faster forwarding in the data plane.</div>
+  </div>
+</div>
+</section>
+
+</main>
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU &middot; TTM4100 &middot; Spring 2026</p>
+  </div>
+</footer>
+<script src="../../quiz.js"></script>
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

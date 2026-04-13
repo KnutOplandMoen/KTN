@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email, DNS, and Socket Programming — Chapter 2</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Chapter 2</a>
+  </div>
+</nav>
+
+<main data-chapter="Chapter 2: Email, DNS, and Socket Programming">
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">Chapter 2 · Part 3</div>
+    <h1>How the Internet <em>talks</em>: email, names, and sockets</h1>
+    <p class="lede">A thorough walkthrough of three of the application layer's most important building blocks — the protocols that move your email, translate names to addresses, and let processes communicate across the globe.</p>
+    <div class="what-youll-learn">
+      <div class="label">What you will take away</div>
+      <ul>
+        <li>Why SMTP still looks like a conversation from 1982 — and why that is a good thing</li>
+        <li>How DNS manages to be both decentralized and lightning-fast at the same time</li>
+        <li>The difference between programming against UDP and TCP, and when you should choose which</li>
+        <li>The recurring themes: <em>push vs pull</em>, <em>stateful vs stateless</em>, <em>complexity at the edge</em></li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<!-- ============ PART 1: EMAIL ============ -->
+<section>
+  <div class="container">
+    <div class="section-badge">01 · Email and SMTP</div>
+    <h2>The oldest messaging service on the <em>network</em></h2>
+    <p class="section-intro">Email existed before the web, before Facebook, before practically everything. When you understand how an email actually travels from you to the recipient, you also understand why the entire application layer is built around a small set of recurring patterns.</p>
+
+    <p class="lead">Let us begin with a question that sounds trivial but is not: when you press "Send" in Gmail, what actually happens? You know the message ends up with the recipient — but between "press" and "delivered" lies an entire little ecosystem of software, and it is that ecosystem we are now going to unpack.</p>
+
+    <p>The email system consists of <strong>three main components</strong>. There is the client program you use to read and write — called the <em>user agent</em> or "mail reader." There are the <strong>mail servers</strong> that actually store messages, both in an inbox for what comes in and in an outgoing queue for what needs to be sent. And then there is <strong>SMTP</strong>, the protocol that binds the servers together and moves messages between them.</p>
+
+    <p>The important thing to realize is that the user agent never talks directly with the recipient's user agent. Your mail first ends up at <em>your</em> mail server, which then opens an SMTP connection to the recipient's mail server and delivers it. The recipient then picks it up from their own server using an entirely different protocol. This is not a coincidence — it is a deliberate design that we will soon see why is smart.</p>
+
+    <h3>The journey of an email</h3>
+    <p>Imagine that Alice wants to send a message to <code>bob@someschool.edu</code>. The sequence is always the same:</p>
+
+    <figure>
+      <svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#b04428"/>
+          </marker>
+        </defs>
+        <circle cx="60" cy="130" r="22" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
+        <text x="60" y="135" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">Alice</text>
+        <text x="60" y="180" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">user agent</text>
+        <rect x="200" y="95" width="120" height="70" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
+        <text x="260" y="125" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">Alice's</text>
+        <text x="260" y="143" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">mail server</text>
+        <text x="260" y="180" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">outgoing queue</text>
+        <rect x="440" y="95" width="120" height="70" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
+        <text x="500" y="125" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">Bob's</text>
+        <text x="500" y="143" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">mail server</text>
+        <text x="500" y="180" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">mailbox</text>
+        <circle cx="700" cy="130" r="22" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
+        <text x="700" y="135" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">Bob</text>
+        <text x="700" y="180" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">user agent</text>
+        <line x1="85" y1="130" x2="195" y2="130" stroke="#b04428" stroke-width="1.8" marker-end="url(#arr)"/>
+        <line x1="325" y1="130" x2="435" y2="130" stroke="#b04428" stroke-width="1.8" marker-end="url(#arr)"/>
+        <line x1="565" y1="130" x2="675" y2="130" stroke="#b04428" stroke-width="1.8" marker-end="url(#arr)"/>
+        <text x="140" y="120" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">SMTP/HTTPS</text>
+        <text x="380" y="120" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">SMTP</text>
+        <text x="620" y="120" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">IMAP/HTTPS</text>
+        <text x="380" y="240" text-anchor="middle" font-family="Newsreader" font-style="italic" font-size="13" fill="#6b6257">Three stages, three roles. The sender's server talks to the recipient's server.</text>
+      </svg>
+    </figure>
+
+    <p>Notice a fundamental asymmetry here: SMTP is used <em>only</em> between the servers (and from Alice's user agent in to her own server). When Bob reads his mail, he does <em>not</em> use SMTP. He uses a "mail access protocol" — typically IMAP, or HTTPS if he uses Gmail in the browser. Why? Because SMTP is a <strong>push</strong> protocol: the sender takes the initiative and pushes the message forward. But when Bob wants to fetch mail, he wants to <em>pull</em> messages down from his own server. That is an entirely different usage pattern, and it requires an entirely different protocol.</p>
+
+    <div class="margin-note">SMTP dates from 1982 (RFC 821, updated to RFC 5321). That it is still in use, more or less unchanged, says something about how well it solved its problem — and how difficult it is to replace established protocols.</div>
+
+    <h3>SMTP — a conversation in plaintext</h3>
+    <p>SMTP is a TCP-based protocol on <strong>port 25</strong>. It is remarkably simple: commands are sent as ASCII text, and the server responds with a three-digit status code followed by a short text. The entire conversation between two mail servers looks like this:</p>
+
+    <pre><span class="c-srv">S: 220 hamburger.edu</span>
+<span class="c-cli">C: HELO crepes.fr</span>
+<span class="c-srv">S: 250 Hello crepes.fr, pleased to meet you</span>
+<span class="c-cli">C: MAIL FROM: &lt;alice@crepes.fr&gt;</span>
+<span class="c-srv">S: 250 alice@crepes.fr... Sender ok</span>
+<span class="c-cli">C: RCPT TO: &lt;bob@hamburger.edu&gt;</span>
+<span class="c-srv">S: 250 bob@hamburger.edu ... Recipient ok</span>
+<span class="c-cli">C: DATA</span>
+<span class="c-srv">S: 354 Enter mail, end with "." on a line by itself</span>
+<span class="c-cli">C: Do you like ketchup?</span>
+<span class="c-cli">C: How about pickles?</span>
+<span class="c-cli">C: .</span>
+<span class="c-srv">S: 250 Message accepted for delivery</span>
+<span class="c-cli">C: QUIT</span>
+<span class="c-srv">S: 221 hamburger.edu closing connection</span></pre>
+
+    <p>This is the entire protocol in a nutshell. Three phases: handshaking (<code>HELO</code>), transfer (<code>MAIL FROM</code>, <code>RCPT TO</code>, <code>DATA</code>), and closure (<code>QUIT</code>). The client — which is the sending mail server here — writes commands, the server responds with status codes. <code>250</code> means OK, <code>354</code> means "continue," <code>220</code> and <code>221</code> are opening and closing. Just like HTTP, but older.</p>
+
+    <p>A small but important detail: notice that the message body is terminated by a line containing only a single period. This is SMTP's way of saying "the message ends here." More precisely, the server looks for the sequence <code>CRLF.CRLF</code> to find the end of the message content. And because everything must be <strong>7-bit ASCII</strong>, all binary content (images, attachments, special characters) must first be re-encoded to ASCII using MIME encoding.</p>
+
+    <div class="quiz" id="quiz1">
+      <div class="label">Check your understanding</div>
+      <div class="q-text">Why does email use two different protocols (SMTP and IMAP) instead of just one?</div>
+      <div class="options">
+        <button class="option" data-correct="false">Because SMTP is too old to handle modern email</button>
+        <button class="option" data-correct="true">Because sending ("push") and fetching ("pull") are fundamentally different usage patterns</button>
+        <button class="option" data-correct="false">Because SMTP does not support encryption, while IMAP does</button>
+        <button class="option" data-correct="false">Because they run on different operating systems</button>
+      </div>
+      <div class="explanation">SMTP is designed for the sender to push a message forward to the recipient's server. When the recipient later wants to fetch their mail — perhaps from a mobile phone, perhaps later today, perhaps from multiple devices — that is an entirely different need. IMAP solves <em>that</em> problem: access to a mailbox stored on a server.</div>
+    </div>
+
+    <h3>SMTP vs HTTP — so similar, yet so different</h3>
+    <p>It is tempting to look at SMTP and HTTP and think they are almost the same thing. Both use TCP. Both have ASCII commands and status codes. Both were built in the same era. But the differences reveal two fundamentally different design philosophies:</p>
+
+    <table>
+      <thead>
+        <tr><th>Property</th><th>HTTP</th><th>SMTP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="label-col">Initiative</td><td>Pull (the client requests)</td><td>Push (the sender pushes)</td></tr>
+        <tr><td class="label-col">Content</td><td>Each resource in its own response</td><td>Multiple objects in one multipart message</td></tr>
+        <tr><td class="label-col">Character set</td><td>Binary allowed</td><td>Requires 7-bit ASCII</td></tr>
+        <tr><td class="label-col">Connection</td><td>Persistent (HTTP/1.1+)</td><td>Persistent</td></tr>
+        <tr><td class="label-col">Use case</td><td>Fetching pages/data on demand</td><td>Delivering messages asynchronously</td></tr>
+      </tbody>
+    </table>
+
+    <p>These differences are not arbitrary. They follow directly from the problems the protocols solve. When you fetch a web page, you are there right now, waiting for the response. When you send email, the recipient might read it two days later — so the message must be queued, stored temporarily, and delivered when convenient.</p>
+
+    <h3>The message format — RFC 822</h3>
+    <p>SMTP is the protocol that moves the message, but the message itself — what lies inside the <code>DATA</code> block — has its own format defined in <strong>RFC 822</strong>. The comparison is roughly like HTTP and HTML: HTTP transports, HTML is what is transported.</p>
+
+    <p>An email message consists of <strong>header lines</strong> (<code>To:</code>, <code>From:</code>, <code>Subject:</code>, and so on), a <em>blank line</em>, and a <strong>body</strong>. It is important to distinguish these headers from the SMTP commands <code>MAIL FROM</code> and <code>RCPT TO</code> — the latter are part of the <em>negotiation</em> between servers (roughly like an envelope), while the RFC 822 headers are part of the <em>letter</em> itself inside the envelope. They often contain the same addresses, but they do not have to. (It is precisely this gap that some types of phishing exploit.)</p>
+
+    <h3>How modern webmail actually looks</h3>
+    <p>In practice, your traffic does not look exactly like the textbook. When you use Gmail or Outlook on the web, it is not SMTP that you speak from your browser to the server — it is HTTPS. Only when Gmail's servers need to deliver the message onward to the recipient's server does SMTP come into play. And when the recipient — also on the web — reads it, it is once again HTTPS all the way to the browser.</p>
+
+    <div class="callout callout-blue">
+      <div class="label">Summary</div>
+      Webmail = HTTPS from you to your server, SMTP between servers, HTTPS from the recipient's server to the recipient. Traditional email client (Outlook, Apple Mail) = SMTP from you out, SMTP between servers, IMAP from the recipient's server to the recipient. A mix of these is the norm.
+    </div>
+  </div>
+</section>
+
+<div class="container"><div class="divider">❋ ❋ ❋</div></div>
+
+<!-- ============ PART 2: DNS ============ -->
+<section>
+  <div class="container">
+    <div class="section-badge">02 · DNS — Domain Name System</div>
+    <h2>How the Internet finds out <em>where</em> things are</h2>
+    <p class="section-intro">Humans remember names. Computers route packets by numbers. DNS is the enormous, distributed translation machine that bridges the two worlds — and it must do it billions of times each day, without breaking down.</p>
+
+    <p class="lead">Every time you type <code>www.ntnu.no</code> in your browser, something happens almost instantaneously that is so fast you never notice it: a name must be translated to an IP address before anything else can happen. This translation is seemingly trivial — just look it up in a table — but it must work for every single name on the entire Internet, and every single name must be changeable when someone moves a service to a new server. This is not trivial.</p>
+
+    <h3>Why not just one big table?</h3>
+    <p>Let us start with the naive solution, which is pedagogically valuable precisely because it does not work. What if we had one central server somewhere in the world, with a gigantic table of all name-to-IP mappings? The client asks, the server answers, done.</p>
+
+    <div class="problem-box">
+      <div class="label">The problem with centralization</div>
+      Comcast's DNS servers alone handle roughly 600 billion queries per day. A central server would (1) be a single point of failure — the entire Internet goes down if it fails, (2) face impossible traffic volumes, (3) be far from most users, and (4) be a nightmare to maintain. It simply does not scale.
+    </div>
+
+    <p>The solution — and this is perhaps the most elegant design idea in the entire protocol world — is to make DNS <strong>distributed and hierarchical</strong>. No single server knows everything. Instead, each server knows a little, and knows whom to ask about the rest.</p>
+
+    <h3>The hierarchy</h3>
+    <p>Consider the name <code>www.amazon.com</code>. The hierarchy is built from right to left. At the very top sit the <strong>root servers</strong>. They know nothing about Amazon, but they know who manages <code>.com</code>. Below root sit the <strong>TLD servers</strong> (Top-Level Domain) — one group for <code>.com</code>, one for <code>.org</code>, one for <code>.no</code>, and so on. The <code>.com</code> server does not know the IP address of <code>www.amazon.com</code>, but it knows which server is <em>authoritative</em> for <code>amazon.com</code>. The authoritative server — operated by Amazon itself — finally knows the actual answer.</p>
+
+    <figure>
+      <svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg">
+        <rect x="330" y="20" width="100" height="40" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
+        <text x="380" y="45" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">Root</text>
+        <rect x="120" y="120" width="100" height="40" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
+        <text x="170" y="145" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">.com</text>
+        <rect x="330" y="120" width="100" height="40" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
+        <text x="380" y="145" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">.org</text>
+        <rect x="540" y="120" width="100" height="40" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
+        <text x="590" y="145" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">.edu</text>
+        <rect x="40" y="220" width="120" height="40" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5"/>
+        <text x="100" y="245" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">amazon.com</text>
+        <rect x="180" y="220" width="120" height="40" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5"/>
+        <text x="240" y="245" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">yahoo.com</text>
+        <rect x="320" y="220" width="120" height="40" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5"/>
+        <text x="380" y="245" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">pbs.org</text>
+        <rect x="460" y="220" width="120" height="40" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5"/>
+        <text x="520" y="245" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">nyu.edu</text>
+        <rect x="600" y="220" width="120" height="40" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5"/>
+        <text x="660" y="245" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">umass.edu</text>
+        <line x1="380" y1="60" x2="170" y2="120" stroke="#6b6257" stroke-width="1"/>
+        <line x1="380" y1="60" x2="380" y2="120" stroke="#6b6257" stroke-width="1"/>
+        <line x1="380" y1="60" x2="590" y2="120" stroke="#6b6257" stroke-width="1"/>
+        <line x1="170" y1="160" x2="100" y2="220" stroke="#6b6257" stroke-width="1"/>
+        <line x1="170" y1="160" x2="240" y2="220" stroke="#6b6257" stroke-width="1"/>
+        <line x1="380" y1="160" x2="380" y2="220" stroke="#6b6257" stroke-width="1"/>
+        <line x1="590" y1="160" x2="520" y2="220" stroke="#6b6257" stroke-width="1"/>
+        <line x1="590" y1="160" x2="660" y2="220" stroke="#6b6257" stroke-width="1"/>
+        <text x="20" y="45" font-family="Newsreader" font-style="italic" font-size="12" fill="#6b6257">Level 1</text>
+        <text x="20" y="145" font-family="Newsreader" font-style="italic" font-size="12" fill="#6b6257">TLD</text>
+        <text x="20" y="245" font-family="Newsreader" font-style="italic" font-size="12" fill="#6b6257">Authoritative</text>
+        <text x="380" y="300" text-anchor="middle" font-family="Newsreader" font-style="italic" font-size="13" fill="#6b6257">The hierarchy — no single server knows everything, but each server knows where to go next.</text>
+      </svg>
+    </figure>
+
+    <p>There are approximately 13 logical root "servers" in the world, but each is replicated hundreds of times using a technique called anycast — over 1,000 physical machines in total. <strong>ICANN</strong> (Internet Corporation for Assigned Names and Numbers) administers the root zone. These are the contact point of <em>last resort</em>: a local name server contacts the root servers only when it has not found the answer elsewhere.</p>
+
+    <h3>Local name servers — the unsung hero</h3>
+    <p>Between you and the entire hierarchy sits something that is not technically part of the DNS hierarchy itself, but is nonetheless the single most important server for your performance: your <strong>local name server</strong>. Every ISP runs one. NTNU has one. Your company has one. When your machine needs to look up a name, the query always goes here first.</p>
+
+    <p>The local server has a local <em>cache</em> of names it has recently looked up. If the answer is in the cache, you skip the entire trip up the hierarchy — you get the answer back in milliseconds. This is why DNS feels instantaneous even though it can actually involve multiple intermediaries. Most queries stop at the cache.</p>
+
+    <h3>Two ways to query: iterative vs recursive</h3>
+    <p>When a name server needs to go further up the hierarchy, there are two fundamental strategies. Let us follow an example: a host at <code>engineering.nyu.edu</code> wants to know the IP address of <code>gaia.cs.umass.edu</code>.</p>
+
+    <div class="stepper" id="stepper-dns">
+      <div class="label">Step by step — iterative DNS lookup</div>
+      <div class="stage">
+        <svg viewBox="0 0 760 280" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="#b04428"/>
+            </marker>
+          </defs>
+          <rect x="30" y="125" width="100" height="40" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
+          <text x="80" y="148" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#1a1612">requesting host</text>
+          <text x="80" y="180" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">engineering.nyu.edu</text>
+          <rect x="200" y="125" width="100" height="40" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
+          <text x="250" y="148" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#1a1612">local DNS</text>
+          <text x="250" y="180" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">dns.nyu.edu</text>
+          <rect x="370" y="20" width="100" height="40" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
+          <text x="420" y="44" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#1a1612">root DNS</text>
+          <rect x="540" y="80" width="100" height="40" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
+          <text x="590" y="104" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#1a1612">.edu TLD</text>
+          <rect x="540" y="200" width="120" height="40" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5"/>
+          <text x="600" y="224" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#b04428">authoritative</text>
+          <text x="600" y="260" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">dns.cs.umass.edu</text>
+          <g id="step-lines">
+            <line class="step-line" data-step="1" x1="130" y1="145" x2="195" y2="145" stroke="#b04428" stroke-width="2" marker-end="url(#arr2)" opacity="0"/>
+            <line class="step-line" data-step="2" x1="295" y1="135" x2="375" y2="60" stroke="#b04428" stroke-width="2" marker-end="url(#arr2)" opacity="0"/>
+            <line class="step-line" data-step="3" x1="375" y1="50" x2="295" y2="135" stroke="#2d4a7a" stroke-width="2" marker-end="url(#arr2)" opacity="0" stroke-dasharray="4,3"/>
+            <line class="step-line" data-step="4" x1="305" y1="145" x2="540" y2="100" stroke="#b04428" stroke-width="2" marker-end="url(#arr2)" opacity="0"/>
+            <line class="step-line" data-step="5" x1="540" y1="110" x2="305" y2="155" stroke="#2d4a7a" stroke-width="2" marker-end="url(#arr2)" opacity="0" stroke-dasharray="4,3"/>
+            <line class="step-line" data-step="6" x1="305" y1="160" x2="540" y2="215" stroke="#b04428" stroke-width="2" marker-end="url(#arr2)" opacity="0"/>
+            <line class="step-line" data-step="7" x1="540" y1="225" x2="305" y2="165" stroke="#2d4a7a" stroke-width="2" marker-end="url(#arr2)" opacity="0" stroke-dasharray="4,3"/>
+            <line class="step-line" data-step="8" x1="195" y1="155" x2="135" y2="155" stroke="#2d4a7a" stroke-width="2" marker-end="url(#arr2)" opacity="0" stroke-dasharray="4,3"/>
+          </g>
+        </svg>
+      </div>
+      <div class="step-desc" id="dns-desc">Click "Next" to see each step in an iterative DNS lookup.</div>
+      <div class="controls">
+        <button id="dns-prev" disabled>&#8249; Previous</button>
+        <span class="progress" id="dns-counter">Step 0 / 8</span>
+        <button id="dns-next">Next &#8250;</button>
+      </div>
+    </div>
+
+    <p>What you saw in the animation above is an <strong>iterative</strong> lookup: each server does not respond with a final answer, but with "I don't know, but ask this one instead." The local server does all the work itself — it hops from root to TLD to authoritative.</p>
+
+    <p>The other strategy is <strong>recursive</strong>: the local server asks the root server and says "figure this out for me," and the root server itself takes responsibility for asking the TLD, which asks the authoritative, and the answer bubbles back through the entire chain. This is simpler to implement on the client side, but places a much heavier load on the top layers of the hierarchy — and therefore is typically only used on the last leg, between you and your local server.</p>
+
+    <h3>DNS records (Resource Records)</h3>
+    <p>What is actually stored in all these name servers? The answer is a distributed database of <strong>resource records</strong>, or RRs. Each record has the format <code>(name, value, type, ttl)</code> — a name, a value, a type, and a "time to live" that indicates how long the answer is valid.</p>
+
+    <table>
+      <thead>
+        <tr><th>Type</th><th>What "name" is</th><th>What "value" is</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="label-col">A</td><td>A hostname</td><td>An IPv4 address</td></tr>
+        <tr><td class="label-col">NS</td><td>A domain (e.g., <code>amazon.com</code>)</td><td>Hostname of an authoritative name server</td></tr>
+        <tr><td class="label-col">CNAME</td><td>An alias name</td><td>The "canonical" (real) name</td></tr>
+        <tr><td class="label-col">MX</td><td>A domain</td><td>Hostname of a mail server for that domain</td></tr>
+      </tbody>
+    </table>
+
+    <p>The <strong>A record</strong> is the classic: name to IP. <strong>NS</strong> points to which server is authoritative. <strong>CNAME</strong> is an alias — so <code>www.ibm.com</code> can actually be a pointer to something like <code>servereast.backup2.ibm.com</code>, and you as a user never need to know. <strong>MX</strong> is how your SMTP server finds out where to deliver email for a domain; without MX records, email would not work.</p>
+
+    <div class="margin-note">DNS also enables load balancing: a busy website can have many servers with different IP addresses, all registered as <strong>A records</strong> for the same hostname. The authoritative DNS server rotates the order of addresses for each lookup, so that traffic spreads across many servers. CNAME, on the other hand, provides <em>aliasing</em> — the ability to let one hostname point to another — which is useful, but a different mechanism from load balancing.</div>
+
+    <h3>How do you get a new domain into DNS?</h3>
+    <p>Imagine you are starting a new company, "Network Utopia," and want the domain <code>networkutopia.com</code>. How do you get it into the global DNS database? The answer is a <strong>registrar</strong> — a commercially authorized organization (accredited by ICANN) that lets you register domain names.</p>
+
+    <p>The process is roughly as follows: you go to a registrar (for example GoDaddy or Domeneshop), check that <code>networkutopia.com</code> is available, pay a fee, and provide the names and IP addresses of your authoritative name servers — let us say <code>dns1.networkutopia.com</code> (212.44.9.129) and <code>dns2.networkutopia.com</code> (212.44.9.130). The registrar then inserts two records in the <code>.com</code> TLD servers:</p>
+
+    <pre>(networkutopia.com, dns1.networkutopia.com, NS)
+(dns1.networkutopia.com, 212.44.9.129, A)</pre>
+
+    <p>Now the <code>.com</code> TLD servers know that queries about <code>networkutopia.com</code> should be forwarded to <em>your</em> authoritative servers. On those servers you yourself enter A records for your web server (<code>www.networkutopia.com</code> → IP address) and MX records for the email server. From that moment the entire chain is complete: root → TLD → authoritative → final answer.</p>
+
+    <h3>Caching — the secret sauce</h3>
+    <p>What we have not yet said explicitly is <em>how</em> DNS manages to be so fast. The answer is caching, everywhere. When a name server — any name server — learns a mapping, it stores it in memory for future queries. It stores it until the TTL expires. TLD server addresses are typically cached in local servers virtually all the time, so root servers are almost never contacted for ordinary lookups.</p>
+
+    <p>The downside is that cached answers can become outdated. If you move a service to a new IP address, the change will not be visible everywhere on the Internet until all relevant TTLs have expired. This is why DNS changes often take hours or days to "propagate" — it is not a bug, it is the TTL doing its job.</p>
+
+    <div class="reveal" id="reveal-mx">
+      <div class="q">What do you think happens if you send email to <code>someone@example.com</code>, but <code>example.com</code> has no MX record in DNS?</div>
+      <button onclick="document.getElementById('reveal-mx-ans').classList.add('show')">Show answer</button>
+      <div class="answer" id="reveal-mx-ans">
+        <p>Your mail server will first query for the MX record for <code>example.com</code>. If it does not find one, most implementations will fall back to querying for an A record for <code>example.com</code> directly and try to deliver to that IP address. This is a historical fallback from early SMTP. In practice, all domains that receive email should have MX records — without them you are relying on senders implementing the fallback, and some do not.</p>
+      </div>
+    </div>
+
+    <h3>DNS messages</h3>
+    <p>DNS mostly uses UDP on port 53 — it is a query-response protocol where each query is short enough to fit in a single UDP packet, and the lower overhead compared to TCP provides much better performance for something that happens billions of times per day. Both queries and responses have the same message format: a header with a 16-bit identifier and some flags, followed by sections for questions, answers, authoritative records, and "helpful additional information."</p>
+
+    <p>The identifier is important: when a server receives many responses, it must know which question each response belongs to, and that is what this number is used for. The flags field indicates, among other things, whether the message is a query or response, whether recursion is desired, and whether the answer comes from an authoritative source.</p>
+
+    <h3>DNS security</h3>
+    <p>DNS is critical infrastructure, and that means some will try to attack it. The most common attack types are:</p>
+
+    <ul>
+      <li><strong>DDoS</strong> — bombarding root or TLD servers with traffic. Has been attempted many times; has so far never managed to cripple the Internet, partly due to caching and traffic filtering.</li>
+      <li><strong>DNS poisoning</strong> — sending fake responses to a name server so that it caches wrong information, directing users to the wrong destination.</li>
+      <li><strong>DNS amplification</strong> — sending DNS queries with a spoofed source address, so that the responses (which are much larger than the queries) are sent to the victim. Used as a DDoS weapon.</li>
+    </ul>
+
+    <p>The defense is called <strong>DNSSEC</strong> (RFC 4033), which adds digital signatures to DNS responses so that the client can verify that the answer actually comes from an authoritative source. It is not universally deployed yet, but it is the long-term solution.</p>
+
+    <div class="quiz" id="quiz2">
+      <div class="label">Check your understanding</div>
+      <div class="q-text">Why are root servers rarely actually contacted, even though they are technically at the top of the hierarchy?</div>
+      <div class="options">
+        <button class="option" data-correct="false">Because they are too slow to handle normal traffic</button>
+        <button class="option" data-correct="true">Because local name servers cache TLD server addresses, and those rarely change</button>
+        <button class="option" data-correct="false">Because ICANN has deactivated them as a security measure</button>
+        <button class="option" data-correct="false">Because DNS only uses them for new domains</button>
+      </div>
+      <div class="explanation">Local name servers almost always have TLD server addresses in their cache, so the iterative lookup process can jump straight to the TLD and proceed from there. Root thus becomes a "contact of last resort" — important that it exists, but rarely actually queried.</div>
+    </div>
+  </div>
+</section>
+
+<div class="container"><div class="divider">❋ ❋ ❋</div></div>
+
+<!-- ============ PART 3: SOCKETS ============ -->
+<section>
+  <div class="container">
+    <div class="section-badge">03 · Socket programming</div>
+    <h2>When you need to write something that <em>talks</em></h2>
+    <p class="section-intro">All the protocols we have examined — SMTP, HTTP, DNS — are built on top of something lower: the socket API. When you need to write your own network program, this is where you actually meet the transport layer face to face.</p>
+
+    <p class="lead">A socket is a peculiar word for something so fundamental. Think of it as a door: on one side stands your process, on the other side stands the transport layer in the operating system. You as the programmer control what happens on the inside of the door. The operating system manages everything on the outside — the packets, the routing, retransmission. The socket is the contract between the two of you.</p>
+
+    <figure>
+      <svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg">
+        <rect x="60" y="40" width="160" height="50" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
+        <text x="140" y="70" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">application</text>
+        <circle cx="140" cy="80" r="14" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5"/>
+        <text x="140" y="84" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428">proc</text>
+        <rect x="60" y="100" width="160" height="40" fill="#ddd5c4" stroke="#1a1612" stroke-width="1.5"/>
+        <text x="140" y="125" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#3d3832">transport</text>
+        <rect x="125" y="95" width="30" height="14" fill="#b04428"/>
+        <rect x="60" y="140" width="160" height="35" fill="#ddd5c4" stroke="#1a1612" stroke-width="1.5"/>
+        <text x="140" y="162" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#3d3832">network</text>
+        <rect x="60" y="175" width="160" height="35" fill="#ddd5c4" stroke="#1a1612" stroke-width="1.5"/>
+        <text x="140" y="197" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#3d3832">link / physical</text>
+        <ellipse cx="360" cy="135" rx="80" ry="40" fill="#f4f1ea" stroke="#6b6257" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <text x="360" y="140" text-anchor="middle" font-family="Newsreader" font-style="italic" font-size="14" fill="#6b6257">Internet</text>
+        <rect x="500" y="40" width="160" height="50" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
+        <text x="580" y="70" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">application</text>
+        <circle cx="580" cy="80" r="14" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5"/>
+        <text x="580" y="84" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428">proc</text>
+        <rect x="500" y="100" width="160" height="40" fill="#ddd5c4" stroke="#1a1612" stroke-width="1.5"/>
+        <text x="580" y="125" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#3d3832">transport</text>
+        <rect x="565" y="95" width="30" height="14" fill="#b04428"/>
+        <rect x="500" y="140" width="160" height="35" fill="#ddd5c4" stroke="#1a1612" stroke-width="1.5"/>
+        <text x="580" y="162" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#3d3832">network</text>
+        <rect x="500" y="175" width="160" height="35" fill="#ddd5c4" stroke="#1a1612" stroke-width="1.5"/>
+        <text x="580" y="197" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#3d3832">link / physical</text>
+        <text x="140" y="245" text-anchor="middle" font-family="Newsreader" font-style="italic" font-size="12" fill="#b04428">controlled by you</text>
+        <text x="140" y="262" text-anchor="middle" font-family="Newsreader" font-style="italic" font-size="12" fill="#6b6257">managed by OS</text>
+        <text x="155" y="100" font-family="IBM Plex Mono" font-size="10" fill="#b04428">socket</text>
+        <text x="595" y="100" font-family="IBM Plex Mono" font-size="10" fill="#b04428">socket</text>
+      </svg>
+      <figcaption>The socket is the door between your process and the transport layer — on both sides of the connection.</figcaption>
+    </figure>
+
+    <p>There are <strong>two types of sockets</strong>, because there are two transport services you can use: <strong>UDP</strong> for unreliable datagrams, and <strong>TCP</strong> for reliable, ordered byte streams. The difference between them is large enough that the APIs actually look different — you use different functions to send and receive — and the choice between them is the first and perhaps most important design decision you make when writing a network program.</p>
+
+    <h3>A small example program</h3>
+    <p>Throughout the rest of this section we will build a very simple application, in both a UDP version and a TCP version, so that the difference becomes clear. The application is deliberately trivial:</p>
+
+    <div class="callout">
+      <div class="label">Specification</div>
+      The client reads a line from the keyboard and sends it to the server. The server converts the line to uppercase and sends it back. The client prints the response. That is it. The entire protocol.
+    </div>
+
+    <h3>UDP — postcards in the mail</h3>
+    <p>The first thing you need to understand about UDP is that <em>there is no connection</em>. There is no handshake before data is sent. Each packet stands on its own. The sender explicitly attaches the destination IP and port number for every single packet, and the receiver extracts the sender's IP and port from each incoming packet. It is like sending postcards — each postcard is its own little event, and there is no conversation.</p>
+
+    <p>The consequences are important: packets <em>can</em> be lost, and they <em>can</em> arrive out of order. The operating system will do nothing about it. If your application requires reliability, you must build it yourself. In return, UDP is extremely lightweight — no startup time, no state, no extra round trip before the first byte can be sent.</p>
+
+    <p>Let us look at the code. First the client:</p>
+
+    <pre><span class="c-cmt"># Python UDP client</span>
+from socket import *
+serverName = <span class="c-cli">'hostname'</span>
+serverPort = 12000
+
+<span class="c-cmt"># Create a UDP socket</span>
+clientSocket = socket(AF_INET, <span class="c-key">SOCK_DGRAM</span>)
+
+message = input(<span class="c-cli">'Enter a sentence: '</span>)
+
+<span class="c-cmt"># We must attach the address and port for each send</span>
+clientSocket.sendto(message.encode(),
+                    (serverName, serverPort))
+
+<span class="c-cmt"># Read the response — we also learn who replied</span>
+modifiedMessage, serverAddress = clientSocket.recvfrom(2048)
+print(modifiedMessage.decode())
+
+clientSocket.close()</pre>
+
+    <p>Note <code>SOCK_DGRAM</code> — that is what says "UDP, please." And note <code>sendto</code>: the second argument is a tuple with the server name and port. We must specify it <em>every single time we send</em>, because the socket has no notion of who it "is connected to." Similarly, <code>recvfrom</code> returns both the data and the sender's address — because each datagram can technically come from any sender.</p>
+
+    <p>The server looks like this:</p>
+
+    <pre><span class="c-cmt"># Python UDP server</span>
+from socket import *
+serverPort = 12000
+
+serverSocket = socket(AF_INET, <span class="c-key">SOCK_DGRAM</span>)
+serverSocket.bind((<span class="c-cli">''</span>, serverPort))   <span class="c-cmt"># Listen on port 12000</span>
+
+print(<span class="c-cli">"The server is ready."</span>)
+
+while True:
+    message, clientAddress = serverSocket.recvfrom(2048)
+    modifiedMessage = message.decode().upper()
+    serverSocket.sendto(modifiedMessage.encode(),
+                        clientAddress)</pre>
+
+    <p>The server is almost simpler than the client. It creates a socket, binds it to a specific port (12000), and enters an infinite loop. For each datagram that arrives, it reads both the content <em>and</em> the client's address — and uses exactly that address to send the response back. No "connection" is opened or closed. Each iteration of the loop is a complete transaction in itself.</p>
+
+    <h3>TCP — a conversation from start to finish</h3>
+    <p>TCP is an entirely different world. Before any data can flow, the client must <em>establish a connection</em> to the server — the famous three-way handshake. Once the connection is established, you have something that behaves like a pipe: bytes you send in at one end come out in the same order at the other end, guaranteed, even if underlying packets were lost and had to be retransmitted.</p>
+
+    <p>The elegant design feature — and something that can be confusing the first time you encounter it — is that the server actually has <em>two</em> types of sockets. One is a <strong>"welcome socket"</strong> that sits waiting for clients to connect. When a client connects, the operating system creates an entirely <em>new</em> socket — a <strong>"connection socket"</strong> — that is dedicated to exactly this client. The welcome socket goes back to waiting for the next client, and the connection socket is used to communicate with the client that just connected.</p>
+
+    <div class="margin-note">This is how a server can talk to many clients simultaneously: one welcome socket, many connection sockets — one per active client. The operating system uses the sender-side port number to keep them apart.</div>
+
+    <p>The client code:</p>
+
+    <pre><span class="c-cmt"># Python TCP client</span>
+from socket import *
+serverName = <span class="c-cli">'servername'</span>
+serverPort = 12000
+
+clientSocket = socket(AF_INET, <span class="c-key">SOCK_STREAM</span>)
+clientSocket.connect((serverName, serverPort))   <span class="c-cmt"># 3-way handshake happens here</span>
+
+sentence = input(<span class="c-cli">'Enter a sentence: '</span>)
+
+<span class="c-cmt"># No need to specify the address — the socket already knows</span>
+clientSocket.send(sentence.encode())
+
+modifiedSentence = clientSocket.recv(1024)
+print(<span class="c-cli">'From the server:'</span>, modifiedSentence.decode())
+
+clientSocket.close()</pre>
+
+    <p>The differences from the UDP version are small but crucial. <code>SOCK_STREAM</code> instead of <code>SOCK_DGRAM</code>. The new line <code>connect()</code> that did not exist in UDP — this is where the actual TCP connection is established. And once that is done, we use <code>send</code> and <code>recv</code> without specifying any address, because the socket <em>knows</em> who it is connected to.</p>
+
+    <p>The server code is where the interesting difference really becomes apparent:</p>
+
+    <pre><span class="c-cmt"># Python TCP server</span>
+from socket import *
+serverPort = 12000
+
+serverSocket = socket(AF_INET, <span class="c-key">SOCK_STREAM</span>)
+serverSocket.bind((<span class="c-cli">''</span>, serverPort))
+serverSocket.listen(1)            <span class="c-cmt"># Start listening for connections</span>
+
+print(<span class="c-cli">"The server is ready."</span>)
+
+while True:
+    <span class="c-cmt"># accept() blocks until a client connects,</span>
+    <span class="c-cmt"># and then returns a COMPLETELY NEW socket for this client</span>
+    connectionSocket, addr = serverSocket.accept()
+
+    sentence = connectionSocket.recv(1024).decode()
+    capitalizedSentence = sentence.upper()
+    connectionSocket.send(capitalizedSentence.encode())
+
+    connectionSocket.close()       <span class="c-cmt"># Close THIS connection, not the welcome socket</span></pre>
+
+    <p>Look at <code>serverSocket.accept()</code>. That is where the magic happens. The function blocks until a client tries to connect, and when it does, it returns a pair: a <em>new</em> socket (<code>connectionSocket</code>) and the client's address. We talk with the client through this new socket, and when we are done we close <em>only it</em> — the welcome socket lives on, waiting for the next client.</p>
+
+    <h3>UDP and TCP — side by side</h3>
+
+    <table>
+      <thead>
+        <tr><th></th><th>UDP</th><th>TCP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="label-col">Socket type</td><td><code>SOCK_DGRAM</code></td><td><code>SOCK_STREAM</code></td></tr>
+        <tr><td class="label-col">Connection</td><td>None</td><td>Established with handshake</td></tr>
+        <tr><td class="label-col">Reliability</td><td>None — packets can be lost</td><td>Guaranteed delivery, correct order</td></tr>
+        <tr><td class="label-col">Send</td><td><code>sendto(data, address)</code></td><td><code>send(data)</code></td></tr>
+        <tr><td class="label-col">Receive</td><td><code>recvfrom()</code> → data + address</td><td><code>recv()</code> → data</td></tr>
+        <tr><td class="label-col">Server</td><td>One socket for everything</td><td>One welcome + one per client</td></tr>
+        <tr><td class="label-col">Suited for</td><td>DNS, video, games, telemetry</td><td>HTTP, SMTP, file transfer</td></tr>
+      </tbody>
+    </table>
+
+    <h3>When do you choose which?</h3>
+    <p>The simple answer is: TCP for most things. The nuanced answer requires that you think about your application's actual needs. Do you need every single byte to arrive? Use TCP. Can you tolerate loss, but need low latency and cannot wait for retransmissions? Use UDP. Are you sending something large enough that TCP connection overhead is negligible? TCP. Are you sending small, frequent, independent messages like DNS lookups or video packets where a packet arriving 200 ms late might as well be discarded? UDP.</p>
+
+    <div class="quiz" id="quiz3">
+      <div class="label">Check your understanding</div>
+      <div class="q-text">Why must a TCP server have two sockets — a "welcome socket" and a "connection socket" — while a UDP server manages with just one?</div>
+      <div class="options">
+        <button class="option" data-correct="false">Because TCP is newer than UDP and therefore uses more memory</button>
+        <button class="option" data-correct="true">Because TCP is connection-oriented, and each connection needs its own "channel" that can exist in parallel with others</button>
+        <button class="option" data-correct="false">Because UDP cannot handle multiple clients simultaneously</button>
+        <button class="option" data-correct="false">To make the code more complex</button>
+      </div>
+      <div class="explanation">UDP treats each datagram as an isolated event — the server uses the same socket to receive from all clients. TCP, on the other hand, has a persistent connection per client, and each of them needs its own socket so that the OS can route incoming bytes to the correct conversation. The welcome socket's only job is to "spawn" new connection sockets.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCLUSION ============ -->
+<section>
+  <div class="container">
+    <div class="section-badge">In closing</div>
+    <h2>The recurring <em>themes</em></h2>
+    <p class="section-intro">Three different protocols, three different problems — but if you read them side by side, you see that the same design choices appear again and again.</p>
+
+    <p>The first theme is <strong>centralized vs decentralized</strong>. SMTP is decentralized: each organization runs its own mail server. DNS is hierarchical, which is a form of decentralization with coordination — no one knows everything, but the structure ensures you can always find the one who does. Centralization is easy to understand and impossible to scale. Decentralization is the opposite: hard to design correctly, but the only path to the scales at which the Internet operates.</p>
+
+    <p>The second theme is <strong>stateless vs stateful</strong>. SMTP maintains state during a connection (it is in the middle of a conversation). DNS is largely stateless — each query is independent. UDP is fundamentally stateless, TCP is fundamentally stateful. Stateless protocols scale more easily because any server can answer any query; stateful protocols are necessary when something must be remembered across requests.</p>
+
+    <p>The third theme is <strong>"complexity at the edge."</strong> This is perhaps the most characteristic feature of Internet architecture as a whole. The network itself — routers, cables, IP — is deliberately dumb. All the interesting intelligence sits in the endpoints: in mail servers, in DNS resolvers, in the programs you yourself write with sockets. This design choice is the reason the Internet could grow without needing to be upgraded centrally, and it is the reason a student with a laptop in Trondheim can invent a completely new application tomorrow and roll it out globally without asking anyone for permission.</p>
+
+    <p>The fourth and final theme is <strong>reliable vs unreliable</strong> message delivery — and the insight that there is no single right choice. TCP and UDP exist side by side because they solve different problems. The same holds true up the stack: SMTP is built on TCP because email must arrive, while DNS is built on UDP because fast lookups that can be retried are better than reliable lookups that are slow.</p>
+
+    <div class="callout callout-green">
+      <div class="label">The most important takeaway</div>
+      Protocols are not magic. Every single design choice you have seen — push vs pull, hierarchy vs centralization, datagram vs stream — was made because the alternative would not have worked at the scale or with the constraints that existed. When you understand which problem a protocol solves, the form it takes becomes almost inevitable.
+    </div>
+  </div>
+</section>
+</main>
+
+<nav class="page-nav">
+  <div class="container">
+    <a href="p2p-video-cdn.html" class="prev"><span class="nav-label">&larr; Previous</span><span class="nav-title">P2P, Video, and CDN</span></a>
+  </div>
+</nav>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Spring 2026</p>
+  </div>
+</footer>
+
+<script>
+// Quiz logic
+(function() {
+  document.querySelectorAll('.quiz').forEach(function(quiz) {
+    var buttons = quiz.querySelectorAll('button.option');
+    var feedback = quiz.querySelector('.explanation');
+    buttons.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        buttons.forEach(function(b) {
+          b.disabled = true;
+          if (b.dataset.correct === 'true') b.classList.add('correct');
+          else if (b === btn) b.classList.add('incorrect');
+        });
+        if (feedback) feedback.classList.add('show');
+      });
+    });
+  });
+})();
+
+// DNS stepper
+(function() {
+  var stepper = document.getElementById('stepper-dns');
+  if (!stepper) return;
+  var lines = stepper.querySelectorAll('.step-line');
+  var prev = document.getElementById('dns-prev');
+  var next = document.getElementById('dns-next');
+  var counter = document.getElementById('dns-counter');
+  var desc = document.getElementById('dns-desc');
+  var step = 0;
+  var max = 8;
+
+  var descriptions = [
+    'Click "Next" to see each step in an iterative DNS lookup.',
+    '1. The host asks its local DNS server about gaia.cs.umass.edu.',
+    '2. The local server does not have the answer. It asks a root server.',
+    '3. The root server replies: "I don\'t know, but ask the .edu TLD server."',
+    '4. The local server asks the .edu TLD server.',
+    '5. The TLD server replies: "Ask the authoritative server for cs.umass.edu."',
+    '6. The local server asks the authoritative server.',
+    '7. The authoritative server returns the actual IP address.',
+    '8. The local server delivers the answer to the host — and caches it.'
+  ];
+
+  function render() {
+    lines.forEach(function(l) {
+      var s = parseInt(l.dataset.step);
+      l.style.opacity = (s <= step) ? '1' : '0';
+      l.style.transition = 'opacity 0.3s';
+    });
+    counter.textContent = 'Step ' + step + ' / ' + max;
+    desc.textContent = descriptions[step];
+    prev.disabled = step === 0;
+    next.disabled = step === max;
+  }
+
+  next.addEventListener('click', function() { if (step < max) { step++; render(); } });
+  prev.addEventListener('click', function() { if (step > 0) { step--; render(); } });
+  render();
+})();
+</script>
+
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

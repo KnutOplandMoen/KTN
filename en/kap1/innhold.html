@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Computer Networks and the Internet — Chapter 1</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Chapter 1</a>
+  </div>
+</nav>
+
+<main data-chapter="Chapter 1: Computer Networks and the Internet">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Chapter 1 · Data Communications</div>
+  <h1>Computer Networks and the <em>Internet</em></h1>
+  <p class="lede">What exactly is the Internet? How does data travel from A to B, what does it cost in time — and why is everything organized in layers?</p>
+  <nav class="toc">
+    <a href="#intro"><span>01</span> What is the Internet?</a>
+    <a href="#edge"><span>02</span> The network edge</a>
+    <a href="#core"><span>03</span> The network core</a>
+    <a href="#delay"><span>04</span> Delay, loss, and throughput</a>
+    <a href="#layers"><span>05</span> Protocol layers and service models</a>
+    <a href="#security"><span>06</span> Networks under attack</a>
+    <a href="#history"><span>07</span> The history of the Internet</a>
+  </nav>
+</div>
+</header>
+
+<!-- ============ INTRO ============ -->
+<section id="intro">
+<div class="container">
+  <div class="section-badge">01 · Introduction</div>
+  <h2>What is the <em>Internet</em>?</h2>
+  <p class="section-intro">Two complementary ways of thinking about the same network.</p>
+
+  <p class="dropcap">The Internet is something most people use for hundreds of minutes every day, yet very few can give a precise definition of. There are two ways to answer the question "what is the Internet?" — and both are equally valid. The first is the <em>nuts-and-bolts</em> description: what does it physically consist of? The second is the <em>service description</em>: what does it offer to applications that use it?</p>
+
+  <h3>The nuts-and-bolts description</h3>
+  <p>The Internet is a network of billions of <strong>end systems</strong> (also called <em>hosts</em>) connected via <strong>communication links</strong> and <strong>packet switches</strong>. End systems range from laptops and smartphones to servers, IoT sensors, and smart refrigerators. The links — fiber, copper cable, radio — bind them together, and packet switches (primarily <strong>routers</strong> and <strong>link-layer switches</strong>) forward data between them.</p>
+
+  <p>When an end system needs to send data, the data is divided into <strong>packets</strong> — small chunks with a header at the front that tells the network where they should go. Each packet travels independently through the network, hopping from switch to switch, and is reassembled at the receiver. End systems connect to the Internet through <strong>ISPs</strong> (Internet Service Providers), which in turn are connected in a hierarchy. The entire system is driven by <strong>protocols</strong> — rules for how devices communicate — where <em>TCP</em> and <em>IP</em> are the two most important.</p>
+
+  <div class="callout callout-blue">
+    <span class="label">What is a protocol?</span>
+    <p>A protocol defines the <strong>format and order</strong> of messages exchanged between two or more communicating entities, as well as the <strong>actions</strong> taken when a message is sent or received. Without protocols, two machines would send bits to each other with no shared understanding of what they mean.</p>
+  </div>
+
+  <h3>The service description</h3>
+  <p>From an application perspective, the Internet is an <strong>infrastructure that provides services to distributed applications</strong>. Email, the web, video streaming, online gaming, social media — all run on top of the Internet. The applications run on end systems, not inside the network, and they communicate with each other using a <strong>socket interface</strong>. The socket is the "door" between the application and the transport layer — it allows the application to request that data be delivered to another machine, without needing to know anything about routers and links along the way.</p>
+
+  <div class="callout callout-green">
+    <span class="label">Analogy</span>
+    <p>Think of the Internet as a postal system. You (the application) drop a letter in the mailbox (the socket). The postal system (the network) takes care of the rest — sorting, transporting, delivering. You don't need to know which route the letter takes or which trucks are used. You trust that there is a set of rules (protocols) that ensures the letter arrives.</p>
+  </div>
+</div>
+</section>
+
+<!-- ============ EDGE ============ -->
+<section id="edge">
+<div class="container">
+  <div class="section-badge">02 · The edge</div>
+  <h2>The network <em>edge</em></h2>
+  <p class="section-intro">End systems, access networks, and physical media — where you and the applications live.</p>
+
+  <p class="dropcap">The network edge is where the real action happens. This is where your laptop runs a browser, your smartphone streams video, and a server responds to HTTP requests. All of these are <strong>end systems</strong> — they sit at the edge of the network and do the useful work. Routers and switches inside the network do nothing the application cares about; they simply forward packets.</p>
+
+  <h3>Access networks — the last mile</h3>
+  <p>The access network is the link between your end system and the <em>first router</em> (edge router) in the network. It is often the narrowest and most expensive part of the entire connection, and a handful of technologies are used:</p>
+
+  <table>
+    <tr><th>Technology</th><th>Medium</th><th>Typical speed</th><th>Notes</th></tr>
+    <tr><td class="mono-cell">DSL</td><td>Existing telephone line (copper)</td><td>5–35 Mbps down</td><td>Speed decreases with distance from the central office</td></tr>
+    <tr><td class="mono-cell">Cable / HFC</td><td>Coaxial cable + fiber</td><td>Up to 1 Gbps down</td><td>Shared medium — capacity is shared with neighbors</td></tr>
+    <tr><td class="mono-cell">FTTH</td><td>Fiber to the home</td><td>1–10 Gbps</td><td>Dedicated fiber, fastest available</td></tr>
+    <tr><td class="mono-cell">WiFi (802.11)</td><td>Radio</td><td>Up to 9.6 Gbps (WiFi 6)</td><td>Wireless last hop, typically backed by cable/fiber</td></tr>
+    <tr><td class="mono-cell">4G / 5G</td><td>Radio (mobile network)</td><td>100 Mbps – 10 Gbps</td><td>Mobile broadband, covers large areas</td></tr>
+    <tr><td class="mono-cell">Satellite</td><td>Radio (orbit)</td><td>~100 Mbps (LEO)</td><td>High latency (GEO) or low (LEO, e.g. Starlink)</td></tr>
+  </table>
+
+  <h3>Physical media</h3>
+  <p>Regardless of the technology, bits must ultimately travel over a physical medium. We distinguish between <strong>guided media</strong> (the signal follows a physical conductor) and <strong>unguided media</strong> (the signal propagates freely):</p>
+
+  <div class="callout">
+    <span class="label">Guided media</span>
+    <p><strong>Twisted-pair cable</strong> — inexpensive, used in Ethernet and DSL, up to 10 Gbps over short distances. <strong>Coaxial cable</strong> — used in cable TV networks, shared medium, good bandwidth. <strong>Fiber-optic cable</strong> — light pulses in glass, enormous bandwidth, low attenuation, immune to electromagnetic interference.</p>
+  </div>
+
+  <div class="callout callout-blue">
+    <span class="label">Unguided media</span>
+    <p><strong>Terrestrial radio (WiFi, Bluetooth)</strong> — short range, affected by walls and interference. <strong>Microwave (4G/5G)</strong> — longer range, widely used in mobile networks. <strong>Satellite</strong> — global coverage possible, but latency is a challenge (GEO: ~280 ms one-way, ~560 ms RTT).</p>
+  </div>
+
+  <div class="margin-note">Fiber-optic cable is the only medium that is not degraded by electromagnetic noise. That is why it is the preferred medium for long distances and high speeds — undersea cables between continents are almost exclusively fiber.</div>
+</div>
+</section>
+
+<!-- ============ CORE ============ -->
+<section id="core">
+<div class="container">
+  <div class="section-badge">03 · The network core</div>
+  <h2>The network <em>core</em></h2>
+  <p class="section-intro">Packet switching vs. circuit switching — two fundamentally different ways to share a network.</p>
+
+  <p class="dropcap">The core of the Internet is a mesh of routers connected by high-speed fiber links. No end systems reside here — only switches that forward packets. But <em>how</em> they forward follows one of two principles that are worth understanding thoroughly, because they define everything that happens above.</p>
+
+  <h3>Packet switching</h3>
+  <p>The Internet uses packet switching. Data is divided into <strong>packets</strong> that are sent independently through the network. Each router that receives a packet stores it completely (<em>store</em>), checks the destination, and forwards it to the next router (<em>forward</em>). This is called <strong>store-and-forward</strong>: the entire packet must be received before it can be forwarded.</p>
+
+  <div class="callout">
+    <span class="label">Store-and-forward — the consequence</span>
+    <p>If a packet is <em>L</em> bits long and the link speed is <em>R</em> bits/second, it takes <strong>L/R seconds</strong> to transmit the packet onto the link. And the router cannot begin forwarding it until it has received everything — that is, after another L/R seconds. For a single packet over N links, the total delay is <strong>N × L/R</strong>.</p>
+  </div>
+
+  <div class="stepper" id="sfStepper">
+    <div class="stage">
+      <h5 id="sfTitle">Step 1 of 4</h5>
+      <p id="sfText"></p>
+      <svg id="sfSvg" viewBox="0 0 640 180" xmlns="http://www.w3.org/2000/svg">
+        <text x="60" y="40" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">Source</text>
+        <rect x="30" y="50" width="60" height="40" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="2"/>
+        <text x="60" y="75" text-anchor="middle" font-family="IBM Plex Mono" font-size="10">SRC</text>
+
+        <text x="310" y="40" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">Router</text>
+        <rect x="280" y="50" width="60" height="40" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="2"/>
+        <text x="310" y="75" text-anchor="middle" font-family="IBM Plex Mono" font-size="10">R</text>
+
+        <text x="560" y="40" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">Destination</text>
+        <rect x="530" y="50" width="60" height="40" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="2"/>
+        <text x="560" y="75" text-anchor="middle" font-family="IBM Plex Mono" font-size="10">DST</text>
+
+        <line x1="90" y1="70" x2="280" y2="70" stroke="#c9c0ae" stroke-width="1.5"/>
+        <line x1="340" y1="70" x2="530" y2="70" stroke="#c9c0ae" stroke-width="1.5"/>
+
+        <g id="sfAnim"></g>
+      </svg>
+    </div>
+    <div class="controls">
+      <button id="sfPrev">&larr; Previous</button>
+      <span class="progress" id="sfInd">1 / 4</span>
+      <button id="sfNext">Next &rarr;</button>
+    </div>
+  </div>
+
+  <h3>Circuit switching</h3>
+  <p>The traditional telephone network uses circuit switching. Before a call starts, a <strong>dedicated connection</strong> (circuit) is set up all the way from sender to receiver. The resources (bandwidth, time slot, frequency band) are <em>reserved</em> and guaranteed to be available for the entire call — but they are also <em>blocked</em> for everyone else, even when you are silent.</p>
+
+  <p>Resources in a circuit can be divided in two ways:</p>
+
+  <div class="callout">
+    <span class="label">FDM (Frequency Division)</span>
+    <p>The frequency band is divided into narrow bands. Each call gets its own frequency band. Everyone transmits simultaneously, but on different frequencies.</p>
+  </div>
+
+  <div class="callout callout-blue">
+    <span class="label">TDM (Time Division)</span>
+    <p>Time is divided into frames with fixed time slots. Each call gets its time slot in each frame. Everyone shares the same frequency, but transmits in turn.</p>
+  </div>
+
+  <h3>Why did packet switching win?</h3>
+  <p>The answer is <strong>statistical multiplexing</strong>. Users are rarely active all the time — you alternate between reading a page, clicking a link, waiting. With packet switching, the network's capacity is shared dynamically: when you are idle, others use the capacity. With circuit switching, the reserved capacity would sit unused. The result is that packet switching can serve <em>far more users</em> than circuit switching for the same amount of network resources.</p>
+
+  <div class="callout">
+    <span class="label">Example</span>
+    <p>A link with 1 Mbps capacity. Each user needs 100 kbps <em>when active</em>, but is only active 10% of the time. With circuit switching (TDM): 10 users max. With packet switching: 35 users can share the link, and the probability that more than 10 are active simultaneously is under 0.04%. Packet switching wins with 3.5× more users — for a very small loss of guarantee.</p>
+  </div>
+
+  <h3>A network of networks</h3>
+  <p>The Internet is not a single network, but a <strong>network of networks</strong>. Millions of access ISPs (Telenor, Telia, your local fiber provider) connect end systems. These access ISPs are in turn connected to <strong>regional ISPs</strong>, which connect up to a small number of <strong>Tier 1 ISPs</strong> (e.g., Lumen, NTT, Telia Carrier) that have global reach. In addition, <strong>IXPs</strong> (Internet Exchange Points) exist where ISPs meet and exchange traffic directly, and large content providers like Google and Netflix build their own <strong>private networks</strong> to reach users faster.</p>
+</div>
+</section>
+
+<div class="divider">&diams; &diams; &diams;</div>
+
+<!-- ============ DELAY ============ -->
+<section id="delay">
+<div class="container">
+  <div class="section-badge">04 · Delay</div>
+  <h2>Delay, <em>loss</em>, and throughput</h2>
+  <p class="section-intro">The four components that together make up the delay — and why packets sometimes disappear.</p>
+
+  <p class="dropcap">When a packet travels from A to B, it takes time. This delay is not one thing — it is the sum of four different components, each with its own cause and behavior. Understanding these four is the key to understanding why the network sometimes feels slow.</p>
+
+  <h3>The four delay components</h3>
+
+  <div class="callout">
+    <span class="label">1. Processing delay (d_proc)</span>
+    <p>The time the router spends examining the packet's header, checking for bit errors, and determining which output link the packet should go to. Typically <strong>microseconds</strong> — negligible in most contexts.</p>
+  </div>
+
+  <div class="callout callout-blue">
+    <span class="label">2. Queuing delay (d_queue)</span>
+    <p>The time the packet waits in the router queue before it gets to go out on the link. Depends on <em>how many other packets</em> are already waiting. Can range from <strong>zero</strong> (no queue) to <strong>milliseconds</strong> (long queue), and is the only one of the four that is fundamentally unpredictable.</p>
+  </div>
+
+  <div class="callout callout-green">
+    <span class="label">3. Transmission delay (d_trans)</span>
+    <p>The time it takes to <em>push all the bits onto the link</em>. Depends on the packet length <em>L</em> and the link speed <em>R</em>: <strong>d_trans = L / R</strong>. A 1500-byte packet on a 1 Gbps link: 12 µs. The same packet on a 1 Mbps link: 12 ms — a thousand times more.</p>
+  </div>
+
+  <div class="callout">
+    <span class="label">4. Propagation delay (d_prop)</span>
+    <p>The time the signal takes to physically travel through the medium — in copper or fiber at approximately 2 × 10⁸ m/s. <strong>d_prop = distance / speed</strong>. Norway to the USA (~6000 km): ~30 ms. Same room: negligible. This delay cannot be reduced without moving the machines closer together.</p>
+  </div>
+
+  <p>The total nodal delay for a single router is therefore:</p>
+  <pre><code>d_nodal = d_proc + d_queue + d_trans + d_prop</code></pre>
+
+  <div class="margin-note">Transmission delay and propagation delay are the two most commonly confused. Transmission is about <em>how fast you push bits onto the link</em> (depends on link speed). Propagation is about <em>how long the bits take to travel through the medium</em> (depends on physical distance). They are two entirely different things.</div>
+
+  <h3>Interactive calculator</h3>
+
+  <div class="slider-box">
+    <div class="label">Delay calculator</div>
+    <label>Packet length (L): <span class="val" id="pktVal">1500 bytes</span></label>
+    <input type="range" id="pktSlider" min="64" max="9000" value="1500" step="1">
+    <label>Link speed (R): <span class="val" id="rateVal">100 Mbps</span></label>
+    <input type="range" id="rateSlider" min="1" max="10000" value="100" step="1">
+    <label>Distance (d): <span class="val" id="distVal">500 km</span></label>
+    <input type="range" id="distSlider" min="1" max="15000" value="500" step="1">
+    <div class="readout" id="delayOut"></div>
+  </div>
+
+  <h3>Queuing delay and traffic intensity</h3>
+  <p>Queuing delay is the most interesting of the four, because it is the only one that <em>explodes</em> under load. We measure the load with <strong>traffic intensity</strong>:</p>
+  <pre><code>Traffic intensity = (L × a) / R</code></pre>
+  <p>Where <em>a</em> is the average number of packets arriving per second. When the traffic intensity approaches 1, the queuing delay grows toward infinity. Above 1, the queue grows faster than it drains — packets are <em>dropped</em> because the buffer is full. This is <strong>packet loss</strong>.</p>
+
+  <h3>End-to-end delay</h3>
+  <p>Over an entire route with N links (and N−1 routers), the delays are summed. If all links are identical:</p>
+  <pre><code>d_end-to-end = N × (d_proc + d_queue + d_trans + d_prop)</code></pre>
+
+  <h3>Throughput</h3>
+  <p>Throughput is the effective rate at which data is delivered from sender to receiver, measured in bits per second. For a route with multiple links, the throughput is limited by the <em>narrowest</em> link — the <strong>bottleneck link</strong>. If you have a 1 Gbps fiber at home but the server sends over a 10 Mbps link, your throughput is 10 Mbps.</p>
+
+  <p>In practice, the bottleneck is most often in the <em>access network</em> (last mile) or at the server itself, not in the network core where the links are enormously fast.</p>
+
+  <h3>Measuring delay in practice: <code>traceroute</code> and <code>ping</code></h3>
+  <p>How do you actually know what the delay is on a given route? Two classic tools let you find out:</p>
+
+  <div class="callout callout-blue">
+    <span class="label">traceroute (tracert on Windows)</span>
+    <p>Sends series of special packets that "expire" at each router along the route to a destination. Each router the packet passes through sends an error message back, and <code>traceroute</code> measures the round-trip time (RTT) to each individual router. The result is a list of all routers along the path and the delay to each of them — so you can see <em>where</em> the delay occurs.</p>
+  </div>
+
+  <div class="callout callout-green">
+    <span class="label">ping</span>
+    <p>Sends a simple ICMP Echo Request packet to a destination and measures the time it takes to receive a reply (RTT). It is the quickest way to check whether a host is reachable and how long the delay is. <code>ping</code> also shows whether packets are lost, which indicates network problems.</p>
+  </div>
+
+  <div class="margin-note">Both tools use the ICMP protocol (Internet Control Message Protocol) at the network layer. Some routers and firewalls block ICMP, so <code>traceroute</code> sometimes shows "* * *" for certain hops.</div>
+</div>
+</section>
+
+<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
+  <p class="q-text">A 1000-byte packet is sent over a link with a capacity of 10 Mbps. What is the transmission delay?</p>
+  <div class="options">
+    <button class="option" data-correct="false">1 ms</button>
+    <button class="option" data-correct="true">0.8 ms (800 µs)</button>
+    <button class="option" data-correct="false">100 µs</button>
+    <button class="option" data-correct="false">8 ms</button>
+  </div>
+  <div class="explanation" id="qFeedback1"></div>
+</div>
+
+<!-- ============ LAYERS ============ -->
+<section id="layers">
+<div class="container">
+  <div class="section-badge">05 · Protocol layers</div>
+  <h2>Protocol layers and <em>service models</em></h2>
+  <p class="section-intro">Why all network communication is organized in a stack of layers — and what each layer does.</p>
+
+  <p class="dropcap">A computer network is enormously complex: it must handle everything from electromagnetic signals in a cable to video streaming in a browser. To tame this complexity, we divide the functionality into <strong>layers</strong>, where each layer offers a service to the layer above and uses the services of the layer below. It is like a postal system where you never talk to the driver — you drop the letter in the mailbox, and each intermediary takes care of its part.</p>
+
+  <h3>The five layers of the Internet</h3>
+
+  <table>
+    <tr><th>#</th><th>Layer</th><th>Protocols (examples)</th><th>Responsibility</th></tr>
+    <tr><td class="mono-cell">5</td><td><strong>Application layer</strong></td><td>HTTP, SMTP, DNS, FTP</td><td>Messages between applications</td></tr>
+    <tr><td class="mono-cell">4</td><td><strong>Transport layer</strong></td><td>TCP, UDP</td><td>End-to-end data delivery between processes</td></tr>
+    <tr><td class="mono-cell">3</td><td><strong>Network layer</strong></td><td>IP, ICMP</td><td>Routing of packets (datagrams) from source to destination</td></tr>
+    <tr><td class="mono-cell">2</td><td><strong>Link layer</strong></td><td>Ethernet, WiFi (802.11)</td><td>Transferring frames between neighboring nodes</td></tr>
+    <tr><td class="mono-cell">1</td><td><strong>Physical layer</strong></td><td>—</td><td>Bits over a physical medium (voltages, light pulses, radio waves)</td></tr>
+  </table>
+
+  <h3>The OSI model — seven layers</h3>
+  <p>The alternative <strong>OSI reference model</strong> (Open Systems Interconnection) has seven layers instead of five. The two extra layers — the <em>presentation layer</em> and the <em>session layer</em> — sit between the application and transport layers. In the Internet, these functions (data compression, encryption, session management) are left to the application itself, and the layers do not exist as separate entities. OSI is important as a historical reference and in academic contexts, but in practice it is the five-layer model that describes the real Internet.</p>
+
+  <h3>Encapsulation — layers wrap inside layers</h3>
+  <p>The most elegant consequence of layering is <strong>encapsulation</strong>. When the application sends a message, the transport layer wraps it in a <em>segment</em> by adding its own header. The network layer wraps the segment in a <em>datagram</em> with an IP header. The link layer wraps the datagram in a <em>frame</em> with its header (and trailer). Each layer sees only its own header — what is inside is "just data" from the layer's perspective.</p>
+
+  <figure>
+    <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
+      <rect x="250" y="20" width="200" height="36" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/>
+      <text x="350" y="43" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">Message (data)</text>
+      <text x="210" y="43" text-anchor="end" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">Application</text>
+
+      <rect x="200" y="76" width="50" height="36" fill="#e8d4cd" stroke="#b04428" stroke-width="1.5"/>
+      <text x="225" y="99" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">Ht</text>
+      <rect x="250" y="76" width="200" height="36" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/>
+      <text x="350" y="99" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">data</text>
+      <text x="160" y="99" text-anchor="end" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">Transport</text>
+
+      <rect x="150" y="132" width="50" height="36" fill="#d4dce8" stroke="#2d4a7a" stroke-width="1.5"/>
+      <text x="175" y="155" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">Hn</text>
+      <rect x="200" y="132" width="50" height="36" fill="#e8d4cd" stroke="#b04428" stroke-width="1.5"/>
+      <text x="225" y="155" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">Ht</text>
+      <rect x="250" y="132" width="200" height="36" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/>
+      <text x="350" y="155" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">data</text>
+      <text x="110" y="155" text-anchor="end" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">Network</text>
+
+      <rect x="100" y="188" width="50" height="36" fill="#d4e6d4" stroke="#3d6b3a" stroke-width="1.5"/>
+      <text x="125" y="211" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">Hl</text>
+      <rect x="150" y="188" width="50" height="36" fill="#d4dce8" stroke="#2d4a7a" stroke-width="1.5"/>
+      <text x="175" y="211" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">Hn</text>
+      <rect x="200" y="188" width="50" height="36" fill="#e8d4cd" stroke="#b04428" stroke-width="1.5"/>
+      <text x="225" y="211" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">Ht</text>
+      <rect x="250" y="188" width="200" height="36" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/>
+      <text x="350" y="211" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">data</text>
+      <rect x="450" y="188" width="40" height="36" fill="#d4e6d4" stroke="#3d6b3a" stroke-width="1.5"/>
+      <text x="470" y="211" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">Tl</text>
+      <text x="60" y="211" text-anchor="end" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">Link</text>
+
+      <text x="350" y="260" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">Each layer adds its header (and possibly trailer) around the data from the layer above</text>
+    </svg>
+    <figcaption>Encapsulation: application data is wrapped layer by layer with headers. The receiver unwraps in reverse order — each layer removes its header and delivers the rest upward.</figcaption>
+  </figure>
+
+  <div class="callout callout-green">
+    <span class="label">Why is this so powerful?</span>
+    <p>Encapsulation means that each layer is <strong>independent</strong>. You can swap Ethernet for WiFi at the link layer without TCP caring. You can add encryption at the application layer without IP knowing about it. The layers are like Lego bricks — they can be freely combined, as long as the interface between them is respected.</p>
+  </div>
+</div>
+</section>
+
+<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
+  <p class="q-text">In the Internet's five-layer model — which layer is responsible for routing packets from source to destination through the network?</p>
+  <div class="options">
+    <button class="option" data-correct="false">Transport layer</button>
+    <button class="option" data-correct="true">Network layer</button>
+    <button class="option" data-correct="false">Link layer</button>
+    <button class="option" data-correct="false">Application layer</button>
+  </div>
+  <div class="explanation" id="qFeedback2"></div>
+</div>
+
+<!-- ============ SECURITY ============ -->
+<section id="security">
+<div class="container">
+  <div class="section-badge">06 · Security threats</div>
+  <h2>Networks under <em>attack</em></h2>
+  <p class="section-intro">The Internet was not designed with security in mind — and attackers have exploited this from the start.</p>
+
+  <p class="dropcap">The early designers of the Internet focused on robustness and openness, not security. The result is that the attack surfaces are numerous and serious. Here are the most important categories you should know about already — we go deeper in Chapter 8.</p>
+
+  <h3>Malware</h3>
+  <p>Malicious software that infects end systems. <strong>Viruses</strong> spread by inserting themselves into files the user actively opens. <strong>Worms</strong> spread by themselves without user interaction — they exploit vulnerabilities in network services and can infect thousands of machines in minutes. Once a machine is infected, it can become part of a <strong>botnet</strong> — a network of compromised machines that are remotely controlled.</p>
+
+  <h3>Denial-of-service attacks (DoS / DDoS)</h3>
+  <p>The goal is to make a service unavailable to legitimate users. In a <strong>DoS attack</strong>, the attacker floods the target with traffic, so the server or network is too busy to serve real requests. In a <strong>DDoS attack</strong> (Distributed DoS), the traffic comes from thousands of machines in a botnet — much harder to stop because the attack traffic looks like normal traffic from many different sources.</p>
+
+  <div class="callout">
+    <span class="label">Three attack patterns for DoS</span>
+    <p><strong>Vulnerability exploitation:</strong> Send specially crafted messages that crash the service. <strong>Bandwidth flooding:</strong> Send a massive volume of packets that fill up the link's capacity. <strong>Connection flooding:</strong> Open an enormous number of half-open TCP connections that exhaust the server's resources (SYN flooding).</p>
+  </div>
+
+  <h3>Packet sniffing</h3>
+  <p>A passive receiver that listens to traffic passing by — especially dangerous on shared media like WiFi. A sniffer can capture passwords, emails, and everything else sent unencrypted. The solution is encryption (TLS/HTTPS), but many protocols still send data in plaintext.</p>
+
+  <h3>IP spoofing</h3>
+  <p>The attacker crafts packets with a <em>forged source IP address</em>. The receiver believes the packet came from someone else. This is used in reflection attacks (DDoS), phishing, and to bypass access controls that are based on IP addresses.</p>
+</div>
+</section>
+
+<!-- ============ HISTORY ============ -->
+<section id="history">
+<div class="container">
+  <div class="section-badge">07 · History</div>
+  <h2>The <em>history</em> of the Internet</h2>
+  <p class="section-intro">From ARPANET with four nodes to a network with billions of devices — in fifty years.</p>
+
+  <p class="dropcap">The history of the Internet is the history of an idea that proved unstoppable: that one could build a reliable communication system from unreliable parts, by dividing information into packets and letting them find their own way. The idea grew from military research into the world's most pervasive infrastructure.</p>
+
+  <h3>The 1960s: the birth of packet switching</h3>
+  <p>Three research groups — MIT/DARPA in the USA, NPL in England, and RAND in the USA — independently arrived at the idea of packet switching. In 1969, <strong>ARPANET</strong> was launched with four nodes (UCLA, SRI, UCSB, Utah). It was the world's first packet-switched network, and it worked.</p>
+
+  <h3>The 1970s: more networks, the need for inter-networking</h3>
+  <p>More packet-switched networks appeared: ALOHAnet (Hawaii, wireless), Telenet (commercial), Cyclades (France). The problem was that they couldn't talk to each other. <strong>Vinton Cerf</strong> and <strong>Bob Kahn</strong> designed TCP/IP to connect different networks — <em>inter-networking</em> — and published the architecture in 1974.</p>
+
+  <h3>The 1980s: TCP/IP and DNS</h3>
+  <p>January 1, 1983 — <em>"flag day"</em> — ARPANET officially switched to TCP/IP. <strong>DNS</strong> was introduced to translate names into IP addresses. The university networks (NSFNET) grew explosively, and email became the first "killer app."</p>
+
+  <h3>The 1990s: the World Wide Web and commercialization</h3>
+  <p><strong>Tim Berners-Lee</strong> at CERN invented the World Wide Web in 1989–91: HTTP, HTML, and the first browser. The Mosaic browser (1993) and Netscape (1994) brought the web to the masses. NSFNET was decommissioned in 1995, and the Internet became fully commercialized. The dot-com boom brought enormous investments in network infrastructure.</p>
+
+  <h3>The 2000s and beyond</h3>
+  <p>Broadband replaced dial-up. WiFi and smartphones made the Internet mobile. Social media, cloud services, streaming services, and IoT exploded. Today over 5 billion people are connected to the Internet, and the volume of traffic roughly doubles every three years. The underlying protocols — TCP, IP, DNS, HTTP — are remarkably unchanged from when they were designed.</p>
+</div>
+</section>
+
+<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
+  <p class="q-text">What is the most important advantage of packet switching over circuit switching?</p>
+  <div class="options">
+    <button class="option" data-correct="false">Packet switching provides lower latency in all cases</button>
+    <button class="option" data-correct="false">Packet switching guarantees no packet loss</button>
+    <button class="option" data-correct="true">Packet switching utilizes network resources better through statistical multiplexing — more users can share the capacity</button>
+    <button class="option" data-correct="false">Packet switching does not need routers</button>
+  </div>
+  <div class="explanation" id="qFeedback3"></div>
+</div>
+
+<div class="quiz" style="max-width:820px;margin:0 auto 80px;">
+  <p class="q-text">What is encapsulation in the context of network protocols?</p>
+  <div class="options">
+    <button class="option" data-correct="false">An encryption technique that hides the data content</button>
+    <button class="option" data-correct="false">A method for compressing packets to a smaller size</button>
+    <button class="option" data-correct="true">Each protocol layer wrapping data from the layer above by adding its own header (and possibly trailer)</button>
+    <button class="option" data-correct="false">All layers using the same header format to ensure compatibility</button>
+  </div>
+  <div class="explanation" id="qFeedback4"></div>
+</div>
+
+<div style="max-width:820px;margin:0 auto 60px;">
+  <div style="font-family:var(--mono,'IBM Plex Mono',monospace);font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted,#6b6257);margin-bottom:18px;">Reflection questions</div>
+
+  <div class="quiz" style="margin-bottom:24px;">
+    <p class="q-text">Explain the difference between transmission delay and propagation delay using an analogy.</p>
+    <details style="margin-top:14px;">
+      <summary style="cursor:pointer;font-family:var(--mono,'IBM Plex Mono',monospace);font-size:13px;color:var(--rust,#b04428);padding:8px 0;">Show suggested answer</summary>
+      <div style="margin-top:10px;padding:14px 18px;background:var(--paper-dark,#f4f1ea);border-radius:6px;font-family:var(--serif,'Newsreader',serif);font-size:16px;line-height:1.65;color:var(--ink,#1a1612);">
+        <p>Think of a caravan of 10 cars that must pass through a toll booth and then drive 100 km to the next toll booth. <strong>Transmission delay</strong> corresponds to the time it takes for all the cars to pass through the booth (depends on how fast the booth processes cars — i.e., the link speed R and the number of bits L). <strong>Propagation delay</strong> corresponds to the time it takes for one car to drive the 100 km (depends on the distance and the speed of the signal in the medium). The two are completely independent: you can make the booth faster without shortening the road, and you can shorten the road without making the booth faster.</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="quiz" style="margin-bottom:24px;">
+    <p class="q-text">Why does the Internet use packet switching instead of circuit switching? Name at least one disadvantage of packet switching.</p>
+    <details style="margin-top:14px;">
+      <summary style="cursor:pointer;font-family:var(--mono,'IBM Plex Mono',monospace);font-size:13px;color:var(--rust,#b04428);padding:8px 0;">Show suggested answer</summary>
+      <div style="margin-top:10px;padding:14px 18px;background:var(--paper-dark,#f4f1ea);border-radius:6px;font-family:var(--serif,'Newsreader',serif);font-size:16px;line-height:1.65;color:var(--ink,#1a1612);">
+        <p>Packet switching is used because it utilizes network resources far more efficiently through <strong>statistical multiplexing</strong>: since users are rarely active at the same time, capacity can be shared dynamically. The same link can serve many more users than with circuit switching, where resources are reserved and sit unused when a user is idle.</p>
+        <p><strong>Disadvantages:</strong> Packet switching provides no guarantees for delay or bandwidth — queuing delay is unpredictable, and packets can be lost (dropped) when router queues are full. This makes it harder to provide services that require real-time guarantees (e.g., traditional telephony).</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="quiz" style="margin-bottom:24px;">
+    <p class="q-text">What happens to queuing delay when the traffic intensity (La/R) approaches 1? And what happens when it exceeds 1?</p>
+    <details style="margin-top:14px;">
+      <summary style="cursor:pointer;font-family:var(--mono,'IBM Plex Mono',monospace);font-size:13px;color:var(--rust,#b04428);padding:8px 0;">Show suggested answer</summary>
+      <div style="margin-top:10px;padding:14px 18px;background:var(--paper-dark,#f4f1ea);border-radius:6px;font-family:var(--serif,'Newsreader',serif);font-size:16px;line-height:1.65;color:var(--ink,#1a1612);">
+        <p>When the traffic intensity approaches 1 (i.e., packets arrive almost as fast as they are sent out), the average queuing delay grows dramatically — it tends toward <strong>infinity</strong>. Small random variations in arrival times cause the queue to grow faster than it can drain.</p>
+        <p>When the traffic intensity exceeds 1, packets arrive faster than the link can send them out. The queue grows without bound — but since the buffer has a finite size, packets that don't fit are <strong>dropped</strong> (packet loss). Designing networks so that the traffic intensity stays well below 1 is therefore essential.</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+</main>
+
+<nav class="page-nav">
+  <div class="container">
+    <a href="./" class="prev"><span class="nav-label">&larr; Back</span><span class="nav-title">Chapter 1 — overview</span></a>
+  </div>
+</nav>
+
+<footer>
+  <div class="container">
+    <p>Based on <em>Computer Networking: A Top-Down Approach</em>, 8th edition, by Kurose &amp; Ross — Chapter 1.</p>
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var steps = [
+    {title:'Step 1: The source sends the packet', text:'The source begins transmitting a packet of L bits onto the first link at rate R. It takes L/R seconds to push all the bits out.', anim:'<rect x="95" y="58" width="90" height="24" fill="#b04428" opacity="0.7" rx="2"/><text x="140" y="74" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fff">L bits → R bps</text>'},
+    {title:'Step 2: The packet arrives at the router', text:'After L/R seconds, the entire packet has arrived at the router. The router cannot begin forwarding until it has received all the bits — this is the store-and-forward principle.', anim:'<rect x="285" y="58" width="50" height="24" fill="#2d4a7a" opacity="0.7" rx="2"/><text x="310" y="74" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fff">STORED</text><text x="310" y="120" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#6b6257">The entire packet must be received</text><text x="310" y="136" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#6b6257">before forwarding can begin</text>'},
+    {title:'Step 3: The router forwards', text:'Now the router sends the packet out on the second link. It takes another L/R seconds. In total, 2 × L/R seconds have elapsed since the source began transmitting.', anim:'<rect x="345" y="58" width="90" height="24" fill="#3d6b3a" opacity="0.7" rx="2"/><text x="390" y="74" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fff">L bits → R bps</text>'},
+    {title:'Step 4: The packet has arrived', text:'After 2 × L/R seconds (for one router), the entire packet has reached the destination. In general, for N links (N−1 routers) the total delay is N × L/R — not counting queuing and propagation.', anim:'<rect x="535" y="58" width="50" height="24" fill="#3d6b3a" opacity="0.7" rx="2"/><text x="560" y="74" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fff">RECEIVED</text><text x="320" y="130" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="#b04428" font-weight="600">Total: N × L/R</text>'}
+  ];
+  var i = 0;
+  var title = document.getElementById('sfTitle');
+  var text = document.getElementById('sfText');
+  var anim = document.getElementById('sfAnim');
+  var ind = document.getElementById('sfInd');
+  var prev = document.getElementById('sfPrev');
+  var next = document.getElementById('sfNext');
+  function render(){
+    title.textContent = 'Step ' + (i+1) + ' of 4 — ' + steps[i].title.replace(/^Step \d+: /,'');
+    text.textContent = steps[i].text;
+    anim.innerHTML = steps[i].anim;
+    ind.textContent = (i+1) + ' / 4';
+    prev.disabled = (i===0);
+    next.disabled = (i===steps.length-1);
+  }
+  prev.addEventListener('click',function(){if(i>0){i--;render();}});
+  next.addEventListener('click',function(){if(i<steps.length-1){i++;render();}});
+  render();
+})();
+
+(function(){
+  var pktSlider = document.getElementById('pktSlider');
+  var rateSlider = document.getElementById('rateSlider');
+  var distSlider = document.getElementById('distSlider');
+  var pktVal = document.getElementById('pktVal');
+  var rateVal = document.getElementById('rateVal');
+  var distVal = document.getElementById('distVal');
+  var out = document.getElementById('delayOut');
+
+  function fmt(val, unit) {
+    if (val >= 1) return val.toFixed(2) + ' ' + unit;
+    if (val >= 0.001) return (val * 1000).toFixed(2) + ' m' + unit;
+    return (val * 1e6).toFixed(1) + ' \u00b5' + unit;
+  }
+
+  function update(){
+    var L = parseInt(pktSlider.value) * 8;
+    var R = parseInt(rateSlider.value) * 1e6;
+    var d = parseInt(distSlider.value) * 1000;
+    var propSpeed = 2e8;
+    pktVal.textContent = pktSlider.value + ' bytes';
+    rateVal.textContent = rateSlider.value + ' Mbps';
+    distVal.textContent = parseInt(distSlider.value).toLocaleString() + ' km';
+
+    var dTrans = L / R;
+    var dProp = d / propSpeed;
+    var total = dTrans + dProp;
+
+    out.innerHTML =
+      '<strong>Transmission delay</strong> (L/R): ' + fmt(dTrans, 's') +
+      '<br><strong>Propagation delay</strong> (d/v): ' + fmt(dProp, 's') +
+      '<br><strong>Total (excl. queuing/processing):</strong> ' + fmt(total, 's');
+  }
+  pktSlider.addEventListener('input', update);
+  rateSlider.addEventListener('input', update);
+  distSlider.addEventListener('input', update);
+  update();
+})();
+
+(function(){
+  var feedback = {
+    'qFeedback1': {
+      correct: 'Correct! 1000 bytes = 8000 bits. d_trans = 8000 / 10,000,000 = 0.0008 s = 0.8 ms = 800 \u00b5s.',
+      wrong: 'Not quite. Remember: d_trans = L/R = (1000 \u00d7 8 bits) / (10 \u00d7 10\u2076 bps) = 0.8 ms.'
+    },
+    'qFeedback2': {
+      correct: 'Correct! The network layer (layer 3) uses IP addresses to route datagrams through the network from source to destination.',
+      wrong: 'Not quite. Think about which layer uses IP addresses and determines the route through the network.'
+    },
+    'qFeedback3': {
+      correct: 'Correct! Statistical multiplexing lets many users share the capacity efficiently because they are rarely active at the same time.',
+      wrong: 'Not quite. Think about what happens to the bandwidth in circuit switching when a user is idle \u2014 it goes to waste.'
+    },
+    'qFeedback4': {
+      correct: 'Correct! Encapsulation means that each layer wraps the data from the layer above with its own header, so that the layers remain independent.',
+      wrong: 'Not quite. Encapsulation is about how each layer adds its own header around the data from the layer above \u2014 like envelopes inside envelopes.'
+    }
+  };
+  document.querySelectorAll('.quiz').forEach(function(quiz){
+    var fbId = quiz.querySelector('.explanation').id;
+    var fb = quiz.querySelector('.explanation');
+    quiz.querySelectorAll('button.option').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var correct = btn.dataset.correct === 'true';
+        quiz.querySelectorAll('button.option').forEach(function(b){
+          b.disabled = true;
+          if (b.dataset.correct === 'true') b.classList.add('correct');
+          else if (b === btn) b.classList.add('incorrect');
+        });
+        fb.textContent = correct ? feedback[fbId].correct : feedback[fbId].wrong;
+        fb.classList.add('show');
+      });
+    });
+  });
+})();
+</script>
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

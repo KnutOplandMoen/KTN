@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 9 — Multimedia Networking</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="../" class="nav-back">&larr; All chapters</a>
+  </div>
+</nav>
+<main data-chapter="Chapter 9: Multimedia Networking">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Chapter 9 · Data Communications</div>
+  <h1>Multimedia <em>Networking</em></h1>
+  <p class="lede">How audio and video travel over a network that really only promises "best effort" — and what happens when the packets don't arrive on time.</p>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">01</span><a href="#overblikk">Overview</a></li>
+    <li><span class="toc-num">02</span><a href="#deler">Parts</a></li>
+    <li><span class="toc-num">03</span><a href="#quiz">Test yourself</a></li>
+  </ol>
+</div>
+</nav>
+
+<section id="overblikk">
+<div class="container">
+  <div class="section-badge">The big picture</div>
+  <h2>A live concert through the <em>postal system</em></h2>
+  <p class="section-intro">The Internet was designed for data that tolerates delay. Multimedia requires something entirely different — and this entire chapter is about how we bridge that gap.</p>
+
+  <p class="dropcap">Imagine you are going to hold a live concert, but the musicians are scattered across the country — and the only way to communicate is the postal system. Every sheet of music you send arrives, but some letters take one day, others take five. For ordinary correspondence, that is unproblematic. But for the musicians, it is a disaster: if the drum note arrives three bars late, the entire piece sounds terrible. <em>That</em> is the problem with multimedia over the Internet. The network only guarantees "best effort" — the packets will probably arrive eventually, but no one promises <em>when</em>. For email and web pages, that does not matter. For video and voice, timing is everything.</p>
+
+  <p>The solution is surprisingly elegant: we cannot fix the network (it will always have variable delay), but we can build smart mechanisms in the endpoints. The most important idea is the <strong>playout buffer</strong> — a temporary store at the receiver that collects packets and plays them out at a steady rate, even though they arrived at uneven intervals. It is as if the concert conductor waits to start the piece until enough sheets of music have arrived, so the musicians always have the next note ready.</p>
+
+  <figure>
+    <svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arw" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L6,4 L0,8 z" fill="#1a1612"/></marker>
+      </defs>
+      <!-- Source -->
+      <rect x="10" y="60" width="100" height="60" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="4"/>
+      <text x="60" y="87" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">Source</text>
+      <text x="60" y="103" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">(camera/microphone)</text>
+      <!-- Arrow to encoder -->
+      <line x1="110" y1="90" x2="155" y2="90" stroke="#1a1612" stroke-width="2" marker-end="url(#arw)"/>
+      <!-- Encoder -->
+      <rect x="162" y="60" width="90" height="60" fill="#e8e3d6" stroke="#2d4a7a" stroke-width="2" rx="4"/>
+      <text x="207" y="87" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a">Encoder</text>
+      <text x="207" y="103" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">MPEG / PCM</text>
+      <!-- Arrow to network -->
+      <line x1="252" y1="90" x2="297" y2="90" stroke="#1a1612" stroke-width="2" marker-end="url(#arw)"/>
+      <!-- Network cloud -->
+      <ellipse cx="380" cy="90" rx="75" ry="42" fill="#f4f1ea" stroke="#b04428" stroke-width="2" stroke-dasharray="6 3"/>
+      <text x="380" y="85" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">Internet</text>
+      <text x="380" y="102" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428">variable delay</text>
+      <!-- Jitter visualization: small packets with varying gaps -->
+      <rect x="315" y="42" width="6" height="10" fill="#b04428" rx="1"/>
+      <rect x="340" y="42" width="6" height="10" fill="#b04428" rx="1"/>
+      <rect x="350" y="42" width="6" height="10" fill="#b04428" rx="1"/>
+      <rect x="395" y="42" width="6" height="10" fill="#b04428" rx="1"/>
+      <rect x="425" y="42" width="6" height="10" fill="#b04428" rx="1"/>
+      <text x="380" y="38" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#b04428">jitter</text>
+      <!-- Arrow to buffer -->
+      <line x1="455" y1="90" x2="500" y2="90" stroke="#1a1612" stroke-width="2" marker-end="url(#arw)"/>
+      <!-- Playout buffer -->
+      <rect x="507" y="55" width="110" height="70" fill="#e8e3d6" stroke="#3d6b3a" stroke-width="2" rx="4"/>
+      <text x="562" y="85" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">Playout</text>
+      <text x="562" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">buffer</text>
+      <!-- Even packets out of buffer -->
+      <rect x="524" y="130" width="8" height="10" fill="#3d6b3a" rx="1"/>
+      <rect x="540" y="130" width="8" height="10" fill="#3d6b3a" rx="1"/>
+      <rect x="556" y="130" width="8" height="10" fill="#3d6b3a" rx="1"/>
+      <rect x="572" y="130" width="8" height="10" fill="#3d6b3a" rx="1"/>
+      <rect x="588" y="130" width="8" height="10" fill="#3d6b3a" rx="1"/>
+      <text x="562" y="155" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#3d6b3a">steady rate out</text>
+      <!-- Arrow to display -->
+      <line x1="617" y1="90" x2="660" y2="90" stroke="#1a1612" stroke-width="2" marker-end="url(#arw)"/>
+      <!-- Display -->
+      <rect x="667" y="60" width="80" height="60" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="4"/>
+      <text x="707" y="87" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">Display</text>
+      <text x="707" y="103" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">/ speaker</text>
+      <!-- Bottom label -->
+      <text x="380" y="188" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">The buffer absorbs jitter: uneven packets in → smooth playout</text>
+    </svg>
+    <figcaption>Multimedia pipeline: the source encodes audio/video, the network introduces variable delay (jitter), and the playout buffer at the receiver smooths out the variation so playback is steady.</figcaption>
+  </figure>
+
+  <div class="callout callout-blue">
+    <span class="label">Why Netflix suddenly gets pixelated</span>
+    <p>When you are watching Netflix and the picture suddenly becomes pixelated, it is because DASH (Dynamic Adaptive Streaming over HTTP) has switched to a lower quality because the network got slower. Your client requests video segments at the resolution it believes the network can handle right now. If it gets better again, it switches back to HD. All of this happens automatically, without you pressing anything — and it is a direct result of the techniques in this chapter.</p>
+  </div>
+
+  <p>The chapter covers the entire spectrum: from how analog audio and video become a bit stream (sampling, compression, CBR vs. VBR), through streaming architectures (HTTP/TCP vs. UDP, DASH), to the special challenges of real-time conversations (VoIP). There we learn that delay over 400 ms ruins a phone call, that <em>jitter</em> is more dangerous than average delay, and that clever techniques like FEC (Forward Error Correction) and interleaving allow us to recover lost packets without waiting for retransmission. Finally, we meet RTP — the protocol that gives multimedia packets what UDP lacks: timestamps, sequence numbers, and type identification.</p>
+</div>
+</section>
+
+<section id="deler">
+<div class="container">
+  <div class="section-badge">Parts</div>
+  <h2>Explore the <em>chapter</em></h2>
+  <div class="subpage-list">
+    <a href="innhold.html" class="subpage-card">
+      <span class="sp-icon">9</span>
+      <div class="sp-info">
+        <div class="sp-title">Multimedia Networking</div>
+        <div class="sp-desc">Audio and video as bits, streaming, VoIP, jitter, playout buffer, FEC, and RTP</div>
+      </div>
+      <span class="sp-arrow">&rarr;</span>
+    </a>
+  </div>
+</div>
+</section>
+
+<section id="quiz">
+<div class="container">
+  <h2>Test yourself</h2>
+  <p class="section-intro">Check whether you have understood the most important concepts from this chapter.</p>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 1</div>
+    <div class="q-text">What is "jitter" in the context of multimedia networking?</div>
+    <div class="options">
+      <button class="option" data-correct="false">The total delay from sender to receiver</button>
+      <button class="option" data-correct="true">The variation in delay between packets — some take longer than others through the network</button>
+      <button class="option" data-correct="false">Packet loss caused by congestion in router buffers</button>
+      <button class="option" data-correct="false">Noise that arises from quantization of the analog audio signal</button>
+    </div>
+    <div class="explanation">Jitter is the variation in packet delay. Packets are sent at regular intervals but arrive at uneven intervals. This is what the playout buffer compensates for — even if the average delay is acceptable, high variation can cause packets to arrive too late to be played out.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 2</div>
+    <div class="q-text">Why does DASH (Dynamic Adaptive Streaming over HTTP) switch between different video qualities during playback?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Because the server decides the quality based on how much it can send</button>
+      <button class="option" data-correct="false">Because TCP automatically adjusts the video quality in its packets</button>
+      <button class="option" data-correct="true">Because the client itself chooses quality based on measured network bandwidth, so that the buffer does not empty</button>
+      <button class="option" data-correct="false">Because the video file is encoded with variable bit rate (VBR) that changes randomly</button>
+    </div>
+    <div class="explanation">In DASH, the client is in control: it measures how fast segments download, estimates available bandwidth, and requests the next segment at a quality the network can handle. The goal is to keep the playout buffer filled without requesting higher quality than the network can deliver.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 3</div>
+    <div class="q-text">What is the maximum end-to-end delay for a VoIP call to feel natural?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Under 50 milliseconds</button>
+      <button class="option" data-correct="true">Under 150 milliseconds</button>
+      <button class="option" data-correct="false">Under 400 milliseconds</button>
+      <button class="option" data-correct="false">Under 1 second</button>
+    </div>
+    <div class="explanation">Under 150 ms, the call feels natural. Between 150 and 400 ms, the delay is noticeable but usable. Over 400 ms, the conversation breaks down — people talk over each other because both think there is silence.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 4</div>
+    <div class="q-text">What does the playout buffer at the receiver do in a multimedia system?</div>
+    <div class="options">
+      <button class="option" data-correct="false">It compresses the video to a lower bit rate to save bandwidth</button>
+      <button class="option" data-correct="false">It retransmits lost packets to the sender</button>
+      <button class="option" data-correct="true">It collects packets that arrive with variable delay and plays them out at a steady rate</button>
+      <button class="option" data-correct="false">It encrypts the data stream for secure transmission</button>
+    </div>
+    <div class="explanation">The playout buffer is the key to smooth playback. Packets arrive at uneven intervals (jitter), but the buffer lets the receiver wait until it has enough data, then play out at the constant rate needed. The larger the buffer, the more jitter can be tolerated — but the delay increases.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 5</div>
+    <div class="q-text">What information does the RTP header provide that the UDP header lacks?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Reliable delivery with retransmission</button>
+      <button class="option" data-correct="true">Payload type, sequence number, and timestamp for media data</button>
+      <button class="option" data-correct="false">Guaranteed maximum delay through the network</button>
+      <button class="option" data-correct="false">Encryption of payload data</button>
+    </div>
+    <div class="explanation">RTP adds three things UDP lacks: payload type (which encoding is used), sequence number (to detect loss and ordering errors), and timestamp (to place packets correctly in time during playback). But RTP provides no delivery guarantees — all intelligence lies in the application.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 6</div>
+    <div class="q-text">What is the advantage of piggyback FEC (a low-quality copy of the previous audio chunk in each packet) compared to simple XOR FEC?</div>
+    <div class="options">
+      <button class="option" data-correct="false">It requires no additional bandwidth at all</button>
+      <button class="option" data-correct="false">It can recover from the loss of several consecutive packets</button>
+      <button class="option" data-correct="true">It can recover from loss without waiting for an entire packet group, thus adding less extra playout delay</button>
+      <button class="option" data-correct="false">It only works with TCP, not UDP</button>
+    </div>
+    <div class="explanation">XOR FEC requires that the entire group of n+1 packets has been received before recovery can occur, which increases playout delay. Piggyback FEC only needs the next packet to recover the previous one — much faster, at the cost of slightly lower audio quality on the recovered chunk.</div>
+  </div>
+</div>
+</section>
+
+</main>
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Spring 2026</p>
+  </div>
+</footer>
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script src="../../quiz.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

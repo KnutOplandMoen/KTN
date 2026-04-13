@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 5 — The Network Layer: The Control Plane</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Chapter 5</a>
+  </div>
+</nav>
+
+<main data-chapter="Chapter 5: The Network Layer – The Control Plane">
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">Chapter 5 · Computer Networking</div>
+    <h1>The Network Layer:<br><em>The Control Plane</em></h1>
+    <p class="section-intro">How routers in a vast network agree on where your packets should go — and how they call for help when something goes wrong.</p>
+
+    <div class="learn-box">
+      <div class="label">In this chapter you will learn</div>
+      <ul>
+        <li>What the control plane actually is</li>
+        <li>The difference between forwarding and routing</li>
+        <li>Per-router vs. centralized control</li>
+        <li>Fundamental routing principles and classification</li>
+        <li>How ICMP works under the hood</li>
+        <li>Why <code>traceroute</code> is ingenious</li>
+      </ul>
+    </div>
+
+    <div class="margin-note"><strong>Syllabus from chapter 5:</strong> 5.1 Introduction, 5.2 Routing Algorithms (intro only — not 5.2.1 Link-State or 5.2.2 Distance-Vector), and 5.6 ICMP. The rest of the material on this page is elaboration and background.</div>
+  </div>
+</header>
+
+<!-- ============ SECTION 1: Introduction ============ -->
+<section>
+  <div class="container">
+    <div class="section-badge">01 · The starting point</div>
+    <h2>The problem the control plane solves</h2>
+    <p class="section-intro">Before we talk about algorithms and protocols: why do we even need a "control plane"?</p>
+
+    <p class="lead">Imagine you are sending an email from your laptop in Trondheim to a friend in Tokyo. Your packet must pass through dozens of routers — perhaps a hundred — before it arrives. At every single router along the way, someone must make a decision: <em>which output should this packet go out of?</em> It is not one single decision. It is thousands of micro-decisions that must be consistent with each other, otherwise the packet ends up in a loop or in a dead end.</p>
+
+    <p>Kurose and Ross therefore divide the network layer into two parts, and the distinction is absolutely essential for understanding the rest of the chapter:</p>
+
+    <div class="info-box">
+      <h4>The two planes</h4>
+      <p><strong>The data plane</strong> does the actual job: it moves a packet from the inputs of a router to the correct output. This happens in <em>nanoseconds</em> — billions of times per second on a large router. The operation is simple because the table is already in place.</p>
+      <p><strong>The control plane</strong> builds that table. It determines <em>which</em> output is correct for each possible destination. This happens on a much slower timescale — seconds to minutes — and involves routers talking to each other to agree on the shape of the network.</p>
+    </div>
+
+    <p>The analogy that helps: the data plane is like a mail sorter who reads the address on the envelope and places it in the correct bin. The control plane is the route plan that <em>determined which bin</em> should go where — it is the back-room job that no customer sees, but without it the mail sorter would just toss things randomly.</p>
+
+    <div class="margin-note"><strong>Note the terminology.</strong> "Forwarding" is the data plane job (move the packet). "Routing" is the control plane job (find the route). In everyday speech we often use "routing" for both — but in this chapter, the distinction matters.</div>
+
+    <h3>Two ways to organize the control plane</h3>
+
+    <p>There are broadly two philosophies for how the control plane should be built:</p>
+
+    <p><strong>1. Per-router control (traditional).</strong> Each router runs its own little routing algorithm, talks to its neighbors, and builds its own local forwarding table. No boss. Everyone is equal. This is how the Internet is built today, and it is what we focus on in this chapter.</p>
+
+    <p><strong>2. Logically centralized control (Software Defined Networking, SDN).</strong> A central controller somewhere in the network computes all forwarding tables and pushes them out to all routers. The routers become "dumb" — they just do what the controller says. This is modern, and is used in large data centers, but is outside the scope of this chapter.</p>
+
+    <!-- Figure: two planes -->
+    <figure>
+      <svg viewBox="0 0 640 340" xmlns="http://www.w3.org/2000/svg">
+        <!-- Router body -->
+        <rect x="120" y="40" width="400" height="260" fill="#e8e3d6" stroke="#1a1612" stroke-width="2" rx="4"/>
+
+        <!-- Control plane -->
+        <rect x="140" y="60" width="360" height="90" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5" rx="3"/>
+        <text x="320" y="85" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#2d4a7a" font-weight="600" letter-spacing="2">CONTROL PLANE</text>
+        <text x="320" y="108" text-anchor="middle" font-family="Newsreader" font-size="15" font-style="italic" fill="#3d3832">Routing algorithm</text>
+        <text x="320" y="128" text-anchor="middle" font-family="Newsreader" font-size="13" fill="#6b6257">"Where should packets to X be sent?"</text>
+
+        <!-- Dashed separator -->
+        <line x1="140" y1="165" x2="500" y2="165" stroke="#6b6257" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+        <!-- Data plane -->
+        <rect x="140" y="180" width="360" height="100" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5" rx="3"/>
+        <text x="320" y="205" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#b04428" font-weight="600" letter-spacing="2">DATA PLANE</text>
+        <text x="320" y="228" text-anchor="middle" font-family="Newsreader" font-size="15" font-style="italic" fill="#3d3832">Forwarding table</text>
+        <text x="320" y="248" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">dst 10.0.1.0 → port 2</text>
+        <text x="320" y="264" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">dst 10.0.2.0 → port 3</text>
+
+        <!-- Arrow from control to data -->
+        <path d="M 470 150 Q 495 165 470 180" fill="none" stroke="#b04428" stroke-width="1.5" marker-end="url(#arrow1)"/>
+        <text x="540" y="170" font-family="IBM Plex Sans" font-size="10" fill="#b04428" font-style="italic">populates</text>
+
+        <!-- Packets coming and going -->
+        <rect x="30" y="215" width="60" height="22" fill="#c68a1f" stroke="#1a1612" stroke-width="1"/>
+        <text x="60" y="230" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">packet</text>
+        <path d="M 95 226 L 135 226" stroke="#1a1612" stroke-width="1.5" marker-end="url(#arrow1)"/>
+
+        <rect x="545" y="215" width="60" height="22" fill="#c68a1f" stroke="#1a1612" stroke-width="1"/>
+        <text x="575" y="230" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">packet</text>
+        <path d="M 505 226 L 540 226" stroke="#1a1612" stroke-width="1.5" marker-end="url(#arrow1)"/>
+
+        <!-- Router label -->
+        <text x="320" y="25" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257" letter-spacing="1">INSIDE A ROUTER</text>
+
+        <defs>
+          <marker id="arrow1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#1a1612"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>The two planes live side by side inside one and the same router. The control plane works slowly and thoughtfully; the data plane works lightning-fast and mechanically.</figcaption>
+    </figure>
+
+    <!-- QUIZ 1 -->
+    <div class="quiz" data-quiz="1">
+      <div class="q-label">Check question</div>
+      <div class="q-text">A packet arrives at a router, the router looks it up in its forwarding table and sends the packet out on port 3. Which plane was involved in this action?</div>
+      <div class="options">
+        <button class="option" data-correct="false">The control plane — the router had to decide where the packet should go</button>
+        <button class="option" data-correct="true">The data plane — the table was already in place, it was just a lookup</button>
+        <button class="option" data-correct="false">Both planes simultaneously</button>
+      </div>
+      <div class="explanation">Correct — the actual movement of the packet is a data plane operation. The control plane worked earlier (perhaps minutes earlier) to build the table, but at the moment the packet arrives, it is just a fast lookup.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider">❋ &nbsp;❋ &nbsp;❋</div>
+
+<!-- ============ SECTION 2: Routing protocols ============ -->
+<section>
+  <div class="container">
+    <div class="section-badge">02 · Routing protocols</div>
+    <h2>How routers find good paths</h2>
+    <p class="section-intro">The goal is easy to describe, but terribly difficult to solve: find a good path from sender to receiver through a network you do not have an overview of.</p>
+
+    <p class="lead">A routing protocol has one main goal: <em>determine good routes (paths) from sending hosts to receiving hosts, through the network of routers</em>. Let us unpack that sentence carefully, because every word means something.</p>
+
+    <p>A <strong>route</strong> (or <em>path</em>) is simply the sequence of routers a packet passes through, from the source host to the destination. If you send a packet from your laptop and it goes through routers R1 → R4 → R7 → R9 before reaching the target, that is the <em>route</em>.</p>
+
+    <p>But what does "good" mean? That depends on what you are optimizing for. Common interpretations are <strong>lowest cost</strong> (perhaps measured in hop count, perhaps in bandwidth, perhaps in peering agreements between ISPs), <strong>fastest</strong> (least delay), or <strong>least congested</strong> (avoiding links where there is queuing). Each routing protocol makes its own choices about what "good" means — and that is part of the reason routing is considered one of the classic "top 10" challenges in networking.</p>
+
+    <div class="margin-note">Routing is difficult because the network does not stand still. Links go down, come back up, become congested, gain new capacity. Routers come and go. A good algorithm must handle changes <em>without</em> everything stopping while it thinks.</div>
+
+    <h3>Two axes of classification</h3>
+
+    <p>Routing algorithms can be classified along two independent axes. If you understand these two, you understand the basic structure of everything we discuss going forward.</p>
+
+    <h4>Axis 1 — Global or decentralized information?</h4>
+
+    <p><strong>Global</strong> means that all routers somehow know the <em>entire</em> network topology: which routers exist, which links they have between them, and what the cost of each link is. With full knowledge, each router can independently compute the best path to every destination. This is the idea behind <strong>link-state</strong> algorithms.</p>
+
+    <p><strong>Decentralized</strong> means that no one has the full picture. Each router only knows the cost to its <em>direct</em> neighbors initially. Then routers talk to their neighbors, exchange what they know, and gradually everyone agrees on the best paths through an iterative process. This is the idea behind <strong>distance-vector</strong> algorithms.</p>
+
+    <h4>Axis 2 — Static or dynamic?</h4>
+
+    <p><strong>Static</strong> routes change infrequently (perhaps when a network administrator manually configures something). <strong>Dynamic</strong> routes are updated continuously — either at regular intervals or in response to a link changing cost or disappearing. Modern networks almost always use dynamic algorithms, because the Internet changes too often to keep up manually.</p>
+
+    <div class="info-box">
+      <h4>Elaboration — outside the syllabus</h4>
+      <p>What follows about link-state and distance-vector is <em>not</em> part of the syllabus (5.2.1 and 5.2.2 are explicitly excluded). It is included as useful background for understanding how routing algorithms actually work in practice.</p>
+    </div>
+
+    <h3>Link-state: "I have the map"</h3>
+
+    <p>Link-state algorithms are built on a simple but powerful idea: if every router has a complete map of the network, each one can compute the best paths entirely on its own, without having to ask anyone. The question then becomes: how does one obtain that map?</p>
+
+    <p>The solution is <em>flooding</em>. Each router creates a small message — a <strong>Link-State Advertisement</strong> (LSA) — that describes all the links it has and what they cost. Then it sends the LSA to all its neighbors. The neighbors forward it to their neighbors. And so on. After a short time, <em>every</em> router in the network has received LSAs from all others, and thus has knowledge of the entire topology.</p>
+
+    <p>Once a router has this complete map, it runs a shortest-path algorithm (typically Dijkstra's algorithm) locally to find the best path to every possible destination. The result is filled into the forwarding table, and the data plane is ready to move packets.</p>
+
+    <div class="info-box blue">
+      <h4>Advantages of link-state</h4>
+      <p><em>Fast convergence:</em> When something changes (a link goes down), the new information spreads quickly through the entire network, and all routers can update rapidly. <em>Good scaling:</em> Handles large, complex networks well. <em>Adaptability:</em> Suitable for networks that change frequently.</p>
+    </div>
+
+    <h3>Distance-vector: "I trust my neighbors"</h3>
+
+    <p>Distance-vector algorithms take an entirely different approach. Instead of everyone having the complete map, each router has only a <strong>distance vector</strong> — a table that says "to destination X, my best distance is Y, and I send the packet out via neighbor Z." The router gets no global overview; it gets only its own little list.</p>
+
+    <p>Here is how it works in practice:</p>
+
+    <p><strong>Step 1 — Information sharing.</strong> Each router sends its own distance vector to its direct neighbors. "This is what the world looks like from my vantage point," it says.</p>
+
+    <p><strong>Step 2 — Updating.</strong> When a router receives a neighbor's vector, it compares: "Hmm, neighbor B says it can reach destination X with cost 5. To reach neighbor B costs me 2. So if I send via B, I can reach X with cost 7. Is that better than what I had?" If yes, it updates its own table.</p>
+
+    <p><strong>Step 3 — Convergence.</strong> Every time a router's table changes, it sends out its new vector to its neighbors, who might update their tables, who might send out new vectors, etc. After a while, everything stabilizes, and all routers have consistent and (hopefully) optimal tables.</p>
+
+    <div class="margin-note"><strong>The analogy.</strong> Link-state is like giving everyone a GPS map of the entire city. Distance-vector is like asking your neighbors: "How far is it to the store from here?" — and they ask their neighbors — until you have all agreed on the shortest route.</div>
+
+    <h3>Comparison</h3>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Link-State</th>
+          <th>Distance-Vector</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Knowledge</td>
+          <td>Entire topology (global)</td>
+          <td>Only neighbors (local)</td>
+        </tr>
+        <tr>
+          <td>Computation</td>
+          <td>Dijkstra locally at each router</td>
+          <td>Iterative exchange with neighbors</td>
+        </tr>
+        <tr>
+          <td>Messages</td>
+          <td>LSAs are flooded to all</td>
+          <td>Vectors are sent only to neighbors</td>
+        </tr>
+        <tr>
+          <td>Convergence</td>
+          <td>Fast</td>
+          <td>Can be slower; may have "count to infinity"</td>
+        </tr>
+        <tr>
+          <td>Scalability</td>
+          <td>Good for large networks</td>
+          <td>Best for smaller networks</td>
+        </tr>
+        <tr>
+          <td>Example</td>
+          <td>OSPF</td>
+          <td>RIP</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- QUIZ 2 -->
+    <div class="quiz" data-quiz="2">
+      <div class="q-label">Check question</div>
+      <div class="q-text">A new router-neighbor pair discovers that the link between them has just gotten twice the delay. Which algorithm type will typically react fastest to this change?</div>
+      <div class="options">
+        <button class="option" data-correct="true">Link-state, because the LSA is flooded quickly to all routers in the network</button>
+        <button class="option" data-correct="false">Distance-vector, because it only needs to talk to the nearest neighbor</button>
+        <button class="option" data-correct="false">Both react at exactly the same speed</button>
+      </div>
+      <div class="explanation">Correct — link-state spreads changes via flooding, so all routers learn about it almost immediately and can recalculate their tables. Distance-vector can take longer because information must "ripple" through the network one neighbor at a time.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider">❋ &nbsp;❋ &nbsp;❋</div>
+
+<!-- ============ SECTION 3: ICMP ============ -->
+<section>
+  <div class="container">
+    <div class="section-badge">03 · Internet Control Message Protocol</div>
+    <h2>ICMP: when the network must talk to itself</h2>
+    <p class="section-intro">Routing protocols determine where packets should go. But what happens when something goes wrong along the way? That is where ICMP comes in.</p>
+
+    <p class="lead">Imagine you send a packet to an IP address that does not exist. What happens? Someone must tell you — otherwise you sit waiting forever for a reply that never comes. Or: a packet has lived too long in the network (perhaps it went in a loop) and must be discarded. Who notifies the sender? The answer to both questions is <strong>ICMP</strong> — Internet Control Message Protocol.</p>
+
+    <p>ICMP is the network's signaling language. It is used by hosts and routers to exchange <em>network-level information</em> with each other. The two most important categories of messages are:</p>
+
+    <p><strong>Error reporting.</strong> When something goes wrong — destination host unreachable, network unreachable, port closed, protocol not available — a router or host sends an ICMP message back to the sender explaining what went wrong.</p>
+
+    <p><strong>Echo request/reply.</strong> This is what the <code>ping</code> command uses. You send an "are you there?" message, and if the receiver is alive, it sends back a "yes!"</p>
+
+    <h3>Where does ICMP fit in the stack?</h3>
+
+    <p>Here is a detail that often confuses: ICMP is considered part of the network layer, but ICMP messages are transported <em>inside</em> IP datagrams. So strictly speaking, ICMP sits <em>"on top of"</em> IP, even though both are considered part of the network layer. Think of ICMP as a small helper protocol that piggybacks on IP to get where it needs to go.</p>
+
+    <p>An ICMP message contains three main fields:</p>
+
+    <ul style="list-style: none; padding-left: 0; margin-bottom: 22px;">
+      <li style="padding: 10px 0; border-bottom: 1px dashed var(--line);"><strong>Type</strong> — which category of message this is (e.g. 3 = "destination unreachable", 8 = "echo request")</li>
+      <li style="padding: 10px 0; border-bottom: 1px dashed var(--line);"><strong>Code</strong> — a subcategory that provides more detail (e.g. type 3 + code 1 = "host unreachable")</li>
+      <li style="padding: 10px 0;"><strong>The first 8 bytes of the IP datagram that caused the error</strong> — so the sender knows <em>which</em> packet the ICMP message refers to</li>
+    </ul>
+
+    <h3>The most important ICMP types</h3>
+
+    <p>Here is the table of the ICMP messages you will encounter most often. Pay special attention to type 0 and 8 (which <code>ping</code> uses) and type 11 (which <code>traceroute</code> depends on — more on that shortly).</p>
+
+    <table class="icmp-table">
+      <thead>
+        <tr><th>Type</th><th>Code</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr class="highlight"><td>0</td><td>0</td><td>echo reply (the response to ping)</td></tr>
+        <tr><td>3</td><td>0</td><td>destination network unreachable</td></tr>
+        <tr><td>3</td><td>1</td><td>destination host unreachable</td></tr>
+        <tr><td>3</td><td>2</td><td>destination protocol unreachable</td></tr>
+        <tr class="highlight"><td>3</td><td>3</td><td>destination port unreachable</td></tr>
+        <tr><td>3</td><td>6</td><td>destination network unknown</td></tr>
+        <tr><td>3</td><td>7</td><td>destination host unknown</td></tr>
+        <tr><td>4</td><td>0</td><td>source quench (no longer in use)</td></tr>
+        <tr class="highlight"><td>8</td><td>0</td><td>echo request (the ping request itself)</td></tr>
+        <tr><td>9</td><td>0</td><td>route advertisement</td></tr>
+        <tr><td>10</td><td>0</td><td>router discovery</td></tr>
+        <tr class="highlight"><td>11</td><td>0</td><td>TTL expired (the packet lived too long)</td></tr>
+        <tr><td>12</td><td>0</td><td>error in IP header</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="divider">❋ &nbsp;❋ &nbsp;❋</div>
+
+<!-- ============ SECTION 4: Traceroute ============ -->
+<section>
+  <div class="container-wide">
+    <div class="section-badge">04 · Traceroute</div>
+    <h2>Traceroute: an ingenious hack</h2>
+    <p class="section-intro">How can you find out which routers your packets pass through on the way to a destination — without having access to any of them? The answer is one of the networking world's finest tricks.</p>
+
+    <div class="container" style="padding: 0;">
+    <p class="lead">The command <code>traceroute</code> (and variants like <code>tracert</code> on Windows, <code>mtr</code>, etc.) shows you a list of all routers a packet passes on the way to a target. It is incredibly useful when troubleshooting — but how on earth does it do it? You cannot ask each router along the way for its name. They do not even know you are trying to reach them.</p>
+
+    <p>The trick exploits a feature that was actually designed to prevent packets from living forever: the <strong>TTL</strong> field (Time To Live) in the IP header. TTL is a number that is decremented by 1 each time a packet passes through a router. When TTL hits 0, the router discards the packet and sends an ICMP message back to the sender: <em>"type 11, code 0 — TTL expired."</em> And — this is the key — that message contains the router's own IP address.</p>
+
+    <p>Can you see where this is going?</p>
+
+    <div class="info-box green">
+      <h4>The traceroute trick</h4>
+      <p>If you send a packet with <strong>TTL = 1</strong>, the <em>first</em> router will decrement it to 0 and return a TTL-expired message. You learn the first router's address.</p>
+      <p>Then send a packet with <strong>TTL = 2</strong>. It survives the first router, but is dropped by the second, which returns a TTL-expired message. You learn the second router's address.</p>
+      <p>Continue with TTL = 3, 4, 5, ... and you have the entire path.</p>
+    </div>
+
+    <p>That is how simple it is, and how beautiful. Traceroute exploits the TTL mechanism to force each router on the path to "reveal" itself, one by one.</p>
+
+    <h3>How it works step by step</h3>
+
+    <p>The source machine sends out <em>sets</em> of UDP segments (usually three per TTL value, to be able to measure RTT variation). Each packet in a set has the same TTL.</p>
+
+    <ul style="list-style: none; padding-left: 0;">
+      <li style="padding: 8px 0;"><strong>Set 1</strong> has TTL = 1 → dies at router 1 → router 1 sends "TTL expired"</li>
+      <li style="padding: 8px 0;"><strong>Set 2</strong> has TTL = 2 → dies at router 2 → router 2 sends "TTL expired"</li>
+      <li style="padding: 8px 0;"><strong>Set 3</strong> has TTL = 3 → dies at router 3 → router 3 sends "TTL expired"</li>
+      <li style="padding: 8px 0;">... and so on</li>
+    </ul>
+
+    <p>When the ICMP message comes back, the sender records the round-trip time (RTT) and the router's IP. It displays them progressively on your screen — that is what you see while <code>traceroute</code> is running.</p>
+
+    <h4>When does it stop?</h4>
+
+    <p>Two things can happen that terminate traceroute:</p>
+
+    <p><strong>1.</strong> The UDP segment eventually actually reaches the destination (when TTL is large enough). Now there is no router dropping it — but the destination most likely has no service listening on the UDP port traceroute used (it deliberately chooses an unlikely port). So the destination responds with an ICMP "<em>destination port unreachable</em>" message (type 3, code 3).</p>
+
+    <p><strong>2.</strong> The source sees this message and understands: <em>aha, we have reached the target</em>. It stops.</p>
+
+    <div class="margin-note">The beauty is that traceroute never actually "asked for" the information. It just exploited two entirely normal ICMP mechanisms — TTL expired and port unreachable — to force a result that no one had intended it to get. It is the hacker spirit at its finest.</div>
+    </div>
+
+    <!-- STEPPER -->
+    <div class="stepper" id="traceroute-stepper">
+      <div class="stepper-header">
+        <div class="stepper-title">Animation: traceroute step by step</div>
+        <div class="stepper-count">Step <span id="step-num">1</span> / 6</div>
+      </div>
+      <div class="stepper-display">
+        <svg id="step-svg" viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- Routers -->
+          <g id="hosts-and-routers">
+            <!-- Source -->
+            <rect x="20" y="80" width="70" height="50" fill="#e8e3d6" stroke="#1a1612" stroke-width="2" rx="3"/>
+            <text x="55" y="110" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#1a1612" font-weight="600">source</text>
+
+            <!-- Router 1 -->
+            <circle cx="190" cy="105" r="28" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" id="r1"/>
+            <text x="190" y="110" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">R1</text>
+
+            <!-- Router 2 -->
+            <circle cx="320" cy="105" r="28" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" id="r2"/>
+            <text x="320" y="110" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">R2</text>
+
+            <!-- Router 3 -->
+            <circle cx="450" cy="105" r="28" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" id="r3"/>
+            <text x="450" y="110" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">R3</text>
+
+            <!-- Router 4 -->
+            <circle cx="580" cy="105" r="28" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" id="r4"/>
+            <text x="580" y="110" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">R4</text>
+
+            <!-- Destination -->
+            <rect x="680" y="80" width="70" height="50" fill="#e8e3d6" stroke="#1a1612" stroke-width="2" rx="3"/>
+            <text x="715" y="110" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#1a1612" font-weight="600">target</text>
+
+            <!-- Lines -->
+            <line x1="90" y1="105" x2="162" y2="105" stroke="#6b6257" stroke-width="1.5"/>
+            <line x1="218" y1="105" x2="292" y2="105" stroke="#6b6257" stroke-width="1.5"/>
+            <line x1="348" y1="105" x2="422" y2="105" stroke="#6b6257" stroke-width="1.5"/>
+            <line x1="478" y1="105" x2="552" y2="105" stroke="#6b6257" stroke-width="1.5"/>
+            <line x1="608" y1="105" x2="680" y2="105" stroke="#6b6257" stroke-width="1.5"/>
+          </g>
+
+          <!-- Packet (animated) -->
+          <g id="packet" style="display:none;">
+            <rect x="0" y="0" width="50" height="20" fill="#c68a1f" stroke="#1a1612" stroke-width="1.5" rx="2"/>
+            <text x="25" y="14" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612" id="packet-label">TTL=1</text>
+          </g>
+
+          <!-- ICMP reply (animated) -->
+          <g id="icmp" style="display:none;">
+            <rect x="0" y="0" width="60" height="20" fill="#b04428" stroke="#1a1612" stroke-width="1.5" rx="2"/>
+            <text x="30" y="14" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#f4f1ea">TTL exp</text>
+          </g>
+        </svg>
+        <div class="stepper-caption" id="step-caption">
+          <strong>Start:</strong> The source is ready to traceroute toward the target. It knows nothing about the routers between them.
+        </div>
+      </div>
+      <div class="stepper-controls">
+        <button class="stepper-btn" id="prev-btn">← Previous</button>
+        <button class="stepper-btn" id="next-btn">Next →</button>
+      </div>
+    </div>
+
+    <div class="container" style="padding: 0;">
+    <!-- QUIZ 3 -->
+    <div class="quiz" data-quiz="3">
+      <div class="q-label">Check question</div>
+      <div class="q-text">Why does traceroute send UDP segments to an <em>unlikely high port number</em> on the destination?</div>
+      <div class="options">
+        <button class="option" data-correct="false">Because high port numbers are faster to route</button>
+        <button class="option" data-correct="true">To guarantee that no service is listening on that port, so the destination responds with "port unreachable" — which is the signal traceroute uses to know it has arrived</button>
+        <button class="option" data-correct="false">Because ICMP does not work on low port numbers</button>
+      </div>
+      <div class="explanation">Exactly right. Traceroute needs a clear "end" signal from the destination. By sending to a port no one listens on, it guarantees the destination responds with ICMP "port unreachable" (type 3, code 3) — which tells traceroute that the next step is not an intermediate router, but the target itself.</div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider">❋ &nbsp;❋ &nbsp;❋</div>
+
+<!-- ============ SECTION 5: Network management ============ -->
+<section>
+  <div class="container">
+    <div class="section-badge">05 · Conclusion</div>
+    <h2>And finally: network management</h2>
+    <p class="section-intro">Routing algorithms and ICMP are the building blocks. But someone must put it all together, monitor it, and fix it when things break.</p>
+
+    <div class="margin-note"><strong>Not part of the syllabus.</strong> Network management is not part of the syllabus for chapter 5, but provides useful context.</div>
+
+    <p class="lead">A modern <em>autonomous system</em> — the technical term for "a network operated by one organization," for example an ISP, a university, or a large enterprise — consists of thousands of interacting hardware and software components. Keeping something this complex in order requires its own discipline: <strong>network management</strong>.</p>
+
+    <p>The classic definition from Saydam &amp; Magedanz (1996) captures the breadth well: network management encompasses the deployment, integration, and coordination of hardware, software, and human elements to monitor, test, configure, analyze, evaluate, and control the network and its resources — so that performance and quality-of-service requirements are met at a reasonable cost.</p>
+
+    <p>Translated into everyday language: someone must make sure the lights are on, nothing is on fire, and the users are not calling to complain. Other complex systems have the same type of challenge — a passenger aircraft, a nuclear power plant, a large factory — all must be continuously monitored and controlled to avoid collapse.</p>
+
+    <div class="info-box">
+      <h4>What to take away from this chapter</h4>
+      <p>The network layer has two faces: the <em>data plane</em> that rapidly moves packets according to pre-built tables, and the <em>control plane</em> that builds those tables by having routers talk to each other via routing protocols. Link-state algorithms give everyone the full map; distance-vector algorithms let each router learn from its neighbors. And when something goes wrong, or when we simply want to trace the path a packet took, ICMP serves as the network's internal signaling language — quiet and discreet, but absolutely essential.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="ornament">❋ &nbsp;❋ &nbsp;❋</div>
+    <p>Based on <em>Computer Networking: A Top-Down Approach</em>, 8th edition,</p>
+    <p>Jim Kurose &amp; Keith Ross, Chapter 5.</p>
+  </div>
+</footer>
+
+<script>
+// ====== Quiz logic ======
+document.querySelectorAll('.quiz').forEach(quiz => {
+  const options = quiz.querySelectorAll('.option');
+  const feedback = quiz.querySelector('.explanation');
+  options.forEach(opt => {
+    opt.addEventListener('click', () => {
+      const isCorrect = opt.dataset.correct === 'true';
+      options.forEach(o => {
+        o.disabled = true;
+        if (o.dataset.correct === 'true') o.classList.add('correct');
+        else if (o === opt) o.classList.add('wrong');
+      });
+      feedback.classList.add('show');
+    });
+  });
+});
+
+// ====== Traceroute stepper ======
+(function() {
+  const steps = [
+    {
+      caption: '<strong>Start.</strong> The source is ready to traceroute toward the target. It knows nothing about the routers between them — only that the target exists somewhere "out there."',
+      packet: null,
+      icmp: null
+    },
+    {
+      caption: '<strong>Step 1: Send TTL=1.</strong> The source sends a UDP segment with TTL=1. The packet reaches R1, which decrements TTL to 0.',
+      packet: { from: 55, to: 190, label: 'TTL=1' },
+      icmp: null
+    },
+    {
+      caption: '<strong>R1 responds.</strong> Since TTL became 0, R1 discards the packet and sends an ICMP "TTL expired" message back. The source learns: R1 is the first hop.',
+      packet: null,
+      icmp: { from: 190, to: 55 },
+      highlight: 'r1'
+    },
+    {
+      caption: '<strong>Step 2: Send TTL=2.</strong> New packet, TTL=2. Survives R1 (TTL→1), dies at R2 (TTL→0).',
+      packet: { from: 55, to: 320, label: 'TTL=2' },
+      icmp: null
+    },
+    {
+      caption: '<strong>R2 responds.</strong> R2 sends TTL expired back. The source learns: R2 is the second hop. This process continues for TTL=3, 4, ...',
+      packet: null,
+      icmp: { from: 320, to: 55 },
+      highlight: 'r2'
+    },
+    {
+      caption: '<strong>Finally.</strong> Eventually a packet reaches the target. The target responds with ICMP "port unreachable" (type 3, code 3) — the source knows it has arrived and stops.',
+      packet: { from: 55, to: 715, label: 'TTL=5' },
+      icmp: null,
+      highlight: 'all'
+    }
+  ];
+
+  let current = 0;
+  const numEl = document.getElementById('step-num');
+  const capEl = document.getElementById('step-caption');
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+  const svg = document.getElementById('step-svg');
+  const packet = document.getElementById('packet');
+  const packetLabel = document.getElementById('packet-label');
+  const icmp = document.getElementById('icmp');
+  const routers = ['r1', 'r2', 'r3', 'r4'];
+
+  function render() {
+    const step = steps[current];
+    numEl.textContent = current + 1;
+    capEl.innerHTML = step.caption;
+
+    // Reset router highlights
+    routers.forEach(r => {
+      const el = document.getElementById(r);
+      el.setAttribute('fill', '#f4f1ea');
+      el.setAttribute('stroke', '#1a1612');
+    });
+
+    // Highlight logic
+    if (step.highlight === 'r1') {
+      document.getElementById('r1').setAttribute('fill', '#c68a1f');
+    } else if (step.highlight === 'r2') {
+      document.getElementById('r1').setAttribute('fill', '#ddd5c4');
+      document.getElementById('r2').setAttribute('fill', '#c68a1f');
+    } else if (step.highlight === 'all') {
+      routers.forEach(r => document.getElementById(r).setAttribute('fill', '#ddd5c4'));
+    }
+
+    // Packet
+    if (step.packet) {
+      packet.style.display = 'block';
+      const x = step.packet.from - 25;
+      packet.setAttribute('transform', `translate(${x}, 45)`);
+      packetLabel.textContent = step.packet.label;
+      // Animate
+      const targetX = step.packet.to - 25;
+      let start = null;
+      const duration = 900;
+      function anim(ts) {
+        if (!start) start = ts;
+        const p = Math.min((ts - start) / duration, 1);
+        const cx = x + (targetX - x) * p;
+        packet.setAttribute('transform', `translate(${cx}, 45)`);
+        if (p < 1) requestAnimationFrame(anim);
+      }
+      requestAnimationFrame(anim);
+    } else {
+      packet.style.display = 'none';
+    }
+
+    // ICMP
+    if (step.icmp) {
+      icmp.style.display = 'block';
+      const x = step.icmp.from - 30;
+      const targetX = step.icmp.to - 30;
+      let start = null;
+      const duration = 900;
+      function anim(ts) {
+        if (!start) start = ts;
+        const p = Math.min((ts - start) / duration, 1);
+        const cx = x + (targetX - x) * p;
+        icmp.setAttribute('transform', `translate(${cx}, 140)`);
+        if (p < 1) requestAnimationFrame(anim);
+      }
+      requestAnimationFrame(anim);
+    } else {
+      icmp.style.display = 'none';
+    }
+
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === steps.length - 1;
+  }
+
+  prevBtn.addEventListener('click', () => { if (current > 0) { current--; render(); } });
+  nextBtn.addEventListener('click', () => { if (current < steps.length - 1) { current++; render(); } });
+
+  render();
+})();
+</script>
+</main>
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

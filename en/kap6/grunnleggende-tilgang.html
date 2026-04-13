@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6a — Fundamentals and Media Access · The Link Layer and LANs</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Chapter 6</a>
+  </div>
+</nav>
+
+<main data-chapter="Chapter 6: The Link Layer and LANs">
+
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">Chapter 6a · The Link Layer</div>
+    <h1>Fundamentals and <em>Media Access</em></h1>
+    <p class="lede">The link layer's role, error detection with CRC, and access protocols for shared media — from ALOHA to CSMA/CD.</p>
+  </div>
+</header>
+
+<!-- ============================================ -->
+<!-- SECTION 1 — INTRODUCTION                      -->
+<!-- ============================================ -->
+<section id="intro">
+  <div class="container">
+    <div class="section-badge">01 · Introduction</div>
+    <h2>What the link layer actually does</h2>
+    <p class="section-intro">
+      Before we talk about Ethernet, switches, or ARP — let us understand why we even need a separate layer below the network layer.
+    </p>
+
+    <p class="dropcap">
+      Imagine you are sending a packet from your laptop in Trondheim to a web server in California. The network layer (IP) is good at <em>one</em> thing: it finds the route across the internet. It determines that the packet should go through router A, then router B, then router C, and so on. But IP does not care about <em>how</em> the packet physically gets from A to B. Is it a fiber cable? A WiFi link? A satellite? IP does not know, and IP does not care.
+    </p>
+
+    <p>
+      That is the job of the <strong>link layer</strong>. For each individual "hop" along the way — that is, each link between two neighbors in the network — it is the link layer that ensures that the data is actually transmitted as signals on a medium and arrives at the other end. Each link can use different technology, and each technology has its own rules.
+    </p>
+
+    <div class="margin-note">
+      A <em>hop</em> is a single link between two physically adjacent nodes. The entire path from you to Google might have 15 hops. IP handles the path; the link layer handles each individual hop.
+    </div>
+
+    <h3>Some terms you need to know</h3>
+    <p>
+      <strong>Nodes</strong> are all devices that run the protocol stack — hosts (PCs, servers, phones) and routers. <strong>Links</strong> are the communication channels connecting neighboring nodes. A link can be wired (twisted pair, coaxial, fiber) or wireless (WiFi, 4G/5G, satellite). The encapsulated unit at layer 2 is called a <strong>frame</strong> — it encapsulates an IP datagram just as a datagram encapsulates a TCP segment.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Encapsulation from application data to frame">
+        <style>
+          .lbl { font-family: 'IBM Plex Mono', monospace; font-size: 11px; fill: #6b6257; }
+          .ttl { font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; font-weight: 600; fill: #1a1612; }
+        </style>
+        <g transform="translate(40,30)">
+          <rect x="0" y="0" width="240" height="30" fill="#e8e3d6" stroke="#c9c0ae"/>
+          <text x="120" y="20" text-anchor="middle" class="ttl">HTTP data</text>
+          <text x="-10" y="20" text-anchor="end" class="lbl">Application</text>
+        </g>
+        <g transform="translate(40,70)">
+          <rect x="-30" y="0" width="30" height="30" fill="#c68a1f" stroke="#8a3420"/>
+          <text x="-15" y="20" text-anchor="middle" class="ttl" style="fill:#fff">TCP</text>
+          <rect x="0" y="0" width="240" height="30" fill="#e8e3d6" stroke="#c9c0ae"/>
+          <text x="120" y="20" text-anchor="middle" class="ttl">HTTP data</text>
+          <text x="-50" y="20" text-anchor="end" class="lbl">Transport</text>
+        </g>
+        <g transform="translate(40,110)">
+          <rect x="-60" y="0" width="30" height="30" fill="#3d6b3a" stroke="#2a4a28"/>
+          <text x="-45" y="20" text-anchor="middle" class="ttl" style="fill:#fff">IP</text>
+          <rect x="-30" y="0" width="30" height="30" fill="#c68a1f" stroke="#8a3420"/>
+          <text x="-15" y="20" text-anchor="middle" class="ttl" style="fill:#fff">TCP</text>
+          <rect x="0" y="0" width="240" height="30" fill="#e8e3d6" stroke="#c9c0ae"/>
+          <text x="120" y="20" text-anchor="middle" class="ttl">HTTP data</text>
+          <text x="-80" y="20" text-anchor="end" class="lbl">Network</text>
+        </g>
+        <g transform="translate(40,150)">
+          <rect x="-100" y="0" width="40" height="30" fill="#b04428" stroke="#8a3420"/>
+          <text x="-80" y="20" text-anchor="middle" class="ttl" style="fill:#fff">Eth</text>
+          <rect x="-60" y="0" width="30" height="30" fill="#3d6b3a" stroke="#2a4a28"/>
+          <text x="-45" y="20" text-anchor="middle" class="ttl" style="fill:#fff">IP</text>
+          <rect x="-30" y="0" width="30" height="30" fill="#c68a1f" stroke="#8a3420"/>
+          <text x="-15" y="20" text-anchor="middle" class="ttl" style="fill:#fff">TCP</text>
+          <rect x="0" y="0" width="240" height="30" fill="#e8e3d6" stroke="#c9c0ae"/>
+          <text x="120" y="20" text-anchor="middle" class="ttl">HTTP data</text>
+          <rect x="240" y="0" width="30" height="30" fill="#b04428" stroke="#8a3420"/>
+          <text x="255" y="20" text-anchor="middle" class="ttl" style="fill:#fff">CRC</text>
+          <text x="-120" y="20" text-anchor="end" class="lbl">Link</text>
+        </g>
+        <text x="340" y="195" class="lbl" text-anchor="middle">The Ethernet frame contains everything above it — plus a CRC for error detection.</text>
+      </svg>
+      <figcaption><strong>Figure 1.</strong> Each layer adds its own header. When the frame is sent out on the cable, the HTTP data lies deep inside multiple layers of encapsulation.</figcaption>
+    </figure>
+
+    <h3>What services does the link layer offer?</h3>
+    <p>
+      Not all link layer technologies do everything, but here is the service catalog they can offer:
+    </p>
+    <ul>
+      <li><strong>Framing and link access.</strong> Encapsulates the datagram into a frame with a header and trailer. If the medium is shared with others (as in WiFi), it must also control who gets to send and when.</li>
+      <li><strong>Reliable delivery.</strong> Some links, especially wireless ones with high error rates, run retransmission at the link level. This is rare on reliable cables — there, TCP handles the job end-to-end.</li>
+      <li><strong>Flow control.</strong> Pacing between neighboring nodes so the receiver is not overwhelmed.</li>
+      <li><strong>Error detection and correction.</strong> Signal attenuation and noise can flip bits. The receiver must be able to detect this.</li>
+      <li><strong>Half- or full-duplex.</strong> Can both sides send simultaneously, or must they take turns?</li>
+    </ul>
+
+    <div class="callout callout-blue">
+      <span class="label">Where is the link layer implemented?</span>
+      <p>In the <strong>network interface card</strong> (NIC) — a dedicated chip or a separate card. It is a mix of hardware, firmware, and a bit of software. The Ethernet chip in your laptop is a link layer implementation. The WiFi chip is one too. The operating system communicates with them over the system bus.</p>
+    </div>
+
+    <div class="quiz" data-quiz="1">
+      <div class="q-label">Knowledge Check</div>
+      <div class="q-text">Why do many Ethernet links <em>not</em> run reliable delivery at the link level, even though the link layer <em>can</em> offer it?</div>
+      <div class="options">
+        <button class="option" data-correct="false">Because IP already guarantees reliable delivery.</button>
+        <button class="option" data-correct="true">Because wired links have very low error rates, so retransmission is better handled end-to-end by TCP.</button>
+        <button class="option" data-correct="false">Because reliable delivery would make the frames too large.</button>
+        <button class="option" data-correct="false">Because Ethernet has no room for ACK messages in the frame structure.</button>
+      </div>
+      <div class="explanation">On clean, modern cable, bit errors are so rare that building reliability into each hop is wasted effort. TCP catches the small amount of errors that slip through. On wireless links, where the error rate is much higher, the picture is different — 802.11 WiFi actually runs ACK at the link level.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 2 — ERRORS                            -->
+<!-- ============================================ -->
+<section id="errors">
+  <div class="container">
+    <div class="section-badge">02 · Error Detection</div>
+    <h2>When bits flip along the way</h2>
+    <p class="section-intro">
+      Noise, attenuation, and electromagnetic interference can flip a bit from 0 to 1 or vice versa. The receiver must be able to detect this. The solution: send some extra information that reveals the error.
+    </p>
+
+    <p class="dropcap">
+      The basic idea is simple. You have <em>d</em> data bits you want to send. Before sending, you compute some extra <em>redundancy</em> bits (EDC — Error Detection and Correction) based on the content. You send both. The receiver recomputes the redundancy from the data it actually received and compares it with the one that was attached. If the two don't match — something went wrong along the way.
+    </p>
+
+    <p>
+      Error detection is <em>never</em> one hundred percent. There always exist error patterns that happen to produce the same redundancy value as the original. But with the right choice of algorithm, the probability of missing an error becomes vanishingly small. The more redundancy bits, the better the detection.
+    </p>
+
+    <h3>Parity bit — the simplest idea</h3>
+    <p>
+      Add a single bit that makes the total number of 1s even. Here is what it looks like for 16 data bits:
+    </p>
+    <pre><span class="comment">  data (16 bits)      parity</span>
+  0111000110101011    1    <span class="comment">→ nine 1s in data, the parity makes it ten (even)</span></pre>
+    <p>
+      If a single bit flips during transmission, the count of 1s becomes odd, and the receiver detects it immediately. The problem: if <em>two</em> bits flip, the count becomes even again, and the error slips under the radar. Single parity only catches an odd number of flipped bits.
+    </p>
+
+    <h3>Two-dimensional parity — a hint toward something smarter</h3>
+    <p>
+      If you arrange the data in a grid and set parity on both each row and each column, you can not only <em>detect</em> a single bit error — you can <em>correct</em> it. The error is located where the flagged row and flagged column intersect.
+    </p>
+
+    <h3>CRC — what is actually used</h3>
+    <p>
+      Ethernet, WiFi, and almost all modern link layer technologies use <strong>Cyclic Redundancy Check (CRC)</strong>. It is a clever construction based on polynomial division in modulo-2 arithmetic (which in practice means XOR operations), and it is both cheap to implement in hardware and very good at catching <em>burst</em> errors — where several adjacent bits flip simultaneously, which is typical for electrical noise.
+    </p>
+
+    <div class="margin-note">
+      Modulo-2 arithmetic is just XOR. No carries, no borrows. This makes CRC circuits extremely simple in hardware — just a shift register and a few XOR gates.
+    </div>
+
+    <h4>The basic idea</h4>
+    <p>
+      The sender and receiver agree on a <em>generator</em> <code>G</code> — a bit sequence of <code>r+1</code> bits (where the first and last bits are 1). The sender finds a redundancy <code>R</code> of <code>r</code> bits such that the combined sequence <code>&lt;D,R&gt;</code> is exactly divisible by <code>G</code> in modulo-2. Then the sender transmits <code>&lt;D,R&gt;</code>. The receiver divides the received data by <code>G</code>. If the remainder is zero — all good. If the remainder is nonzero — an error has occurred.
+    </p>
+
+    <h4>The formula</h4>
+    <p>
+      The sender computes <code>R</code> as the remainder of <code>(D · 2ʳ) / G</code> (modulo 2). Multiplying by <code>2ʳ</code> is the same as appending <code>r</code> zeros to the right — we shift the data left and make room for the CRC bits. Then this shifted value is XOR-divided by <code>G</code>, and the remainder is <code>R</code>.
+    </p>
+
+    <h4>A concrete example</h4>
+    <p>
+      Let us walk through it step by step with data <code>100100</code> and generator <code>G = 1101</code> (corresponding to the polynomial <code>x³ + x² + 1</code>). Since <code>G</code> is 4 bits, <code>r = 3</code>, so we append three zeros and XOR-divide:
+    </p>
+
+<pre>  1 0 0 1 0 0 0 0 0   <span class="comment">← D shifted three positions</span>
+⊕ 1 1 0 1             <span class="comment">← G</span>
+  ─────────
+    1 0 0 0 0 0 0 0
+  ⊕ 1 1 0 1
+    ─────────
+      1 0 1 0 0 0 0
+    ⊕ 1 1 0 1
+      ─────────
+        1 1 1 0 0 0
+      ⊕ 1 1 0 1
+        ─────────
+            1 1 0 0
+          ⊕ 1 1 0 1
+            ─────
+                  <span class="keyword">0 0 1</span>    <span class="comment">← R = 001 (the remainder, three bits)</span></pre>
+
+    <p>
+      So what goes on the cable is <code>&lt;D,R&gt; = 100100<strong>001</strong></code>. The receiver takes these nine bits, XOR-divides them by the same <code>G = 1101</code>, and should get a remainder of zero. If one or more bits have flipped along the way, the remainder will be nonzero, and the receiver knows the frame is corrupt — and discards it.
+    </p>
+
+    <div class="stepper" id="crc-stepper">
+      <div class="s-label">Interactive walkthrough — CRC step by step</div>
+      <div class="stage" id="crc-stage">
+        <h5 id="crc-title">Step 1 of 5</h5>
+        <p id="crc-body">Start here.</p>
+      </div>
+      <div class="controls">
+        <button id="crc-prev">← Previous</button>
+        <span class="progress" id="crc-progress">1 / 5</span>
+        <button id="crc-next">Next →</button>
+      </div>
+    </div>
+
+    <h4>How good is CRC?</h4>
+    <p>
+      A CRC with <code>r</code> bits catches <strong>all burst errors shorter than <code>r+1</code> bits</strong>, all errors with an odd number of bit flips, and longer burst errors with probability <code>1 − (½)ʳ</code>. Ethernet uses CRC-32 — a 32-bit CRC — so even for a very long burst, the chance of missing the error is approximately one in four billion.
+    </p>
+
+    <table>
+      <thead>
+        <tr><th>Name</th><th>r</th><th>Used in</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>CRC-16-CCITT</td><td>16</td><td>802.11 WiFi, Bluetooth, HDLC</td></tr>
+        <tr><td>CRC-32</td><td>32</td><td>802.3 Ethernet, ZIP, PNG</td></tr>
+      </tbody>
+    </table>
+
+    <div class="reveal" data-reveal>
+      <div class="q">Why don't we just send the data twice and compare? That would also detect errors.</div>
+      <button>Show answer</button>
+      <div class="answer">That would double the bandwidth — you would have to send as much redundancy as payload data. CRC gives you nearly as good detection with only 32 extra bits per frame, regardless of the frame size. For an Ethernet frame of 1500 bytes, that is 32 bits versus 12,000 bits — a savings by a factor of 375.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- SECTION 3 — MULTIPLE ACCESS                   -->
+<!-- ============================================ -->
+<section id="mac">
+  <div class="container">
+    <div class="section-badge">03 · Multiple Access</div>
+    <h2>When many share the same cable</h2>
+    <p class="section-intro">
+      If only two nodes are connected by a cable, there is no question about who gets to send. But if ten or a hundred share the same medium — who gets the floor, and when?
+    </p>
+
+    <p class="dropcap">
+      Two types of links exist: <strong>point-to-point</strong> and <strong>broadcast</strong>. A point-to-point link has exactly two ends — like a fiber link between a switch and a server. No coordination is needed here. But in a broadcast link — like old Ethernet with coaxial cable, WiFi in the air, or cables in a bus topology — everyone shares the same physical medium. If two transmit simultaneously, the signals overlap and become unreadable. This is called a <strong>collision</strong>.
+    </p>
+
+    <div class="margin-note">
+      A good analogy: a cocktail party. Everyone can speak, but if two speak at the same time, no one hears much. How do you learn to take the floor without interrupting?
+    </div>
+
+    <h3>What we really want</h3>
+    <p>
+      The ideal multiple access protocol would have four properties: when one node wants to send, it can use the entire channel <code>R</code>. When <code>M</code> nodes want to send, they share fairly with <code>R/M</code> each. No centralized master. And it must be simple to implement. Unfortunately, no protocol achieves all four simultaneously — everything is a trade-off. There are three broad classes of approaches.
+    </p>
+
+    <h3>Class 1 — Channel Partitioning</h3>
+    <p>
+      Divide the channel into fixed pieces and give each node its own piece. In <strong>TDMA</strong> (Time Division Multiple Access), time is divided into rounds, and each node gets one time slot in each round. In <strong>FDMA</strong> (Frequency Division), the frequency spectrum is divided into bands, and each node gets its own band.
+    </p>
+    <p>
+      This is fair under high load — no collisions, guaranteed bandwidth. But under low load, it is wasteful. If only one out of six nodes has something to send, it must wait for its time slot every sixth turn, even though the other five are silent. It gets only <code>R/6</code> even though <code>5R/6</code> lies unused.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 680 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TDMA with six time slots">
+        <style>
+          .tl { font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; font-weight: 600; }
+          .cap { font-family: 'IBM Plex Mono', monospace; font-size: 11px; fill: #6b6257; }
+        </style>
+        <g transform="translate(40,40)">
+          <rect x="0" y="0" width="80" height="40" fill="#b04428" stroke="#1a1612"/>
+          <text x="40" y="25" text-anchor="middle" class="tl" fill="#fff">1</text>
+          <rect x="80" y="0" width="80" height="40" fill="#e8e3d6" stroke="#1a1612"/>
+          <text x="120" y="25" text-anchor="middle" class="tl" fill="#a39886">idle</text>
+          <rect x="160" y="0" width="80" height="40" fill="#3d6b3a" stroke="#1a1612"/>
+          <text x="200" y="25" text-anchor="middle" class="tl" fill="#fff">3</text>
+          <rect x="240" y="0" width="80" height="40" fill="#2d4a7a" stroke="#1a1612"/>
+          <text x="280" y="25" text-anchor="middle" class="tl" fill="#fff">4</text>
+          <rect x="320" y="0" width="80" height="40" fill="#e8e3d6" stroke="#1a1612"/>
+          <text x="360" y="25" text-anchor="middle" class="tl" fill="#a39886">idle</text>
+          <rect x="400" y="0" width="80" height="40" fill="#e8e3d6" stroke="#1a1612"/>
+          <text x="440" y="25" text-anchor="middle" class="tl" fill="#a39886">idle</text>
+          <rect x="480" y="0" width="80" height="40" fill="#b04428" stroke="#1a1612"/>
+          <text x="520" y="25" text-anchor="middle" class="tl" fill="#fff">1</text>
+          <rect x="560" y="0" width="40" height="40" fill="#e8e3d6" stroke="#1a1612"/>
+          <text x="580" y="25" text-anchor="middle" class="tl" fill="#a39886">…</text>
+          <text x="240" y="70" class="cap" text-anchor="middle">← 6-slot round →</text>
+          <text x="240" y="90" class="cap" text-anchor="middle" font-style="italic">nodes 1, 3, and 4 have data; slots 2, 5, 6 are empty</text>
+        </g>
+      </svg>
+      <figcaption><strong>Figure 2.</strong> TDMA with 6 slots. Only nodes 1, 3, and 4 have data. The three empty slots are used by nobody, but they remain idle. That is the price we pay for predictability.</figcaption>
+    </figure>
+
+    <h3>Class 2 — Random Access</h3>
+    <p>
+      The opposite philosophy: don't partition anything at all. When you have something to send, just send it at full speed. If it collides with something else — deal with it. This works great under low load, where a lone node can use the entire channel. But under high load, collision probability increases, and more and more time is wasted.
+    </p>
+
+    <h4>Slotted ALOHA — the simplest random access idea</h4>
+    <p>
+      Divide time into equal-sized slots, exactly as long as one frame. All nodes are synchronized. When a node has a new frame, it sends it <em>at the next slot start</em>. If only it sends, the slot is successful. If two send in the same slot, they collide — and both retransmit in a future slot with probability <code>p</code> until they succeed.
+    </p>
+    <p>
+      The maximum efficiency of slotted ALOHA is <code>1/e ≈ 37%</code>. This means that even in the best case, 63 percent of the time is either collisions or empty slots. Unslotted (pure) ALOHA is even worse — only 18 percent.
+    </p>
+
+    <h4>CSMA — listen before you speak</h4>
+    <p>
+      The most obvious improvement: listen to the channel first. If nobody is talking, send. If someone is talking, wait. <strong>Carrier Sense Multiple Access</strong>. The polite conversational approach.
+    </p>
+    <p>
+      But even with carrier sensing, collisions can happen. Why? <em>Propagation delay</em>. Signals travel fast, but not infinitely fast. If node A starts transmitting, it takes a small fraction of a second before the signal reaches node B at the other end of the cable. During that time, B thinks the channel is idle. B also starts transmitting. When the signals finally meet — collision. The longer the cable, the larger the window for this kind of error.
+    </p>
+
+    <h4>CSMA/CD — and listen while you speak</h4>
+    <p>
+      The next improvement: detect the collision while it is happening, and abort the transmission. <strong>Collision Detection</strong>. Instead of completing a frame that is already ruined, you stop immediately, send a short "jam signal" so everyone understands what happened, and try again later. This saves a lot of time, especially on short cables.
+    </p>
+    <p>
+      Ethernet uses CSMA/CD. Here is the algorithm in broad strokes:
+    </p>
+    <ol>
+      <li>The NIC receives a datagram from the network layer and creates a frame.</li>
+      <li>It listens on the channel. If idle, it starts transmitting. If busy, it waits until it becomes idle.</li>
+      <li>If the entire frame goes through without collision — done.</li>
+      <li>If a collision is detected during transmission, the transmission is aborted and a jam signal is sent.</li>
+      <li>The NIC enters <em>binary exponential backoff</em>: after the <em>m</em>-th collision, a random number <code>K</code> is chosen from <code>{0, 1, …, 2ᵐ−1}</code>, and the node waits <code>K · 512</code> bit times before trying again. More collisions → longer expected wait time.</li>
+    </ol>
+
+    <div class="margin-note">
+      Binary exponential backoff is ingenious: when collisions are rare, the wait time is short. When they become frequent (many nodes competing), the wait time automatically increases, and the system calms itself down.
+    </div>
+
+    <h3>Class 3 — Taking Turns</h3>
+    <p>
+      Try to get the best of both worlds. In <strong>polling</strong>, a master node sends an invitation to each slave node in turn: "Do you have something to send? Go ahead." In <strong>token passing</strong>, a special small message (token) is sent around in a ring between the nodes, and you may only send when you have the token.
+    </p>
+    <p>
+      These methods avoid both collisions and waste under low load. The downsides are polling overhead, latency, and — most critically — a single point of failure: lose the master node or lose the token, and everything stops. Bluetooth and legacy Token Ring use variants of this.
+    </p>
+
+    <table>
+      <thead>
+        <tr><th>Protocol</th><th>Low load</th><th>High load</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>TDMA / FDMA</td><td>Poor (wastes slots)</td><td>Good (predictable)</td><td>Cellular, satellite</td></tr>
+        <tr><td>Slotted ALOHA</td><td>Good</td><td>Poor (37% max)</td><td>Historical; cable upstream requests</td></tr>
+        <tr><td>CSMA/CD</td><td>Very good</td><td>OK</td><td>Classic Ethernet (802.3)</td></tr>
+        <tr><td>CSMA/CA</td><td>Good</td><td>OK</td><td>WiFi (802.11)</td></tr>
+        <tr><td>Token passing</td><td>OK</td><td>Good</td><td>Token Ring, FDDI</td></tr>
+      </tbody>
+    </table>
+
+    <div class="quiz" data-quiz="2">
+      <div class="q-label">Knowledge Check</div>
+      <div class="q-text">Why can collisions occur in CSMA, even though each node listens before it sends?</div>
+      <div class="options">
+        <button class="option" data-correct="false">Because carrier sensing does not work on metallic cables.</button>
+        <button class="option" data-correct="true">Because propagation delay means a node may have started transmitting without another node having heard it yet.</button>
+        <button class="option" data-correct="false">Because the nodes do not have synchronized clocks.</button>
+        <button class="option" data-correct="false">Because CSMA only listens to its own transmissions, not others'.</button>
+      </div>
+      <div class="explanation">This is why Ethernet originally had an upper limit on cable length: the longer the cable, the larger the window during which two nodes both think the channel is idle and both start transmitting. The CSMA/CD algorithm is designed so that collisions must be detectable before a minimum-sized frame finishes transmitting — that is why Ethernet has a minimum frame size of 64 bytes.</div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<div class="container">
+  <nav class="page-nav">
+    <a href="ethernet-svitsjer.html" class="next">
+      <span class="nav-label">Next →</span>
+      <span class="nav-title">Ethernet, Switches, and ARP</span>
+    </a>
+  </nav>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Spring 2026</p>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('.quiz').forEach(quiz => {
+  const buttons = quiz.querySelectorAll('.option');
+  const explanation = quiz.querySelector('.explanation');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const correct = btn.dataset.correct === 'true';
+      buttons.forEach(b => {
+        b.disabled = true;
+        if (b.dataset.correct === 'true') b.classList.add('correct');
+      });
+      if (!correct) btn.classList.add('incorrect');
+      if (explanation) explanation.classList.add('show');
+    });
+  });
+});
+
+document.querySelectorAll('.reveal').forEach(r => {
+  const btn = r.querySelector('button');
+  const ans = r.querySelector('.answer');
+  btn.addEventListener('click', () => {
+    ans.classList.toggle('show');
+    btn.textContent = ans.classList.contains('show') ? 'Hide answer' : 'Show answer';
+  });
+});
+
+(function() {
+  const steps = [
+    {
+      title: 'Step 1 — The starting point',
+      body: 'We have data D = 100100 (six bits) and a generator G = 1101 (four bits, so r = 3). The goal is to find three CRC bits R such that &lt;D,R&gt; is evenly divisible by G.'
+    },
+    {
+      title: 'Step 2 — Shift the data',
+      body: 'Append r = 3 zeros after the data: 100100 → 100100000. This is the same as multiplying by 2³. Now we have room to "subtract" G using XOR multiple times.'
+    },
+    {
+      title: 'Step 3 — First XOR',
+      body: 'Align G = 1101 with the first 1 in 100100000. XOR: 1001 ⊕ 1101 = 0100. Remainder: 0100 00000. Shift G one position to the right and continue.'
+    },
+    {
+      title: 'Step 4 — Iterate to the end',
+      body: 'After several XOR steps, we are left with 001 as the remainder. This is R — the three CRC bits.'
+    },
+    {
+      title: 'Step 5 — Send the frame',
+      body: 'The frame that goes on the cable is &lt;D,R&gt; = 100100001. The receiver divides this by the same G. If it divides evenly with remainder 0, all is well. Anything other than 0 means bits have flipped along the way.'
+    }
+  ];
+  let i = 0;
+  const title = document.getElementById('crc-title');
+  const body = document.getElementById('crc-body');
+  const prog = document.getElementById('crc-progress');
+  const prev = document.getElementById('crc-prev');
+  const next = document.getElementById('crc-next');
+  function render() {
+    title.textContent = steps[i].title;
+    body.innerHTML = steps[i].body;
+    prog.textContent = (i+1) + ' / ' + steps.length;
+    prev.disabled = i === 0;
+    next.disabled = i === steps.length - 1;
+  }
+  prev.addEventListener('click', () => { if (i > 0) { i--; render(); } });
+  next.addEventListener('click', () => { if (i < steps.length - 1) { i++; render(); } });
+  render();
+})();
+</script>
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

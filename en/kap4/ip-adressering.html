@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 4b — IP and Addressing</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Chapter 4</a>
+  </div>
+</nav>
+
+<main data-chapter="Chapter 4: The Network Layer – Data Plane">
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">Chapter 4b &middot; The Network Layer</div>
+    <h1>IP and <em>addressing</em></h1>
+    <p class="lede">IP datagrams, CIDR, DHCP, NAT, IPv6 and the Internet&rsquo;s architectural principles &mdash; everything about how addresses and packets work.</p>
+  </div>
+</header>
+
+<!-- ============ 09 IP DATAGRAM ============ -->
+<section id="ip">
+  <div class="container wide">
+    <div class="section-badge">09 &middot; The IP datagram</div>
+    <h2>The format that <em>carries everything</em></h2>
+    <p class="section-intro">Everything we have seen so far is generic. Now we meet the concrete: what an actual IPv4 packet looks like, and why each field is where it is.</p>
+  </div>
+
+  <div class="container wide">
+    <figure>
+      <div class="packet">
+        <div class="cell c4"><div><strong>Ver</strong><small>4 bit</small></div></div>
+        <div class="cell c4"><div><strong>HLen</strong><small>4 bit</small></div></div>
+        <div class="cell c8"><div><strong>Type of Service</strong><small>diffserv + ECN</small></div></div>
+        <div class="cell c16"><div><strong>Total Length</strong><small>16 bit &middot; bytes</small></div></div>
+
+        <div class="cell c16"><div><strong>16-bit Identifier</strong><small>fragmentation</small></div></div>
+        <div class="cell c3"><div><strong>Flg</strong><small>3b</small></div></div>
+        <div class="cell c13"><div><strong>Fragment Offset</strong><small>13 bit</small></div></div>
+
+        <div class="cell c8"><div><strong>TTL</strong><small>8 bit</small></div></div>
+        <div class="cell c8"><div><strong>Protocol</strong><small>8 bit</small></div></div>
+        <div class="cell c16"><div><strong>Header Checksum</strong><small>16 bit</small></div></div>
+
+        <div class="cell c32 hl"><div><strong>Source IP Address</strong><small>32 bit</small></div></div>
+        <div class="cell c32 hl"><div><strong>Destination IP Address</strong><small>32 bit</small></div></div>
+
+        <div class="cell c32"><div><strong>Options</strong><small>variable (rarely used)</small></div></div>
+        <div class="cell c32 data"><div>Payload (typically a TCP or UDP segment)</div></div>
+      </div>
+      <figcaption>The IPv4 header. Minimum 20 bytes, plus an optional options section. Overhead: 20 IP + 20 TCP = 40 bytes per packet.</figcaption>
+    </figure>
+  </div>
+
+  <div class="container">
+    <table>
+      <thead><tr><th>Field</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td class="mono-cell">Version</td><td>4 for IPv4, 6 for IPv6. Two entirely different formats.</td></tr>
+        <tr><td class="mono-cell">HLen</td><td>Header length in 32-bit words. Usually 5 (= 20 bytes, no options).</td></tr>
+        <tr><td class="mono-cell">Type of Service</td><td>Differentiated services (Diffserv bits 0&ndash;5) and congestion notification (ECN bits 6&ndash;7).</td></tr>
+        <tr><td class="mono-cell">Total Length</td><td>The entire datagram including payload. Max 65&nbsp;535 bytes, typically &le; 1500.</td></tr>
+        <tr><td class="mono-cell">TTL</td><td>Decremented by 1 at each router. At 0: the packet is dropped + ICMP error. Prevents infinite loops. Used by <code>traceroute</code>.</td></tr>
+        <tr><td class="mono-cell">Protocol</td><td>What is in the payload? 6 = TCP, 17 = UDP, 1 = ICMP.</td></tr>
+        <tr><td class="mono-cell">Header Checksum</td><td>Protects only the header (not data). Must be recomputed at each router because TTL changes. Dropped in IPv6.</td></tr>
+      </tbody>
+    </table>
+    <h3>IP fragmentation</h3>
+    <p>A datagram can be up to 65&nbsp;535 bytes, but each link has an <strong>MTU</strong> (Maximum Transmission Unit) &mdash; the largest frame it can carry. Ethernet typically has MTU&nbsp;=&nbsp;1500 bytes. If a datagram is larger than the MTU on the next link, the router must <strong>fragment</strong> it into smaller pieces.</p>
+
+    <p>Three fields in the IPv4 header control fragmentation:</p>
+    <ul>
+      <li><strong>16-bit Identifier</strong> &mdash; all fragments from the same original datagram receive the same value, so the receiver can group them.</li>
+      <li><strong>Flags</strong> &mdash; the MF bit (More Fragments) is set in all fragments except the last. The DF bit (Don&rsquo;t Fragment) forbids fragmentation; the router drops the packet instead and sends an ICMP error message.</li>
+      <li><strong>Fragment Offset</strong> &mdash; indicates where in the original datagram this fragment belongs, measured in units of 8 bytes.</li>
+    </ul>
+
+    <h4>Example: 4000-byte datagram over MTU&nbsp;=&nbsp;1500</h4>
+    <p>A datagram of 4000 bytes (20 header + 3980 payload) must be split. Each fragment gets its own 20-byte IP header, so the payload per fragment is 1500&nbsp;&minus;&nbsp;20&nbsp;=&nbsp;1480 bytes:</p>
+
+    <table>
+      <thead><tr><th>Fragment</th><th>Payload</th><th>Offset</th><th>MF</th><th>Total</th></tr></thead>
+      <tbody>
+        <tr><td class="mono-cell">#1</td><td>1480 bytes</td><td>0</td><td>1</td><td>1500</td></tr>
+        <tr><td class="mono-cell">#2</td><td>1480 bytes</td><td>185</td><td>1</td><td>1500</td></tr>
+        <tr><td class="mono-cell">#3</td><td>1020 bytes</td><td>370</td><td>0</td><td>1040</td></tr>
+      </tbody>
+    </table>
+    <p>The offset values are 1480/8&nbsp;=&nbsp;185 and 2960/8&nbsp;=&nbsp;370. Total: 1480&nbsp;+&nbsp;1480&nbsp;+&nbsp;1020&nbsp;=&nbsp;3980 bytes payload, which equals the original.</p>
+
+    <div class="callout">
+      <span class="label">Reassembly occurs only at the destination</span>
+      <p>Routers along the way do <em>not</em> reassemble fragments &mdash; that is the end system&rsquo;s job. The reason is simple: fragments may take different routes through the network, so only the destination is guaranteed to see all of them. If one fragment is lost, the receiver discards the rest and TCP/the application handles retransmission.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10 ADDRESSING ============ -->
+<section id="addressing">
+  <div class="container">
+    <div class="section-badge">10 &middot; IP addresses &amp; subnets</div>
+    <h2>Addresses are bound to <em>interfaces</em></h2>
+    <p class="section-intro">An IP address does not identify a machine &mdash; it identifies an interface. A router with eight ports has eight addresses.</p>
+
+    <p class="dropcap">An IP address is 32 bits, written as four decimal numbers separated by dots (<em>dotted decimal</em>). But it is bound to an <strong>interface</strong>, not a machine. Your laptop has two interfaces (Ethernet + WiFi) and gets two different IP addresses.</p>
+
+    <h3>Subnets: &laquo;the same neighborhood&raquo;</h3>
+    <p>A <strong>subnet</strong> is a set of interfaces that can reach each other directly without passing through a router. All machines on the same Ethernet switch or WiFi are on the same subnet.</p>
+
+    <p>The recipe for identifying subnets: detach all interfaces from routers and hosts. The connected &laquo;islands&raquo; that remain are the subnets.</p>
+
+    <p>The addresses on a subnet share a common <strong>network part</strong> (high-order bits) and vary only in the <strong>host part</strong> (low-order bits). For example: <code>223.1.1.0/24</code> has a 24-bit network part and an 8-bit host part (256 addresses).</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 620 250" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="130" cy="85" rx="95" ry="52" fill="rgba(61,107,58,0.1)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="130" y="35" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="var(--green)">223.1.1.0/24</text>
+          <circle cx="85" cy="78" r="5" fill="var(--ink-soft)"/><text x="85" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">.1</text>
+          <circle cx="125" cy="72" r="5" fill="var(--ink-soft)"/><text x="125" y="94" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">.2</text>
+          <circle cx="165" cy="90" r="5" fill="var(--ink-soft)"/><text x="165" y="112" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">.3</text>
+
+          <rect x="280" y="100" width="60" height="38" fill="var(--paper-dark)" stroke="var(--rust)" stroke-width="1.5" rx="3"/>
+          <text x="310" y="124" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="600">R</text>
+
+          <ellipse cx="490" cy="85" rx="95" ry="52" fill="rgba(61,107,58,0.1)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="490" y="35" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="var(--green)">223.1.2.0/24</text>
+          <circle cx="450" cy="78" r="5" fill="var(--ink-soft)"/><text x="450" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">.1</text>
+          <circle cx="495" cy="90" r="5" fill="var(--ink-soft)"/><text x="495" y="112" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">.2</text>
+          <circle cx="535" cy="72" r="5" fill="var(--ink-soft)"/><text x="535" y="94" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">.9</text>
+
+          <ellipse cx="310" cy="200" rx="85" ry="40" fill="rgba(61,107,58,0.1)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="310" y="244" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="var(--green)">223.1.3.0/24</text>
+          <circle cx="280" cy="198" r="5" fill="var(--ink-soft)"/>
+          <circle cx="340" cy="198" r="5" fill="var(--ink-soft)"/>
+
+          <line x1="220" y1="95" x2="280" y2="112" stroke="var(--rust)" stroke-width="1.5"/>
+          <line x1="340" y1="112" x2="400" y2="95" stroke="var(--rust)" stroke-width="1.5"/>
+          <line x1="310" y1="138" x2="310" y2="165" stroke="var(--rust)" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <figcaption>Three subnets connected by one router. The router has three different IP addresses &mdash; one per interface.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ 11 CIDR ============ -->
+<section id="cidr">
+  <div class="container">
+    <div class="section-badge">11 &middot; CIDR</div>
+    <h2>Classless <em>addressing</em></h2>
+    <p class="section-intro">The old classes (/8, /16, /24) wasted enormous amounts of addresses. CIDR lets the network part be any number between 0 and 32.</p>
+
+    <p class="dropcap"><strong>CIDR</strong> &mdash; Classless Inter-Domain Routing &mdash; drops the fixed classes and allows the prefix length to be arbitrary. <code>200.23.16.0/23</code> means &laquo;the first 23 bits are the network part, the last 9 are the host part&raquo;, giving 2&#8313; = 512 addresses.</p>
+
+    <div class="slider-box">
+      <div class="slabel">Explore CIDR</div>
+      <h4>Move the prefix length and see how many addresses you get:</h4>
+      <input type="range" id="cidr-slider" min="8" max="30" value="24">
+      <div class="addr-display" id="cidr-display"></div>
+      <div class="stats">
+        <div><div class="k">Prefix</div><div class="v" id="cidr-prefix">/24</div></div>
+        <div><div class="k">Subnet mask</div><div class="v" id="cidr-mask" style="font-size:13px">255.255.255.0</div></div>
+        <div><div class="k">Number of addresses</div><div class="v" id="cidr-count">256</div></div>
+      </div>
+    </div>
+
+    <h3>Route aggregation</h3>
+    <p>CIDR enables <strong>hierarchical addressing</strong>. An ISP that owns <code>200.23.16.0/20</code> can advertise that single route to the rest of the Internet, even though it internally divides the space into eight /23 blocks for eight customer organizations. The rest of the Internet does not need to know about the subdivision &mdash; only that &laquo;everything starting with 200.23.16.0/20 goes to this ISP.&raquo;</p>
+
+    <p>When an organization switches ISPs, the new ISP advertises a more specific route (longer prefix), and thanks to LPM traffic finds its way correctly. The system is self-repairing.</p>
+
+    <h3>Who allocates addresses?</h3>
+    <p><strong>ICANN</strong> (Internet Corporation for Assigned Names and Numbers) allocates IP address blocks through five Regional Internet Registries (RIRs). ICANN allocated the last IPv4 block to an RIR in 2011 &mdash; the global pool is empty.</p>
+  </div>
+</section>
+
+<!-- ============ 12 DHCP ============ -->
+<section id="dhcp">
+  <div class="container">
+    <div class="section-badge">12 &middot; DHCP</div>
+    <h2>Getting an address <em>automatically</em></h2>
+    <p class="section-intro">DHCP &mdash; Dynamic Host Configuration Protocol &mdash; lets a machine request and receive an IP address when it joins the network.</p>
+
+    <p class="dropcap">Manual configuration works for servers, but is impossible for laptops that constantly switch networks. DHCP solves this with a four-step dance &mdash; all sent as broadcast, because the client initially does not even know its own address.</p>
+
+    <div class="stepper" id="stepper-dhcp">
+      <div class="slabel">The DHCP sequence</div>
+      <h4>Four messages, all broadcast</h4>
+      <div class="stage-svg" id="dhcp-svg"></div>
+      <div class="desc" id="dhcp-desc"></div>
+      <div class="ctrls">
+        <button id="dhcp-prev" disabled>&larr; Previous</button>
+        <span class="progress" id="dhcp-prog">0 / 4</span>
+        <button id="dhcp-next">Next &rarr;</button>
+      </div>
+    </div>
+
+    <p>DHCP delivers more than just an IP address. The reply typically also includes: the address of the <strong>first-hop router</strong> (default gateway), the address of the <strong>DNS server</strong>, and the <strong>subnet mask</strong>.</p>
+
+    <div class="quiz">
+      <p class="q-text">Why is the DHCP request sent as broadcast, even when the client knows the server address?</p>
+      <div class="options">
+        <button class="option" data-correct="false">Because the client still does not have its own IP address to reply from.</button>
+        <button class="option" data-correct="false">Because unicast is not supported at this point in the protocol.</button>
+        <button class="option" data-correct="true">To let other DHCP servers that also sent offers know that their offers were declined &mdash; so they can release reserved addresses.</button>
+        <button class="option" data-correct="false">Because routers filter unicast traffic to DHCP servers.</button>
+      </div>
+      <div class="explanation"><strong>Correct!</strong> The broadcast in step 3 signals to <em>all</em> DHCP servers: &laquo;I chose this server; the others can release their reservations.&raquo;</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 13 NAT ============ -->
+<section id="nat">
+  <div class="container">
+    <div class="section-badge">13 &middot; NAT</div>
+    <h2>Why the entire household shares <em>one IP</em></h2>
+    <p class="section-intro">Network Address Translation lets an entire private network share one public IP address. It saved IPv4 &mdash; but violates the end-to-end principle.</p>
+
+    <p class="dropcap">IPv4 has 2&sup3;&sup2; &asymp; 4.3 billion addresses. That is not enough for all the world&rsquo;s devices. <strong>NAT</strong> solves this by having all machines on a private network (typically <code>10.0.0.0/8</code> or <code>192.168.0.0/16</code>) share one public address externally.</p>
+
+    <p>The trick lies in the <strong>port numbers</strong>. When your machine sends a packet out, the NAT router rewrites the source address to its public IP and changes the source port to a unique number that it stores in a <strong>NAT table</strong>. When the reply comes back, it looks up the port number in the table and sends the packet to the correct internal machine.</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 620 230" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="120" cy="110" rx="88" ry="75" fill="rgba(61,107,58,0.08)" stroke="var(--green)" stroke-width="1.5"/>
+          <text x="120" y="38" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-style="italic" fill="var(--green)">private network</text>
+          <circle cx="80" cy="95" r="5" fill="var(--ink-soft)"/>
+          <text x="80" y="85" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">10.0.0.1</text>
+          <circle cx="150" cy="90" r="5" fill="var(--ink-soft)"/>
+          <text x="150" y="80" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">10.0.0.2</text>
+          <circle cx="100" cy="140" r="5" fill="var(--ink-soft)"/>
+          <text x="100" y="158" text-anchor="middle" font-family="IBM Plex Mono" font-size="8">10.0.0.3</text>
+
+          <rect x="250" y="88" width="120" height="48" fill="var(--paper-dark)" stroke="var(--rust)" stroke-width="1.5" rx="3"/>
+          <text x="310" y="109" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">NAT</text>
+          <text x="310" y="126" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--rust)">138.76.29.7</text>
+
+          <ellipse cx="520" cy="110" rx="68" ry="55" fill="var(--paper-dark)" stroke="var(--blue)" stroke-width="1.5"/>
+          <text x="520" y="115" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-style="italic" fill="var(--blue)">Internet</text>
+
+          <line x1="205" y1="112" x2="250" y2="112" stroke="var(--ink-soft)" stroke-width="1.5"/>
+          <line x1="370" y1="112" x2="455" y2="112" stroke="var(--ink-soft)" stroke-width="1.5"/>
+
+          <g font-family="IBM Plex Mono" font-size="9">
+            <rect x="225" y="160" width="170" height="56" fill="var(--paper)" stroke="var(--line)" stroke-dasharray="3 3"/>
+            <text x="310" y="174" text-anchor="middle" fill="var(--ink-faded)">NAT table</text>
+            <text x="232" y="190">10.0.0.1:3345 &harr; :5001</text>
+            <text x="232" y="204">10.0.0.2:4500 &harr; :5002</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>NAT maintains a translation table that lets many internal flows share one public address. The key is rewriting port numbers.</figcaption>
+    </figure>
+
+    <div class="callout">
+      <span class="label">NAT is controversial</span>
+      <p>NAT violates the <strong>end-to-end principle</strong>: a machine behind NAT cannot readily accept incoming connections. It requires &laquo;port forwarding&raquo; to run a server at home, and peer-to-peer protocols must use &laquo;hole punching.&raquo; Routers &laquo;should&raquo; only process up to layer 3, but NAT manipulates port numbers (layer 4). Nevertheless: NAT is here to stay, widely used in home networks, enterprises and 4G/5G networks.</p>
+    </div>
+
+    <div class="reveal" data-reveal>
+      <div class="q">Why is NAT controversial among network architects, and which layers in the protocol stack does it violate?</div>
+      <button>Show answer</button>
+      <div class="answer">NAT violates the <strong>end-to-end principle</strong> in two ways. First: a machine behind NAT cannot accept incoming connections without explicit &laquo;port forwarding&raquo; &mdash; servers, P2P and IoT become problematic. Second: a router normally operates at layer&nbsp;3, but NAT rewrites <em>port numbers</em> (layer&nbsp;4). This means a layer-3 device manipulates layer-4 information, which breaks the clean layering. In addition, the NAT router must maintain state (the NAT table) per flow, which contradicts the stateless IP model.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 14 IPv6 ============ -->
+<section id="ipv6">
+  <div class="container">
+    <div class="section-badge">14 &middot; IPv6</div>
+    <h2>128-bit addresses and a <em>simpler</em> header</h2>
+    <p class="section-intro">IPv6 was specified in 1998. The motivation: 32-bit addresses would run out. The solution: 128-bit addresses &mdash; enough to give every grain of sand on Earth its own address several trillion times over.</p>
+
+    <p class="dropcap">IPv6 has two advantages beyond the larger address space. First: a <strong>fixed 40-byte header</strong> without options or variable fields, which makes forwarding faster. Second: support for <strong>flow labels</strong> that let routers treat flows differently.</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 620 160" xmlns="http://www.w3.org/2000/svg">
+          <g font-family="IBM Plex Mono" font-size="10">
+            <text x="40" y="20" font-family="IBM Plex Sans" font-size="12" font-weight="600">IPv6 header (fixed 40 bytes)</text>
+
+            <rect x="40" y="32" width="50" height="24" fill="var(--paper-dark)" stroke="var(--ink-soft)"/>
+            <rect x="90" y="32" width="90" height="24" fill="var(--paper-dark)" stroke="var(--ink-soft)"/>
+            <rect x="180" y="32" width="300" height="24" fill="var(--paper-dark)" stroke="var(--ink-soft)"/>
+            <text x="65" y="48" text-anchor="middle">ver</text>
+            <text x="135" y="48" text-anchor="middle">traffic class</text>
+            <text x="330" y="48" text-anchor="middle">flow label</text>
+
+            <rect x="40" y="56" width="160" height="24" fill="var(--paper-dark)" stroke="var(--ink-soft)"/>
+            <rect x="200" y="56" width="160" height="24" fill="var(--paper-dark)" stroke="var(--ink-soft)"/>
+            <rect x="360" y="56" width="120" height="24" fill="var(--paper-dark)" stroke="var(--ink-soft)"/>
+            <text x="120" y="72" text-anchor="middle">payload length</text>
+            <text x="280" y="72" text-anchor="middle">next header</text>
+            <text x="420" y="72" text-anchor="middle">hop limit</text>
+
+            <rect x="40" y="80" width="440" height="24" fill="rgba(176,68,40,0.12)" stroke="var(--rust)" stroke-width="1.5"/>
+            <text x="260" y="96" text-anchor="middle" font-weight="600">source address (128 bit)</text>
+
+            <rect x="40" y="104" width="440" height="24" fill="rgba(176,68,40,0.12)" stroke="var(--rust)" stroke-width="1.5"/>
+            <text x="260" y="120" text-anchor="middle" font-weight="600">destination address (128 bit)</text>
+
+            <text x="500" y="50" font-family="Newsreader" font-size="10" fill="var(--ink-faded)">no</text>
+            <text x="500" y="62" font-family="Newsreader" font-size="10" fill="var(--ink-faded)">fragment fields!</text>
+            <text x="500" y="96" font-family="Newsreader" font-size="10" fill="var(--ink-faded)">4&times; longer</text>
+            <text x="500" y="108" font-family="Newsreader" font-size="10" fill="var(--ink-faded)">addresses</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>The IPv6 header is simpler than IPv4 despite longer addresses: no checksum, no inline options, no fragmentation in routers.</figcaption>
+    </figure>
+
+    <h3>What was removed from IPv4?</h3>
+    <ul>
+      <li><strong>No header checksum</strong> &mdash; saves time in routers (the transport layer has its own).</li>
+      <li><strong>No fragmentation in routers</strong> &mdash; if the packet is too large, the router sends an ICMP &laquo;Packet Too Big&raquo; message back. The sender must fragment it itself.</li>
+      <li><strong>No options</strong> &mdash; replaced by extension headers chained via &laquo;next header&raquo; fields.</li>
+    </ul>
+
+    <h3>Transition: tunneling and dual stack</h3>
+    <p>IPv6 and IPv4 are <em>not</em> backward compatible. The transition requires <strong>dual stack</strong> (running both simultaneously) and <strong>tunneling</strong> (encapsulating IPv6 datagrams inside IPv4 payloads to cross IPv4 networks).</p>
+
+    <p>In 2026, we are around 45&ndash;47% IPv6 traffic globally &mdash; after more than 25 years of gradual migration. NAT kept IPv4 on life support and removed the pressure for a rapid transition.</p>
+
+    <div class="reveal" data-reveal>
+      <div class="q">Why does IPv6 have no header checksum, while IPv4 does?</div>
+      <button>Show answer</button>
+      <div class="answer">In IPv4, the header checksum must be <strong>recomputed at every single router</strong>, because the TTL field is decremented at each hop. This costs time in a device that must process millions of packets per second. At the same time, both TCP and UDP have their own checksums that protect data and header end-to-end. The IPv6 designers concluded that a hop-by-hop checksum at the network layer was wasted processing &mdash; and removed it to make forwarding faster.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 15 HOURGLASS ============ -->
+<section id="hourglass">
+  <div class="container">
+    <div class="section-badge">15 &middot; The hourglass &amp; end-to-end</div>
+    <h2>The Internet&rsquo;s <em>architectural principles</em></h2>
+    <p class="section-intro">IP is the Internet&rsquo;s &laquo;narrow waist&raquo; &mdash; the only thing everyone must implement. Complexity lives at the edges. This is a deliberate design choice.</p>
+
+    <div class="callout">
+      <span class="label">Syllabus note</span>
+      <p>Section 4.5 (Middleboxes) in the textbook is <strong>not part of the syllabus</strong>. The hourglass model and the end-to-end argument are nevertheless central architectural principles referenced throughout the course. This section provides useful background, but the exam focus is on sections 4.1&ndash;4.3.</p>
+    </div>
+
+    <h3>The IP hourglass</h3>
+    <p>The Internet has many protocols at the application, transport, link and physical layers &mdash; but only <strong>one</strong> network-layer protocol: IP. This &laquo;narrow waist&raquo; is what makes interoperability possible: any device that implements IP can communicate with any other.</p>
+
+    <p>In &laquo;middle age,&raquo; the Internet has developed &laquo;love handles&raquo;: middleboxes (firewalls, NAT, caches) that operate inside the network and break the clean hourglass model.</p>
+
+    <h3>Architectural principles (RFC 1958)</h3>
+
+    <div class="callout callout-blue">
+      <span class="label">&#9733; RFC 1958</span>
+      <p>&laquo;The goal is connectivity, the tool is the Internet Protocol, and the intelligence is end to end rather than hidden in the network.&raquo;</p>
+      <p style="margin-top:12px">Three cornerstones: <strong>simple connectivity</strong>, <strong>IP as the narrow waist</strong>, and <strong>intelligence at the edges</strong>.</p>
+    </div>
+
+    <h3>The end-to-end argument</h3>
+    <p>Saltzer, Reed and Clark (1981) put it this way: a function can <em>only</em> be implemented completely and correctly with knowledge from the application at the endpoints. Building it into the network itself is not possible. An incomplete version in the network <em>may</em> be useful as a performance optimization, but can never replace the endpoint implementation.</p>
+
+    <p>Concretely: reliable data transfer can either be implemented hop-by-hop in the network (expensive, complex) or end-to-end in the end systems (TCP). The Internet chose end-to-end &mdash; and it has scaled better than all alternatives.</p>
+
+    <div class="quiz">
+      <p class="q-text">What does the end-to-end argument mean in practice for network design?</p>
+      <div class="options">
+        <button class="option" data-correct="false">That routers should encrypt all traffic for security.</button>
+        <button class="option" data-correct="true">That functions such as reliability are best implemented in the end systems, not in the network.</button>
+        <button class="option" data-correct="false">That all devices must run the same operating system.</button>
+        <button class="option" data-correct="false">That packets always follow the shortest path.</button>
+      </div>
+      <div class="explanation"><strong>Correct!</strong> The intelligence &mdash; reliability, encryption, ordered delivery &mdash; belongs in the end systems. The network is kept simple and focused on best-effort delivery.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 16 SUMMARY ============ -->
+<section id="summary">
+  <div class="container">
+    <div class="section-badge">16 &middot; Summary</div>
+    <h2>Simple <em>by design</em></h2>
+
+    <p class="dropcap">If there is one thing to take away from this chapter: the Internet&rsquo;s network layer is simple by design. Every design decision &mdash; best-effort, dumb routers, hierarchical addressing, destination-based forwarding &mdash; is a choice <em>against</em> complexity.</p>
+
+    <p>The complexity is not gone &mdash; it has simply moved:</p>
+    <ul>
+      <li>To the <strong>end systems</strong>: TCP ensures reliability, QUIC provides low latency.</li>
+      <li>To the <strong>control plane</strong>: BGP is one of the most complex systems humans have built.</li>
+      <li>To <strong>middleboxes</strong>: NAT, firewalls, load balancers, deep packet inspection.</li>
+    </ul>
+
+    <p>The data plane has remained relatively simple &mdash; and that is why it has been able to fly. Next time, when we open the control plane section, we will see <em>how</em> forwarding tables are actually populated: routing algorithms, OSPF, BGP, and ICMP.</p>
+  </div>
+</section>
+
+<div class="container">
+  <nav class="page-nav">
+    <a href="rutere-videresending.html">
+      <span class="nav-label">&larr; Previous</span>
+      <span class="nav-title">Routers and forwarding</span>
+    </a>
+  </nav>
+</div>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10038; &#10038; &#10038;</div>
+    <p>NTNU &middot; TTM4100 &middot; Spring 2026</p>
+  </div>
+</footer>
+
+<script>
+// === Quiz handlers ===
+document.querySelectorAll('.quiz').forEach(function(quiz) {
+  var fb = quiz.querySelector('.explanation');
+  quiz.querySelectorAll('button.option').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var correct = btn.dataset.correct === 'true';
+      quiz.querySelectorAll('button.option').forEach(function(b) {
+        b.disabled = true;
+        if (b.dataset.correct === 'true') b.classList.add('correct');
+        else if (b === btn) b.classList.add('incorrect');
+      });
+      if (fb) fb.classList.add('show');
+    });
+  });
+});
+
+// === CIDR slider ===
+(function() {
+  var slider = document.getElementById('cidr-slider');
+  var display = document.getElementById('cidr-display');
+  var prefixEl = document.getElementById('cidr-prefix');
+  var maskEl = document.getElementById('cidr-mask');
+  var countEl = document.getElementById('cidr-count');
+
+  function toMask(bits) {
+    var full = '';
+    for (var i = 0; i < 32; i++) full += i < bits ? '1' : '0';
+    var octets = [];
+    for (var i = 0; i < 4; i++) octets.push(parseInt(full.substr(i * 8, 8), 2));
+    return octets.join('.');
+  }
+
+  function update() {
+    var bits = parseInt(slider.value);
+    var addr = '11001000000101110001000000000000';
+    var html = '';
+    for (var i = 0; i < 32; i++) {
+      if (i > 0 && i % 8 === 0) html += ' ';
+      var cls = i < bits ? 'net' : 'host';
+      html += '<span class="' + cls + '">' + addr[i] + '</span>';
+    }
+    html += '<br>200.23.16.0/' + bits;
+    display.innerHTML = html;
+    prefixEl.textContent = '/' + bits;
+    maskEl.textContent = toMask(bits);
+    var count = Math.pow(2, 32 - bits);
+    countEl.textContent = count >= 1e6 ? (count / 1e6).toFixed(1) + 'M' : count.toLocaleString('en');
+  }
+
+  slider.addEventListener('input', update);
+  update();
+})();
+
+// === DHCP stepper ===
+(function() {
+  var descs = [
+    'Click \u00abNext\u00bb to see the DHCP message exchange step by step.',
+    'The client knows nothing \u2014 not its own address, not the server\u2019s. It broadcasts \u201cis there a DHCP server out there?\u201d (DHCP Discover) to the entire subnet. Source address: 0.0.0.0. Destination: 255.255.255.255.',
+    'The server responds with an offer: \u201cHere is an address you can use: 223.1.2.4\u201d (DHCP Offer). This too is sent as broadcast. Includes the lease time.',
+    'The client broadcasts back: \u201cI\u2019ll take .4!\u201d (DHCP Request). Broadcast because other DHCP servers that also sent offers need to know they were declined.',
+    'The server confirms: \u201cOK, it\u2019s yours\u201d (DHCP ACK). Now the lease is assigned, and the client knows its IP, gateway, DNS server and subnet mask.'
+  ];
+
+  function buildSvg(step) {
+    var s = '<svg viewBox="0 0 580 240" xmlns="http://www.w3.org/2000/svg">';
+    s += '<defs><marker id="darr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="var(--rust)"/></marker>';
+    s += '<marker id="darrg" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="var(--green)"/></marker></defs>';
+    s += '<rect x="30" y="20" width="90" height="34" fill="var(--paper-dark)" stroke="var(--ink-soft)" rx="3"/>';
+    s += '<text x="75" y="42" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">Client</text>';
+    s += '<line x1="75" y1="54" x2="75" y2="230" stroke="var(--ink-ghost)" stroke-dasharray="2 3"/>';
+    s += '<rect x="430" y="20" width="110" height="34" fill="var(--paper-dark)" stroke="var(--ink-soft)" rx="3"/>';
+    s += '<text x="485" y="42" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600">DHCP Server</text>';
+    s += '<line x1="485" y1="54" x2="485" y2="230" stroke="var(--ink-ghost)" stroke-dasharray="2 3"/>';
+
+    var msgs = [
+      { y: 85, label: '1. DHCP Discover', dir: 'r', color: 'var(--rust)', marker: 'darr' },
+      { y: 125, label: '2. DHCP Offer', dir: 'l', color: 'var(--green)', marker: 'darrg' },
+      { y: 165, label: '3. DHCP Request', dir: 'r', color: 'var(--rust)', marker: 'darr' },
+      { y: 205, label: '4. DHCP ACK', dir: 'l', color: 'var(--green)', marker: 'darrg' }
+    ];
+
+    for (var i = 0; i < msgs.length; i++) {
+      var m = msgs[i];
+      var op = i < step ? '1' : '0.12';
+      var x1 = m.dir === 'r' ? 75 : 485;
+      var x2 = m.dir === 'r' ? 485 : 75;
+      s += '<g opacity="' + op + '">';
+      s += '<line x1="' + x1 + '" y1="' + m.y + '" x2="' + x2 + '" y2="' + m.y + '" stroke="' + m.color + '" stroke-width="2" marker-end="url(#' + m.marker + ')"/>';
+      s += '<text x="280" y="' + (m.y - 8) + '" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="' + m.color + '">' + m.label + '</text>';
+      s += '</g>';
+    }
+    s += '</svg>';
+    return s;
+  }
+
+  var idx = 0;
+  var svgEl = document.getElementById('dhcp-svg');
+  var descEl = document.getElementById('dhcp-desc');
+  var progEl = document.getElementById('dhcp-prog');
+  var prevBtn = document.getElementById('dhcp-prev');
+  var nextBtn = document.getElementById('dhcp-next');
+
+  function render() {
+    svgEl.innerHTML = buildSvg(idx);
+    descEl.textContent = descs[idx];
+    progEl.textContent = idx + ' / 4';
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === descs.length - 1;
+  }
+  prevBtn.addEventListener('click', function() { if (idx > 0) { idx--; render(); } });
+  nextBtn.addEventListener('click', function() { if (idx < descs.length - 1) { idx++; render(); } });
+  render();
+})();
+
+// === Reveal handlers ===
+document.querySelectorAll('.reveal').forEach(function(r) {
+  var btn = r.querySelector('button');
+  var ans = r.querySelector('.answer');
+  btn.addEventListener('click', function() {
+    ans.classList.toggle('show');
+    btn.textContent = ans.classList.contains('show') ? 'Hide answer' : 'Show answer';
+  });
+});
+</script>
+
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

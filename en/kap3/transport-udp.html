@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 3a — The Transport Layer: Services, mux/demux, and UDP</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Chapter 3</a>
+  </div>
+</nav>
+
+<main data-chapter="Chapter 3: The Transport Layer – Services, multiplexing, and UDP">
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">Chapter 3 · The Transport Layer</div>
+    <h1>Services, <em>multiplexing</em><br>and UDP</h1>
+    <p class="sub">What the transport layer actually does, how the right process finds the right packet, and the simplest protocol that gets by without guarantees.</p>
+    <nav class="toc">
+      <a href="#services"><span>00</span> Transport layer services</a>
+      <a href="#muxdemux"><span>01</span> Multiplexing and demux</a>
+      <a href="#udp"><span>02</span> UDP</a>
+      <a href="#checksum"><span>03</span> The UDP checksum</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ TRANSPORT-LAYER SERVICES ============ -->
+<section id="services">
+  <div class="container">
+    <div class="badge">00 · Transport layer services</div>
+    <h2>What the transport layer <em>actually does</em></h2>
+    <p class="section-intro">The network layer delivers packets between machines. The transport layer lifts communication one level up — to processes.</p>
+
+    <p class="lead">Imagine a house where twelve children live. Another house, on the other side of town, also houses twelve children. Every day the children send letters to each other. The postal system delivers envelopes to the right house — but it is Ann and Bill, one child in each house, who receive the mail and distribute it to the right sibling. The postal system is the network layer: it delivers to the <em>house address</em>. Ann and Bill are the transport layer: they deliver to the right <em>person</em> inside the house.</p>
+
+    <p>This analogy captures the absolutely central distinction:</p>
+
+    <table class="compare">
+      <thead><tr><th>Layer</th><th>Communication</th></tr></thead>
+      <tbody>
+        <tr><td>Network layer</td><td>Logical communication between <strong>hosts</strong> — IP addresses identify machines.</td></tr>
+        <tr><td>Transport layer</td><td>Logical communication between <strong>processes</strong> — port numbers identify applications.</td></tr>
+      </tbody>
+    </table>
+
+    <p>The transport layer <strong>builds upon</strong> the network layer, but it cannot perform miracles. The network layer (IP) offers a <em>best-effort</em> service without any guarantees. The transport layer can add reliability and ordering (TCP), but it cannot force the network to provide better bandwidth or lower latency.</p>
+
+    <h3>Sender and receiver actions</h3>
+    <p>The transport layer performs concrete actions on both sides:</p>
+
+    <div class="box solution">
+      <div class="label">Sender</div>
+      <p>Receives an application message from the layer above. Determines header values (port numbers, etc.), creates a <strong>segment</strong>, and delivers the segment down to IP.</p>
+    </div>
+
+    <div class="box solution">
+      <div class="label">Receiver</div>
+      <p>Receives a segment from IP. Checks the header values. Extracts the application data. <strong>Demultiplexes</strong> the message up to the correct socket (and thus the correct process).</p>
+    </div>
+
+    <h3>Two transport protocols</h3>
+    <p>The Internet gives applications two choices:</p>
+
+    <table class="compare">
+      <thead><tr><th>Protocol</th><th>Properties</th></tr></thead>
+      <tbody>
+        <tr><td>TCP</td><td>Reliable, ordered delivery. Flow control, congestion control, connection establishment. Costs time and resources.</td></tr>
+        <tr><td>UDP</td><td>Unreliable, unordered delivery. No handshake, no state information, minimal overhead. Fast and simple.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="margin-note">
+      <strong>What the transport layer cannot provide</strong>
+      Neither TCP nor UDP can guarantee latency or bandwidth. These properties require support in the network core, and IP provides no such guarantees.
+    </div>
+
+    <div class="quiz" data-correct="1">
+      <div class="qlabel">Check your understanding</div>
+      <h4>What is the fundamental difference between the network layer and the transport layer?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">The network layer uses ports; the transport layer uses IP addresses</button>
+        <button class="opt" data-i="1">The network layer provides logical communication between hosts; the transport layer provides logical communication between processes</button>
+        <button class="opt" data-i="2">The network layer is reliable; the transport layer is unreliable</button>
+        <button class="opt" data-i="3">The transport layer exists only on the server, not on the client</button>
+      </div>
+      <div class="feedback"><strong>Correct.</strong> The network layer (IP) delivers packets to the right <em>machine</em>. The transport layer uses port numbers to deliver onward to the right <em>process</em> on that machine.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MUX / DEMUX ============ -->
+<section id="muxdemux">
+  <div class="container">
+    <div class="badge">01 · Multiplexing and demultiplexing</div>
+    <h2>The right packet to the <em>right</em> process</h2>
+    <p class="section-intro">The core task of the transport layer: gather data from many sockets on the sender side, and deliver them to the correct socket on the receiver side.</p>
+
+    <p class="lead">Multiplexing and demultiplexing are two sides of the same coin. <strong>Multiplexing</strong> happens at the sender: the transport layer gathers data from different application sockets, adds transport headers (including port numbers), and sends the segments downward. <strong>Demultiplexing</strong> happens at the receiver: the transport layer examines header information in incoming segments and delivers the data up to the correct socket.</p>
+
+    <h3>How demultiplexing works</h3>
+    <p>When a host receives an IP datagram, it contains:</p>
+    <ul style="list-style:none;padding:0;margin:24px 0">
+      <li style="padding:14px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:13px;display:inline-block;width:200px">Source IP address</strong> Who sent the datagram.</li>
+      <li style="padding:14px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:13px;display:inline-block;width:200px">Destination IP</strong> Who should receive it.</li>
+      <li style="padding:14px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:13px;display:inline-block;width:200px">Source port number</strong> From the segment header — 16 bits.</li>
+      <li style="padding:14px 0"><strong style="color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:13px;display:inline-block;width:200px">Dest. port number</strong> From the segment header — 16 bits.</li>
+    </ul>
+    <p>The host uses IP addresses and port numbers to direct the segment to the correct socket. But <em>how</em> this happens differs between UDP and TCP.</p>
+
+    <h3>Connectionless demultiplexing (UDP)</h3>
+    <p>A UDP socket is identified by <strong>only two things</strong>: destination IP and destination port. The consequence is simple but important:</p>
+
+    <div class="box insight">
+      <div class="label">Key insight</div>
+      <p>If two UDP datagrams have <em>different</em> source IP and/or source port, but the <em>same</em> destination IP and port, they end up in the <strong>same socket</strong> at the receiver. UDP only cares about where the packet is going, not where it comes from.</p>
+    </div>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="ar1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1a1612"/></marker></defs>
+
+          <text x="80" y="30" font-family="IBM Plex Sans" font-size="14" font-weight="600" fill="#1a1612">Client A</text>
+          <text x="380" y="30" font-family="IBM Plex Sans" font-size="14" font-weight="600" fill="#1a1612">Server</text>
+          <text x="580" y="30" font-family="IBM Plex Sans" font-size="14" font-weight="600" fill="#1a1612">Client B</text>
+
+          <rect x="60" y="50" width="120" height="50" rx="4" fill="none" stroke="#a39886" stroke-width="1.5"/>
+          <text x="120" y="80" font-family="IBM Plex Mono" font-size="12" fill="#2d4a7a" text-anchor="middle">port 9157</text>
+
+          <rect x="360" y="50" width="120" height="50" rx="4" fill="none" stroke="#b04428" stroke-width="2"/>
+          <text x="420" y="80" font-family="IBM Plex Mono" font-size="12" fill="#b04428" text-anchor="middle">port 6428</text>
+
+          <rect x="560" y="50" width="120" height="50" rx="4" fill="none" stroke="#a39886" stroke-width="1.5"/>
+          <text x="620" y="80" font-family="IBM Plex Mono" font-size="12" fill="#2d4a7a" text-anchor="middle">port 5775</text>
+
+          <line x1="180" y1="75" x2="358" y2="75" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ar1)"/>
+          <text x="260" y="65" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">src:9157 dst:6428</text>
+
+          <line x1="560" y1="75" x2="482" y2="75" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ar1)"/>
+          <text x="490" y="65" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">src:5775 dst:6428</text>
+
+          <text x="420" y="140" font-family="Newsreader" font-size="13" font-style="italic" fill="#3d6b3a" text-anchor="middle">Both end up in the same socket (port 6428)</text>
+        </svg>
+      </div>
+      <figcaption>UDP demultiplexing: two clients with different source ports send to the same destination port. Both packets are delivered to the same socket.</figcaption>
+    </figure>
+
+    <h3>Connection-oriented demultiplexing (TCP)</h3>
+    <p>TCP does it differently. A TCP socket is identified by a <strong>4-tuple</strong>:</p>
+    <ul style="list-style:none;padding:0;margin:24px 0">
+      <li style="padding:10px 0;border-bottom:1px dotted var(--line)"><code>source IP</code></li>
+      <li style="padding:10px 0;border-bottom:1px dotted var(--line)"><code>source port</code></li>
+      <li style="padding:10px 0;border-bottom:1px dotted var(--line)"><code>destination IP</code></li>
+      <li style="padding:10px 0"><code>destination port</code></li>
+    </ul>
+
+    <p>The consequence: even if three segments arrive at the same server with the <em>same</em> destination IP and port (e.g., port 80), they will be delivered to <strong>different sockets</strong> if they have different source IP or source port. A web server can thus have hundreds of simultaneous TCP connections — all on port 80 — and keep them separate because each connection has a unique 4-tuple.</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1a1612"/></marker></defs>
+
+          <text x="80" y="25" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612">Host A (IP: A)</text>
+          <text x="400" y="25" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612">Server B (IP: B)</text>
+          <text x="80" y="200" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612">Host C (IP: C)</text>
+
+          <rect x="60" y="40" width="130" height="40" rx="4" fill="none" stroke="#a39886" stroke-width="1.5"/>
+          <text x="125" y="65" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a" text-anchor="middle">A:9157</text>
+
+          <rect x="60" y="215" width="130" height="40" rx="4" fill="none" stroke="#a39886" stroke-width="1.5"/>
+          <text x="125" y="240" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a" text-anchor="middle">C:5775</text>
+
+          <rect x="60" y="260" width="130" height="40" rx="4" fill="none" stroke="#a39886" stroke-width="1.5"/>
+          <text x="125" y="285" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a" text-anchor="middle">C:9157</text>
+
+          <rect x="400" y="40" width="150" height="40" rx="4" fill="none" stroke="#b04428" stroke-width="2"/>
+          <text x="475" y="65" font-family="IBM Plex Mono" font-size="11" fill="#b04428" text-anchor="middle">P4 (A:9157,B:80)</text>
+
+          <rect x="400" y="120" width="150" height="40" rx="4" fill="none" stroke="#b04428" stroke-width="2"/>
+          <text x="475" y="145" font-family="IBM Plex Mono" font-size="11" fill="#b04428" text-anchor="middle">P5 (C:5775,B:80)</text>
+
+          <rect x="400" y="200" width="150" height="40" rx="4" fill="none" stroke="#b04428" stroke-width="2"/>
+          <text x="475" y="225" font-family="IBM Plex Mono" font-size="11" fill="#b04428" text-anchor="middle">P6 (C:9157,B:80)</text>
+
+          <line x1="190" y1="60" x2="398" y2="60" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ar2)"/>
+          <line x1="190" y1="235" x2="398" y2="140" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ar2)"/>
+          <line x1="190" y1="280" x2="398" y2="220" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ar2)"/>
+
+          <text x="475" y="280" font-family="Newsreader" font-size="12" font-style="italic" fill="#3d6b3a" text-anchor="middle">All three to port 80, but three different sockets</text>
+        </svg>
+      </div>
+      <figcaption>TCP demultiplexing: three segments to port 80 are demultiplexed to three different sockets based on the 4-tuple (source IP, source port, dest IP, dest port).</figcaption>
+    </figure>
+
+    <div class="quiz" data-correct="2">
+      <div class="qlabel">Check your understanding</div>
+      <h4>Two UDP datagrams arrive at a server. They have different source IPs but the same destination IP and port. What happens?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">One is dropped because there is a conflict</button>
+        <button class="opt" data-i="1">They are delivered to two different sockets</button>
+        <button class="opt" data-i="2">They are both delivered to the same socket</button>
+        <button class="opt" data-i="3">The server sends an error message back</button>
+      </div>
+      <div class="feedback"><strong>Correct.</strong> UDP identifies a socket using only the destination IP and port. Source information is not used for demultiplexing, so both end up in the same socket.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ UDP ============ -->
+<section id="udp">
+  <div class="container">
+    <div class="badge">02 · UDP</div>
+    <h2>Connectionless transport: <em>UDP</em></h2>
+    <p class="section-intro">UDP does almost nothing — and that is precisely the point. Minimal overhead, maximum freedom.</p>
+
+    <p class="lead">User Datagram Protocol is the simplest transport protocol on the Internet. It does <em>almost</em> nothing beyond what IP already provides. No connection establishment, no state, no delivery guarantee, no ordering guarantee, no flow control, no congestion control. Each UDP segment is handled independently of all others.</p>
+
+    <p>Why choose something so primitive? Because the absence of guarantees has concrete advantages:</p>
+
+    <table class="compare">
+      <thead><tr><th>Property</th><th>Advantage</th></tr></thead>
+      <tbody>
+        <tr><td>No handshake</td><td>No extra RTT to set up a connection — data can be sent immediately.</td></tr>
+        <tr><td>No state</td><td>Sender and receiver hold no connection information. Servers can handle many more clients.</td></tr>
+        <tr><td>Small header</td><td>Only 8 bytes of overhead vs. 20+ bytes for TCP.</td></tr>
+        <tr><td>No congestion control</td><td>The application can send as fast as it wants — useful for real-time applications that tolerate some loss.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Who uses UDP?</h3>
+    <p>UDP is surprisingly widespread:</p>
+    <ul style="list-style:none;padding:0;margin:24px 0">
+      <li style="padding:10px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">DNS</strong> — fast lookups without setting up a connection</li>
+      <li style="padding:10px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">SNMP</strong> — network monitoring where simplicity matters</li>
+      <li style="padding:10px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">Streaming</strong> — loss-tolerant, latency-sensitive (though services like Netflix often use TCP)</li>
+      <li style="padding:10px 0"><strong style="color:var(--rust)">HTTP/3</strong> — builds reliability and congestion control <em>on top of</em> UDP via QUIC</li>
+    </ul>
+
+    <div class="margin-note">
+      <strong>Reliability on top of UDP</strong>
+      If an application needs reliable delivery but uses UDP (e.g., HTTP/3), it must implement reliability and congestion control itself at the application layer.
+    </div>
+
+    <h3>Anatomy of a UDP segment</h3>
+    <p>The UDP header is minimalist — only 8 bytes:</p>
+  </div>
+
+  <div class="container wide">
+    <figure>
+      <div class="packet">
+        <div class="cell c16 hl"><div><strong>Source Port</strong><small>16 bit</small></div></div>
+        <div class="cell c16 hl"><div><strong>Dest Port</strong><small>16 bit</small></div></div>
+
+        <div class="cell c16"><div><strong>Length</strong><small>16 bit · bytes in entire segment</small></div></div>
+        <div class="cell c16"><div><strong>Checksum</strong><small>16 bit</small></div></div>
+
+        <div class="cell c32 data"><div>Application data (payload)</div></div>
+      </div>
+      <figcaption>The UDP segment — only four fields in the header, totalling 8 bytes. Compare with TCP's minimum of 20 bytes.</figcaption>
+    </figure>
+  </div>
+
+  <div class="container">
+    <table class="compare">
+      <thead><tr><th>Field</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>Source Port</td><td>The sender's port number. The receiver can use this to send a reply back.</td></tr>
+        <tr><td>Dest Port</td><td>The port number the segment should be delivered to at the receiver.</td></tr>
+        <tr><td>Length</td><td>The length of the entire UDP segment (header + data) in bytes.</td></tr>
+        <tr><td>Checksum</td><td>Used to detect bit errors in the header or data.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Sender and receiver actions</h3>
+    <div class="box solution">
+      <div class="label">UDP sender</div>
+      <p>Receives an application message. Sets source and destination port. Computes the length and checksum. Packs everything into a segment and delivers it to IP.</p>
+    </div>
+    <div class="box solution">
+      <div class="label">UDP receiver</div>
+      <p>Receives a segment from IP. Checks the checksum. Extracts the application data. Demultiplexes the message up to the correct socket based on the destination port.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHECKSUM ============ -->
+<section id="checksum">
+  <div class="container">
+    <div class="badge">03 · The UDP checksum</div>
+    <h2>Error detection with <em>one's complement</em></h2>
+    <p class="section-intro">The checksum is UDP's only line of defense. It is simple, cheap, and far from perfect.</p>
+
+    <p class="lead">The idea behind the checksum is straightforward: the sender sums all 16-bit words in the segment (header + data + parts of the IP header), takes the one's complement of the sum, and places the result in the checksum field. The receiver performs the same computation. If the answer does not match, she knows that something was altered in transit.</p>
+
+    <h3>Step by step</h3>
+    <div class="box solution">
+      <div class="label">Computation</div>
+      <p><strong>1.</strong> Treat the contents as a sequence of 16-bit integers.<br>
+      <strong>2.</strong> Sum them using <em>one's complement</em> addition (where a carry out of bit 15 is added back to bit 0 — wraparound).<br>
+      <strong>3.</strong> Take the one's complement of the sum (invert all bits). This is the checksum.</p>
+    </div>
+
+    <h3>An example</h3>
+    <p>Suppose we add two 16-bit numbers:</p>
+    <div class="box insight">
+      <div class="label">Computation</div>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:14px;line-height:2">
+        <code>1110 0110 0110 0110</code><br>
+        <code>1101 0101 0101 0101</code><br>
+        ────────────────────<br>
+        <code>1 1011 1011 1011 1011</code> &larr; wraparound carry<br>
+        <code>&nbsp;&nbsp;1011 1011 1011 1100</code> &larr; sum (after wraparound)<br>
+        <code>&nbsp;&nbsp;0100 0100 0100 0011</code> &larr; checksum (one's complement)
+      </p>
+    </div>
+
+    <h3>Weak, but better than nothing</h3>
+    <p>The checksum catches many common errors — such as a single bit flip. But it is <strong>weak</strong>: if two bits flip in just the right way, they can "cancel out" each other without changing the sum. The checksum provides <em>no</em> guarantee that the data is unaltered — it only gives a reasonable chance of detecting errors.</p>
+
+    <div class="margin-note">
+      <strong>Why one's complement?</strong>
+      One's complement addition has a useful property: it is order-independent. You can sum the words in any order and get the same result. This simplifies the implementation.
+    </div>
+
+    <div class="quiz" data-correct="1">
+      <div class="qlabel">Check your understanding</div>
+      <h4>What is a weakness of the UDP checksum?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">It cannot detect any bit errors</button>
+        <button class="opt" data-i="1">Two bit errors that "cancel out" each other can go undetected</button>
+        <button class="opt" data-i="2">It only works with IPv4, not IPv6</button>
+        <button class="opt" data-i="3">Only the sender computes it; the receiver ignores it</button>
+      </div>
+      <div class="feedback"><strong>Correct.</strong> A single bit flip is almost always detected, but two complementary errors can yield an unchanged sum. The checksum is simple and cheap, but far from foolproof.</div>
+    </div>
+
+    <div class="ornament">&#10038; &#10038; &#10038;</div>
+    <p>With the transport layer's fundamental principles, multiplexing/demultiplexing, and UDP in place, the next step is to understand <em>how</em> we build reliability step by step: <a href="palitelig-dataoverforing.html">Principles of reliable data transfer</a>.</p>
+  </div>
+</section>
+
+<nav class="page-nav">
+  <div class="container">
+    <span></span>
+    <a href="palitelig-dataoverforing.html" class="next"><span class="nav-label">Next &rarr;</span><span class="nav-title">Reliable data transfer</span></a>
+  </div>
+</nav>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10038; &#10038; &#10038;</div>
+    <p>Based on Kurose &amp; Ross, <em>Computer Networking</em>, 8th edition — Chapter 3</p>
+    <p>NTNU · TTM4100 · Spring 2026</p>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('.quiz').forEach(q => {
+  const correct = parseInt(q.dataset.correct);
+  const fb = q.querySelector('.feedback');
+  q.querySelectorAll('button.opt').forEach(b => {
+    b.addEventListener('click', () => {
+      q.querySelectorAll('button.opt').forEach(x => { x.disabled = true; });
+      const i = parseInt(b.dataset.i);
+      if (i === correct) {
+        b.classList.add('correct');
+      } else {
+        b.classList.add('wrong');
+        q.querySelectorAll('button.opt')[correct].classList.add('correct');
+      }
+      fb.classList.add('show');
+    });
+  });
+});
+</script>
+
+</main>
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTTP and the Web — Chapter 2</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Chapter 2</a>
+  </div>
+</nav>
+
+<main data-chapter="Chapter 2: The Application Layer">
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">Chapter 2 · Part 1</div>
+    <h1><span class="reg">The Web and</span> <em>HTTP</em></h1>
+    <p class="lede">From fundamental principles of network applications and the client–server paradigm, through the internals of the HTTP protocol, to cookies, caching, and HTTP/2.</p>
+    <nav class="toc">
+      <a href="#prinsipper"><span class="toc-num">01</span><span>Principles of network applications</span></a>
+      <a href="#paradigmer"><span class="toc-num">02</span><span>Client–server vs. peer-to-peer</span></a>
+      <a href="#transport"><span class="toc-num">03</span><span>What does an app need from the transport layer?</span></a>
+      <a href="#http"><span class="toc-num">04</span><span>The Web and HTTP</span></a>
+      <a href="#meldinger"><span class="toc-num">05</span><span>HTTP messages and methods</span></a>
+      <a href="#cookies"><span class="toc-num">06</span><span>State and cookies</span></a>
+      <a href="#cache"><span class="toc-num">07</span><span>Web cache and conditional GET</span></a>
+      <a href="#http2"><span class="toc-num">08</span><span>HTTP/2 and HOL blocking</span></a>
+    </nav>
+  </div>
+</header>
+
+<!-- ========== 01 PRINSIPPER ========== -->
+<section id="prinsipper">
+  <div class="container">
+    <div class="section-badge">01 · Where apps live</div>
+    <h2>Programs at each end of the network</h2>
+    <p class="section-intro">Before we talk about HTTP or BitTorrent, we need to understand one simple thing: where does a network application actually run?</p>
+
+    <p class="lead">A browser runs on your machine. A web server runs on another. Between them lies the Internet — millions of routers and links that move packets around. The absolutely central idea in the application layer is this: <em>you only write code for the end systems</em>. The routers in the core run no user applications; they merely forward packets. This is the reason a student can invent a completely new network service tonight and roll it out across the globe tomorrow, without having to update anything in the network's infrastructure.</p>
+
+    <p>Writing a network application thus means writing two (or more) programs that run on <em>different</em> machines and exchange messages over the network. A web server program talks with a browser program. Two Skype clients talk with each other. A BitTorrent client talks with dozens of other clients simultaneously. The pattern is the same everywhere: processes on end systems sending messages through the network.</p>
+
+    <h3>Processes, sockets, and addresses</h3>
+    <p>Inside the operating system, a running app is a <strong>process</strong>. Two processes on the same machine communicate via mechanisms the operating system provides (shared memory, pipes, etc.). Two processes on different machines communicate by sending messages through the network — and the gateway out of the process is called a <strong>socket</strong>.</p>
+
+    <p>The picture you should have in mind: the socket is a door. The sending process pushes a message out through the door and trusts that the transport infrastructure on the other side delivers it to another socket at the receiving process. Two sockets are involved in each communication — one at each end.</p>
+
+    <figure class="fig-frame">
+      <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#b04428"/>
+          </marker>
+        </defs>
+        <rect x="40" y="40" width="220" height="200" fill="#fdfaf2" stroke="#c9c0ae"/>
+        <text x="150" y="64" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#6b6257" font-weight="600">HOST A</text>
+        <rect x="60" y="80" width="180" height="38" fill="#e8e3d6" stroke="#c9c0ae"/>
+        <text x="150" y="104" text-anchor="middle" font-family="Newsreader" font-size="14" fill="#1a1612" font-style="italic">process (browser)</text>
+        <rect x="120" y="118" width="60" height="22" fill="#b04428" stroke="#8a3420"/>
+        <text x="150" y="134" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#fdfaf2">socket</text>
+        <rect x="60" y="140" width="180" height="28" fill="#f4f1ea" stroke="#c9c0ae"/>
+        <text x="150" y="158" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">transport (TCP/UDP)</text>
+        <rect x="60" y="168" width="180" height="22" fill="#f4f1ea" stroke="#c9c0ae"/>
+        <text x="150" y="184" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#a39886">network · link · physical</text>
+        <ellipse cx="350" cy="140" rx="60" ry="38" fill="none" stroke="#a39886" stroke-dasharray="3,3"/>
+        <text x="350" y="145" text-anchor="middle" font-family="Newsreader" font-size="13" fill="#6b6257" font-style="italic">Internet</text>
+        <rect x="440" y="40" width="220" height="200" fill="#fdfaf2" stroke="#c9c0ae"/>
+        <text x="550" y="64" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#6b6257" font-weight="600">HOST B</text>
+        <rect x="460" y="80" width="180" height="38" fill="#e8e3d6" stroke="#c9c0ae"/>
+        <text x="550" y="104" text-anchor="middle" font-family="Newsreader" font-size="14" fill="#1a1612" font-style="italic">process (web server)</text>
+        <rect x="520" y="118" width="60" height="22" fill="#b04428" stroke="#8a3420"/>
+        <text x="550" y="134" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#fdfaf2">socket</text>
+        <rect x="460" y="140" width="180" height="28" fill="#f4f1ea" stroke="#c9c0ae"/>
+        <text x="550" y="158" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">transport (TCP/UDP)</text>
+        <rect x="460" y="168" width="180" height="22" fill="#f4f1ea" stroke="#c9c0ae"/>
+        <text x="550" y="184" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#a39886">network · link · physical</text>
+        <path d="M 180 129 Q 350 70 520 129" fill="none" stroke="#b04428" stroke-width="1.5" marker-end="url(#arr)"/>
+        <path d="M 520 130 Q 350 200 180 130" fill="none" stroke="#b04428" stroke-width="1.5" marker-end="url(#arr)" opacity="0.5"/>
+        <text x="150" y="225" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#6b6257">controlled by app developer</text>
+        <line x1="60" y1="232" x2="240" y2="232" stroke="#a39886" stroke-width="0.5"/>
+        <text x="150" y="258" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#a39886">the rest is managed by the OS</text>
+      </svg>
+      <figcaption>Two processes communicate through their respective sockets. Everything above the socket is the app developer's domain; everything below belongs to the operating system.</figcaption>
+    </figure>
+
+    <p>For the message to arrive, the receiving process must have an <em>identifier</em>. The host's IP address is not enough — a single machine typically runs dozens of processes simultaneously. The identifier therefore consists of two parts: <strong>IP address</strong> (which machine) and <strong>port number</strong> (which process on that machine). An HTTP server typically listens on port 80, a mail server on port 25.</p>
+
+    <div class="margin-note">Think of the IP address as the street address of an apartment building, and the port number as the apartment number. Both must be on the envelope for the letter to reach the right person.</div>
+
+    <h3>What an application protocol actually is</h3>
+    <p>When two programs need to communicate, they must agree on the rules. An <strong>application protocol</strong> defines four things:</p>
+    <p><strong>Message types</strong> — for example request and response. <strong>Message syntax</strong> — which fields exist, and how are they delimited? <strong>Message semantics</strong> — what do the values in the fields mean? <strong>Rules</strong> — when and how are messages sent, and how does one respond?</p>
+    <p>Some protocols are <em>open</em>: defined in RFCs, freely available, so that anyone can implement them. HTTP and SMTP are classic examples — it is precisely because they are open that any browser can talk to any web server. Other protocols are <em>proprietary</em> — Skype is an example — and work only within a single vendor's ecosystem.</p>
+  </div>
+</section>
+
+<!-- ========== 02 PARADIGMER ========== -->
+<section id="paradigmer">
+  <div class="container">
+    <div class="section-badge">02 · Two ways to organize it</div>
+    <h2>Client–server, or everyone against everyone</h2>
+    <p class="section-intro">When two machines need to cooperate, who takes the initiative? Who is always on? The answer divides the entire application world in two.</p>
+
+    <p class="lead">The classic model is <strong>client–server</strong>. A server machine is always on, has a fixed IP address, and waits for clients to connect. The clients — your browser, your email app, your FTP client — connect when they have a need, send a request, receive a response, and disconnect again. Clients never talk directly to each other; all traffic goes through the server. Examples: HTTP, IMAP, FTP. The model is easy to reason about, and because the server has one known address, there is no doubt about whom to contact.</p>
+
+    <p>The obvious downside is that the server quickly becomes a bottleneck. If you need to distribute a large file to a million clients simultaneously, <em>one</em> machine must upload that file a million times. That scales poorly — and we will soon examine this mathematically.</p>
+
+    <p>The alternative model is <strong>peer-to-peer</strong>. Here there is no always-on server. Arbitrary end systems — <em>peers</em> — talk directly with each other. A peer requests a service from another peer, and itself provides services back to others. The fascinating property is <em>self-scaling</em>: each new peer that enters the system brings not only new demands, but also new capacity. The more people who want the file, the more people there are who can share it further.</p>
+
+    <p>The price you pay is complexity. Peers are only intermittently connected, their IP addresses change, and there is no central directory. Classic examples are BitTorrent (file sharing), KanKan (streaming), and Skype (VoIP).</p>
+
+    <div class="callout callout-blue">
+      <h4>The hybrid reality</h4>
+      <p>In practice, nearly all modern systems are hybrids. Skype uses peer-to-peer for the actual conversation, but needs centralized servers to find out <em>where</em> the other party is. BitTorrent uses P2P for the file transfer, but often a centralized "tracker" or distributed hash table to discover other peers. The pure form is rare; what matters is understanding both models because systems borrow features from both.</p>
+    </div>
+
+    <div class="quiz" id="quiz1">
+      <div class="label">Check your understanding</div>
+      <div class="q-text">Why does P2P file distribution scale fundamentally better than client–server?</div>
+      <div class="options">
+        <button class="option" data-correct="false">Because peers are geographically closer to users than central servers.</button>
+        <button class="option" data-correct="true">Because each new peer requesting the file simultaneously brings its own upload capacity into the system.</button>
+        <button class="option" data-correct="false">Because P2P protocols use UDP instead of TCP and thus avoid overhead.</button>
+        <button class="option" data-correct="false">Because the server no longer needs to be on once peers have connected to each other.</button>
+      </div>
+      <div class="explanation">Correct — this is the key to self-scaling. In client–server, total upload capacity is constant (= u<sub>s</sub>). In P2P it grows with the number of peers, because each peer both downloads <em>and</em> uploads.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 03 TRANSPORT ========== -->
+<section id="transport">
+  <div class="container">
+    <div class="section-badge">03 · What does the app need from the layer below?</div>
+    <h2>The order to the transport layer</h2>
+    <p class="section-intro">An app is picky. It wants certain things from the transport layer — but not all apps want the same things.</p>
+
+    <p class="lead">When you design an application protocol, you must choose which transport service to sit on top of. There are two main options on the Internet — TCP and UDP — and they give you very different guarantees. To choose wisely, you need to know what your app actually requires.</p>
+
+    <p>There are four dimensions at play. <strong>Data reliability</strong>: can the app tolerate some lost packets? File transfer requires 100% reliability — a single lost byte and the entire file is corrupt. Audio and video, on the other hand, can tolerate some loss; a glitch here and there produces a bit of static, not catastrophe. <strong>Timing requirements</strong>: must data arrive within a certain time? Internet telephony and games need low delay to feel usable. A file download does not care about a second more or less. <strong>Throughput</strong>: does the app need a minimum rate? Streaming video does. Email does not. <strong>Security</strong>: should data be encrypted, integrity-checked, authenticated?</p>
+
+    <h3>TCP vs. UDP, in brief</h3>
+    <p><strong>TCP</strong> gives you reliable transfer (all bytes arrive, in correct order), flow control (the sender does not overwhelm a slow receiver) and congestion control (the sender slows down when the network is congested). In addition, TCP is connection-oriented — a connection must be set up between the parties before data can flow. TCP does <em>not</em> provide timing guarantees or minimum throughput, and it does not provide security by itself.</p>
+
+    <p><strong>UDP</strong> is the opposite: no reliability, no flow control, no congestion control, no connection setup. You send a packet; it may or may not arrive. Why does UDP exist then? Because it is simple and fast, and because some apps prefer to handle reliability themselves — or actually do not want it. Real-time voice calls would rather lose some packets than wait for retransmissions.</p>
+
+    <table>
+      <thead>
+        <tr><th>Application</th><th>Data loss</th><th>Throughput</th><th>Time-sensitive?</th><th>Transport</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>File transfer / download</td><td>No loss</td><td>Elastic</td><td>No</td><td class="mono-cell">TCP</td></tr>
+        <tr><td>Email</td><td>No loss</td><td>Elastic</td><td>No</td><td class="mono-cell">TCP</td></tr>
+        <tr><td>Web documents</td><td>No loss</td><td>Elastic</td><td>No</td><td class="mono-cell">TCP</td></tr>
+        <tr><td>Real-time audio/video</td><td>Loss-tolerant</td><td>5 kbps – 5 Mbps</td><td>Yes, tens of ms</td><td class="mono-cell">TCP or UDP</td></tr>
+        <tr><td>Stored audio/video</td><td>Loss-tolerant</td><td>10 kbps – 5 Mbps</td><td>Yes, a few seconds</td><td class="mono-cell">TCP</td></tr>
+        <tr><td>Interactive games</td><td>Loss-tolerant</td><td>A few kbps and up</td><td>Yes, tens of ms</td><td class="mono-cell">UDP / TCP</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Securing TCP with TLS</h3>
+    <p>Plain TCP and UDP sockets are unencrypted. If you send a password through a plain TCP socket, it travels in clear text across the Internet — and anyone along the way can read it. The solution is called <strong>Transport Layer Security</strong> (TLS), which sits as a layer on top of TCP and provides encryption, data integrity, and endpoint authentication. TLS is implemented as libraries in the application layer — apps call TLS functions, which in turn communicate with TCP. Plaintext sent into a TLS socket comes out again at the other end, but over the network it has traveled encrypted.</p>
+  </div>
+</section>
+
+<!-- ========== 04 HTTP ========== -->
+<section id="http">
+  <div class="container">
+    <div class="section-badge">04 · The Web and HTTP</div>
+    <h2>The protocol that builds a web page</h2>
+    <p class="section-intro">When you type a URL in the browser, what actually happens? The answer is HTTP — the Web's application protocol, and perhaps the most widely used protocol in the world.</p>
+
+    <p class="lead">A web page is rarely one thing. It is an <em>HTML file</em> that references other objects — images, stylesheets, scripts, fonts, videos — and each of these objects may be fetched from different servers on the Internet. When the browser is to display a page, it must first fetch the HTML, then parse it to discover which other objects are needed, and then fetch all of those as well. This is a choreographed ballet of requests and responses, and it is HTTP that conducts it all.</p>
+
+    <p>HTTP stands for <em>HyperText Transfer Protocol</em>. It follows a client–server model: the browser is the client that sends requests, the web server is the server that responds. HTTP uses TCP under the hood — because we need reliable transfer so that the HTML does not arrive corrupted. The client initiates a TCP connection to the server on port 80 (or 443 for HTTPS), the server accepts, HTTP messages are exchanged, and finally the connection is closed.</p>
+
+    <p>A critical property: HTTP is <strong>stateless</strong>. The server remembers nothing about previous requests from the same client. Each request is a blank slate. That sounds like a weakness — and we shall see that it creates challenges that must be solved with cookies — but it is also an enormous strength. Stateless protocols are simple to implement, simple to scale, and if a server crashes, a new one can take over without needing to reconstruct any "session state."</p>
+
+    <h3>Two flavors of HTTP connections</h3>
+    <p>In early HTTP days (HTTP/1.0), <strong>non-persistent</strong> connections were used: one TCP connection per object. You open the connection, fetch the HTML, close. Open a new connection, fetch the first image, close. Open a new connection, fetch the second image, close. For a page with ten images, that means eleven TCP setups. Each setup costs one RTT just to get started, plus OS overhead.</p>
+
+    <p>HTTP/1.1 introduced <strong>persistent</strong> connections: open one TCP connection, send many requests over it, close when you are done. The difference may seem small, but it is significant — especially over connections with high RTT.</p>
+
+    <h3>Response time: why RTT matters above all</h3>
+    <p>Let us do the math. <strong>RTT</strong> (round-trip time) is the time it takes for a small packet to travel from client to server and back. For a non-persistent HTTP request for one object:</p>
+
+    <figure class="fig-frame">
+      <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg">
+        <line x1="180" y1="40" x2="180" y2="290" stroke="#6b6257" stroke-width="1"/>
+        <line x1="540" y1="40" x2="540" y2="290" stroke="#6b6257" stroke-width="1"/>
+        <text x="180" y="28" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#6b6257" font-weight="600">CLIENT</text>
+        <text x="540" y="28" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#6b6257" font-weight="600">SERVER</text>
+        <line x1="180" y1="60" x2="540" y2="90" stroke="#b04428" stroke-width="1.3"/>
+        <line x1="540" y1="90" x2="180" y2="120" stroke="#b04428" stroke-width="1.3"/>
+        <text x="65" y="68" font-family="Newsreader" font-size="13" font-style="italic" fill="#1a1612">open TCP</text>
+        <text x="155" y="92" text-anchor="end" font-family="IBM Plex Mono" font-size="11" fill="#b04428">RTT</text>
+        <line x1="180" y1="135" x2="540" y2="165" stroke="#2d4a7a" stroke-width="1.3"/>
+        <line x1="540" y1="165" x2="180" y2="195" stroke="#2d4a7a" stroke-width="1.3"/>
+        <text x="65" y="143" font-family="Newsreader" font-size="13" font-style="italic" fill="#1a1612">request file</text>
+        <text x="155" y="167" text-anchor="end" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a">RTT</text>
+        <rect x="170" y="195" width="20" height="80" fill="#3d6b3a"/>
+        <text x="65" y="240" font-family="Newsreader" font-size="13" font-style="italic" fill="#1a1612">file received</text>
+        <text x="610" y="240" text-anchor="start" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">file</text>
+        <text x="610" y="254" text-anchor="start" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">transfer</text>
+        <text x="350" y="305" text-anchor="middle" font-family="Newsreader" font-size="14" font-style="italic" fill="#8a3420">total = 2·RTT + transfer time</text>
+      </svg>
+      <figcaption>Non-persistent HTTP: one RTT for TCP setup, one RTT for request and start of response, plus the time to transfer the file itself.</figcaption>
+    </figure>
+
+    <p>Persistent HTTP eliminates the first RTT for each additional object — you pay the TCP setup cost only once, then you can send one request after another over the same connection. The client can even pipeline requests: send the request for object 2 before the response to object 1 has arrived. For a page with many references, this can halve the load time.</p>
+
+    <div class="quiz" id="quiz-http-conn">
+      <div class="label">Check your understanding</div>
+      <div class="q-text">A web page contains one HTML file and 8 images, all on the same server. With non-persistent HTTP (no parallel connections) — how many TCP connections must be established, and what is the minimum number of RTTs to load the entire page?</div>
+      <div class="options">
+        <button class="option" data-correct="false">1 connection, 9 RTTs</button>
+        <button class="option" data-correct="false">9 connections, 9 RTTs</button>
+        <button class="option" data-correct="true">9 connections, 18 RTTs (plus transfer time)</button>
+        <button class="option" data-correct="false">9 connections, 10 RTTs</button>
+      </div>
+      <div class="explanation">With non-persistent HTTP each object needs its own TCP connection, so 9 in total (1 HTML + 8 images). Each connection costs 2 RTTs (1 for TCP setup + 1 for request/response), totaling 18 RTTs plus the actual transfer time. With persistent HTTP you would need only 1 connection and 10 RTTs (1 for TCP setup + 1 per object) — or even less with pipelining.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 05 MELDINGER ========== -->
+<section id="meldinger">
+  <div class="container">
+    <div class="section-badge">05 · The HTTP message, unfolded</div>
+    <h2>What a request and a response actually contain</h2>
+    <p class="section-intro">HTTP messages are remarkably readable. You can practically talk to a web server from a keyboard via Telnet.</p>
+
+    <p>There are two types of HTTP messages: requests (sent from client to server) and responses (server to client). Both are plain ASCII — no binary obscurity — and consist of three parts: a start line, a number of header lines, and an optional body.</p>
+
+    <div class="http-msg">
+      <div class="panel">
+        <h5>Request</h5>
+<pre><span class="kw">GET</span> /index.html HTTP/1.1
+Host: www.cs.umass.edu
+User-Agent: Firefox/3.6
+Accept: text/html
+Accept-Language: en-us,en
+Accept-Encoding: gzip,deflate
+Connection: keep-alive
+
+<span class="c-cmt">(blank line marks the end)</span></pre>
+      </div>
+      <div class="panel">
+        <h5>Response</h5>
+<pre>HTTP/1.1 <span class="kw">200 OK</span>
+Date: Sun, 26 Sep 2010 20:09:20 GMT
+Server: Apache/2.0.52
+Last-Modified: Tue, 30 Oct 2007
+Content-Length: 2652
+Content-Type: text/html
+
+&lt;html&gt;...&lt;/html&gt;</pre>
+      </div>
+    </div>
+
+    <p>The request's first line — called the <em>request line</em> — has the form <code>METHOD  URL  VERSION</code>. The header lines follow as <code>name: value</code>. A blank line (CRLF) marks the end of the header. After the header, a body may follow, for example data from a filled-in form.</p>
+
+    <h3>The methods</h3>
+    <p>HTTP defines several methods, each with a clear role. <strong>GET</strong> requests an object; any parameters are placed in the URL after a question mark. <strong>POST</strong> sends data to the server — typically from a web form — in the request body. <strong>HEAD</strong> requests the header of an object without the content itself; useful for debugging and for caches that want to check if something has changed. <strong>PUT</strong> uploads a new file to a specified URL and replaces any existing content there.</p>
+
+    <h3>Status codes</h3>
+    <p>The response's first line contains a three-digit status code. You probably know some of them already:</p>
+    <table>
+      <tbody>
+        <tr><td class="mono-cell">200 OK</td><td>The request succeeded; the object is included in the response.</td></tr>
+        <tr><td class="mono-cell">301 Moved Permanently</td><td>The object has been moved; the new address is given in the <code>Location</code> header.</td></tr>
+        <tr><td class="mono-cell">400 Bad Request</td><td>The server did not understand the request.</td></tr>
+        <tr><td class="mono-cell">404 Not Found</td><td>The requested document does not exist on the server.</td></tr>
+        <tr><td class="mono-cell">505 HTTP Version Not Supported</td><td>The server does not support the HTTP version the client used.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <h4>Try it yourself</h4>
+      <p>You can talk directly to a web server from the terminal. Type <code>telnet gaia.cs.umass.edu 80</code>, and you have a TCP connection on port 80. Type a GET request manually (end with two enters), and watch raw HTTP response come back. It is one of the fastest ways to demystify how the web actually works.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 06 COOKIES ========== -->
+<section id="cookies">
+  <div class="container">
+    <div class="section-badge">06 · State in a stateless world</div>
+    <h2>Cookies, or why your browser knows who you are</h2>
+    <p class="section-intro">HTTP is stateless — but the shopping cart in the online store knows what you put in it. How does that work?</p>
+
+    <p class="lead">The statelessness of HTTP is a blessing for scalability and simplicity, but a curse if you actually want to build an application where the user should be able to log in, fill a shopping cart, or pick up where they left off yesterday. How can a server recognize the same user across independent requests? The answer is one of the Web's most important inventions: <strong>cookies</strong>.</p>
+
+    <p>The idea is simple. The first time a user visits a website, the server sends a unique identifier back in a special header field — <code>Set-Cookie: 1678</code>. The browser stores this in a cookie file, associated with the domain. Next time the user requests something from the same website, the browser automatically includes the cookie in the request — <code>Cookie: 1678</code>. Now the server can look up the identifier in its own database and determine: "Ah, that is the user who put two books in the shopping cart ten minutes ago."</p>
+
+    <p>There are four moving parts in the system: a <em>Set-Cookie</em> header in an HTTP response, a <em>Cookie</em> header in subsequent HTTP requests, a cookie file on the user's machine (managed by the browser), and a database on the server side where the cookie is linked to actual information.</p>
+
+    <div class="stepper" id="cookie-stepper">
+      <div class="label">Cookie flow — step by step</div>
+      <div class="stage">
+        <svg viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg" id="cookie-svg">
+          <rect x="40" y="40" width="120" height="160" fill="#fdfaf2" stroke="#c9c0ae"/>
+          <text x="100" y="60" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="600" fill="#6b6257">CLIENT</text>
+          <rect x="55" y="75" width="90" height="40" fill="#e8e3d6" stroke="#c9c0ae" id="cookie-store"/>
+          <text x="100" y="92" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">cookie file</text>
+          <text x="100" y="106" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428" id="cookie-content">(empty)</text>
+          <rect x="440" y="40" width="120" height="160" fill="#fdfaf2" stroke="#c9c0ae"/>
+          <text x="500" y="60" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="600" fill="#6b6257">SERVER</text>
+          <rect x="455" y="140" width="90" height="50" fill="#e8e3d6" stroke="#c9c0ae"/>
+          <text x="500" y="158" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">database</text>
+          <text x="500" y="175" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428" id="db-content">(empty)</text>
+          <g id="arrow-group"></g>
+        </svg>
+      </div>
+      <div class="step-desc" id="cookie-step-text">First visit: the user contacts the server without a cookie.</div>
+      <div class="controls">
+        <button id="cs-prev" disabled>&#8249; Previous</button>
+        <span class="progress" id="cookie-counter">Step 1 / 5</span>
+        <button id="cs-next">Next &#8250;</button>
+      </div>
+    </div>
+
+    <p>Cookies are used for many useful things: authorization (who are you logged in as?), shopping carts, recommendations, session state for webmail. But they are also one of the main mechanisms behind tracking on the web. <strong>Third-party persistent cookies</strong> — cookies set by domains other than the one you see in the address bar — allow the same identifier to follow you across many different websites, building a very detailed profile of your activity.</p>
+
+    <div class="callout callout-blue">
+      <h4>Norwegian regulations from 2025</h4>
+      <p>The Norwegian Parliament passed a new Electronic Communications Act that took effect on January 1, 2025. It requires that consent to cookies meets GDPR requirements: voluntary, specific, informed, unambiguous, given through an active action, documentable, and possible to withdraw as easily as it was given. This is the reason nearly all websites now show you a cookie banner on first visit.</p>
+    </div>
+
+    <div class="reveal" id="reveal-cookies">
+      <div class="q">HTTP is stateless, but cookies provide state. Why didn't they simply make HTTP stateful from the start, instead of adding cookies later?</div>
+      <button onclick="document.getElementById('reveal-cookies-ans').classList.add('show')">Show answer</button>
+      <div class="answer" id="reveal-cookies-ans">
+        <p>Statelessness is a deliberate design decision that provides great advantages: servers do not need to remember anything between requests, which makes it easy to scale (add more servers behind a load balancer — any of them can answer any request). If the server crashes, it does not need to reconstruct any session state. Stateless protocols are also simpler to implement and simpler to debug. Cookies let you add state <em>where you need it</em>, without imposing it on the entire protocol. It is an "opt-in" system: only those applications that actually need state pay the cost.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 07 CACHE ========== -->
+<section id="cache">
+  <div class="container">
+    <div class="section-badge">07 · Web cache and conditional GET</div>
+    <h2>Don't fetch what you already have</h2>
+    <p class="section-intro">The fastest request is the one you never send.</p>
+
+    <p class="lead">A <strong>web cache</strong> — or proxy server — is an intermediary that remembers previous responses. The user's browser is configured to send all HTTP requests through the cache instead of directly to the origin server. When a request arrives, the cache first checks whether it already has the object. If yes, it delivers it immediately. If no, it fetches the object from the origin server, stores a copy, and delivers it onward to the client.</p>
+
+    <p>The cache thus acts simultaneously as a server (toward the client) and as a client (toward the origin server). This provides two important benefits: <strong>shorter response time</strong> for the user, because the cache is typically closer than the origin server, and <strong>less traffic</strong> on the institution's access link, because popular content only needs to be downloaded once. For a university ISP or an office network, this can save enormous amounts of bandwidth.</p>
+
+    <h3>The problem: how does the cache know it has a valid copy?</h3>
+    <p>What if the content on the origin server has changed since the cache stored its copy? Then the cache serves stale content to the user — embarrassing. The solution is <strong>conditional GET</strong>. The cache sends a regular GET request, but adds a header field: <code>If-Modified-Since: &lt;date&gt;</code>.</p>
+
+    <p>The server checks whether the object has been modified after that date. If not, it responds with <code>304 Not Modified</code> — a small message with no content at all. The cache then knows its version is still valid and can safely deliver it. If the object has been modified, the server responds with <code>200 OK</code> and the new content, just like a regular GET. This is an elegant optimization: in the common case — where the content has not changed — the object does not need to be transferred at all, only the small 304 message.</p>
+
+    <figure class="fig-frame">
+      <svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+        <line x1="120" y1="30" x2="120" y2="200" stroke="#6b6257"/>
+        <line x1="580" y1="30" x2="580" y2="200" stroke="#6b6257"/>
+        <text x="120" y="20" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="600" fill="#6b6257">CACHE</text>
+        <text x="580" y="20" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="600" fill="#6b6257">SERVER</text>
+        <line x1="120" y1="55" x2="580" y2="80" stroke="#2d4a7a" stroke-width="1.3"/>
+        <text x="350" y="62" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">GET with If-Modified-Since: Oct 30</text>
+        <line x1="580" y1="100" x2="120" y2="125" stroke="#3d6b3a" stroke-width="1.3"/>
+        <text x="350" y="110" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">304 Not Modified  (empty response)</text>
+        <line x1="40" y1="145" x2="660" y2="145" stroke="#c9c0ae" stroke-dasharray="3,3"/>
+        <line x1="120" y1="160" x2="580" y2="180" stroke="#2d4a7a" stroke-width="1.3"/>
+        <text x="350" y="167" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">GET with If-Modified-Since: Oct 30</text>
+        <line x1="580" y1="195" x2="120" y2="215" stroke="#b04428" stroke-width="2.5"/>
+        <text x="350" y="208" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">200 OK  + new content</text>
+        <text x="690" y="92" text-anchor="end" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">unchanged</text>
+        <text x="690" y="195" text-anchor="end" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">modified</text>
+      </svg>
+      <figcaption>Conditional GET. If the object is unchanged, the entire transfer is avoided and only a tiny 304 message is returned.</figcaption>
+    </figure>
+
+    <div class="quiz" id="quiz-cache">
+      <div class="label">Check your understanding</div>
+      <div class="q-text">A web cache has a stored copy of an object. What does it send to the origin server to check whether the copy is still valid?</div>
+      <div class="options">
+        <button class="option" data-correct="false">A HEAD request, which always returns without content.</button>
+        <button class="option" data-correct="false">A regular GET, and compares the response with its own copy.</button>
+        <button class="option" data-correct="true">A GET with the <code>If-Modified-Since</code> header set to the date the copy was stored.</button>
+        <button class="option" data-correct="false">A DNS request to check whether the server has changed IP address.</button>
+      </div>
+      <div class="explanation">Conditional GET is a regular GET request with an extra header field — <code>If-Modified-Since</code> — containing the date the cache last fetched the object. The server responds with <code>304 Not Modified</code> (no body) if the object is unchanged, or <code>200 OK</code> with the new content if it has been modified. This saves bandwidth in the common case where the content has not changed.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 08 HTTP/2 ========== -->
+<section id="http2">
+  <div class="container">
+    <div class="section-badge">08 · HTTP/2 and head-of-line blocking</div>
+    <h2>When one large file blocks everything else</h2>
+    <p class="section-intro">HTTP/1.1 was good, but it had one annoying problem that HTTP/2 was created to fix.</p>
+
+    <p class="lead">HTTP/1.1 let you pipeline requests over one TCP connection, but the server responded in the same order as the requests arrived (FCFS — first-come-first-served). Imagine a web page containing one large video and three small images. The client requests all four in order: O₁ (the video), O₂, O₃, O₄. The server begins sending O₁, and because it is large, the three small images must wait behind in the queue. This is called <strong>head-of-line blocking</strong> — the object at the front blocks everything behind it.</p>
+
+    <p>The result is that the user sees a blank page while the video is being transferred, even though the three small images could have been transferred in an instant. The browser's main trick to work around this in HTTP/1.1 was to open <em>multiple parallel TCP connections</em> to the same server, so that small objects could be fetched in parallel with the large one. It works, but it is cumbersome and weakens congestion control.</p>
+
+    <p><strong>HTTP/2</strong> (RFC 7540, 2015) solves this by breaking objects into smaller <em>frames</em> and interleaving frames from different objects on the same connection. The server can also prioritize frames based on what the client has requested — not necessarily FCFS. Three small objects then get their frames transmitted between frames from the large object, arriving quickly while the large one is still being transferred.</p>
+
+    <p>HTTP/2 also introduced <strong>server push</strong>: the server can send objects to the client <em>before the client has requested them</em>. When the server receives a request for an HTML page, it knows the client will soon need the CSS file and some images — and can proactively push these out instead of waiting for the client to parse the HTML and send new requests. This eliminates one extra RTT for each object that is pushed.</p>
+
+    <figure class="fig-frame">
+      <svg viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg">
+        <text x="170" y="22" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600" fill="#6b6257">HTTP/1.1</text>
+        <text x="520" y="22" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600" fill="#6b6257">HTTP/2</text>
+        <rect x="40" y="40" width="240" height="20" fill="#2d4a7a"/>
+        <text x="160" y="55" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#fdfaf2">O₁ (large)</text>
+        <rect x="282" y="40" width="14" height="20" fill="#c68a1f"/>
+        <text x="289" y="55" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fdfaf2">O₂</text>
+        <rect x="298" y="40" width="14" height="20" fill="#3d6b3a"/>
+        <text x="305" y="55" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fdfaf2">O₃</text>
+        <rect x="314" y="40" width="14" height="20" fill="#b04428"/>
+        <text x="321" y="55" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fdfaf2">O₄</text>
+        <text x="170" y="90" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#8a3420">O₂, O₃, O₄ must wait</text>
+        <g transform="translate(390,0)">
+          <rect x="0" y="40" width="20" height="20" fill="#2d4a7a"/>
+          <rect x="20" y="40" width="14" height="20" fill="#c68a1f"/>
+          <rect x="34" y="40" width="20" height="20" fill="#2d4a7a"/>
+          <rect x="54" y="40" width="14" height="20" fill="#3d6b3a"/>
+          <rect x="68" y="40" width="20" height="20" fill="#2d4a7a"/>
+          <rect x="88" y="40" width="14" height="20" fill="#b04428"/>
+          <rect x="102" y="40" width="20" height="20" fill="#2d4a7a"/>
+          <rect x="122" y="40" width="20" height="20" fill="#2d4a7a"/>
+          <rect x="142" y="40" width="20" height="20" fill="#2d4a7a"/>
+          <rect x="162" y="40" width="20" height="20" fill="#2d4a7a"/>
+          <rect x="182" y="40" width="20" height="20" fill="#2d4a7a"/>
+          <rect x="202" y="40" width="20" height="20" fill="#2d4a7a"/>
+        </g>
+        <text x="520" y="90" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#3d6b3a">small objects interleaved — all delivered quickly</text>
+        <text x="40" y="140" font-family="IBM Plex Sans" font-size="11" font-weight="600" fill="#6b6257">DELIVERY TIME</text>
+        <line x1="40" y1="150" x2="660" y2="150" stroke="#c9c0ae"/>
+        <text x="40" y="175" font-family="Newsreader" font-size="13" fill="#1a1612">HTTP/1.1:</text>
+        <text x="160" y="175" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a">O₁ ▬▬▬▬</text>
+        <text x="240" y="175" font-family="IBM Plex Mono" font-size="11" fill="#c68a1f">O₂</text>
+        <text x="270" y="175" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">O₃</text>
+        <text x="300" y="175" font-family="IBM Plex Mono" font-size="11" fill="#b04428">O₄</text>
+        <text x="40" y="200" font-family="Newsreader" font-size="13" fill="#1a1612">HTTP/2:</text>
+        <text x="160" y="200" font-family="IBM Plex Mono" font-size="11" fill="#c68a1f">O₂</text>
+        <text x="190" y="200" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">O₃</text>
+        <text x="220" y="200" font-family="IBM Plex Mono" font-size="11" fill="#b04428">O₄</text>
+        <text x="280" y="200" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a">O₁ (slightly delayed)</text>
+      </svg>
+      <figcaption>HTTP/1.1 delivers in the ordered sequence — large objects block small ones. HTTP/2 interleaves frames from different objects, so small objects need not wait.</figcaption>
+    </figure>
+
+    <p>HTTP/2 still has a remaining problem, however: it still sits on top of <em>one</em> TCP connection, and if a TCP packet is lost, all objects must wait for the retransmission. <strong>HTTP/3</strong> solves this by replacing TCP with a new transport protocol called <strong>QUIC</strong>, built on UDP. QUIC gives each stream its own independent error handling, so that a packet loss in one stream does not block the others. More on this in the chapter on the transport layer.</p>
+  </div>
+</section>
+</main>
+
+<nav class="page-nav">
+  <div class="container">
+    <a href="p2p-video-cdn.html" class="next"><span class="nav-label">Next &rarr;</span><span class="nav-title">P2P, Video, and CDN</span></a>
+  </div>
+</nav>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Spring 2026</p>
+  </div>
+</footer>
+
+<script>
+// ========== QUIZ ==========
+function setupQuiz(id) {
+  var quiz = document.getElementById(id);
+  if (!quiz) return;
+  var opts = quiz.querySelectorAll('.option');
+  var fb = quiz.querySelector('.explanation');
+  opts.forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      opts.forEach(function(o) { o.classList.remove('correct','incorrect'); o.disabled = true; });
+      var correct = opt.dataset.correct === 'true';
+      if (correct) {
+        opt.classList.add('correct');
+      } else {
+        opt.classList.add('incorrect');
+        opts.forEach(function(o) { if (o.dataset.correct === 'true') o.classList.add('correct'); });
+      }
+      if (fb) fb.classList.add('show');
+    });
+  });
+}
+setupQuiz('quiz1');
+setupQuiz('quiz-http-conn');
+setupQuiz('quiz-cache');
+
+// ========== COOKIE STEPPER ==========
+(function() {
+  var steps = [
+    {
+      text: 'First visit: the user contacts the server without a cookie.',
+      cookie: '(empty)',
+      db: '(empty)',
+      arrows: '<line x1="160" y1="100" x2="440" y2="100" stroke="#2d4a7a" stroke-width="1.5" marker-end="url(#a1)"/><text x="300" y="92" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">HTTP request</text>'
+    },
+    {
+      text: 'The server creates a unique ID for the user and stores it in its database.',
+      cookie: '(empty)',
+      db: 'user → 1678',
+      arrows: '<rect x="455" y="140" width="90" height="50" fill="#fff5d0" stroke="#c68a1f"/>'
+    },
+    {
+      text: 'The response contains Set-Cookie: 1678. The browser stores the cookie.',
+      cookie: 'site → 1678',
+      db: 'user → 1678',
+      arrows: '<line x1="440" y1="100" x2="160" y2="100" stroke="#3d6b3a" stroke-width="1.5" marker-end="url(#a2)"/><text x="300" y="92" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">Set-Cookie: 1678</text>'
+    },
+    {
+      text: 'Subsequent requests automatically include Cookie: 1678. The server recognizes the user.',
+      cookie: 'site → 1678',
+      db: 'user → 1678',
+      arrows: '<line x1="160" y1="100" x2="440" y2="100" stroke="#2d4a7a" stroke-width="1.5" marker-end="url(#a1)"/><text x="300" y="92" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">Cookie: 1678</text>'
+    },
+    {
+      text: 'Even a week later — as long as the cookie exists — the server knows who the user is.',
+      cookie: 'site → 1678',
+      db: 'user → 1678 (+ history)',
+      arrows: '<line x1="160" y1="100" x2="440" y2="100" stroke="#2d4a7a" stroke-width="1.5" marker-end="url(#a1)"/><text x="300" y="92" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">Cookie: 1678  (weeks later)</text>'
+    }
+  ];
+  var idx = 0;
+  var svg = document.getElementById('cookie-svg');
+  var defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  defs.innerHTML = '<marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2d4a7a"/></marker><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3d6b3a"/></marker>';
+  svg.insertBefore(defs, svg.firstChild);
+
+  var text = document.getElementById('cookie-step-text');
+  var counter = document.getElementById('cookie-counter');
+  var cookieEl = document.getElementById('cookie-content');
+  var dbEl = document.getElementById('db-content');
+  var arrowGroup = document.getElementById('arrow-group');
+  var prev = document.getElementById('cs-prev');
+  var next = document.getElementById('cs-next');
+
+  function render() {
+    var s = steps[idx];
+    text.textContent = s.text;
+    counter.textContent = 'Step ' + (idx+1) + ' / ' + steps.length;
+    cookieEl.textContent = s.cookie;
+    dbEl.textContent = s.db;
+    arrowGroup.innerHTML = s.arrows;
+    prev.disabled = (idx === 0);
+    next.disabled = (idx === steps.length - 1);
+  }
+  prev.addEventListener('click', function() { if (idx > 0) { idx--; render(); }});
+  next.addEventListener('click', function() { if (idx < steps.length - 1) { idx++; render(); }});
+  render();
+})();
+</script>
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

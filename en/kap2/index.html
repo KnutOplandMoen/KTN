@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 2 — The Application Layer</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="../" class="nav-back">&larr; All chapters</a>
+  </div>
+</nav>
+<main data-chapter="Chapter 2: The Application Layer">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Chapter 2 · The Application Layer</div>
+  <h1>The Application <em>Layer</em></h1>
+  <p class="lede">How programs on two vastly different machines — a mobile phone in Trondheim and a server in California — manage to communicate, send web pages, share files, and stream video. A journey through principles, protocols, and clever tricks.</p>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">01</span><a href="#overblikk">Overview</a></li>
+    <li><span class="toc-num">02</span><a href="#deler">Parts</a></li>
+    <li><span class="toc-num">03</span><a href="#quiz">Test yourself</a></li>
+  </ol>
+</div>
+</nav>
+
+<section id="overblikk">
+<div class="container">
+  <div class="section-badge">Overview</div>
+  <h2>The big <em>picture</em></h2>
+  <p class="section-intro">The application layer is where all the useful communication actually happens — the rest of the network stack exists only to support it.</p>
+
+  <p class="lead">Imagine that you and a friend in another country are talking on the phone. You don't need to know anything about how the telephone network works — copper cables, switches, optical fibers — you just need to speak the <em>same language</em>. The application layer is precisely that: the languages computers speak with each other. HTTP is the language for web pages, SMTP is the language for email, and DNS is the phone book that lets you look up who you want to talk to. Underneath all of this lie the transport, network, and link layers — the infrastructure — but your applications never need to worry about the details down there.</p>
+
+  <figure class="fig-frame">
+    <svg viewBox="0 0 720 370" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="ovarr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#b04428"/>
+        </marker>
+      </defs>
+
+      <!-- Client -->
+      <rect x="40" y="30" width="200" height="190" rx="6" fill="#fdfaf2" stroke="#c9c0ae"/>
+      <text x="140" y="54" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600" fill="#1a1612">CLIENT</text>
+      <rect x="55" y="66" width="170" height="50" rx="4" fill="#b04428" opacity="0.12" stroke="#b04428" stroke-width="1.5"/>
+      <text x="140" y="86" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="600" fill="#b04428">Application layer</text>
+      <text x="140" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">browser · email client</text>
+      <rect x="55" y="122" width="170" height="28" rx="3" fill="#e8e3d6" stroke="#c9c0ae"/>
+      <text x="140" y="141" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">transport (TCP/UDP)</text>
+      <rect x="55" y="155" width="170" height="28" rx="3" fill="#e8e3d6" stroke="#c9c0ae"/>
+      <text x="140" y="174" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#a39886">network · link · physical</text>
+      <rect x="55" y="188" width="170" height="22" rx="3" fill="#e8e3d6" stroke="#c9c0ae"/>
+      <text x="140" y="203" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#a39886">managed by OS</text>
+
+      <!-- Server -->
+      <rect x="480" y="30" width="200" height="190" rx="6" fill="#fdfaf2" stroke="#c9c0ae"/>
+      <text x="580" y="54" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600" fill="#1a1612">SERVER</text>
+      <rect x="495" y="66" width="170" height="50" rx="4" fill="#b04428" opacity="0.12" stroke="#b04428" stroke-width="1.5"/>
+      <text x="580" y="86" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="600" fill="#b04428">Application layer</text>
+      <text x="580" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">web server · mail server</text>
+      <rect x="495" y="122" width="170" height="28" rx="3" fill="#e8e3d6" stroke="#c9c0ae"/>
+      <text x="580" y="141" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">transport (TCP/UDP)</text>
+      <rect x="495" y="155" width="170" height="28" rx="3" fill="#e8e3d6" stroke="#c9c0ae"/>
+      <text x="580" y="174" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#a39886">network · link · physical</text>
+      <rect x="495" y="188" width="170" height="22" rx="3" fill="#e8e3d6" stroke="#c9c0ae"/>
+      <text x="580" y="203" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#a39886">managed by OS</text>
+
+      <!-- Network cloud -->
+      <ellipse cx="360" cy="185" rx="75" ry="35" fill="none" stroke="#a39886" stroke-dasharray="4,3" stroke-width="1.2"/>
+      <text x="360" y="190" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">the network</text>
+
+      <!-- Conversation arrows -->
+      <path d="M 225 72 Q 360 32 495 72" fill="none" stroke="#b04428" stroke-width="1.8" marker-end="url(#ovarr)"/>
+      <text x="360" y="42" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#b04428">HTTP</text>
+
+      <path d="M 225 82 Q 360 120 495 82" fill="none" stroke="#2d4a7a" stroke-width="1.5" marker-end="url(#ovarr)"/>
+      <text x="360" y="116" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#2d4a7a">SMTP</text>
+
+      <!-- DNS off to the side -->
+      <rect x="295" y="260" width="130" height="44" rx="4" fill="#fdfaf2" stroke="#3d6b3a" stroke-width="1.5"/>
+      <text x="360" y="280" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" font-weight="600" fill="#3d6b3a">DNS server</text>
+      <text x="360" y="296" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">"the phone book"</text>
+
+      <line x1="140" y1="220" x2="320" y2="260" stroke="#3d6b3a" stroke-width="1.3" stroke-dasharray="4,3"/>
+      <line x1="580" y1="220" x2="400" y2="260" stroke="#3d6b3a" stroke-width="1.3" stroke-dasharray="4,3"/>
+
+      <!-- Labels -->
+      <text x="360" y="345" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">The application layer does not care what happens inside the network — only that messages arrive.</text>
+    </svg>
+    <figcaption>Application-layer protocols (HTTP, SMTP, DNS) run on the end systems. The network infrastructure beneath is invisible to the applications.</figcaption>
+  </figure>
+
+  <p>It is easy to think that the Internet is one thing, but in reality it is an entire family of protocols working together. When you type <code>ntnu.no</code> in your browser, at least <em>three</em> application-layer protocols come into play: <strong>DNS</strong> finds the server's IP address, <strong>TCP</strong> establishes a reliable connection, and <strong>HTTP</strong> fetches the web page. All of this happens in under a second.</p>
+
+  <div class="callout callout-green">
+    <h4>The core idea of this chapter</h4>
+    <p>Application developers only write code for the end systems — the client and the server. The routers in the network core run no user applications; they merely forward packets. That is why a student can invent a completely new network service tonight and roll it out across the globe tomorrow, without changing anything in the network infrastructure.</p>
+  </div>
+
+  <p>In this chapter we examine the most important patterns: <strong>client–server</strong> vs. <strong>peer-to-peer</strong> (two fundamentally different ways of organizing communication), the protocols <strong>HTTP</strong>, <strong>SMTP</strong>, and <strong>DNS</strong> (which cover the web, email, and name resolution), and finally <strong>socket programming</strong> — where you get to write code that communicates over the network yourself.</p>
+</div>
+</section>
+
+<section id="deler">
+<div class="container">
+  <div class="section-badge">Parts</div>
+  <h2>Explore the <em>chapter</em></h2>
+  <div class="subpage-list">
+    <a href="http-og-web.html" class="subpage-card">
+      <div class="sp-icon">01–08</div>
+      <div class="sp-info">
+        <div class="sp-title">HTTP and the Web</div>
+        <div class="sp-desc">Principles of network applications, client–server vs. P2P, transport-layer services, the HTTP protocol, messages and methods, cookies, web cache, and HTTP/2.</div>
+      </div>
+      <div class="sp-arrow">&rarr;</div>
+    </a>
+    <a href="p2p-video-cdn.html" class="subpage-card">
+      <div class="sp-icon">09–11</div>
+      <div class="sp-info">
+        <div class="sp-title">P2P, Video, and CDN</div>
+        <div class="sp-desc">P2P file distribution and the mathematics behind self-scaling, video streaming with DASH, and Content Distribution Networks (CDN).</div>
+      </div>
+      <div class="sp-arrow">&rarr;</div>
+    </a>
+    <a href="epost-dns-sockets.html" class="subpage-card">
+      <div class="sp-icon">12–14</div>
+      <div class="sp-info">
+        <div class="sp-title">Email, DNS, and Sockets</div>
+        <div class="sp-desc">SMTP and the journey of an email, the DNS hierarchy and caching, and socket programming with UDP and TCP in Python.</div>
+      </div>
+      <div class="sp-arrow">&rarr;</div>
+    </a>
+  </div>
+</div>
+</section>
+
+<section id="quiz">
+<div class="container">
+  <h2>Test yourself</h2>
+  <p class="section-intro">Check whether you have understood the most important concepts from this chapter.</p>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 1</div>
+    <div class="q-text">What is the most important difference between client–server architecture and peer-to-peer (P2P)?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Client–server uses TCP, while P2P uses UDP.</button>
+      <button class="option" data-correct="false">P2P is always faster than client–server.</button>
+      <button class="option" data-correct="true">In client–server there is one always-available server; in P2P arbitrary end systems communicate directly and contribute their own capacity.</button>
+      <button class="option" data-correct="false">Client–server requires all machines to have a fixed IP address.</button>
+    </div>
+    <div class="explanation">The core difference is the architecture: client–server has one central server that serves many clients, while P2P lets peers talk directly with each other. P2P's strength is self-scaling — each new peer brings both demand and capacity.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 2</div>
+    <div class="q-text">When you type <code>www.ntnu.no</code> in the browser, what is DNS's role?</div>
+    <div class="options">
+      <button class="option" data-correct="false">DNS encrypts the connection between the browser and the server.</button>
+      <button class="option" data-correct="true">DNS translates the domain name to an IP address so the browser knows which machine to contact.</button>
+      <button class="option" data-correct="false">DNS checks whether the website is available and routes traffic around any failures.</button>
+      <button class="option" data-correct="false">DNS compresses the web page so it loads faster.</button>
+    </div>
+    <div class="explanation">DNS is the Internet's "phone book" — it translates human-readable domain names (like www.ntnu.no) to IP addresses (like 129.241.56.116) that the network can route packets to. Without DNS you would have to remember the numbers yourself.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 3</div>
+    <div class="q-text">HTTP is a stateless protocol. What does that mean in practice?</div>
+    <div class="options">
+      <button class="option" data-correct="false">That the web server cannot send HTML pages with dynamic content.</button>
+      <button class="option" data-correct="false">That the browser cannot use persistent connections.</button>
+      <button class="option" data-correct="false">That HTTP cannot be used together with encryption (TLS).</button>
+      <button class="option" data-correct="true">That the server does not remember anything about previous requests from the same client — each request is independent.</button>
+    </div>
+    <div class="explanation">Statelessness means the server treats each request as a blank slate. It does not know whether you just visited another page on the same site. To create an illusion of state (login, shopping cart) mechanisms like cookies are used, which place the identifier on the client side.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 4</div>
+    <div class="q-text">Why do SMTP and HTTP use different communication models, even though both are TCP-based text protocols?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Because SMTP was developed by a different organization than HTTP.</button>
+      <button class="option" data-correct="false">Because email requires encryption while web pages do not.</button>
+      <button class="option" data-correct="true">Because HTTP is a pull protocol (the client requests data), while SMTP is a push protocol (the sender pushes data forward) — two fundamentally different usage patterns.</button>
+      <button class="option" data-correct="false">Because SMTP uses a binary format while HTTP uses ASCII.</button>
+    </div>
+    <div class="explanation">HTTP and SMTP solve different problems. When you fetch a web page, you are there right now and waiting for the response (pull). When you send email, the recipient might read it two days later — the message must be stored, queued, and delivered asynchronously (push). The design differences follow directly from the usage pattern.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 5</div>
+    <div class="q-text">In socket programming with TCP, the server has two types of sockets. What is the reason for this?</div>
+    <div class="options">
+      <button class="option" data-correct="false">One socket for encrypted traffic and one for unencrypted traffic.</button>
+      <button class="option" data-correct="true">One "welcome socket" that waits for new connections, and one "connection socket" per active client — because TCP is connection-oriented.</button>
+      <button class="option" data-correct="false">One for incoming data and one for outgoing data.</button>
+      <button class="option" data-correct="false">Because the Python library requires two sockets for technical reasons.</button>
+    </div>
+    <div class="explanation">TCP is connection-oriented: each client has its own dedicated "channel." The welcome socket listens for new clients, and when one connects, the OS creates a new connection socket for that specific client. This is how the server can talk to many clients simultaneously. UDP only needs one socket because each datagram is an independent event.</div>
+  </div>
+</div>
+</section>
+
+</main>
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Spring 2026</p>
+  </div>
+</footer>
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script src="../../quiz.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

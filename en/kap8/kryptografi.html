@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8a — Cryptography and integrity · Network Security</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="../../en/" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Chapter 8</a>
+  </div>
+</nav>
+
+<main data-chapter="Chapter 8: Network Security">
+
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">Chapter 8a · Security</div>
+    <h1>Cryptography and <em>integrity</em></h1>
+    <p class="lede">The four security properties, symmetric and public key cryptography, message integrity, digital signatures, and certificate authorities.</p>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 1 — What is network security?
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="sikkerhet">
+<div class="container">
+  <div class="section-badge">01 · Introduction</div>
+  <h2>What is <em>network security</em>?</h2>
+  <p class="section-intro">Four properties that a secure communication system must satisfy — and what happens when it does not.</p>
+
+  <p class="dropcap">When Alice sends a message to Bob over the Internet, it passes through dozens of routers, switches, and links that neither of them controls. Anyone along the way — a curious network administrator, a hacker on an open WiFi, a state intelligence agency — can in principle listen, alter, or block the message. Network security is about making it impossible, or at least computationally infeasible, for a third party to misuse the communication.</p>
+
+  <p>A secure communication system must satisfy four fundamental properties:</p>
+
+  <div class="callout">
+    <span class="label">Confidentiality</span>
+    <p>Only the sender and intended receiver should be able to understand the message content. The sender encrypts, the receiver decrypts. Everyone else sees only unintelligible noise.</p>
+  </div>
+
+  <div class="callout callout-blue">
+    <span class="label">Authentication</span>
+    <p>Sender and receiver should be able to confirm each other's identity. When you log into your online bank, the bank wants to know it is really you — and you want to know you are really talking to the bank, not a fake copy.</p>
+  </div>
+
+  <div class="callout callout-green">
+    <span class="label">Message integrity</span>
+    <p>The content of the message must not be alterable en route — neither by an attacker nor by random errors — without the receiver detecting it.</p>
+  </div>
+
+  <div class="callout" style="border-left-color: var(--ochre);">
+    <span class="label" style="color: var(--ochre);">Availability</span>
+    <p>Services must actually be available to legitimate users. A Denial-of-Service attack (DoS) attempts precisely to break this property by flooding a server with so much traffic that it cannot serve genuine requests.</p>
+  </div>
+
+  <h3>Alice, Bob, and Trudy</h3>
+  <p>In the security world, we use three recurring characters: <strong>Alice</strong> and <strong>Bob</strong> want to communicate securely with each other. <strong>Trudy</strong> (from "intruder") is the attacker who sits between them and tries to sabotage. Trudy can do surprisingly much:</p>
+
+  <figure>
+    <svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="100" cy="100" r="32" fill="#f4f1ea" stroke="#1a1612" stroke-width="2"/>
+      <text x="100" y="106" text-anchor="middle" font-family="Newsreader" font-size="20" font-weight="600" fill="#1a1612">Alice</text>
+      <circle cx="600" cy="100" r="32" fill="#f4f1ea" stroke="#1a1612" stroke-width="2"/>
+      <text x="600" y="106" text-anchor="middle" font-family="Newsreader" font-size="20" font-weight="600" fill="#1a1612">Bob</text>
+      <line x1="132" y1="100" x2="568" y2="100" stroke="#3d6b3a" stroke-width="2" stroke-dasharray="8 4"/>
+      <text x="350" y="90" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">secure channel (desired)</text>
+      <circle cx="350" cy="185" r="28" fill="#e8d4cd" stroke="#b04428" stroke-width="2"/>
+      <text x="350" y="191" text-anchor="middle" font-family="Newsreader" font-size="18" font-weight="600" fill="#b04428">Trudy</text>
+      <path d="M 170 115 Q 260 180 322 185" stroke="#b04428" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
+      <path d="M 530 115 Q 440 180 378 185" stroke="#b04428" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
+      <text x="350" y="150" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">eavesdropping / tampering</text>
+    </svg>
+    <figcaption>Alice and Bob want a secure channel. Trudy can eavesdrop, insert fake messages, impersonate Alice or Bob, hijack an ongoing connection, or block communication entirely.</figcaption>
+  </figure>
+
+  <p>Who are Alice and Bob in practice? They could be a browser and an online bank, two DNS servers exchanging lookups, two BGP routers sharing routing tables, or simply two people sending email. Trudy can be anyone with access to the network between them.</p>
+
+  <h3>What can an attacker do?</h3>
+  <ul>
+    <li><strong>Eavesdrop:</strong> passively intercept messages without anyone noticing.</li>
+    <li><strong>Insert messages:</strong> actively inject fake packets into an ongoing connection.</li>
+    <li><strong>Impersonate others (spoofing):</strong> forge the source address of a packet so it appears to come from someone else.</li>
+    <li><strong>Hijack a connection:</strong> take over an ongoing TCP connection by removing one party and stepping in their place.</li>
+    <li><strong>Denial of Service (DoS):</strong> flood a server with requests so it cannot serve legitimate users.</li>
+  </ul>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 2 — Symmetric key cryptography
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="symmetrisk">
+<div class="container">
+  <div class="section-badge">02 · Cryptography</div>
+  <h2>Symmetric <em>key cryptography</em></h2>
+  <p class="section-intro">When sender and receiver share one and the same secret key.</p>
+
+  <p class="dropcap">Cryptography is the toolbox that makes the four security properties possible. The basic setup is always the same: a <strong>plaintext</strong> <em>m</em> is passed through an encryption algorithm together with a <strong>key</strong> K<sub>A</sub>, and the result is a <strong>ciphertext</strong> that is unreadable to anyone who does not have the correct decryption key K<sub>B</sub>. The receiver uses K<sub>B</sub> to recover the plaintext: m = K<sub>B</sub>(K<sub>A</sub>(m)).</p>
+
+  <p>In <strong>symmetric key cryptography</strong>, the encryption and decryption key are the <em>same</em>: K<sub>A</sub> = K<sub>B</sub> = K<sub>S</sub>. Both parties must therefore know the same secret. This raises an immediate question: <em>how do they agree on the key in the first place?</em> But let us first look at the mechanisms themselves.</p>
+
+  <figure>
+    <svg viewBox="0 0 700 150" xmlns="http://www.w3.org/2000/svg">
+      <text x="30" y="30" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">plaintext m</text>
+      <rect x="30" y="40" width="100" height="40" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/>
+      <text x="80" y="65" text-anchor="middle" font-family="Newsreader" font-size="14" fill="#1a1612">m</text>
+      <path d="M 130 60 L 200 60" stroke="#1a1612" stroke-width="2" marker-end="url(#arw)"/>
+      <rect x="200" y="35" width="120" height="50" fill="#e8e3d6" stroke="#b04428" stroke-width="2" rx="3"/>
+      <text x="260" y="55" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">ENCRYPTION</text>
+      <text x="260" y="72" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">K&#x209b;</text>
+      <path d="M 320 60 L 390 60" stroke="#1a1612" stroke-width="2" marker-end="url(#arw)"/>
+      <rect x="390" y="40" width="100" height="40" fill="#e8d4cd" stroke="#b04428" stroke-width="1.5"/>
+      <text x="440" y="65" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#b04428">K&#x209b;(m)</text>
+      <text x="390" y="30" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">ciphertext</text>
+      <path d="M 490 60 L 540 60" stroke="#1a1612" stroke-width="2" marker-end="url(#arw)"/>
+      <rect x="540" y="35" width="120" height="50" fill="#e8e3d6" stroke="#2d4a7a" stroke-width="2" rx="3"/>
+      <text x="600" y="55" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">DECRYPTION</text>
+      <text x="600" y="72" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">K&#x209b;</text>
+      <text x="600" y="120" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">plaintext m</text>
+      <defs><marker id="arw" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L6,4 L0,8 z" fill="#1a1612"/></marker></defs>
+    </svg>
+    <figcaption>Symmetric cryptography: the same key K<sub>S</sub> is used for both encryption and decryption.</figcaption>
+  </figure>
+
+  <h3>Substitution cipher: the simplest example</h3>
+  <p>The most basic encryption scheme is a <strong>monoalphabetic substitution cipher</strong>: replace each letter with another, consistently throughout the entire message. For example: a→m, b→n, c→b, d→v, etc. The key is the entire substitution table — a permutation of 26 letters.</p>
+
+  <p>The problem is that such ciphers are easy to break with statistical analysis. The letter "e" is the most common in English text, so the letter that appears most frequently in the ciphertext is probably "e". With a few hundred characters of ciphertext, one can typically crack the entire key. A <strong>polyalphabetic cipher</strong> — where one rotates among several substitution tables — is better, but still vulnerable.</p>
+
+  <h3>Breaking encryption</h3>
+  <p>An attacker can try to break an encryption in three ways:</p>
+
+  <table>
+    <tr><th>Attack type</th><th>What Trudy has</th><th>Strategy</th></tr>
+    <tr>
+      <td class="mono-cell">Ciphertext-only</td>
+      <td>Only the ciphertext</td>
+      <td>Brute force (try all keys) or statistical analysis</td>
+    </tr>
+    <tr>
+      <td class="mono-cell">Known-plaintext</td>
+      <td>Some plaintext-ciphertext pairs</td>
+      <td>Use the pairs to derive the key</td>
+    </tr>
+    <tr>
+      <td class="mono-cell">Chosen-plaintext</td>
+      <td>Can choose plaintext and see the resulting ciphertext</td>
+      <td>Choose strategic plaintext to uncover the key structure</td>
+    </tr>
+  </table>
+
+  <h3>DES — Data Encryption Standard</h3>
+  <p><strong>DES</strong> was the U.S. standard for symmetric encryption from 1977 (FIPS PUB 46). It uses a <strong>56-bit key</strong> and operates on 64-bit blocks of plaintext. DES is a <em>block cipher</em>: the plaintext is divided into fixed-size blocks that are encrypted individually, and the blocks are chained together via <strong>cipher block chaining</strong> (CBC) to prevent identical plaintext blocks from producing identical ciphertext.</p>
+
+  <p>How secure is DES? Not secure enough. In the DES Challenge, a 56-bit key was cracked by brute force in less than a day. The solution was <strong>3DES</strong>: encrypt three times with three different keys, effectively providing a 168-bit key strength.</p>
+
+  <h3>AES — Advanced Encryption Standard</h3>
+  <p><strong>AES</strong> replaced DES in 2001 as the NIST standard. It operates on <strong>128-bit blocks</strong> and supports key lengths of <strong>128, 192, or 256 bits</strong>. To put it in perspective: if brute-forcing DES takes one second, brute-forcing AES with a 128-bit key would take approximately 149 trillion years. AES is today the dominant symmetric algorithm — it is used in TLS, WiFi (WPA2/WPA3), IPsec, and much more.</p>
+
+  <div class="margin-note">Symmetric cryptography is <em>fast</em> — it is used to encrypt the actual data. But it has one major problem: how do Alice and Bob exchange the key securely? The answer comes in the next section.</div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 3 — Public key cryptography
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="offentlig">
+<div class="container">
+  <div class="section-badge">03 · Public key</div>
+  <h2>Public <em>key cryptography</em></h2>
+  <p class="section-intro">A radical idea: publish one key for the entire world — and keep the other one strictly private.</p>
+
+  <p class="dropcap">Symmetric cryptography has a fundamental problem: Alice and Bob must agree on a shared secret key in advance. If they have never met physically, how do they do so without Trudy intercepting the key? Public key cryptography — proposed independently by Diffie and Hellman (1976) and by the RSA group (Rivest, Shamir, Adleman, 1978) — solves this in an elegant way.</p>
+
+  <p>The idea is simple yet revolutionary: Bob has <em>two</em> keys. One — <strong>the public key K<sub>B</sub><sup>+</sup></strong> — he publishes for the entire world. The other — <strong>the private key K<sub>B</sub><sup>−</sup></strong> — he keeps strictly to himself. The system has two crucial properties:</p>
+
+  <ol>
+    <li>If you encrypt with the public key, only the private key can decrypt: K<sub>B</sub><sup>−</sup>(K<sub>B</sub><sup>+</sup>(m)) = m</li>
+    <li>Given the public key, it is <em>computationally infeasible</em> to find the private key.</li>
+  </ol>
+
+  <figure>
+    <svg viewBox="0 0 700 160" xmlns="http://www.w3.org/2000/svg">
+      <text x="20" y="28" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">plaintext m</text>
+      <rect x="20" y="38" width="90" height="40" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/>
+      <text x="65" y="63" text-anchor="middle" font-family="Newsreader" font-size="14" fill="#1a1612">m</text>
+      <path d="M 110 58 L 180 58" stroke="#1a1612" stroke-width="2" marker-end="url(#arw)"/>
+      <rect x="180" y="33" width="140" height="50" fill="#e8e3d6" stroke="#3d6b3a" stroke-width="2" rx="3"/>
+      <text x="250" y="53" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">ENCRYPTION</text>
+      <text x="250" y="70" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">K&#x1d6f;&#x207a; (public)</text>
+      <path d="M 320 58 L 390 58" stroke="#1a1612" stroke-width="2" marker-end="url(#arw)"/>
+      <rect x="390" y="38" width="100" height="40" fill="#e8d4cd" stroke="#b04428" stroke-width="1.5"/>
+      <text x="440" y="63" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">K&#x1d6f;&#x207a;(m)</text>
+      <path d="M 490 58 L 530 58" stroke="#1a1612" stroke-width="2" marker-end="url(#arw)"/>
+      <rect x="530" y="33" width="140" height="50" fill="#e8e3d6" stroke="#2d4a7a" stroke-width="2" rx="3"/>
+      <text x="600" y="53" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">DECRYPTION</text>
+      <text x="600" y="70" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">K&#x1d6f;&#x207b; (private)</text>
+      <text x="600" y="120" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">plaintext m</text>
+    </svg>
+    <figcaption>Public key cryptography: Alice encrypts with Bob's public key. Only Bob's private key can decrypt.</figcaption>
+  </figure>
+
+  <p>In practice, the two are combined: public key cryptography is used to exchange a <strong>shared symmetric session key</strong>, and then the fast symmetric algorithm (e.g., AES) is used to encrypt the actual data stream. This is the pattern we will see again and again — in secure email, in TLS, and in IPsec.</p>
+
+  <div class="margin-note">Public key cryptography revolutionized 2,000 years of cryptographic history. Before 1976, only symmetric methods existed, and key exchange was always the hardest problem.</div>
+</div>
+</section>
+
+<div class="divider">&#10043; &#10043; &#10043;</div>
+
+<!-- QUIZ 1 -->
+<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
+  <p class="q-text">Alice wants to send an encrypted message to Bob. She has never met Bob, but knows his public key. Which key does she use to encrypt the message?</p>
+  <div class="options">
+    <button class="option" data-correct="false">Alice's private key</button>
+    <button class="option" data-correct="true">Bob's public key</button>
+    <button class="option" data-correct="false">Bob's private key</button>
+    <button class="option" data-correct="false">A shared symmetric key they have exchanged beforehand</button>
+  </div>
+  <div class="explanation" id="qf1"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 4 — Message integrity and digital signatures
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="integritet">
+<div class="container">
+  <div class="section-badge">04 · Integrity</div>
+  <h2>Message integrity and <em>digital signatures</em></h2>
+  <p class="section-intro">How to prove that a message has not been altered en route — and that it really was Bob who sent it.</p>
+
+  <p class="dropcap">Encryption gives us confidentiality, but that is not enough. Even if Trudy cannot read the message, she may be able to change some bits in the ciphertext without knowing what she is changing. Or she can send an entirely new message and pretend it comes from Bob. We need two more things: <strong>message integrity</strong> (the content is unaltered) and <strong>authentication</strong> (the sender is who they claim to be).</p>
+
+  <h3>Digital signatures</h3>
+  <p>A digital signature is the cryptographic version of a handwritten signature, but much stronger. Bob signs a message <em>m</em> by encrypting it (or a hash of it) with his <strong>private key K<sub>B</sub><sup>−</sup></strong>. The result is the signature K<sub>B</sub><sup>−</sup>(m).</p>
+
+  <p>When Alice receives the message and the signature, she applies Bob's <strong>public key K<sub>B</sub><sup>+</sup></strong> to the signature. If K<sub>B</sub><sup>+</sup>(K<sub>B</sub><sup>−</sup>(m)) = m, she knows two things:</p>
+
+  <ol>
+    <li><strong>Bob signed the message</strong> — because only Bob has the private key that could produce that signature.</li>
+    <li><strong>The message is unaltered</strong> — because any change to <em>m</em> would cause the verification to fail.</li>
+  </ol>
+
+  <p>In addition, we get <strong>non-repudiation</strong>: Alice can show the message and signature to a third party (e.g., a court) and prove that Bob must have signed, because only Bob's private key could have produced that signature.</p>
+
+  <h3>Message digest and hash functions</h3>
+  <p>Public-key-encrypting an entire long message is computationally expensive. The solution is to use a <strong>hash function H</strong> that creates a short "fingerprint" of the message — a <strong>message digest H(m)</strong> of fixed length. Instead of signing all of <em>m</em>, Bob signs only H(m). Alice verifies by: (1) computing H(m) herself from the received message, (2) decrypting the signature with Bob's public key, and (3) checking that the two hashes are equal.</p>
+
+  <p>A cryptographic hash function has three important properties:</p>
+
+  <ul>
+    <li><strong>Many-to-one:</strong> different messages can in principle produce the same hash (but it should be extremely unlikely).</li>
+    <li><strong>Fixed length:</strong> regardless of how long the message is, the hash produces a fixed-size output.</li>
+    <li><strong>One-way function:</strong> given a hash value x, it is computationally infeasible to find a message m such that H(m) = x.</li>
+  </ul>
+
+  <div class="callout">
+    <span class="label">Why not Internet checksum?</span>
+    <p>TCP already uses a checksum for error detection — why can't we use that? Because the Internet checksum is too simple. It is easy to find two different messages that produce <em>exactly the same</em> checksum. For example, "IOU 100.99 BOB" and "IOU 900.19 BOB" produce identical 16-bit checksums. A cryptographic hash function (such as SHA-256) makes this practically impossible.</p>
+  </div>
+
+  <h3>Hash algorithms</h3>
+  <table>
+    <tr><th>Algorithm</th><th>Digest length</th><th>Status</th></tr>
+    <tr><td class="mono-cell">MD5</td><td>128 bits</td><td>Deprecated — collisions found</td></tr>
+    <tr><td class="mono-cell">SHA-1</td><td>160 bits</td><td>Deprecated — collisions demonstrated in 2017</td></tr>
+    <tr><td class="mono-cell">SHA-256</td><td>256 bits</td><td>Recommended standard today</td></tr>
+  </table>
+
+  <h3>Certificate Authorities (CA)</h3>
+  <p>The entire system relies on Alice having Bob's <em>genuine</em> public key. But what if Trudy pretends to be Bob and publishes her own public key under Bob's name? Then Trudy can sign messages that appear to come from Bob.</p>
+
+  <p>The solution is a <strong>Certification Authority (CA)</strong> — a trusted third party that binds a public key to an identity. Bob gives his key to a CA, proves who he is, and the CA creates a <strong>certificate</strong>: a document containing Bob's identity and public key, <em>digitally signed by the CA</em> with the CA's private key.</p>
+
+  <p>When Alice needs Bob's public key, she fetches the certificate and verifies the CA's signature using the CA's public key. But wait — where does the <em>CA's</em> public key come from? It typically comes pre-installed in your browser or operating system. That is why the browser can verify that an SSL certificate from a website is genuine — it has the CA's root key built in from the factory.</p>
+
+  <figure>
+    <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="60" width="160" height="80" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="3"/>
+      <text x="110" y="85" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">Bob's certificate</text>
+      <text x="110" y="105" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#1a1612">Identity: Bob</text>
+      <text x="110" y="122" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#1a1612">Public key: K&#x1d6f;&#x207a;</text>
+      <path d="M 190 100 L 260 100" stroke="#1a1612" stroke-width="2" marker-end="url(#arw)"/>
+      <rect x="260" y="60" width="160" height="80" fill="#e8e3d6" stroke="#b04428" stroke-width="2" rx="3"/>
+      <text x="340" y="90" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">CA SIGNING</text>
+      <text x="340" y="115" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">K&#x1d9c;&#x1d00;&#x207b;</text>
+      <path d="M 420 100 L 490 100" stroke="#1a1612" stroke-width="2" marker-end="url(#arw)"/>
+      <rect x="490" y="50" width="180" height="100" fill="#d9e6d4" stroke="#3d6b3a" stroke-width="1.5" rx="3"/>
+      <text x="580" y="80" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">SIGNED CERTIFICATE</text>
+      <text x="580" y="100" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#1a1612">Bob + K&#x1d6f;&#x207a;</text>
+      <text x="580" y="120" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#1a1612">+ CA signature</text>
+      <text x="580" y="140" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a">verifiable with K&#x1d9c;&#x1d00;&#x207a;</text>
+    </svg>
+    <figcaption>The CA signs Bob's certificate with its private key. Alice can verify it with the CA's public key, which is pre-installed in the browser.</figcaption>
+  </figure>
+</div>
+</section>
+
+<div class="divider">&#10043; &#10043; &#10043;</div>
+
+<!-- QUIZ 2 -->
+<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
+  <p class="q-text">Why does Bob sign a <em>hash</em> of his message (H(m)) instead of the entire message?</p>
+  <div class="options">
+    <button class="option" data-correct="false">Because the hash function provides better security than direct encryption</button>
+    <button class="option" data-correct="false">Because the private key only works on short messages</button>
+    <button class="option" data-correct="true">Because public-key encryption of a long message is computationally expensive — the hash is short and fast to sign</button>
+    <button class="option" data-correct="false">Because the hash function encrypts the message at the same time</button>
+  </div>
+  <div class="explanation" id="qf2"></div>
+</div>
+
+</main>
+
+<div class="container">
+  <nav class="page-nav">
+    <a href="protokoller-brannmur.html" class="next">
+      <span class="nav-label">Next →</span>
+      <span class="nav-title">Protocols and firewalls</span>
+    </a>
+  </nav>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Spring 2026</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var feedback = {
+    'qf1': {
+      correct: 'Correct! Alice encrypts with Bob\'s public key. Only Bob\'s private key can decrypt the message.',
+      wrong: 'Not quite. Remember: in public key cryptography, the sender encrypts with the receiver\'s public key.'
+    },
+    'qf2': {
+      correct: 'Exactly! Public-key operations are much slower than symmetric ones. By signing only the hash (which is short and of fixed length), one avoids the computational cost.',
+      wrong: 'Think about how long it takes to encrypt a large message with a public-key algorithm compared to encrypting a short hash.'
+    }
+  };
+  document.querySelectorAll('.quiz').forEach(function(quiz){
+    var fb = quiz.querySelector('.explanation');
+    var fbId = fb ? fb.id : null;
+    quiz.querySelectorAll('button.option').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var correct = btn.dataset.correct === 'true';
+        quiz.querySelectorAll('button.option').forEach(function(b){
+          b.disabled = true;
+          if (b.dataset.correct === 'true') b.classList.add('correct');
+          else if (b === btn) b.classList.add('incorrect');
+        });
+        if (fb && fbId && feedback[fbId]) {
+          fb.textContent = correct ? feedback[fbId].correct : feedback[fbId].wrong;
+          fb.classList.add('show');
+        }
+      });
+    });
+  });
+})();
+</script>
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
