@@ -99,6 +99,7 @@
       border-top: 1px solid var(--line, #c9c0ae);
       background: var(--paper, #f4f1ea);
       flex-shrink: 0;
+      position: relative;
     }
     .ktn-chat-input {
       flex: 1; border: 1px solid var(--line, #c9c0ae);
@@ -110,6 +111,15 @@
     }
     .ktn-chat-input:focus { border-color: var(--rust, #b04428); }
     .ktn-chat-input::placeholder { color: var(--ink-ghost, #a39886); }
+
+    .ktn-chat-hint {
+      position: absolute; bottom: 100%; left: 14px; right: 14px;
+      text-align: center; font-size: 11.5px;
+      color: var(--ink-ghost, #a39886);
+      padding: 4px 0 6px;
+      pointer-events: none;
+      letter-spacing: .01em;
+    }
 
     .ktn-chat-send {
       background: var(--rust, #b04428); color: #fff;
@@ -186,6 +196,7 @@
     <div class="ktn-chat-messages"></div>
     <form class="ktn-chat-form" autocomplete="off">
       <input class="ktn-chat-input" placeholder="Spør om pensum..." />
+      <div class="ktn-chat-hint">Gratis AI-modell — kan ta opptil 60 sek for lengre svar</div>
       <button class="ktn-chat-send" type="submit">Send</button>
     </form>
   `;
@@ -340,7 +351,7 @@
   ];
 
   function addLoadingIndicator() {
-    const ESTIMATE_MS = 10000;
+    const ESTIMATE_MS = 30000;
     const div = document.createElement("div");
     div.className = "ktn-msg ktn-msg-assistant";
 
