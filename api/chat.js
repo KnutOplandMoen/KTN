@@ -56,22 +56,24 @@ function findTopChunks(queryEmbedding, allChunks, n = 5, chapterHint = null) {
   return scored.slice(0, n);
 }
 
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
-    return res.status(405).json({ error: "Method not allowed" });
-  }
+function jsonResponse(body, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
+}
 
+export async function POST(request) {
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({ error: "OPENROUTER_API_KEY not configured" });
+    return jsonResponse({ error: "OPENROUTER_API_KEY not configured" }, 500);
   }
 
   try {
-    const { question, page_context, history } = req.body;
+    const { question, page_context, history } = await request.json();
 
     if (!question || typeof question !== "string") {
-      return res.status(400).json({ error: "Missing question" });
+      return jsonResponse({ error: "Missing question" }, 400);
     }
 
     let searchQuery = question;
@@ -132,36 +134,18 @@ ${page_context?.visible_text || "(ingen)"}`;
 
     if (!llmResp.ok) {
       const err = await llmResp.text();
-      return res.status(502).json({ error: `LLM request failed (${llmResp.status}): ${err}` });
+      return jsonResponse({ error: `LLM request failed (${llmResp.status}): ${err}` }, 502);
     }
 
-    res.setHeader("Content-Type", "text/event-stream");
-    res.setHeader("Cache-Control", "no-cache, no-transform");
-    res.setHeader("Connection", "keep-alive");
-    res.setHeader("X-Accel-Buffering", "no");
-    res.flushHeaders();
-
-    const reader = llmResp.body.getReader();
-    const decoder = new TextDecoder();
-
-    try {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const text = decoder.decode(value, { stream: true });
-        res.write(text);
-      }
-    } catch (streamErr) {
-      console.error("Stream interrupted:", streamErr.message);
-    }
-
-    res.end();
+    return new Response(llmResp.body, {
+      headers: {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache, no-transform",
+        "X-Content-Type-Options": "nosniff",
+      },
+    });
   } catch (err) {
     console.error("Chat API error:", err);
-    if (!res.headersSent) {
-      res.status(500).json({ error: err.message });
-    } else {
-      res.end();
-    }
+    return jsonResponse({ error: err.message }, 500);
   }
 }
