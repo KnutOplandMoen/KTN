@@ -860,6 +860,50 @@ footer p {
   color: var(--ink);
 }
 
+/* ---------- CHAPTER TOC (mini-innholdsfortegnelse) ---------- */
+.chapter-toc {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper-dark);
+}
+.chapter-toc .chapter-toc-list {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+.chapter-toc .chapter-toc-list li {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.chapter-toc .chapter-toc-list .toc-num {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-ghost);
+  font-weight: 600;
+}
+.chapter-toc .chapter-toc-list a {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.chapter-toc .chapter-toc-list a:hover {
+  color: var(--rust);
+}
+@media (max-width: 768px) {
+  .chapter-toc .chapter-toc-list {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
 /* ---------- SUBPAGE LIST (chapter overview) ---------- */
 .subpage-list {
   display: grid;
