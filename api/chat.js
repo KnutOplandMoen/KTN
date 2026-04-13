@@ -28,8 +28,9 @@ async function getEmbedding(text, apiKey) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "openai/text-embedding-3-small",
-      input: text,
+      model: "nvidia/llama-nemotron-embed-vl-1b-v2:free",
+      input: [text],
+      encoding_format: "float",
     }),
   });
   if (!resp.ok) {
