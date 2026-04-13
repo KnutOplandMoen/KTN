@@ -43,7 +43,7 @@
   <p class="dropcap">Internett er noe de fleste bruker i hundrevis av minutter hver dag, men svært få kan gi en presis definisjon av. Det finnes to måter å svare på spørsmålet "hva er Internett?" — og begge er like gyldige. Den første er <em>mutterne-og-boltene</em>-beskrivelsen: hva består det fysisk av? Den andre er <em>tjenestebeskrivelsen</em>: hva tilbyr det til applikasjoner som bruker det?</p>
 
   <h3>Mutterne-og-boltene-beskrivelsen</h3>
-  <p>Internett er et nettverk av milliarder av <strong>endesystemer</strong> (også kalt <em>hosts</em>) koblet sammen via <strong>kommunikasjonslinker</strong> og <strong>pakkesvitsjer</strong>. Endesystemene er alt fra laptoper og smarttelefoner til servere, IoT-sensorer og smarte kjøleskap. Linkene — fiber, kobberkabel, radio — binder dem sammen, og pakkessvitsjene (primært <strong>rutere</strong> og <strong>linklagssvitsjer</strong>) videresender data mellom dem.</p>
+  <p>Internett er et nettverk av milliarder av <strong>endesystemer</strong> (også kalt <em>hosts</em>) koblet sammen via <strong>kommunikasjonslinker</strong> og <strong>pakkesvitsjer</strong>. Endesystemene er alt fra laptoper og smarttelefoner til servere, IoT-sensorer og smarte kjøleskap. Linkene — fiber, kobberkabel, radio — binder dem sammen, og pakkesvitsjene (primært <strong>rutere</strong> og <strong>linklagssvitsjer</strong>) videresender data mellom dem.</p>
 
   <p>Når et endesystem skal sende data, deles dataene opp i <strong>pakker</strong> — små biter med en header foran som forteller nettverket hvor de skal. Hver pakke reiser uavhengig gjennom nettverket, hopper fra svitsj til svitsj, og settes sammen igjen hos mottakeren. Endesystemene er koblet til Internett gjennom <strong>ISP-er</strong> (Internet Service Providers), som igjen er koblet sammen i et hierarki. Hele systemet drives av <strong>protokoller</strong> — regler for hvordan enheter kommuniserer — der <em>TCP</em> og <em>IP</em> er de to viktigste.</p>
 
@@ -79,9 +79,9 @@
     <tr><td class="mono-cell">DSL</td><td>Eksisterende telefonlinje (kobber)</td><td>5–35 Mbps ned</td><td>Hastighet faller med avstand til sentralen</td></tr>
     <tr><td class="mono-cell">Kabel / HFC</td><td>Koaksialkabel + fiber</td><td>Opptil 1 Gbps ned</td><td>Delt medium — kapasiteten deles med naboene</td></tr>
     <tr><td class="mono-cell">FTTH</td><td>Fiber helt hjem</td><td>1–10 Gbps</td><td>Dedikert fiber, raskest tilgjengelig</td></tr>
-    <tr><td class="mono-cell">WiFi (802.11)</td><td>Radio</td><td>Opptil 14 Gbps (WiFi 6)</td><td>Trådløs siste hopp, typisk til kabel/fiber bak</td></tr>
+    <tr><td class="mono-cell">WiFi (802.11)</td><td>Radio</td><td>Opptil 9,6 Gbps (WiFi 6)</td><td>Trådløs siste hopp, typisk til kabel/fiber bak</td></tr>
     <tr><td class="mono-cell">4G / 5G</td><td>Radio (mobilnett)</td><td>100 Mbps – 10 Gbps</td><td>Mobilbredbånd, dekker store områder</td></tr>
-    <tr><td class="mono-cell">Satelitt</td><td>Radio (jordbane)</td><td>~100 Mbps (LEO)</td><td>Høy latens (GEO) eller lav (LEO, f.eks. Starlink)</td></tr>
+    <tr><td class="mono-cell">Satellitt</td><td>Radio (jordbane)</td><td>~100 Mbps (LEO)</td><td>Høy latens (GEO) eller lav (LEO, f.eks. Starlink)</td></tr>
   </table>
 
   <h3>Fysiske medier</h3>
@@ -94,7 +94,7 @@
 
   <div class="callout callout-blue">
     <span class="label">Ikke-guidede medier</span>
-    <p><strong>Jordbølger (WiFi, Bluetooth)</strong> — kort rekkevidde, påvirkes av vegger og interferens. <strong>Mikrobølger (4G/5G)</strong> — lengre rekkevidde, mye brukt i mobilnett. <strong>Satellitt</strong> — global dekning mulig, men latens er en utfordring (GEO: ~280 ms RTT).</p>
+    <p><strong>Jordbølger (WiFi, Bluetooth)</strong> — kort rekkevidde, påvirkes av vegger og interferens. <strong>Mikrobølger (4G/5G)</strong> — lengre rekkevidde, mye brukt i mobilnett. <strong>Satellitt</strong> — global dekning mulig, men latens er en utfordring (GEO: ~280 ms enveis, ~560 ms RTT).</p>
   </div>
 
   <div class="margin-note">Fiberkabel er det eneste mediet som ikke degraderes av elektromagnetisk støy. Derfor er det det foretrukne mediet for lange strekk og høye hastigheter — undersøiske kabler mellom kontinenter er nesten utelukkende fiber.</div>
@@ -240,6 +240,21 @@
   <p>Gjennomstrømning er den effektive raten data leveres fra sender til mottaker, målt i bits per sekund. For en rute med flere linker er gjennomstrømningen begrenset av den <em>trangeste</em> linken — <strong>flaskehalsen</strong> (bottleneck link). Hvis du har en 1 Gbps-fiber hjemme men serveren sender over en 10 Mbps-link, er gjennomstrømningen din 10 Mbps.</p>
 
   <p>I praksis er flaskehalsen oftest i <em>aksessnettet</em> (siste mil) eller på selve serveren, ikke i nettverkskjernen der linkene er enormt raske.</p>
+
+  <h3>Måle forsinkelse i praksis: <code>traceroute</code> og <code>ping</code></h3>
+  <p>Hvordan vet du egentlig hva forsinkelsen er på en gitt rute? To klassiske verktøy lar deg finne ut av det:</p>
+
+  <div class="callout callout-blue">
+    <span class="label">traceroute (tracert på Windows)</span>
+    <p>Sender serier med spesielle pakker som «utløper» ved hver ruter langs ruten til en destinasjon. Hver ruter som pakken passerer sender en feilmelding tilbake, og <code>traceroute</code> måler rundturstiden (RTT) til hver enkelt ruter. Resultatet er en liste over alle rutere på veien og forsinkelsen til hver av dem — slik at du kan se <em>hvor</em> forsinkelsen oppstår.</p>
+  </div>
+
+  <div class="callout callout-green">
+    <span class="label">ping</span>
+    <p>Sender en enkel ICMP Echo Request-pakke til en destinasjon og måler tiden det tar å få svar (RTT). Det er den raskeste måten å sjekke om en host er tilgjengelig og hvor lang forsinkelsen er. <code>ping</code> viser også om pakker går tapt, noe som indikerer nettverksproblemer.</p>
+  </div>
+
+  <div class="margin-note">Begge verktøyene bruker ICMP-protokollen (Internet Control Message Protocol) på nettverkslaget. Noen rutere og brannmurer blokkerer ICMP, slik at <code>traceroute</code> noen ganger viser «* * *» for enkelte hopp.</div>
 </div>
 </section>
 
@@ -409,6 +424,42 @@
     <button class="option" data-correct="false">At alle lag bruker samme headerformat for å sikre kompatibilitet</button>
   </div>
   <div class="explanation" id="qFeedback4"></div>
+</div>
+
+<div style="max-width:820px;margin:0 auto 60px;">
+  <div style="font-family:var(--mono,'IBM Plex Mono',monospace);font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted,#6b6257);margin-bottom:18px;">Refleksjonsspørsmål</div>
+
+  <div class="quiz" style="margin-bottom:24px;">
+    <p class="q-text">Forklar forskjellen mellom transmisjonsforsinkelse og propageringsforsinkelse med en analogi.</p>
+    <details style="margin-top:14px;">
+      <summary style="cursor:pointer;font-family:var(--mono,'IBM Plex Mono',monospace);font-size:13px;color:var(--rust,#b04428);padding:8px 0;">Vis foreslått svar</summary>
+      <div style="margin-top:10px;padding:14px 18px;background:var(--paper-dark,#f4f1ea);border-radius:6px;font-family:var(--serif,'Newsreader',serif);font-size:16px;line-height:1.65;color:var(--ink,#1a1612);">
+        <p>Tenk på en karavane med 10 biler som skal gjennom en bomstasjon og deretter kjøre 100 km til neste bomstasjon. <strong>Transmisjonsforsinkelsen</strong> tilsvarer tiden det tar for alle bilene å passere gjennom bommen (avhenger av hvor raskt bommen behandler biler — dvs. linkhastigheten R og antall bits L). <strong>Propageringsforsinkelsen</strong> tilsvarer tiden det tar for én bil å kjøre de 100 km (avhenger av avstanden og hastigheten til signalet i mediet). De to er helt uavhengige: du kan gjøre bommen raskere uten å forkorte veien, og du kan forkorte veien uten å gjøre bommen raskere.</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="quiz" style="margin-bottom:24px;">
+    <p class="q-text">Hvorfor bruker Internett pakkesvitsjing i stedet for linjesvitsjing? Nevn minst én ulempe med pakkesvitsjing.</p>
+    <details style="margin-top:14px;">
+      <summary style="cursor:pointer;font-family:var(--mono,'IBM Plex Mono',monospace);font-size:13px;color:var(--rust,#b04428);padding:8px 0;">Vis foreslått svar</summary>
+      <div style="margin-top:10px;padding:14px 18px;background:var(--paper-dark,#f4f1ea);border-radius:6px;font-family:var(--serif,'Newsreader',serif);font-size:16px;line-height:1.65;color:var(--ink,#1a1612);">
+        <p>Pakkesvitsjing brukes fordi den utnytter nettverksressursene langt bedre gjennom <strong>statistisk multipleksing</strong>: siden brukere sjelden er aktive samtidig, kan kapasiteten deles dynamisk. Samme link kan betjene mange flere brukere enn med linjesvitsjing, der ressursene reserveres og ligger ubrukt når en bruker er inaktiv.</p>
+        <p><strong>Ulemper:</strong> Pakkesvitsjing gir ingen garantier for forsinkelse eller båndbredde — køforsinkelsen er uforutsigbar, og pakker kan gå tapt (droppes) når ruterkøene er fulle. Dette gjør det vanskeligere å tilby tjenester som krever sanntidsgarantier (f.eks. tradisjonell telefoni).</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="quiz" style="margin-bottom:24px;">
+    <p class="q-text">Hva skjer med køforsinkelsen når trafikk-intensiteten (La/R) nærmer seg 1? Og hva skjer når den overstiger 1?</p>
+    <details style="margin-top:14px;">
+      <summary style="cursor:pointer;font-family:var(--mono,'IBM Plex Mono',monospace);font-size:13px;color:var(--rust,#b04428);padding:8px 0;">Vis foreslått svar</summary>
+      <div style="margin-top:10px;padding:14px 18px;background:var(--paper-dark,#f4f1ea);border-radius:6px;font-family:var(--serif,'Newsreader',serif);font-size:16px;line-height:1.65;color:var(--ink,#1a1612);">
+        <p>Når trafikk-intensiteten nærmer seg 1 (dvs. pakker ankommer nesten like raskt som de sendes ut), vokser den gjennomsnittlige køforsinkelsen dramatisk — den går mot <strong>uendelig</strong>. Små tilfeldige variasjoner i ankomsttidene fører til at køen vokser raskere enn den rekker å tømmes.</p>
+        <p>Når trafikk-intensiteten overstiger 1, ankommer pakker raskere enn linken klarer å sende dem ut. Køen vokser ubegrenset — men siden bufferet har en endelig størrelse, vil pakker som ikke får plass bli <strong>droppet</strong> (pakketap). Å designe nettverk slik at trafikk-intensiteten holdes godt under 1 er derfor essensielt.</p>
+      </div>
+    </details>
+  </div>
 </div>
 
 <footer>

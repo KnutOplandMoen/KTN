@@ -213,6 +213,18 @@
     </figure>
 
     <p>Persistent HTTP fjerner den første RTT-en for hvert ekstra objekt — du betaler bare TCP-oppsettet én gang, så kan du sende den ene forespørselen etter den andre over samme forbindelse. Klienten kan til og med pipeline forespørslene: send forespørsel for objekt 2 før svaret på objekt 1 er kommet i havn. For en side med mange referanser kan dette halvere lastetiden.</p>
+
+    <div class="quiz" id="quiz-http-conn">
+      <div class="label">Sjekk forståelsen</div>
+      <div class="q-text">En webside inneholder en HTML-fil og 8 bilder, alle på samme tjener. Med ikke-persistent HTTP (ingen parallelle forbindelser) — hvor mange TCP-forbindelser må opprettes, og hva er minimum antall RTT-er for å laste hele siden?</div>
+      <div class="options">
+        <button class="option" data-correct="false">1 forbindelse, 9 RTT-er</button>
+        <button class="option" data-correct="false">9 forbindelser, 9 RTT-er</button>
+        <button class="option" data-correct="true">9 forbindelser, 18 RTT-er (pluss overføringstid)</button>
+        <button class="option" data-correct="false">9 forbindelser, 10 RTT-er</button>
+      </div>
+      <div class="explanation">Med ikke-persistent HTTP trenger hvert objekt sin egen TCP-forbindelse, altså 9 stykker (1 HTML + 8 bilder). Hver forbindelse koster 2 RTT-er (1 for TCP-oppsett + 1 for forespørsel/svar), totalt 18 RTT-er pluss selve overføringstiden. Med persistent HTTP ville du klart deg med 1 forbindelse og 10 RTT-er (1 for TCP-oppsett + 1 per objekt) — eller enda mindre med pipelining.</div>
+    </div>
   </div>
 </section>
 
@@ -319,6 +331,14 @@ Content-Type: text/html
       <h4>Norske regler fra 2025</h4>
       <p>Stortinget har vedtatt en ny ekomlov som trådte i kraft 1. januar 2025. Den krever at samtykke til informasjonskapsler oppfyller GDPR-kravene: frivillig, spesifikt, informert, utvetydig, gitt gjennom en aktiv handling, dokumenterbart, og mulig å trekke tilbake like lett som det ble gitt. Dette er grunnen til at nesten alle nettsteder nå viser deg en cookie-banner ved første besøk.</p>
     </div>
+
+    <div class="reveal" id="reveal-cookies">
+      <div class="q">HTTP er tilstandsløst, men cookies gir tilstand. Hvorfor valgte man ikke bare å gjøre HTTP tilstandsbevart fra starten, i stedet for å legge på cookies etterpå?</div>
+      <button onclick="document.getElementById('reveal-cookies-ans').classList.add('show')">Vis svar</button>
+      <div class="answer" id="reveal-cookies-ans">
+        <p>Tilstandsløshet er en bevisst designbeslutning som gir store fordeler: tjenere trenger ikke huske noe mellom forespørsler, noe som gjør det enkelt å skalere (legg til flere tjenere bak en lastbalanser — en hvilken som helst av dem kan svare på en hvilken som helst forespørsel). Hvis tjeneren krasjer, trenger den ikke å rekonstruere noen sesjonstilstand. Tilstandsløse protokoller er også enklere å implementere og enklere å feilsøke. Cookies lar deg legge til tilstand <em>der du trenger det</em>, uten å påtvinge det på hele protokollen. Det er et «opt-in»-system: bare de applikasjonene som faktisk trenger tilstand, betaler kostnaden.</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -358,6 +378,18 @@ Content-Type: text/html
       </svg>
       <figcaption>Betinget GET. Hvis objektet er uendret, slipper man hele overføringen og får bare en bitteliten 304-melding tilbake.</figcaption>
     </figure>
+
+    <div class="quiz" id="quiz-cache">
+      <div class="label">Sjekk forståelsen</div>
+      <div class="q-text">En web-cache har en lagret kopi av et objekt. Hva sender den til opprinnelses-tjeneren for å sjekke om kopien fortsatt er gyldig?</div>
+      <div class="options">
+        <button class="option" data-correct="false">En HEAD-forespørsel, som alltid returnerer uten innhold.</button>
+        <button class="option" data-correct="false">En vanlig GET, og sammenligner svaret med sin egen kopi.</button>
+        <button class="option" data-correct="true">En GET med <code>If-Modified-Since</code>-hodet satt til datoen kopien ble lagret.</button>
+        <button class="option" data-correct="false">En DNS-forespørsel for å sjekke om tjeneren har endret IP-adresse.</button>
+      </div>
+      <div class="explanation">Betinget GET er en vanlig GET-forespørsel med et ekstra hodefelt — <code>If-Modified-Since</code> — som inneholder datoen cachen sist hentet objektet. Tjeneren svarer med <code>304 Not Modified</code> (ingen kropp) hvis objektet er uendret, eller <code>200 OK</code> med det nye innholdet hvis det er endret. Dette sparer båndbredde i det vanlige tilfellet der innholdet ikke har endret seg.</div>
+    </div>
   </div>
 </section>
 
@@ -373,6 +405,8 @@ Content-Type: text/html
     <p>Resultatet er at brukeren ser en blank side mens videoen overføres, selv om de tre små bildene kunne vært overført på et øyeblikk. Nettleserens hovedtriks for å omgå dette i HTTP/1.1 var å åpne <em>flere parallelle TCP-forbindelser</em> til samme tjener, slik at de små objektene kunne hentes parallelt med det store. Det fungerer, men det er tungvint og svekker overbelastningskontrollen.</p>
 
     <p><strong>HTTP/2</strong> (RFC 7540, 2015) løser dette ved å dele objekter opp i mindre <em>frames</em> og blande sammen rammene fra forskjellige objekter på samme forbindelse. Tjeneren kan også prioritere rammer ut fra hva klienten har bedt om — ikke nødvendigvis FCFS. Tre små objekter får da overført rammene sine mellom rammer fra det store objektet, og kommer raskt frem mens det store fortsatt overføres.</p>
+
+    <p>HTTP/2 introduserte også <strong>server push</strong>: tjeneren kan sende objekter til klienten <em>før klienten har bedt om dem</em>. Når tjeneren mottar en forespørsel om en HTML-side, vet den at klienten snart vil trenge CSS-filen og noen bilder — og kan proaktivt dytte disse ut i stedet for å vente på at klienten parser HTML-en og sender nye forespørsler. Dette eliminerer én ekstra RTT for hvert objekt som pushes.</p>
 
     <figure class="fig-frame">
       <svg viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg">
@@ -418,7 +452,7 @@ Content-Type: text/html
       <figcaption>HTTP/1.1 leverer i bestilt rekkefølge — store objekter blokkerer små. HTTP/2 fletter rammer fra forskjellige objekter, slik at små objekter ikke må vente.</figcaption>
     </figure>
 
-    <p>HTTP/2 har likevel et gjenværende problem: det ligger fortsatt på <em>én</em> TCP-forbindelse, og hvis en TCP-pakke går tapt, må alle objektene vente på retransmisjonen. <strong>HTTP/3</strong> løser dette ved å bytte ut TCP med en transport bygd på UDP, der hvert objekt har sin egen feilhåndtering. Mer om dette i kapittelet om transportlaget.</p>
+    <p>HTTP/2 har likevel et gjenværende problem: det ligger fortsatt på <em>én</em> TCP-forbindelse, og hvis en TCP-pakke går tapt, må alle objektene vente på retransmisjonen. <strong>HTTP/3</strong> løser dette ved å bytte ut TCP med en ny transportprotokoll kalt <strong>QUIC</strong>, bygd på UDP. QUIC gir hver strøm sin egen uavhengige feilhåndtering, slik at et pakketap i én strøm ikke blokkerer de andre. Mer om dette i kapittelet om transportlaget.</p>
   </div>
 </section>
 </main>
@@ -458,6 +492,8 @@ function setupQuiz(id) {
   });
 }
 setupQuiz('quiz1');
+setupQuiz('quiz-http-conn');
+setupQuiz('quiz-cache');
 
 // ========== COOKIE STEPPER ==========
 (function() {

@@ -249,6 +249,12 @@
       </div>
       <div class="explanation"><strong>Riktig!</strong> Begge prefikser matcher adressen, men /16 er mer spesifikk enn /8. Longest prefix matching velger alltid den mest spesifikke matchen.</div>
     </div>
+
+    <div class="reveal" data-reveal>
+      <div class="q">Hvorfor er forwarding implementert i maskinvare (ASIC/TCAM) i stedet for programvare?</div>
+      <button>Vis svar</button>
+      <div class="answer">En 100&nbsp;Gbps-lenke leverer en 64-byte-pakke omtrent hvert 5. nanosekund. Programvare p&aring; en generell CPU klarer ikke &aring; gj&oslash;re et tabelloppslag s&aring; raskt. Derfor brukes spesialbygde kretser (ASIC-er) og TCAM som kan sl&aring; opp blant hundretusenvis av prefikser p&aring; &eacute;n klokkesyklus &mdash; uavhengig av tabellst&oslash;rrelsen. Uten maskinvareakselerasjon ville routerne blitt flaskehalsen i Internett.</div>
+    </div>
   </div>
 </section>
 
@@ -357,6 +363,12 @@
     <div class="callout">
       <span class="label">Nettverksn&oslash;ytralitet &mdash; teknisk sett</span>
       <p>FCFS er &laquo;n&oslash;ytralt&raquo;. Priority scheduling basert p&aring; betalende kunder er &laquo;paid prioritization&raquo; &mdash; det 2015 FCC-regelverket forbydde. Scheduling- og buffer-regler er <em>mekanismene</em> der nettn&oslash;ytralitetspolitikk f&aring;r teknisk innhold.</p>
+    </div>
+
+    <div class="reveal" data-reveal>
+      <div class="q">Hva skjer med latens hvis bufferene i en router er for store?</div>
+      <button>Vis svar</button>
+      <div class="answer"><strong>Bufferbloat.</strong> Med for store buffere droppes f&aelig;rre pakker, s&aring; tap-raten ser bra ut &mdash; men pakkene st&aring;r lenge i k&oslash; f&oslash;r de sendes videre. Resultatet er h&oslash;y og variabel latens som &oslash;delegger interaktive applikasjoner (VoIP, spill, videokonferanser). TCP tolker ikke tapet tidsnok og reduserer ikke vinduet, s&aring; k&oslash;ene forblir fulle. Nyere forskning anbefaler RTT&middot;C&nbsp;/&nbsp;&radic;N i stedet for den gamle RTT&middot;C-regelen, nettopp for &aring; unng&aring; bufferbloat.</div>
     </div>
   </div>
 </section>
@@ -556,6 +568,16 @@ document.querySelectorAll('.quiz').forEach(function(quiz) {
   nextBtn.addEventListener('click', function() { if (idx < stages.length - 1) { idx++; render(); } });
   render();
 })();
+
+// === Reveal handlers ===
+document.querySelectorAll('.reveal').forEach(function(r) {
+  var btn = r.querySelector('button');
+  var ans = r.querySelector('.answer');
+  btn.addEventListener('click', function() {
+    ans.classList.toggle('show');
+    btn.textContent = ans.classList.contains('show') ? 'Skjul svar' : 'Vis svar';
+  });
+});
 </script>
 
 <script src="../chat-widget.js"></script>

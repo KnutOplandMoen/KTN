@@ -108,6 +108,8 @@
   <h3>Record-basert kryptering</h3>
   <p>TCP gir en byte-strøm, men TLS kan ikke kryptere strømmen fortløpende — for da ville MAC-en først komme på slutten, og mottakeren ville ikke kunne sjekke integriteten før hele forbindelsen lukkes. Løsningen: TLS deler strømmen opp i <strong>records</strong>. Hver record inneholder data, en MAC for integritet, og en lengde. Hele recorden krypteres med sesjonsnøkkelen før den sendes til TCP.</p>
 
+  <p>Et viktig poeng: MAC-en beregnes ikke bare over selve dataene i recorden — den inkluderer også et <strong>sekvensnummer</strong>. Selv om sekvensnummeret ikke sendes eksplisitt i recorden, holder begge parter en intern teller. Uten sekvensnumre kunne Trudy fange opp en record og spille den av på nytt (replay-angrep), eller omorganisere rekkefølgen på records uten at mottakeren oppdager det. Med sekvensnummeret i MAC-beregningen vil enhver slik manipulasjon føre til at MAC-verifiseringen feiler.</p>
+
   <h3>TLS 1.3 og cipher suites</h3>
   <p>En «cipher suite» er et sett av algoritmer som brukes sammen: én for nøkkelutveksling, én for kryptering, én for MAC og én for digital signatur. TLS 1.3 (RFC 8446, 2018) er den nyeste versjonen og har strammet inn valgene kraftig.</p>
 </div>
@@ -123,6 +125,17 @@
   <p class="section-intro">Sikkerhet på nettverkslaget — der hele IP-datagrammer krypteres og autentiseres.</p>
 
   <p class="dropcap">TLS sikrer enkelttransportforbindelser (én TCP-forbindelse om gangen). Men hva om du vil sikre <em>all</em> trafikk mellom to nettverk — uansett applikasjon, uansett port? Da trenger du sikkerhet på nettverkslaget, og det er der <strong>IPsec</strong> kommer inn. IPsec gir kryptering, autentisering og integritetskontroll på datagram-nivå, for både brukerdata og kontrolltrafikk (BGP, DNS, osv.).</p>
+
+  <h3>Security Association (SA)</h3>
+  <p>Før IPsec kan sende et eneste kryptert datagram, må de to endepunktene opprette en <strong>Security Association (SA)</strong> — en enveis logisk forbindelse som definerer sikkerhetsparameterne for trafikken. Hver SA identifiseres av tre ting:</p>
+
+  <ul>
+    <li><strong>SPI (Security Parameter Index):</strong> et 32-bits tall som inkluderes i hvert IPsec-datagram, slik at mottakeren vet hvilken SA (og dermed hvilke nøkler og algoritmer) pakken tilhører.</li>
+    <li><strong>Destinasjons-IP:</strong> adressen til den andre enden av SA-en.</li>
+    <li><strong>Protokollidentifikator:</strong> om SA-en bruker AH eller ESP.</li>
+  </ul>
+
+  <p>Fordi en SA er <em>enveis</em>, trengs det to SA-er for toveis kommunikasjon — én i hver retning, hver med sin egen SPI og sine egne nøkler. Alle aktive SA-er lagres i en <strong>SAD (Security Association Database)</strong> på begge endepunkter. Når et IPsec-datagram ankommer, bruker mottakeren SPI-verdien i headeren til å slå opp riktig SA i SAD-en og dermed finne krypteringsnøkkelen og algoritmen som trengs for å dekryptere.</p>
 
   <h3>To moduser</h3>
 
@@ -314,7 +327,8 @@
 
   <div class="callout">
     <span class="label">Eksempler på filtrering</span>
-    <p><strong>Blokker all Telnet:</strong> drop pakker med IP-protokollfelt = 17 og port 23. Resultat: all UDP-trafikk og Telnet blokkeres.</p>
+    <p><strong>Blokker all innkommende UDP:</strong> drop alle pakker med IP-protokollfelt = 17. Resultat: ingen UDP-trafikk (f.eks. DNS-forespørsler utenfra) slipper inn.</p>
+    <p><strong>Blokker all Telnet:</strong> drop alle TCP-segmenter med destinasjonsport 23. Resultat: ingen kan opprette Telnet-forbindelser til interne maskiner.</p>
     <p><strong>Blokker innkommende TCP-forbindelser:</strong> drop innkommende TCP-segmenter med ACK=0. Resultat: eksterne klienter kan ikke opprette TCP-forbindelser innover, men interne klienter kan koble seg ut.</p>
   </div>
 

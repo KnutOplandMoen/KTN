@@ -197,6 +197,24 @@
     <h3>OTT — over the top</h3>
     <p>En CDN som Netflix er et <strong>OTT</strong>-system: «over the top». Det betyr at innholdsleverandøren bygger sin egen distribusjons-overbygning oppå Internett, uten å eie de underliggende linjene. Internett gir bare host-til-host-kommunikasjon som tjeneste — alt det smarte, all videolagring, all server-utvelgelse, all DASH-koreografering, foregår på applikasjonslaget på endesystemene som Netflix kontrollerer. Utfordringene er reelle: hvilken CDN-node skal en gitt seer hentes fra? Hvordan oppfører seere seg når nettet er treigt? Hvilket innhold skal lagres på hvilke noder, gitt at man ikke har plass til alt overalt?</p>
 
+    <h3>Netflix og YouTube — to forskjellige strategier</h3>
+    <p><strong>Netflix</strong> bruker en todelt arkitektur. Selve applikasjonslogikken — brukerkontoer, betalinger, søk, anbefalinger — kjører i <strong>Amazon Web Services</strong> (AWS), altså i skyen. Men videoen leveres fra Netflix sitt eget CDN, kalt <strong>Open Connect</strong>. Open Connect følger en «enter deep»-strategi: Netflix plasserer dedikerte servere (kalt OCA-er) direkte inne i ISP-enes nettverk over hele verden. Når du trykker «play» i Netflix-appen, bestemmer Netflix sin programvare (via AWS) hvilken OCA som er best for deg — basert på nettverksnærhet og kapasitet — og du strømmer videoen derfra med DASH over HTTP.</p>
+
+    <p><strong>YouTube</strong> bruker Googles eget private CDN, med en kombinasjon av store datasenterklynger og mange mindre lokasjoner nærmere brukerne. En viktig forskjell fra Netflix er at YouTube i større grad bruker <strong>pull-basert caching</strong>: ikke alt innhold er forhåndsplassert overalt. Populært innhold havner naturlig på mange noder fordi det etterspørres ofte, mens sjeldent sett innhold kanskje bare finnes i et sentralt datasenter. YouTube bruker også DNS-omdirigering for å sende brukere til riktig klynge, men hele prosessen skjer innenfor Googles egen infrastruktur.</p>
+
+    <div class="callout callout-blue">
+      <div class="label">Fellesnevneren</div>
+      Både Netflix og YouTube er OTT-tjenester som ikke eier aksessnettverkene brukerne sitter i — de bygger sin egen distribusjonsinfrastruktur <em>oppå</em> det offentlige internett. Begge bruker DASH og HTTP for selve strømmingen. Men Netflix forhåndsplasserer innhold aktivt (push), mens YouTube i større grad cacher innhold reaktivt når det blir populært (pull).
+    </div>
+
+    <div class="reveal" id="reveal-cdn">
+      <div class="q">Hva er fordeler og ulemper med «enter deep» vs «bring home» som CDN-strategi? Når ville du valgt den ene fremfor den andre?</div>
+      <button onclick="document.getElementById('reveal-cdn-ans').classList.add('show')">Vis svar</button>
+      <div class="answer" id="reveal-cdn-ans">
+        <p><strong>Enter deep</strong> (Akamai-modellen) plasserer servere helt inne i aksessnettverkene, nær sluttbrukeren. Fordelen er minimal latens og mindre trafikk over internett-kjernen. Ulempen er enorm driftskompleksitet — tusenvis av lokasjoner som må vedlikeholdes. <strong>Bring home</strong> (Limelight-modellen) bruker færre, men større klynger plassert i POP-er nær aksessnettverkene. Fordelen er enklere drift; ulempen er litt høyere latens. Enter deep passer best for latenskritisk innhold som live video der millisekunder teller. Bring home passer for innhold der noe høyere latens er akseptabelt, og der driftsenkelhet og kostnadskontroll er viktigere.</p>
+      </div>
+    </div>
+
     <div class="quiz" id="quiz2">
       <div class="label">Sjekk forståelsen</div>
       <div class="q-text">I DASH-strømming — hvor ligger «intelligensen» som bestemmer hvilken kvalitet en chunk skal hentes i?</div>

@@ -284,7 +284,17 @@
 
     <p><strong>A-posten</strong> er den klassiske: navn til IP. <strong>NS</strong> peker på hvilken server som er autoritativ. <strong>CNAME</strong> er et alias — derfor kan <code>www.ibm.com</code> egentlig være en peker til noe sånt som <code>servereast.backup2.ibm.com</code>, og du som bruker trenger aldri å vite det. <strong>MX</strong> er hvordan SMTP-serveren din finner ut hvor den skal levere e-post for et domene; uten MX-poster ville e-post ikke fungert.</p>
 
-    <div class="margin-note">CNAME muliggjør også lastbalansering: én navn kan oversettes til ulike IP-adresser for ulike forespørsler, slik at trafikken sprer seg utover mange servere. Dette er hvordan store nettsteder skalerer — uten å trenge én eneste superkraftig maskin.</div>
+    <div class="margin-note">DNS muliggjør også lastbalansering: et travelt nettsted kan ha mange servere med forskjellige IP-adresser, alle registrert som <strong>A-poster</strong> for samme hostname. Den autoritative DNS-serveren roterer rekkefølgen på adressene for hvert oppslag, slik at trafikken sprer seg utover mange servere. CNAME gir derimot <em>aliasing</em> — muligheten til å la ett hostname peke på et annet — noe som er nyttig, men en annen mekanisme enn lastbalansering.</div>
+
+    <h3>Hvordan får man et nytt domene inn i DNS?</h3>
+    <p>Tenk deg at du starter et nytt firma, «Network Utopia», og vil ha domenet <code>networkutopia.com</code>. Hvordan får du det inn i den globale DNS-databasen? Svaret er en <strong>registrar</strong> — en kommersielt autorisert organisasjon (akkreditert av ICANN) som lar deg registrere domenenavn.</p>
+
+    <p>Prosessen er omtrent slik: du går til en registrar (for eksempel GoDaddy eller Domeneshop), sjekker at <code>networkutopia.com</code> er ledig, betaler en avgift, og oppgir navn og IP-adresser til dine autoritative navneservere — la oss si <code>dns1.networkutopia.com</code> (212.44.9.129) og <code>dns2.networkutopia.com</code> (212.44.9.130). Registraren setter da inn to poster i <code>.com</code>-TLD-serverne:</p>
+
+    <pre>(networkutopia.com, dns1.networkutopia.com, NS)
+(dns1.networkutopia.com, 212.44.9.129, A)</pre>
+
+    <p>Nå vet <code>.com</code>-TLD-serverne at spørsmål om <code>networkutopia.com</code> skal sendes videre til <em>dine</em> autoritative servere. På disse serverne legger du selv inn A-poster for webserveren din (<code>www.networkutopia.com</code> → IP-adresse) og MX-poster for e-postserveren. Fra det øyeblikket er hele kjeden komplett: root → TLD → autoritativ → endelig svar.</p>
 
     <h3>Caching — den hemmelige sausen</h3>
     <p>Det vi egentlig ikke har sagt eksplisitt ennå er <em>hvordan</em> DNS klarer å være så raskt. Svaret er caching, overalt. Når en navneserver — hvilken som helst — lærer en mapping, lagrer den den i minnet sitt for fremtidige forespørsler. Den lagrer den til TTL utløper. TLD-server-adresser er typisk cachet i lokale servere stort sett alltid, så root-serverne blir nesten aldri kontaktet for vanlige oppslag.</p>

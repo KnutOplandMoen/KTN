@@ -71,6 +71,33 @@
         <tr><td class="mono-cell">Header Checksum</td><td>Beskytter bare headeren (ikke data). M&aring; reberegnes i hver router fordi TTL endres. Droppet i IPv6.</td></tr>
       </tbody>
     </table>
+    <h3>IP-fragmentering</h3>
+    <p>Et datagram kan v&aelig;re opptil 65&nbsp;535 bytes, men hver lenke har en <strong>MTU</strong> (Maximum Transmission Unit) &mdash; den st&oslash;rste rammen den kan b&aelig;re. Ethernet har typisk MTU&nbsp;=&nbsp;1500 bytes. Hvis et datagram er st&oslash;rre enn MTU-en p&aring; neste lenke, m&aring; routeren <strong>fragmentere</strong> det i mindre biter.</p>
+
+    <p>Tre felt i IPv4-headeren styrer fragmenteringen:</p>
+    <ul>
+      <li><strong>16-bit Identifier</strong> &mdash; alle fragmenter fra samme originale datagram f&aring;r samme verdi, slik at mottakeren kan gruppere dem.</li>
+      <li><strong>Flags</strong> &mdash; MF-biten (More Fragments) er satt i alle fragmenter unntatt det siste. DF-biten (Don&rsquo;t Fragment) forbyr fragmentering; routeren dropper heller pakken og sender ICMP-feilmelding.</li>
+      <li><strong>Fragment Offset</strong> &mdash; angir hvor i det originale datagrammet dette fragmentet h&oslash;rer hjemme, m&aring;lt i enheter av 8 bytes.</li>
+    </ul>
+
+    <h4>Eksempel: 4000-byte datagram over MTU&nbsp;=&nbsp;1500</h4>
+    <p>Et datagram p&aring; 4000 bytes (20 header + 3980 payload) m&aring; deles opp. Hvert fragment f&aring;r sin egen 20-byte IP-header, s&aring; nyttelast per fragment er 1500&nbsp;&minus;&nbsp;20&nbsp;=&nbsp;1480 bytes:</p>
+
+    <table>
+      <thead><tr><th>Fragment</th><th>Payload</th><th>Offset</th><th>MF</th><th>Total</th></tr></thead>
+      <tbody>
+        <tr><td class="mono-cell">#1</td><td>1480 bytes</td><td>0</td><td>1</td><td>1500</td></tr>
+        <tr><td class="mono-cell">#2</td><td>1480 bytes</td><td>185</td><td>1</td><td>1500</td></tr>
+        <tr><td class="mono-cell">#3</td><td>1020 bytes</td><td>370</td><td>0</td><td>1040</td></tr>
+      </tbody>
+    </table>
+    <p>Offset-verdiene er 1480/8&nbsp;=&nbsp;185 og 2960/8&nbsp;=&nbsp;370. Totalt: 1480&nbsp;+&nbsp;1480&nbsp;+&nbsp;1020&nbsp;=&nbsp;3980 bytes payload, som tilsvarer originalen.</p>
+
+    <div class="callout">
+      <span class="label">Reassembly skjer kun i destinasjonen</span>
+      <p>Routere underveis setter <em>ikke</em> fragmenter sammen igjen &mdash; det er endesystemets jobb. Grunnen er enkel: fragmentene kan ta forskjellige ruter gjennom nettverket, s&aring; bare destinasjonen er garantert &aring; se alle. Hvis ett fragment g&aring;r tapt, forkaster mottakeren de &oslash;vrige og TCP/applikasjonen s&oslash;rger for retransmisjon.</p>
+    </div>
   </div>
 </section>
 
@@ -238,6 +265,12 @@
       <span class="label">NAT er kontroversielt</span>
       <p>NAT bryter <strong>end-to-end-prinsippet</strong>: en maskin bak NAT kan ikke uten videre ta imot innkommende forbindelser. Det krever &laquo;port forwarding&raquo; for &aring; kj&oslash;re en server hjemme, og peer-to-peer-protokoller m&aring; bruke &laquo;hole punching.&raquo; Routere &laquo;b&oslash;r&raquo; bare prosessere opp til lag 3, men NAT manipulerer portnumre (lag 4). Likevel: NAT er her for &aring; bli, bredt brukt i hjemmenett, bedrifter og 4G/5G-nett.</p>
     </div>
+
+    <div class="reveal" data-reveal>
+      <div class="q">Hvorfor er NAT kontroversielt blant nettverksarkitekter, og hvilke lag i protokollstakken bryter det?</div>
+      <button>Vis svar</button>
+      <div class="answer">NAT bryter <strong>end-to-end-prinsippet</strong> p&aring; to m&aring;ter. For det f&oslash;rste: en maskin bak NAT kan ikke ta imot innkommende forbindelser uten eksplisitt &laquo;port forwarding&raquo; &mdash; servere, P2P og IoT blir problematisk. For det andre: en router opererer normalt p&aring; lag&nbsp;3, men NAT omskriver <em>portnumre</em> (lag&nbsp;4). Det betyr at et lag-3-apparat manipulerer lag-4-informasjon, noe som bryter den rene lagdelingen. I tillegg m&aring; NAT-routeren holde tilstand (NAT-tabellen) per flow, som strider mot den tilstandsl&oslash;se IP-modellen.</div>
+    </div>
   </div>
 </section>
 
@@ -297,6 +330,12 @@
     <p>IPv6 og IPv4 er <em>ikke</em> bakoverkompatible. Overgangen krever <strong>dual stack</strong> (kj&oslash;re begge samtidig) og <strong>tunneling</strong> (pakke IPv6-datagrammer inn i IPv4-payloads for &aring; krysse IPv4-nettverk).</p>
 
     <p>I 2026 er vi rundt 45&ndash;47% IPv6-trafikk globalt &mdash; etter over 25 &aring;r med gradvis migrasjon. NAT holdt IPv4 p&aring; livst&oslash;tte, og fjernet presset for en rask overgang.</p>
+
+    <div class="reveal" data-reveal>
+      <div class="q">Hvorfor har IPv6 ingen header checksum, mens IPv4 har det?</div>
+      <button>Vis svar</button>
+      <div class="answer">I IPv4 m&aring; header checksum <strong>reberegnes i hver eneste router</strong>, fordi TTL-feltet dekrementeres for hvert hopp. Dette koster tid i en enhet som m&aring; prosessere millioner av pakker per sekund. Samtidig har b&aring;de TCP og UDP sine egne checksummer som beskytter data og header end-to-end. IPv6-designerne konkluderte med at en hop-by-hop checksum p&aring; nettverkslaget var bortkastet prosessering &mdash; og fjernet den for &aring; gj&oslash;re forwarding raskere.</div>
+    </div>
   </div>
 </section>
 
@@ -306,6 +345,11 @@
     <div class="section-badge">15 &middot; Timeglasset &amp; end-to-end</div>
     <h2>Internetts <em>arkitekturprinsipper</em></h2>
     <p class="section-intro">IP er Internetts &laquo;smale midje&raquo; &mdash; det eneste som alle m&aring; implementere. Kompleksiteten lever i kantene. Dette er et bevisst designvalg.</p>
+
+    <div class="callout">
+      <span class="label">Pensum-merknad</span>
+      <p>Seksjon 4.5 (Middleboxes) i boken er <strong>ikke pensum</strong>. Timeglassmodellen og end-to-end-argumentet er likevel sentrale arkitekturprinsipper som refereres gjennom hele kurset. Denne seksjonen gir nyttig bakgrunn, men eksamensfokuset ligger p&aring; seksjonene 4.1&ndash;4.3.</p>
+    </div>
 
     <h3>IP-timeglasset</h3>
     <p>Internett har mange protokoller i applikasjons-, transport-, lenke- og fysisk lag &mdash; men bare <strong>&eacute;n</strong> nettverkslagsprotokoll: IP. Denne &laquo;smale midjen&raquo; er det som gj&oslash;r interoperabilitet mulig: enhver enhet som implementerer IP kan kommunisere med enhver annen.</p>
@@ -489,6 +533,16 @@ document.querySelectorAll('.quiz').forEach(function(quiz) {
   nextBtn.addEventListener('click', function() { if (idx < descs.length - 1) { idx++; render(); } });
   render();
 })();
+
+// === Reveal handlers ===
+document.querySelectorAll('.reveal').forEach(function(r) {
+  var btn = r.querySelector('button');
+  var ans = r.querySelector('.answer');
+  btn.addEventListener('click', function() {
+    ans.classList.toggle('show');
+    btn.textContent = ans.classList.contains('show') ? 'Skjul svar' : 'Vis svar';
+  });
+});
 </script>
 
 <script src="../chat-widget.js"></script>

@@ -28,11 +28,13 @@
         <li>Hva kontrollplanet faktisk er</li>
         <li>Forskjellen på forwarding og routing</li>
         <li>Per-router vs. sentralisert kontroll</li>
-        <li>Link-state og distance-vector algoritmer</li>
+        <li>Grunnleggende rutingprinsipper og klassifisering</li>
         <li>Hvordan ICMP fungerer under panseret</li>
         <li>Hvorfor <code>traceroute</code> er genialt</li>
       </ul>
     </div>
+
+    <div class="margin-note"><strong>Pensum fra kapittel 5:</strong> 5.1 Introduction, 5.2 Routing Algorithms (kun intro — ikke 5.2.1 Link-State eller 5.2.2 Distance-Vector), og 5.6 ICMP. Resten av stoffet på denne siden er utdypning og bakgrunn.</div>
   </div>
 </header>
 
@@ -156,6 +158,11 @@
     <h4>Akse 2 — Statisk eller dynamisk?</h4>
 
     <p><strong>Statiske</strong> ruter endres sjelden (kanskje når en nettverksadministrator manuelt konfigurerer noe). <strong>Dynamiske</strong> ruter oppdateres fortløpende — enten med jevne mellomrom eller som respons på at en lenke endrer kostnad eller forsvinner. Moderne nettverk bruker nesten alltid dynamiske algoritmer, fordi internett endrer seg for ofte til å holde tritt manuelt.</p>
+
+    <div class="info-box">
+      <h4>Utdypning — utenfor pensum</h4>
+      <p>Det som følger om link-state og distance-vector er <em>ikke</em> pensum (5.2.1 og 5.2.2 er eksplisitt utelatt). Det er tatt med som nyttig bakgrunn for å forstå hvordan rutingalgoritmer faktisk fungerer i praksis.</p>
+    </div>
 
     <h3>Link-state: "jeg har kartet"</h3>
 
@@ -435,6 +442,8 @@
     <div class="section-badge">05 · Avslutning</div>
     <h2>Og til slutt: nettverksadministrasjon</h2>
     <p class="section-intro">Rutingalgoritmer og ICMP er byggesteinene. Men noen må sette alt sammen, overvåke det, og fikse det når det går i stykker.</p>
+
+    <div class="margin-note"><strong>Ikke pensum.</strong> Nettverksadministrasjon er ikke del av pensum for kapittel 5, men gir nyttig kontekst.</div>
 
     <p class="lead">Et moderne <em>autonomt system</em> — det tekniske ordet for "et nettverk drevet av én organisasjon", for eksempel en ISP, et universitet eller en stor bedrift — består av tusenvis av samhandlende maskinvare- og programvarekomponenter. Å holde orden på noe så komplekst krever et eget fagfelt: <strong>nettverksadministrasjon</strong>.</p>
 

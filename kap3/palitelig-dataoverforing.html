@@ -158,11 +158,11 @@
     <h2>Bitfeil — <em>ACK og NAK</em></h2>
     <p class="section-intro">Kanalen kan nå flippe bits i pakker. Vi trenger en mekanisme for at mottakeren kan si «fikk den» eller «fikk den ikke».</p>
 
-    <p class="lead">Forestill deg at du dikterer en tekst over telefon. Etter hvert ord sier lytteren enten «OK» eller «gjenta det». Det er nøyaktig det rdt 2.0 gjør: mottakeren bruker en <strong>sjekksumm</strong> for å oppdage bitfeil, og svarer med <strong>ACK</strong> (alt vel) eller <strong>NAK</strong> (feil oppdaget — send på nytt).</p>
+    <p class="lead">Forestill deg at du dikterer en tekst over telefon. Etter hvert ord sier lytteren enten «OK» eller «gjenta det». Det er nøyaktig det rdt 2.0 gjør: mottakeren bruker en <strong>sjekksum</strong> for å oppdage bitfeil, og svarer med <strong>ACK</strong> (alt vel) eller <strong>NAK</strong> (feil oppdaget — send på nytt).</p>
 
     <div class="box solution">
       <div class="label">Nye mekanismer i rdt 2.0</div>
-      <p><strong>Feildeteksjon:</strong> Sjekksumm i hver pakke lar mottakeren oppdage korrupte data.<br>
+      <p><strong>Feildeteksjon:</strong> Sjekksum i hver pakke lar mottakeren oppdage korrupte data.<br>
       <strong>Tilbakemelding:</strong> ACK og NAK fra mottaker til sender.<br>
       <strong>Retransmisjon:</strong> Ved NAK sender senderen pakken på nytt.</p>
     </div>
@@ -315,7 +315,7 @@
   <div class="container">
     <div class="badge">05 · rdt 3.0</div>
     <h2>Tap og timeout — <em>den komplette protokollen</em></h2>
-    <p class="section-intro">Den underliggende kanalen kan nå også <strong>miste pakker</strong> helt — både datapakker og ACK-er. Sjekksumm og sekvensnumre alene er ikke nok.</p>
+    <p class="section-intro">Den underliggende kanalen kan nå også <strong>miste pakker</strong> helt — både datapakker og ACK-er. Sjekksum og sekvensnumre alene er ikke nok.</p>
 
     <p class="lead">Med bitfeil og duplikathåndtering på plass, gjenstår én stor utfordring: pakker kan forsvinne sporløst. Senderen sender en pakke, og det kommer rett og slett aldri noe svar. Uten en ny mekanisme ville senderen ventet evig.</p>
 
@@ -764,7 +764,7 @@
       <div class="proto-step">
         <div class="proto-name">rdt 2.0</div>
         <div class="proto-channel">Bitfeil i data</div>
-        <p>+ Sjekksumm, ACK/NAK, retransmisjon. Fatalt problem: korrupte ACK/NAK.</p>
+        <p>+ Sjekksum, ACK/NAK, retransmisjon. Fatalt problem: korrupte ACK/NAK.</p>
       </div>
       <div class="proto-step">
         <div class="proto-name">rdt 2.1</div>

@@ -83,6 +83,19 @@
       <p><strong>2.</strong> Å øke sendraten utover bottleneck-kapasiteten <em>øker</em> RTT, fordi pakker venter lenger i køen.</p>
       <p style="margin-top:12px;font-weight:600;color:var(--ink)">Målet: «Keep the end-end pipe just full, but not fuller.»</p>
     </div>
+
+    <h3>To tilnærminger til metningskontroll</h3>
+    <p>Det finnes to fundamentalt forskjellige måter å angripe metningsproblemet på:</p>
+
+    <table class="compare">
+      <thead><tr><th>Tilnærming</th><th>Hvordan det fungerer</th></tr></thead>
+      <tbody>
+        <tr><td>End-to-end</td><td>Nettverket gir <strong>ingen eksplisitt tilbakemelding</strong> om metning. Senderen må selv utlede tilstanden — basert på observert tap (timeout eller dupliserte ACK-er) og forsinkelse. <em>TCP bruker denne tilnærmingen.</em></td></tr>
+        <tr><td>Nettverksassistert</td><td>Rutere gir <strong>eksplisitt tilbakemelding</strong> til senderen om metningsnivået — for eksempel via spesielle kontrollmeldinger, eller ved å sette bits i pakkeheaderen som signaliserer at en lenke nærmer seg metning.</td></tr>
+      </tbody>
+    </table>
+
+    <p>Internettets TCP har tradisjonelt vært rent end-to-end: IP-laget gir ingen hjelp, og senderen er overlatt til seg selv. All informasjon om nettverkets tilstand må utledes indirekte — fra ACK-er som uteblir, fra forsinkelser som øker, eller fra pakker som forsvinner. Det er nettopp dette som gjør TCP-metningskontroll til et så elegant og utfordrende problem.</p>
   </div>
 </section>
 
@@ -460,7 +473,7 @@
         <tr><td>1988</td><td>TCP Tahoe — slow start og congestion avoidance (Jacobson)</td></tr>
         <tr><td>1990</td><td>TCP Reno — fast retransmit og fast recovery</td></tr>
         <tr><td>2005</td><td>BIC TCP</td></tr>
-        <tr><td>2018</td><td>TCP CUBIC — standard i Linux, kubisk vekstfunksjon</td></tr>
+        <tr><td>2008</td><td>TCP CUBIC — kubisk vekstfunksjon, standard i Linux siden 2006 (RFC 8312 publisert 2018)</td></tr>
       </tbody>
     </table>
 

@@ -519,7 +519,7 @@
 
     <p class="lead">Når en av partene er ferdig, sender hun et segment med <code>FIN</code>-flagget satt. Den andre siden svarer med en <code>ACK</code>. Men det er bare den ene retningen som er stengt — TCP er full duplex, så den andre siden kan fortsatt ha mer å si. Når også den siden er ferdig, sender hun sin egen FIN, og den første parten svarer med en ACK.</p>
 
-    <p>Fire meldinger totalt — selv om FIN og ACK fra samme side kan slås sammen til ett segment. Klienten som initierer lukkingen går inn i en spesiell <strong>TIME_WAIT</strong>-tilstand etter sin siste ACK, hvor hun blir værende i typisk 30 sekunder. Hvorfor? Fordi den siste ACK-en kan ha gått tapt. Hvis den gjorde det, vil serveren retransmittere sin FIN, og klienten må fortsatt være rundt for å svare på den. Først etter timeoutet utløper får klienten faktisk lov til å glemme forbindelsen helt.</p>
+    <p>Fire meldinger totalt — selv om FIN og ACK fra samme side kan slås sammen til ett segment. Klienten som initierer lukkingen går inn i en spesiell <strong>TIME_WAIT</strong>-tilstand etter sin siste ACK, hvor hun blir værende i typisk 30 sekunder til 2 minutter (2 &times; MSL — Maximum Segment Lifetime). Hvorfor? Fordi den siste ACK-en kan ha gått tapt. Hvis den gjorde det, vil serveren retransmittere sin FIN, og klienten må fortsatt være rundt for å svare på den. Først etter timeoutet utløper får klienten faktisk lov til å glemme forbindelsen helt.</p>
 
     <figure>
       <div class="svg-wrap">

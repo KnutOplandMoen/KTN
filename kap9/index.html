@@ -186,7 +186,7 @@
   </div>
   <p style="font-size:14px;color:var(--ink-faded);font-style:italic;margin-top:-20px">Dra slideren for å se hvordan initial playout-forsinkelse påvirker bufferrobusthet og brukeropplevelse. Modellen er forenklet, men illustrerer kjernen av trade-off-en.</p>
 
-  <div class="margin-note">Moderne tjenester som YouTube bruker DASH (Dynamic Adaptive Streaming over HTTP), der klienten dynamisk ber om videosegmenter i den kvaliteten som passer til nettverksforholdene akkurat nå — men det grunnleggende prinsippet med buffering er det samme.</div>
+  <div class="margin-note">Moderne tjenester som YouTube bruker <a href="../kap2/p2p-video-cdn.html#streaming">DASH (Dynamic Adaptive Streaming over HTTP)</a>, der klienten dynamisk ber om videosegmenter i den kvaliteten som passer til nettverksforholdene akkurat nå — men det grunnleggende prinsippet med buffering er det samme.</div>
 </div>
 </section>
 
@@ -320,7 +320,7 @@
     </div>
   </div>
 
-  <p>Et viktig poeng: VoIP <strong>tåler noe tap</strong>. Avhengig av lydkoding og teknikker for å skjule tap (loss concealment), kan man tolerere 1–10% pakketap uten at samtalen blir uforståelig. Det er en dramatisk forskjell fra f.eks. filoverføring, der ethvert tapt byte er katastrofalt.</p>
+  <p>Et viktig poeng: VoIP <strong>tåler noe tap</strong>. Avhengig av lydkoding og teknikker for å skjule tap (loss concealment), kan man tolerere 1–20% pakketap uten at samtalen blir uforståelig. Det er en dramatisk forskjell fra f.eks. filoverføring, der ethvert tapt byte er katastrofalt.</p>
 </div>
 </section>
 
@@ -388,6 +388,20 @@
   </div>
 
   <p>Her er d<sub>i</sub> det estimerte nettverksforsinkelsen etter den i-te pakken, &alpha; er en liten konstant (typisk 0,1), r<sub>i</sub> er tidspunktet pakken ble mottatt, og t<sub>i</sub> er tidsstempelet (når den ble sendt). Uttrykket (r<sub>i</sub> − t<sub>i</sub>) er den faktisk målte forsinkelsen for pakke i.</p>
+
+  <p>Men gjennomsnittlig forsinkelse alene er ikke nok — vi trenger også et mål på <em>variasjonen</em>. Vi estimerer avviket på samme måte:</p>
+
+  <div class="formula">
+    v<sub>i</sub> = (1 − &beta;) &middot; v<sub>i-1</sub> + &beta; &middot; |r<sub>i</sub> − t<sub>i</sub> − d<sub>i</sub>|
+  </div>
+
+  <p>Playout-tidspunktet for den første pakken <em>j</em> i en ny snakkefase settes da til:</p>
+
+  <div class="formula">
+    playout<sub>j</sub> = t<sub>j</sub> + d<sub>j</sub> + K &middot; v<sub>j</sub>
+  </div>
+
+  <p>Her er K en konstant (typisk 4). Legg merke til parallellen til TCP: der settes timeout til EstimatedRTT + 4 &middot; DevRTT — nøyaktig samme struktur. Gjennomsnittet fanger opp «normaltilstanden», og K &middot; v legger til en sikkerhetsmargin proporsjonalt med hvor mye forsinkelsen varierer. Alle etterfølgende pakker i samme snakkefase spilles av med faste 20 ms mellomrom fra dette utgangspunktet.</p>
 
   <div class="stepper" id="ewmaStepper">
     <div class="step-display">
@@ -687,7 +701,7 @@
   <div class="explanation" id="qFeedback3"></div>
 </div>
 
-<div class="quiz" style="max-width:820px;margin:0 auto 80px;">
+<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
   <p class="q-text">Hvorfor bruker streaming i dag nesten alltid HTTP/TCP i stedet for UDP?</p>
   <div class="options">
     <button class="option" data-correct="false">Fordi TCP har lavere forsinkelse enn UDP</button>
@@ -696,6 +710,39 @@
     <button class="option" data-correct="false">Fordi TCP aldri retransmitterer pakker under streaming</button>
   </div>
   <div class="explanation" id="qFeedback4"></div>
+</div>
+
+<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
+  <p class="q-text">I adaptiv playout-forsinkelse, når justeres playout-forsinkelsen?</p>
+  <div class="options">
+    <button class="option" data-correct="false">Kontinuerlig for hver enkelt pakke som mottas</button>
+    <button class="option" data-correct="true">Bare ved starten av en ny snakkefase — stillhetsperioder brukes til å absorbere endringen</button>
+    <button class="option" data-correct="false">Hvert 20. millisekund, synkronisert med sende-raten</button>
+    <button class="option" data-correct="false">Bare når pakketap oppdages via sekvensnummer-gap</button>
+  </div>
+  <div class="explanation" id="qFeedback5"></div>
+</div>
+
+<div class="quiz" style="max-width:820px;margin:0 auto 60px;">
+  <p class="q-text">Hva er «jitter» i konteksten av multimedia-nettverk?</p>
+  <div class="options">
+    <button class="option" data-correct="false">Pakketap forårsaket av metning i ruterbuffere</button>
+    <button class="option" data-correct="false">Den totale ende-til-ende-forsinkelsen fra sender til mottaker</button>
+    <button class="option" data-correct="true">Variasjonen i forsinkelse mellom pakker — noen pakker bruker lengre tid enn andre</button>
+    <button class="option" data-correct="false">Feilraten i den digitale lydstrømmen etter kvantisering</button>
+  </div>
+  <div class="explanation" id="qFeedback6"></div>
+</div>
+
+<div class="quiz" style="max-width:820px;margin:0 auto 80px;">
+  <p class="q-text">Hva er forskjellen mellom CBR og VBR for videokoding?</p>
+  <div class="options">
+    <button class="option" data-correct="false">CBR bruker spatial koding, VBR bruker temporal koding</button>
+    <button class="option" data-correct="false">CBR sender video over TCP, VBR sender over UDP</button>
+    <button class="option" data-correct="true">CBR bruker en fast bitrate uansett innholdets kompleksitet, mens VBR varierer bitraten etter hvor komplekst innholdet er</button>
+    <button class="option" data-correct="false">CBR er nyere og mer effektivt enn VBR</button>
+  </div>
+  <div class="explanation" id="qFeedback7"></div>
 </div>
 
 <footer>
@@ -741,7 +788,7 @@
 (function(){
   var steps = [
     {title:'Hva er problemet?', text:'Fast playout-forsinkelse q fungerer, men er et kompromiss: for stor q gir unødvendig forsinkelse i samtalen, for liten q gir for mange «for sene» pakker. Kan vi gjøre q adaptiv?'},
-    {title:'EWMA-estimering', text:'Vi bruker en eksponentielt vektet glidende gjennomsnitt (EWMA) for å estimere nettverksforsinkelsen. Formelen er: dᵢ = (1 − α) · dᵢ₋₁ + α · (rᵢ − tᵢ), der α typisk er 0,1. Dette er nøyaktig samme teknikk som TCP bruker for å estimere RTT.'},
+    {title:'EWMA-estimering', text:'Vi bruker en eksponentielt vektet glidende gjennomsnitt (EWMA) for å estimere nettverksforsinkelsen: dᵢ = (1 − α) · dᵢ₋₁ + α · (rᵢ − tᵢ), der α typisk er 0,1. I tillegg estimerer vi avviket: vᵢ = (1 − β) · vᵢ₋₁ + β · |rᵢ − tᵢ − dᵢ|. Playout-tidspunktet for første pakke j i en ny snakkefase blir: tⱼ + dⱼ + K · vⱼ (K = 4). Nøyaktig samme struktur som TCPs RTO = EstimatedRTT + 4 · DevRTT.'},
     {title:'Når justerer vi?', text:'Playout-forsinkelsen justeres bare ved starten av en ny snakkefase — aldri midt i en. Under en snakkefase spilles alle pakker av med fast 20 ms mellomrom. Mellom snakkefasene (stillheten) kan vi strekke eller komprimere pausen for å ta igjen den nye forsinkelsen.'},
     {title:'Hvordan oppdage ny snakkefase?', text:'Uten pakketap: hvis tidsstempelforskjellen mellom to påfølgende pakker er > 20 ms, har det vært en stillhetsperiode. Med mulig tap: vi sjekker også sekvensnumrene — gap i tidsstempler uten gap i sekvensnummer betyr ny snakkefase, ikke pakketap.'},
     {title:'Resultatet', text:'Adaptiv playout gir oss det beste fra to verdener: når nettverket er stabilt, holder vi forsinkelsen lav. Når jitteret øker, øker vi automatisk playout-bufferen for å unngå tap. Brukeren merker bare at «stillheten» mellom setninger er litt lengre eller kortere — noe som er helt umerkelig.'}
@@ -782,6 +829,18 @@
     'qFeedback4': {
       correct: 'Riktig! HTTP/TCP passerer brannmurer (port 80/443 er nesten alltid åpen), fungerer med standard webservere, og gir pålitelig levering. Større playout-buffer kompenserer for TCPs variable sende-rate.',
       wrong: 'Tenk pragmatisk: hva er den praktiske barrieren som gjør at UDP-streaming feiler i mange nettverk?'
+    },
+    'qFeedback5': {
+      correct: 'Riktig! Playout-forsinkelsen justeres bare mellom snakkefaser. Under en snakkefase spilles alle pakker av med faste 20 ms mellomrom. Stillhetsperioder strekkes eller komprimeres umerkelig for å absorbere den nye forsinkelsen.',
+      wrong: 'Tenk på at å endre forsinkelsen midt i en snakkefase ville forstyrre lyden. Når er det naturlig å gjøre justeringen uten at lytteren merker det?'
+    },
+    'qFeedback6': {
+      correct: 'Akkurat! Jitter er variasjonen i pakke-forsinkelse. Selv om gjennomsnittlig forsinkelse er akseptabel, kan stor variasjon føre til at pakker ankommer for sent til å spilles av — og det er dette playout-bufferen kompenserer for.',
+      wrong: 'Jitter handler ikke om tap eller total forsinkelse, men om uforutsigbarheten i når pakker ankommer. Tenk: pakker sendes med jevne mellomrom, men ankommer med ujevne mellomrom.'
+    },
+    'qFeedback7': {
+      correct: 'Riktig! CBR (Constant Bit Rate) holder bitraten fast — enkelt for nettverket, men kan gi dårlig kvalitet i komplekse scener og sløse med bits i enkle scener. VBR (Variable Bit Rate) tilpasser seg innholdet og gir bedre kvalitet, men er vanskeligere for nettverket å håndtere.',
+      wrong: 'CBR og VBR handler om hvordan videoen kodes — med fast eller variabel bitrate. Tenk på forskjellen mellom en rolig scene og en actionscene: trenger de like mange bits?'
     }
   };
   document.querySelectorAll('.quiz').forEach(function(quiz){

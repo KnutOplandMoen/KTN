@@ -101,8 +101,7 @@
   </table>
   </div>
 
-  <div class="margin-note">Legg merke til kompromisset: jo høyere hastighet, jo kortere rekkevidde. 5G på millimeterbølger gir ekstrem hastighet, men signalet stoppes bokstavelig talt av en regndråpe. Derfor trengs det <em>mange flere</em> basestasjoner for å dekke et område med 5G enn med 4G.</p>
-  </div>
+  <div class="margin-note">Legg merke til kompromisset: jo høyere hastighet, jo kortere rekkevidde. 5G på millimeterbølger gir ekstrem hastighet, men signalet stoppes bokstavelig talt av en regndråpe. Derfor trengs det <em>mange flere</em> basestasjoner for å dekke et område med 5G enn med 4G.</div>
 </div>
 </section>
 
@@ -214,6 +213,12 @@
   <p>Den andre varianten ligner litt, men har en annen årsak. Tenk deg tre noder på rad — A, B, C — uten noe fjell mellom. Avstanden er bare så stor at A's signal er sterkt nok til å nå B men har dempet seg til ingenting før det når C, og motsatt for C. Resultatet er det samme: A og C "ser" ikke hverandre, og kan sende samtidig uten å vite det. Begge signalene kolliderer ved B i midten.</p>
 
   <p>Begge problemene har samme konsekvens: <em>vi kan ikke stole på "lytt før du sender"-strategien alene</em>. Vi trenger noe annet, og det er der CSMA/CA og RTS/CTS-mekanismen i WiFi kommer inn.</p>
+
+  <div class="reveal" data-reveal>
+    <div class="q">Tenk deg at vi på magisk vis kunne lytte mens vi sender på en trådløs link (altså at CSMA/CD var teknisk mulig). Ville det løst skjult terminal-problemet?</div>
+    <button>Vis svar</button>
+    <div class="answer">Nei. Selv om A kunne lytte mens den sender, ville den fortsatt ikke høre C — fordi C er utenfor rekkevidde. Kollisjonsdeteksjon krever at senderen hører <em>alle</em> andre potensielle sendere, men i et trådløst nett er det nettopp det som ikke er tilfelle. Skjult terminal-problemet handler ikke om at vi ikke kan lytte og sende samtidig, men om at to sendere kan være usynlige for hverandre. Derfor trengs en eksplisitt reservasjonsmekanisme som RTS/CTS, der <em>basestasjonen</em> — som kan høre begge — formidler beskjeden.</div>
+  </div>
 </div>
 </section>
 
@@ -260,6 +265,9 @@
   </div>
 
   <p>Etter assosieringen kommer som regel autentisering (passordet ditt verifiseres) og deretter DHCP for å få en IP-adresse i AP-ens subnett. Først nå er du faktisk på Internett.</p>
+
+  <h3>Rate-tilpasning</h3>
+  <p>En viktig avansert funksjon i 802.11 er <strong>rate adaptation</strong> — WiFi-senderen bytter automatisk mellom forskjellige modulasjonsmetoder avhengig av signalforholdene. Når du sitter rett ved ruteren, bruker den en aggressiv modulasjon (f.eks. QAM256) som gir høy hastighet. Når du går lengre unna og SNR faller, skifter den ned til en mer robust men tregere modulasjon. Dette er grunnen til at WiFi-hastigheten gradvis synker jo lengre du er fra AP-en, i stedet for å bare kutte ut brått. Vi beskrev fysikken bak dette i <a href="#links">seksjon 04</a> — slideren der illustrerer sammenhengen mellom avstand, SNR og valgt modulasjon.</p>
 
   <div class="margin-note">Når mobilen din "finner" alle WiFi-nettverk i nærheten i innstillingsmenyen, er det aktiv skanning som skjer — den kringkaster probes og samler opp alle svarene.</div>
 </div>
@@ -345,8 +353,11 @@
     <li style="margin-bottom:6px"><strong>Adresse 1 — Mottaker av denne rammen:</strong> AP-ens MAC. Det er hvem som skal plukke opp rammen fra lufta.</li>
     <li style="margin-bottom:6px"><strong>Adresse 2 — Sender av denne rammen:</strong> H1 sin MAC. Det er hvem som faktisk transmitterte den.</li>
     <li style="margin-bottom:6px"><strong>Adresse 3 — Endelig destinasjon på det kablede nettet:</strong> R1 sin MAC. AP-en trenger denne for å vite hvem den skal videresende til etter at rammen kommer inn.</li>
-    <li><strong>Adresse 4:</strong> Brukes bare i ad-hoc-modus mellom to AP-er. I vanlig infrastrukturmodus er den tom.</li>
+    <li><strong>Adresse 4:</strong> Brukes i ad hoc-modus og når to AP-er videresender til hverandre trådløst (WDS — Wireless Distribution System). I vanlig infrastrukturmodus er den tom.</li>
   </ul>
+
+  <h3>Sekvensnummeret — viktigere enn du tror</h3>
+  <p>I tillegg til de fire adressene har 802.11-rammen et <strong>sekvensnummer</strong>-felt. Hvorfor? Fordi ACK-mekanismen i CSMA/CA skaper et spesielt problem: hva skjer hvis senderen sender en ramme, mottakeren tar imot den og sender ACK, men <em>ACK-en går tapt</em>? Senderen får ingen bekreftelse og sender rammen på nytt — men mottakeren har allerede levert den opp til nettverkslaget. Uten sekvensnummer ville mottakeren ikke kunne skille en retransmisjon fra en helt ny ramme, og ville levert duplikat-data oppover i stakken. Sekvensnummeret lar mottakeren gjenkjenne og forkaste slike duplikater.</p>
 
   <p>Når AP-en mottar 802.11-rammen, "pakker den ut" innholdet (IP-pakken) og lager en ny <em>Ethernet</em>-ramme. I Ethernet-rammen er kilden H1 sin MAC og destinasjonen R1 sin MAC — fordi når man sender på det kablede nettet trenger man ikke noen mellomliggende AP-adresse. AP-en fungerer altså som en bro mellom de to lenkeprotokollene.</p>
 
@@ -384,6 +395,12 @@
     </svg>
     <figcaption>AP-en omformer rammeformatet, men IP-pakken inni er den samme. Adresse 2 (H1) og adresse 3 (R1) blir til source og dest i Ethernet-rammen.</figcaption>
   </figure>
+
+  <div class="reveal" data-reveal>
+    <div class="q">Vi så adressene for retningen H1 → AP → R1. Hva skjer med de fire adressefeltene når en pakke går <em>motsatt</em> vei — fra Internett, gjennom R1, via AP-en og ut til H1 over WiFi?</div>
+    <button>Vis svar</button>
+    <div class="answer">I den trådløse rammen fra AP til H1 er rollene speilvendt: <strong>adresse 1</strong> (mottaker av rammen) er nå <em>H1 sin MAC</em>, <strong>adresse 2</strong> (sender av rammen) er <em>AP-ens MAC</em>, og <strong>adresse 3</strong> (opprinnelig avsender på det kablede nettet) er <em>R1 sin MAC</em>. AP-en gjør altså den omvendte oversettelsen: den tar Ethernet-rammen fra R1, pakker ut IP-pakken, og lager en ny 802.11-ramme med riktige adresser for det trådløse hoppet.</div>
+  </div>
 </div>
 </section>
 
@@ -555,6 +572,12 @@
 
   <h3>Roaming: hvordan gateway-er takler at du er i utlandet</h3>
   <p>Når du tar med telefonen til et annet land, er du ikke lenger i hjemmenettverket ditt. Du er fortsatt identifisert av SIM-kortet, og det forteller fortsatt hvilket nettverk som er hjemme. Det <em>besøkte</em> nettverket setter deg på sin egen P-GW (eller noen ganger ruter trafikken hjem først), og snakker med <em>din hjemoperatørs</em> HSS for å verifisere identiteten din og finne ut hvilke tjenester du har rett på. Det er denne mekanismen — sammen med interoperatør-avregning — som gjør at telefonen din "bare fungerer" når du går av flyet i Tokyo.</p>
+
+  <div class="reveal" data-reveal>
+    <div class="q">Hvorfor bruker mobiloperatørene GTP-tunneling i stedet for å bare rute IP-pakkene direkte gjennom kjernenettet, slik vanlig Internett gjør?</div>
+    <button>Vis svar</button>
+    <div class="answer">Vanlig IP-ruting binder en IP-adresse til et bestemt subnett. Hvis telefonen bytter basestasjon (og dermed subnett), ville den normalt trengt en ny IP-adresse — og da knekker alle pågående TCP-forbindelser. GTP-tunneling løser dette ved å skille telefonens IP-adresse fra den fysiske plasseringen. P-GW eier IP-adressen og er alltid endepunktet sett fra Internett. Pakker tunneleres ned til riktig basestasjon uansett hvor telefonen befinner seg. Ved handover oppdateres bare tunnel-endepunktet — IP-adressen og TCP-forbindelsene forblir urørt. Det er i bunn og grunn en form for indireksjon: «ring alltid P-GW, og P-GW vet hvor telefonen er akkurat nå.»</div>
+  </div>
 </div>
 </section>
 
@@ -610,6 +633,17 @@
     <button class="option" data-correct="false">En broadcast-adresse (FF:FF:FF:FF:FF:FF)</button>
   </div>
   <div class="explanation" id="qFeedback3"></div>
+</div>
+
+<div class="quiz" style="max-width:820px;margin:0 auto 80px;">
+  <p class="q-text">5G NR bruker to frekvensbånd: FR1 (under 6 GHz) og FR2 (millimeterbølger, 24–52 GHz). Hva er den viktigste praktiske forskjellen mellom dem?</p>
+  <div class="options">
+    <button class="option" data-correct="false">FR2 har lengre rekkevidde enn FR1, men lavere hastighet</button>
+    <button class="option" data-correct="false">FR1 og FR2 gir omtrent lik hastighet, men FR2 er billigere å drifte</button>
+    <button class="option" data-correct="true">FR2 gir mye høyere hastighet, men har svært kort rekkevidde og blokkeres lett av vegger og hindringer</button>
+    <button class="option" data-correct="false">FR1 krever flere basestasjoner enn FR2 fordi signalet er svakere</button>
+  </div>
+  <div class="explanation" id="qFeedback4"></div>
 </div>
 
 <footer>
@@ -687,6 +721,10 @@
     'qFeedback3': {
       correct: 'Riktig! Adresse 1 er hvem som mottar denne rammen (AP), adresse 2 er hvem som sendte den (verten), og adresse 3 er den endelige destinasjonen på det kablede nettet (R1).',
       wrong: 'Tenk på hva AP-en trenger å vite for å videresende pakken videre på Ethernet-nettet etter å ha mottatt den fra lufta.'
+    },
+    'qFeedback4': {
+      correct: 'Riktig! FR2 (mmWave) gir enorm båndbredde, men signalet blokkeres av vegger, regn og til og med menneskekropper — og rekkevidden er typisk bare 10–100 meter. Derfor krever FR2 massiv utbygging av pico-celler.',
+      wrong: 'Tenk på det fysiske kompromisset: høyere frekvenser gir mer båndbredde, men hva skjer med rekkevidden og gjennomtrengningen?'
     }
   };
   document.querySelectorAll('.quiz').forEach(quiz=>{
@@ -705,6 +743,16 @@
     });
   });
 })();
+
+// REVEAL toggle
+document.querySelectorAll('.reveal').forEach(r => {
+  const btn = r.querySelector('button');
+  const ans = r.querySelector('.answer');
+  btn.addEventListener('click', () => {
+    ans.classList.toggle('show');
+    btn.textContent = ans.classList.contains('show') ? 'Skjul svar' : 'Vis svar';
+  });
+});
 </script>
 </main>
 <script src="../chat-widget.js"></script>
