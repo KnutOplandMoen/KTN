@@ -1027,7 +1027,8 @@ footer p{margin-bottom:8px;color:var(--ink-faded);font-family:inherit}
     <h3>Det store bildet</h3>
     <p>Vi har gått gjennom segmentstruktur, sekvensnummer, RTT-estimering, retransmisjonslogikk, fast retransmit, flow control, og forbindelsesetablering og -avslutning. Alt henger sammen: hver mekanisme finnes fordi en tidligere mekanisme ville feilet uten den. Sekvensnumre gjør ACK-er meningsfulle. Kumulative ACK-er gjør tapte ACK-er overlevelige. RTT-estimering gjør timeouts robuste. En enkelt timer per forbindelse gjør protokollen skalerbar. Tre-veis håndtrykk gjør forbindelser sikre mot gjengangere fra fortiden.</p>
 
-    <p>Det neste kapittelet — <em>congestion control</em> — handler om noe ganske annet: ikke hvordan man holder en enkelt forbindelse pålitelig, men hvordan tusenvis av forbindelser sammen kan dele et begrenset nettverk uten å kollapse det. Men det er en historie for en annen side.</p>
+    <p>Det neste kapittelet — <a href="kapittel3-congestion.html"><em>congestion control</em></a> — handler om noe ganske annet: ikke hvordan man holder en enkelt forbindelse pålitelig, men hvordan tusenvis av forbindelser sammen kan dele et begrenset nettverk uten å kollapse det. Der dekker vi slow start, AIMD, TCP Reno vs. Tahoe, CUBIC, rettferdighet og QUIC.</p>
+    <p>Se også: <a href="kapittel3-transport-udp.html">Transportlagets tjenester, multipleksing/demultipleksing og UDP</a> — grunnlaget som TCP bygger videre på.</p>
   </div>
 </section>
 
@@ -1211,5 +1212,6 @@ document.querySelectorAll('.quiz').forEach(q => {
 })();
 </script>
 
+<script src="chat-widget.js"></script>
 </body>
 </html>

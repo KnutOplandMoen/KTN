@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kapittel 3b — Metningskontroll og evolusjon</title>
+<link rel="stylesheet" href="style.css">
+<style>
+:root{
+  --paper:#f4f1ea;
+  --paper-dark:#e8e3d6;
+  --ink:#1a1612;
+  --ink-soft:#3d3832;
+  --ink-faded:#6b6257;
+  --ink-ghost:#a39886;
+  --rust:#b04428;
+  --rust-dark:#8a3420;
+  --blue:#2d4a7a;
+  --green:#3d6b3a;
+  --ochre:#c68a1f;
+  --line:#c9c0ae;
+  --line-soft:#ddd5c4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Newsreader',Georgia,serif;
+  font-size:18px;
+  line-height:1.65;
+  color:var(--ink);
+  background:var(--paper);
+  -webkit-font-smoothing:antialiased;
+  position:relative;
+  font-feature-settings:"kern","liga";
+}
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.36 0 0 0 0 0.27 0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  opacity:.35;
+  pointer-events:none;
+  z-index:1;
+  mix-blend-mode:multiply;
+}
+.container{
+  max-width:820px;
+  margin:0 auto;
+  padding:0 32px;
+  position:relative;
+  z-index:2;
+}
+.container.wide{max-width:980px}
+
+/* HERO */
+.hero{
+  padding:120px 0 80px;
+  border-bottom:1px solid var(--line);
+}
+.hero .eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--rust);
+  margin-bottom:24px;
+  display:flex;align-items:center;gap:14px;
+}
+.hero .eyebrow::after{
+  content:"";flex:1;height:1px;background:var(--line);max-width:200px;
+}
+.hero h1{
+  font-size:clamp(48px,8vw,92px);
+  line-height:1.0;
+  letter-spacing:-0.025em;
+  font-weight:500;
+  margin-bottom:28px;
+}
+.hero h1 em{font-style:italic;color:var(--rust);font-weight:400}
+.hero .sub{
+  font-size:22px;
+  font-style:italic;
+  color:var(--ink-soft);
+  max-width:640px;
+  line-height:1.45;
+  margin-bottom:48px;
+  font-weight:300;
+}
+.hero .toc{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:18px 36px;
+  border-top:1px solid var(--line);
+  padding-top:32px;
+}
+.hero .toc a{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  color:var(--ink-soft);
+  text-decoration:none;
+  display:flex;gap:14px;
+  border-bottom:1px dotted transparent;
+  padding-bottom:4px;
+  transition:color .2s, border-color .2s;
+}
+.hero .toc a:hover{color:var(--rust);border-color:var(--rust)}
+.hero .toc a span{color:var(--ink-ghost);font-weight:500}
+
+/* SECTIONS */
+section{
+  padding:90px 0;
+  border-bottom:1px solid var(--line);
+}
+.badge{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--rust);
+  border:1px solid var(--rust);
+  padding:6px 14px;
+  display:inline-block;
+  margin-bottom:24px;
+}
+h2{
+  font-size:clamp(34px,5vw,56px);
+  line-height:1.05;
+  letter-spacing:-0.02em;
+  font-weight:500;
+  margin-bottom:18px;
+}
+h2 em{font-style:italic;color:var(--rust)}
+.section-intro{
+  font-size:21px;
+  font-style:italic;
+  color:var(--ink-faded);
+  margin-bottom:48px;
+  max-width:680px;
+  line-height:1.5;
+  font-weight:300;
+}
+h3{
+  font-size:26px;
+  line-height:1.25;
+  margin:56px 0 16px;
+  font-weight:500;
+  letter-spacing:-0.01em;
+}
+h3::before{
+  content:"§ ";
+  color:var(--rust);
+  font-weight:400;
+}
+p{margin-bottom:20px;color:var(--ink-soft)}
+p strong{color:var(--ink);font-weight:600}
+p em{font-style:italic}
+.lead::first-letter{
+  font-family:'Newsreader',serif;
+  font-size:5.2em;
+  float:left;
+  line-height:0.85;
+  padding:8px 10px 0 0;
+  color:var(--rust);
+  font-weight:500;
+}
+a{color:var(--rust);text-decoration:none;border-bottom:1px solid var(--rust)}
+
+/* MARGIN NOTE */
+.margin-note{
+  border-left:3px solid var(--rust);
+  padding:8px 0 8px 22px;
+  margin:32px 0;
+  font-style:italic;
+  color:var(--ink-faded);
+  font-size:17px;
+  background:rgba(176,68,40,0.04);
+}
+.margin-note strong{font-style:normal;color:var(--rust);display:block;font-family:'IBM Plex Sans',sans-serif;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:6px;font-weight:600}
+
+/* PROBLEM/SOLUTION BOX */
+.box{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.35);
+  padding:28px 32px;
+  margin:36px 0;
+  position:relative;
+}
+.box.problem{border-left:4px solid var(--rust)}
+.box.solution{border-left:4px solid var(--green)}
+.box.insight{border-left:4px solid var(--ochre);background:rgba(198,138,31,0.06)}
+.box .label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  margin-bottom:12px;
+  font-weight:600;
+}
+.box.problem .label{color:var(--rust)}
+.box.solution .label{color:var(--green)}
+.box.insight .label{color:var(--ochre)}
+.box p:last-child{margin-bottom:0}
+
+/* CODE / MONO */
+code, .mono{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.88em;
+  background:var(--paper-dark);
+  padding:2px 6px;
+  color:var(--ink);
+}
+
+/* FIGURES */
+figure{
+  margin:48px 0;
+}
+figcaption{
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:13px;
+  color:var(--ink-faded);
+  text-align:center;
+  margin-top:14px;
+  font-style:italic;
+}
+.svg-wrap{
+  background:rgba(255,255,255,0.45);
+  border:1px solid var(--line);
+  padding:24px;
+  overflow-x:auto;
+}
+.svg-wrap svg{display:block;margin:0 auto;max-width:100%;height:auto}
+
+/* COMPARISON TABLE */
+table.compare{
+  width:100%;
+  border-collapse:collapse;
+  margin:32px 0;
+  font-size:16px;
+}
+table.compare th, table.compare td{
+  text-align:left;
+  padding:14px 18px;
+  border-bottom:1px solid var(--line);
+  vertical-align:top;
+}
+table.compare th{
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:12px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--rust);
+  font-weight:600;
+  border-bottom:2px solid var(--rust);
+}
+table.compare tr:last-child td{border-bottom:none}
+table.compare td:first-child{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;
+  color:var(--ink);
+  width:30%;
+}
+
+/* QUIZ */
+.quiz{
+  border:1px solid var(--ochre);
+  background:rgba(198,138,31,0.05);
+  padding:32px;
+  margin:48px 0;
+}
+.quiz .qlabel{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--ochre);
+  font-weight:600;
+  margin-bottom:14px;
+}
+.quiz h4{
+  font-size:21px;
+  font-weight:500;
+  margin-bottom:20px;
+  line-height:1.35;
+  color:var(--ink);
+}
+.quiz .opts{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.quiz button.opt{
+  text-align:left;
+  font-family:'Newsreader',serif;
+  font-size:17px;
+  padding:14px 18px;
+  background:rgba(255,255,255,0.5);
+  border:1px solid var(--line);
+  color:var(--ink-soft);
+  cursor:pointer;
+  transition:all .15s;
+}
+.quiz button.opt:hover{border-color:var(--ochre);background:rgba(255,255,255,0.8)}
+.quiz button.opt.correct{border-color:var(--green);background:rgba(61,107,58,0.12);color:var(--green)}
+.quiz button.opt.wrong{border-color:var(--rust);background:rgba(176,68,40,0.1);color:var(--rust);text-decoration:line-through}
+.quiz .feedback{
+  font-style:italic;
+  color:var(--ink-faded);
+  font-size:16px;
+  padding-top:14px;
+  border-top:1px dotted var(--line);
+  display:none;
+}
+.quiz .feedback.show{display:block}
+.quiz .feedback strong{font-style:normal;color:var(--ink)}
+
+/* STEPPER */
+.stepper{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.45);
+  padding:28px;
+  margin:48px 0;
+}
+.stepper .slabel{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--rust);
+  font-weight:600;
+  margin-bottom:8px;
+}
+.stepper h4{
+  font-size:22px;
+  font-weight:500;
+  margin-bottom:20px;
+}
+.stepper .stage-svg{
+  background:var(--paper);
+  border:1px solid var(--line-soft);
+  padding:18px;
+  margin-bottom:18px;
+  min-height:280px;
+  display:flex;align-items:center;justify-content:center;
+}
+.stepper .stage-svg svg{max-width:100%;height:auto}
+.stepper .desc{
+  font-style:italic;
+  font-size:17px;
+  color:var(--ink-soft);
+  min-height:60px;
+  padding:0 6px;
+  margin-bottom:20px;
+}
+.stepper .desc strong{font-style:normal;color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;display:block;margin-bottom:6px}
+.stepper .ctrls{display:flex;gap:12px;align-items:center;justify-content:space-between}
+.stepper button{
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:13px;
+  font-weight:600;
+  padding:10px 22px;
+  background:var(--ink);
+  color:var(--paper);
+  border:none;
+  cursor:pointer;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+}
+.stepper button:disabled{background:var(--ink-ghost);cursor:not-allowed}
+.stepper .progress{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  color:var(--ink-faded);
+  letter-spacing:0.1em;
+}
+
+/* ORNAMENT */
+.ornament{
+  text-align:center;
+  color:var(--rust);
+  font-size:18px;
+  letter-spacing:1em;
+  padding:40px 0 20px;
+}
+
+/* FOOTER */
+footer{
+  padding:80px 0 100px;
+  text-align:center;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  color:var(--ink-faded);
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+}
+footer p{margin-bottom:8px;color:var(--ink-faded);font-family:inherit}
+
+/* RESPONSIVE */
+@media (max-width:768px){
+  body{font-size:17px}
+  .container{padding:0 22px}
+  .hero{padding:80px 0 50px}
+  .hero h1{font-size:42px}
+  .hero .sub{font-size:18px}
+  .hero .toc{grid-template-columns:1fr;gap:14px}
+  section{padding:60px 0}
+  h2{font-size:32px}
+  h3{font-size:22px;margin:40px 0 14px}
+  .stepper, .quiz, .box{padding:20px}
+}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="index.html" class="brand">TTM4100</a>
+    <a href="index.html" class="nav-back">&larr; Alle kapitler</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">Kapittel 3 · Transportlaget</div>
+    <h1>Metningskontroll<br>og <em>evolusjon</em></h1>
+    <p class="sub">Hvordan tusenvis av TCP-forbindelser deler et begrenset nettverk uten å kollapse det — fra slow start til CUBIC og QUIC.</p>
+    <nav class="toc">
+      <a href="#intro"><span>00</span> Metningskontroll — hvorfor?</a>
+      <a href="#slowstart"><span>01</span> Slow start</a>
+      <a href="#aimd"><span>02</span> AIMD og congestion avoidance</a>
+      <a href="#fastrecovery"><span>03</span> Fast recovery og Reno vs. Tahoe</a>
+      <a href="#cubic"><span>04</span> TCP CUBIC</a>
+      <a href="#fairness"><span>05</span> Rettferdighet</a>
+      <a href="#quic"><span>06</span> QUIC og evolusjon</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ INTRO ============ -->
+<section id="intro">
+  <div class="container">
+    <div class="badge">00 · Motivasjon</div>
+    <h2>Hvorfor <em>metningskontroll</em>?</h2>
+    <p class="section-intro">Flow control beskytter én mottaker. Metningskontroll beskytter det delte nettverket mellom alle sendere.</p>
+
+    <p class="lead">Tenk deg en motorvei der hver sjåfør bestemmer sin egen fart. Uten noen form for regulering — trafikklys, fartsgrenser, påkjøringsramper — vil veien til slutt gå i lås. Metningskontroll i TCP er trafikklyset: en mekanisme som lar sende ren justere farten sin basert på hvor fullt nettverket virker å være, uten at noen sentral myndighet styrer det.</p>
+
+    <h3>To vinduer, én begrensning</h3>
+    <p>TCP-senderen styres av <em>to</em> vinduer som begge legger begrensninger:</p>
+
+    <table class="compare">
+      <thead><tr><th>Vindu</th><th>Hva det beskytter</th></tr></thead>
+      <tbody>
+        <tr><td>rwnd</td><td><strong>Receive window</strong> — satt av mottakeren i TCP-headeren. Beskytter mottakerens buffer mot overflyt.</td></tr>
+        <tr><td>cwnd</td><td><strong>Congestion window</strong> — vedlikeholdt av senderen lokalt, usynlig i headeren. Beskytter nettverket mot overbelastning.</td></tr>
+      </tbody>
+    </table>
+
+    <p>Regelen er enkel:</p>
+    <div class="box insight">
+      <div class="label">Senderens lov</div>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:15px;text-align:center;padding:12px 0">
+        LastByteSent − LastByteAcked &le; min(cwnd, rwnd)
+      </p>
+      <p>Senderen kan aldri ha mer data «in flight» enn den minste av de to vinduene. I praksis, når nettverket er flaskehalsen, er <code>cwnd &lt; rwnd</code>, og det er cwnd som styrer.</p>
+    </div>
+
+    <p>TCPs senderrate blir da omtrent:</p>
+    <div class="box solution">
+      <div class="label">Senderrate</div>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:16px;text-align:center;padding:8px 0">
+        rate &asymp; cwnd / RTT &nbsp;bytes/sek
+      </p>
+    </div>
+
+    <div class="margin-note">
+      <strong>cwnd er usynlig</strong>
+      Merk at <code>rwnd</code> annonseres i TCP-headeren og kan observeres i en pakkefangst. <code>cwnd</code> derimot eksisterer bare internt hos senderen — den er aldri synlig på tråden.
+    </div>
+
+    <h3>Bottleneck-lenken</h3>
+    <p>Når TCP øker sendraten, er det til slutt én lenke i stien som blir mettet — <strong>bottleneck-lenken</strong>. Ruterens utgangskø fyller seg opp, og pakker begynner å gå tapt. Nøkkelinnsikten:</p>
+    <div class="box insight">
+      <div class="label">To innsikter om bottleneck</div>
+      <p><strong>1.</strong> Å øke sendraten utover bottleneck-kapasiteten gir <em>ikke</em> høyere gjennomstrømning — det gir bare mer pakketap.</p>
+      <p><strong>2.</strong> Å øke sendraten utover bottleneck-kapasiteten <em>øker</em> RTT, fordi pakker venter lenger i køen.</p>
+      <p style="margin-top:12px;font-weight:600;color:var(--ink)">Målet: «Keep the end-end pipe just full, but not fuller.»</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLOW START ============ -->
+<section id="slowstart">
+  <div class="container">
+    <div class="badge">01 · Slow start</div>
+    <h2>Eksponentiell <em>opptrapping</em></h2>
+    <p class="section-intro">Navnet er misvisende — slow start er faktisk den raskeste fasen av TCP. Vinduet dobles hver RTT.</p>
+
+    <p class="lead">Når en TCP-forbindelse nettopp er opprettet, vet senderen ingenting om nettverkets kapasitet. Å sende for mye umiddelbart kan forårsake metning. Å sende for lite kaster bort tid. Løsningen er å starte forsiktig og <em>doble</em> sendraten for hver RTT til man treffer en grense.</p>
+
+    <h3>Mekanismen</h3>
+    <div class="box solution">
+      <div class="label">Slow start-algoritmen</div>
+      <p><strong>1.</strong> Start med <code>cwnd = 1 MSS</code>.<br>
+      <strong>2.</strong> For <em>hver mottatte ACK</em>, øk <code>cwnd</code> med 1 MSS: <code>cwnd = cwnd + MSS</code>.<br>
+      <strong>3.</strong> Effekten: cwnd dobles per RTT (eksponentiell vekst).</p>
+    </div>
+
+    <h3>Eksempel</h3>
+    <p>Med <code>MSS = 1500 bytes</code> og <code>RTT = 200 ms</code>:</p>
+    <table class="compare">
+      <thead><tr><th>RTT</th><th>cwnd</th><th>Segmenter sendt</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>1 MSS</td><td>1</td></tr>
+        <tr><td>1</td><td>2 MSS</td><td>2</td></tr>
+        <tr><td>2</td><td>4 MSS</td><td>4</td></tr>
+        <tr><td>3</td><td>8 MSS</td><td>8</td></tr>
+        <tr><td>4</td><td>16 MSS</td><td>16</td></tr>
+      </tbody>
+    </table>
+    <p>Initiell rate: <code>1500 / 0.2 = 7.5 kB/s</code>. Etter 4 RTT-er: <code>24 000 / 0.2 = 120 kB/s</code>. Eksponentiell vekst rammer raskt opp til tilgjengelig kapasitet.</p>
+
+    <h3>Når slutter slow start?</h3>
+    <p>Slow start avsluttes ved ett av tre hendelser:</p>
+    <ul style="list-style:none;padding:0;margin:24px 0">
+      <li style="padding:12px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">Timeout</strong> — cwnd settes tilbake til 1 MSS, <code>ssthresh = cwnd/2</code>, og slow start starter på nytt.</li>
+      <li style="padding:12px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">cwnd &ge; ssthresh</strong> — overgang til <em>congestion avoidance</em> (lineær vekst).</li>
+      <li style="padding:12px 0"><strong style="color:var(--rust)">3 dupliserte ACKs</strong> — overgang til <em>fast recovery</em>.</li>
+    </ul>
+
+    <div class="margin-note">
+      <strong>ssthresh</strong>
+      <code>ssthresh</code> (slow start threshold) er en variabel som husker omtrent hvor det gikk galt sist. Den starter typisk på en høy verdi (f.eks. 64 KB) og halveres ved hvert tap. Den markerer grensen mellom eksponentiell og lineær vekst.
+    </div>
+
+    <div class="quiz" data-correct="2">
+      <div class="qlabel">Sjekk forståelsen</div>
+      <h4>Under slow start med cwnd = 4 MSS sender TCP 4 segmenter og mottar 4 ACKs. Hva blir ny cwnd?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">5 MSS (lineær økning)</button>
+        <button class="opt" data-i="1">6 MSS</button>
+        <button class="opt" data-i="2">8 MSS (dobling)</button>
+        <button class="opt" data-i="3">16 MSS</button>
+      </div>
+      <div class="feedback"><strong>Riktig.</strong> I slow start økes cwnd med 1 MSS for <em>hver ACK</em>. Med 4 ACKs: 4 + 4 = 8 MSS. Cwnd dobles per RTT.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AIMD ============ -->
+<section id="aimd">
+  <div class="container">
+    <div class="badge">02 · Congestion avoidance</div>
+    <h2>Additive increase, <em>multiplicative</em> decrease</h2>
+    <p class="section-intro">Når cwnd har nådd ssthresh, skifter TCP fra eksponentiell til forsiktig lineær vekst — og halverer brutalt ved tap.</p>
+
+    <p class="lead">AIMD (Additive Increase, Multiplicative Decrease) er kjernen i TCPs metningskontroll. Ideen er vakker i sin asymmetri: voks sakte oppover, kutt raskt nedover. Denne asymmetrien gir stabilitet og rettferdighet — egenskaper som ren eksponentiell vekst aldri kunne gitt.</p>
+
+    <h3>Additive increase</h3>
+    <p>I congestion avoidance-fasen øker cwnd med <strong>1 MSS per RTT</strong> — ikke per ACK som i slow start. Formelen per ACK er:</p>
+    <div class="box solution">
+      <div class="label">Congestion avoidance — per ACK</div>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:15px;text-align:center;padding:8px 0">
+        cwnd = cwnd + MSS &times; (MSS / cwnd)
+      </p>
+      <p>Siden det kommer omtrent <code>cwnd/MSS</code> ACKs per RTT, gir dette en total økning på 1 MSS per RTT — lineær vekst.</p>
+    </div>
+
+    <h3>Multiplicative decrease</h3>
+    <p>Ved pakketap halverer TCP vinduet:</p>
+    <div class="box problem">
+      <div class="label">Ved tap</div>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:15px">
+        ssthresh = cwnd / 2<br>
+        cwnd = ssthresh &nbsp;(ved 3 dup-ACKs, TCP Reno)<br>
+        cwnd = 1 MSS &nbsp;(ved timeout, alle varianter)
+      </p>
+    </div>
+
+    <h3>Sagtann-mønsteret</h3>
+    <p>Resultatet er det karakteristiske sagtannmønsteret: cwnd vokser lineært oppover, faller brått ved tap, vokser lineært igjen. TCP «sonderer» stadig etter mer båndbredde.</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg">
+          <text x="10" y="20" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">cwnd (KB)</text>
+          <text x="650" y="245" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">tid</text>
+
+          <line x1="50" y1="20" x2="50" y2="220" stroke="#c9c0ae" stroke-width="1"/>
+          <line x1="50" y1="220" x2="680" y2="220" stroke="#c9c0ae" stroke-width="1"/>
+
+          <polyline points="50,200 130,100 135,160 210,60 215,130 300,40 305,120 390,30 395,115 480,25 485,112 570,20 575,110 660,15" fill="none" stroke="#b04428" stroke-width="2.5"/>
+
+          <text x="90" y="165" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a">additive increase</text>
+          <text x="130" y="140" font-family="IBM Plex Mono" font-size="9" fill="#b04428">loss!</text>
+          <line x1="132" y1="100" x2="132" y2="155" stroke="#b04428" stroke-width="1" stroke-dasharray="3,2"/>
+        </svg>
+      </div>
+      <figcaption>AIMD-sagtannen. Lineær oppgang, brå halvering ved tap, lineær oppgang igjen. TCP prøver stadig å finne den rette sendraten.</figcaption>
+    </figure>
+
+    <h3>Regneeksempel: congestion avoidance</h3>
+    <div class="box insight">
+      <div class="label">Eksempel</div>
+      <p>Anta <code>cwnd = 3000 bytes</code> og <code>MSS = 1500 bytes</code>. Det betyr 2 segmenter i flight, altså 2 ACKs per RTT.</p>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:13px;margin-top:12px">
+        ACK 1: cwnd = 3000 + 1500&times;(1500/3000) = 3750<br>
+        ACK 2: cwnd = 3750 + 1500&times;(1500/3750) = 4350
+      </p>
+      <p style="margin-top:8px">Netto økning over hele RTT-en: omtrent 1 MSS (fra 3000 til ~4500). Lineær vekst, som forventet.</p>
+    </div>
+
+    <div class="quiz" data-correct="0">
+      <div class="qlabel">Sjekk forståelsen</div>
+      <h4>I congestion avoidance med cwnd = 10 MSS, hvor mye vokser cwnd på én RTT?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">1 MSS</button>
+        <button class="opt" data-i="1">10 MSS (dobling)</button>
+        <button class="opt" data-i="2">2 MSS</button>
+        <button class="opt" data-i="3">0.1 MSS</button>
+      </div>
+      <div class="feedback"><strong>Riktig.</strong> I congestion avoidance er veksten alltid 1 MSS per RTT, uavhengig av cwnd-størrelsen. Det er nettopp dette som gjør den lineær.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAST RECOVERY ============ -->
+<section id="fastrecovery">
+  <div class="container">
+    <div class="badge">03 · Fast recovery</div>
+    <h2>Reno vs. <em>Tahoe</em></h2>
+    <p class="section-intro">Ikke alle pakketap er like alvorlige. Tre dupliserte ACKs betyr at noe fortsatt kommer frem — og TCP kan reagere mildere.</p>
+
+    <p class="lead">Det er en vesentlig forskjell mellom en timeout og tre dupliserte ACKs. En timeout betyr: «Jeg har ikke hørt noe som helst på lenge — nettverket er kanskje helt nede.» Tre dupliserte ACKs betyr: «Ett segment gikk tapt, men andre segmenter <em>kommer frem</em> — for mottakeren sender jo ACKs.» TCP Reno utnytter denne forskjellen.</p>
+
+    <h3>TCP Tahoe (den opprinnelige)</h3>
+    <p>TCP Tahoe (1988) behandler alle tap likt:</p>
+    <div class="box problem">
+      <div class="label">Tahoe — ved ethvert tap</div>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:14px">
+        ssthresh = cwnd / 2<br>
+        cwnd = 1 MSS<br>
+        Start slow start på nytt
+      </p>
+    </div>
+
+    <h3>TCP Reno (forbedringen)</h3>
+    <p>TCP Reno (1990) differensierer:</p>
+    <div class="box solution">
+      <div class="label">Reno — ved 3 dupliserte ACKs</div>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:14px">
+        ssthresh = cwnd / 2<br>
+        cwnd = ssthresh + 3 MSS<br>
+        G&aring; til <strong>fast recovery</strong>
+      </p>
+    </div>
+    <div class="box problem">
+      <div class="label">Reno — ved timeout</div>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:14px">
+        ssthresh = cwnd / 2<br>
+        cwnd = 1 MSS<br>
+        Start slow start p&aring; nytt
+      </p>
+    </div>
+
+    <h3>Hva skjer i fast recovery?</h3>
+    <p>Under fast recovery øker cwnd med 1 MSS for hver <em>dupliserte</em> ACK som ankommer (disse tyder på at etterfølgende segmenter kommer frem). Når en <strong>ny ACK</strong> ankommer (som bekrefter det retransmitterte segmentet), avsluttes fast recovery:</p>
+    <div class="box solution">
+      <div class="label">Ny ACK i fast recovery</div>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:14px">
+        cwnd = ssthresh<br>
+        G&aring; til congestion avoidance
+      </p>
+    </div>
+
+    <h3>Sammenligning</h3>
+    <table class="compare">
+      <thead><tr><th>Hendelse</th><th>TCP Tahoe</th><th>TCP Reno</th></tr></thead>
+      <tbody>
+        <tr><td>Timeout</td><td>cwnd &rarr; 1 MSS, slow start</td><td>cwnd &rarr; 1 MSS, slow start</td></tr>
+        <tr><td>3 dup-ACKs</td><td>cwnd &rarr; 1 MSS, slow start</td><td>cwnd &rarr; ssthresh+3, fast recovery</td></tr>
+      </tbody>
+    </table>
+
+    <p>Reno unngår den kostbare turen tilbake til 1 MSS ved dupliserte ACKs — noe som kan spare mange RTT-er med lav gjennomstrømning.</p>
+
+    <div class="quiz" data-correct="1">
+      <div class="qlabel">Sjekk forståelsen</div>
+      <h4>TCP Reno registrerer 3 dupliserte ACKs mens cwnd = 20 MSS. Hva skjer?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">cwnd settes til 1 MSS og slow start begynner</button>
+        <button class="opt" data-i="1">ssthresh settes til 10, cwnd til 13 MSS, fast recovery starter</button>
+        <button class="opt" data-i="2">cwnd dobles til 40 MSS</button>
+        <button class="opt" data-i="3">cwnd halveres til 10 MSS og congestion avoidance begynner direkte</button>
+      </div>
+      <div class="feedback"><strong>Riktig.</strong> ssthresh = 20/2 = 10. cwnd = ssthresh + 3 = 13 MSS. Reno går til fast recovery i stedet for slow start.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CUBIC ============ -->
+<section id="cubic">
+  <div class="container">
+    <div class="badge">04 · TCP CUBIC</div>
+    <h2>Raskere tilbake med <em>kubisk</em> funksjon</h2>
+    <p class="section-intro">AIMD er rettferdig, men langsom. CUBIC bruker en smartere kurve for å utnytte kapasiteten raskere.</p>
+
+    <p class="lead">Klassisk TCP bruker AIMD: lineær økning med 1 MSS per RTT. På en lenke med høy kapasitet og lang forsinkelse kan det ta <em>mange</em> RTT-er å fylle lenken etter et tap. CUBIC stiller spørsmålet: kan vi gjøre det bedre?</p>
+
+    <h3>Innsikten</h3>
+    <div class="box insight">
+      <div class="label">CUBIC-prinsippet</div>
+      <p>La <strong>W<sub>max</sub></strong> være sendraten da det siste tapet skjedde. Etter et tap vet vi at nettverket sannsynligvis ikke har endret seg mye. Da er det trygt å raskt nærme seg W<sub>max</sub> igjen — men vi bør være forsiktige nær W<sub>max</sub>, fordi det var <em>der</em> det gikk galt sist.</p>
+    </div>
+
+    <h3>Kubisk vekst</h3>
+    <p>CUBIC øker cwnd som en funksjon av <em>tiden</em> siden siste tap, ikke av RTT:</p>
+    <ul style="list-style:none;padding:0;margin:24px 0">
+      <li style="padding:12px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">Langt fra W<sub>max</sub></strong> — store, raske økninger (kurven er bratt).</li>
+      <li style="padding:12px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">Nær W<sub>max</sub></strong> — forsiktige, små økninger (kurven flater ut).</li>
+      <li style="padding:12px 0"><strong style="color:var(--rust)">Forbi W<sub>max</sub></strong> — sonderer forsiktig etter ny kapasitet (kurven stiger igjen).</li>
+    </ul>
+
+    <p>Punktet <strong>K</strong> er tidspunktet der cwnd ville nå W<sub>max</sub>. K er tunbart. Kurven er symmetrisk rundt K — den ligner en kubisk funksjon (derav navnet).</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
+          <text x="10" y="20" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">cwnd</text>
+          <text x="650" y="270" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">tid</text>
+
+          <line x1="50" y1="20" x2="50" y2="250" stroke="#c9c0ae" stroke-width="1"/>
+          <line x1="50" y1="250" x2="680" y2="250" stroke="#c9c0ae" stroke-width="1"/>
+
+          <!-- Wmax line -->
+          <line x1="50" y1="60" x2="680" y2="60" stroke="#c9c0ae" stroke-width="1" stroke-dasharray="6,4"/>
+          <text x="685" y="64" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">W_max</text>
+
+          <!-- Classic TCP (linear AIMD) -->
+          <polyline points="80,200 180,140 280,80 380,60 385,130 485,70 580,50" fill="none" stroke="#a39886" stroke-width="1.5" stroke-dasharray="6,3"/>
+          <text x="300" y="95" font-family="IBM Plex Mono" font-size="10" fill="#a39886">klassisk TCP</text>
+
+          <!-- CUBIC -->
+          <path d="M80,200 C120,170 140,130 170,95 C200,70 240,62 300,60 C360,58 400,55 430,50 C435,130 460,100 490,80 C520,65 550,58 600,55 C630,53 660,48 680,42" fill="none" stroke="#b04428" stroke-width="2.5"/>
+          <text x="440" y="108" font-family="IBM Plex Mono" font-size="10" fill="#b04428" font-weight="600">TCP CUBIC</text>
+
+          <!-- K marker -->
+          <line x1="300" y1="55" x2="300" y2="260" stroke="#2d4a7a" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="290" y="272" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a" font-weight="600">K</text>
+
+          <!-- Loss marker -->
+          <text x="430" y="145" font-family="IBM Plex Mono" font-size="10" fill="#b04428">tap</text>
+        </svg>
+      </div>
+      <figcaption>TCP CUBIC vs. klassisk AIMD. CUBIC vokser raskt langt fra W<sub>max</sub>, bremser nær W<sub>max</sub>, og sonderer forsiktig forbi. Resultatet: høyere gjennomstrømning.</figcaption>
+    </figure>
+
+    <div class="margin-note">
+      <strong>Standard i Linux</strong>
+      TCP CUBIC er standard metningskontrollalgoritme i Linux og er den mest brukte varianten blant populære webservere i dag.
+    </div>
+
+    <div class="quiz" data-correct="2">
+      <div class="qlabel">Sjekk forståelsen</div>
+      <h4>Hva er den viktigste fordelen med CUBIC over klassisk AIMD?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">CUBIC bruker mindre minne</button>
+        <button class="opt" data-i="1">CUBIC gir lavere latens</button>
+        <button class="opt" data-i="2">CUBIC utnytter tilgjengelig kapasitet raskere ved å ramme opp raskt mot W_max, men bremse forsiktig nær den</button>
+        <button class="opt" data-i="3">CUBIC fungerer bare på trådløse nettverk</button>
+      </div>
+      <div class="feedback"><strong>Riktig.</strong> CUBIC kombinerer aggressiv vekst (langt fra W<sub>max</sub>) med forsiktighet (nær W<sub>max</sub>), og utnytter dermed kapasiteten mer effektivt enn ren lineær AIMD.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAIRNESS ============ -->
+<section id="fairness">
+  <div class="container">
+    <div class="badge">05 · Rettferdighet</div>
+    <h2>Er TCP <em>fair</em>?</h2>
+    <p class="section-intro">Hvis K TCP-sesjoner deler en flaskehals med kapasitet R, bør hver ideelt sett få R/K.</p>
+
+    <p class="lead">Rettferdighet er ikke bare et akademisk spørsmål — det handler om internettets grunnleggende funksjon. Hvis én forbindelse kunne ta alt, ville alle andre sulte. AIMD har en elegant egenskap: under idealiserte forhold konvergerer parallelle TCP-forbindelser mot lik fordeling.</p>
+
+    <h3>AIMD-konvergens</h3>
+    <p>Betrakt to TCP-sesjoner som deler en bottleneck med kapasitet R. Plott gjennomstrømningen til sesjon 1 på x-aksen og sesjon 2 på y-aksen:</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1a1612"/></marker></defs>
+
+          <line x1="50" y1="450" x2="470" y2="450" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ar3)"/>
+          <line x1="50" y1="450" x2="50" y2="30" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ar3)"/>
+          <text x="400" y="475" font-family="IBM Plex Sans" font-size="12" fill="#1a1612">Sesjon 1</text>
+          <text x="10" y="40" font-family="IBM Plex Sans" font-size="12" fill="#1a1612">Sesjon 2</text>
+
+          <!-- R line (capacity) -->
+          <line x1="50" y1="50" x2="450" y2="450" stroke="#c9c0ae" stroke-width="1.5" stroke-dasharray="6,4"/>
+          <text x="455" y="445" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">x1+x2=R</text>
+
+          <!-- Fair share line -->
+          <line x1="50" y1="450" x2="400" y2="100" stroke="#3d6b3a" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="370" y="80" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">lik fordeling</text>
+
+          <!-- AIMD trajectory -->
+          <circle cx="120" cy="400" r="4" fill="#b04428"/>
+          <text x="100" y="420" font-family="IBM Plex Mono" font-size="10" fill="#b04428">A</text>
+          <line x1="120" y1="400" x2="220" y2="300" stroke="#b04428" stroke-width="2" marker-end="url(#ar3)"/>
+          <text x="160" y="340" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a">add. incr.</text>
+
+          <circle cx="220" cy="300" r="4" fill="#b04428"/>
+          <text x="225" y="295" font-family="IBM Plex Mono" font-size="10" fill="#b04428">B</text>
+          <line x1="220" y1="300" x2="160" y2="330" stroke="#2d4a7a" stroke-width="2" marker-end="url(#ar3)"/>
+          <text x="180" y="325" font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a">halver</text>
+
+          <circle cx="160" cy="330" r="4" fill="#b04428"/>
+          <text x="140" y="345" font-family="IBM Plex Mono" font-size="10" fill="#b04428">C</text>
+          <line x1="160" y1="330" x2="260" y2="230" stroke="#b04428" stroke-width="2" marker-end="url(#ar3)"/>
+
+          <circle cx="260" cy="230" r="4" fill="#b04428"/>
+          <text x="265" y="225" font-family="IBM Plex Mono" font-size="10" fill="#b04428">D</text>
+        </svg>
+      </div>
+      <figcaption>AIMD-konvergens: Additive increase gir helning 1 (45°). Multiplicative decrease trekker mot origo. Over tid konvergerer de mot lik fordeling.</figcaption>
+    </figure>
+
+    <p><strong>A &rarr; B:</strong> begge sesjoner øker additivt (helning 45°) til de treffer kapasitetsgrensen.<br>
+    <strong>B &rarr; C:</strong> begge halverer cwnd (trekker mot origo), men dette flytter punktet nærmere den grønne linjen.<br>
+    Gjenta — punktet konvergerer mot lik fordeling.</p>
+
+    <h3>Forutsetningene</h3>
+    <div class="box insight">
+      <div class="label">Rettferdighet gjelder under idealiserte antakelser</div>
+      <p><strong>Samme RTT</strong> — forbindelser med lavere RTT øker raskere og får mer båndbredde i praksis.<br>
+      <strong>Fast antall sesjoner</strong> — i virkeligheten kommer og går forbindelser.<br>
+      <strong>Bare congestion avoidance</strong> — beviset antar lineær vekst, ikke slow start.</p>
+    </div>
+
+    <h3>Rettferdighet og UDP</h3>
+    <p>UDP-applikasjoner (f.eks. videostrømming) deltar ikke i metningskontroll. De kan sende så fort de vil og tar dermed mer enn sin «rettferdige» andel. Det finnes ingen «internettpoliti» som håndhever rettferdighet.</p>
+
+    <h3>Parallelle TCP-forbindelser</h3>
+    <p>En nettleser som åpner 10 parallelle TCP-forbindelser til en server, får i praksis 10 &times; sin rettferdige andel sammenlignet med en applikasjon som bruker én forbindelse. Dette er en «lovlig» måte å jukse på — og det er utbredt.</p>
+  </div>
+</section>
+
+<!-- ============ QUIC ============ -->
+<section id="quic">
+  <div class="container">
+    <div class="badge">06 · Evolusjon</div>
+    <h2>Fra Tahoe til <em>QUIC</em></h2>
+    <p class="section-intro">TCP har utviklet seg i 40 år. Den nyeste evolusjonen flytter transportfunksjonaliteten opp til applikasjonslaget.</p>
+
+    <p class="lead">TCP og UDP har vært de to transportprotokollene i over fire tiår. I løpet av den tiden har TCP blitt forbedret gjentatte ganger — fra Tahoe via Reno til CUBIC. Men den mest radikale endringen er en helt ny tilnærming: QUIC, som bygger transportfunksjonalitet oppå UDP.</p>
+
+    <h3>TCPs utvikling</h3>
+    <table class="compare">
+      <thead><tr><th>År</th><th>Milepæl</th></tr></thead>
+      <tbody>
+        <tr><td>1981</td><td>RFC 793 — original TCP-spesifikasjon</td></tr>
+        <tr><td>1988</td><td>TCP Tahoe — slow start og congestion avoidance (Jacobson)</td></tr>
+        <tr><td>1990</td><td>TCP Reno — fast retransmit og fast recovery</td></tr>
+        <tr><td>2005</td><td>BIC TCP</td></tr>
+        <tr><td>2018</td><td>TCP CUBIC — standard i Linux, kubisk vekstfunksjon</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Forskjellige scenarier, forskjellige utfordringer</h3>
+    <table class="compare">
+      <thead><tr><th>Scenario</th><th>Utfordring</th></tr></thead>
+      <tbody>
+        <tr><td>Store overføringer</td><td>Mange pakker «in flight»; ett tap stenger hele pipelinen</td></tr>
+        <tr><td>Trådløst</td><td>Tap pga. støy forveksles med metning — TCP reduserer unødvendig</td></tr>
+        <tr><td>Lange forsinkelser</td><td>Ekstremt lang RTT gjør AIMD-oppramping smertefull</td></tr>
+        <tr><td>Datasentre</td><td>Latenskritiske tjenester der selv millisekunders kø-forsinkelse teller</td></tr>
+      </tbody>
+    </table>
+
+    <h3>QUIC: Quick UDP Internet Connections</h3>
+    <p>QUIC er en applikasjonslagsprotokoll bygd over UDP. Den implementerer pålitelighet, metningskontroll, kryptering og multipleksing — alt i brukerrommet, uten å vente på OS-oppdateringer.</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg">
+          <!-- TCP/TLS/HTTP2 stack -->
+          <text x="140" y="25" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612" text-anchor="middle">HTTP/2 over TCP</text>
+          <rect x="50" y="35" width="180" height="40" rx="3" fill="rgba(45,74,122,0.12)" stroke="#2d4a7a" stroke-width="1.5"/>
+          <text x="140" y="60" font-family="IBM Plex Mono" font-size="12" fill="#2d4a7a" text-anchor="middle">HTTP/2</text>
+          <rect x="50" y="80" width="180" height="40" rx="3" fill="rgba(61,107,58,0.12)" stroke="#3d6b3a" stroke-width="1.5"/>
+          <text x="140" y="105" font-family="IBM Plex Mono" font-size="12" fill="#3d6b3a" text-anchor="middle">TLS</text>
+          <rect x="50" y="125" width="180" height="40" rx="3" fill="rgba(176,68,40,0.12)" stroke="#b04428" stroke-width="1.5"/>
+          <text x="140" y="150" font-family="IBM Plex Mono" font-size="12" fill="#b04428" text-anchor="middle">TCP</text>
+          <rect x="50" y="170" width="180" height="35" rx="3" fill="rgba(201,192,174,0.3)" stroke="#a39886" stroke-width="1"/>
+          <text x="140" y="192" font-family="IBM Plex Mono" font-size="11" fill="#6b6257" text-anchor="middle">IP</text>
+
+          <!-- Labels -->
+          <text x="250" y="62" font-family="IBM Plex Sans" font-size="10" fill="#6b6257">Applikasjon</text>
+          <text x="250" y="107" font-family="IBM Plex Sans" font-size="10" fill="#6b6257">Sikkerhet</text>
+          <text x="250" y="152" font-family="IBM Plex Sans" font-size="10" fill="#6b6257">Transport</text>
+          <text x="250" y="192" font-family="IBM Plex Sans" font-size="10" fill="#6b6257">Nettverk</text>
+
+          <!-- Arrow -->
+          <text x="370" y="120" font-family="Newsreader" font-size="28" fill="#a39886">&rarr;</text>
+
+          <!-- QUIC stack -->
+          <text x="540" y="25" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612" text-anchor="middle">HTTP/3 over QUIC</text>
+          <rect x="430" y="35" width="220" height="40" rx="3" fill="rgba(45,74,122,0.12)" stroke="#2d4a7a" stroke-width="1.5"/>
+          <text x="540" y="60" font-family="IBM Plex Mono" font-size="12" fill="#2d4a7a" text-anchor="middle">HTTP/3</text>
+          <rect x="430" y="80" width="220" height="85" rx="3" fill="rgba(176,68,40,0.12)" stroke="#b04428" stroke-width="2"/>
+          <text x="540" y="110" font-family="IBM Plex Mono" font-size="13" fill="#b04428" text-anchor="middle" font-weight="600">QUIC</text>
+          <text x="540" y="130" font-family="IBM Plex Sans" font-size="10" fill="#b04428" text-anchor="middle">pålitelighet + kryptering + metningskontroll</text>
+          <text x="540" y="150" font-family="IBM Plex Sans" font-size="10" fill="#b04428" text-anchor="middle">per strøm</text>
+          <rect x="430" y="170" width="220" height="35" rx="3" fill="rgba(201,192,174,0.3)" stroke="#a39886" stroke-width="1"/>
+          <text x="540" y="187" font-family="IBM Plex Mono" font-size="11" fill="#6b6257" text-anchor="middle">UDP / IP</text>
+        </svg>
+      </div>
+      <figcaption>HTTP/2 over TCP krever separate håndtrykk for TCP og TLS. QUIC kombinerer alt i ett håndtrykk over UDP.</figcaption>
+    </figure>
+
+    <h3>QUICs fordeler</h3>
+    <table class="compare">
+      <thead><tr><th>Egenskap</th><th>Fordel over TCP</th></tr></thead>
+      <tbody>
+        <tr><td>1-RTT håndtrykk</td><td>TCP + TLS krever 2 serielle håndtrykk. QUIC gjør alt i én RTT — pålitelighet, metningskontroll, autentisering og kryptering.</td></tr>
+        <tr><td>Per-strøm pålitelighet</td><td>TCP har head-of-line (HOL) blocking: ett tapt segment blokkerer <em>alle</em> data bak det. QUIC multiplekser flere strømmer uavhengig — tap i én strøm blokkerer ikke de andre.</td></tr>
+        <tr><td>I brukerrommet</td><td>Oppdateringer krever ikke OS-endringer. Google ruller ut forbedringer i Chrome uten å vente på kjerneendringer.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>QUIC og head-of-line blocking</h3>
+    <p>Med TCP og HTTP/2: tre GET-forespørsler deler én TCP-forbindelse. Hvis et segment tilhørende forespørsel 1 går tapt, må <em>alle tre</em> vente på retransmisjonen — selv om data for forespørsel 2 og 3 allerede er mottatt.</p>
+    <p>Med QUIC: hver forespørsel har sin egen strøm med uavhengig pålitelig levering. Tap i strøm 1 blokkerer bare strøm 1 — strøm 2 og 3 leveres uforstyrret.</p>
+
+    <div class="quiz" data-correct="2">
+      <div class="qlabel">Sjekk forståelsen</div>
+      <h4>Hva er hovedfordelen med QUICs per-strøm pålitelighet?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">Lavere overhead fordi QUIC ikke har headere</button>
+        <button class="opt" data-i="1">QUIC bruker mindre båndbredde enn TCP</button>
+        <button class="opt" data-i="2">Tap i én strøm blokkerer ikke leveringen av andre strømmer (ingen HOL-blocking)</button>
+        <button class="opt" data-i="3">QUIC støtter bare HTTP/3 og ingen andre protokoller</button>
+      </div>
+      <div class="feedback"><strong>Riktig.</strong> TCPs enkelt-strøm-modell betyr at ett tapt segment blokkerer alt bak det. QUIC løser dette med uavhengige strømmer, som eliminerer head-of-line blocking mellom forespørsler.</div>
+    </div>
+
+    <div class="ornament">&#10038; &#10038; &#10038;</div>
+    <p>Med dette er hele kapittel 3 dekket: fra <a href="kapittel3-transport-udp.html">transportlagets tjenester og UDP</a>, gjennom <a href="kapittel3-tcp.html">TCPs pålitelige dataoverføring</a>, til metningskontroll, CUBIC og QUIC. Neste stopp er <a href="nettverkslaget.html">nettverkslaget</a> — kjernen i pakkesvitsjer og rutere.</p>
+  </div>
+</section>
+
+<!-- ============ CWND STEPPER ============ -->
+<section id="cwnd-sim" style="border-bottom:none">
+  <div class="container">
+    <div class="badge">Interaktiv</div>
+    <h2>cwnd gjennom <em>fasene</em></h2>
+    <p class="section-intro">Følg utviklingen av congestion window steg for steg — fra slow start, gjennom congestion avoidance, til tap og recovery.</p>
+
+    <div class="stepper">
+      <div class="slabel">CWND-utvikling</div>
+      <h4 id="cwnd-title">Steg-for-steg simulering</h4>
+      <div class="stage-svg" id="cwndsvg"></div>
+      <div class="desc" id="cwnddesc"></div>
+      <div class="ctrls">
+        <button id="cprev">&larr; Forrige</button>
+        <span class="progress" id="cprog"></span>
+        <button id="cnext">Neste &rarr;</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10038; &#10038; &#10038;</div>
+    <p>Basert på Kurose &amp; Ross, <em>Computer Networking</em>, 8. utgave — Kapittel 3</p>
+    <p>NTNU · TTM4100 · Vår 2026</p>
+  </div>
+</footer>
+
+<script>
+// ============ QUIZ HANDLER ============
+document.querySelectorAll('.quiz').forEach(q => {
+  const correct = parseInt(q.dataset.correct);
+  const fb = q.querySelector('.feedback');
+  q.querySelectorAll('button.opt').forEach(b => {
+    b.addEventListener('click', () => {
+      q.querySelectorAll('button.opt').forEach(x => { x.disabled = true; });
+      const i = parseInt(b.dataset.i);
+      if (i === correct) {
+        b.classList.add('correct');
+      } else {
+        b.classList.add('wrong');
+        q.querySelectorAll('button.opt')[correct].classList.add('correct');
+      }
+      fb.classList.add('show');
+    });
+  });
+});
+
+// ============ CWND STEPPER ============
+(function(){
+  const W = 650, H = 300, PAD = 50;
+  const chartW = W - PAD * 2, chartH = H - PAD * 2;
+
+  const stages = [
+    {
+      title: 'RTT 0 — Oppstart (Slow Start)',
+      desc: 'Forbindelsen er nettopp opprettet. cwnd = 1 MSS, ssthresh = 16 MSS. Vi er i slow start-fasen — eksponentiell vekst.',
+      points: [[0,1]],
+      ssthresh: 16,
+      phase: 'slow start'
+    },
+    {
+      title: 'RTT 1-4 — Slow Start fortsetter',
+      desc: 'cwnd dobles hver RTT: 1 → 2 → 4 → 8 → 16. Vi nærmer oss ssthresh (16 MSS).',
+      points: [[0,1],[1,2],[2,4],[3,8],[4,16]],
+      ssthresh: 16,
+      phase: 'slow start'
+    },
+    {
+      title: 'RTT 4-8 — Congestion Avoidance',
+      desc: 'cwnd har nådd ssthresh. Vi skifter til lineær vekst: +1 MSS per RTT. cwnd: 16 → 17 → 18 → 19 → 20.',
+      points: [[0,1],[1,2],[2,4],[3,8],[4,16],[5,17],[6,18],[7,19],[8,20]],
+      ssthresh: 16,
+      phase: 'congestion avoidance'
+    },
+    {
+      title: 'RTT 8 — 3 dupliserte ACKs! (Reno)',
+      desc: 'Tre dupliserte ACKs mottatt ved cwnd = 20. ssthresh = 20/2 = 10. cwnd = 10 + 3 = 13 (fast recovery). Etter ny ACK: cwnd = ssthresh = 10.',
+      points: [[0,1],[1,2],[2,4],[3,8],[4,16],[5,17],[6,18],[7,19],[8,20],[8.2,10]],
+      ssthresh: 10,
+      phase: 'fast recovery → CA'
+    },
+    {
+      title: 'RTT 9-14 — Ny congestion avoidance',
+      desc: 'Lineær vekst igjen fra cwnd = 10: 10 → 11 → 12 → 13 → 14 → 15. ssthresh er nå 10.',
+      points: [[0,1],[1,2],[2,4],[3,8],[4,16],[5,17],[6,18],[7,19],[8,20],[8.2,10],[9,11],[10,12],[11,13],[12,14],[13,15]],
+      ssthresh: 10,
+      phase: 'congestion avoidance'
+    },
+    {
+      title: 'RTT 14 — Timeout!',
+      desc: 'Timeout ved cwnd = 15. ssthresh = 15/2 ≈ 7. cwnd = 1 MSS. Tilbake til slow start — dette er den dyre typen tap.',
+      points: [[0,1],[1,2],[2,4],[3,8],[4,16],[5,17],[6,18],[7,19],[8,20],[8.2,10],[9,11],[10,12],[11,13],[12,14],[13,15],[13.2,1]],
+      ssthresh: 7,
+      phase: 'timeout → slow start'
+    },
+    {
+      title: 'RTT 15-17 — Slow start igjen',
+      desc: 'Eksponentiell vekst fra 1: 1 → 2 → 4 → 8 (passerer ssthresh=7). Deretter congestion avoidance.',
+      points: [[0,1],[1,2],[2,4],[3,8],[4,16],[5,17],[6,18],[7,19],[8,20],[8.2,10],[9,11],[10,12],[11,13],[12,14],[13,15],[13.2,1],[14,2],[15,4],[16,8]],
+      ssthresh: 7,
+      phase: 'slow start → CA'
+    }
+  ];
+
+  let idx = 0;
+  const svg = document.getElementById('cwndsvg');
+  const desc = document.getElementById('cwnddesc');
+  const prog = document.getElementById('cprog');
+  const prev = document.getElementById('cprev');
+  const next = document.getElementById('cnext');
+
+  function drawChart(stage) {
+    const pts = stage.points;
+    const maxX = 18;
+    const maxY = 22;
+    const scaleX = x => PAD + (x / maxX) * chartW;
+    const scaleY = y => PAD + chartH - (y / maxY) * chartH;
+
+    let s = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+
+    // Grid lines
+    for (let y = 0; y <= maxY; y += 4) {
+      s += `<line x1="${PAD}" y1="${scaleY(y)}" x2="${W-PAD}" y2="${scaleY(y)}" stroke="#ddd5c4" stroke-width="0.5"/>`;
+      s += `<text x="${PAD-8}" y="${scaleY(y)+4}" font-family="IBM Plex Mono" font-size="10" fill="#a39886" text-anchor="end">${y}</text>`;
+    }
+    for (let x = 0; x <= maxX; x += 2) {
+      s += `<line x1="${scaleX(x)}" y1="${PAD}" x2="${scaleX(x)}" y2="${PAD+chartH}" stroke="#ddd5c4" stroke-width="0.5"/>`;
+      s += `<text x="${scaleX(x)}" y="${PAD+chartH+16}" font-family="IBM Plex Mono" font-size="10" fill="#a39886" text-anchor="middle">${x}</text>`;
+    }
+
+    // Axes
+    s += `<line x1="${PAD}" y1="${PAD}" x2="${PAD}" y2="${PAD+chartH}" stroke="#1a1612" stroke-width="1.5"/>`;
+    s += `<line x1="${PAD}" y1="${PAD+chartH}" x2="${W-PAD}" y2="${PAD+chartH}" stroke="#1a1612" stroke-width="1.5"/>`;
+    s += `<text x="${PAD-5}" y="${PAD-8}" font-family="IBM Plex Sans" font-size="11" fill="#6b6257" text-anchor="end">cwnd (MSS)</text>`;
+    s += `<text x="${W-PAD}" y="${PAD+chartH+30}" font-family="IBM Plex Sans" font-size="11" fill="#6b6257" text-anchor="end">RTT</text>`;
+
+    // ssthresh line
+    const ssy = scaleY(stage.ssthresh);
+    s += `<line x1="${PAD}" y1="${ssy}" x2="${W-PAD}" y2="${ssy}" stroke="#2d4a7a" stroke-width="1.5" stroke-dasharray="6,4"/>`;
+    s += `<text x="${W-PAD+5}" y="${ssy+4}" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">ssthresh=${stage.ssthresh}</text>`;
+
+    // Data line
+    if (pts.length > 1) {
+      let polyPts = pts.map(p => `${scaleX(p[0])},${scaleY(p[1])}`).join(' ');
+      s += `<polyline points="${polyPts}" fill="none" stroke="#b04428" stroke-width="2.5" stroke-linejoin="round"/>`;
+    }
+
+    // Data points
+    pts.forEach((p, i) => {
+      s += `<circle cx="${scaleX(p[0])}" cy="${scaleY(p[1])}" r="${i === pts.length-1 ? 5 : 3}" fill="${i === pts.length-1 ? '#b04428' : '#1a1612'}"/>`;
+    });
+
+    // Phase label
+    s += `<text x="${W-PAD}" y="${PAD+15}" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a" text-anchor="end">${stage.phase}</text>`;
+
+    s += '</svg>';
+    return s;
+  }
+
+  function render() {
+    const s = stages[idx];
+    svg.innerHTML = drawChart(s);
+    desc.innerHTML = '<strong>' + s.title + '</strong>' + s.desc;
+    prog.textContent = (idx+1) + ' / ' + stages.length;
+    prev.disabled = idx === 0;
+    next.disabled = idx === stages.length - 1;
+  }
+
+  prev.addEventListener('click', () => { if (idx > 0) { idx--; render(); } });
+  next.addEventListener('click', () => { if (idx < stages.length - 1) { idx++; render(); } });
+  render();
+})();
+</script>
+
+</body>
+</html>
