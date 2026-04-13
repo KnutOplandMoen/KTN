@@ -1,0 +1,15 @@
+---
+description: Remind to update English translations in /en when editing Norwegian pages
+globs: "*.html"
+alwaysApply: true
+---
+
+# Keep English translations in sync
+
+This project has Norwegian pages in the root (e.g. `kap1/`, `kap2/`) and English translations in `en/` (e.g. `en/kap1/`, `en/kap2/`).
+
+When adding or editing content in a Norwegian HTML page, always check if a corresponding English page exists in `en/` and update it with the translated version of the changes.
+
+- If editing `kap3/tcp.html`, check for and update `en/kap3/tcp.html`.
+- If creating a new page like `kap5/innhold.html`, create `en/kap5/innhold.html` with translated content as well.
+- Translate all user-visible text to English. Keep HTML structure, class names, IDs, and code examples identical.
