@@ -118,6 +118,7 @@ ${page_context || "(ingen)"}`;
     res.setHeader("Cache-Control", "no-cache, no-transform");
     res.setHeader("Connection", "keep-alive");
     res.setHeader("X-Accel-Buffering", "no");
+    res.flushHeaders();
 
     const reader = llmResp.body.getReader();
     const decoder = new TextDecoder();

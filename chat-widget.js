@@ -330,13 +330,17 @@
       const reader = resp.body.getReader();
       const decoder = new TextDecoder();
       let fullText = "";
+      let sseBuffer = "";
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
-        const chunk = decoder.decode(value, { stream: true });
-        for (const line of chunk.split("\n")) {
+        sseBuffer += decoder.decode(value, { stream: true });
+        const lines = sseBuffer.split("\n");
+        sseBuffer = lines.pop();
+
+        for (const line of lines) {
           if (!line.startsWith("data: ")) continue;
           const payload = line.slice(6).trim();
           if (payload === "[DONE]") continue;
@@ -350,7 +354,7 @@
               messagesEl.scrollTop = messagesEl.scrollHeight;
             }
           } catch {
-            // skip unparseable lines
+            // incomplete JSON, will be completed in next chunk
           }
         }
       }
