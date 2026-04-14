@@ -127,75 +127,303 @@
   <p class="section-intro">Sjekk om du har forstått de viktigste konseptene fra dette kapittelet.</p>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 1</div>
-    <div class="q-text">Hva er «jitter» i konteksten av multimedia-nettverk?</div>
+    <div class="q-label">Spørsmål 1 · Lett</div>
+    <div class="q-text">Hva beskriver best forskjellen mellom streaming og full nedlasting?</div>
     <div class="options">
-      <button class="option" data-correct="false">Den totale forsinkelsen fra sender til mottaker</button>
-      <button class="option" data-correct="true">Variasjonen i forsinkelse mellom pakker — noen bruker lengre tid enn andre gjennom nettet</button>
-      <button class="option" data-correct="false">Pakketap forårsaket av metning i ruterbuffere</button>
-      <button class="option" data-correct="false">Støy som oppstår ved kvantisering av det analoge lydsignalet</button>
+      <button class="option" data-correct="true">Streaming starter avspilling før hele filen er mottatt ved å bruke fortløpende buffring.</button>
+      <button class="option" data-correct="false">RTP-sekvensnumre brukes til å oppdage tap og håndtere omrekkefølge i mottakeren.</button>
+      <button class="option" data-correct="false">TCP-retransmisjoner og head-of-line blocking kan øke latenstid uakseptabelt for liveinnhold.</button>
+      <button class="option" data-correct="false">I-rammer gir referansepunkter, mens P/B-rammer øker komprimering ved prediksjon over tid.</button>
     </div>
-    <div class="explanation">Jitter er variasjonen i pakke-forsinkelse. Pakker sendes med jevne mellomrom, men ankommer med ujevne mellomrom. Det er dette playout-bufferen kompenserer for — selv om gjennomsnittlig forsinkelse er akseptabel, kan høy variasjon gjøre at pakker ankommer for sent til å spilles av.</div>
+    <div class="explanation">Riktig. Streaming starter avspilling før hele filen er mottatt ved å bruke fortløpende buffring.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 2</div>
-    <div class="q-text">Hvorfor bytter DASH (Dynamic Adaptive Streaming over HTTP) mellom forskjellige videokvaliteter under avspilling?</div>
+    <div class="q-label">Spørsmål 2 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om playout-bufferens rolle i praksis?</div>
     <div class="options">
-      <button class="option" data-correct="false">Fordi serveren bestemmer kvaliteten basert på hvor mye den kan sende</button>
-      <button class="option" data-correct="false">Fordi TCP automatisk tilpasser videokvaliteten i sine pakker</button>
-      <button class="option" data-correct="true">Fordi klienten selv velger kvalitet basert på målt nettverksbåndbredde, slik at bufferen ikke tømmes</button>
-      <button class="option" data-correct="false">Fordi videofilen er kodet med variabel bitrate (VBR) som endrer seg tilfeldig</button>
+      <button class="option" data-correct="false">RTP-tidsstempel hjelper mottakeren å plassere mediedata riktig i tidslinjen.</button>
+      <button class="option" data-correct="true">Playout-buffer glatter ut ujevn pakkeankomst slik at avspilling blir jevnere.</button>
+      <button class="option" data-correct="false">FEC legger til redundans slik at mottaker kan rekonstruere tapte pakker uten retransmisjon.</button>
+      <button class="option" data-correct="false">Kortere keyframe-intervall forbedrer seek og robusthet, men krever mer bitrate.</button>
     </div>
-    <div class="explanation">I DASH er det klienten som styrer: den måler hvor raskt segmenter lastes ned, estimerer tilgjengelig båndbredde, og ber om neste segment i en kvalitet som nettverket klarer. Målet er å holde playout-bufferen fylt uten å be om høyere kvalitet enn nettverket kan levere.</div>
+    <div class="explanation">Riktig. Playout-buffer glatter ut ujevn pakkeankomst slik at avspilling blir jevnere.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 3</div>
-    <div class="q-text">Hva er den maksimale ende-til-ende-forsinkelsen for at en VoIP-samtale skal føles naturlig?</div>
+    <div class="q-label">Spørsmål 3 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om tradeoff ved større buffer er faglig best?</div>
     <div class="options">
-      <button class="option" data-correct="false">Under 50 millisekunder</button>
-      <button class="option" data-correct="true">Under 150 millisekunder</button>
-      <button class="option" data-correct="false">Under 400 millisekunder</button>
-      <button class="option" data-correct="false">Under 1 sekund</button>
+      <button class="option" data-correct="false">RTCP rapporterer kvalitetsmål som tap og jitter for adaptiv styring av strømmen.</button>
+      <button class="option" data-correct="false">Interleaving sprer bursttap over tid slik at feil blir mindre hørbare/synlige.</button>
+      <button class="option" data-correct="true">Større buffer tåler mer jitter, men øker opplevd ende-til-ende-forsinkelse.</button>
+      <button class="option" data-correct="false">Lyd og bilde må synkroniseres med tidsstempler og klokkehåndtering for naturlig avspilling.</button>
     </div>
-    <div class="explanation">Under 150 ms føles samtalen naturlig. Mellom 150 og 400 ms er forsinkelsen merkbar men brukbar. Over 400 ms bryter samtalen sammen — man snakker i munnen på hverandre fordi begge tror det er stille.</div>
+    <div class="explanation">Riktig. Større buffer tåler mer jitter, men øker opplevd ende-til-ende-forsinkelse.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 4</div>
-    <div class="q-text">Hva gjør playout-bufferen hos mottakeren i et multimedia-system?</div>
+    <div class="q-label">Spørsmål 4 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om hva jitter betyr i praksis?</div>
     <div class="options">
-      <button class="option" data-correct="false">Den komprimerer videoen til lavere bitrate for å spare båndbredde</button>
-      <button class="option" data-correct="false">Den sender tapte pakker på nytt til senderen</button>
-      <button class="option" data-correct="true">Den samler opp pakker som ankommer med variabel forsinkelse og spiller dem av med jevn rate</button>
-      <button class="option" data-correct="false">Den krypterer datastrømmen for sikker overføring</button>
+      <button class="option" data-correct="false">Rundt under 150 ms oppleves samtale som naturlig; større forsinkelse gjør dialog vanskeligere.</button>
+      <button class="option" data-correct="false">Oppstartstid, rebuffering, bildekvalitet og kvalitetsbytter påvirker brukeropplevelse mest.</button>
+      <button class="option" data-correct="false">Multicast kan skalere én-til-mange effektivt der infrastrukturen støtter det.</button>
+      <button class="option" data-correct="true">Jitter er variasjon i pakkeforsinkelse, ikke nødvendigvis høy gjennomsnittsforsinkelse.</button>
     </div>
-    <div class="explanation">Playout-bufferen er nøkkelen til jevn avspilling. Pakker ankommer med ujevne mellomrom (jitter), men bufferen lar mottakeren vente til den har nok data, og deretter spille av med den konstante raten som trengs. Jo større buffer, jo mer jitter tåles — men forsinkelsen øker.</div>
+    <div class="explanation">Riktig. Jitter er variasjon i pakkeforsinkelse, ikke nødvendigvis høy gjennomsnittsforsinkelse.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 5</div>
-    <div class="q-text">Hvilken informasjon gir RTP-headeren som UDP-headeren mangler?</div>
+    <div class="q-label">Spørsmål 5 · Lett</div>
+    <div class="q-text">Hva beskriver best DASH-klientens bitratevalg?</div>
     <div class="options">
-      <button class="option" data-correct="false">Pålitelig levering med retransmisjon</button>
-      <button class="option" data-correct="true">Payload-type, sekvensnummer og tidsstempel for mediedata</button>
-      <button class="option" data-correct="false">Garantert maksimal forsinkelse gjennom nettverket</button>
-      <button class="option" data-correct="false">Kryptering av payload-data</button>
+      <button class="option" data-correct="true">DASH-klienten velger segmentkvalitet dynamisk basert på nettmålinger og bufferfylling.</button>
+      <button class="option" data-correct="false">Ved svært høy forsinkelse begynner deltakere å snakke i munnen på hverandre og opplever dårlig flyt.</button>
+      <button class="option" data-correct="false">Ved redusert kapasitet bør klienten senke bitrate tidlig for å unngå avspillingsstopp.</button>
+      <button class="option" data-correct="false">Unicast fungerer over dagens internett uten global multicast-støtte i mellomnett.</button>
     </div>
-    <div class="explanation">RTP legger til tre ting UDP mangler: payload-type (hvilken koding brukes), sekvensnummer (for å oppdage tap og rekkefølgefeil) og tidsstempel (for å plassere pakkene riktig i tid ved avspilling). Men RTP gir ingen leveringsgarantier — all smarthet ligger i applikasjonen.</div>
+    <div class="explanation">Riktig. DASH-klienten velger segmentkvalitet dynamisk basert på nettmålinger og bufferfylling.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 6</div>
-    <div class="q-text">Hva er fordelen med piggyback FEC (lavkvalitetskopi av forrige lydbit i hver pakke) sammenlignet med enkel XOR-FEC?</div>
+    <div class="q-label">Spørsmål 6 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om segmentlengde i adaptiv video er faglig best?</div>
     <div class="options">
-      <button class="option" data-correct="false">Den krever ingen ekstra båndbredde i det hele tatt</button>
-      <button class="option" data-correct="false">Den kan gjenopprette tap av flere sammenhengende pakker</button>
-      <button class="option" data-correct="true">Den kan gjenopprette tap uten å vente på en hel pakkegruppe, og gir dermed lavere ekstra playout-forsinkelse</button>
-      <button class="option" data-correct="false">Den fungerer bare med TCP, ikke UDP</button>
+      <button class="option" data-correct="false">UDP unngår retransmisjonslatens og lar applikasjonen styre taps- og tidsstrategi direkte.</button>
+      <button class="option" data-correct="true">Kortere segmenter gir raskere tilpasning, men høyere protokoll- og request-overhead.</button>
+      <button class="option" data-correct="false">Lavlatensoppsett bruker mindre buffere og kortere segmenter, men tåler mindre nettverksvariasjon.</button>
+      <button class="option" data-correct="false">Jevn utsending og købevisst styring reduserer burst, tap og varians i mottak.</button>
     </div>
-    <div class="explanation">XOR-FEC krever at hele gruppen av n+1 pakker er mottatt før gjenoppretting kan skje, noe som øker playout-forsinkelsen. Piggyback FEC trenger bare neste pakke for å gjenopprette forrige — mye raskere, til prisen av litt lavere lydkvalitet på den gjennopprettede biten.</div>
+    <div class="explanation">Riktig. Kortere segmenter gir raskere tilpasning, men høyere protokoll- og request-overhead.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 7 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om CDN for multimedia i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">TCP-retransmisjoner og head-of-line blocking kan øke latenstid uakseptabelt for liveinnhold.</button>
+      <button class="option" data-correct="false">I-rammer gir referansepunkter, mens P/B-rammer øker komprimering ved prediksjon over tid.</button>
+      <button class="option" data-correct="true">CDN reduserer forsinkelse og backbone-belastning ved å servere media fra nære edge-noder.</button>
+      <button class="option" data-correct="false">Streaming starter avspilling før hele filen er mottatt ved å bruke fortløpende buffring.</button>
+    </div>
+    <div class="explanation">Riktig. CDN reduserer forsinkelse og backbone-belastning ved å servere media fra nære edge-noder.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 8 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om RTP-sekvensnummer er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">FEC legger til redundans slik at mottaker kan rekonstruere tapte pakker uten retransmisjon.</button>
+      <button class="option" data-correct="false">Kortere keyframe-intervall forbedrer seek og robusthet, men krever mer bitrate.</button>
+      <button class="option" data-correct="false">Playout-buffer glatter ut ujevn pakkeankomst slik at avspilling blir jevnere.</button>
+      <button class="option" data-correct="true">RTP-sekvensnumre brukes til å oppdage tap og håndtere omrekkefølge i mottakeren.</button>
+    </div>
+    <div class="explanation">Riktig. RTP-sekvensnumre brukes til å oppdage tap og håndtere omrekkefølge i mottakeren.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 9 · Lett</div>
+    <div class="q-text">Hva beskriver best RTP-tidsstempel?</div>
+    <div class="options">
+      <button class="option" data-correct="true">RTP-tidsstempel hjelper mottakeren å plassere mediedata riktig i tidslinjen.</button>
+      <button class="option" data-correct="false">Interleaving sprer bursttap over tid slik at feil blir mindre hørbare/synlige.</button>
+      <button class="option" data-correct="false">Lyd og bilde må synkroniseres med tidsstempler og klokkehåndtering for naturlig avspilling.</button>
+      <button class="option" data-correct="false">Større buffer tåler mer jitter, men øker opplevd ende-til-ende-forsinkelse.</button>
+    </div>
+    <div class="explanation">Riktig. RTP-tidsstempel hjelper mottakeren å plassere mediedata riktig i tidslinjen.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 10 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om RTCP-tilbakemelding er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Oppstartstid, rebuffering, bildekvalitet og kvalitetsbytter påvirker brukeropplevelse mest.</button>
+      <button class="option" data-correct="true">RTCP rapporterer kvalitetsmål som tap og jitter for adaptiv styring av strømmen.</button>
+      <button class="option" data-correct="false">Multicast kan skalere én-til-mange effektivt der infrastrukturen støtter det.</button>
+      <button class="option" data-correct="false">Jitter er variasjon i pakkeforsinkelse, ikke nødvendigvis høy gjennomsnittsforsinkelse.</button>
+    </div>
+    <div class="explanation">Riktig. RTCP rapporterer kvalitetsmål som tap og jitter for adaptiv styring av strømmen.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 11 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om forsinkelsesgrense for naturlig tale i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Ved redusert kapasitet bør klienten senke bitrate tidlig for å unngå avspillingsstopp.</button>
+      <button class="option" data-correct="false">Unicast fungerer over dagens internett uten global multicast-støtte i mellomnett.</button>
+      <button class="option" data-correct="true">Rundt under 150 ms oppleves samtale som naturlig; større forsinkelse gjør dialog vanskeligere.</button>
+      <button class="option" data-correct="false">DASH-klienten velger segmentkvalitet dynamisk basert på nettmålinger og bufferfylling.</button>
+    </div>
+    <div class="explanation">Riktig. Rundt under 150 ms oppleves samtale som naturlig; større forsinkelse gjør dialog vanskeligere.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 12 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om hva som skjer over 400 ms taleforsinkelse er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Lavlatensoppsett bruker mindre buffere og kortere segmenter, men tåler mindre nettverksvariasjon.</button>
+      <button class="option" data-correct="false">Jevn utsending og købevisst styring reduserer burst, tap og varians i mottak.</button>
+      <button class="option" data-correct="false">Kortere segmenter gir raskere tilpasning, men høyere protokoll- og request-overhead.</button>
+      <button class="option" data-correct="true">Ved svært høy forsinkelse begynner deltakere å snakke i munnen på hverandre og opplever dårlig flyt.</button>
+    </div>
+    <div class="explanation">Riktig. Ved svært høy forsinkelse begynner deltakere å snakke i munnen på hverandre og opplever dårlig flyt.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 13 · Lett</div>
+    <div class="q-text">Hva beskriver best hvorfor UDP ofte brukes for sanntidsmedia?</div>
+    <div class="options">
+      <button class="option" data-correct="true">UDP unngår retransmisjonslatens og lar applikasjonen styre taps- og tidsstrategi direkte.</button>
+      <button class="option" data-correct="false">I-rammer gir referansepunkter, mens P/B-rammer øker komprimering ved prediksjon over tid.</button>
+      <button class="option" data-correct="false">Streaming starter avspilling før hele filen er mottatt ved å bruke fortløpende buffring.</button>
+      <button class="option" data-correct="false">CDN reduserer forsinkelse og backbone-belastning ved å servere media fra nære edge-noder.</button>
+    </div>
+    <div class="explanation">Riktig. UDP unngår retransmisjonslatens og lar applikasjonen styre taps- og tidsstrategi direkte.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 14 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om ulempe med TCP for live media i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Kortere keyframe-intervall forbedrer seek og robusthet, men krever mer bitrate.</button>
+      <button class="option" data-correct="true">TCP-retransmisjoner og head-of-line blocking kan øke latenstid uakseptabelt for liveinnhold.</button>
+      <button class="option" data-correct="false">Playout-buffer glatter ut ujevn pakkeankomst slik at avspilling blir jevnere.</button>
+      <button class="option" data-correct="false">RTP-sekvensnumre brukes til å oppdage tap og håndtere omrekkefølge i mottakeren.</button>
+    </div>
+    <div class="explanation">Riktig. TCP-retransmisjoner og head-of-line blocking kan øke latenstid uakseptabelt for liveinnhold.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 15 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om FEC i mediestrømmer er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Lyd og bilde må synkroniseres med tidsstempler og klokkehåndtering for naturlig avspilling.</button>
+      <button class="option" data-correct="false">Større buffer tåler mer jitter, men øker opplevd ende-til-ende-forsinkelse.</button>
+      <button class="option" data-correct="true">FEC legger til redundans slik at mottaker kan rekonstruere tapte pakker uten retransmisjon.</button>
+      <button class="option" data-correct="false">RTP-tidsstempel hjelper mottakeren å plassere mediedata riktig i tidslinjen.</button>
+    </div>
+    <div class="explanation">Riktig. FEC legger til redundans slik at mottaker kan rekonstruere tapte pakker uten retransmisjon.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 16 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om interleaving i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Multicast kan skalere én-til-mange effektivt der infrastrukturen støtter det.</button>
+      <button class="option" data-correct="false">Jitter er variasjon i pakkeforsinkelse, ikke nødvendigvis høy gjennomsnittsforsinkelse.</button>
+      <button class="option" data-correct="false">RTCP rapporterer kvalitetsmål som tap og jitter for adaptiv styring av strømmen.</button>
+      <button class="option" data-correct="true">Interleaving sprer bursttap over tid slik at feil blir mindre hørbare/synlige.</button>
+    </div>
+    <div class="explanation">Riktig. Interleaving sprer bursttap over tid slik at feil blir mindre hørbare/synlige.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 17 · Lett</div>
+    <div class="q-text">Hva beskriver best QoE-faktorer i video?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Oppstartstid, rebuffering, bildekvalitet og kvalitetsbytter påvirker brukeropplevelse mest.</button>
+      <button class="option" data-correct="false">Unicast fungerer over dagens internett uten global multicast-støtte i mellomnett.</button>
+      <button class="option" data-correct="false">DASH-klienten velger segmentkvalitet dynamisk basert på nettmålinger og bufferfylling.</button>
+      <button class="option" data-correct="false">Rundt under 150 ms oppleves samtale som naturlig; større forsinkelse gjør dialog vanskeligere.</button>
+    </div>
+    <div class="explanation">Riktig. Oppstartstid, rebuffering, bildekvalitet og kvalitetsbytter påvirker brukeropplevelse mest.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 18 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om adaptiv bitrate ved dårlig nett er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Jevn utsending og købevisst styring reduserer burst, tap og varians i mottak.</button>
+      <button class="option" data-correct="true">Ved redusert kapasitet bør klienten senke bitrate tidlig for å unngå avspillingsstopp.</button>
+      <button class="option" data-correct="false">Kortere segmenter gir raskere tilpasning, men høyere protokoll- og request-overhead.</button>
+      <button class="option" data-correct="false">Ved svært høy forsinkelse begynner deltakere å snakke i munnen på hverandre og opplever dårlig flyt.</button>
+    </div>
+    <div class="explanation">Riktig. Ved redusert kapasitet bør klienten senke bitrate tidlig for å unngå avspillingsstopp.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 19 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om lavlatens live-streaming i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Streaming starter avspilling før hele filen er mottatt ved å bruke fortløpende buffring.</button>
+      <button class="option" data-correct="false">CDN reduserer forsinkelse og backbone-belastning ved å servere media fra nære edge-noder.</button>
+      <button class="option" data-correct="true">Lavlatensoppsett bruker mindre buffere og kortere segmenter, men tåler mindre nettverksvariasjon.</button>
+      <button class="option" data-correct="false">UDP unngår retransmisjonslatens og lar applikasjonen styre taps- og tidsstrategi direkte.</button>
+    </div>
+    <div class="explanation">Riktig. Lavlatensoppsett bruker mindre buffere og kortere segmenter, men tåler mindre nettverksvariasjon.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 20 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om I/P/B-rammer i videokoding er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Playout-buffer glatter ut ujevn pakkeankomst slik at avspilling blir jevnere.</button>
+      <button class="option" data-correct="false">RTP-sekvensnumre brukes til å oppdage tap og håndtere omrekkefølge i mottakeren.</button>
+      <button class="option" data-correct="false">TCP-retransmisjoner og head-of-line blocking kan øke latenstid uakseptabelt for liveinnhold.</button>
+      <button class="option" data-correct="true">I-rammer gir referansepunkter, mens P/B-rammer øker komprimering ved prediksjon over tid.</button>
+    </div>
+    <div class="explanation">Riktig. I-rammer gir referansepunkter, mens P/B-rammer øker komprimering ved prediksjon over tid.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 21 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om keyframe-intervall i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Kortere keyframe-intervall forbedrer seek og robusthet, men krever mer bitrate.</button>
+      <button class="option" data-correct="false">Større buffer tåler mer jitter, men øker opplevd ende-til-ende-forsinkelse.</button>
+      <button class="option" data-correct="false">RTP-tidsstempel hjelper mottakeren å plassere mediedata riktig i tidslinjen.</button>
+      <button class="option" data-correct="false">FEC legger til redundans slik at mottaker kan rekonstruere tapte pakker uten retransmisjon.</button>
+    </div>
+    <div class="explanation">Riktig. Kortere keyframe-intervall forbedrer seek og robusthet, men krever mer bitrate.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 22 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om lip-sync er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Jitter er variasjon i pakkeforsinkelse, ikke nødvendigvis høy gjennomsnittsforsinkelse.</button>
+      <button class="option" data-correct="true">Lyd og bilde må synkroniseres med tidsstempler og klokkehåndtering for naturlig avspilling.</button>
+      <button class="option" data-correct="false">RTCP rapporterer kvalitetsmål som tap og jitter for adaptiv styring av strømmen.</button>
+      <button class="option" data-correct="false">Interleaving sprer bursttap over tid slik at feil blir mindre hørbare/synlige.</button>
+    </div>
+    <div class="explanation">Riktig. Lyd og bilde må synkroniseres med tidsstempler og klokkehåndtering for naturlig avspilling.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 23 · Lett</div>
+    <div class="q-text">Hva beskriver best multicast i distribusjonsnett?</div>
+    <div class="options">
+      <button class="option" data-correct="false">DASH-klienten velger segmentkvalitet dynamisk basert på nettmålinger og bufferfylling.</button>
+      <button class="option" data-correct="false">Rundt under 150 ms oppleves samtale som naturlig; større forsinkelse gjør dialog vanskeligere.</button>
+      <button class="option" data-correct="true">Multicast kan skalere én-til-mange effektivt der infrastrukturen støtter det.</button>
+      <button class="option" data-correct="false">Oppstartstid, rebuffering, bildekvalitet og kvalitetsbytter påvirker brukeropplevelse mest.</button>
+    </div>
+    <div class="explanation">Riktig. Multicast kan skalere én-til-mange effektivt der infrastrukturen støtter det.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 24 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om hvorfor OTT ofte bruker unicast i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Kortere segmenter gir raskere tilpasning, men høyere protokoll- og request-overhead.</button>
+      <button class="option" data-correct="false">Ved svært høy forsinkelse begynner deltakere å snakke i munnen på hverandre og opplever dårlig flyt.</button>
+      <button class="option" data-correct="false">Ved redusert kapasitet bør klienten senke bitrate tidlig for å unngå avspillingsstopp.</button>
+      <button class="option" data-correct="true">Unicast fungerer over dagens internett uten global multicast-støtte i mellomnett.</button>
+    </div>
+    <div class="explanation">Riktig. Unicast fungerer over dagens internett uten global multicast-støtte i mellomnett.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 25 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om pacing og køkontroll i medieavspilling er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Jevn utsending og købevisst styring reduserer burst, tap og varians i mottak.</button>
+      <button class="option" data-correct="false">CDN reduserer forsinkelse og backbone-belastning ved å servere media fra nære edge-noder.</button>
+      <button class="option" data-correct="false">UDP unngår retransmisjonslatens og lar applikasjonen styre taps- og tidsstrategi direkte.</button>
+      <button class="option" data-correct="false">Lavlatensoppsett bruker mindre buffere og kortere segmenter, men tåler mindre nettverksvariasjon.</button>
+    </div>
+    <div class="explanation">Riktig. Jevn utsending og købevisst styring reduserer burst, tap og varians i mottak.</div>
   </div>
 </div>
 </section>

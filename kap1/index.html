@@ -149,40 +149,305 @@
 <div class="container">
   <h2>Test deg selv</h2>
   <p class="section-intro">Sjekk om du har forstått de viktigste konseptene fra dette kapittelet.</p>
+
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 1</div>
-    <div class="q-text">Hva er den viktigste forskjellen mellom pakkesvitsjing og linjesvitsjing?</div>
+    <div class="q-label">Spørsmål 1 · Lett</div>
+    <div class="q-text">Hva beskriver best forskjellen mellom pakkesvitsjing og linjesvitsjing?</div>
     <div class="options">
-      <button class="option" data-correct="false">Pakkesvitsjing krever at det settes opp en dedikert forbindelse før data kan sendes</button>
-      <button class="option" data-correct="false">Linjesvitsjing deler data opp i pakker som sendes uavhengig gjennom nettverket</button>
-      <button class="option" data-correct="true">I pakkesvitsjing deles nettverksressursene dynamisk mellom alle brukere, mens linjesvitsjing reserverer dedikerte ressurser for hver forbindelse</button>
-      <button class="option" data-correct="false">Pakkesvitsjing garanterer at data kommer frem uten forsinkelse, mens linjesvitsjing ikke gjør det</button>
+      <button class="option" data-correct="true">Pakkesvitsjing deler kapasitet dynamisk mellom brukere, mens linjesvitsjing reserverer kapasitet per forbindelse.</button>
+      <button class="option" data-correct="false">La/R måler hvor hardt en lenke belastes; når verdien nærmer seg 1, vokser køene kraftig.</button>
+      <button class="option" data-correct="false">Lagdeling isolerer kompleksitet, gjør design modulært og lar lag utvikles uavhengig.</button>
+      <button class="option" data-correct="false">Aksess-ISP-er kobles mot regionale/tier-1-nett og utveksler trafikk via peering og transitt.</button>
     </div>
-    <div class="explanation">I pakkesvitsjing deles kapasiteten dynamisk gjennom <em>statistisk multipleksing</em> — pakkene fra ulike brukere blandes og deler linkene. I linjesvitsjing reserveres en fast del av kapasiteten (frekvens eller tidsluke) for hele samtalen, selv når brukeren er inaktiv. Pakkesvitsjing er mer effektivt, men gir ingen garantier for forsinkelse eller tap.</div>
+    <div class="explanation">Riktig. Pakkesvitsjing deler kapasitet dynamisk mellom brukere, mens linjesvitsjing reserverer kapasitet per forbindelse.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 2</div>
-    <div class="q-text">Hva definerer en nettverksprotokoll?</div>
+    <div class="q-label">Spørsmål 2 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om hva en nettverksprotokoll faktisk definerer i praksis?</div>
     <div class="options">
-      <button class="option" data-correct="false">Hastigheten data kan sendes med over en bestemt link</button>
-      <button class="option" data-correct="true">Formatet og rekkefølgen av meldinger som utveksles, samt handlingene som utføres ved sending og mottak</button>
-      <button class="option" data-correct="false">Den fysiske kabelen som kobler to maskiner sammen</button>
-      <button class="option" data-correct="false">IP-adressen til en enhet på nettverket</button>
+      <button class="option" data-correct="false">Flaskehalslenken er den med lavest kapasitet på ruten og begrenser ende-til-ende-gjennomstrømning.</button>
+      <button class="option" data-correct="true">En protokoll definerer meldingsformat, rekkefølge og handlinger ved sending og mottak.</button>
+      <button class="option" data-correct="false">Hvert lag legger til sin egen header rundt data fra laget over.</button>
+      <button class="option" data-correct="false">IXP-er lar nettverk utveksle trafikk direkte, noe som reduserer kostnad og ofte forsinkelse.</button>
     </div>
-    <div class="explanation">En protokoll er et sett med regler som definerer <em>formatet</em>, <em>rekkefølgen</em> og <em>handlingene</em> knyttet til meldingsutveksling mellom to eller flere kommuniserende enheter. Uten protokoller ville maskinene sendt bits uten noen felles forståelse av hva de betyr.</div>
+    <div class="explanation">Riktig. En protokoll definerer meldingsformat, rekkefølge og handlinger ved sending og mottak.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 3</div>
-    <div class="q-text">Hvilken av de fire forsinkelseskomponentene er fundamentalt uforutsigbar og avhenger av nettverkstrafikken?</div>
+    <div class="q-label">Spørsmål 3 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om rollen til endesystemer i Internett er faglig best?</div>
     <div class="options">
-      <button class="option" data-correct="false">Prosesseringsforsinkelse (d_proc)</button>
-      <button class="option" data-correct="true">Køforsinkelse (d_queue)</button>
-      <button class="option" data-correct="false">Transmisjonsforsinkelse (d_trans)</button>
-      <button class="option" data-correct="false">Propageringsforsinkelse (d_prop)</button>
+      <button class="option" data-correct="false">Statistisk multipleksing utnytter at brukere er aktive til ulike tider, så kapasitet kan deles effektivt.</button>
+      <button class="option" data-correct="false">Aksessnettet kobler endesystemet til første ruter hos ISP-en.</button>
+      <button class="option" data-correct="true">Endesystemer kjører applikasjoner og er kilder/mål for data, mens rutere bare videresender pakker.</button>
+      <button class="option" data-correct="false">Et botnet koordinerer mange kompromitterte maskiner for å oversvømme et mål med trafikk.</button>
     </div>
-    <div class="explanation">Køforsinkelsen er den eneste av de fire komponentene som er fundamentalt uforutsigbar. Den avhenger av hvor mange andre pakker som allerede venter i ruterkøen — noe som varierer med nettverkstrafikken. De andre tre er enten konstante (prosessering, propagering) eller bestemmes av kjente verdier (transmisjon = L/R).</div>
+    <div class="explanation">Riktig. Endesystemer kjører applikasjoner og er kilder/mål for data, mens rutere bare videresender pakker.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 4 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om store-and-forward-prinsippet i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Pakker droppes når bufferen er full og nye pakker ankommer raskere enn de kan sendes ut.</button>
+      <button class="option" data-correct="false">DSL tildeler typisk mer kapasitet nedstrøms enn oppstrøms fordi brukertrafikk ofte er nedlastningstung.</button>
+      <button class="option" data-correct="false">IP-spoofing er å sende pakker med forfalsket kildeadresse for å skjule eller forvirre avsenderidentitet.</button>
+      <button class="option" data-correct="true">En ruter må motta hele pakken før den kan sende den videre på neste lenke.</button>
+    </div>
+    <div class="explanation">Riktig. En ruter må motta hele pakken før den kan sende den videre på neste lenke.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 5 · Lett</div>
+    <div class="q-text">Hva beskriver best hvordan transmisjonsforsinkelse beregnes?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Transmisjonsforsinkelsen er L/R, altså pakkestørrelse i bits delt på linkhastighet.</button>
+      <button class="option" data-correct="false">Traceroute øker TTL trinnvis slik at hver mellomruter svarer med ICMP time exceeded.</button>
+      <button class="option" data-correct="false">Flere hus deler samme kanal, så brukerhastighet varierer med naboenes aktivitet.</button>
+      <button class="option" data-correct="false">Enkle dataplane-operasjoner i kjernen gir bedre skalerbarhet og høyere videresendingshastighet.</button>
+    </div>
+    <div class="explanation">Riktig. Transmisjonsforsinkelsen er L/R, altså pakkestørrelse i bits delt på linkhastighet.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 6 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om hvordan propageringsforsinkelse beregnes er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Ping måler rundturstid (RTT) mellom ICMP echo request og echo reply.</button>
+      <button class="option" data-correct="true">Propageringsforsinkelsen er avstand delt på signalhastigheten i mediet.</button>
+      <button class="option" data-correct="false">Fiber gir høy kapasitet, lav demping og god robusthet mot elektromagnetisk støy.</button>
+      <button class="option" data-correct="false">Socket-grensesnittet lar applikasjoner sende/motta data over nett uten å implementere ruting selv.</button>
+    </div>
+    <div class="explanation">Riktig. Propageringsforsinkelsen er avstand delt på signalhastigheten i mediet.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 7 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om hvorfor køforsinkelse er vanskelig å forutsi i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Lagdeling isolerer kompleksitet, gjør design modulært og lar lag utvikles uavhengig.</button>
+      <button class="option" data-correct="false">Aksess-ISP-er kobles mot regionale/tier-1-nett og utveksler trafikk via peering og transitt.</button>
+      <button class="option" data-correct="true">Køforsinkelse varierer med momentan trafikkbelastning og antall pakker som allerede venter.</button>
+      <button class="option" data-correct="false">Pakkesvitsjing deler kapasitet dynamisk mellom brukere, mens linjesvitsjing reserverer kapasitet per forbindelse.</button>
+    </div>
+    <div class="explanation">Riktig. Køforsinkelse varierer med momentan trafikkbelastning og antall pakker som allerede venter.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 8 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om hva trafikkintensitet La/R forteller er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Hvert lag legger til sin egen header rundt data fra laget over.</button>
+      <button class="option" data-correct="false">IXP-er lar nettverk utveksle trafikk direkte, noe som reduserer kostnad og ofte forsinkelse.</button>
+      <button class="option" data-correct="false">En protokoll definerer meldingsformat, rekkefølge og handlinger ved sending og mottak.</button>
+      <button class="option" data-correct="true">La/R måler hvor hardt en lenke belastes; når verdien nærmer seg 1, vokser køene kraftig.</button>
+    </div>
+    <div class="explanation">Riktig. La/R måler hvor hardt en lenke belastes; når verdien nærmer seg 1, vokser køene kraftig.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 9 · Lett</div>
+    <div class="q-text">Hva beskriver best hva som er en flaskehalslenke?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Flaskehalslenken er den med lavest kapasitet på ruten og begrenser ende-til-ende-gjennomstrømning.</button>
+      <button class="option" data-correct="false">Aksessnettet kobler endesystemet til første ruter hos ISP-en.</button>
+      <button class="option" data-correct="false">Et botnet koordinerer mange kompromitterte maskiner for å oversvømme et mål med trafikk.</button>
+      <button class="option" data-correct="false">Endesystemer kjører applikasjoner og er kilder/mål for data, mens rutere bare videresender pakker.</button>
+    </div>
+    <div class="explanation">Riktig. Flaskehalslenken er den med lavest kapasitet på ruten og begrenser ende-til-ende-gjennomstrømning.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 10 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om statistisk multipleksing er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">DSL tildeler typisk mer kapasitet nedstrøms enn oppstrøms fordi brukertrafikk ofte er nedlastningstung.</button>
+      <button class="option" data-correct="true">Statistisk multipleksing utnytter at brukere er aktive til ulike tider, så kapasitet kan deles effektivt.</button>
+      <button class="option" data-correct="false">IP-spoofing er å sende pakker med forfalsket kildeadresse for å skjule eller forvirre avsenderidentitet.</button>
+      <button class="option" data-correct="false">En ruter må motta hele pakken før den kan sende den videre på neste lenke.</button>
+    </div>
+    <div class="explanation">Riktig. Statistisk multipleksing utnytter at brukere er aktive til ulike tider, så kapasitet kan deles effektivt.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 11 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om hvorfor pakkedropp skjer i rutere i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Flere hus deler samme kanal, så brukerhastighet varierer med naboenes aktivitet.</button>
+      <button class="option" data-correct="false">Enkle dataplane-operasjoner i kjernen gir bedre skalerbarhet og høyere videresendingshastighet.</button>
+      <button class="option" data-correct="true">Pakker droppes når bufferen er full og nye pakker ankommer raskere enn de kan sendes ut.</button>
+      <button class="option" data-correct="false">Transmisjonsforsinkelsen er L/R, altså pakkestørrelse i bits delt på linkhastighet.</button>
+    </div>
+    <div class="explanation">Riktig. Pakker droppes når bufferen er full og nye pakker ankommer raskere enn de kan sendes ut.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 12 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om hvordan traceroute avdekker rutehopp er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Fiber gir høy kapasitet, lav demping og god robusthet mot elektromagnetisk støy.</button>
+      <button class="option" data-correct="false">Socket-grensesnittet lar applikasjoner sende/motta data over nett uten å implementere ruting selv.</button>
+      <button class="option" data-correct="false">Propageringsforsinkelsen er avstand delt på signalhastigheten i mediet.</button>
+      <button class="option" data-correct="true">Traceroute øker TTL trinnvis slik at hver mellomruter svarer med ICMP time exceeded.</button>
+    </div>
+    <div class="explanation">Riktig. Traceroute øker TTL trinnvis slik at hver mellomruter svarer med ICMP time exceeded.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 13 · Lett</div>
+    <div class="q-text">Hva beskriver best hva ping faktisk måler?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Ping måler rundturstid (RTT) mellom ICMP echo request og echo reply.</button>
+      <button class="option" data-correct="false">Aksess-ISP-er kobles mot regionale/tier-1-nett og utveksler trafikk via peering og transitt.</button>
+      <button class="option" data-correct="false">Pakkesvitsjing deler kapasitet dynamisk mellom brukere, mens linjesvitsjing reserverer kapasitet per forbindelse.</button>
+      <button class="option" data-correct="false">Køforsinkelse varierer med momentan trafikkbelastning og antall pakker som allerede venter.</button>
+    </div>
+    <div class="explanation">Riktig. Ping måler rundturstid (RTT) mellom ICMP echo request og echo reply.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 14 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om hvorfor lagdeling brukes i nettverk i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">IXP-er lar nettverk utveksle trafikk direkte, noe som reduserer kostnad og ofte forsinkelse.</button>
+      <button class="option" data-correct="true">Lagdeling isolerer kompleksitet, gjør design modulært og lar lag utvikles uavhengig.</button>
+      <button class="option" data-correct="false">En protokoll definerer meldingsformat, rekkefølge og handlinger ved sending og mottak.</button>
+      <button class="option" data-correct="false">La/R måler hvor hardt en lenke belastes; når verdien nærmer seg 1, vokser køene kraftig.</button>
+    </div>
+    <div class="explanation">Riktig. Lagdeling isolerer kompleksitet, gjør design modulært og lar lag utvikles uavhengig.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 15 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om enkapsulering i protokollstakken er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Et botnet koordinerer mange kompromitterte maskiner for å oversvømme et mål med trafikk.</button>
+      <button class="option" data-correct="false">Endesystemer kjører applikasjoner og er kilder/mål for data, mens rutere bare videresender pakker.</button>
+      <button class="option" data-correct="true">Hvert lag legger til sin egen header rundt data fra laget over.</button>
+      <button class="option" data-correct="false">Flaskehalslenken er den med lavest kapasitet på ruten og begrenser ende-til-ende-gjennomstrømning.</button>
+    </div>
+    <div class="explanation">Riktig. Hvert lag legger til sin egen header rundt data fra laget over.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 16 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om hva et aksessnett er i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">IP-spoofing er å sende pakker med forfalsket kildeadresse for å skjule eller forvirre avsenderidentitet.</button>
+      <button class="option" data-correct="false">En ruter må motta hele pakken før den kan sende den videre på neste lenke.</button>
+      <button class="option" data-correct="false">Statistisk multipleksing utnytter at brukere er aktive til ulike tider, så kapasitet kan deles effektivt.</button>
+      <button class="option" data-correct="true">Aksessnettet kobler endesystemet til første ruter hos ISP-en.</button>
+    </div>
+    <div class="explanation">Riktig. Aksessnettet kobler endesystemet til første ruter hos ISP-en.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 17 · Lett</div>
+    <div class="q-text">Hva beskriver best hvorfor DSL ofte er asymmetrisk?</div>
+    <div class="options">
+      <button class="option" data-correct="true">DSL tildeler typisk mer kapasitet nedstrøms enn oppstrøms fordi brukertrafikk ofte er nedlastningstung.</button>
+      <button class="option" data-correct="false">Enkle dataplane-operasjoner i kjernen gir bedre skalerbarhet og høyere videresendingshastighet.</button>
+      <button class="option" data-correct="false">Transmisjonsforsinkelsen er L/R, altså pakkestørrelse i bits delt på linkhastighet.</button>
+      <button class="option" data-correct="false">Pakker droppes når bufferen er full og nye pakker ankommer raskere enn de kan sendes ut.</button>
+    </div>
+    <div class="explanation">Riktig. DSL tildeler typisk mer kapasitet nedstrøms enn oppstrøms fordi brukertrafikk ofte er nedlastningstung.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 18 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om hva det betyr at kabelnett er delt medium er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Socket-grensesnittet lar applikasjoner sende/motta data over nett uten å implementere ruting selv.</button>
+      <button class="option" data-correct="true">Flere hus deler samme kanal, så brukerhastighet varierer med naboenes aktivitet.</button>
+      <button class="option" data-correct="false">Propageringsforsinkelsen er avstand delt på signalhastigheten i mediet.</button>
+      <button class="option" data-correct="false">Traceroute øker TTL trinnvis slik at hver mellomruter svarer med ICMP time exceeded.</button>
+    </div>
+    <div class="explanation">Riktig. Flere hus deler samme kanal, så brukerhastighet varierer med naboenes aktivitet.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 19 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om hvorfor fiber brukes i kjernen av Internett i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Pakkesvitsjing deler kapasitet dynamisk mellom brukere, mens linjesvitsjing reserverer kapasitet per forbindelse.</button>
+      <button class="option" data-correct="false">Køforsinkelse varierer med momentan trafikkbelastning og antall pakker som allerede venter.</button>
+      <button class="option" data-correct="true">Fiber gir høy kapasitet, lav demping og god robusthet mot elektromagnetisk støy.</button>
+      <button class="option" data-correct="false">Ping måler rundturstid (RTT) mellom ICMP echo request og echo reply.</button>
+    </div>
+    <div class="explanation">Riktig. Fiber gir høy kapasitet, lav demping og god robusthet mot elektromagnetisk støy.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 20 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om hvordan ISP-hierarkiet er organisert er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">En protokoll definerer meldingsformat, rekkefølge og handlinger ved sending og mottak.</button>
+      <button class="option" data-correct="false">La/R måler hvor hardt en lenke belastes; når verdien nærmer seg 1, vokser køene kraftig.</button>
+      <button class="option" data-correct="false">Lagdeling isolerer kompleksitet, gjør design modulært og lar lag utvikles uavhengig.</button>
+      <button class="option" data-correct="true">Aksess-ISP-er kobles mot regionale/tier-1-nett og utveksler trafikk via peering og transitt.</button>
+    </div>
+    <div class="explanation">Riktig. Aksess-ISP-er kobles mot regionale/tier-1-nett og utveksler trafikk via peering og transitt.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 21 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om rollen til IXP-er i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="true">IXP-er lar nettverk utveksle trafikk direkte, noe som reduserer kostnad og ofte forsinkelse.</button>
+      <button class="option" data-correct="false">Endesystemer kjører applikasjoner og er kilder/mål for data, mens rutere bare videresender pakker.</button>
+      <button class="option" data-correct="false">Flaskehalslenken er den med lavest kapasitet på ruten og begrenser ende-til-ende-gjennomstrømning.</button>
+      <button class="option" data-correct="false">Hvert lag legger til sin egen header rundt data fra laget over.</button>
+    </div>
+    <div class="explanation">Riktig. IXP-er lar nettverk utveksle trafikk direkte, noe som reduserer kostnad og ofte forsinkelse.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 22 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om hva et botnet gjør i et DDoS-angrep er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">En ruter må motta hele pakken før den kan sende den videre på neste lenke.</button>
+      <button class="option" data-correct="true">Et botnet koordinerer mange kompromitterte maskiner for å oversvømme et mål med trafikk.</button>
+      <button class="option" data-correct="false">Statistisk multipleksing utnytter at brukere er aktive til ulike tider, så kapasitet kan deles effektivt.</button>
+      <button class="option" data-correct="false">Aksessnettet kobler endesystemet til første ruter hos ISP-en.</button>
+    </div>
+    <div class="explanation">Riktig. Et botnet koordinerer mange kompromitterte maskiner for å oversvømme et mål med trafikk.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 23 · Lett</div>
+    <div class="q-text">Hva beskriver best hva IP-spoofing innebærer?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Transmisjonsforsinkelsen er L/R, altså pakkestørrelse i bits delt på linkhastighet.</button>
+      <button class="option" data-correct="false">Pakker droppes når bufferen er full og nye pakker ankommer raskere enn de kan sendes ut.</button>
+      <button class="option" data-correct="true">IP-spoofing er å sende pakker med forfalsket kildeadresse for å skjule eller forvirre avsenderidentitet.</button>
+      <button class="option" data-correct="false">DSL tildeler typisk mer kapasitet nedstrøms enn oppstrøms fordi brukertrafikk ofte er nedlastningstung.</button>
+    </div>
+    <div class="explanation">Riktig. IP-spoofing er å sende pakker med forfalsket kildeadresse for å skjule eller forvirre avsenderidentitet.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 24 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om hvorfor kjerneutstyr holdes enkelt i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Propageringsforsinkelsen er avstand delt på signalhastigheten i mediet.</button>
+      <button class="option" data-correct="false">Traceroute øker TTL trinnvis slik at hver mellomruter svarer med ICMP time exceeded.</button>
+      <button class="option" data-correct="false">Flere hus deler samme kanal, så brukerhastighet varierer med naboenes aktivitet.</button>
+      <button class="option" data-correct="true">Enkle dataplane-operasjoner i kjernen gir bedre skalerbarhet og høyere videresendingshastighet.</button>
+    </div>
+    <div class="explanation">Riktig. Enkle dataplane-operasjoner i kjernen gir bedre skalerbarhet og høyere videresendingshastighet.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 25 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om hva socket-grensesnittet gir applikasjoner er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Socket-grensesnittet lar applikasjoner sende/motta data over nett uten å implementere ruting selv.</button>
+      <button class="option" data-correct="false">Køforsinkelse varierer med momentan trafikkbelastning og antall pakker som allerede venter.</button>
+      <button class="option" data-correct="false">Ping måler rundturstid (RTT) mellom ICMP echo request og echo reply.</button>
+      <button class="option" data-correct="false">Fiber gir høy kapasitet, lav demping og god robusthet mot elektromagnetisk støy.</button>
+    </div>
+    <div class="explanation">Riktig. Socket-grensesnittet lar applikasjoner sende/motta data over nett uten å implementere ruting selv.</div>
   </div>
 </div>
 </section>
