@@ -150,53 +150,307 @@
 <!-- ============ QUIZ ============ -->
 <section id="quiz">
 <div class="container">
-  <div class="section-badge">Test deg selv</div>
-  <h2>Hurtigquiz &mdash; kapittel <em>4</em></h2>
-  <p class="section-intro">Sjekk om du har f&aring;tt med deg det viktigste fra nettverkslagets dataplan.</p>
+  <h2>Test deg selv</h2>
+  <p class="section-intro">Sjekk om du har forstått de viktigste konseptene fra dette kapittelet.</p>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Sp&oslash;rsm&aring;l 1</div>
-    <p class="q-text">En router har f&oslash;lgende forwarding-tabell. Hvilken utport velges for en pakke med destinasjon <code>10.1.5.200</code>?</p>
-    <table style="margin-bottom:16px;">
-      <thead><tr><th>Prefiks</th><th>Utport</th></tr></thead>
-      <tbody>
-        <tr><td class="mono-cell">10.0.0.0/8</td><td>0</td></tr>
-        <tr><td class="mono-cell">10.1.0.0/16</td><td>1</td></tr>
-        <tr><td class="mono-cell">10.1.4.0/22</td><td>2</td></tr>
-        <tr><td class="mono-cell">0.0.0.0/0</td><td>3</td></tr>
-      </tbody>
-    </table>
+    <div class="q-label">Spørsmål 1 · Lett</div>
+    <div class="q-text">Hva beskriver best forwarding i dataplanet?</div>
     <div class="options">
-      <button class="option" data-correct="false">Port 0 &mdash; /8 matcher og er den f&oslash;rste i tabellen.</button>
-      <button class="option" data-correct="false">Port 1 &mdash; /16 matcher og er mest spesifikk.</button>
-      <button class="option" data-correct="true">Port 2 &mdash; /22 er det lengste prefikset som matcher.</button>
-      <button class="option" data-correct="false">Port 3 &mdash; default-ruten brukes n&aring;r det er tvetydig.</button>
+      <button class="option" data-correct="true">Forwarding er den raske per-pakke-operasjonen som sender en pakke til riktig utport.</button>
+      <button class="option" data-correct="false">Typisk DHCP-forløp er Discover, Offer, Request og Ack.</button>
+      <button class="option" data-correct="false">Med DF=1 droppes for store pakker, og avsender må normalt redusere pakkestørrelse.</button>
+      <button class="option" data-correct="false">Aggregering slår sammen prefikser for å redusere tabellstørrelse og kontrollplane-belastning.</button>
     </div>
-    <div class="explanation"><strong>Riktig!</strong> Alle tre prefiksene (/8, /16, /22) matcher <code>10.1.5.200</code>, men <strong>longest prefix match</strong> velger /22 fordi det er det mest spesifikke. Adressen <code>10.1.5.200</code> = <code>10.1.0000&nbsp;01.11001000</code>, og de f&oslash;rste 22 bitene matcher prefikset <code>10.1.4.0/22</code> (10.1.0000&nbsp;01xx&nbsp;xxxx.xxxx&nbsp;xxxx). Default-ruten brukes bare n&aring;r ingen andre prefikser matcher.</div>
+    <div class="explanation">Riktig. Forwarding er den raske per-pakke-operasjonen som sender en pakke til riktig utport.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Sp&oslash;rsm&aring;l 2</div>
-    <p class="q-text">Et hjemmenett med 5 enheter bruker NAT. Alle enhetene surfer p&aring; nettet samtidig. Hva ser en ekstern webserver som kilde-IP p&aring; alle foresp&oslash;rslene?</p>
+    <div class="q-label">Spørsmål 2 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om longest-prefix matching i praksis?</div>
     <div class="options">
-      <button class="option" data-correct="false">Fem forskjellige offentlige IP-adresser &mdash; &eacute;n per enhet.</button>
-      <button class="option" data-correct="true">Samme offentlige IP-adresse, men med forskjellige kilde-portnumre.</button>
-      <button class="option" data-correct="false">De private adressene (f.eks. 192.168.1.x) &mdash; NAT er transparent.</button>
-      <button class="option" data-correct="false">Routerens MAC-adresse i stedet for IP-adresse.</button>
+      <button class="option" data-correct="false">NAT mapper mange interne adresser til én offentlig adresse ved hjelp av portnumre.</button>
+      <button class="option" data-correct="true">Når flere ruter matcher, velges den med lengst og mest spesifikt prefiks.</button>
+      <button class="option" data-correct="false">IPv6 bruker en fast 40-byte basisheader som forenkler rask forwarding.</button>
+      <button class="option" data-correct="false">IP lover ikke levering, rekkefølge eller båndbreddegaranti; det håndteres i endesystemene.</button>
     </div>
-    <div class="explanation"><strong>Riktig!</strong> NAT-routeren omskriver kilde-IP-en p&aring; alle utg&aring;ende pakker til sin ene offentlige adresse. For &aring; skille mellom de interne enhetene bruker den forskjellige <strong>kilde-portnumre</strong>, som den lagrer i NAT-tabellen. N&aring;r svaret kommer tilbake, sl&aring;r routeren opp portnummeret i tabellen og videresender til riktig intern enhet.</div>
+    <div class="explanation">Riktig. Når flere ruter matcher, velges den med lengst og mest spesifikt prefiks.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Sp&oslash;rsm&aring;l 3</div>
-    <p class="q-text">Hva er den viktigste forbedringen i IPv6 sammenlignet med IPv4 n&aring;r det gjelder forwarding-ytelse i routere?</p>
+    <div class="q-label">Spørsmål 3 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om CIDR-prefikser er faglig best?</div>
     <div class="options">
-      <button class="option" data-correct="false">IPv6 har st&oslash;rre adresser, s&aring; routere kan adressere flere enheter.</button>
-      <button class="option" data-correct="true">IPv6 har en fast 40-byte header uten checksum &mdash; routere slipper &aring; reberegne checksum per hopp.</button>
-      <button class="option" data-correct="false">IPv6 bruker flow labels til &aring; eliminere behovet for forwarding-tabeller.</button>
-      <button class="option" data-correct="false">IPv6 krypterer alle pakker automatisk, s&aring; routere trenger ikke inspisere innholdet.</button>
+      <button class="option" data-correct="false">Private adresser er ikke globalt rutbare og brukes bak NAT i lokale nett.</button>
+      <button class="option" data-correct="false">IPv6 fjernet headerchecksum for å redusere arbeid per hopp siden andre lag allerede har feilkontroll.</button>
+      <button class="option" data-correct="true">CIDR skriver nett med adresse/prefikslengde og muliggjør fleksibel adresseallokering.</button>
+      <button class="option" data-correct="false">MAC-adresser er lokale per lenke og byttes for hvert hopp, mens IP-destinasjonen er ende-til-ende.</button>
     </div>
-    <div class="explanation"><strong>Riktig!</strong> I IPv4 m&aring; header-checksum reberegnes i <em>hver eneste router</em> fordi TTL-feltet endres per hopp. IPv6 fjernet checksummen helt (transportlaget har sin egen), og headeren er fast p&aring; 40 bytes uten options. Resultatet er raskere forwarding i data plane.</div>
+    <div class="explanation">Riktig. CIDR skriver nett med adresse/prefikslengde og muliggjør fleksibel adresseallokering.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 4 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om default-rute i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">TTL reduseres per hopp for å hindre at pakker sirkulerer uendelig ved rutingfeil.</button>
+      <button class="option" data-correct="false">Når utgående lenke er fullbooket, bygges kø; ved full buffer må pakker droppes.</button>
+      <button class="option" data-correct="false">NAT skjuler interne verter og krever port forwarding eller lignende for å nå interne tjenester utenfra.</button>
+      <button class="option" data-correct="true">Default-ruten brukes når ingen mer spesifikk oppføring matcher destinasjonsadressen.</button>
+    </div>
+    <div class="explanation">Riktig. Default-ruten brukes når ingen mer spesifikk oppføring matcher destinasjonsadressen.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 5 · Lett</div>
+    <div class="q-text">Hva beskriver best subnettmaske?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Subnettmasken skiller nettverksdel fra hostdel i en IPv4-adresse.</button>
+      <button class="option" data-correct="false">IPv4-headerchecksum må oppdateres i hver ruter fordi headerfelter som TTL endres.</button>
+      <button class="option" data-correct="false">Ruteren gjør prefiksoppslag på destinasjonsadresse for å velge riktig neste hopp.</button>
+      <button class="option" data-correct="false">CIDR gjør det mulig å tilpasse subnettstørrelse etter faktisk behov i stedet for faste klasser.</button>
+    </div>
+    <div class="explanation">Riktig. Subnettmasken skiller nettverksdel fra hostdel i en IPv4-adresse.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 6 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om vert som sender til annet subnett er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Hvis et datagram er større enn linkens MTU og DF=0, kan det fragmenteres i flere biter.</button>
+      <button class="option" data-correct="true">Verten sender rammen til default gateway når målet ligger utenfor eget subnett.</button>
+      <button class="option" data-correct="false">Switching fabric flytter pakker fra valgt inngangsport til valgt utgangsport internt i ruteren.</button>
+      <button class="option" data-correct="false">Små nett bruker ofte default-rute for å sende ukjent trafikk mot en upstream-ruter.</button>
+    </div>
+    <div class="explanation">Riktig. Verten sender rammen til default gateway når målet ligger utenfor eget subnett.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 7 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om ARP-oppslag i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Med DF=1 droppes for store pakker, og avsender må normalt redusere pakkestørrelse.</button>
+      <button class="option" data-correct="false">Aggregering slår sammen prefikser for å redusere tabellstørrelse og kontrollplane-belastning.</button>
+      <button class="option" data-correct="true">ARP oversetter lokal IP-adresse til lokal MAC-adresse på samme lenke.</button>
+      <button class="option" data-correct="false">Forwarding er den raske per-pakke-operasjonen som sender en pakke til riktig utport.</button>
+    </div>
+    <div class="explanation">Riktig. ARP oversetter lokal IP-adresse til lokal MAC-adresse på samme lenke.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 8 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om DHCP DORA-sekvensen er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">IPv6 bruker en fast 40-byte basisheader som forenkler rask forwarding.</button>
+      <button class="option" data-correct="false">IP lover ikke levering, rekkefølge eller båndbreddegaranti; det håndteres i endesystemene.</button>
+      <button class="option" data-correct="false">Når flere ruter matcher, velges den med lengst og mest spesifikt prefiks.</button>
+      <button class="option" data-correct="true">Typisk DHCP-forløp er Discover, Offer, Request og Ack.</button>
+    </div>
+    <div class="explanation">Riktig. Typisk DHCP-forløp er Discover, Offer, Request og Ack.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 9 · Lett</div>
+    <div class="q-text">Hva beskriver best NAT med portoversettelse?</div>
+    <div class="options">
+      <button class="option" data-correct="true">NAT mapper mange interne adresser til én offentlig adresse ved hjelp av portnumre.</button>
+      <button class="option" data-correct="false">IPv6 fjernet headerchecksum for å redusere arbeid per hopp siden andre lag allerede har feilkontroll.</button>
+      <button class="option" data-correct="false">MAC-adresser er lokale per lenke og byttes for hvert hopp, mens IP-destinasjonen er ende-til-ende.</button>
+      <button class="option" data-correct="false">CIDR skriver nett med adresse/prefikslengde og muliggjør fleksibel adresseallokering.</button>
+    </div>
+    <div class="explanation">Riktig. NAT mapper mange interne adresser til én offentlig adresse ved hjelp av portnumre.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 10 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om private IPv4-adresser er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Når utgående lenke er fullbooket, bygges kø; ved full buffer må pakker droppes.</button>
+      <button class="option" data-correct="true">Private adresser er ikke globalt rutbare og brukes bak NAT i lokale nett.</button>
+      <button class="option" data-correct="false">NAT skjuler interne verter og krever port forwarding eller lignende for å nå interne tjenester utenfra.</button>
+      <button class="option" data-correct="false">Default-ruten brukes når ingen mer spesifikk oppføring matcher destinasjonsadressen.</button>
+    </div>
+    <div class="explanation">Riktig. Private adresser er ikke globalt rutbare og brukes bak NAT i lokale nett.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 11 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om TTL-feltet i IPv4 i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Ruteren gjør prefiksoppslag på destinasjonsadresse for å velge riktig neste hopp.</button>
+      <button class="option" data-correct="false">CIDR gjør det mulig å tilpasse subnettstørrelse etter faktisk behov i stedet for faste klasser.</button>
+      <button class="option" data-correct="true">TTL reduseres per hopp for å hindre at pakker sirkulerer uendelig ved rutingfeil.</button>
+      <button class="option" data-correct="false">Subnettmasken skiller nettverksdel fra hostdel i en IPv4-adresse.</button>
+    </div>
+    <div class="explanation">Riktig. TTL reduseres per hopp for å hindre at pakker sirkulerer uendelig ved rutingfeil.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 12 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om IPv4-headerchecksum er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Switching fabric flytter pakker fra valgt inngangsport til valgt utgangsport internt i ruteren.</button>
+      <button class="option" data-correct="false">Små nett bruker ofte default-rute for å sende ukjent trafikk mot en upstream-ruter.</button>
+      <button class="option" data-correct="false">Verten sender rammen til default gateway når målet ligger utenfor eget subnett.</button>
+      <button class="option" data-correct="true">IPv4-headerchecksum må oppdateres i hver ruter fordi headerfelter som TTL endres.</button>
+    </div>
+    <div class="explanation">Riktig. IPv4-headerchecksum må oppdateres i hver ruter fordi headerfelter som TTL endres.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 13 · Lett</div>
+    <div class="q-text">Hva beskriver best IP-fragmentering?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Hvis et datagram er større enn linkens MTU og DF=0, kan det fragmenteres i flere biter.</button>
+      <button class="option" data-correct="false">Aggregering slår sammen prefikser for å redusere tabellstørrelse og kontrollplane-belastning.</button>
+      <button class="option" data-correct="false">Forwarding er den raske per-pakke-operasjonen som sender en pakke til riktig utport.</button>
+      <button class="option" data-correct="false">ARP oversetter lokal IP-adresse til lokal MAC-adresse på samme lenke.</button>
+    </div>
+    <div class="explanation">Riktig. Hvis et datagram er større enn linkens MTU og DF=0, kan det fragmenteres i flere biter.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 14 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om DF-bit satt til 1 i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">IP lover ikke levering, rekkefølge eller båndbreddegaranti; det håndteres i endesystemene.</button>
+      <button class="option" data-correct="true">Med DF=1 droppes for store pakker, og avsender må normalt redusere pakkestørrelse.</button>
+      <button class="option" data-correct="false">Når flere ruter matcher, velges den med lengst og mest spesifikt prefiks.</button>
+      <button class="option" data-correct="false">Typisk DHCP-forløp er Discover, Offer, Request og Ack.</button>
+    </div>
+    <div class="explanation">Riktig. Med DF=1 droppes for store pakker, og avsender må normalt redusere pakkestørrelse.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 15 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om IPv6 fast header er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">MAC-adresser er lokale per lenke og byttes for hvert hopp, mens IP-destinasjonen er ende-til-ende.</button>
+      <button class="option" data-correct="false">CIDR skriver nett med adresse/prefikslengde og muliggjør fleksibel adresseallokering.</button>
+      <button class="option" data-correct="true">IPv6 bruker en fast 40-byte basisheader som forenkler rask forwarding.</button>
+      <button class="option" data-correct="false">NAT mapper mange interne adresser til én offentlig adresse ved hjelp av portnumre.</button>
+    </div>
+    <div class="explanation">Riktig. IPv6 bruker en fast 40-byte basisheader som forenkler rask forwarding.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 16 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om hvorfor IPv6 fjernet headerchecksum i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">NAT skjuler interne verter og krever port forwarding eller lignende for å nå interne tjenester utenfra.</button>
+      <button class="option" data-correct="false">Default-ruten brukes når ingen mer spesifikk oppføring matcher destinasjonsadressen.</button>
+      <button class="option" data-correct="false">Private adresser er ikke globalt rutbare og brukes bak NAT i lokale nett.</button>
+      <button class="option" data-correct="true">IPv6 fjernet headerchecksum for å redusere arbeid per hopp siden andre lag allerede har feilkontroll.</button>
+    </div>
+    <div class="explanation">Riktig. IPv6 fjernet headerchecksum for å redusere arbeid per hopp siden andre lag allerede har feilkontroll.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 17 · Lett</div>
+    <div class="q-text">Hva beskriver best utgående kø i ruter?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Når utgående lenke er fullbooket, bygges kø; ved full buffer må pakker droppes.</button>
+      <button class="option" data-correct="false">CIDR gjør det mulig å tilpasse subnettstørrelse etter faktisk behov i stedet for faste klasser.</button>
+      <button class="option" data-correct="false">Subnettmasken skiller nettverksdel fra hostdel i en IPv4-adresse.</button>
+      <button class="option" data-correct="false">TTL reduseres per hopp for å hindre at pakker sirkulerer uendelig ved rutingfeil.</button>
+    </div>
+    <div class="explanation">Riktig. Når utgående lenke er fullbooket, bygges kø; ved full buffer må pakker droppes.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 18 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om oppslag i forwarding-tabell er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Små nett bruker ofte default-rute for å sende ukjent trafikk mot en upstream-ruter.</button>
+      <button class="option" data-correct="true">Ruteren gjør prefiksoppslag på destinasjonsadresse for å velge riktig neste hopp.</button>
+      <button class="option" data-correct="false">Verten sender rammen til default gateway når målet ligger utenfor eget subnett.</button>
+      <button class="option" data-correct="false">IPv4-headerchecksum må oppdateres i hver ruter fordi headerfelter som TTL endres.</button>
+    </div>
+    <div class="explanation">Riktig. Ruteren gjør prefiksoppslag på destinasjonsadresse for å velge riktig neste hopp.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 19 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om switching fabric i en ruter i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Forwarding er den raske per-pakke-operasjonen som sender en pakke til riktig utport.</button>
+      <button class="option" data-correct="false">ARP oversetter lokal IP-adresse til lokal MAC-adresse på samme lenke.</button>
+      <button class="option" data-correct="true">Switching fabric flytter pakker fra valgt inngangsport til valgt utgangsport internt i ruteren.</button>
+      <button class="option" data-correct="false">Hvis et datagram er større enn linkens MTU og DF=0, kan det fragmenteres i flere biter.</button>
+    </div>
+    <div class="explanation">Riktig. Switching fabric flytter pakker fra valgt inngangsport til valgt utgangsport internt i ruteren.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 20 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om ruteaggregering er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Når flere ruter matcher, velges den med lengst og mest spesifikt prefiks.</button>
+      <button class="option" data-correct="false">Typisk DHCP-forløp er Discover, Offer, Request og Ack.</button>
+      <button class="option" data-correct="false">Med DF=1 droppes for store pakker, og avsender må normalt redusere pakkestørrelse.</button>
+      <button class="option" data-correct="true">Aggregering slår sammen prefikser for å redusere tabellstørrelse og kontrollplane-belastning.</button>
+    </div>
+    <div class="explanation">Riktig. Aggregering slår sammen prefikser for å redusere tabellstørrelse og kontrollplane-belastning.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 21 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om best-effort i IP i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="true">IP lover ikke levering, rekkefølge eller båndbreddegaranti; det håndteres i endesystemene.</button>
+      <button class="option" data-correct="false">CIDR skriver nett med adresse/prefikslengde og muliggjør fleksibel adresseallokering.</button>
+      <button class="option" data-correct="false">NAT mapper mange interne adresser til én offentlig adresse ved hjelp av portnumre.</button>
+      <button class="option" data-correct="false">IPv6 bruker en fast 40-byte basisheader som forenkler rask forwarding.</button>
+    </div>
+    <div class="explanation">Riktig. IP lover ikke levering, rekkefølge eller båndbreddegaranti; det håndteres i endesystemene.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 22 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om hvordan MAC-adresser endres hop-for-hop er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Default-ruten brukes når ingen mer spesifikk oppføring matcher destinasjonsadressen.</button>
+      <button class="option" data-correct="true">MAC-adresser er lokale per lenke og byttes for hvert hopp, mens IP-destinasjonen er ende-til-ende.</button>
+      <button class="option" data-correct="false">Private adresser er ikke globalt rutbare og brukes bak NAT i lokale nett.</button>
+      <button class="option" data-correct="false">IPv6 fjernet headerchecksum for å redusere arbeid per hopp siden andre lag allerede har feilkontroll.</button>
+    </div>
+    <div class="explanation">Riktig. MAC-adresser er lokale per lenke og byttes for hvert hopp, mens IP-destinasjonen er ende-til-ende.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 23 · Lett</div>
+    <div class="q-text">Hva beskriver best NAT og innkommende forbindelser?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Subnettmasken skiller nettverksdel fra hostdel i en IPv4-adresse.</button>
+      <button class="option" data-correct="false">TTL reduseres per hopp for å hindre at pakker sirkulerer uendelig ved rutingfeil.</button>
+      <button class="option" data-correct="true">NAT skjuler interne verter og krever port forwarding eller lignende for å nå interne tjenester utenfra.</button>
+      <button class="option" data-correct="false">Når utgående lenke er fullbooket, bygges kø; ved full buffer må pakker droppes.</button>
+    </div>
+    <div class="explanation">Riktig. NAT skjuler interne verter og krever port forwarding eller lignende for å nå interne tjenester utenfra.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 24 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om CIDR og variabel subnetting i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Verten sender rammen til default gateway når målet ligger utenfor eget subnett.</button>
+      <button class="option" data-correct="false">IPv4-headerchecksum må oppdateres i hver ruter fordi headerfelter som TTL endres.</button>
+      <button class="option" data-correct="false">Ruteren gjør prefiksoppslag på destinasjonsadresse for å velge riktig neste hopp.</button>
+      <button class="option" data-correct="true">CIDR gjør det mulig å tilpasse subnettstørrelse etter faktisk behov i stedet for faste klasser.</button>
+    </div>
+    <div class="explanation">Riktig. CIDR gjør det mulig å tilpasse subnettstørrelse etter faktisk behov i stedet for faste klasser.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 25 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om når default-rute er en god strategi er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Små nett bruker ofte default-rute for å sende ukjent trafikk mot en upstream-ruter.</button>
+      <button class="option" data-correct="false">ARP oversetter lokal IP-adresse til lokal MAC-adresse på samme lenke.</button>
+      <button class="option" data-correct="false">Hvis et datagram er større enn linkens MTU og DF=0, kan det fragmenteres i flere biter.</button>
+      <button class="option" data-correct="false">Switching fabric flytter pakker fra valgt inngangsport til valgt utgangsport internt i ruteren.</button>
+    </div>
+    <div class="explanation">Riktig. Små nett bruker ofte default-rute for å sende ukjent trafikk mot en upstream-ruter.</div>
   </div>
 </div>
 </section>

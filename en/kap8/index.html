@@ -141,41 +141,305 @@
   <h2>Test yourself</h2>
   <p class="section-intro">Check whether you have understood the most important concepts from this chapter.</p>
 
-<div class="quiz" data-quiz style="max-width:820px;margin:0 auto;">
-  <div class="q-label">Question 1</div>
-  <div class="q-text">Alice wants to send a large, confidential file to Bob. Why doesn't she simply use Bob's public RSA key to encrypt the entire file directly?</div>
-  <div class="options">
-    <button class="option" data-correct="false">Because RSA keys only work for short text messages, not files</button>
-    <button class="option" data-correct="true">Because asymmetric encryption (RSA) is extremely slow compared to symmetric encryption — in practice, one encrypts the file with a fast symmetric key (e.g., AES) and uses RSA only to encrypt the short symmetric key</button>
-    <button class="option" data-correct="false">Because Bob's public key is available to everyone, and anyone could decrypt</button>
-    <button class="option" data-correct="false">Because RSA does not provide integrity protection, so one must use AES instead</button>
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 1 · Easy</div>
+    <div class="q-text">Which statement best describes the CIA triad?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Confidentiality, integrity, and availability are the foundational goals of information security.</button>
+      <button class="option" data-correct="false">A MAC provides integrity and authentication between parties sharing a secret key.</button>
+      <button class="option" data-correct="false">Salts prevent equal passwords from producing equal hashes and weaken precomputed-table attacks.</button>
+      <button class="option" data-correct="false">MITM places an attacker in the traffic path for eavesdropping, modification, or injection.</button>
+    </div>
+    <div class="explanation">Correct. Confidentiality, integrity, and availability are the foundational goals of information security.</div>
   </div>
-  <div class="explanation">Asymmetric encryption (such as RSA) is orders of magnitude slower than symmetric encryption (such as AES). Therefore, in practice <strong>hybrid encryption</strong> is used: generate a random symmetric session key K<sub>S</sub>, encrypt the file with K<sub>S</sub> (fast), and encrypt only K<sub>S</sub> with Bob's public RSA key. Bob decrypts K<sub>S</sub> with his private key, then uses it to decrypt the file. This is exactly what TLS and secure email do.</div>
-</div>
 
-<div class="quiz" data-quiz style="max-width:820px;margin:0 auto;">
-  <div class="q-label">Question 2</div>
-  <div class="q-text">What is the main difference between a MAC (Message Authentication Code) and a digital signature?</div>
-  <div class="options">
-    <button class="option" data-correct="false">A MAC encrypts the message, while a digital signature only verifies the sender</button>
-    <button class="option" data-correct="false">A digital signature uses symmetric keys, while a MAC uses public key cryptography</button>
-    <button class="option" data-correct="true">A MAC uses a shared secret key (both parties can create and verify), while a digital signature uses the sender's private key (only the sender can sign, anyone can verify) — this provides non-repudiation</button>
-    <button class="option" data-correct="false">There is no difference — MAC and digital signature are two names for the same thing</button>
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 2 · Medium</div>
+    <div class="q-text">In practice, which statement about symmetric encryption is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Digital signatures provide verifiable sender authentication and non-repudiation.</button>
+      <button class="option" data-correct="true">Symmetric encryption is fast and suitable for bulk data with a shared secret key.</button>
+      <button class="option" data-correct="false">Stateless filtering matches packets against rules without flow history context.</button>
+      <button class="option" data-correct="false">Replay attacks reuse valid messages later to trick systems into accepting stale actions.</button>
+    </div>
+    <div class="explanation">Correct. Symmetric encryption is fast and suitable for bulk data with a shared secret key.</div>
   </div>
-  <div class="explanation">A MAC is based on a <strong>shared symmetric key</strong> — both Alice and Bob can create and verify the MAC, but neither can prove to a third party who created it. A digital signature uses the <strong>sender's private key</strong>, so only Alice can sign, while anyone with her public key can verify. This provides <em>non-repudiation</em>: Alice cannot deny having signed the message.</div>
-</div>
 
-<div class="quiz" data-quiz style="max-width:820px;margin:0 auto;">
-  <div class="q-label">Question 3</div>
-  <div class="q-text">During a TLS handshake, the server sends its certificate to the client. What does this certificate contain, and why is it necessary?</div>
-  <div class="options">
-    <button class="option" data-correct="false">The certificate contains the server's private key, so that the client can decrypt data</button>
-    <button class="option" data-correct="true">The certificate contains the server's public key, signed by a trusted Certificate Authority (CA) — so the client can verify that it is talking to the correct server and not an attacker</button>
-    <button class="option" data-correct="false">The certificate contains a copy of the symmetric session key for this connection</button>
-    <button class="option" data-correct="false">The certificate contains a list of all permitted encryption algorithms</button>
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 3 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of asymmetric encryption is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">A certificate binds identity to a public key through a signature from a trusted CA.</button>
+      <button class="option" data-correct="false">A stateful firewall tracks connection state and can dynamically permit return traffic.</button>
+      <button class="option" data-correct="true">Asymmetric cryptography uses key pairs and is useful for key exchange and signatures.</button>
+      <button class="option" data-correct="false">Unique nonces/timestamps provide freshness and reduce replay risk.</button>
+    </div>
+    <div class="explanation">Correct. Asymmetric cryptography uses key pairs and is useful for key exchange and signatures.</div>
   </div>
-  <div class="explanation">A TLS certificate binds a <strong>public key</strong> to an identity (e.g., ntnu.no), and this binding is <strong>signed by a trusted CA</strong>. Without the certificate, Trudy could impersonate the server (man-in-the-middle attack). The client verifies the CA's signature using the CA's public key (which is already built into the browser), and then trusts that the public key in the certificate really belongs to the server.</div>
-</div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 4 · Medium</div>
+    <div class="q-text">In practice, which statement about hybrid encryption is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">The TLS handshake establishes crypto parameters and shared session keys before application data is sent.</button>
+      <button class="option" data-correct="false">IDS detects and alerts, while IPS can actively block suspicious traffic.</button>
+      <button class="option" data-correct="false">DNS spoofing tries to make clients resolve wrong IPs and contact attacker-controlled targets.</button>
+      <button class="option" data-correct="true">Hybrid schemes use asymmetric methods for key exchange and symmetric methods for data encryption.</button>
+    </div>
+    <div class="explanation">Correct. Hybrid schemes use asymmetric methods for key exchange and symmetric methods for data encryption.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 5 · Easy</div>
+    <div class="q-text">Which statement best describes AES?</div>
+    <div class="options">
+      <button class="option" data-correct="true">AES is a symmetric block cipher used widely in modern protocols.</button>
+      <button class="option" data-correct="false">Session keys are short-lived keys used for efficient encryption of one connection.</button>
+      <button class="option" data-correct="false">DDoS uses many distributed sources to overload targets and make filtering harder.</button>
+      <button class="option" data-correct="false">Least privilege restricts access to what is necessary and limits blast radius on compromise.</button>
+    </div>
+    <div class="explanation">Correct. AES is a symmetric block cipher used widely in modern protocols.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 6 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of RSA/ECC keys is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">PFS ensures compromise of long-term keys does not reveal past sessions.</button>
+      <button class="option" data-correct="true">The private key remains secret, while the public key can be shared for verification and key agreement.</button>
+      <button class="option" data-correct="false">Phishing manipulates users into revealing secrets via convincing but fake messages/sites.</button>
+      <button class="option" data-correct="false">Multiple independent security layers keep systems resilient even if one control fails.</button>
+    </div>
+    <div class="explanation">Correct. The private key remains secret, while the public key can be shared for verification and key agreement.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 7 · Medium</div>
+    <div class="q-text">In practice, which statement about hash functions is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Salts prevent equal passwords from producing equal hashes and weaken precomputed-table attacks.</button>
+      <button class="option" data-correct="false">MITM places an attacker in the traffic path for eavesdropping, modification, or injection.</button>
+      <button class="option" data-correct="true">A cryptographic hash gives a short fingerprint that changes dramatically with tiny input changes.</button>
+      <button class="option" data-correct="false">Confidentiality, integrity, and availability are the foundational goals of information security.</button>
+    </div>
+    <div class="explanation">Correct. A cryptographic hash gives a short fingerprint that changes dramatically with tiny input changes.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 8 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of a Message Authentication Code (MAC) is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Stateless filtering matches packets against rules without flow history context.</button>
+      <button class="option" data-correct="false">Replay attacks reuse valid messages later to trick systems into accepting stale actions.</button>
+      <button class="option" data-correct="false">Symmetric encryption is fast and suitable for bulk data with a shared secret key.</button>
+      <button class="option" data-correct="true">A MAC provides integrity and authentication between parties sharing a secret key.</button>
+    </div>
+    <div class="explanation">Correct. A MAC provides integrity and authentication between parties sharing a secret key.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 9 · Easy</div>
+    <div class="q-text">Which statement best describes digital signatures?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Digital signatures provide verifiable sender authentication and non-repudiation.</button>
+      <button class="option" data-correct="false">A stateful firewall tracks connection state and can dynamically permit return traffic.</button>
+      <button class="option" data-correct="false">Unique nonces/timestamps provide freshness and reduce replay risk.</button>
+      <button class="option" data-correct="false">Asymmetric cryptography uses key pairs and is useful for key exchange and signatures.</button>
+    </div>
+    <div class="explanation">Correct. Digital signatures provide verifiable sender authentication and non-repudiation.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 10 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of certificates and CAs is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">IDS detects and alerts, while IPS can actively block suspicious traffic.</button>
+      <button class="option" data-correct="true">A certificate binds identity to a public key through a signature from a trusted CA.</button>
+      <button class="option" data-correct="false">DNS spoofing tries to make clients resolve wrong IPs and contact attacker-controlled targets.</button>
+      <button class="option" data-correct="false">Hybrid schemes use asymmetric methods for key exchange and symmetric methods for data encryption.</button>
+    </div>
+    <div class="explanation">Correct. A certificate binds identity to a public key through a signature from a trusted CA.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 11 · Medium</div>
+    <div class="q-text">In practice, which statement about the TLS handshake is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">DDoS uses many distributed sources to overload targets and make filtering harder.</button>
+      <button class="option" data-correct="false">Least privilege restricts access to what is necessary and limits blast radius on compromise.</button>
+      <button class="option" data-correct="true">The TLS handshake establishes crypto parameters and shared session keys before application data is sent.</button>
+      <button class="option" data-correct="false">AES is a symmetric block cipher used widely in modern protocols.</button>
+    </div>
+    <div class="explanation">Correct. The TLS handshake establishes crypto parameters and shared session keys before application data is sent.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 12 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of session keys is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Phishing manipulates users into revealing secrets via convincing but fake messages/sites.</button>
+      <button class="option" data-correct="false">Multiple independent security layers keep systems resilient even if one control fails.</button>
+      <button class="option" data-correct="false">The private key remains secret, while the public key can be shared for verification and key agreement.</button>
+      <button class="option" data-correct="true">Session keys are short-lived keys used for efficient encryption of one connection.</button>
+    </div>
+    <div class="explanation">Correct. Session keys are short-lived keys used for efficient encryption of one connection.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 13 · Easy</div>
+    <div class="q-text">Which statement best describes Perfect Forward Secrecy?</div>
+    <div class="options">
+      <button class="option" data-correct="true">PFS ensures compromise of long-term keys does not reveal past sessions.</button>
+      <button class="option" data-correct="false">MITM places an attacker in the traffic path for eavesdropping, modification, or injection.</button>
+      <button class="option" data-correct="false">Confidentiality, integrity, and availability are the foundational goals of information security.</button>
+      <button class="option" data-correct="false">A cryptographic hash gives a short fingerprint that changes dramatically with tiny input changes.</button>
+    </div>
+    <div class="explanation">Correct. PFS ensures compromise of long-term keys does not reveal past sessions.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 14 · Medium</div>
+    <div class="q-text">In practice, which statement about salted password hashes is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Replay attacks reuse valid messages later to trick systems into accepting stale actions.</button>
+      <button class="option" data-correct="true">Salts prevent equal passwords from producing equal hashes and weaken precomputed-table attacks.</button>
+      <button class="option" data-correct="false">Symmetric encryption is fast and suitable for bulk data with a shared secret key.</button>
+      <button class="option" data-correct="false">A MAC provides integrity and authentication between parties sharing a secret key.</button>
+    </div>
+    <div class="explanation">Correct. Salts prevent equal passwords from producing equal hashes and weaken precomputed-table attacks.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 15 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of stateless packet filtering is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Unique nonces/timestamps provide freshness and reduce replay risk.</button>
+      <button class="option" data-correct="false">Asymmetric cryptography uses key pairs and is useful for key exchange and signatures.</button>
+      <button class="option" data-correct="true">Stateless filtering matches packets against rules without flow history context.</button>
+      <button class="option" data-correct="false">Digital signatures provide verifiable sender authentication and non-repudiation.</button>
+    </div>
+    <div class="explanation">Correct. Stateless filtering matches packets against rules without flow history context.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 16 · Medium</div>
+    <div class="q-text">In practice, which statement about stateful firewalls is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">DNS spoofing tries to make clients resolve wrong IPs and contact attacker-controlled targets.</button>
+      <button class="option" data-correct="false">Hybrid schemes use asymmetric methods for key exchange and symmetric methods for data encryption.</button>
+      <button class="option" data-correct="false">A certificate binds identity to a public key through a signature from a trusted CA.</button>
+      <button class="option" data-correct="true">A stateful firewall tracks connection state and can dynamically permit return traffic.</button>
+    </div>
+    <div class="explanation">Correct. A stateful firewall tracks connection state and can dynamically permit return traffic.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 17 · Easy</div>
+    <div class="q-text">Which statement best describes IDS versus IPS?</div>
+    <div class="options">
+      <button class="option" data-correct="true">IDS detects and alerts, while IPS can actively block suspicious traffic.</button>
+      <button class="option" data-correct="false">Least privilege restricts access to what is necessary and limits blast radius on compromise.</button>
+      <button class="option" data-correct="false">AES is a symmetric block cipher used widely in modern protocols.</button>
+      <button class="option" data-correct="false">The TLS handshake establishes crypto parameters and shared session keys before application data is sent.</button>
+    </div>
+    <div class="explanation">Correct. IDS detects and alerts, while IPS can actively block suspicious traffic.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 18 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of the DDoS mechanism is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Multiple independent security layers keep systems resilient even if one control fails.</button>
+      <button class="option" data-correct="true">DDoS uses many distributed sources to overload targets and make filtering harder.</button>
+      <button class="option" data-correct="false">The private key remains secret, while the public key can be shared for verification and key agreement.</button>
+      <button class="option" data-correct="false">Session keys are short-lived keys used for efficient encryption of one connection.</button>
+    </div>
+    <div class="explanation">Correct. DDoS uses many distributed sources to overload targets and make filtering harder.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 19 · Medium</div>
+    <div class="q-text">In practice, which statement about phishing is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Confidentiality, integrity, and availability are the foundational goals of information security.</button>
+      <button class="option" data-correct="false">A cryptographic hash gives a short fingerprint that changes dramatically with tiny input changes.</button>
+      <button class="option" data-correct="true">Phishing manipulates users into revealing secrets via convincing but fake messages/sites.</button>
+      <button class="option" data-correct="false">PFS ensures compromise of long-term keys does not reveal past sessions.</button>
+    </div>
+    <div class="explanation">Correct. Phishing manipulates users into revealing secrets via convincing but fake messages/sites.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 20 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of man-in-the-middle attacks is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Symmetric encryption is fast and suitable for bulk data with a shared secret key.</button>
+      <button class="option" data-correct="false">A MAC provides integrity and authentication between parties sharing a secret key.</button>
+      <button class="option" data-correct="false">Salts prevent equal passwords from producing equal hashes and weaken precomputed-table attacks.</button>
+      <button class="option" data-correct="true">MITM places an attacker in the traffic path for eavesdropping, modification, or injection.</button>
+    </div>
+    <div class="explanation">Correct. MITM places an attacker in the traffic path for eavesdropping, modification, or injection.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 21 · Medium</div>
+    <div class="q-text">In practice, which statement about replay attacks is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Replay attacks reuse valid messages later to trick systems into accepting stale actions.</button>
+      <button class="option" data-correct="false">Asymmetric cryptography uses key pairs and is useful for key exchange and signatures.</button>
+      <button class="option" data-correct="false">Digital signatures provide verifiable sender authentication and non-repudiation.</button>
+      <button class="option" data-correct="false">Stateless filtering matches packets against rules without flow history context.</button>
+    </div>
+    <div class="explanation">Correct. Replay attacks reuse valid messages later to trick systems into accepting stale actions.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 22 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of nonces and timestamps is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Hybrid schemes use asymmetric methods for key exchange and symmetric methods for data encryption.</button>
+      <button class="option" data-correct="true">Unique nonces/timestamps provide freshness and reduce replay risk.</button>
+      <button class="option" data-correct="false">A certificate binds identity to a public key through a signature from a trusted CA.</button>
+      <button class="option" data-correct="false">A stateful firewall tracks connection state and can dynamically permit return traffic.</button>
+    </div>
+    <div class="explanation">Correct. Unique nonces/timestamps provide freshness and reduce replay risk.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 23 · Easy</div>
+    <div class="q-text">Which statement best describes DNS spoofing?</div>
+    <div class="options">
+      <button class="option" data-correct="false">AES is a symmetric block cipher used widely in modern protocols.</button>
+      <button class="option" data-correct="false">The TLS handshake establishes crypto parameters and shared session keys before application data is sent.</button>
+      <button class="option" data-correct="true">DNS spoofing tries to make clients resolve wrong IPs and contact attacker-controlled targets.</button>
+      <button class="option" data-correct="false">IDS detects and alerts, while IPS can actively block suspicious traffic.</button>
+    </div>
+    <div class="explanation">Correct. DNS spoofing tries to make clients resolve wrong IPs and contact attacker-controlled targets.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 24 · Medium</div>
+    <div class="q-text">In practice, which statement about least privilege is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">The private key remains secret, while the public key can be shared for verification and key agreement.</button>
+      <button class="option" data-correct="false">Session keys are short-lived keys used for efficient encryption of one connection.</button>
+      <button class="option" data-correct="false">DDoS uses many distributed sources to overload targets and make filtering harder.</button>
+      <button class="option" data-correct="true">Least privilege restricts access to what is necessary and limits blast radius on compromise.</button>
+    </div>
+    <div class="explanation">Correct. Least privilege restricts access to what is necessary and limits blast radius on compromise.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 25 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of defense in depth is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Multiple independent security layers keep systems resilient even if one control fails.</button>
+      <button class="option" data-correct="false">A cryptographic hash gives a short fingerprint that changes dramatically with tiny input changes.</button>
+      <button class="option" data-correct="false">PFS ensures compromise of long-term keys does not reveal past sessions.</button>
+      <button class="option" data-correct="false">Phishing manipulates users into revealing secrets via convincing but fake messages/sites.</button>
+    </div>
+    <div class="explanation">Correct. Multiple independent security layers keep systems resilient even if one control fails.</div>
+  </div>
 </div>
 </section>
 

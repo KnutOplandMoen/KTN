@@ -144,63 +144,303 @@
   <p class="section-intro">Sjekk om du har forstått de viktigste konseptene fra dette kapittelet.</p>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 1</div>
-    <div class="q-text">Hva er forskjellen mellom «trådløst» og «mobilt»?</div>
+    <div class="q-label">Spørsmål 1 · Lett</div>
+    <div class="q-text">Hva beskriver best forholdet mellom trådløshet og mobilitet?</div>
     <div class="options">
-      <button class="option" data-correct="false">Det er det samme — alle trådløse enheter er mobile</button>
-      <button class="option" data-correct="false">Trådløst betyr WiFi, mobilt betyr 4G/5G</button>
-      <button class="option" data-correct="true">Trådløst handler om å sende via radio; mobilt handler om å flytte seg mellom tilkoblingspunkter — en enhet kan være det ene uten det andre</button>
-      <button class="option" data-correct="false">Mobilt betyr at enheten har batteri, trådløst betyr at den ikke har kabel</button>
+      <button class="option" data-correct="true">Trådløshet beskriver overføringsmedium, mens mobilitet beskriver bevegelse mellom tilgangspunkter.</button>
+      <button class="option" data-correct="false">CSMA/CA bruker tilfeldig backoff for å redusere sannsynlighet for samtidig sending.</button>
+      <button class="option" data-correct="false">FR1 gir bedre dekning, mens FR2 (mmWave) gir høyere kapasitet men kortere rekkevidde.</button>
+      <button class="option" data-correct="false">Effektkontroll reduserer interferens, forbedrer kapasitet og sparer batteri i terminalen.</button>
     </div>
-    <div class="explanation">En smart-TV på WiFi er trådløs men ikke mobil. Et nettbrett med USB-kabel kan være mobilt men ikke trådløst. De to problemene — radiokommunikasjon og mobilitetshåndtering — løses uavhengig av hverandre.</div>
+    <div class="explanation">Riktig. Trådløshet beskriver overføringsmedium, mens mobilitet beskriver bevegelse mellom tilgangspunkter.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 2</div>
-    <div class="q-text">Hvorfor bruker WiFi (802.11) CSMA/CA i stedet for CSMA/CD slik Ethernet gjør?</div>
+    <div class="q-label">Spørsmål 2 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om støy og fading i radiolinker i praksis?</div>
     <div class="options">
-      <button class="option" data-correct="false">Fordi WiFi-rammer er for korte til at kollisjoner rekker å oppstå</button>
-      <button class="option" data-correct="true">Fordi senderens eget signal overdøver mottakeren, så kollisjoner ikke kan detekteres under sending — og skjulte terminaler gjør at ikke alle sendere kan høre hverandre</button>
-      <button class="option" data-correct="false">Fordi CSMA/CD krever full-dupleks, noe WiFi ikke støtter</button>
-      <button class="option" data-correct="false">Fordi kollisjoner aldri forekommer på trådløse nettverk</button>
+      <button class="option" data-correct="false">Kanalene 1, 6 og 11 brukes ofte for minimal overlapp og mindre interferens.</button>
+      <button class="option" data-correct="true">Interferens, fading og lav SNR øker bitfeilrate og krever robuste MAC-/PHY-mekanismer.</button>
+      <button class="option" data-correct="false">mmWave blokkeres lett av objekter og krever tett nett av småceller og stråleforming.</button>
+      <button class="option" data-correct="false">Eget sendesignal dominerer mottakskjeden, så samtidige kollisjoner er vanskelige å høre direkte.</button>
     </div>
-    <div class="explanation">På en radiolink er senderens eget signal millioner av ganger sterkere enn innkommende signaler, så mottakeren er «blind» mens den sender. I tillegg betyr skjult terminal-problemet at to sendere kan kollidere ved en tredjepart uten at noen av dem vet det. Derfor må WiFi unngå kollisjoner (CA) i stedet for å oppdage dem (CD).</div>
+    <div class="explanation">Riktig. Interferens, fading og lav SNR øker bitfeilrate og krever robuste MAC-/PHY-mekanismer.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 3</div>
-    <div class="q-text">Hvorfor bruker 4G LTE GTP-tunneling i stedet for vanlig IP-ruting gjennom kjernenettet?</div>
+    <div class="q-label">Spørsmål 3 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om skjult terminal-problemet er faglig best?</div>
     <div class="options">
-      <button class="option" data-correct="false">For å kryptere trafikken mellom basestasjon og Internett</button>
-      <button class="option" data-correct="false">Fordi IP-protokollen ikke fungerer over radiolinker</button>
-      <button class="option" data-correct="true">Slik at telefonens IP-adresse forblir den samme selv når den bytter basestasjon — tunnelendepunktet flyttes, men TCP-forbindelsen overlever</button>
-      <button class="option" data-correct="false">For å komprimere datapakker og spare båndbredde i kjernenettet</button>
+      <button class="option" data-correct="false">Handover innebærer skanning, valg av nytt AP og re-assosiering med minst mulig avbrudd.</button>
+      <button class="option" data-correct="false">Flere antenner muliggjør spatial multiplexing og målrettede stråler for høyere spektral effektivitet.</button>
+      <button class="option" data-correct="true">To sendere kan være utenfor hverandres rekkevidde, men kollidere hos samme mottaker.</button>
+      <button class="option" data-correct="false">Småceller øker kapasitet gjennom tettere frekvensgjenbruk over mindre geografiske områder.</button>
     </div>
-    <div class="explanation">Vanlig IP-ruting binder adresser til subnett. Uten tunneling ville en basestasjon-bytte kreve ny IP-adresse, og alle TCP-forbindelser ville knekke. GTP-tunneler lar P-GW (utgangsporten) eie IP-adressen, mens bare tunnelendepunktet oppdateres ved handover — en elegant form for indireksjon.</div>
+    <div class="explanation">Riktig. To sendere kan være utenfor hverandres rekkevidde, men kollidere hos samme mottaker.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 4</div>
-    <div class="q-text">Hva er «skjult terminal-problemet» i trådløse nettverk?</div>
+    <div class="q-label">Spørsmål 4 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om eksponert terminal-problemet i praksis?</div>
     <div class="options">
-      <button class="option" data-correct="false">At en terminal er gjemt bak en brannmur og ikke kan nås fra Internett</button>
-      <button class="option" data-correct="true">At to sendere ikke kan høre hverandre (f.eks. pga. avstand eller hindring), og dermed sender samtidig — noe som gir kollisjon ved mottakeren uten at noen av dem vet det</button>
-      <button class="option" data-correct="false">At en enhet kobler seg til et skjult WiFi-nettverk uten SSID</button>
-      <button class="option" data-correct="false">At basestasjonen skjuler seg fra nye enheter for å spare båndbredde</button>
+      <button class="option" data-correct="false">Mobilnett deler dekning i celler for frekvensgjenbruk og høyere total kapasitet.</button>
+      <button class="option" data-correct="false">Mobilitetshåndtering flytter tilkobling mellom basestasjoner uten å bryte aktive sesjoner unødig.</button>
+      <button class="option" data-correct="false">Lav handover-latens er kritisk for tale, gaming og andre sanntidsapplikasjoner.</button>
+      <button class="option" data-correct="true">En node kan unødvendig tie fordi den hører en sender som ikke faktisk forstyrrer dens egen mottaker.</button>
     </div>
-    <div class="explanation">Skjult terminal oppstår når node A og C begge er innen rekkevidde av B, men ikke av hverandre. Begge lytter, hører stillhet, og sender — men kolliderer hos B. CSMA alene løser ikke dette; det kreves mekanismer som RTS/CTS der basestasjonen reserverer kanalen på vegne av senderen.</div>
+    <div class="explanation">Riktig. En node kan unødvendig tie fordi den hører en sender som ikke faktisk forstyrrer dens egen mottaker.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 5</div>
-    <div class="q-text">Hva er den viktigste praktiske forskjellen mellom 5G-frekvensbåndene FR1 (under 6 GHz) og FR2 (millimeterbølger, 24–52 GHz)?</div>
+    <div class="q-label">Spørsmål 5 · Lett</div>
+    <div class="q-text">Hva beskriver best RTS/CTS?</div>
     <div class="options">
-      <button class="option" data-correct="false">FR1 gir høyere hastighet enn FR2, men kortere rekkevidde</button>
-      <button class="option" data-correct="false">FR2 trenger gjennom vegger bedre fordi bølgelengden er kortere</button>
-      <button class="option" data-correct="true">FR2 gir enormt mye høyere hastighet, men har svært kort rekkevidde og blokkeres lett av vegger, regn og menneskekropper</button>
-      <button class="option" data-correct="false">FR1 og FR2 gir lik ytelse, men FR2 er billigere for operatørene</button>
+      <button class="option" data-correct="true">RTS/CTS reserverer kanal før datasending og reduserer kollisjoner fra skjulte terminaler.</button>
+      <button class="option" data-correct="false">Basestasjonen planlegger ressurser slik at terminaler får koordinerte tids-/frekvensblokker.</button>
+      <button class="option" data-correct="false">GTP kapsler brukertrafikk mellom mobilnoder slik at enhetens IP kan holdes stabil under handover.</button>
+      <button class="option" data-correct="false">WiFi er mer distribuert og konkurransebasert, mens mobilnett i større grad er sentralt planlagt.</button>
     </div>
-    <div class="explanation">FR2 (mmWave) tilbyr opptil 10 Gbps, men signalet blokkeres av nesten alt — vegger, regndråper, menneskekropper. Rekkevidden er typisk 10–100 meter, noe som krever massiv utbygging av små pico-celler. FR1 ligner mer på tradisjonelle mobilfrekvenser med god rekkevidde men moderate hastigheter.</div>
+    <div class="explanation">Riktig. RTS/CTS reserverer kanal før datasending og reduserer kollisjoner fra skjulte terminaler.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 6 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om 802.11-assosiering er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Kjernenett skiller brukerplan og kontrollplan for skalerbar mobilitet og tjenestestyring.</button>
+      <button class="option" data-correct="true">En klient må assosiere med et access point før normal datatrafikk kan sendes.</button>
+      <button class="option" data-correct="false">Roaming krever autentisering, policy og avregning mellom besøkt og hjemmenett.</button>
+      <button class="option" data-correct="false">Radiotap kommer ofte i burst, noe som påvirker kodingsvalg, interleaving og retransmisjonsstrategi.</button>
+    </div>
+    <div class="explanation">Riktig. En klient må assosiere med et access point før normal datatrafikk kan sendes.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 7 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om beacon-rammer i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">FR1 gir bedre dekning, mens FR2 (mmWave) gir høyere kapasitet men kortere rekkevidde.</button>
+      <button class="option" data-correct="false">Effektkontroll reduserer interferens, forbedrer kapasitet og sparer batteri i terminalen.</button>
+      <button class="option" data-correct="true">Access points sender beacons som annonserer SSID, kanal og timing-informasjon.</button>
+      <button class="option" data-correct="false">Trådløshet beskriver overføringsmedium, mens mobilitet beskriver bevegelse mellom tilgangspunkter.</button>
+    </div>
+    <div class="explanation">Riktig. Access points sender beacons som annonserer SSID, kanal og timing-informasjon.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 8 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om tilfeldig backoff i WiFi er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">mmWave blokkeres lett av objekter og krever tett nett av småceller og stråleforming.</button>
+      <button class="option" data-correct="false">Eget sendesignal dominerer mottakskjeden, så samtidige kollisjoner er vanskelige å høre direkte.</button>
+      <button class="option" data-correct="false">Interferens, fading og lav SNR øker bitfeilrate og krever robuste MAC-/PHY-mekanismer.</button>
+      <button class="option" data-correct="true">CSMA/CA bruker tilfeldig backoff for å redusere sannsynlighet for samtidig sending.</button>
+    </div>
+    <div class="explanation">Riktig. CSMA/CA bruker tilfeldig backoff for å redusere sannsynlighet for samtidig sending.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 9 · Lett</div>
+    <div class="q-text">Hva beskriver best kanalplan i 2.4 GHz WiFi?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Kanalene 1, 6 og 11 brukes ofte for minimal overlapp og mindre interferens.</button>
+      <button class="option" data-correct="false">Flere antenner muliggjør spatial multiplexing og målrettede stråler for høyere spektral effektivitet.</button>
+      <button class="option" data-correct="false">Småceller øker kapasitet gjennom tettere frekvensgjenbruk over mindre geografiske områder.</button>
+      <button class="option" data-correct="false">To sendere kan være utenfor hverandres rekkevidde, men kollidere hos samme mottaker.</button>
+    </div>
+    <div class="explanation">Riktig. Kanalene 1, 6 og 11 brukes ofte for minimal overlapp og mindre interferens.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 10 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om WiFi-handover er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Mobilitetshåndtering flytter tilkobling mellom basestasjoner uten å bryte aktive sesjoner unødig.</button>
+      <button class="option" data-correct="true">Handover innebærer skanning, valg av nytt AP og re-assosiering med minst mulig avbrudd.</button>
+      <button class="option" data-correct="false">Lav handover-latens er kritisk for tale, gaming og andre sanntidsapplikasjoner.</button>
+      <button class="option" data-correct="false">En node kan unødvendig tie fordi den hører en sender som ikke faktisk forstyrrer dens egen mottaker.</button>
+    </div>
+    <div class="explanation">Riktig. Handover innebærer skanning, valg av nytt AP og re-assosiering med minst mulig avbrudd.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 11 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om cellestruktur i mobilnett i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">GTP kapsler brukertrafikk mellom mobilnoder slik at enhetens IP kan holdes stabil under handover.</button>
+      <button class="option" data-correct="false">WiFi er mer distribuert og konkurransebasert, mens mobilnett i større grad er sentralt planlagt.</button>
+      <button class="option" data-correct="true">Mobilnett deler dekning i celler for frekvensgjenbruk og høyere total kapasitet.</button>
+      <button class="option" data-correct="false">RTS/CTS reserverer kanal før datasending og reduserer kollisjoner fra skjulte terminaler.</button>
+    </div>
+    <div class="explanation">Riktig. Mobilnett deler dekning i celler for frekvensgjenbruk og høyere total kapasitet.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 12 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om planlagt tilgang i mobil uplink er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Roaming krever autentisering, policy og avregning mellom besøkt og hjemmenett.</button>
+      <button class="option" data-correct="false">Radiotap kommer ofte i burst, noe som påvirker kodingsvalg, interleaving og retransmisjonsstrategi.</button>
+      <button class="option" data-correct="false">En klient må assosiere med et access point før normal datatrafikk kan sendes.</button>
+      <button class="option" data-correct="true">Basestasjonen planlegger ressurser slik at terminaler får koordinerte tids-/frekvensblokker.</button>
+    </div>
+    <div class="explanation">Riktig. Basestasjonen planlegger ressurser slik at terminaler får koordinerte tids-/frekvensblokker.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 13 · Lett</div>
+    <div class="q-text">Hva beskriver best arkitektur i 4G/5G-kjernenett?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Kjernenett skiller brukerplan og kontrollplan for skalerbar mobilitet og tjenestestyring.</button>
+      <button class="option" data-correct="false">Effektkontroll reduserer interferens, forbedrer kapasitet og sparer batteri i terminalen.</button>
+      <button class="option" data-correct="false">Trådløshet beskriver overføringsmedium, mens mobilitet beskriver bevegelse mellom tilgangspunkter.</button>
+      <button class="option" data-correct="false">Access points sender beacons som annonserer SSID, kanal og timing-informasjon.</button>
+    </div>
+    <div class="explanation">Riktig. Kjernenett skiller brukerplan og kontrollplan for skalerbar mobilitet og tjenestestyring.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 14 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om FR1 kontra FR2 i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Eget sendesignal dominerer mottakskjeden, så samtidige kollisjoner er vanskelige å høre direkte.</button>
+      <button class="option" data-correct="true">FR1 gir bedre dekning, mens FR2 (mmWave) gir høyere kapasitet men kortere rekkevidde.</button>
+      <button class="option" data-correct="false">Interferens, fading og lav SNR øker bitfeilrate og krever robuste MAC-/PHY-mekanismer.</button>
+      <button class="option" data-correct="false">CSMA/CA bruker tilfeldig backoff for å redusere sannsynlighet for samtidig sending.</button>
+    </div>
+    <div class="explanation">Riktig. FR1 gir bedre dekning, mens FR2 (mmWave) gir høyere kapasitet men kortere rekkevidde.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 15 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om mmWave-utfordringer er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Småceller øker kapasitet gjennom tettere frekvensgjenbruk over mindre geografiske områder.</button>
+      <button class="option" data-correct="false">To sendere kan være utenfor hverandres rekkevidde, men kollidere hos samme mottaker.</button>
+      <button class="option" data-correct="true">mmWave blokkeres lett av objekter og krever tett nett av småceller og stråleforming.</button>
+      <button class="option" data-correct="false">Kanalene 1, 6 og 11 brukes ofte for minimal overlapp og mindre interferens.</button>
+    </div>
+    <div class="explanation">Riktig. mmWave blokkeres lett av objekter og krever tett nett av småceller og stråleforming.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 16 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om MIMO og beamforming i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Lav handover-latens er kritisk for tale, gaming og andre sanntidsapplikasjoner.</button>
+      <button class="option" data-correct="false">En node kan unødvendig tie fordi den hører en sender som ikke faktisk forstyrrer dens egen mottaker.</button>
+      <button class="option" data-correct="false">Handover innebærer skanning, valg av nytt AP og re-assosiering med minst mulig avbrudd.</button>
+      <button class="option" data-correct="true">Flere antenner muliggjør spatial multiplexing og målrettede stråler for høyere spektral effektivitet.</button>
+    </div>
+    <div class="explanation">Riktig. Flere antenner muliggjør spatial multiplexing og målrettede stråler for høyere spektral effektivitet.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 17 · Lett</div>
+    <div class="q-text">Hva beskriver best mobilitetshåndtering?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Mobilitetshåndtering flytter tilkobling mellom basestasjoner uten å bryte aktive sesjoner unødig.</button>
+      <button class="option" data-correct="false">WiFi er mer distribuert og konkurransebasert, mens mobilnett i større grad er sentralt planlagt.</button>
+      <button class="option" data-correct="false">RTS/CTS reserverer kanal før datasending og reduserer kollisjoner fra skjulte terminaler.</button>
+      <button class="option" data-correct="false">Mobilnett deler dekning i celler for frekvensgjenbruk og høyere total kapasitet.</button>
+    </div>
+    <div class="explanation">Riktig. Mobilitetshåndtering flytter tilkobling mellom basestasjoner uten å bryte aktive sesjoner unødig.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 18 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om GTP-tunneler er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Radiotap kommer ofte i burst, noe som påvirker kodingsvalg, interleaving og retransmisjonsstrategi.</button>
+      <button class="option" data-correct="true">GTP kapsler brukertrafikk mellom mobilnoder slik at enhetens IP kan holdes stabil under handover.</button>
+      <button class="option" data-correct="false">En klient må assosiere med et access point før normal datatrafikk kan sendes.</button>
+      <button class="option" data-correct="false">Basestasjonen planlegger ressurser slik at terminaler får koordinerte tids-/frekvensblokker.</button>
+    </div>
+    <div class="explanation">Riktig. GTP kapsler brukertrafikk mellom mobilnoder slik at enhetens IP kan holdes stabil under handover.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 19 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om roaming mellom operatører i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Trådløshet beskriver overføringsmedium, mens mobilitet beskriver bevegelse mellom tilgangspunkter.</button>
+      <button class="option" data-correct="false">Access points sender beacons som annonserer SSID, kanal og timing-informasjon.</button>
+      <button class="option" data-correct="true">Roaming krever autentisering, policy og avregning mellom besøkt og hjemmenett.</button>
+      <button class="option" data-correct="false">Kjernenett skiller brukerplan og kontrollplan for skalerbar mobilitet og tjenestestyring.</button>
+    </div>
+    <div class="explanation">Riktig. Roaming krever autentisering, policy og avregning mellom besøkt og hjemmenett.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 20 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om effekten av sendeeffektkontroll er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Interferens, fading og lav SNR øker bitfeilrate og krever robuste MAC-/PHY-mekanismer.</button>
+      <button class="option" data-correct="false">CSMA/CA bruker tilfeldig backoff for å redusere sannsynlighet for samtidig sending.</button>
+      <button class="option" data-correct="false">FR1 gir bedre dekning, mens FR2 (mmWave) gir høyere kapasitet men kortere rekkevidde.</button>
+      <button class="option" data-correct="true">Effektkontroll reduserer interferens, forbedrer kapasitet og sparer batteri i terminalen.</button>
+    </div>
+    <div class="explanation">Riktig. Effektkontroll reduserer interferens, forbedrer kapasitet og sparer batteri i terminalen.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 21 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om hvorfor kollisjonsdeteksjon er vanskelig i radio i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Eget sendesignal dominerer mottakskjeden, så samtidige kollisjoner er vanskelige å høre direkte.</button>
+      <button class="option" data-correct="false">To sendere kan være utenfor hverandres rekkevidde, men kollidere hos samme mottaker.</button>
+      <button class="option" data-correct="false">Kanalene 1, 6 og 11 brukes ofte for minimal overlapp og mindre interferens.</button>
+      <button class="option" data-correct="false">mmWave blokkeres lett av objekter og krever tett nett av småceller og stråleforming.</button>
+    </div>
+    <div class="explanation">Riktig. Eget sendesignal dominerer mottakskjeden, så samtidige kollisjoner er vanskelige å høre direkte.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 22 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om småceller og kapasitetsøkning er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">En node kan unødvendig tie fordi den hører en sender som ikke faktisk forstyrrer dens egen mottaker.</button>
+      <button class="option" data-correct="true">Småceller øker kapasitet gjennom tettere frekvensgjenbruk over mindre geografiske områder.</button>
+      <button class="option" data-correct="false">Handover innebærer skanning, valg av nytt AP og re-assosiering med minst mulig avbrudd.</button>
+      <button class="option" data-correct="false">Flere antenner muliggjør spatial multiplexing og målrettede stråler for høyere spektral effektivitet.</button>
+    </div>
+    <div class="explanation">Riktig. Småceller øker kapasitet gjennom tettere frekvensgjenbruk over mindre geografiske områder.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 23 · Lett</div>
+    <div class="q-text">Hva beskriver best latenskrav ved handover?</div>
+    <div class="options">
+      <button class="option" data-correct="false">RTS/CTS reserverer kanal før datasending og reduserer kollisjoner fra skjulte terminaler.</button>
+      <button class="option" data-correct="false">Mobilnett deler dekning i celler for frekvensgjenbruk og høyere total kapasitet.</button>
+      <button class="option" data-correct="true">Lav handover-latens er kritisk for tale, gaming og andre sanntidsapplikasjoner.</button>
+      <button class="option" data-correct="false">Mobilitetshåndtering flytter tilkobling mellom basestasjoner uten å bryte aktive sesjoner unødig.</button>
+    </div>
+    <div class="explanation">Riktig. Lav handover-latens er kritisk for tale, gaming og andre sanntidsapplikasjoner.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 24 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om WiFi kontra mobilnett tilgangsstyring i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">En klient må assosiere med et access point før normal datatrafikk kan sendes.</button>
+      <button class="option" data-correct="false">Basestasjonen planlegger ressurser slik at terminaler får koordinerte tids-/frekvensblokker.</button>
+      <button class="option" data-correct="false">GTP kapsler brukertrafikk mellom mobilnoder slik at enhetens IP kan holdes stabil under handover.</button>
+      <button class="option" data-correct="true">WiFi er mer distribuert og konkurransebasert, mens mobilnett i større grad er sentralt planlagt.</button>
+    </div>
+    <div class="explanation">Riktig. WiFi er mer distribuert og konkurransebasert, mens mobilnett i større grad er sentralt planlagt.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 25 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om tap på radiolink er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Radiotap kommer ofte i burst, noe som påvirker kodingsvalg, interleaving og retransmisjonsstrategi.</button>
+      <button class="option" data-correct="false">Access points sender beacons som annonserer SSID, kanal og timing-informasjon.</button>
+      <button class="option" data-correct="false">Kjernenett skiller brukerplan og kontrollplan for skalerbar mobilitet og tjenestestyring.</button>
+      <button class="option" data-correct="false">Roaming krever autentisering, policy og avregning mellom besøkt og hjemmenett.</button>
+    </div>
+    <div class="explanation">Riktig. Radiotap kommer ofte i burst, noe som påvirker kodingsvalg, interleaving og retransmisjonsstrategi.</div>
   </div>
 </div>
 </section>

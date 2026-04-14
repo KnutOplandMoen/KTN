@@ -153,40 +153,307 @@
 <!-- ============================================ -->
 <section id="quiz">
 <div class="container">
-  <div class="section-badge">Test Yourself</div>
-  <h2>Quick Quiz</h2>
+  <h2>Test yourself</h2>
+  <p class="section-intro">Check whether you have understood the most important concepts from this chapter.</p>
 
-  <div class="quiz" data-quiz="1">
-    <div class="q-label">Question 1</div>
-    <div class="q-text">Host A wants to send an IP packet to Host B on the same local network (LAN). A knows B's IP address but has no entry for B in its ARP cache. What happens?</div>
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 1 · Easy</div>
+    <div class="q-text">Which statement best describes link-layer framing?</div>
     <div class="options">
-      <button class="option" data-correct="false">A sends the packet directly using B's IP address as the destination in the Ethernet frame</button>
-      <button class="option" data-correct="true">A sends an ARP broadcast to find B's MAC address, and waits for a reply before sending the IP packet in an Ethernet frame</button>
-      <button class="option" data-correct="false">A sends the packet to the default gateway (the router), which forwards it to B</button>
+      <button class="option" data-correct="true">The link layer encapsulates network-layer packets into frames with local address and control fields.</button>
+      <button class="option" data-correct="false">A hub repeats signals to all ports, while a switch forwards selectively.</button>
+      <button class="option" data-correct="false">In full-duplex point-to-point Ethernet, collisions do not occur, so CSMA/CD is unnecessary.</button>
+      <button class="option" data-correct="false">ff:ff:ff:ff:ff:ff means the frame should be delivered to all nodes on the local link.</button>
     </div>
-    <div class="explanation">Correct! The Ethernet frame needs a MAC address as the destination — not an IP address. When the ARP cache is empty, A sends an ARP request as a broadcast (FF-FF-FF-FF-FF-FF). B recognizes its own IP and replies with its MAC address. Only then can A send the actual IP packet encapsulated in an Ethernet frame addressed to B's MAC.</div>
+    <div class="explanation">Correct. The link layer encapsulates network-layer packets into frames with local address and control fields.</div>
   </div>
 
-  <div class="quiz" data-quiz="2">
-    <div class="q-label">Question 2</div>
-    <div class="q-text">What is the most important difference between a MAC address and an IP address?</div>
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 2 · Medium</div>
+    <div class="q-text">In practice, which statement about medium access on a shared channel is most correct?</div>
     <div class="options">
-      <button class="option" data-correct="false">MAC addresses are shorter than IP addresses</button>
-      <button class="option" data-correct="false">MAC addresses are only used on wireless networks</button>
-      <button class="option" data-correct="true">The MAC address is permanently tied to the network interface card and has local significance, while the IP address is logical and depends on where in the network you are</button>
+      <button class="option" data-correct="false">Switches split collision domains per port, increasing effective capacity.</button>
+      <button class="option" data-correct="true">MAC protocols determine who may transmit when multiple nodes share the medium.</button>
+      <button class="option" data-correct="false">VLANs divide one physical switched network into multiple logical broadcast domains.</button>
+      <button class="option" data-correct="false">Learned MAC entries age out after inactivity to handle topology changes.</button>
     </div>
-    <div class="explanation">Correct! The MAC address (48 bits) is "burned in" to the network interface card and follows the device no matter where it connects. The IP address is logical — it changes when you switch networks. Routers use IP to find the path across the internet; MAC addresses are only used on the local link to identify the neighbor.</div>
+    <div class="explanation">Correct. MAC protocols determine who may transmit when multiple nodes share the medium.</div>
   </div>
 
-  <div class="quiz" data-quiz="3">
-    <div class="q-label">Question 3</div>
-    <div class="q-text">In CSMA/CD: what does a station do when it detects a collision while transmitting?</div>
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 3 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of CRC error detection is most accurate?</div>
     <div class="options">
-      <button class="option" data-correct="false">It continues transmitting and hopes the other station stops</button>
-      <button class="option" data-correct="false">It retransmits the packet immediately</button>
-      <button class="option" data-correct="true">It aborts the transmission, sends a jam signal, and waits a random time (binary exponential backoff) before trying again</button>
+      <button class="option" data-correct="false">CSMA/CD senses before transmit, detects collisions, stops, and retries later.</button>
+      <button class="option" data-correct="false">WiFi cannot reliably detect collisions while transmitting and therefore tries to avoid them.</button>
+      <button class="option" data-correct="true">CRC detects single-bit and many burst errors with high probability.</button>
+      <button class="option" data-correct="false">Spanning Tree logically blocks selected links to prevent layer-2 loops.</button>
     </div>
-    <div class="explanation">Correct! Upon collision, the station stops immediately, sends a short jam signal so that everyone knows a collision occurred, and then waits a random time. The waiting time is chosen using <em>binary exponential backoff</em>: after the n-th collision, the waiting time is chosen randomly from {0, 1, …, 2ⁿ−1} time slots. This spreads out the attempts and reduces the chance of another collision.</div>
+    <div class="explanation">Correct. CRC detects single-bit and many burst errors with high probability.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 4 · Medium</div>
+    <div class="q-text">In practice, which statement about MAC addresses is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">The jam signal informs other nodes of the collision so all transmitters abort.</button>
+      <button class="option" data-correct="false">WiFi uses link-layer ACKs and retransmissions to handle higher radio error rates.</button>
+      <button class="option" data-correct="false">An Ethernet frame includes destination, source, type/length, payload, and FCS.</button>
+      <button class="option" data-correct="true">MAC addresses are 48-bit identifiers used for local link delivery.</button>
+    </div>
+    <div class="explanation">Correct. MAC addresses are 48-bit identifiers used for local link delivery.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 5 · Easy</div>
+    <div class="q-text">Which statement best describes an ARP request?</div>
+    <div class="options">
+      <button class="option" data-correct="true">An ARP request is broadcast when the sender lacks the destination MAC address.</button>
+      <button class="option" data-correct="false">After each collision, waiting time is chosen from a growing random window to spread retries.</button>
+      <button class="option" data-correct="false">Maximum throughput fraction for slotted ALOHA is 1/e under ideal assumptions.</button>
+      <button class="option" data-correct="false">Standard Ethernet MTU is typically 1500 bytes of IP payload before fragmentation is considered.</button>
+    </div>
+    <div class="explanation">Correct. An ARP request is broadcast when the sender lacks the destination MAC address.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 6 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of a switch learning table is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">A 64-byte minimum ensures collisions can be detected before a frame finishes transmission.</button>
+      <button class="option" data-correct="true">A switch learns source-MAC-to-port mappings by observing incoming frames.</button>
+      <button class="option" data-correct="false">Pure ALOHA has lower maximum efficiency (1/2e) than slotted ALOHA.</button>
+      <button class="option" data-correct="false">Link-layer retransmissions can hide some losses from transport and improve perceived performance.</button>
+    </div>
+    <div class="explanation">Correct. A switch learns source-MAC-to-port mappings by observing incoming frames.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 7 · Medium</div>
+    <div class="q-text">In practice, which statement about flooding for unknown destinations is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">In full-duplex point-to-point Ethernet, collisions do not occur, so CSMA/CD is unnecessary.</button>
+      <button class="option" data-correct="false">ff:ff:ff:ff:ff:ff means the frame should be delivered to all nodes on the local link.</button>
+      <button class="option" data-correct="true">When destination MAC is unknown, the switch floods the frame out all other ports.</button>
+      <button class="option" data-correct="false">The link layer encapsulates network-layer packets into frames with local address and control fields.</button>
+    </div>
+    <div class="explanation">Correct. When destination MAC is unknown, the switch floods the frame out all other ports.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 8 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of a hub versus a switch is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">VLANs divide one physical switched network into multiple logical broadcast domains.</button>
+      <button class="option" data-correct="false">Learned MAC entries age out after inactivity to handle topology changes.</button>
+      <button class="option" data-correct="false">MAC protocols determine who may transmit when multiple nodes share the medium.</button>
+      <button class="option" data-correct="true">A hub repeats signals to all ports, while a switch forwards selectively.</button>
+    </div>
+    <div class="explanation">Correct. A hub repeats signals to all ports, while a switch forwards selectively.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 9 · Easy</div>
+    <div class="q-text">Which statement best describes collision domains?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Switches split collision domains per port, increasing effective capacity.</button>
+      <button class="option" data-correct="false">WiFi cannot reliably detect collisions while transmitting and therefore tries to avoid them.</button>
+      <button class="option" data-correct="false">Spanning Tree logically blocks selected links to prevent layer-2 loops.</button>
+      <button class="option" data-correct="false">CRC detects single-bit and many burst errors with high probability.</button>
+    </div>
+    <div class="explanation">Correct. Switches split collision domains per port, increasing effective capacity.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 10 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of CSMA/CD is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">WiFi uses link-layer ACKs and retransmissions to handle higher radio error rates.</button>
+      <button class="option" data-correct="true">CSMA/CD senses before transmit, detects collisions, stops, and retries later.</button>
+      <button class="option" data-correct="false">An Ethernet frame includes destination, source, type/length, payload, and FCS.</button>
+      <button class="option" data-correct="false">MAC addresses are 48-bit identifiers used for local link delivery.</button>
+    </div>
+    <div class="explanation">Correct. CSMA/CD senses before transmit, detects collisions, stops, and retries later.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 11 · Medium</div>
+    <div class="q-text">In practice, which statement about the jam signal on Ethernet collision is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Maximum throughput fraction for slotted ALOHA is 1/e under ideal assumptions.</button>
+      <button class="option" data-correct="false">Standard Ethernet MTU is typically 1500 bytes of IP payload before fragmentation is considered.</button>
+      <button class="option" data-correct="true">The jam signal informs other nodes of the collision so all transmitters abort.</button>
+      <button class="option" data-correct="false">An ARP request is broadcast when the sender lacks the destination MAC address.</button>
+    </div>
+    <div class="explanation">Correct. The jam signal informs other nodes of the collision so all transmitters abort.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 12 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of binary exponential backoff is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Pure ALOHA has lower maximum efficiency (1/2e) than slotted ALOHA.</button>
+      <button class="option" data-correct="false">Link-layer retransmissions can hide some losses from transport and improve perceived performance.</button>
+      <button class="option" data-correct="false">A switch learns source-MAC-to-port mappings by observing incoming frames.</button>
+      <button class="option" data-correct="true">After each collision, waiting time is chosen from a growing random window to spread retries.</button>
+    </div>
+    <div class="explanation">Correct. After each collision, waiting time is chosen from a growing random window to spread retries.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 13 · Easy</div>
+    <div class="q-text">Which statement best describes the minimum Ethernet frame size?</div>
+    <div class="options">
+      <button class="option" data-correct="true">A 64-byte minimum ensures collisions can be detected before a frame finishes transmission.</button>
+      <button class="option" data-correct="false">ff:ff:ff:ff:ff:ff means the frame should be delivered to all nodes on the local link.</button>
+      <button class="option" data-correct="false">The link layer encapsulates network-layer packets into frames with local address and control fields.</button>
+      <button class="option" data-correct="false">When destination MAC is unknown, the switch floods the frame out all other ports.</button>
+    </div>
+    <div class="explanation">Correct. A 64-byte minimum ensures collisions can be detected before a frame finishes transmission.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 14 · Medium</div>
+    <div class="q-text">In practice, which statement about full-duplex Ethernet is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Learned MAC entries age out after inactivity to handle topology changes.</button>
+      <button class="option" data-correct="true">In full-duplex point-to-point Ethernet, collisions do not occur, so CSMA/CD is unnecessary.</button>
+      <button class="option" data-correct="false">MAC protocols determine who may transmit when multiple nodes share the medium.</button>
+      <button class="option" data-correct="false">A hub repeats signals to all ports, while a switch forwards selectively.</button>
+    </div>
+    <div class="explanation">Correct. In full-duplex point-to-point Ethernet, collisions do not occur, so CSMA/CD is unnecessary.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 15 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of VLANs is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Spanning Tree logically blocks selected links to prevent layer-2 loops.</button>
+      <button class="option" data-correct="false">CRC detects single-bit and many burst errors with high probability.</button>
+      <button class="option" data-correct="true">VLANs divide one physical switched network into multiple logical broadcast domains.</button>
+      <button class="option" data-correct="false">Switches split collision domains per port, increasing effective capacity.</button>
+    </div>
+    <div class="explanation">Correct. VLANs divide one physical switched network into multiple logical broadcast domains.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 16 · Medium</div>
+    <div class="q-text">In practice, which statement about why WiFi uses CSMA/CA is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">An Ethernet frame includes destination, source, type/length, payload, and FCS.</button>
+      <button class="option" data-correct="false">MAC addresses are 48-bit identifiers used for local link delivery.</button>
+      <button class="option" data-correct="false">CSMA/CD senses before transmit, detects collisions, stops, and retries later.</button>
+      <button class="option" data-correct="true">WiFi cannot reliably detect collisions while transmitting and therefore tries to avoid them.</button>
+    </div>
+    <div class="explanation">Correct. WiFi cannot reliably detect collisions while transmitting and therefore tries to avoid them.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 17 · Easy</div>
+    <div class="q-text">Which statement best describes 802.11 link-layer ACKs?</div>
+    <div class="options">
+      <button class="option" data-correct="true">WiFi uses link-layer ACKs and retransmissions to handle higher radio error rates.</button>
+      <button class="option" data-correct="false">Standard Ethernet MTU is typically 1500 bytes of IP payload before fragmentation is considered.</button>
+      <button class="option" data-correct="false">An ARP request is broadcast when the sender lacks the destination MAC address.</button>
+      <button class="option" data-correct="false">The jam signal informs other nodes of the collision so all transmitters abort.</button>
+    </div>
+    <div class="explanation">Correct. WiFi uses link-layer ACKs and retransmissions to handle higher radio error rates.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 18 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of slotted ALOHA efficiency is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Link-layer retransmissions can hide some losses from transport and improve perceived performance.</button>
+      <button class="option" data-correct="true">Maximum throughput fraction for slotted ALOHA is 1/e under ideal assumptions.</button>
+      <button class="option" data-correct="false">A switch learns source-MAC-to-port mappings by observing incoming frames.</button>
+      <button class="option" data-correct="false">After each collision, waiting time is chosen from a growing random window to spread retries.</button>
+    </div>
+    <div class="explanation">Correct. Maximum throughput fraction for slotted ALOHA is 1/e under ideal assumptions.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 19 · Medium</div>
+    <div class="q-text">In practice, which statement about pure ALOHA efficiency is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">The link layer encapsulates network-layer packets into frames with local address and control fields.</button>
+      <button class="option" data-correct="false">When destination MAC is unknown, the switch floods the frame out all other ports.</button>
+      <button class="option" data-correct="true">Pure ALOHA has lower maximum efficiency (1/2e) than slotted ALOHA.</button>
+      <button class="option" data-correct="false">A 64-byte minimum ensures collisions can be detected before a frame finishes transmission.</button>
+    </div>
+    <div class="explanation">Correct. Pure ALOHA has lower maximum efficiency (1/2e) than slotted ALOHA.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 20 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of the broadcast MAC address is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">MAC protocols determine who may transmit when multiple nodes share the medium.</button>
+      <button class="option" data-correct="false">A hub repeats signals to all ports, while a switch forwards selectively.</button>
+      <button class="option" data-correct="false">In full-duplex point-to-point Ethernet, collisions do not occur, so CSMA/CD is unnecessary.</button>
+      <button class="option" data-correct="true">ff:ff:ff:ff:ff:ff means the frame should be delivered to all nodes on the local link.</button>
+    </div>
+    <div class="explanation">Correct. ff:ff:ff:ff:ff:ff means the frame should be delivered to all nodes on the local link.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 21 · Medium</div>
+    <div class="q-text">In practice, which statement about switch table aging is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Learned MAC entries age out after inactivity to handle topology changes.</button>
+      <button class="option" data-correct="false">CRC detects single-bit and many burst errors with high probability.</button>
+      <button class="option" data-correct="false">Switches split collision domains per port, increasing effective capacity.</button>
+      <button class="option" data-correct="false">VLANs divide one physical switched network into multiple logical broadcast domains.</button>
+    </div>
+    <div class="explanation">Correct. Learned MAC entries age out after inactivity to handle topology changes.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 22 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of Spanning Tree in Ethernet is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">MAC addresses are 48-bit identifiers used for local link delivery.</button>
+      <button class="option" data-correct="true">Spanning Tree logically blocks selected links to prevent layer-2 loops.</button>
+      <button class="option" data-correct="false">CSMA/CD senses before transmit, detects collisions, stops, and retries later.</button>
+      <button class="option" data-correct="false">WiFi cannot reliably detect collisions while transmitting and therefore tries to avoid them.</button>
+    </div>
+    <div class="explanation">Correct. Spanning Tree logically blocks selected links to prevent layer-2 loops.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 23 · Easy</div>
+    <div class="q-text">Which statement best describes Ethernet frame fields?</div>
+    <div class="options">
+      <button class="option" data-correct="false">An ARP request is broadcast when the sender lacks the destination MAC address.</button>
+      <button class="option" data-correct="false">The jam signal informs other nodes of the collision so all transmitters abort.</button>
+      <button class="option" data-correct="true">An Ethernet frame includes destination, source, type/length, payload, and FCS.</button>
+      <button class="option" data-correct="false">WiFi uses link-layer ACKs and retransmissions to handle higher radio error rates.</button>
+    </div>
+    <div class="explanation">Correct. An Ethernet frame includes destination, source, type/length, payload, and FCS.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 24 · Medium</div>
+    <div class="q-text">In practice, which statement about Ethernet MTU is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">A switch learns source-MAC-to-port mappings by observing incoming frames.</button>
+      <button class="option" data-correct="false">After each collision, waiting time is chosen from a growing random window to spread retries.</button>
+      <button class="option" data-correct="false">Maximum throughput fraction for slotted ALOHA is 1/e under ideal assumptions.</button>
+      <button class="option" data-correct="true">Standard Ethernet MTU is typically 1500 bytes of IP payload before fragmentation is considered.</button>
+    </div>
+    <div class="explanation">Correct. Standard Ethernet MTU is typically 1500 bytes of IP payload before fragmentation is considered.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 25 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of local retransmission at the link layer is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Link-layer retransmissions can hide some losses from transport and improve perceived performance.</button>
+      <button class="option" data-correct="false">When destination MAC is unknown, the switch floods the frame out all other ports.</button>
+      <button class="option" data-correct="false">A 64-byte minimum ensures collisions can be detected before a frame finishes transmission.</button>
+      <button class="option" data-correct="false">Pure ALOHA has lower maximum efficiency (1/2e) than slotted ALOHA.</button>
+    </div>
+    <div class="explanation">Correct. Link-layer retransmissions can hide some losses from transport and improve perceived performance.</div>
   </div>
 </div>
 </section>

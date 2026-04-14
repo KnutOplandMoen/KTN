@@ -175,51 +175,303 @@
   <p class="section-intro">Check whether you have understood the most important concepts from this chapter.</p>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 1</div>
-    <div class="q-text">What is the main task of the control plane in the network layer?</div>
+    <div class="q-label">Question 1 · Easy</div>
+    <div class="q-text">Which statement best describes what the control plane does?</div>
     <div class="options">
-      <button class="option" data-correct="false">To move packets from input port to output port in a router as fast as possible</button>
-      <button class="option" data-correct="true">To determine which path packets should take through the network, and populate the forwarding tables</button>
-      <button class="option" data-correct="false">To encrypt packets so they cannot be intercepted en route</button>
-      <button class="option" data-correct="false">To split large packets into smaller fragments for transport</button>
+      <button class="option" data-correct="true">The control plane computes routes and populates forwarding tables used by the data plane.</button>
+      <button class="option" data-correct="false">Fast, stable convergence reduces periods of loss, loops, and suboptimal routing.</button>
+      <button class="option" data-correct="false">In SDN, control logic moves to a logically centralized controller that programs network devices.</button>
+      <button class="option" data-correct="false">Flooding distributes topology changes quickly so all routers can recompute consistently.</button>
     </div>
-    <div class="explanation">The control plane is about <em>routing</em> — computing the best path through the network and filling in the forwarding table. The actual movement of packets (the fast per-packet operation) is the data plane's job.</div>
+    <div class="explanation">Correct. The control plane computes routes and populates forwarding tables used by the data plane.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 2</div>
-    <div class="q-text">What is the difference between per-router control and SDN (Software Defined Networking)?</div>
+    <div class="q-label">Question 2 · Medium</div>
+    <div class="q-text">In practice, which statement about the link-state principle is most correct?</div>
     <div class="options">
-      <button class="option" data-correct="false">Per-router control uses only static routes, while SDN uses dynamic ones</button>
-      <button class="option" data-correct="false">SDN is older technology that was replaced by per-router control</button>
-      <button class="option" data-correct="true">With per-router control, each router computes its own table; with SDN, a central controller computes all tables</button>
-      <button class="option" data-correct="false">Per-router control only works in local networks, while SDN is used on the Internet</button>
+      <button class="option" data-correct="false">OSPF is a link-state IGP using cost metrics and LSA flooding.</button>
+      <button class="option" data-correct="true">In link-state, routers know the full topology and compute shortest paths locally.</button>
+      <button class="option" data-correct="false">Match-action rules determine packet handling based on header fields.</button>
+      <button class="option" data-correct="false">Sequence numbers and age prevent stale link-state messages from overriding fresh ones.</button>
     </div>
-    <div class="explanation">In per-router control, each router runs its own routing algorithm and talks to its neighbors to build its forwarding table. In SDN, a logically centralized controller does all the computation and distributes the tables to "dumb" routers that simply follow instructions.</div>
+    <div class="explanation">Correct. In link-state, routers know the full topology and compute shortest paths locally.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 3</div>
-    <div class="q-text">The command <code>ping</code> uses ICMP. Which two ICMP message types are involved?</div>
+    <div class="q-label">Question 3 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of Dijkstra in routing is most accurate?</div>
     <div class="options">
-      <button class="option" data-correct="false">Type 3 (destination unreachable) and type 11 (TTL expired)</button>
-      <button class="option" data-correct="false">Type 4 (source quench) and type 0 (echo reply)</button>
-      <button class="option" data-correct="true">Type 8 (echo request) and type 0 (echo reply)</button>
-      <button class="option" data-correct="false">Type 11 (TTL expired) and type 8 (echo request)</button>
+      <button class="option" data-correct="false">RIP is a simple distance-vector protocol using hop count as metric.</button>
+      <button class="option" data-correct="false">A southbound interface lets the controller install and update rules in switches/routers.</button>
+      <button class="option" data-correct="true">Dijkstra builds a shortest-path tree from one source given known link costs.</button>
+      <button class="option" data-correct="false">Hierarchy improves control-plane scalability by dividing networks into administrative regions.</button>
     </div>
-    <div class="explanation"><code>ping</code> sends an ICMP echo request (type 8) to the target. If the target is reachable, it responds with an ICMP echo reply (type 0). The round-trip time between these two messages is what ping shows you.</div>
+    <div class="explanation">Correct. Dijkstra builds a shortest-path tree from one source given known link costs.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 4</div>
-    <div class="q-text">How does <code>traceroute</code> manage to find the address of each router along the path?</div>
+    <div class="q-label">Question 4 · Medium</div>
+    <div class="q-text">In practice, which statement about the distance-vector principle is most correct?</div>
     <div class="options">
-      <button class="option" data-correct="false">It queries DNS for a list of all routers between source and destination</button>
-      <button class="option" data-correct="false">It sends a special ICMP request that each router is obligated to answer</button>
-      <button class="option" data-correct="true">It sends packets with increasing TTL values, so that each router in turn returns a "TTL expired" message with its address</button>
-      <button class="option" data-correct="false">It reads the forwarding table of the local router and follows the pointers</button>
+      <button class="option" data-correct="false">BGP advertises AS paths and policy attributes between autonomous systems.</button>
+      <button class="option" data-correct="false">The data plane forwards packets, while the control plane computes the rules it follows.</button>
+      <button class="option" data-correct="false">An AS often exits traffic at the nearest egress to minimize internal transport cost.</button>
+      <button class="option" data-correct="true">Distance-vector exchanges cost estimates neighbor-to-neighbor and updates iteratively.</button>
     </div>
-    <div class="explanation">Traceroute exploits the TTL field in the IP header. By sending packets with TTL = 1, 2, 3, ... it forces each router along the path to drop the packet and send an ICMP "TTL expired" message back — and that message reveals the router's IP address.</div>
+    <div class="explanation">Correct. Distance-vector exchanges cost estimates neighbor-to-neighbor and updates iteratively.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 5 · Easy</div>
+    <div class="q-text">Which statement best describes Bellman-Ford in DV?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Bellman-Ford updates best routes by minimizing over neighbors&#x27; advertised costs.</button>
+      <button class="option" data-correct="false">BGP often selects routes by business policy and economics, not only shortest path.</button>
+      <button class="option" data-correct="false">Ping tests reachability by sending ICMP echo requests and timing echo replies.</button>
+      <button class="option" data-correct="false">Conflicting policies and rapid changes can cause oscillations and temporary route instability.</button>
+    </div>
+    <div class="explanation">Correct. Bellman-Ford updates best routes by minimizing over neighbors&#x27; advertised costs.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 6 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of the count-to-infinity problem is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">eBGP runs between ASes, while iBGP distributes external routes inside an AS.</button>
+      <button class="option" data-correct="true">In DV, incorrect reachability info can persist and metrics can climb gradually.</button>
+      <button class="option" data-correct="false">Traceroute uses increasing TTL values to elicit replies from each hop along the path.</button>
+      <button class="option" data-correct="false">Fast failure detection and reconvergence reduce downtime and packet loss.</button>
+    </div>
+    <div class="explanation">Correct. In DV, incorrect reachability info can persist and metrics can climb gradually.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 7 · Medium</div>
+    <div class="q-text">In practice, which statement about poison reverse is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">In SDN, control logic moves to a logically centralized controller that programs network devices.</button>
+      <button class="option" data-correct="false">Flooding distributes topology changes quickly so all routers can recompute consistently.</button>
+      <button class="option" data-correct="true">Poison reverse advertises infinity back to the neighbor that supplied a route to mitigate simple loops.</button>
+      <button class="option" data-correct="false">The control plane computes routes and populates forwarding tables used by the data plane.</button>
+    </div>
+    <div class="explanation">Correct. Poison reverse advertises infinity back to the neighbor that supplied a route to mitigate simple loops.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 8 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of convergence in routing protocols is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Match-action rules determine packet handling based on header fields.</button>
+      <button class="option" data-correct="false">Sequence numbers and age prevent stale link-state messages from overriding fresh ones.</button>
+      <button class="option" data-correct="false">In link-state, routers know the full topology and compute shortest paths locally.</button>
+      <button class="option" data-correct="true">Fast, stable convergence reduces periods of loss, loops, and suboptimal routing.</button>
+    </div>
+    <div class="explanation">Correct. Fast, stable convergence reduces periods of loss, loops, and suboptimal routing.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 9 · Easy</div>
+    <div class="q-text">Which statement best describes OSPF?</div>
+    <div class="options">
+      <button class="option" data-correct="true">OSPF is a link-state IGP using cost metrics and LSA flooding.</button>
+      <button class="option" data-correct="false">A southbound interface lets the controller install and update rules in switches/routers.</button>
+      <button class="option" data-correct="false">Hierarchy improves control-plane scalability by dividing networks into administrative regions.</button>
+      <button class="option" data-correct="false">Dijkstra builds a shortest-path tree from one source given known link costs.</button>
+    </div>
+    <div class="explanation">Correct. OSPF is a link-state IGP using cost metrics and LSA flooding.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 10 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of RIP is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">The data plane forwards packets, while the control plane computes the rules it follows.</button>
+      <button class="option" data-correct="true">RIP is a simple distance-vector protocol using hop count as metric.</button>
+      <button class="option" data-correct="false">An AS often exits traffic at the nearest egress to minimize internal transport cost.</button>
+      <button class="option" data-correct="false">Distance-vector exchanges cost estimates neighbor-to-neighbor and updates iteratively.</button>
+    </div>
+    <div class="explanation">Correct. RIP is a simple distance-vector protocol using hop count as metric.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 11 · Medium</div>
+    <div class="q-text">In practice, which statement about BGP as the inter-AS protocol is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Ping tests reachability by sending ICMP echo requests and timing echo replies.</button>
+      <button class="option" data-correct="false">Conflicting policies and rapid changes can cause oscillations and temporary route instability.</button>
+      <button class="option" data-correct="true">BGP advertises AS paths and policy attributes between autonomous systems.</button>
+      <button class="option" data-correct="false">Bellman-Ford updates best routes by minimizing over neighbors&#x27; advertised costs.</button>
+    </div>
+    <div class="explanation">Correct. BGP advertises AS paths and policy attributes between autonomous systems.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 12 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of policy in BGP is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Traceroute uses increasing TTL values to elicit replies from each hop along the path.</button>
+      <button class="option" data-correct="false">Fast failure detection and reconvergence reduce downtime and packet loss.</button>
+      <button class="option" data-correct="false">In DV, incorrect reachability info can persist and metrics can climb gradually.</button>
+      <button class="option" data-correct="true">BGP often selects routes by business policy and economics, not only shortest path.</button>
+    </div>
+    <div class="explanation">Correct. BGP often selects routes by business policy and economics, not only shortest path.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 13 · Easy</div>
+    <div class="q-text">Which statement best describes eBGP versus iBGP?</div>
+    <div class="options">
+      <button class="option" data-correct="true">eBGP runs between ASes, while iBGP distributes external routes inside an AS.</button>
+      <button class="option" data-correct="false">Flooding distributes topology changes quickly so all routers can recompute consistently.</button>
+      <button class="option" data-correct="false">The control plane computes routes and populates forwarding tables used by the data plane.</button>
+      <button class="option" data-correct="false">Poison reverse advertises infinity back to the neighbor that supplied a route to mitigate simple loops.</button>
+    </div>
+    <div class="explanation">Correct. eBGP runs between ASes, while iBGP distributes external routes inside an AS.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 14 · Medium</div>
+    <div class="q-text">In practice, which statement about an SDN controller is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Sequence numbers and age prevent stale link-state messages from overriding fresh ones.</button>
+      <button class="option" data-correct="true">In SDN, control logic moves to a logically centralized controller that programs network devices.</button>
+      <button class="option" data-correct="false">In link-state, routers know the full topology and compute shortest paths locally.</button>
+      <button class="option" data-correct="false">Fast, stable convergence reduces periods of loss, loops, and suboptimal routing.</button>
+    </div>
+    <div class="explanation">Correct. In SDN, control logic moves to a logically centralized controller that programs network devices.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 15 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of match-action tables is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Hierarchy improves control-plane scalability by dividing networks into administrative regions.</button>
+      <button class="option" data-correct="false">Dijkstra builds a shortest-path tree from one source given known link costs.</button>
+      <button class="option" data-correct="true">Match-action rules determine packet handling based on header fields.</button>
+      <button class="option" data-correct="false">OSPF is a link-state IGP using cost metrics and LSA flooding.</button>
+    </div>
+    <div class="explanation">Correct. Match-action rules determine packet handling based on header fields.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 16 · Medium</div>
+    <div class="q-text">In practice, which statement about an OpenFlow-like southbound API is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">An AS often exits traffic at the nearest egress to minimize internal transport cost.</button>
+      <button class="option" data-correct="false">Distance-vector exchanges cost estimates neighbor-to-neighbor and updates iteratively.</button>
+      <button class="option" data-correct="false">RIP is a simple distance-vector protocol using hop count as metric.</button>
+      <button class="option" data-correct="true">A southbound interface lets the controller install and update rules in switches/routers.</button>
+    </div>
+    <div class="explanation">Correct. A southbound interface lets the controller install and update rules in switches/routers.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 17 · Easy</div>
+    <div class="q-text">Which statement best describes data plane versus control plane?</div>
+    <div class="options">
+      <button class="option" data-correct="true">The data plane forwards packets, while the control plane computes the rules it follows.</button>
+      <button class="option" data-correct="false">Conflicting policies and rapid changes can cause oscillations and temporary route instability.</button>
+      <button class="option" data-correct="false">Bellman-Ford updates best routes by minimizing over neighbors&#x27; advertised costs.</button>
+      <button class="option" data-correct="false">BGP advertises AS paths and policy attributes between autonomous systems.</button>
+    </div>
+    <div class="explanation">Correct. The data plane forwards packets, while the control plane computes the rules it follows.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 18 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of ping and ICMP echo is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Fast failure detection and reconvergence reduce downtime and packet loss.</button>
+      <button class="option" data-correct="true">Ping tests reachability by sending ICMP echo requests and timing echo replies.</button>
+      <button class="option" data-correct="false">In DV, incorrect reachability info can persist and metrics can climb gradually.</button>
+      <button class="option" data-correct="false">BGP often selects routes by business policy and economics, not only shortest path.</button>
+    </div>
+    <div class="explanation">Correct. Ping tests reachability by sending ICMP echo requests and timing echo replies.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 19 · Medium</div>
+    <div class="q-text">In practice, which statement about traceroute and TTL is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">The control plane computes routes and populates forwarding tables used by the data plane.</button>
+      <button class="option" data-correct="false">Poison reverse advertises infinity back to the neighbor that supplied a route to mitigate simple loops.</button>
+      <button class="option" data-correct="true">Traceroute uses increasing TTL values to elicit replies from each hop along the path.</button>
+      <button class="option" data-correct="false">eBGP runs between ASes, while iBGP distributes external routes inside an AS.</button>
+    </div>
+    <div class="explanation">Correct. Traceroute uses increasing TTL values to elicit replies from each hop along the path.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 20 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of flooding of link-state advertisements is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">In link-state, routers know the full topology and compute shortest paths locally.</button>
+      <button class="option" data-correct="false">Fast, stable convergence reduces periods of loss, loops, and suboptimal routing.</button>
+      <button class="option" data-correct="false">In SDN, control logic moves to a logically centralized controller that programs network devices.</button>
+      <button class="option" data-correct="true">Flooding distributes topology changes quickly so all routers can recompute consistently.</button>
+    </div>
+    <div class="explanation">Correct. Flooding distributes topology changes quickly so all routers can recompute consistently.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 21 · Medium</div>
+    <div class="q-text">In practice, which statement about LSA sequence numbers is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Sequence numbers and age prevent stale link-state messages from overriding fresh ones.</button>
+      <button class="option" data-correct="false">Dijkstra builds a shortest-path tree from one source given known link costs.</button>
+      <button class="option" data-correct="false">OSPF is a link-state IGP using cost metrics and LSA flooding.</button>
+      <button class="option" data-correct="false">Match-action rules determine packet handling based on header fields.</button>
+    </div>
+    <div class="explanation">Correct. Sequence numbers and age prevent stale link-state messages from overriding fresh ones.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 22 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of hierarchical routing is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Distance-vector exchanges cost estimates neighbor-to-neighbor and updates iteratively.</button>
+      <button class="option" data-correct="true">Hierarchy improves control-plane scalability by dividing networks into administrative regions.</button>
+      <button class="option" data-correct="false">RIP is a simple distance-vector protocol using hop count as metric.</button>
+      <button class="option" data-correct="false">A southbound interface lets the controller install and update rules in switches/routers.</button>
+    </div>
+    <div class="explanation">Correct. Hierarchy improves control-plane scalability by dividing networks into administrative regions.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 23 · Easy</div>
+    <div class="q-text">Which statement best describes hot-potato routing?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Bellman-Ford updates best routes by minimizing over neighbors&#x27; advertised costs.</button>
+      <button class="option" data-correct="false">BGP advertises AS paths and policy attributes between autonomous systems.</button>
+      <button class="option" data-correct="true">An AS often exits traffic at the nearest egress to minimize internal transport cost.</button>
+      <button class="option" data-correct="false">The data plane forwards packets, while the control plane computes the rules it follows.</button>
+    </div>
+    <div class="explanation">Correct. An AS often exits traffic at the nearest egress to minimize internal transport cost.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 24 · Medium</div>
+    <div class="q-text">In practice, which statement about routing instability is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">In DV, incorrect reachability info can persist and metrics can climb gradually.</button>
+      <button class="option" data-correct="false">BGP often selects routes by business policy and economics, not only shortest path.</button>
+      <button class="option" data-correct="false">Ping tests reachability by sending ICMP echo requests and timing echo replies.</button>
+      <button class="option" data-correct="true">Conflicting policies and rapid changes can cause oscillations and temporary route instability.</button>
+    </div>
+    <div class="explanation">Correct. Conflicting policies and rapid changes can cause oscillations and temporary route instability.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 25 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of fast failure response in the control plane is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Fast failure detection and reconvergence reduce downtime and packet loss.</button>
+      <button class="option" data-correct="false">Poison reverse advertises infinity back to the neighbor that supplied a route to mitigate simple loops.</button>
+      <button class="option" data-correct="false">eBGP runs between ASes, while iBGP distributes external routes inside an AS.</button>
+      <button class="option" data-correct="false">Traceroute uses increasing TTL values to elicit replies from each hop along the path.</button>
+    </div>
+    <div class="explanation">Correct. Fast failure detection and reconvergence reduce downtime and packet loss.</div>
   </div>
 </div>
 </section>

@@ -140,67 +140,307 @@
 
 <section id="quiz">
 <div class="container">
-  <h2>Test Yourself</h2>
-  <p class="section-intro">Check whether you have understood the key concepts from this chapter.</p>
+  <h2>Test yourself</h2>
+  <p class="section-intro">Check whether you have understood the most important concepts from this chapter.</p>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 1</div>
-    <div class="q-text">What is the difference between "wireless" and "mobile"?</div>
+    <div class="q-label">Question 1 · Easy</div>
+    <div class="q-text">Which statement best describes the relation between wireless and mobility?</div>
     <div class="options">
-      <button class="option" data-correct="false">They are the same — all wireless devices are mobile</button>
-      <button class="option" data-correct="false">Wireless means WiFi, mobile means 4G/5G</button>
-      <button class="option" data-correct="true">Wireless is about transmitting via radio; mobile is about moving between attachment points — a device can be one without the other</button>
-      <button class="option" data-correct="false">Mobile means the device has a battery, wireless means it has no cable</button>
+      <button class="option" data-correct="true">Wireless describes the transmission medium, while mobility describes movement across attachment points.</button>
+      <button class="option" data-correct="false">CSMA/CA uses random backoff to reduce the probability of simultaneous transmission.</button>
+      <button class="option" data-correct="false">FR1 offers better coverage, while FR2 (mmWave) offers higher capacity but shorter range.</button>
+      <button class="option" data-correct="false">Power control reduces interference, improves capacity, and saves device battery.</button>
     </div>
-    <div class="explanation">A smart TV on WiFi is wireless but not mobile. A tablet with a USB cable can be mobile but not wireless. The two problems — radio communication and mobility management — are solved independently of each other.</div>
+    <div class="explanation">Correct. Wireless describes the transmission medium, while mobility describes movement across attachment points.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 2</div>
-    <div class="q-text">Why does WiFi (802.11) use CSMA/CA instead of CSMA/CD like Ethernet does?</div>
+    <div class="q-label">Question 2 · Medium</div>
+    <div class="q-text">In practice, which statement about noise and fading in radio links is most correct?</div>
     <div class="options">
-      <button class="option" data-correct="false">Because WiFi frames are too short for collisions to occur</button>
-      <button class="option" data-correct="true">Because the sender's own signal overwhelms the receiver, so collisions cannot be detected during transmission — and hidden terminals mean not all senders can hear each other</button>
-      <button class="option" data-correct="false">Because CSMA/CD requires full-duplex, which WiFi does not support</button>
-      <button class="option" data-correct="false">Because collisions never occur on wireless networks</button>
+      <button class="option" data-correct="false">Channels 1, 6, and 11 are commonly used to minimize overlap and interference.</button>
+      <button class="option" data-correct="true">Interference, fading, and low SNR increase bit error rate and require robust MAC/PHY mechanisms.</button>
+      <button class="option" data-correct="false">mmWave is easily blocked and requires dense small-cell deployment and beamforming.</button>
+      <button class="option" data-correct="false">A transmitter&#x27;s own signal dominates its receiver, making direct collision detection difficult.</button>
     </div>
-    <div class="explanation">On a radio link, the sender's own signal is millions of times stronger than incoming signals, so the receiver is "blind" while transmitting. Additionally, the hidden terminal problem means two senders can collide at a third party without either of them knowing it. That is why WiFi must avoid collisions (CA) instead of detecting them (CD).</div>
+    <div class="explanation">Correct. Interference, fading, and low SNR increase bit error rate and require robust MAC/PHY mechanisms.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 3</div>
-    <div class="q-text">Why does 4G LTE use GTP tunneling instead of regular IP routing through the core network?</div>
+    <div class="q-label">Question 3 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of the hidden terminal problem is most accurate?</div>
     <div class="options">
-      <button class="option" data-correct="false">To encrypt traffic between the base station and the Internet</button>
-      <button class="option" data-correct="false">Because the IP protocol does not work over radio links</button>
-      <button class="option" data-correct="true">So that the phone's IP address remains the same even when it switches base stations — the tunnel endpoint is moved, but the TCP connection survives</button>
-      <button class="option" data-correct="false">To compress data packets and save bandwidth in the core network</button>
+      <button class="option" data-correct="false">Handover involves scanning, selecting a new AP, and reassociating with minimal interruption.</button>
+      <button class="option" data-correct="false">Multiple antennas enable spatial multiplexing and directed beams for higher spectral efficiency.</button>
+      <button class="option" data-correct="true">Two transmitters may be out of range of each other yet collide at the same receiver.</button>
+      <button class="option" data-correct="false">Small cells increase capacity via denser frequency reuse over smaller areas.</button>
     </div>
-    <div class="explanation">Regular IP routing binds addresses to subnets. Without tunneling, a base station switch would require a new IP address, and all TCP connections would break. GTP tunnels let the P-GW (the gateway) own the IP address, while only the tunnel endpoint is updated during handover — an elegant form of indirection.</div>
+    <div class="explanation">Correct. Two transmitters may be out of range of each other yet collide at the same receiver.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 4</div>
-    <div class="q-text">What is the "hidden terminal problem" in wireless networks?</div>
+    <div class="q-label">Question 4 · Medium</div>
+    <div class="q-text">In practice, which statement about the exposed terminal problem is most correct?</div>
     <div class="options">
-      <button class="option" data-correct="false">That a terminal is hidden behind a firewall and cannot be reached from the Internet</button>
-      <button class="option" data-correct="true">That two senders cannot hear each other (e.g., due to distance or obstruction), and therefore transmit simultaneously — causing a collision at the receiver without either of them knowing</button>
-      <button class="option" data-correct="false">That a device connects to a hidden WiFi network without an SSID</button>
-      <button class="option" data-correct="false">That the base station hides from new devices to save bandwidth</button>
+      <button class="option" data-correct="false">Cellular systems divide coverage into cells to enable frequency reuse and higher total capacity.</button>
+      <button class="option" data-correct="false">Mobility management moves connections between base stations without unnecessarily breaking sessions.</button>
+      <button class="option" data-correct="false">Low handover latency is critical for voice, gaming, and other real-time applications.</button>
+      <button class="option" data-correct="true">A node may stay silent unnecessarily after hearing a transmitter that would not interfere at its receiver.</button>
     </div>
-    <div class="explanation">The hidden terminal problem occurs when nodes A and C are both within range of B, but not of each other. Both listen, hear silence, and transmit — but collide at B. CSMA alone does not solve this; it requires mechanisms like RTS/CTS where the base station reserves the channel on behalf of the sender.</div>
+    <div class="explanation">Correct. A node may stay silent unnecessarily after hearing a transmitter that would not interfere at its receiver.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 5</div>
-    <div class="q-text">What is the most important practical difference between the 5G frequency bands FR1 (under 6 GHz) and FR2 (millimeter waves, 24–52 GHz)?</div>
+    <div class="q-label">Question 5 · Easy</div>
+    <div class="q-text">Which statement best describes RTS/CTS?</div>
     <div class="options">
-      <button class="option" data-correct="false">FR1 provides higher speed than FR2, but shorter range</button>
-      <button class="option" data-correct="false">FR2 penetrates walls better because the wavelength is shorter</button>
-      <button class="option" data-correct="true">FR2 provides enormously higher speed, but has very short range and is easily blocked by walls, rain, and human bodies</button>
-      <button class="option" data-correct="false">FR1 and FR2 provide equal performance, but FR2 is cheaper for operators</button>
+      <button class="option" data-correct="true">RTS/CTS reserves the channel before data transmission and reduces hidden-terminal collisions.</button>
+      <button class="option" data-correct="false">The base station schedules resources so user devices transmit in coordinated time/frequency blocks.</button>
+      <button class="option" data-correct="false">GTP encapsulates user traffic between mobile nodes so device IP can remain stable during handover.</button>
+      <button class="option" data-correct="false">WiFi is more distributed and contention-based, while cellular access is more centrally scheduled.</button>
     </div>
-    <div class="explanation">FR2 (mmWave) offers up to 10 Gbps, but the signal is blocked by almost anything — walls, raindrops, human bodies. The range is typically 10–100 meters, which requires massive deployment of small pico cells. FR1 is more like traditional cellular frequencies with good range but moderate speeds.</div>
+    <div class="explanation">Correct. RTS/CTS reserves the channel before data transmission and reduces hidden-terminal collisions.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 6 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of 802.11 association is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">The core separates user and control planes for scalable mobility and service control.</button>
+      <button class="option" data-correct="true">A client must associate with an access point before regular data transfer can begin.</button>
+      <button class="option" data-correct="false">Roaming requires authentication, policy, and billing coordination between visited and home networks.</button>
+      <button class="option" data-correct="false">Radio losses are often bursty, affecting coding choices, interleaving, and retransmission strategy.</button>
+    </div>
+    <div class="explanation">Correct. A client must associate with an access point before regular data transfer can begin.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 7 · Medium</div>
+    <div class="q-text">In practice, which statement about beacon frames is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">FR1 offers better coverage, while FR2 (mmWave) offers higher capacity but shorter range.</button>
+      <button class="option" data-correct="false">Power control reduces interference, improves capacity, and saves device battery.</button>
+      <button class="option" data-correct="true">Access points send beacons advertising SSID, channel, and timing information.</button>
+      <button class="option" data-correct="false">Wireless describes the transmission medium, while mobility describes movement across attachment points.</button>
+    </div>
+    <div class="explanation">Correct. Access points send beacons advertising SSID, channel, and timing information.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 8 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of random backoff in WiFi is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">mmWave is easily blocked and requires dense small-cell deployment and beamforming.</button>
+      <button class="option" data-correct="false">A transmitter&#x27;s own signal dominates its receiver, making direct collision detection difficult.</button>
+      <button class="option" data-correct="false">Interference, fading, and low SNR increase bit error rate and require robust MAC/PHY mechanisms.</button>
+      <button class="option" data-correct="true">CSMA/CA uses random backoff to reduce the probability of simultaneous transmission.</button>
+    </div>
+    <div class="explanation">Correct. CSMA/CA uses random backoff to reduce the probability of simultaneous transmission.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 9 · Easy</div>
+    <div class="q-text">Which statement best describes channel planning in 2.4 GHz WiFi?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Channels 1, 6, and 11 are commonly used to minimize overlap and interference.</button>
+      <button class="option" data-correct="false">Multiple antennas enable spatial multiplexing and directed beams for higher spectral efficiency.</button>
+      <button class="option" data-correct="false">Small cells increase capacity via denser frequency reuse over smaller areas.</button>
+      <button class="option" data-correct="false">Two transmitters may be out of range of each other yet collide at the same receiver.</button>
+    </div>
+    <div class="explanation">Correct. Channels 1, 6, and 11 are commonly used to minimize overlap and interference.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 10 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of WiFi handover is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Mobility management moves connections between base stations without unnecessarily breaking sessions.</button>
+      <button class="option" data-correct="true">Handover involves scanning, selecting a new AP, and reassociating with minimal interruption.</button>
+      <button class="option" data-correct="false">Low handover latency is critical for voice, gaming, and other real-time applications.</button>
+      <button class="option" data-correct="false">A node may stay silent unnecessarily after hearing a transmitter that would not interfere at its receiver.</button>
+    </div>
+    <div class="explanation">Correct. Handover involves scanning, selecting a new AP, and reassociating with minimal interruption.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 11 · Medium</div>
+    <div class="q-text">In practice, which statement about cell structure in cellular networks is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">GTP encapsulates user traffic between mobile nodes so device IP can remain stable during handover.</button>
+      <button class="option" data-correct="false">WiFi is more distributed and contention-based, while cellular access is more centrally scheduled.</button>
+      <button class="option" data-correct="true">Cellular systems divide coverage into cells to enable frequency reuse and higher total capacity.</button>
+      <button class="option" data-correct="false">RTS/CTS reserves the channel before data transmission and reduces hidden-terminal collisions.</button>
+    </div>
+    <div class="explanation">Correct. Cellular systems divide coverage into cells to enable frequency reuse and higher total capacity.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 12 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of scheduled access in cellular uplink is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Roaming requires authentication, policy, and billing coordination between visited and home networks.</button>
+      <button class="option" data-correct="false">Radio losses are often bursty, affecting coding choices, interleaving, and retransmission strategy.</button>
+      <button class="option" data-correct="false">A client must associate with an access point before regular data transfer can begin.</button>
+      <button class="option" data-correct="true">The base station schedules resources so user devices transmit in coordinated time/frequency blocks.</button>
+    </div>
+    <div class="explanation">Correct. The base station schedules resources so user devices transmit in coordinated time/frequency blocks.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 13 · Easy</div>
+    <div class="q-text">Which statement best describes 4G/5G core architecture?</div>
+    <div class="options">
+      <button class="option" data-correct="true">The core separates user and control planes for scalable mobility and service control.</button>
+      <button class="option" data-correct="false">Power control reduces interference, improves capacity, and saves device battery.</button>
+      <button class="option" data-correct="false">Wireless describes the transmission medium, while mobility describes movement across attachment points.</button>
+      <button class="option" data-correct="false">Access points send beacons advertising SSID, channel, and timing information.</button>
+    </div>
+    <div class="explanation">Correct. The core separates user and control planes for scalable mobility and service control.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 14 · Medium</div>
+    <div class="q-text">In practice, which statement about FR1 versus FR2 is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">A transmitter&#x27;s own signal dominates its receiver, making direct collision detection difficult.</button>
+      <button class="option" data-correct="true">FR1 offers better coverage, while FR2 (mmWave) offers higher capacity but shorter range.</button>
+      <button class="option" data-correct="false">Interference, fading, and low SNR increase bit error rate and require robust MAC/PHY mechanisms.</button>
+      <button class="option" data-correct="false">CSMA/CA uses random backoff to reduce the probability of simultaneous transmission.</button>
+    </div>
+    <div class="explanation">Correct. FR1 offers better coverage, while FR2 (mmWave) offers higher capacity but shorter range.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 15 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of mmWave challenges is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Small cells increase capacity via denser frequency reuse over smaller areas.</button>
+      <button class="option" data-correct="false">Two transmitters may be out of range of each other yet collide at the same receiver.</button>
+      <button class="option" data-correct="true">mmWave is easily blocked and requires dense small-cell deployment and beamforming.</button>
+      <button class="option" data-correct="false">Channels 1, 6, and 11 are commonly used to minimize overlap and interference.</button>
+    </div>
+    <div class="explanation">Correct. mmWave is easily blocked and requires dense small-cell deployment and beamforming.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 16 · Medium</div>
+    <div class="q-text">In practice, which statement about MIMO and beamforming is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Low handover latency is critical for voice, gaming, and other real-time applications.</button>
+      <button class="option" data-correct="false">A node may stay silent unnecessarily after hearing a transmitter that would not interfere at its receiver.</button>
+      <button class="option" data-correct="false">Handover involves scanning, selecting a new AP, and reassociating with minimal interruption.</button>
+      <button class="option" data-correct="true">Multiple antennas enable spatial multiplexing and directed beams for higher spectral efficiency.</button>
+    </div>
+    <div class="explanation">Correct. Multiple antennas enable spatial multiplexing and directed beams for higher spectral efficiency.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 17 · Easy</div>
+    <div class="q-text">Which statement best describes mobility management?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Mobility management moves connections between base stations without unnecessarily breaking sessions.</button>
+      <button class="option" data-correct="false">WiFi is more distributed and contention-based, while cellular access is more centrally scheduled.</button>
+      <button class="option" data-correct="false">RTS/CTS reserves the channel before data transmission and reduces hidden-terminal collisions.</button>
+      <button class="option" data-correct="false">Cellular systems divide coverage into cells to enable frequency reuse and higher total capacity.</button>
+    </div>
+    <div class="explanation">Correct. Mobility management moves connections between base stations without unnecessarily breaking sessions.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 18 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of GTP tunnels is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Radio losses are often bursty, affecting coding choices, interleaving, and retransmission strategy.</button>
+      <button class="option" data-correct="true">GTP encapsulates user traffic between mobile nodes so device IP can remain stable during handover.</button>
+      <button class="option" data-correct="false">A client must associate with an access point before regular data transfer can begin.</button>
+      <button class="option" data-correct="false">The base station schedules resources so user devices transmit in coordinated time/frequency blocks.</button>
+    </div>
+    <div class="explanation">Correct. GTP encapsulates user traffic between mobile nodes so device IP can remain stable during handover.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 19 · Medium</div>
+    <div class="q-text">In practice, which statement about roaming between operators is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Wireless describes the transmission medium, while mobility describes movement across attachment points.</button>
+      <button class="option" data-correct="false">Access points send beacons advertising SSID, channel, and timing information.</button>
+      <button class="option" data-correct="true">Roaming requires authentication, policy, and billing coordination between visited and home networks.</button>
+      <button class="option" data-correct="false">The core separates user and control planes for scalable mobility and service control.</button>
+    </div>
+    <div class="explanation">Correct. Roaming requires authentication, policy, and billing coordination between visited and home networks.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 20 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of the effect of transmit power control is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Interference, fading, and low SNR increase bit error rate and require robust MAC/PHY mechanisms.</button>
+      <button class="option" data-correct="false">CSMA/CA uses random backoff to reduce the probability of simultaneous transmission.</button>
+      <button class="option" data-correct="false">FR1 offers better coverage, while FR2 (mmWave) offers higher capacity but shorter range.</button>
+      <button class="option" data-correct="true">Power control reduces interference, improves capacity, and saves device battery.</button>
+    </div>
+    <div class="explanation">Correct. Power control reduces interference, improves capacity, and saves device battery.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 21 · Medium</div>
+    <div class="q-text">In practice, which statement about why collision detection is hard in radio is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="true">A transmitter&#x27;s own signal dominates its receiver, making direct collision detection difficult.</button>
+      <button class="option" data-correct="false">Two transmitters may be out of range of each other yet collide at the same receiver.</button>
+      <button class="option" data-correct="false">Channels 1, 6, and 11 are commonly used to minimize overlap and interference.</button>
+      <button class="option" data-correct="false">mmWave is easily blocked and requires dense small-cell deployment and beamforming.</button>
+    </div>
+    <div class="explanation">Correct. A transmitter&#x27;s own signal dominates its receiver, making direct collision detection difficult.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 22 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of small cells and capacity growth is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">A node may stay silent unnecessarily after hearing a transmitter that would not interfere at its receiver.</button>
+      <button class="option" data-correct="true">Small cells increase capacity via denser frequency reuse over smaller areas.</button>
+      <button class="option" data-correct="false">Handover involves scanning, selecting a new AP, and reassociating with minimal interruption.</button>
+      <button class="option" data-correct="false">Multiple antennas enable spatial multiplexing and directed beams for higher spectral efficiency.</button>
+    </div>
+    <div class="explanation">Correct. Small cells increase capacity via denser frequency reuse over smaller areas.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 23 · Easy</div>
+    <div class="q-text">Which statement best describes handover latency requirements?</div>
+    <div class="options">
+      <button class="option" data-correct="false">RTS/CTS reserves the channel before data transmission and reduces hidden-terminal collisions.</button>
+      <button class="option" data-correct="false">Cellular systems divide coverage into cells to enable frequency reuse and higher total capacity.</button>
+      <button class="option" data-correct="true">Low handover latency is critical for voice, gaming, and other real-time applications.</button>
+      <button class="option" data-correct="false">Mobility management moves connections between base stations without unnecessarily breaking sessions.</button>
+    </div>
+    <div class="explanation">Correct. Low handover latency is critical for voice, gaming, and other real-time applications.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 24 · Medium</div>
+    <div class="q-text">In practice, which statement about WiFi versus cellular access control is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">A client must associate with an access point before regular data transfer can begin.</button>
+      <button class="option" data-correct="false">The base station schedules resources so user devices transmit in coordinated time/frequency blocks.</button>
+      <button class="option" data-correct="false">GTP encapsulates user traffic between mobile nodes so device IP can remain stable during handover.</button>
+      <button class="option" data-correct="true">WiFi is more distributed and contention-based, while cellular access is more centrally scheduled.</button>
+    </div>
+    <div class="explanation">Correct. WiFi is more distributed and contention-based, while cellular access is more centrally scheduled.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 25 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of loss behavior on radio links is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Radio losses are often bursty, affecting coding choices, interleaving, and retransmission strategy.</button>
+      <button class="option" data-correct="false">Access points send beacons advertising SSID, channel, and timing information.</button>
+      <button class="option" data-correct="false">The core separates user and control planes for scalable mobility and service control.</button>
+      <button class="option" data-correct="false">Roaming requires authentication, policy, and billing coordination between visited and home networks.</button>
+    </div>
+    <div class="explanation">Correct. Radio losses are often bursty, affecting coding choices, interleaving, and retransmission strategy.</div>
   </div>
 </div>
 </section>

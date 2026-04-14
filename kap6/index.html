@@ -153,40 +153,307 @@
 <!-- ============================================ -->
 <section id="quiz">
 <div class="container">
-  <div class="section-badge">Test deg selv</div>
-  <h2>Kjapt quiz</h2>
+  <h2>Test deg selv</h2>
+  <p class="section-intro">Sjekk om du har forstått de viktigste konseptene fra dette kapittelet.</p>
 
-  <div class="quiz" data-quiz="1">
-    <div class="q-label">Spørsmål 1</div>
-    <div class="q-text">Host A vil sende en IP-pakke til Host B på samme lokale nettverk (LAN). A kjenner B sin IP-adresse, men har ingen oppføring for B i ARP-cachen sin. Hva skjer?</div>
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 1 · Lett</div>
+    <div class="q-text">Hva beskriver best framing i lenkelaget?</div>
     <div class="options">
-      <button class="option" data-correct="false">A sender pakken direkte med B sin IP-adresse som destinasjon i Ethernet-rammen</button>
-      <button class="option" data-correct="true">A sender en ARP-broadcast for å finne B sin MAC-adresse, og venter på svar før den sender IP-pakken i en Ethernet-ramme</button>
-      <button class="option" data-correct="false">A sender pakken til default gateway (ruteren), som videresender den til B</button>
+      <button class="option" data-correct="true">Lenkelaget kapsler nettverkslagspakker i rammer med lokale adresse- og kontrollfelt.</button>
+      <button class="option" data-correct="false">En hub gjentar signal til alle porter, mens en svitsj videresender selektivt.</button>
+      <button class="option" data-correct="false">I full-dupleks punkt-til-punkt Ethernet oppstår ikke kollisjoner, så CSMA/CD er unødvendig.</button>
+      <button class="option" data-correct="false">ff:ff:ff:ff:ff:ff betyr at rammen skal leveres til alle noder på lokal lenke.</button>
     </div>
-    <div class="explanation">Riktig! Ethernet-rammen trenger en MAC-adresse som destinasjon — ikke en IP-adresse. Når ARP-cachen er tom, sender A en ARP-request som broadcast (FF-FF-FF-FF-FF-FF). B gjenkjenner sin egen IP og svarer med sin MAC-adresse. Først da kan A sende den faktiske IP-pakken innkapslet i en Ethernet-ramme adressert til B sin MAC.</div>
+    <div class="explanation">Riktig. Lenkelaget kapsler nettverkslagspakker i rammer med lokale adresse- og kontrollfelt.</div>
   </div>
 
-  <div class="quiz" data-quiz="2">
-    <div class="q-label">Spørsmål 2</div>
-    <div class="q-text">Hva er den viktigste forskjellen mellom en MAC-adresse og en IP-adresse?</div>
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 2 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om medietilgang på delt kanal i praksis?</div>
     <div class="options">
-      <button class="option" data-correct="false">MAC-adresser er kortere enn IP-adresser</button>
-      <button class="option" data-correct="false">MAC-adresser brukes bare på trådløse nettverk</button>
-      <button class="option" data-correct="true">MAC-adressen er fast knyttet til nettverkskortet og har lokal betydning, mens IP-adressen er logisk og avhenger av hvor i nettverket du er</button>
+      <button class="option" data-correct="false">Svitsjer splitter kollisjonsdomener per port, noe som øker effektiv kapasitet.</button>
+      <button class="option" data-correct="true">MAC-protokoller bestemmer hvem som får sende når flere noder deler samme medium.</button>
+      <button class="option" data-correct="false">VLAN deler ett fysisk svitsjenett i flere logiske broadcast-domener.</button>
+      <button class="option" data-correct="false">Lærte MAC-oppføringer utløper etter inaktivitet for å håndtere topologiske endringer.</button>
     </div>
-    <div class="explanation">Riktig! MAC-adressen (48 bit) er «brent inn» i nettverkskortet og følger enheten uansett hvor den kobles til. IP-adressen er logisk — den endres når du bytter nettverk. Rutere bruker IP for å finne veien på tvers av internett; MAC-adresser brukes bare på den lokale lenken for å identifisere naboen.</div>
+    <div class="explanation">Riktig. MAC-protokoller bestemmer hvem som får sende når flere noder deler samme medium.</div>
   </div>
 
-  <div class="quiz" data-quiz="3">
-    <div class="q-label">Spørsmål 3</div>
-    <div class="q-text">I CSMA/CD: hva gjør en stasjon som oppdager en kollisjon mens den sender?</div>
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 3 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om CRC-feildeteksjon er faglig best?</div>
     <div class="options">
-      <button class="option" data-correct="false">Den fortsetter å sende og håper den andre stasjonen stopper</button>
-      <button class="option" data-correct="false">Den sender pakken på nytt umiddelbart</button>
-      <button class="option" data-correct="true">Den avbryter sendingen, sender et jam-signal, og venter en tilfeldig tid (binary exponential backoff) før den prøver igjen</button>
+      <button class="option" data-correct="false">CSMA/CD lytter før sending, oppdager kollisjon, stopper og prøver igjen senere.</button>
+      <button class="option" data-correct="false">WiFi kan ikke pålitelig oppdage kollisjoner under sending og prøver derfor å unngå dem.</button>
+      <button class="option" data-correct="true">CRC oppdager enkeltfeil og mange burstfeil med høy sannsynlighet.</button>
+      <button class="option" data-correct="false">Spanning Tree blokkerer utvalgte lenker logisk for å hindre lag-2-løkker.</button>
     </div>
-    <div class="explanation">Riktig! Ved kollisjon stopper stasjonen umiddelbart, sender et kort jam-signal slik at alle vet at det var en kollisjon, og venter deretter en tilfeldig tid. Ventetiden velges med <em>binary exponential backoff</em>: etter n-te kollisjon velges ventetiden tilfeldig fra {0, 1, …, 2ⁿ−1} tidsslots. Dette sprer ut forsøkene og reduserer sjansen for ny kollisjon.</div>
+    <div class="explanation">Riktig. CRC oppdager enkeltfeil og mange burstfeil med høy sannsynlighet.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 4 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om MAC-adresser i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Jam-signalet varsler andre noder om kollisjonen slik at alle avbryter sending.</button>
+      <button class="option" data-correct="false">WiFi bruker linklags-ACK og retransmisjon for å håndtere høyere radiofeilrate.</button>
+      <button class="option" data-correct="false">En Ethernet-ramme inneholder blant annet destinasjon, kilde, type/length, payload og FCS.</button>
+      <button class="option" data-correct="true">MAC-adresser er 48-bit identifikatorer brukt for lokal levering på lenken.</button>
+    </div>
+    <div class="explanation">Riktig. MAC-adresser er 48-bit identifikatorer brukt for lokal levering på lenken.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 5 · Lett</div>
+    <div class="q-text">Hva beskriver best ARP-request?</div>
+    <div class="options">
+      <button class="option" data-correct="true">ARP-request sendes som broadcast når avsender mangler MAC-adressen til målet.</button>
+      <button class="option" data-correct="false">Etter hver kollisjon velges ventetid tilfeldig fra et større tidsvindu for å spre forsøk.</button>
+      <button class="option" data-correct="false">Maksimal gjennomstrømningsandel i slotted ALOHA er 1/e under ideelle antakelser.</button>
+      <button class="option" data-correct="false">Standard Ethernet MTU er typisk 1500 byte IP-payload før fragmentering vurderes.</button>
+    </div>
+    <div class="explanation">Riktig. ARP-request sendes som broadcast når avsender mangler MAC-adressen til målet.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 6 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om svitsjens læringstabell er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Minimum 64 byte sikrer at kollisjon kan oppdages før en ramme er ferdig sendt.</button>
+      <button class="option" data-correct="true">Svitsjen lærer kilde-MAC mot inngangsport ved å observere innkommende rammer.</button>
+      <button class="option" data-correct="false">Pure ALOHA har lavere maksimal effektivitet (1/2e) enn slotted ALOHA.</button>
+      <button class="option" data-correct="false">Lenkelagsretransmisjon kan skjule enkelte feil fra transportlaget og forbedre opplevd ytelse.</button>
+    </div>
+    <div class="explanation">Riktig. Svitsjen lærer kilde-MAC mot inngangsport ved å observere innkommende rammer.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 7 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om flooding ved ukjent destinasjon i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">I full-dupleks punkt-til-punkt Ethernet oppstår ikke kollisjoner, så CSMA/CD er unødvendig.</button>
+      <button class="option" data-correct="false">ff:ff:ff:ff:ff:ff betyr at rammen skal leveres til alle noder på lokal lenke.</button>
+      <button class="option" data-correct="true">Når destinasjons-MAC er ukjent, kopierer svitsjen rammen til alle andre porter.</button>
+      <button class="option" data-correct="false">Lenkelaget kapsler nettverkslagspakker i rammer med lokale adresse- og kontrollfelt.</button>
+    </div>
+    <div class="explanation">Riktig. Når destinasjons-MAC er ukjent, kopierer svitsjen rammen til alle andre porter.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 8 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om hub versus svitsj er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">VLAN deler ett fysisk svitsjenett i flere logiske broadcast-domener.</button>
+      <button class="option" data-correct="false">Lærte MAC-oppføringer utløper etter inaktivitet for å håndtere topologiske endringer.</button>
+      <button class="option" data-correct="false">MAC-protokoller bestemmer hvem som får sende når flere noder deler samme medium.</button>
+      <button class="option" data-correct="true">En hub gjentar signal til alle porter, mens en svitsj videresender selektivt.</button>
+    </div>
+    <div class="explanation">Riktig. En hub gjentar signal til alle porter, mens en svitsj videresender selektivt.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 9 · Lett</div>
+    <div class="q-text">Hva beskriver best kollisjonsdomener?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Svitsjer splitter kollisjonsdomener per port, noe som øker effektiv kapasitet.</button>
+      <button class="option" data-correct="false">WiFi kan ikke pålitelig oppdage kollisjoner under sending og prøver derfor å unngå dem.</button>
+      <button class="option" data-correct="false">Spanning Tree blokkerer utvalgte lenker logisk for å hindre lag-2-løkker.</button>
+      <button class="option" data-correct="false">CRC oppdager enkeltfeil og mange burstfeil med høy sannsynlighet.</button>
+    </div>
+    <div class="explanation">Riktig. Svitsjer splitter kollisjonsdomener per port, noe som øker effektiv kapasitet.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 10 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om CSMA/CD er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">WiFi bruker linklags-ACK og retransmisjon for å håndtere høyere radiofeilrate.</button>
+      <button class="option" data-correct="true">CSMA/CD lytter før sending, oppdager kollisjon, stopper og prøver igjen senere.</button>
+      <button class="option" data-correct="false">En Ethernet-ramme inneholder blant annet destinasjon, kilde, type/length, payload og FCS.</button>
+      <button class="option" data-correct="false">MAC-adresser er 48-bit identifikatorer brukt for lokal levering på lenken.</button>
+    </div>
+    <div class="explanation">Riktig. CSMA/CD lytter før sending, oppdager kollisjon, stopper og prøver igjen senere.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 11 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om jam-signal ved Ethernet-kollisjon i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Maksimal gjennomstrømningsandel i slotted ALOHA er 1/e under ideelle antakelser.</button>
+      <button class="option" data-correct="false">Standard Ethernet MTU er typisk 1500 byte IP-payload før fragmentering vurderes.</button>
+      <button class="option" data-correct="true">Jam-signalet varsler andre noder om kollisjonen slik at alle avbryter sending.</button>
+      <button class="option" data-correct="false">ARP-request sendes som broadcast når avsender mangler MAC-adressen til målet.</button>
+    </div>
+    <div class="explanation">Riktig. Jam-signalet varsler andre noder om kollisjonen slik at alle avbryter sending.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 12 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om binary exponential backoff er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Pure ALOHA har lavere maksimal effektivitet (1/2e) enn slotted ALOHA.</button>
+      <button class="option" data-correct="false">Lenkelagsretransmisjon kan skjule enkelte feil fra transportlaget og forbedre opplevd ytelse.</button>
+      <button class="option" data-correct="false">Svitsjen lærer kilde-MAC mot inngangsport ved å observere innkommende rammer.</button>
+      <button class="option" data-correct="true">Etter hver kollisjon velges ventetid tilfeldig fra et større tidsvindu for å spre forsøk.</button>
+    </div>
+    <div class="explanation">Riktig. Etter hver kollisjon velges ventetid tilfeldig fra et større tidsvindu for å spre forsøk.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 13 · Lett</div>
+    <div class="q-text">Hva beskriver best minimum Ethernet-rammestørrelse?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Minimum 64 byte sikrer at kollisjon kan oppdages før en ramme er ferdig sendt.</button>
+      <button class="option" data-correct="false">ff:ff:ff:ff:ff:ff betyr at rammen skal leveres til alle noder på lokal lenke.</button>
+      <button class="option" data-correct="false">Lenkelaget kapsler nettverkslagspakker i rammer med lokale adresse- og kontrollfelt.</button>
+      <button class="option" data-correct="false">Når destinasjons-MAC er ukjent, kopierer svitsjen rammen til alle andre porter.</button>
+    </div>
+    <div class="explanation">Riktig. Minimum 64 byte sikrer at kollisjon kan oppdages før en ramme er ferdig sendt.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 14 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om full-dupleks Ethernet i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Lærte MAC-oppføringer utløper etter inaktivitet for å håndtere topologiske endringer.</button>
+      <button class="option" data-correct="true">I full-dupleks punkt-til-punkt Ethernet oppstår ikke kollisjoner, så CSMA/CD er unødvendig.</button>
+      <button class="option" data-correct="false">MAC-protokoller bestemmer hvem som får sende når flere noder deler samme medium.</button>
+      <button class="option" data-correct="false">En hub gjentar signal til alle porter, mens en svitsj videresender selektivt.</button>
+    </div>
+    <div class="explanation">Riktig. I full-dupleks punkt-til-punkt Ethernet oppstår ikke kollisjoner, så CSMA/CD er unødvendig.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 15 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om VLAN er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Spanning Tree blokkerer utvalgte lenker logisk for å hindre lag-2-løkker.</button>
+      <button class="option" data-correct="false">CRC oppdager enkeltfeil og mange burstfeil med høy sannsynlighet.</button>
+      <button class="option" data-correct="true">VLAN deler ett fysisk svitsjenett i flere logiske broadcast-domener.</button>
+      <button class="option" data-correct="false">Svitsjer splitter kollisjonsdomener per port, noe som øker effektiv kapasitet.</button>
+    </div>
+    <div class="explanation">Riktig. VLAN deler ett fysisk svitsjenett i flere logiske broadcast-domener.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 16 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om hvorfor WiFi bruker CSMA/CA i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">En Ethernet-ramme inneholder blant annet destinasjon, kilde, type/length, payload og FCS.</button>
+      <button class="option" data-correct="false">MAC-adresser er 48-bit identifikatorer brukt for lokal levering på lenken.</button>
+      <button class="option" data-correct="false">CSMA/CD lytter før sending, oppdager kollisjon, stopper og prøver igjen senere.</button>
+      <button class="option" data-correct="true">WiFi kan ikke pålitelig oppdage kollisjoner under sending og prøver derfor å unngå dem.</button>
+    </div>
+    <div class="explanation">Riktig. WiFi kan ikke pålitelig oppdage kollisjoner under sending og prøver derfor å unngå dem.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 17 · Lett</div>
+    <div class="q-text">Hva beskriver best ACK i 802.11?</div>
+    <div class="options">
+      <button class="option" data-correct="true">WiFi bruker linklags-ACK og retransmisjon for å håndtere høyere radiofeilrate.</button>
+      <button class="option" data-correct="false">Standard Ethernet MTU er typisk 1500 byte IP-payload før fragmentering vurderes.</button>
+      <button class="option" data-correct="false">ARP-request sendes som broadcast når avsender mangler MAC-adressen til målet.</button>
+      <button class="option" data-correct="false">Jam-signalet varsler andre noder om kollisjonen slik at alle avbryter sending.</button>
+    </div>
+    <div class="explanation">Riktig. WiFi bruker linklags-ACK og retransmisjon for å håndtere høyere radiofeilrate.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 18 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om slotted ALOHA-effektivitet er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Lenkelagsretransmisjon kan skjule enkelte feil fra transportlaget og forbedre opplevd ytelse.</button>
+      <button class="option" data-correct="true">Maksimal gjennomstrømningsandel i slotted ALOHA er 1/e under ideelle antakelser.</button>
+      <button class="option" data-correct="false">Svitsjen lærer kilde-MAC mot inngangsport ved å observere innkommende rammer.</button>
+      <button class="option" data-correct="false">Etter hver kollisjon velges ventetid tilfeldig fra et større tidsvindu for å spre forsøk.</button>
+    </div>
+    <div class="explanation">Riktig. Maksimal gjennomstrømningsandel i slotted ALOHA er 1/e under ideelle antakelser.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 19 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om pure ALOHA-effektivitet i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Lenkelaget kapsler nettverkslagspakker i rammer med lokale adresse- og kontrollfelt.</button>
+      <button class="option" data-correct="false">Når destinasjons-MAC er ukjent, kopierer svitsjen rammen til alle andre porter.</button>
+      <button class="option" data-correct="true">Pure ALOHA har lavere maksimal effektivitet (1/2e) enn slotted ALOHA.</button>
+      <button class="option" data-correct="false">Minimum 64 byte sikrer at kollisjon kan oppdages før en ramme er ferdig sendt.</button>
+    </div>
+    <div class="explanation">Riktig. Pure ALOHA har lavere maksimal effektivitet (1/2e) enn slotted ALOHA.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 20 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om broadcast-MAC-adressen er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">MAC-protokoller bestemmer hvem som får sende når flere noder deler samme medium.</button>
+      <button class="option" data-correct="false">En hub gjentar signal til alle porter, mens en svitsj videresender selektivt.</button>
+      <button class="option" data-correct="false">I full-dupleks punkt-til-punkt Ethernet oppstår ikke kollisjoner, så CSMA/CD er unødvendig.</button>
+      <button class="option" data-correct="true">ff:ff:ff:ff:ff:ff betyr at rammen skal leveres til alle noder på lokal lenke.</button>
+    </div>
+    <div class="explanation">Riktig. ff:ff:ff:ff:ff:ff betyr at rammen skal leveres til alle noder på lokal lenke.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 21 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om aging i svitsjtabeller i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Lærte MAC-oppføringer utløper etter inaktivitet for å håndtere topologiske endringer.</button>
+      <button class="option" data-correct="false">CRC oppdager enkeltfeil og mange burstfeil med høy sannsynlighet.</button>
+      <button class="option" data-correct="false">Svitsjer splitter kollisjonsdomener per port, noe som øker effektiv kapasitet.</button>
+      <button class="option" data-correct="false">VLAN deler ett fysisk svitsjenett i flere logiske broadcast-domener.</button>
+    </div>
+    <div class="explanation">Riktig. Lærte MAC-oppføringer utløper etter inaktivitet for å håndtere topologiske endringer.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 22 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om Spanning Tree i Ethernet er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="false">MAC-adresser er 48-bit identifikatorer brukt for lokal levering på lenken.</button>
+      <button class="option" data-correct="true">Spanning Tree blokkerer utvalgte lenker logisk for å hindre lag-2-løkker.</button>
+      <button class="option" data-correct="false">CSMA/CD lytter før sending, oppdager kollisjon, stopper og prøver igjen senere.</button>
+      <button class="option" data-correct="false">WiFi kan ikke pålitelig oppdage kollisjoner under sending og prøver derfor å unngå dem.</button>
+    </div>
+    <div class="explanation">Riktig. Spanning Tree blokkerer utvalgte lenker logisk for å hindre lag-2-løkker.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 23 · Lett</div>
+    <div class="q-text">Hva beskriver best Ethernet-rammens felt?</div>
+    <div class="options">
+      <button class="option" data-correct="false">ARP-request sendes som broadcast når avsender mangler MAC-adressen til målet.</button>
+      <button class="option" data-correct="false">Jam-signalet varsler andre noder om kollisjonen slik at alle avbryter sending.</button>
+      <button class="option" data-correct="true">En Ethernet-ramme inneholder blant annet destinasjon, kilde, type/length, payload og FCS.</button>
+      <button class="option" data-correct="false">WiFi bruker linklags-ACK og retransmisjon for å håndtere høyere radiofeilrate.</button>
+    </div>
+    <div class="explanation">Riktig. En Ethernet-ramme inneholder blant annet destinasjon, kilde, type/length, payload og FCS.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 24 · Middels</div>
+    <div class="q-text">Hvilken påstand er mest korrekt om Ethernet MTU i praksis?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Svitsjen lærer kilde-MAC mot inngangsport ved å observere innkommende rammer.</button>
+      <button class="option" data-correct="false">Etter hver kollisjon velges ventetid tilfeldig fra et større tidsvindu for å spre forsøk.</button>
+      <button class="option" data-correct="false">Maksimal gjennomstrømningsandel i slotted ALOHA er 1/e under ideelle antakelser.</button>
+      <button class="option" data-correct="true">Standard Ethernet MTU er typisk 1500 byte IP-payload før fragmentering vurderes.</button>
+    </div>
+    <div class="explanation">Riktig. Standard Ethernet MTU er typisk 1500 byte IP-payload før fragmentering vurderes.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 25 · Vanskelig</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om lokal retransmisjon i lenkelaget er faglig best?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Lenkelagsretransmisjon kan skjule enkelte feil fra transportlaget og forbedre opplevd ytelse.</button>
+      <button class="option" data-correct="false">Når destinasjons-MAC er ukjent, kopierer svitsjen rammen til alle andre porter.</button>
+      <button class="option" data-correct="false">Minimum 64 byte sikrer at kollisjon kan oppdages før en ramme er ferdig sendt.</button>
+      <button class="option" data-correct="false">Pure ALOHA har lavere maksimal effektivitet (1/2e) enn slotted ALOHA.</button>
+    </div>
+    <div class="explanation">Riktig. Lenkelagsretransmisjon kan skjule enkelte feil fra transportlaget og forbedre opplevd ytelse.</div>
   </div>
 </div>
 </section>

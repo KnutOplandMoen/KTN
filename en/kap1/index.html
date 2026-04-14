@@ -149,40 +149,305 @@
 <div class="container">
   <h2>Test yourself</h2>
   <p class="section-intro">Check whether you have understood the most important concepts from this chapter.</p>
+
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 1</div>
-    <div class="q-text">What is the key difference between packet switching and circuit switching?</div>
+    <div class="q-label">Question 1 · Easy</div>
+    <div class="q-text">Which statement best describes the difference between packet switching and circuit switching?</div>
     <div class="options">
-      <button class="option" data-correct="false">Packet switching requires a dedicated connection to be established before data can be sent</button>
-      <button class="option" data-correct="false">Circuit switching divides data into packets that are sent independently through the network</button>
-      <button class="option" data-correct="true">In packet switching, network resources are shared dynamically among all users, while circuit switching reserves dedicated resources for each connection</button>
-      <button class="option" data-correct="false">Packet switching guarantees that data arrives without delay, while circuit switching does not</button>
+      <button class="option" data-correct="true">Packet switching shares capacity dynamically among users, while circuit switching reserves capacity per connection.</button>
+      <button class="option" data-correct="false">La/R measures link load; when it approaches 1, queues grow sharply.</button>
+      <button class="option" data-correct="false">Layering isolates complexity, makes design modular, and allows layers to evolve independently.</button>
+      <button class="option" data-correct="false">Access ISPs connect to regional/tier-1 networks and exchange traffic via peering and transit.</button>
     </div>
-    <div class="explanation">In packet switching, capacity is shared dynamically through <em>statistical multiplexing</em> — packets from different users are interleaved and share the links. In circuit switching, a fixed portion of capacity (frequency band or time slot) is reserved for the entire call, even when the user is idle. Packet switching is more efficient but provides no guarantees for delay or loss.</div>
+    <div class="explanation">Correct. Packet switching shares capacity dynamically among users, while circuit switching reserves capacity per connection.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 2</div>
-    <div class="q-text">What defines a network protocol?</div>
+    <div class="q-label">Question 2 · Medium</div>
+    <div class="q-text">In practice, which statement about what a network protocol actually defines is most correct?</div>
     <div class="options">
-      <button class="option" data-correct="false">The speed at which data can be sent over a particular link</button>
-      <button class="option" data-correct="true">The format and order of messages exchanged, as well as the actions taken upon sending and receiving</button>
-      <button class="option" data-correct="false">The physical cable connecting two machines</button>
-      <button class="option" data-correct="false">The IP address of a device on the network</button>
+      <button class="option" data-correct="false">The bottleneck link has the lowest capacity on the path and limits end-to-end throughput.</button>
+      <button class="option" data-correct="true">A protocol defines message format, ordering, and the actions performed on send and receive.</button>
+      <button class="option" data-correct="false">Each layer adds its own header around data from the layer above.</button>
+      <button class="option" data-correct="false">IXPs let networks exchange traffic directly, reducing cost and often delay.</button>
     </div>
-    <div class="explanation">A protocol is a set of rules that defines the <em>format</em>, <em>order</em>, and <em>actions</em> associated with message exchange between two or more communicating entities. Without protocols, machines would send bits with no shared understanding of what they mean.</div>
+    <div class="explanation">Correct. A protocol defines message format, ordering, and the actions performed on send and receive.</div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 3</div>
-    <div class="q-text">Which of the four delay components is fundamentally unpredictable and depends on network traffic?</div>
+    <div class="q-label">Question 3 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of the role of end systems in the Internet is most accurate?</div>
     <div class="options">
-      <button class="option" data-correct="false">Processing delay (d_proc)</button>
-      <button class="option" data-correct="true">Queuing delay (d_queue)</button>
-      <button class="option" data-correct="false">Transmission delay (d_trans)</button>
-      <button class="option" data-correct="false">Propagation delay (d_prop)</button>
+      <button class="option" data-correct="false">Statistical multiplexing exploits users being active at different times so capacity can be shared efficiently.</button>
+      <button class="option" data-correct="false">The access network connects an end system to the ISP&#x27;s first router.</button>
+      <button class="option" data-correct="true">End systems run applications and act as data sources/destinations, while routers only forward packets.</button>
+      <button class="option" data-correct="false">A botnet coordinates many compromised machines to flood a target with traffic.</button>
     </div>
-    <div class="explanation">Queuing delay is the only one of the four components that is fundamentally unpredictable. It depends on how many other packets are already waiting in the router queue — something that varies with network traffic. The other three are either constant (processing, propagation) or determined by known values (transmission = L/R).</div>
+    <div class="explanation">Correct. End systems run applications and act as data sources/destinations, while routers only forward packets.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 4 · Medium</div>
+    <div class="q-text">In practice, which statement about the store-and-forward principle is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Packets are dropped when buffers are full and arrivals exceed the outgoing service rate.</button>
+      <button class="option" data-correct="false">DSL typically allocates more downstream than upstream capacity because user traffic is download-heavy.</button>
+      <button class="option" data-correct="false">IP spoofing is sending packets with a forged source address to hide or mislead sender identity.</button>
+      <button class="option" data-correct="true">A router must receive the full packet before it can forward it on the next link.</button>
+    </div>
+    <div class="explanation">Correct. A router must receive the full packet before it can forward it on the next link.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 5 · Easy</div>
+    <div class="q-text">Which statement best describes how transmission delay is computed?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Transmission delay is L/R, i.e. packet size in bits divided by link rate.</button>
+      <button class="option" data-correct="false">Traceroute increases TTL step by step so each intermediate router returns ICMP time exceeded.</button>
+      <button class="option" data-correct="false">Multiple homes share the same channel, so user rate varies with neighbors&#x27; activity.</button>
+      <button class="option" data-correct="false">Simple core data-plane operations improve scalability and forwarding speed.</button>
+    </div>
+    <div class="explanation">Correct. Transmission delay is L/R, i.e. packet size in bits divided by link rate.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 6 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of how propagation delay is computed is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Ping measures round-trip time (RTT) between ICMP echo request and echo reply.</button>
+      <button class="option" data-correct="true">Propagation delay is distance divided by signal speed in the medium.</button>
+      <button class="option" data-correct="false">Fiber provides high capacity, low attenuation, and strong immunity to electromagnetic noise.</button>
+      <button class="option" data-correct="false">The socket interface lets applications send/receive network data without implementing routing themselves.</button>
+    </div>
+    <div class="explanation">Correct. Propagation delay is distance divided by signal speed in the medium.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 7 · Medium</div>
+    <div class="q-text">In practice, which statement about why queueing delay is hard to predict is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Layering isolates complexity, makes design modular, and allows layers to evolve independently.</button>
+      <button class="option" data-correct="false">Access ISPs connect to regional/tier-1 networks and exchange traffic via peering and transit.</button>
+      <button class="option" data-correct="true">Queueing delay varies with instantaneous traffic load and the number of packets already waiting.</button>
+      <button class="option" data-correct="false">Packet switching shares capacity dynamically among users, while circuit switching reserves capacity per connection.</button>
+    </div>
+    <div class="explanation">Correct. Queueing delay varies with instantaneous traffic load and the number of packets already waiting.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 8 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of what traffic intensity La/R tells you is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Each layer adds its own header around data from the layer above.</button>
+      <button class="option" data-correct="false">IXPs let networks exchange traffic directly, reducing cost and often delay.</button>
+      <button class="option" data-correct="false">A protocol defines message format, ordering, and the actions performed on send and receive.</button>
+      <button class="option" data-correct="true">La/R measures link load; when it approaches 1, queues grow sharply.</button>
+    </div>
+    <div class="explanation">Correct. La/R measures link load; when it approaches 1, queues grow sharply.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 9 · Easy</div>
+    <div class="q-text">Which statement best describes what a bottleneck link is?</div>
+    <div class="options">
+      <button class="option" data-correct="true">The bottleneck link has the lowest capacity on the path and limits end-to-end throughput.</button>
+      <button class="option" data-correct="false">The access network connects an end system to the ISP&#x27;s first router.</button>
+      <button class="option" data-correct="false">A botnet coordinates many compromised machines to flood a target with traffic.</button>
+      <button class="option" data-correct="false">End systems run applications and act as data sources/destinations, while routers only forward packets.</button>
+    </div>
+    <div class="explanation">Correct. The bottleneck link has the lowest capacity on the path and limits end-to-end throughput.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 10 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of statistical multiplexing is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">DSL typically allocates more downstream than upstream capacity because user traffic is download-heavy.</button>
+      <button class="option" data-correct="true">Statistical multiplexing exploits users being active at different times so capacity can be shared efficiently.</button>
+      <button class="option" data-correct="false">IP spoofing is sending packets with a forged source address to hide or mislead sender identity.</button>
+      <button class="option" data-correct="false">A router must receive the full packet before it can forward it on the next link.</button>
+    </div>
+    <div class="explanation">Correct. Statistical multiplexing exploits users being active at different times so capacity can be shared efficiently.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 11 · Medium</div>
+    <div class="q-text">In practice, which statement about why packet drops happen in routers is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Multiple homes share the same channel, so user rate varies with neighbors&#x27; activity.</button>
+      <button class="option" data-correct="false">Simple core data-plane operations improve scalability and forwarding speed.</button>
+      <button class="option" data-correct="true">Packets are dropped when buffers are full and arrivals exceed the outgoing service rate.</button>
+      <button class="option" data-correct="false">Transmission delay is L/R, i.e. packet size in bits divided by link rate.</button>
+    </div>
+    <div class="explanation">Correct. Packets are dropped when buffers are full and arrivals exceed the outgoing service rate.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 12 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of how traceroute reveals path hops is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Fiber provides high capacity, low attenuation, and strong immunity to electromagnetic noise.</button>
+      <button class="option" data-correct="false">The socket interface lets applications send/receive network data without implementing routing themselves.</button>
+      <button class="option" data-correct="false">Propagation delay is distance divided by signal speed in the medium.</button>
+      <button class="option" data-correct="true">Traceroute increases TTL step by step so each intermediate router returns ICMP time exceeded.</button>
+    </div>
+    <div class="explanation">Correct. Traceroute increases TTL step by step so each intermediate router returns ICMP time exceeded.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 13 · Easy</div>
+    <div class="q-text">Which statement best describes what ping actually measures?</div>
+    <div class="options">
+      <button class="option" data-correct="true">Ping measures round-trip time (RTT) between ICMP echo request and echo reply.</button>
+      <button class="option" data-correct="false">Access ISPs connect to regional/tier-1 networks and exchange traffic via peering and transit.</button>
+      <button class="option" data-correct="false">Packet switching shares capacity dynamically among users, while circuit switching reserves capacity per connection.</button>
+      <button class="option" data-correct="false">Queueing delay varies with instantaneous traffic load and the number of packets already waiting.</button>
+    </div>
+    <div class="explanation">Correct. Ping measures round-trip time (RTT) between ICMP echo request and echo reply.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 14 · Medium</div>
+    <div class="q-text">In practice, which statement about why layering is used in networking is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">IXPs let networks exchange traffic directly, reducing cost and often delay.</button>
+      <button class="option" data-correct="true">Layering isolates complexity, makes design modular, and allows layers to evolve independently.</button>
+      <button class="option" data-correct="false">A protocol defines message format, ordering, and the actions performed on send and receive.</button>
+      <button class="option" data-correct="false">La/R measures link load; when it approaches 1, queues grow sharply.</button>
+    </div>
+    <div class="explanation">Correct. Layering isolates complexity, makes design modular, and allows layers to evolve independently.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 15 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of encapsulation in the protocol stack is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">A botnet coordinates many compromised machines to flood a target with traffic.</button>
+      <button class="option" data-correct="false">End systems run applications and act as data sources/destinations, while routers only forward packets.</button>
+      <button class="option" data-correct="true">Each layer adds its own header around data from the layer above.</button>
+      <button class="option" data-correct="false">The bottleneck link has the lowest capacity on the path and limits end-to-end throughput.</button>
+    </div>
+    <div class="explanation">Correct. Each layer adds its own header around data from the layer above.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 16 · Medium</div>
+    <div class="q-text">In practice, which statement about what an access network is is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">IP spoofing is sending packets with a forged source address to hide or mislead sender identity.</button>
+      <button class="option" data-correct="false">A router must receive the full packet before it can forward it on the next link.</button>
+      <button class="option" data-correct="false">Statistical multiplexing exploits users being active at different times so capacity can be shared efficiently.</button>
+      <button class="option" data-correct="true">The access network connects an end system to the ISP&#x27;s first router.</button>
+    </div>
+    <div class="explanation">Correct. The access network connects an end system to the ISP&#x27;s first router.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 17 · Easy</div>
+    <div class="q-text">Which statement best describes why DSL is often asymmetric?</div>
+    <div class="options">
+      <button class="option" data-correct="true">DSL typically allocates more downstream than upstream capacity because user traffic is download-heavy.</button>
+      <button class="option" data-correct="false">Simple core data-plane operations improve scalability and forwarding speed.</button>
+      <button class="option" data-correct="false">Transmission delay is L/R, i.e. packet size in bits divided by link rate.</button>
+      <button class="option" data-correct="false">Packets are dropped when buffers are full and arrivals exceed the outgoing service rate.</button>
+    </div>
+    <div class="explanation">Correct. DSL typically allocates more downstream than upstream capacity because user traffic is download-heavy.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 18 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of what it means that cable access is a shared medium is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">The socket interface lets applications send/receive network data without implementing routing themselves.</button>
+      <button class="option" data-correct="true">Multiple homes share the same channel, so user rate varies with neighbors&#x27; activity.</button>
+      <button class="option" data-correct="false">Propagation delay is distance divided by signal speed in the medium.</button>
+      <button class="option" data-correct="false">Traceroute increases TTL step by step so each intermediate router returns ICMP time exceeded.</button>
+    </div>
+    <div class="explanation">Correct. Multiple homes share the same channel, so user rate varies with neighbors&#x27; activity.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 19 · Medium</div>
+    <div class="q-text">In practice, which statement about why fiber is used in the Internet core is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Packet switching shares capacity dynamically among users, while circuit switching reserves capacity per connection.</button>
+      <button class="option" data-correct="false">Queueing delay varies with instantaneous traffic load and the number of packets already waiting.</button>
+      <button class="option" data-correct="true">Fiber provides high capacity, low attenuation, and strong immunity to electromagnetic noise.</button>
+      <button class="option" data-correct="false">Ping measures round-trip time (RTT) between ICMP echo request and echo reply.</button>
+    </div>
+    <div class="explanation">Correct. Fiber provides high capacity, low attenuation, and strong immunity to electromagnetic noise.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 20 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of how the ISP hierarchy is organized is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">A protocol defines message format, ordering, and the actions performed on send and receive.</button>
+      <button class="option" data-correct="false">La/R measures link load; when it approaches 1, queues grow sharply.</button>
+      <button class="option" data-correct="false">Layering isolates complexity, makes design modular, and allows layers to evolve independently.</button>
+      <button class="option" data-correct="true">Access ISPs connect to regional/tier-1 networks and exchange traffic via peering and transit.</button>
+    </div>
+    <div class="explanation">Correct. Access ISPs connect to regional/tier-1 networks and exchange traffic via peering and transit.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 21 · Medium</div>
+    <div class="q-text">In practice, which statement about the role of IXPs is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="true">IXPs let networks exchange traffic directly, reducing cost and often delay.</button>
+      <button class="option" data-correct="false">End systems run applications and act as data sources/destinations, while routers only forward packets.</button>
+      <button class="option" data-correct="false">The bottleneck link has the lowest capacity on the path and limits end-to-end throughput.</button>
+      <button class="option" data-correct="false">Each layer adds its own header around data from the layer above.</button>
+    </div>
+    <div class="explanation">Correct. IXPs let networks exchange traffic directly, reducing cost and often delay.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 22 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of what a botnet does in a DDoS attack is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="false">A router must receive the full packet before it can forward it on the next link.</button>
+      <button class="option" data-correct="true">A botnet coordinates many compromised machines to flood a target with traffic.</button>
+      <button class="option" data-correct="false">Statistical multiplexing exploits users being active at different times so capacity can be shared efficiently.</button>
+      <button class="option" data-correct="false">The access network connects an end system to the ISP&#x27;s first router.</button>
+    </div>
+    <div class="explanation">Correct. A botnet coordinates many compromised machines to flood a target with traffic.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 23 · Easy</div>
+    <div class="q-text">Which statement best describes what IP spoofing means?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Transmission delay is L/R, i.e. packet size in bits divided by link rate.</button>
+      <button class="option" data-correct="false">Packets are dropped when buffers are full and arrivals exceed the outgoing service rate.</button>
+      <button class="option" data-correct="true">IP spoofing is sending packets with a forged source address to hide or mislead sender identity.</button>
+      <button class="option" data-correct="false">DSL typically allocates more downstream than upstream capacity because user traffic is download-heavy.</button>
+    </div>
+    <div class="explanation">Correct. IP spoofing is sending packets with a forged source address to hide or mislead sender identity.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 24 · Medium</div>
+    <div class="q-text">In practice, which statement about why core network devices are kept simple is most correct?</div>
+    <div class="options">
+      <button class="option" data-correct="false">Propagation delay is distance divided by signal speed in the medium.</button>
+      <button class="option" data-correct="false">Traceroute increases TTL step by step so each intermediate router returns ICMP time exceeded.</button>
+      <button class="option" data-correct="false">Multiple homes share the same channel, so user rate varies with neighbors&#x27; activity.</button>
+      <button class="option" data-correct="true">Simple core data-plane operations improve scalability and forwarding speed.</button>
+    </div>
+    <div class="explanation">Correct. Simple core data-plane operations improve scalability and forwarding speed.</div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Question 25 · Hard</div>
+    <div class="q-text">In a larger network setting, which evaluation of what the socket interface gives applications is most accurate?</div>
+    <div class="options">
+      <button class="option" data-correct="true">The socket interface lets applications send/receive network data without implementing routing themselves.</button>
+      <button class="option" data-correct="false">Queueing delay varies with instantaneous traffic load and the number of packets already waiting.</button>
+      <button class="option" data-correct="false">Ping measures round-trip time (RTT) between ICMP echo request and echo reply.</button>
+      <button class="option" data-correct="false">Fiber provides high capacity, low attenuation, and strong immunity to electromagnetic noise.</button>
+    </div>
+    <div class="explanation">Correct. The socket interface lets applications send/receive network data without implementing routing themselves.</div>
   </div>
 </div>
 </section>
