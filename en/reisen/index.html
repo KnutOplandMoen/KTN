@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Journey of a Web Page — TTM4100</title>
+<link rel="stylesheet" href="../../style.css">
+<style>
+.journey-layout {
+  display: grid;
+  grid-template-columns: 200px 1fr 56px;
+  gap: 0 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+  position: relative;
+  z-index: 2;
+}
+
+/* --- Left sidebar: step nav --- */
+.step-nav {
+  position: sticky;
+  top: 60px;
+  align-self: start;
+  padding: 24px 0;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+}
+.step-nav ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.step-nav li {
+  margin: 0 0 2px;
+}
+.step-nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-ghost);
+  transition: all 0.15s;
+  line-height: 1.3;
+}
+.step-nav a:hover { color: var(--ink-soft); background: var(--paper-dark); }
+.step-nav a.active { color: var(--rust); background: rgba(176,68,40,0.08); font-weight: 600; }
+.step-nav a.done { color: var(--green); }
+.step-nav .sn-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  min-width: 18px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.step-nav a.done .sn-num::after { content: ' \2713'; }
+
+/* --- Right sidebar: layer stack --- */
+.layer-stack {
+  position: sticky;
+  top: 60px;
+  align-self: start;
+  padding: 24px 0;
+}
+.layer-stack .ls-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-ghost);
+  margin-bottom: 8px;
+  text-align: center;
+}
+.layer-stack .ls-layer {
+  display: block;
+  width: 48px;
+  padding: 6px 0;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  margin-bottom: -1px;
+  color: var(--ink-ghost);
+  background: var(--paper);
+  transition: all 0.25s;
+  text-decoration: none;
+  line-height: 1.2;
+}
+.layer-stack .ls-layer:first-of-type { border-radius: 3px 3px 0 0; }
+.layer-stack .ls-layer:last-of-type { border-radius: 0 0 3px 3px; }
+.layer-stack .ls-layer.active-app { background: rgba(176,68,40,0.15); color: var(--rust); border-color: var(--rust); }
+.layer-stack .ls-layer.active-trans { background: rgba(176,68,40,0.10); color: var(--rust); border-color: var(--rust); }
+.layer-stack .ls-layer.active-net { background: rgba(45,74,122,0.15); color: var(--blue); border-color: var(--blue); }
+.layer-stack .ls-layer.active-link { background: rgba(61,107,58,0.15); color: var(--green); border-color: var(--green); }
+.layer-stack .ls-layer.active-phys { background: rgba(198,138,31,0.15); color: var(--ochre); border-color: var(--ochre); }
+
+/* --- Main content column --- */
+.journey-main { min-width: 0; }
+.journey-main section {
+  padding: 60px 0;
+  border-bottom: 1px solid var(--line);
+}
+.journey-main section:last-of-type { border-bottom: none; }
+
+/* --- Hero --- */
+.journey-hero {
+  padding: 100px 0 60px;
+  border-bottom: 1px solid var(--line);
+}
+.journey-hero .container { max-width: 820px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 2; }
+.journey-hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin-bottom: 24px;
+}
+.journey-hero h1 em { font-style: italic; font-weight: 400; color: var(--rust); }
+.journey-hero .lead {
+  font-size: 20px;
+  font-style: italic;
+  color: var(--ink-soft);
+  max-width: 600px;
+  line-height: 1.55;
+  margin-bottom: 0;
+}
+
+/* --- Step header --- */
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.step-num {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--paper);
+  background: var(--rust);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.step-num.blue { background: var(--blue); }
+.step-num.green { background: var(--green); }
+.step-num.ochre { background: var(--ochre); }
+.step-kap {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-ghost);
+}
+.step-kap a { color: var(--ink-ghost); text-decoration: none; }
+.step-kap a:hover { color: var(--rust); }
+
+/* --- Stepper within journey --- */
+.j-stepper {
+  background: var(--paper-dark);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 24px;
+  margin: 28px 0;
+}
+.j-stepper .stage-area {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 16px;
+  min-height: 200px;
+}
+.j-stepper .stage-title {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--rust);
+  margin-bottom: 8px;
+}
+.j-stepper .stage-text {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+}
+.j-stepper .controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.j-stepper .controls button {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 8px 18px;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.j-stepper .controls button:hover:not(:disabled) { background: var(--rust); }
+.j-stepper .controls button:disabled { opacity: 0.3; cursor: not-allowed; }
+.j-stepper .controls .progress {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-faded);
+}
+
+/* --- Zoom box --- */
+.zoom-box {
+  border: 1px dashed var(--line);
+  background: rgba(255,255,255,0.4);
+  padding: 20px 24px;
+  margin: 24px 0;
+  border-radius: 3px;
+}
+.zoom-box summary {
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rust);
+  padding: 4px 0;
+  font-weight: 600;
+}
+.zoom-box .zoom-content {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line-soft);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+.zoom-box .zoom-content strong { color: var(--ink); }
+
+/* --- Timeline summary --- */
+.timeline-bar {
+  display: flex;
+  border-radius: 4px;
+  overflow: hidden;
+  height: 36px;
+  margin: 24px 0;
+  border: 1px solid var(--line);
+}
+.timeline-bar .tl-seg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  padding: 0 6px;
+  min-width: 0;
+}
+
+/* --- Mobile --- */
+@media (max-width: 960px) {
+  .journey-layout {
+    grid-template-columns: 1fr;
+    padding: 0 20px;
+  }
+  .step-nav, .layer-stack { display: none; }
+  .journey-hero { padding: 70px 0 40px; }
+  .journey-hero .container { padding: 0 20px; }
+}
+
+/* Minimap */
+.minimap { margin: 0 0 28px; }
+.minimap svg { display: block; max-width: 100%; height: auto; }
+.minimap .mm-node { opacity: 0.35; transition: opacity 0.25s; }
+.minimap .mm-node.here { opacity: 1; }
+.minimap .mm-edge { stroke: var(--line); stroke-width: 2; }
+.minimap .mm-edge.here { stroke: var(--rust); stroke-width: 2.5; }
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="../" class="brand">TTM4100</a>
+    <a href="../" class="nav-back">&larr; All chapters</a>
+  </div>
+</nav>
+
+<!-- ======== HERO ======== -->
+<header class="journey-hero">
+  <div class="container">
+    <div class="eyebrow">Interactive visualization · All chapters</div>
+    <h1>The Journey of a <em>Web Page</em></h1>
+    <p class="lead">You are on campus, connect to NTNU WiFi, open the browser, and type <code>ntnu.no</code>. In under a second you see the front page. But what actually happened — step by step, layer by layer?</p>
+  </div>
+</header>
+
+<!-- ======== HERO MAP ======== -->
+<div style="padding:32px 0; border-bottom:1px solid var(--line);">
+  <div class="container" style="max-width:900px;">
+    <figure class="fig-frame" style="margin:0;">
+      <svg id="heroMap" viewBox="0 0 820 160" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;">
+        <defs>
+          <marker id="hma" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#b04428"/></marker>
+        </defs>
+        <!-- Laptop -->
+        <rect x="10" y="45" width="60" height="40" rx="4" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/>
+        <rect x="18" y="52" width="44" height="26" rx="2" fill="#e8e3d6" stroke="#c9c0ae"/>
+        <rect x="20" y="85" width="40" height="4" rx="1" fill="#c9c0ae"/>
+        <text x="40" y="110" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#1a1612" font-weight="600">Your laptop</text>
+
+        <!-- WiFi waves -->
+        <path d="M80 55 Q95 45 95 65" fill="none" stroke="#2d4a7a" stroke-width="1.5" stroke-dasharray="3,2"/>
+        <path d="M85 50 Q105 40 105 70" fill="none" stroke="#2d4a7a" stroke-width="1" stroke-dasharray="3,2"/>
+
+        <!-- AP -->
+        <g id="hmAP" style="cursor:pointer;" onclick="document.getElementById('step1').scrollIntoView({behavior:'smooth'})">
+          <rect x="115" y="50" width="44" height="30" rx="3" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/>
+          <text x="137" y="69" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">AP</text>
+          <text x="137" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">WiFi</text>
+        </g>
+        <line x1="159" y1="65" x2="190" y2="65" stroke="#c9c0ae" stroke-width="1.5"/>
+
+        <!-- Switch -->
+        <g style="cursor:pointer;" onclick="document.getElementById('step6').scrollIntoView({behavior:'smooth'})">
+          <rect x="190" y="50" width="44" height="30" rx="3" fill="#f4f1ea" stroke="#3d6b3a" stroke-width="1.5"/>
+          <text x="212" y="69" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#3d6b3a">Switch</text>
+          <text x="212" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#3d6b3a">L2</text>
+        </g>
+        <line x1="234" y1="65" x2="265" y2="65" stroke="#c9c0ae" stroke-width="1.5"/>
+
+        <!-- Router 1 -->
+        <g style="cursor:pointer;" onclick="document.getElementById('step6').scrollIntoView({behavior:'smooth'})">
+          <circle cx="285" cy="65" r="18" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/>
+          <text x="285" y="69" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">R1</text>
+          <text x="285" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">Router</text>
+        </g>
+        <line x1="303" y1="65" x2="347" y2="65" stroke="#c9c0ae" stroke-width="1.5"/>
+
+        <!-- Internet cloud -->
+        <ellipse cx="395" cy="65" rx="44" ry="24" fill="none" stroke="#a39886" stroke-width="1.2" stroke-dasharray="4,3"/>
+        <text x="395" y="69" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#6b6257">Internet</text>
+
+        <line x1="439" y1="65" x2="473" y2="65" stroke="#c9c0ae" stroke-width="1.5"/>
+
+        <!-- Router 2 -->
+        <g style="cursor:pointer;" onclick="document.getElementById('step6').scrollIntoView({behavior:'smooth'})">
+          <circle cx="493" cy="65" r="18" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/>
+          <text x="493" y="69" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">R2</text>
+        </g>
+        <line x1="511" y1="65" x2="545" y2="65" stroke="#c9c0ae" stroke-width="1.5"/>
+
+        <!-- DNS off to side -->
+        <g style="cursor:pointer;" onclick="document.getElementById('step2').scrollIntoView({behavior:'smooth'})">
+          <rect x="340" y="120" width="56" height="28" rx="3" fill="#f4f1ea" stroke="#b04428" stroke-width="1.2"/>
+          <text x="368" y="138" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#b04428">DNS</text>
+        </g>
+        <line x1="368" y1="89" x2="368" y2="120" stroke="#b04428" stroke-width="1" stroke-dasharray="3,2"/>
+
+        <!-- NTNU Server -->
+        <g style="cursor:pointer;" onclick="document.getElementById('step5').scrollIntoView({behavior:'smooth'})">
+          <rect x="545" y="42" width="70" height="46" rx="4" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/>
+          <rect x="553" y="49" width="54" height="8" rx="1" fill="#e8e3d6" stroke="#c9c0ae"/>
+          <rect x="553" y="61" width="54" height="8" rx="1" fill="#e8e3d6" stroke="#c9c0ae"/>
+          <rect x="553" y="73" width="54" height="8" rx="1" fill="#e8e3d6" stroke="#c9c0ae"/>
+          <text x="580" y="110" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#1a1612" font-weight="600">ntnu.no</text>
+        </g>
+
+        <!-- Protocol labels along top -->
+        <text x="100" y="28" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">1 WiFi</text>
+        <text x="212" y="28" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#b04428">2 DNS</text>
+        <text x="320" y="28" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#b04428">3 TCP</text>
+        <text x="415" y="28" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#c68a1f">4 TLS</text>
+        <text x="500" y="28" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#b04428">5 HTTP</text>
+
+        <!-- Path arrow overlaying everything -->
+        <path d="M70 65 C200 15 500 15 545 65" fill="none" stroke="#b04428" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#hma)" opacity="0.5"/>
+      </svg>
+      <figcaption>Click a component to jump to that step. Packets travel from your laptop through WiFi, switches and routers, across the Internet, all the way to the NTNU server — and back.</figcaption>
+    </figure>
+  </div>
+</div>
+
+<!-- ======== MAIN 3-COL LAYOUT ======== -->
+<div class="journey-layout">
+
+<!-- LEFT: Step navigation -->
+<nav class="step-nav" id="stepNav">
+  <ol>
+    <li><a href="#step1" data-step="1"><span class="sn-num">1</span>WiFi connection</a></li>
+    <li><a href="#step2" data-step="2"><span class="sn-num">2</span>DNS lookup</a></li>
+    <li><a href="#step3" data-step="3"><span class="sn-num">3</span>TCP handshake</a></li>
+    <li><a href="#step4" data-step="4"><span class="sn-num">4</span>TLS encryption</a></li>
+    <li><a href="#step5" data-step="5"><span class="sn-num">5</span>HTTP request</a></li>
+    <li><a href="#step6" data-step="6"><span class="sn-num">6</span>Encapsulation &amp; routing</a></li>
+    <li><a href="#step7" data-step="7"><span class="sn-num">7</span>Response back</a></li>
+    <li><a href="#step8" data-step="8"><span class="sn-num">8</span>Page renders</a></li>
+  </ol>
+</nav>
+
+<!-- CENTER: Content -->
+<div class="journey-main" id="journeyMain">
+
+<!-- ════════ STEP 1: WiFi ════════ -->
+<section id="step1" data-layers="link,phys">
+  <div class="step-header">
+    <span class="step-num blue">1</span>
+    <div>
+      <h2 style="margin:0;">WiFi <em>connection</em></h2>
+      <div class="step-kap"><a href="../kap7/">Ch 7</a> · <a href="../kap4/">Ch 4</a></div>
+    </div>
+  </div>
+  <p class="section-intro">Before anything else can happen, the laptop must connect to the network — wirelessly.</p>
+  <p>You open your laptop on campus. The WiFi card scans for access points by sending <strong>Probe Requests</strong> on different channels, and finds NTNU's network. What follows is a precise dance of messages between the laptop and the access point — authentication, association, and finally a DHCP exchange to obtain an IP address.</p>
+  <p>DHCP gives you four important things: an <strong>IP address</strong> (e.g. 10.22.14.87), a <strong>subnet mask</strong> (e.g. 255.255.255.0, telling you that all hosts with prefix 10.22.14.x are on the same local network), the address of a <strong>default gateway</strong> (the router that forwards everything outside the subnet), and the address of a <strong>DNS server</strong>. Note that 10.22.14.87 is a <em>private</em> IP address (RFC 1918) — it only works internally on campus. When traffic needs to go out on the Internet, a <strong>NAT router</strong> (Network Address Translation) must translate the private address to a public IP address.</p>
+
+  <div class="j-stepper" id="wifi-stepper">
+    <div class="stage-area">
+      <div class="stage-title" id="wifiTitle"></div>
+      <div class="stage-text" id="wifiText"></div>
+      <svg id="wifiSvg" viewBox="0 0 620 200" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;display:block;margin:0 auto;">
+        <text x="80" y="20" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#1a1612">Laptop</text>
+        <line x1="80" y1="28" x2="80" y2="190" stroke="#a39886" stroke-width="1.5"/>
+        <text x="540" y="20" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#2d4a7a">AP / DHCP</text>
+        <line x1="540" y1="28" x2="540" y2="190" stroke="#a39886" stroke-width="1.5"/>
+        <g id="wifiAnim"></g>
+      </svg>
+    </div>
+    <div class="controls">
+      <button id="wifiPrev">&larr; Previous</button>
+      <span class="progress" id="wifiInd"></span>
+      <button id="wifiNext">Next &rarr;</button>
+    </div>
+  </div>
+
+  <details class="zoom-box">
+    <summary>Zoom in — the 802.11 frame</summary>
+    <div class="zoom-content">
+      <p>A WiFi frame (802.11) has a more complex header than Ethernet — it contains <strong>four address fields</strong> (not two) because traffic must be routed through the access point. The fields include <strong>Frame Control</strong> (type and subtype), <strong>Duration</strong> (for NAV / virtual carrier sensing), <strong>Addresses 1–4</strong> (sender, receiver, AP, and optional mesh nodes), <strong>Sequence Control</strong> (for reassembly), and finally <strong>FCS</strong> (CRC check).</p>
+      <p>CSMA/CA — collision avoidance — means the laptop <strong>listens before it transmits</strong>. If the channel is busy, it waits a random backoff time. After sending, it waits for an <strong>ACK</strong> from the AP. No ACK? Try again. This differs from Ethernet's <strong>CSMA/CD</strong> (collision detection), because wireless devices cannot listen while transmitting — they cannot detect collisions, only avoid them.</p>
+    </div>
+  </details>
+
+  <details class="zoom-box">
+    <summary>Zoom in — NAT and private addresses</summary>
+    <div class="zoom-content">
+      <p>The address 10.22.14.87 is a <strong>private RFC 1918 address</strong> — it is not routable on the Internet. Three address blocks are reserved for private use: <strong>10.0.0.0/8</strong>, <strong>172.16.0.0/12</strong>, and <strong>192.168.0.0/16</strong>. Hundreds of organizations can use the same addresses internally without conflict.</p>
+      <p>When your packet leaves the campus network, the <strong>NAT router</strong> performs a translation: it replaces your private source IP and source port with its own public IP address and a new port number. The router remembers this mapping in a <strong>NAT table</strong>, so responses can be sent back to the correct internal machine. NAT is one of the reasons IPv4 with its 4.3 billion addresses still works despite billions of connected devices.</p>
+    </div>
+  </details>
+
+  <details class="zoom-box">
+    <summary>Zoom in — the hidden terminal problem</summary>
+    <div class="zoom-content">
+      <p>A classic problem with wireless networks: two devices (A and C) can both reach the access point (B), but <em>cannot</em> hear each other because they are too far apart. Both think the channel is free, transmit simultaneously, and the packets collide at the AP. This is called the <strong>hidden terminal problem</strong>.</p>
+      <p>The solution is <strong>RTS/CTS</strong> (Request to Send / Clear to Send): the sender first asks for permission with a short RTS message. The AP replies with CTS that everyone nearby hears — and they know they must wait. This adds overhead but eliminates collisions from hidden terminals.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ════════ STEP 2: DNS ════════ -->
+<section id="step2" data-layers="app">
+  <div class="step-header">
+    <span class="step-num">2</span>
+    <div>
+      <h2 style="margin:0;">DNS <em>lookup</em></h2>
+      <div class="step-kap"><a href="../kap2/epost-dns-sockets.html">Ch 2 · DNS</a></div>
+    </div>
+  </div>
+  <p class="section-intro">The browser does not know where ntnu.no lives. DNS translates the name into an IP address.</p>
+  <p>The browser calls the operating system's resolver function (<code>getaddrinfo</code>), which sends a DNS query via <strong>UDP port 53</strong> to the local DNS resolver (configured via DHCP in step 1). Why UDP and not TCP? Because a DNS query is small (typically under 512 bytes), it does not need reliable delivery (just try again if it fails), and UDP avoids the overhead of connection setup.</p>
+  <p>The resolver performs an <strong>iterative lookup</strong>: it asks a root server about <code>.no</code>, the TLD server about <code>ntnu.no</code>, and finally the authoritative server for the actual IP address. In an iterative lookup, the resolver does all the work — the servers just reply "ask that one instead." Alternatively, the resolver could request a <strong>recursive lookup</strong>, where the root server itself contacts the TLD server, which contacts the authoritative server, and the answer is carried all the way back. In practice, most resolvers perform iterative lookups.</p>
+  <p>An important point: DNS caches aggressively. If someone on campus recently visited ntnu.no, the resolver has the answer in its cache and can respond immediately without contacting any other servers. Even the operating system and the browser have their own DNS caches. The <strong>TTL</strong> (Time To Live) in the DNS response determines how long cached answers remain valid.</p>
+
+  <div class="j-stepper" id="dns-stepper">
+    <div class="stage-area">
+      <div class="stage-title" id="dnsTitle"></div>
+      <div class="stage-text" id="dnsText"></div>
+      <svg id="dnsSvg" viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;display:block;margin:0 auto;">
+        <g id="dnsAnim"></g>
+      </svg>
+    </div>
+    <div class="controls">
+      <button id="dnsPrev">&larr; Previous</button>
+      <span class="progress" id="dnsInd"></span>
+      <button id="dnsNext">Next &rarr;</button>
+    </div>
+  </div>
+
+  <details class="zoom-box">
+    <summary>Zoom in — DNS message format and record types</summary>
+    <div class="zoom-content">
+      <p>A DNS message is just a 12-byte header plus the question section. The header contains a <strong>transaction ID</strong> (to match answers to questions), flags (QR, RD, RA), and counters for the four sections: <strong>Questions</strong>, <strong>Answers</strong>, <strong>Authority</strong>, <strong>Additional</strong>.</p>
+      <p>The most important record types: <strong>A</strong> (IPv4 address), <strong>AAAA</strong> (IPv6 address), <strong>CNAME</strong> (alias — e.g. www.ntnu.no → ntnu.no), <strong>MX</strong> (mail server for the domain), and <strong>NS</strong> (authoritative name server for the domain). Each answer has a <strong>TTL</strong> that says how long it may be cached — typically 300–3600 seconds.</p>
+    </div>
+  </details>
+
+  <details class="zoom-box">
+    <summary>Zoom in — DNS security</summary>
+    <div class="zoom-content">
+      <p>DNS was designed without security. An attacker can exploit this with <strong>DNS cache poisoning</strong>: it sends a forged answer to the resolver with the correct transaction ID before the real answer arrives. Now ntnu.no points to the attacker's server — and the resolver caches the forged answer.</p>
+      <p>The solution is <strong>DNSSEC</strong> (DNS Security Extensions), which adds digital signatures to DNS answers so the resolver can verify that the answer really came from the authoritative server. In addition, modern systems use <strong>DNS over HTTPS (DoH)</strong> or <strong>DNS over TLS (DoT)</strong> to encrypt DNS traffic itself, so no one on the network can see which domains you are looking up.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ════════ STEP 3: TCP ════════ -->
+<section id="step3" data-layers="trans">
+  <div class="step-header">
+    <span class="step-num">3</span>
+    <div>
+      <h2 style="margin:0;">The TCP <em>handshake</em></h2>
+      <div class="step-kap"><a href="../kap3/tcp.html">Ch 3 · TCP</a></div>
+    </div>
+  </div>
+  <p class="section-intro">We now know the IP address. Before data can flow, a TCP connection must be established.</p>
+  <p>TCP uses a <strong>three-way handshake</strong> to synchronize sequence numbers and confirm that both sides are ready. Both sides go through defined <strong>states</strong>: the client from CLOSED → SYN_SENT → ESTABLISHED, the server from LISTEN → SYN_RCVD → ESTABLISHED. None of this is visible to you — the browser does it automatically behind the scenes.</p>
+  <p>During the handshake, the parties also negotiate important parameters: <strong>MSS</strong> (Maximum Segment Size, typically 1460 bytes for Ethernet), <strong>window scaling</strong> (which allows receive windows larger than 64 KB), and optionally <strong>SACK</strong> (Selective Acknowledgment, which lets the receiver tell the sender exactly which segments are missing). The initial sequence numbers are <em>random</em> — not for cryptographic security, but to prevent old segments from a previous connection being misinterpreted as valid in a new one.</p>
+
+  <div class="j-stepper" id="tcp-stepper">
+    <div class="stage-area">
+      <div class="stage-title" id="tcpTitle"></div>
+      <div class="stage-text" id="tcpText"></div>
+      <svg id="tcpSvg" viewBox="0 0 620 200" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;display:block;margin:0 auto;">
+        <text x="80" y="20" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#1a1612">Laptop</text>
+        <line x1="80" y1="28" x2="80" y2="190" stroke="#a39886" stroke-width="1.5"/>
+        <text x="540" y="20" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#1a1612">ntnu.no</text>
+        <line x1="540" y1="28" x2="540" y2="190" stroke="#a39886" stroke-width="1.5"/>
+        <g id="tcpAnim"></g>
+      </svg>
+    </div>
+    <div class="controls">
+      <button id="tcpPrev">&larr; Previous</button>
+      <span class="progress" id="tcpInd"></span>
+      <button id="tcpNext">Next &rarr;</button>
+    </div>
+  </div>
+
+  <details class="zoom-box">
+    <summary>Zoom in — the TCP segment</summary>
+    <div class="zoom-content">
+      <p>The SYN packet contains: <strong>Source Port</strong> (random, e.g. 49152), <strong>Dest Port</strong> (443 for HTTPS), <strong>Sequence Number</strong> (random initial value), <strong>SYN flag set</strong>, and <strong>Receive Window</strong> (buffer size). The TCP header also has room for the <strong>Options</strong> field where MSS, window scaling, and SACK are advertised. The server replies with SYN-ACK: its own sequence number + acknowledgment of the client's sequence number + 1.</p>
+      <p>The entire handshake takes one <strong>RTT</strong> (round-trip time) — typically 10–50 ms within Norway. The TCP header is a minimum of <strong>20 bytes</strong> (5 × 32-bit words), but with options it can grow to 60 bytes.</p>
+    </div>
+  </details>
+
+  <details class="zoom-box">
+    <summary>Zoom in — SYN flood attacks</summary>
+    <div class="zoom-content">
+      <p>The TCP handshake has a vulnerability: the server allocates resources (memory for connection state) already at SYN-ACK, i.e. <em>before</em> the client has confirmed with ACK. An attacker can exploit this with a <strong>SYN flood attack</strong>: send thousands of SYN packets with forged source IPs. The server replies with SYN-ACK to addresses that never respond, and all the pending "half-open" connections consume the server's resources.</p>
+      <p>The defense is <strong>SYN cookies</strong>: instead of storing state at SYN-ACK, the server encodes all necessary information into the sequence number itself. Only when the final ACK arrives are resources allocated — and the server can verify that the ACK is valid without having stored anything.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ════════ STEP 4: TLS ════════ -->
+<section id="step4" data-layers="app">
+  <div class="step-header">
+    <span class="step-num ochre">4</span>
+    <div>
+      <h2 style="margin:0;">TLS <em>encryption</em></h2>
+      <div class="step-kap"><a href="../kap8/protokoller-brannmur.html">Ch 8 · Security</a></div>
+    </div>
+  </div>
+  <p class="section-intro">The TCP connection is up, but all data would travel in plaintext. TLS fixes that.</p>
+  <p>Because you use HTTPS (port 443), the browser starts a <strong>TLS handshake</strong> on top of the TCP connection. TLS provides three of the four security properties: <strong>confidentiality</strong> (data is encrypted), <strong>authentication</strong> (we verify that the server really is ntnu.no), and <strong>message integrity</strong> (data cannot be altered in transit without us detecting it). The result is an encrypted tunnel where no one — not the network, the ISP, or anyone on the same WiFi — can read or tamper with the contents.</p>
+  <p>The cryptography uses two different techniques: <strong>asymmetric cryptography</strong> (public/private key pair) to authenticate the server and exchange keys, and <strong>symmetric cryptography</strong> (shared secret key, e.g. AES) for the actual data encryption — because symmetric is thousands of times faster.</p>
+
+  <div class="j-stepper" id="tls-stepper">
+    <div class="stage-area">
+      <div class="stage-title" id="tlsTitle"></div>
+      <div class="stage-text" id="tlsText"></div>
+      <svg id="tlsSvg" viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;display:block;margin:0 auto;">
+        <text x="80" y="20" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#1a1612">Laptop</text>
+        <line x1="80" y1="28" x2="80" y2="210" stroke="#a39886" stroke-width="1.5"/>
+        <text x="540" y="20" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#1a1612">ntnu.no</text>
+        <line x1="540" y1="28" x2="540" y2="210" stroke="#a39886" stroke-width="1.5"/>
+        <g id="tlsAnim"></g>
+      </svg>
+    </div>
+    <div class="controls">
+      <button id="tlsPrev">&larr; Previous</button>
+      <span class="progress" id="tlsInd"></span>
+      <button id="tlsNext">Next &rarr;</button>
+    </div>
+  </div>
+
+  <details class="zoom-box">
+    <summary>Zoom in — certificates and keys</summary>
+    <div class="zoom-content">
+      <p>The certificate from ntnu.no contains: the <strong>domain name</strong>, the <strong>server's public key</strong>, the <strong>issuer (CA)</strong>, validity period, and a <strong>digital signature</strong> from the CA. The signature proves that the CA has verified that ntnu.no really controls this domain.</p>
+      <p>The browser verifies via a <strong>certificate chain</strong> (chain of trust): the server certificate is signed by an intermediate CA, which is signed by a root CA that the browser has built-in trust for. If the chain is valid all the way up to a trusted root CA, we are safe.</p>
+      <p>Key exchange uses <strong>Diffie–Hellman</strong> (ECDHE): both sides generate a shared secret without sending it over the wire. This is used to derive <strong>symmetric session keys</strong> (AES) that encrypt all further traffic. In addition, a <strong>MAC key</strong> (Message Authentication Code) is generated to ensure integrity — the receiver can verify that no one has altered the message in transit.</p>
+    </div>
+  </details>
+
+  <details class="zoom-box">
+    <summary>Zoom in — TLS 1.2 vs TLS 1.3</summary>
+    <div class="zoom-content">
+      <p><strong>TLS 1.2</strong> requires <strong>2 RTTs</strong> for the handshake: one for ServerHello and the certificate, one for key exchange and Finished. <strong>TLS 1.3</strong> reduces this to <strong>1 RTT</strong> by combining the key exchange with ClientHello — the client sends its Diffie–Hellman parameters already in the first message.</p>
+      <p>TLS 1.3 also supports <strong>0-RTT resumption</strong>: if you have visited ntnu.no before, the browser can send encrypted data already in the first message using a stored session key. The price is that 0-RTT data can be replayed — an attacker can resend the same message — but for idempotent operations (like GET) this is acceptable.</p>
+      <p>TLS 1.3 also removed all insecure encryption algorithms (RC4, DES, CBC mode) and requires <strong>forward secrecy</strong>: even if the server's private key is compromised in the future, previous sessions cannot be decrypted because the Diffie–Hellman keys were ephemeral.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ════════ STEP 5: HTTP ════════ -->
+<section id="step5" data-layers="app">
+  <div class="step-header">
+    <span class="step-num">5</span>
+    <div>
+      <h2 style="margin:0;">The HTTP <em>request</em></h2>
+      <div class="step-kap"><a href="../kap2/http-og-web.html">Ch 2 · HTTP</a></div>
+    </div>
+  </div>
+  <p class="section-intro">The encrypted tunnel is ready. The browser finally sends the request for the web page.</p>
+  <p>Inside the TLS tunnel, the browser sends an <strong>HTTP GET</strong> request. HTTP is a <strong>stateless</strong> protocol — the server remembers nothing between requests. It is plain text — but encrypted by TLS, so no outsider can read it. The headers tell the server what we want, who we are, and what we accept.</p>
+  <p>HTTP defines several <strong>methods</strong>: <strong>GET</strong> (fetch a resource), <strong>POST</strong> (send data to the server, e.g. a form), <strong>HEAD</strong> (fetch only the headers, not the content), and <strong>PUT</strong>/<strong>DELETE</strong> (create/delete resources). To load a web page we use GET. The connection is <strong>persistent</strong> (HTTP/1.1 <code>Connection: keep-alive</code>), which means we can send many requests over the same TCP connection instead of paying TCP setup for each individual resource.</p>
+
+  <div class="j-stepper" id="http-stepper">
+    <div class="stage-area">
+      <div class="stage-title" id="httpTitle"></div>
+      <div class="stage-text" id="httpText"></div>
+      <div id="httpContent" style="margin-top:12px;"></div>
+    </div>
+    <div class="controls">
+      <button id="httpPrev">&larr; Previous</button>
+      <span class="progress" id="httpInd"></span>
+      <button id="httpNext">Next &rarr;</button>
+    </div>
+  </div>
+
+  <details class="zoom-box">
+    <summary>Zoom in — HTTP/1.1 vs HTTP/2 vs HTTP/3</summary>
+    <div class="zoom-content">
+      <p><strong>HTTP/1.1</strong>: One request at a time per TCP connection (head-of-line blocking). Partially mitigated with several parallel connections. Persistent connection and pipelining were improvements, but pipelining was rarely used in practice.</p>
+      <p><strong>HTTP/2</strong>: Multiplexing — many requests over the same TCP connection via <strong>streams</strong>. Binary format instead of text. Header compression (HPACK). <strong>Server push</strong>: the server can proactively send resources before the client asks for them. But: a single TCP packet loss blocks all streams.</p>
+      <p><strong>HTTP/3</strong> (QUIC): Runs over <strong>UDP</strong> instead of TCP. Embeds TLS 1.3, offers 0-RTT resumption, and avoids head-of-line blocking at the transport level as well — each stream has its own error handling.</p>
+    </div>
+  </details>
+
+  <details class="zoom-box">
+    <summary>Zoom in — cookies and state</summary>
+    <div class="zoom-content">
+      <p>HTTP is stateless, but many websites need to recognize you between requests (login, shopping cart, preferences). The solution is <strong>cookies</strong>. On first visit, the server sends a <code>Set-Cookie: id=abc123</code> header. The browser stores the cookie and automatically sends it with all future requests to the same domain: <code>Cookie: id=abc123</code>.</p>
+      <p>The server uses the cookie to look up session state in its database. Four components work together: <strong>Set-Cookie</strong> header in the response, <strong>Cookie</strong> header in requests, cookie file on the client machine, and database on the server.</p>
+      <p>Cookies are also used for <strong>tracking</strong>: third-party cookies (set by domains other than the one you are visiting) can follow you across websites and build a detailed profile of your browsing.</p>
+    </div>
+  </details>
+
+  <details class="zoom-box">
+    <summary>Zoom in — web caching and conditional GET</summary>
+    <div class="zoom-content">
+      <p>If you had visited ntnu.no recently, the browser (or a proxy cache) would already have a copy of the page. Instead of fetching everything again, the cache sends a <strong>conditional GET</strong> with the header <code>If-Modified-Since: &lt;date&gt;</code>. If the content has not changed, the server responds with <strong>304 Not Modified</strong> — a small message with no content at all — and the cache serves its stored copy.</p>
+      <p>Web caches provide two major benefits: <strong>faster response time</strong> (the cache is often closer than the server) and <strong>less traffic</strong> on the access link (popular content is only downloaded once).</p>
+    </div>
+  </details>
+</section>
+
+<!-- ════════ STEP 6: Encapsulation & Routing ════════ -->
+<section id="step6" data-layers="net,link">
+  <div class="step-header">
+    <span class="step-num blue">6</span>
+    <div>
+      <h2 style="margin:0;">Encapsulation <em>&amp; routing</em></h2>
+      <div class="step-kap"><a href="../kap1/innhold.html">Ch 1</a> · <a href="../kap4/">Ch 4</a> · <a href="../kap6/">Ch 6</a></div>
+    </div>
+  </div>
+  <p class="section-intro">The HTTP message is wrapped layer by layer and finds its way through the network, router by router.</p>
+  <p>Now the real magic happens. The HTTP request — just bytes — is first wrapped in a TCP segment, then in an IP datagram, and finally in an Ethernet frame (or a WiFi frame on the wireless link). This "Russian doll" process is called <strong>encapsulation</strong>. Each layer sees only its own header — the content is "just data" from the layer's perspective.</p>
+  <p>But before the Ethernet frame can be sent, the laptop needs to know the <strong>MAC address</strong> of the next hop. The destination IP (129.241.160.100) is outside our subnet (10.22.14.0/24), so the packet must go to the <strong>default gateway</strong>. The laptop uses <strong>ARP</strong> (Address Resolution Protocol) to find the gateway's MAC address: it sends an ARP request as a broadcast ("Who has IP 10.22.14.1?"), and the gateway replies with its MAC address. The answer is stored in an <strong>ARP table</strong> so that future packets do not need a new ARP request.</p>
+
+  <div class="j-stepper" id="encap-stepper">
+    <div class="stage-area">
+      <div class="stage-title" id="encapTitle"></div>
+      <div class="stage-text" id="encapText"></div>
+      <svg id="encapSvg" viewBox="0 0 620 200" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;display:block;margin:0 auto;">
+        <g id="encapAnim"></g>
+      </svg>
+    </div>
+    <div class="controls">
+      <button id="encapPrev">&larr; Previous</button>
+      <span class="progress" id="encapInd"></span>
+      <button id="encapNext">Next &rarr;</button>
+    </div>
+  </div>
+
+  <details class="zoom-box">
+    <summary>Zoom in — longest prefix match and the IP header</summary>
+    <div class="zoom-content">
+      <p>When a router receives a datagram, it looks up the destination IP in its <strong>forwarding table</strong>. It matches against the <strong>longest prefix</strong> (the most specific route). Example: destination <code>129.241.56.78</code> matches both <code>129.241.0.0/16</code> and <code>129.241.56.0/24</code> — the router chooses /24 because it is more specific.</p>
+      <p>At each hop: the <strong>IP header</strong> stays almost unchanged, but <strong>TTL</strong> (Time To Live) is decremented by 1. If TTL reaches 0, the packet is dropped and the router sends an <strong>ICMP Time Exceeded</strong> message back to the sender — this is the mechanism <code>traceroute</code> uses to map the route. The IP header also contains a <strong>Protocol field</strong> (6 = TCP, 17 = UDP) and a <strong>Header Checksum</strong> that is recalculated at every router because the TTL changes.</p>
+      <p>At each hop the <strong>Ethernet header</strong> is rewritten — new source MAC and new destination MAC. ARP is used to find the MAC address of the next hop.</p>
+    </div>
+  </details>
+
+  <details class="zoom-box">
+    <summary>Zoom in — switches and L2 forwarding</summary>
+    <div class="zoom-content">
+      <p>Before the packet reaches the first router, it typically passes through an <strong>Ethernet switch</strong>. A switch operates at layer 2 and forwards frames based on <strong>MAC addresses</strong>, not IP addresses. It maintains a <strong>switch table</strong> (MAC address table) that maps MAC addresses to ports.</p>
+      <p>The switch <strong>learns</strong> the table by itself: when a frame arrives on a port, it stores the source MAC. When a frame needs to be forwarded and the destination MAC is found in the table, it is sent only to the correct port (<strong>selective forwarding</strong>). If it is not found, the switch <strong>floods</strong> the frame to all ports except the ingress port — just like a hub, but only for unknown addresses.</p>
+      <p>Switches are <strong>transparent</strong> — end systems do not know they exist. They require no configuration and build the table automatically. This is called <strong>self-learning</strong>.</p>
+    </div>
+  </details>
+
+  <details class="zoom-box">
+    <summary>Zoom in — CRC and error detection</summary>
+    <div class="zoom-content">
+      <p>The Ethernet frame's <strong>FCS</strong> (Frame Check Sequence) is a <strong>CRC-32</strong> checksum (Cyclic Redundancy Check). The sender computes the CRC over the entire frame and places the result in the FCS field. The receiver performs the same computation and compares — if they do not match, the frame is silently discarded.</p>
+      <p>CRC is far more powerful than a simple checksum. It can detect all burst errors up to 32 bits, all single- and double-bit errors, and all errors with an odd number of flipped bits. But it cannot <em>correct</em> errors — the frame is discarded, and it is up to TCP to detect the loss and retransmit the segment.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ════════ STEP 7: Response ════════ -->
+<section id="step7" data-layers="trans,app">
+  <div class="step-header">
+    <span class="step-num">7</span>
+    <div>
+      <h2 style="margin:0;">Response <em>back</em></h2>
+      <div class="step-kap"><a href="../kap3/congestion.html">Ch 3 · Congestion</a> · <a href="../kap2/http-og-web.html">Ch 2</a></div>
+    </div>
+  </div>
+  <p class="section-intro">The server sends the page back — potentially hundreds of TCP segments, governed by congestion control.</p>
+  <p>The server replies with <code>200 OK</code> and the HTML content, plus headers like <code>Content-Type: text/html</code>, <code>Content-Length</code>, and perhaps a <code>Set-Cookie</code> header. Other common status codes: <strong>301</strong> (permanent redirect), <strong>304</strong> (not modified — for conditional GET), <strong>404</strong> (not found), and <strong>505</strong> (HTTP version not supported).</p>
+  <p>But a web page is too large for one packet — it is split into many TCP segments. TCP manages the transfer with two parallel mechanisms: <strong>flow control</strong> (prevents the sender from overwhelming the receiver's buffer — controlled by <em>rwnd</em>, receive window) and <strong>congestion control</strong> (prevents the sender from overwhelming the network — controlled by <em>cwnd</em>, congestion window). The send window is always <strong>min(cwnd, rwnd)</strong>.</p>
+
+  <div class="j-stepper" id="resp-stepper">
+    <div class="stage-area">
+      <div class="stage-title" id="respTitle"></div>
+      <div class="stage-text" id="respText"></div>
+      <svg id="respSvg" viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;display:block;margin:0 auto;">
+        <g id="respAnim"></g>
+      </svg>
+    </div>
+    <div class="controls">
+      <button id="respPrev">&larr; Previous</button>
+      <span class="progress" id="respInd"></span>
+      <button id="respNext">Next &rarr;</button>
+    </div>
+  </div>
+
+  <details class="zoom-box">
+    <summary>Zoom in — slow start, congestion avoidance, and AIMD</summary>
+    <div class="zoom-content">
+      <p><strong>Slow start:</strong> cwnd starts at 1 MSS. For each ACK the window doubles — exponential growth. At <strong>ssthresh</strong> (slow start threshold), TCP switches to <strong>congestion avoidance</strong>: linear growth (+1 MSS per RTT). The overall principle is called <strong>AIMD</strong> — Additive Increase, Multiplicative Decrease.</p>
+      <p><strong>Packet loss</strong> is detected in two ways: (1) <strong>3 duplicate ACKs</strong>: the receiver sends the same ACK repeatedly because it is missing a segment. TCP Reno halves cwnd and continues (fast recovery). (2) <strong>Timeout</strong>: no ACK at all. cwnd is reset to 1 MSS, ssthresh is halved, and a new slow start begins. TCP uses <strong>cumulative ACKs</strong>: an ACK for byte number N confirms all bytes up to N.</p>
+      <p><strong>TCP CUBIC</strong> (the default in Linux) improves Reno by using a cubic function for window growth — it grows quickly back to the level where the last loss occurred, and then proceeds cautiously. QUIC improves further with per-stream flow control.</p>
+    </div>
+  </details>
+
+  <details class="zoom-box">
+    <summary>Zoom in — flow control (rwnd)</summary>
+    <div class="zoom-content">
+      <p>Flow control prevents the sender from overwhelming the receiver's buffer. The receiver advertises its available buffer space in the <strong>Receive Window</strong> field (rwnd) in each ACK. The sender ensures it never has more unacknowledged data in flight than rwnd allows.</p>
+      <p>If the receiver's buffer is full (rwnd = 0), the sender stops. But to avoid deadlock, it periodically sends <strong>probe segments</strong> (with 1 byte of data) so the receiver can reply with an updated rwnd when space becomes available.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ════════ STEP 8: Summary ════════ -->
+<section id="step8" data-layers="app">
+  <div class="step-header">
+    <span class="step-num green">8</span>
+    <div>
+      <h2 style="margin:0;">The page <em>renders</em></h2>
+      <div class="step-kap">Summary</div>
+    </div>
+  </div>
+  <p class="section-intro">All bytes are received, HTML is parsed, and you see ntnu.no. All of this took under a second.</p>
+  <p>The browser has now received all the HTML. It parses the document, discovers references to CSS, JavaScript, and images, and starts <em>new</em> HTTP requests for each resource (over the same TCP/TLS connection, thanks to HTTP/2 multiplexing). When enough has loaded, the browser renders the page — and you see the NTNU front page.</p>
+
+  <h3>Connection teardown</h3>
+  <p>When you close the tab or the browser is done, the TCP connection is terminated with a <strong>4-way close</strong>: the client sends <strong>FIN</strong>, the server acknowledges with <strong>ACK</strong>, the server sends its own <strong>FIN</strong>, and the client acknowledges with <strong>ACK</strong>. The client then enters the <strong>TIME_WAIT</strong> state for 2 × MSL (Maximum Segment Lifetime, typically 60 seconds) to ensure the last ACK arrives and that delayed segments from the old connection do not interfere with a potential new connection on the same ports.</p>
+
+  <h3>The timeline</h3>
+  <p>Here is a typical time breakdown for the whole journey from Enter to a finished page:</p>
+
+  <div class="timeline-bar" id="timelineBar">
+    <div class="tl-seg" style="flex:8;background:#2d4a7a;">WiFi</div>
+    <div class="tl-seg" style="flex:5;background:#b04428;">DNS</div>
+    <div class="tl-seg" style="flex:3;background:#b04428;opacity:0.7;">TCP</div>
+    <div class="tl-seg" style="flex:6;background:#c68a1f;">TLS</div>
+    <div class="tl-seg" style="flex:2;background:#b04428;opacity:0.5;">HTTP</div>
+    <div class="tl-seg" style="flex:10;background:#3d6b3a;">Data</div>
+    <div class="tl-seg" style="flex:5;background:#1a1612;">Render</div>
+  </div>
+
+  <div class="slider-box" style="margin-top:24px;">
+    <div class="label">Time calculator</div>
+    <label>RTT to ntnu.no: <span class="val" id="rttVal">20 ms</span></label>
+    <input type="range" id="rttSlider" min="5" max="200" value="20" step="1">
+    <div class="readout" id="timeOut"></div>
+  </div>
+
+  <div class="callout callout-green" style="margin-top:32px;">
+    <span class="label">The big picture</span>
+    <p>You pressed Enter and got a web page. Behind the scenes, <strong>WiFi</strong> (ch 7), <strong>DHCP</strong> (ch 4), <strong>NAT</strong> (ch 4), <strong>DNS</strong> (ch 2), <strong>TCP</strong> (ch 3), <strong>TLS</strong> (ch 8), <strong>HTTP</strong> (ch 2), <strong>IP routing</strong> (ch 4–5), <strong>Ethernet/ARP</strong> (ch 6), <strong>switches</strong> (ch 6), and <strong>congestion control</strong> (ch 3) all took part. Each layer did its job independently, and together they delivered a seamless experience. That is the power of layering.</p>
+  </div>
+
+  <h3 style="margin-top:40px;">Test yourself</h3>
+
+  <div class="quiz" style="margin-bottom:24px;" id="quiz-reise1">
+    <p class="q-text">Why does DNS normally use UDP instead of TCP?</p>
+    <div class="options">
+      <button class="option" data-correct="false">Because UDP is more secure than TCP</button>
+      <button class="option" data-correct="true">Because DNS queries are small, do not need reliable delivery (can just try again), and UDP avoids the overhead of connection setup</button>
+      <button class="option" data-correct="false">Because UDP is faster than the speed of light</button>
+      <button class="option" data-correct="false">Because TCP does not support port 53</button>
+    </div>
+    <div class="explanation"></div>
+  </div>
+
+  <div class="quiz" style="margin-bottom:24px;" id="quiz-reise2">
+    <p class="q-text">What is the difference between flow control (rwnd) and congestion control (cwnd)?</p>
+    <div class="options">
+      <button class="option" data-correct="false">They are two names for the same mechanism</button>
+      <button class="option" data-correct="false">Flow control manages the network, congestion control manages the receiver</button>
+      <button class="option" data-correct="true">Flow control prevents overloading the receiver's buffer (rwnd), while congestion control prevents overloading the network (cwnd). Send window = min(cwnd, rwnd)</button>
+      <button class="option" data-correct="false">Congestion control is only used in UDP</button>
+    </div>
+    <div class="explanation"></div>
+  </div>
+
+  <div class="quiz" style="margin-bottom:24px;" id="quiz-reise3">
+    <p class="q-text">What happens to the Ethernet header and the IP header when a packet passes through a router?</p>
+    <div class="options">
+      <button class="option" data-correct="false">Both remain unchanged throughout the entire route</button>
+      <button class="option" data-correct="false">Both are rewritten at each hop</button>
+      <button class="option" data-correct="true">The IP header stays almost unchanged (only TTL is decremented), but the Ethernet header is rewritten with new MAC addresses at each hop</button>
+      <button class="option" data-correct="false">The IP header is rewritten, the Ethernet header stays unchanged</button>
+    </div>
+    <div class="explanation"></div>
+  </div>
+
+  <div class="quiz" style="margin-bottom:24px;" id="quiz-reise4">
+    <p class="q-text">Why does TLS use both asymmetric and symmetric cryptography?</p>
+    <div class="options">
+      <button class="option" data-correct="false">Because asymmetric cryptography is faster for large amounts of data</button>
+      <button class="option" data-correct="true">Asymmetric cryptography is used for authentication and key exchange (secure, but slow). Symmetric cryptography is used for the actual data encryption (fast). The combination provides both security and performance.</button>
+      <button class="option" data-correct="false">Because symmetric cryptography cannot be used over the Internet</button>
+      <button class="option" data-correct="false">Because it is a requirement of the HTTP standard</button>
+    </div>
+    <div class="explanation"></div>
+  </div>
+</section>
+
+</div><!-- /journey-main -->
+
+<!-- RIGHT: Layer stack -->
+<aside class="layer-stack" id="layerStack">
+  <div class="ls-label">Layers</div>
+  <a href="../kap2/" class="ls-layer" data-layer="app" title="Application layer">App</a>
+  <a href="../kap3/" class="ls-layer" data-layer="trans" title="Transport layer">Trans</a>
+  <a href="../kap4/" class="ls-layer" data-layer="net" title="Network layer">Net</a>
+  <a href="../kap6/" class="ls-layer" data-layer="link" title="Link layer">Link</a>
+  <a href="../kap7/" class="ls-layer" data-layer="phys" title="Physical layer">Phys</a>
+</aside>
+
+</div><!-- /journey-layout -->
+
+<footer>
+  <div class="container">
+    <p>An interactive journey through the curriculum in <em>TTM4100 — Communication: Services and Networks</em>.</p>
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* ==================== STEPPER ENGINE ==================== */
+  function initStepper(cfg) {
+    var i = 0;
+    var title = document.getElementById(cfg.titleId);
+    var text = document.getElementById(cfg.textId);
+    var anim = cfg.animId ? document.getElementById(cfg.animId) : null;
+    var content = cfg.contentId ? document.getElementById(cfg.contentId) : null;
+    var ind = document.getElementById(cfg.indId);
+    var prev = document.getElementById(cfg.prevId);
+    var next = document.getElementById(cfg.nextId);
+    function render() {
+      var s = cfg.steps[i];
+      title.textContent = s.title;
+      text.textContent = s.text;
+      if (anim && s.anim) anim.innerHTML = s.anim;
+      if (content) content.innerHTML = s.content || '';
+      ind.textContent = (i + 1) + ' / ' + cfg.steps.length;
+      prev.disabled = (i === 0);
+      next.disabled = (i === cfg.steps.length - 1);
+    }
+    prev.addEventListener('click', function() { if (i > 0) { i--; render(); } });
+    next.addEventListener('click', function() { if (i < cfg.steps.length - 1) { i++; render(); } });
+    render();
+  }
+
+  /* Helper: arrow SVG for timeline diagrams */
+  function arr(x1,y1,x2,y2,color,label,lx,ly,extra) {
+    return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+color+'" stroke-width="1.8" '+(extra||'')+'/>' +
+           '<polygon points="'+x2+','+y2+' '+(x2+(x1>x2?8:-8))+','+(y2-4)+' '+(x2+(x1>x2?8:-8))+','+(y2+4)+'" fill="'+color+'"/>' +
+           '<text x="'+lx+'" y="'+ly+'" font-family="IBM Plex Mono" font-size="10" fill="'+color+'" font-weight="600">'+label+'</text>';
+  }
+
+  /* ==================== STEP 1: WiFi ==================== */
+  initStepper({
+    titleId:'wifiTitle', textId:'wifiText', animId:'wifiAnim',
+    indId:'wifiInd', prevId:'wifiPrev', nextId:'wifiNext',
+    steps: [
+      { title:'Probe Request (broadcast)',
+        text:'The laptop sends a Probe Request on all channels — "are there any access points here?" This is a broadcast message that every nearby AP can hear.',
+        anim: arr(80,50,535,70,'#2d4a7a','Probe Request',220,55) },
+      { title:'Probe Response',
+        text:'NTNU\u2019s access point replies with a Probe Response containing the network name (SSID), supported rates, and security settings (WPA2/WPA3).',
+        anim: arr(540,70,85,90,'#2d4a7a','Probe Response',220,75) },
+      { title:'Authentication & association',
+        text:'The laptop authenticates (WPA2-Enterprise with username/password at NTNU) and associates with the AP. You now have a wireless link — but no IP address yet.',
+        anim: arr(80,60,535,80,'#3d6b3a','Auth Request',220,55) + arr(540,95,85,115,'#3d6b3a','Auth OK + Assoc',220,110) },
+      { title:'DHCP Discover',
+        text:'The laptop sends a DHCP Discover message as a broadcast — "Is there a DHCP server that can give me an IP address?"',
+        anim: arr(80,60,535,80,'#b04428','DHCP Discover (broadcast)',200,55) },
+      { title:'DHCP Offer \u2192 Request \u2192 ACK',
+        text:'The DHCP server offers an IP address (e.g. 10.22.14.87), the laptop accepts, and the server confirms. The laptop now has an IP address, subnet mask, default gateway, and DNS server address.',
+        anim: arr(540,55,85,75,'#b04428','DHCP Offer',220,50) + arr(80,90,535,110,'#b04428','DHCP Request',220,85) + arr(540,125,85,145,'#3d6b3a','DHCP ACK \u2713 IP: 10.22.14.87',200,138) }
+    ]
+  });
+
+  /* ==================== STEP 2: DNS ==================== */
+  var dnsBase = '<text x="80" y="20" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#1a1612">Laptop</text>' +
+    '<text x="250" y="20" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#b04428">Local resolver</text>' +
+    '<text x="420" y="20" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">Root DNS</text>' +
+    '<text x="520" y="20" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">.no TLD</text>' +
+    '<text x="580" y="50" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">ntnu.no auth</text>' +
+    '<line x1="80" y1="28" x2="80" y2="210" stroke="#a39886" stroke-width="1.5"/>' +
+    '<line x1="250" y1="28" x2="250" y2="210" stroke="#a39886" stroke-width="1.5"/>' +
+    '<line x1="420" y1="28" x2="420" y2="210" stroke="#a39886" stroke-width="1"/>' +
+    '<line x1="520" y1="28" x2="520" y2="210" stroke="#a39886" stroke-width="1"/>' +
+    '<line x1="580" y1="58" x2="580" y2="210" stroke="#a39886" stroke-width="1"/>';
+
+  initStepper({
+    titleId:'dnsTitle', textId:'dnsText', animId:'dnsAnim',
+    indId:'dnsInd', prevId:'dnsPrev', nextId:'dnsNext',
+    steps: [
+      { title:'Browser asks local resolver',
+        text:'The browser calls getaddrinfo("ntnu.no"), which sends a DNS query (UDP port 53) to the local resolver assigned via DHCP.',
+        anim: dnsBase + arr(80,55,245,70,'#b04428','Who is ntnu.no?',100,50) },
+      { title:'Resolver asks a root server',
+        text:'The resolver does not know ntnu.no. It asks one of the 13 root DNS servers: "Who is responsible for .no?" The root server answers with the address of the .no TLD server.',
+        anim: dnsBase + arr(250,65,415,80,'#6b6257','Who is ntnu.no?',280,60) + arr(420,95,255,110,'#6b6257','Ask .no: 185.x.x.x',280,108) },
+      { title:'Resolver asks the .no TLD',
+        text:'The resolver contacts the .no TLD server and asks for ntnu.no. The TLD server answers with the address of NTNU\u2019s authoritative DNS server.',
+        anim: dnsBase + arr(250,85,515,100,'#6b6257','Who is ntnu.no?',310,80) + arr(520,115,255,130,'#6b6257','Ask 129.241.x.x',310,128) },
+      { title:'Resolver asks authoritative server',
+        text:'The resolver contacts NTNU\u2019s authoritative DNS server, which has the definitive answer: ntnu.no \u2192 129.241.160.100. The answer is cached with a TTL.',
+        anim: dnsBase + arr(250,100,575,115,'#b04428','ntnu.no?',350,95) + arr(580,130,255,145,'#3d6b3a','129.241.160.100',350,143) },
+      { title:'Answer returned to the browser',
+        text:'The resolver sends the IP address back to the browser. The laptop now knows where ntnu.no lives and can open a TCP connection there.',
+        anim: dnsBase + arr(250,70,85,85,'#3d6b3a','129.241.160.100 \u2713',100,65) }
+    ]
+  });
+
+  /* ==================== STEP 3: TCP ==================== */
+  initStepper({
+    titleId:'tcpTitle', textId:'tcpText', animId:'tcpAnim',
+    indId:'tcpInd', prevId:'tcpPrev', nextId:'tcpNext',
+    steps: [
+      { title:'SYN',
+        text:'The browser sends a TCP segment with the SYN flag set. It contains a random initial sequence number (e.g. Seq=1000) and destination port 443 (HTTPS).',
+        anim: arr(80,55,535,85,'#b04428','SYN  Seq=1000',200,55) },
+      { title:'SYN-ACK',
+        text:'The server replies with SYN-ACK: its own sequence number (Seq=5000) and acknowledgment of the client\u2019s number (ACK=1001). The server allocates resources for the connection.',
+        anim: arr(80,55,535,85,'#a39886','SYN  Seq=1000',200,55) + arr(540,100,85,130,'#2d4a7a','SYN-ACK  Seq=5000, ACK=1001',180,100) },
+      { title:'ACK \u2014 connection established',
+        text:'The laptop sends ACK (ACK=5001). The TCP connection is now ESTABLISHED in both directions. The whole handshake took 1 RTT (~20 ms). Data can start flowing.',
+        anim: arr(80,55,535,85,'#a39886','SYN',260,55) + arr(540,100,85,130,'#a39886','SYN-ACK',260,100) + arr(80,145,535,170,'#3d6b3a','ACK  ACK=5001 \u2713',200,145) +
+              '<text x="310" y="195" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#3d6b3a">Connection established!</text>' }
+    ]
+  });
+
+  /* ==================== STEP 4: TLS ==================== */
+  initStepper({
+    titleId:'tlsTitle', textId:'tlsText', animId:'tlsAnim',
+    indId:'tlsInd', prevId:'tlsPrev', nextId:'tlsNext',
+    steps: [
+      { title:'ClientHello',
+        text:'The browser sends a ClientHello with supported TLS versions, cipher suites (e.g. TLS_AES_256_GCM_SHA384), and a random nonce.',
+        anim: arr(80,50,535,75,'#c68a1f','ClientHello',220,45) },
+      { title:'ServerHello + certificate',
+        text:'The server replies with the chosen cipher suite, its certificate (issued by a CA), and its public Diffie\u2013Hellman parameters.',
+        anim: arr(80,45,535,65,'#a39886','ClientHello',240,40) + arr(540,80,85,105,'#c68a1f','ServerHello + Cert + DH params',180,78) },
+      { title:'Client verification',
+        text:'The browser verifies the certificate: checks the CA signature, expiry date, and that the domain name matches. It then derives the shared secret via ECDHE.',
+        anim: arr(80,45,535,65,'#a39886','ClientHello',240,40) + arr(540,80,85,105,'#a39886','ServerHello + Cert',220,78) +
+              '<rect x="30" y="120" width="100" height="24" rx="3" fill="#c68a1f" opacity="0.15" stroke="#c68a1f"/><text x="80" y="136" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#c68a1f">Verified \u2713</text>' },
+      { title:'Finished \u2014 encrypted tunnel',
+        text:'Both sides send "Finished" messages encrypted with the new session keys. If decryption succeeds, the handshake is complete. All further traffic is AES-encrypted.',
+        anim: arr(80,50,535,70,'#c68a1f','Client Finished',220,45) + arr(540,85,85,105,'#c68a1f','Server Finished',220,83) +
+              '<rect x="75" y="120" width="470" height="30" rx="4" fill="#c68a1f" opacity="0.12" stroke="#c68a1f" stroke-dasharray="4,3"/>' +
+              '<text x="310" y="140" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#c68a1f" font-weight="600">\uD83D\uDD12 Encrypted tunnel established</text>' }
+    ]
+  });
+
+  /* ==================== STEP 5: HTTP ==================== */
+  initStepper({
+    titleId:'httpTitle', textId:'httpText', contentId:'httpContent',
+    indId:'httpInd', prevId:'httpPrev', nextId:'httpNext',
+    steps: [
+      { title:'The GET request',
+        text:'Inside the TLS tunnel, the browser sends this HTTP request:',
+        content: '<pre style="font-size:12px;line-height:1.5"><code><span class="kw">GET</span> / HTTP/1.1\r\n<span class="c-cmt">Host:</span> ntnu.no\r\n<span class="c-cmt">Accept:</span> text/html\r\n<span class="c-cmt">Accept-Encoding:</span> gzip, br\r\n<span class="c-cmt">User-Agent:</span> Mozilla/5.0 ...\r\n<span class="c-cmt">Connection:</span> keep-alive\r\n</code></pre>' },
+      { title:'Request line',
+        text:'The first line specifies the method (GET), the resource (/ = the front page), and the protocol version. GET means "fetch this resource" \u2014 no request body.',
+        content: '<pre style="font-size:13px;line-height:1.5"><code><span class="kw" style="font-size:16px;background:rgba(176,68,40,0.1);padding:2px 6px;">GET / HTTP/1.1</span>\r\nHost: ntnu.no\r\nAccept: text/html\r\n...</code></pre><p style="font-size:14px;color:var(--ink-faded);margin-top:12px;"><strong>GET</strong> = method &nbsp;|&nbsp; <strong>/</strong> = resource &nbsp;|&nbsp; <strong>HTTP/1.1</strong> = version</p>' },
+      { title:'The Host header',
+        text:'Host is mandatory in HTTP/1.1. It tells the server which domain we want \u2014 important because several domains can share the same IP address (virtual hosting).',
+        content: '<pre style="font-size:13px;line-height:1.5"><code>GET / HTTP/1.1\r\n<span class="kw" style="font-size:16px;background:rgba(176,68,40,0.1);padding:2px 6px;">Host: ntnu.no</span>\r\nAccept: text/html\r\n...</code></pre>' },
+      { title:'Request sent',
+        text:'The whole request is typically under 500 bytes \u2014 it fits in one TCP segment. Now we wait for the server\u2019s response.',
+        content: '<div style="text-align:center;padding:24px 0;"><span style="font-family:var(--mono);font-size:48px;color:var(--rust);">\u2192</span><p style="font-size:14px;color:var(--ink-faded);margin-top:8px;">~500 bytes sent, encrypted, across the network</p></div>' }
+    ]
+  });
+
+  /* ==================== STEP 6: Encapsulation ==================== */
+  var encapData = '<rect x="210" y="YVAL" width="200" height="HH" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="2"/><text x="310" y="TVAL" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">LABEL</text>';
+
+  function encapLayer(y,h,label,color,headerW) {
+    var hw = headerW || 50;
+    return '<rect x="'+(210-hw)+'" y="'+y+'" width="'+hw+'" height="'+h+'" fill="'+color+'" opacity="0.2" stroke="'+color+'" stroke-width="1.5" rx="2"/>' +
+           '<text x="'+(210-hw/2)+'" y="'+(y+h/2+4)+'" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="'+color+'" font-weight="600">'+label+'</text>';
+  }
+
+  initStepper({
+    titleId:'encapTitle', textId:'encapText', animId:'encapAnim',
+    indId:'encapInd', prevId:'encapPrev', nextId:'encapNext',
+    steps: [
+      { title:'Application data',
+        text:'The HTTP GET request is just data \u2014 a string of bytes. It knows nothing about networks, ports, or addresses.',
+        anim: '<rect x="210" y="80" width="200" height="40" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="2"/><text x="310" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">HTTP GET / (data)</text><text x="310" y="140" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">Application layer</text>' },
+      { title:'TCP adds a header',
+        text:'The transport layer adds a TCP header with source port, dest port (443), sequence number, and flags. The result is a TCP segment.',
+        anim: encapLayer(80,40,'TCP Hdr','#b04428',60) + '<rect x="210" y="80" width="200" height="40" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="2"/><text x="310" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">HTTP data</text><text x="310" y="140" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#b04428">\u2192 TCP segment</text>' },
+      { title:'IP adds a header',
+        text:'The network layer adds an IP header with source IP (10.22.14.87), destination IP (129.241.160.100), TTL, and protocol field. The result is an IP datagram.',
+        anim: encapLayer(80,40,'IP Hdr','#2d4a7a',50) + encapLayer(80,40,'TCP','#b04428',60).replace(/160/g,'130').replace(/80/g,'80') + '<rect x="210" y="80" width="200" height="40" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="2"/><text x="310" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">data</text>' +
+              '<rect x="100" y="80" width="50" height="40" fill="rgba(45,74,122,0.2)" stroke="#2d4a7a" stroke-width="1.5" rx="2"/><text x="125" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a" font-weight="600">IP Hdr</text>' +
+              '<rect x="150" y="80" width="60" height="40" fill="rgba(176,68,40,0.2)" stroke="#b04428" stroke-width="1.5" rx="2"/><text x="180" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428" font-weight="600">TCP Hdr</text>' +
+              '<text x="310" y="145" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#2d4a7a">\u2192 IP datagram</text>' },
+      { title:'Ethernet adds header + trailer',
+        text:'The link layer wraps the datagram in an Ethernet frame with source MAC, destination MAC (next hop\u2019s MAC via ARP), type field, and a CRC checksum (FCS) at the end.',
+        anim: '<rect x="60" y="80" width="40" height="40" fill="rgba(61,107,58,0.2)" stroke="#3d6b3a" stroke-width="1.5" rx="2"/><text x="80" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#3d6b3a" font-weight="600">Eth Hdr</text>' +
+              '<rect x="100" y="80" width="50" height="40" fill="rgba(45,74,122,0.2)" stroke="#2d4a7a" stroke-width="1.5" rx="2"/><text x="125" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a" font-weight="600">IP</text>' +
+              '<rect x="150" y="80" width="60" height="40" fill="rgba(176,68,40,0.2)" stroke="#b04428" stroke-width="1.5" rx="2"/><text x="180" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428" font-weight="600">TCP</text>' +
+              '<rect x="210" y="80" width="200" height="40" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="2"/><text x="310" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">data</text>' +
+              '<rect x="410" y="80" width="36" height="40" fill="rgba(61,107,58,0.2)" stroke="#3d6b3a" stroke-width="1.5" rx="2"/><text x="428" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#3d6b3a" font-weight="600">FCS</text>' +
+              '<text x="270" y="145" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#3d6b3a">\u2192 Ethernet frame \u2014 ready to send!</text>' },
+      { title:'Packet travels through routers',
+        text:'The frame is sent to the switch (L2 forwarding based on MAC), then to the gateway router. Each router: unpacks Ethernet, reads the IP destination, looks up the forwarding table (longest prefix match), builds a new Ethernet frame with the next hop\u2019s MAC.',
+        anim: '<circle cx="80" cy="100" r="16" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/><text x="80" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#1a1612">Laptop</text>' +
+              '<line x1="96" y1="100" x2="150" y2="100" stroke="#3d6b3a" stroke-width="2"/>' +
+              '<rect x="150" y="88" width="40" height="24" rx="3" fill="#f4f1ea" stroke="#3d6b3a" stroke-width="1.5"/><text x="170" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#3d6b3a">SW</text>' +
+              '<line x1="190" y1="100" x2="240" y2="100" stroke="#2d4a7a" stroke-width="2"/>' +
+              '<circle cx="260" cy="100" r="16" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/><text x="260" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">R1</text>' +
+              '<line x1="276" y1="100" x2="330" y2="100" stroke="#2d4a7a" stroke-width="2"/>' +
+              '<circle cx="350" cy="100" r="16" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/><text x="350" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">R2</text>' +
+              '<line x1="366" y1="100" x2="420" y2="100" stroke="#2d4a7a" stroke-width="2"/>' +
+              '<circle cx="440" cy="100" r="16" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/><text x="440" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">R3</text>' +
+              '<line x1="456" y1="100" x2="510" y2="100" stroke="#1a1612" stroke-width="2"/>' +
+              '<rect x="510" y="86" width="50" height="28" rx="3" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/><text x="535" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#1a1612">ntnu.no</text>' +
+              '<text x="310" y="150" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#6b6257">IP header stays the same \u2014 Ethernet header is rewritten at each hop</text>' },
+      { title:'Decapsulation on the server',
+        text:'The server receives the Ethernet frame, checks the FCS (CRC), strips the Ethernet header, strips the IP header, strips the TCP header, and delivers the HTTP request to the web server process on port 443. Layers are unwrapped in reverse order.',
+        anim: '<text x="310" y="50" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600" fill="#1a1612">Server unpacks:</text>' +
+              '<rect x="60" y="70" width="500" height="28" fill="rgba(61,107,58,0.1)" stroke="#3d6b3a" rx="2"/><text x="310" y="88" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">Ethernet \u2192 strip</text>' +
+              '<rect x="100" y="104" width="420" height="28" fill="rgba(45,74,122,0.1)" stroke="#2d4a7a" rx="2"/><text x="310" y="122" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">IP \u2192 strip</text>' +
+              '<rect x="140" y="138" width="340" height="28" fill="rgba(176,68,40,0.1)" stroke="#b04428" rx="2"/><text x="310" y="156" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">TCP \u2192 strip</text>' +
+              '<rect x="190" y="172" width="240" height="28" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="2"/><text x="310" y="190" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612" font-weight="600">GET / HTTP/1.1 \u2713</text>' }
+    ]
+  });
+
+  /* ==================== STEP 7: Response ==================== */
+  initStepper({
+    titleId:'respTitle', textId:'respText', animId:'respAnim',
+    indId:'respInd', prevId:'respPrev', nextId:'respNext',
+    steps: [
+      { title:'200 OK',
+        text:'The server finds the file, generates the HTML content (perhaps from a CMS), and sends an HTTP response with status code 200 OK.',
+        anim: '<text x="80" y="20" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#1a1612">Laptop</text><line x1="80" y1="28" x2="80" y2="210" stroke="#a39886" stroke-width="1.5"/><text x="540" y="20" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#1a1612">ntnu.no</text><line x1="540" y1="28" x2="540" y2="210" stroke="#a39886" stroke-width="1.5"/>' +
+              arr(540,55,85,85,'#3d6b3a','200 OK + HTML (segment 1)',200,50) },
+      { title:'Slow start \u2014 cwnd grows',
+        text:'TCP first sends 1 segment (1 MSS \u2248 1460 bytes). When the ACK comes back, the window doubles: 2, 4, 8, 16... Exponential growth quickly fills the pipe.',
+        anim: '<text x="80" y="20" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#1a1612">Laptop</text><line x1="80" y1="28" x2="80" y2="210" stroke="#a39886" stroke-width="1.5"/><text x="540" y="20" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#1a1612">ntnu.no</text><line x1="540" y1="28" x2="540" y2="210" stroke="#a39886" stroke-width="1.5"/>' +
+              arr(540,45,85,65,'#3d6b3a','1 segment',300,40) +
+              arr(80,75,535,90,'#2d4a7a','ACK',300,73) +
+              arr(540,95,85,110,'#3d6b3a','2 segments',300,90) + arr(540,100,85,115,'#3d6b3a','',300,95) +
+              arr(80,125,535,140,'#2d4a7a','ACKs',300,123) +
+              arr(540,145,85,160,'#3d6b3a','4 segments',300,140) + arr(540,148,85,163,'#3d6b3a','',300,143) + arr(540,151,85,166,'#3d6b3a','',300,146) + arr(540,154,85,169,'#3d6b3a','',300,149) +
+              '<text x="310" y="200" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428" font-weight="600">cwnd: 1 \u2192 2 \u2192 4 \u2192 8 \u2192 ...</text>' },
+      { title:'All segments received',
+        text:'After a few RTTs, TCP has transferred the entire HTML file. The laptop sends an ACK for each received segment (cumulatively). Any loss is detected via duplicate ACKs and resent via fast retransmit.',
+        anim: '<text x="310" y="60" text-anchor="middle" font-family="IBM Plex Sans" font-size="14" font-weight="600" fill="#3d6b3a">All data received \u2713</text>' +
+              '<text x="310" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">~50 KB HTML</text>' +
+              '<text x="310" y="120" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">\u2248 35 TCP segments</text>' +
+              '<text x="310" y="140" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">Over 3\u20134 RTTs (~80 ms)</text>' +
+              '<text x="310" y="180" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">The browser starts parsing HTML immediately \u2014 it does not wait for everything.</text>' }
+    ]
+  });
+
+  /* ==================== STEP 8: Timeline calculator ==================== */
+  var rttSlider = document.getElementById('rttSlider');
+  var rttVal = document.getElementById('rttVal');
+  var timeOut = document.getElementById('timeOut');
+
+  function updateTimeline() {
+    var rtt = parseInt(rttSlider.value);
+    rttVal.textContent = rtt + ' ms';
+    var wifi = 50;
+    var dns = rtt * 2;
+    var tcp = rtt;
+    var tls = rtt * 2;
+    var http = 5;
+    var data = rtt * 3;
+    var render = 40;
+    var total = wifi + dns + tcp + tls + http + data + render;
+    timeOut.innerHTML =
+      '<strong>WiFi connection:</strong> ~' + wifi + ' ms<br>' +
+      '<strong>DNS lookup:</strong> ~' + dns + ' ms (2 RTT)<br>' +
+      '<strong>TCP handshake:</strong> ~' + tcp + ' ms (1 RTT)<br>' +
+      '<strong>TLS handshake:</strong> ~' + tls + ' ms (2 RTT for TLS 1.2, 1 RTT for TLS 1.3)<br>' +
+      '<strong>HTTP request:</strong> ~' + http + ' ms<br>' +
+      '<strong>Data transfer:</strong> ~' + data + ' ms (slow start + segments)<br>' +
+      '<strong>Rendering:</strong> ~' + render + ' ms<br>' +
+      '<br><strong style="color:var(--rust);font-size:18px;">Total: ~' + total + ' ms (' + (total/1000).toFixed(2) + ' s)</strong>';
+  }
+  rttSlider.addEventListener('input', updateTimeline);
+  updateTimeline();
+
+  /* ==================== SIDEBAR: IntersectionObserver ==================== */
+  var sections = document.querySelectorAll('.journey-main section[id]');
+  var navLinks = document.querySelectorAll('#stepNav a');
+  var layers = document.querySelectorAll('#layerStack .ls-layer');
+  var layerMap = {
+    step1: ['link','phys'],
+    step2: ['app'],
+    step3: ['trans'],
+    step4: ['app'],
+    step5: ['app'],
+    step6: ['net','link'],
+    step7: ['trans','app'],
+    step8: ['app']
+  };
+  var layerClasses = { app:'active-app', trans:'active-trans', net:'active-net', link:'active-link', phys:'active-phys' };
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var id = entry.target.id;
+        navLinks.forEach(function(link) {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + id) link.classList.add('active');
+        });
+        layers.forEach(function(l) {
+          l.className = 'ls-layer';
+        });
+        var activeLayers = layerMap[id] || [];
+        activeLayers.forEach(function(lay) {
+          layers.forEach(function(l) {
+            if (l.dataset.layer === lay) l.classList.add(layerClasses[lay]);
+          });
+        });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+
+  sections.forEach(function(sec) { observer.observe(sec); });
+
+  /* ==================== QUIZZES ==================== */
+  document.querySelectorAll('.quiz').forEach(function(quiz) {
+    var fb = quiz.querySelector('.explanation');
+    quiz.querySelectorAll('button.option').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var correct = btn.dataset.correct === 'true';
+        quiz.querySelectorAll('button.option').forEach(function(b) {
+          b.disabled = true;
+          if (b.dataset.correct === 'true') b.classList.add('correct');
+          else if (b === btn && !correct) b.classList.add('incorrect');
+        });
+        if (fb) {
+          fb.textContent = correct ? 'Correct!' : 'Not quite \u2014 see the correct answer highlighted in green.';
+          fb.classList.add('show');
+        }
+      });
+    });
+  });
+})();
+</script>
+<script src="../../chat-widget.js"></script>
+<script src="../../lang-switch.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>

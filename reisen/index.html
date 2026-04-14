@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reisen til en nettside — TTM4100</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+.journey-layout {
+  display: grid;
+  grid-template-columns: 200px 1fr 56px;
+  gap: 0 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+  position: relative;
+  z-index: 2;
+}
+
+/* --- Left sidebar: step nav --- */
+.step-nav {
+  position: sticky;
+  top: 60px;
+  align-self: start;
+  padding: 24px 0;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+}
+.step-nav ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.step-nav li {
+  margin: 0 0 2px;
+}
+.step-nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-ghost);
+  transition: all 0.15s;
+  line-height: 1.3;
+}
+.step-nav a:hover { color: var(--ink-soft); background: var(--paper-dark); }
+.step-nav a.active { color: var(--rust); background: rgba(176,68,40,0.08); font-weight: 600; }
+.step-nav a.done { color: var(--green); }
+.step-nav .sn-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  min-width: 18px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.step-nav a.done .sn-num::after { content: ' \2713'; }
+
+/* --- Right sidebar: layer stack --- */
+.layer-stack {
+  position: sticky;
+  top: 60px;
+  align-self: start;
+  padding: 24px 0;
+}
+.layer-stack .ls-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-ghost);
+  margin-bottom: 8px;
+  text-align: center;
+}
+.layer-stack .ls-layer {
+  display: block;
+  width: 48px;
+  padding: 6px 0;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  margin-bottom: -1px;
+  color: var(--ink-ghost);
+  background: var(--paper);
+  transition: all 0.25s;
+  text-decoration: none;
+  line-height: 1.2;
+}
+.layer-stack .ls-layer:first-of-type { border-radius: 3px 3px 0 0; }
+.layer-stack .ls-layer:last-of-type { border-radius: 0 0 3px 3px; }
+.layer-stack .ls-layer.active-app { background: rgba(176,68,40,0.15); color: var(--rust); border-color: var(--rust); }
+.layer-stack .ls-layer.active-trans { background: rgba(176,68,40,0.10); color: var(--rust); border-color: var(--rust); }
+.layer-stack .ls-layer.active-net { background: rgba(45,74,122,0.15); color: var(--blue); border-color: var(--blue); }
+.layer-stack .ls-layer.active-link { background: rgba(61,107,58,0.15); color: var(--green); border-color: var(--green); }
+.layer-stack .ls-layer.active-phys { background: rgba(198,138,31,0.15); color: var(--ochre); border-color: var(--ochre); }
+
+/* --- Main content column --- */
+.journey-main { min-width: 0; }
+.journey-main section {
+  padding: 60px 0;
+  border-bottom: 1px solid var(--line);
+}
+.journey-main section:last-of-type { border-bottom: none; }
+
+/* --- Hero --- */
+.journey-hero {
+  padding: 100px 0 60px;
+  border-bottom: 1px solid var(--line);
+}
+.journey-hero .container { max-width: 820px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 2; }
+.journey-hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin-bottom: 24px;
+}
+.journey-hero h1 em { font-style: italic; font-weight: 400; color: var(--rust); }
+.journey-hero .lead {
+  font-size: 20px;
+  font-style: italic;
+  color: var(--ink-soft);
+  max-width: 600px;
+  line-height: 1.55;
+  margin-bottom: 0;
+}
+
+/* --- Step header --- */
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.step-num {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--paper);
+  background: var(--rust);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.step-num.blue { background: var(--blue); }
+.step-num.green { background: var(--green); }
+.step-num.ochre { background: var(--ochre); }
+.step-kap {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-ghost);
+}
+.step-kap a { color: var(--ink-ghost); text-decoration: none; }
+.step-kap a:hover { color: var(--rust); }
+
+/* --- Stepper within journey --- */
+.j-stepper {
+  background: var(--paper-dark);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 24px;
+  margin: 28px 0;
+}
+.j-stepper .stage-area {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 16px;
+  min-height: 200px;
+}
+.j-stepper .stage-title {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--rust);
+  margin-bottom: 8px;
+}
+.j-stepper .stage-text {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+}
+.j-stepper .controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.j-stepper .controls button {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 8px 18px;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.j-stepper .controls button:hover:not(:disabled) { background: var(--rust); }
+.j-stepper .controls button:disabled { opacity: 0.3; cursor: not-allowed; }
+.j-stepper .controls .progress {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-faded);
+}
+
+/* --- Zoom box --- */
+.zoom-box {
+  border: 1px dashed var(--line);
+  background: rgba(255,255,255,0.4);
+  padding: 20px 24px;
+  margin: 24px 0;
+  border-radius: 3px;
+}
+.zoom-box summary {
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rust);
+  padding: 4px 0;
+  font-weight: 600;
+}
+.zoom-box .zoom-content {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line-soft);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+.zoom-box .zoom-content strong { color: var(--ink); }
+
+/* --- Timeline summary --- */
+.timeline-bar {
+  display: flex;
+  border-radius: 4px;
+  overflow: hidden;
+  height: 36px;
+  margin: 24px 0;
+  border: 1px solid var(--line);
+}
+.timeline-bar .tl-seg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  padding: 0 6px;
+  min-width: 0;
+}
+
+/* --- Mobile --- */
+@media (max-width: 960px) {
+  .journey-layout {
+    grid-template-columns: 1fr;
+    padding: 0 20px;
+  }
+  .step-nav, .layer-stack { display: none; }
+  .journey-hero { padding: 70px 0 40px; }
+  .journey-hero .container { padding: 0 20px; }
+}
+
+/* Minimap */
+.minimap { margin: 0 0 28px; }
+.minimap svg { display: block; max-width: 100%; height: auto; }
+.minimap .mm-node { opacity: 0.35; transition: opacity 0.25s; }
+.minimap .mm-node.here { opacity: 1; }
+.minimap .mm-edge { stroke: var(--line); stroke-width: 2; }
+.minimap .mm-edge.here { stroke: var(--rust); stroke-width: 2.5; }
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container">
+    <a href="../" class="brand">TTM4100</a>
+    <a href="../" class="nav-back">&larr; Alle kapitler</a>
+  </div>
+</nav>
+
+<!-- ======== HERO ======== -->
+<header class="journey-hero">
+  <div class="container">
+    <div class="eyebrow">Interaktiv visualisering · Alle kapitler</div>
+    <h1>Reisen til en <em>nettside</em></h1>
+    <p class="lead">Du sitter på campus, kobler til NTNU-WiFi, åpner nettleseren og skriver <code>ntnu.no</code>. På under ett sekund ser du forsiden. Men hva skjedde egentlig — steg for steg, lag for lag?</p>
+  </div>
+</header>
+
+<!-- ======== HERO MAP ======== -->
+<div style="padding:32px 0; border-bottom:1px solid var(--line);">
+  <div class="container" style="max-width:900px;">
+    <figure class="fig-frame" style="margin:0;">
+      <svg id="heroMap" viewBox="0 0 820 160" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;">
+        <defs>
+          <marker id="hma" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#b04428"/></marker>
+        </defs>
+        <!-- Laptop -->
+        <rect x="10" y="45" width="60" height="40" rx="4" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/>
+        <rect x="18" y="52" width="44" height="26" rx="2" fill="#e8e3d6" stroke="#c9c0ae"/>
+        <rect x="20" y="85" width="40" height="4" rx="1" fill="#c9c0ae"/>
+        <text x="40" y="110" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#1a1612" font-weight="600">Din laptop</text>
+
+        <!-- WiFi waves -->
+        <path d="M80 55 Q95 45 95 65" fill="none" stroke="#2d4a7a" stroke-width="1.5" stroke-dasharray="3,2"/>
+        <path d="M85 50 Q105 40 105 70" fill="none" stroke="#2d4a7a" stroke-width="1" stroke-dasharray="3,2"/>
+
+        <!-- AP -->
+        <g id="hmAP" style="cursor:pointer;" onclick="document.getElementById('step1').scrollIntoView({behavior:'smooth'})">
+          <rect x="115" y="50" width="44" height="30" rx="3" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/>
+          <text x="137" y="69" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">AP</text>
+          <text x="137" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">WiFi</text>
+        </g>
+        <line x1="159" y1="65" x2="190" y2="65" stroke="#c9c0ae" stroke-width="1.5"/>
+
+        <!-- Switch -->
+        <g style="cursor:pointer;" onclick="document.getElementById('step6').scrollIntoView({behavior:'smooth'})">
+          <rect x="190" y="50" width="44" height="30" rx="3" fill="#f4f1ea" stroke="#3d6b3a" stroke-width="1.5"/>
+          <text x="212" y="69" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#3d6b3a">Svitsj</text>
+          <text x="212" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#3d6b3a">L2</text>
+        </g>
+        <line x1="234" y1="65" x2="265" y2="65" stroke="#c9c0ae" stroke-width="1.5"/>
+
+        <!-- Router 1 -->
+        <g style="cursor:pointer;" onclick="document.getElementById('step6').scrollIntoView({behavior:'smooth'})">
+          <circle cx="285" cy="65" r="18" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/>
+          <text x="285" y="69" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">R1</text>
+          <text x="285" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">Ruter</text>
+        </g>
+        <line x1="303" y1="65" x2="347" y2="65" stroke="#c9c0ae" stroke-width="1.5"/>
+
+        <!-- Internet cloud -->
+        <ellipse cx="395" cy="65" rx="44" ry="24" fill="none" stroke="#a39886" stroke-width="1.2" stroke-dasharray="4,3"/>
+        <text x="395" y="69" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#6b6257">Internett</text>
+
+        <line x1="439" y1="65" x2="473" y2="65" stroke="#c9c0ae" stroke-width="1.5"/>
+
+        <!-- Router 2 -->
+        <g style="cursor:pointer;" onclick="document.getElementById('step6').scrollIntoView({behavior:'smooth'})">
+          <circle cx="493" cy="65" r="18" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/>
+          <text x="493" y="69" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">R2</text>
+        </g>
+        <line x1="511" y1="65" x2="545" y2="65" stroke="#c9c0ae" stroke-width="1.5"/>
+
+        <!-- DNS off to side -->
+        <g style="cursor:pointer;" onclick="document.getElementById('step2').scrollIntoView({behavior:'smooth'})">
+          <rect x="340" y="120" width="56" height="28" rx="3" fill="#f4f1ea" stroke="#b04428" stroke-width="1.2"/>
+          <text x="368" y="138" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#b04428">DNS</text>
+        </g>
+        <line x1="368" y1="89" x2="368" y2="120" stroke="#b04428" stroke-width="1" stroke-dasharray="3,2"/>
+
+        <!-- NTNU Server -->
+        <g style="cursor:pointer;" onclick="document.getElementById('step5').scrollIntoView({behavior:'smooth'})">
+          <rect x="545" y="42" width="70" height="46" rx="4" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/>
+          <rect x="553" y="49" width="54" height="8" rx="1" fill="#e8e3d6" stroke="#c9c0ae"/>
+          <rect x="553" y="61" width="54" height="8" rx="1" fill="#e8e3d6" stroke="#c9c0ae"/>
+          <rect x="553" y="73" width="54" height="8" rx="1" fill="#e8e3d6" stroke="#c9c0ae"/>
+          <text x="580" y="110" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#1a1612" font-weight="600">ntnu.no</text>
+        </g>
+
+        <!-- Protocol labels along top -->
+        <text x="100" y="28" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">1 WiFi</text>
+        <text x="212" y="28" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#b04428">2 DNS</text>
+        <text x="320" y="28" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#b04428">3 TCP</text>
+        <text x="415" y="28" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#c68a1f">4 TLS</text>
+        <text x="500" y="28" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#b04428">5 HTTP</text>
+
+        <!-- Path arrow overlaying everything -->
+        <path d="M70 65 C200 15 500 15 545 65" fill="none" stroke="#b04428" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#hma)" opacity="0.5"/>
+      </svg>
+      <figcaption>Klikk på en komponent for å hoppe til det steget. Pakkene reiser fra laptopen din gjennom WiFi, svitsjer og rutere, over Internett, helt til NTNU-serveren — og tilbake.</figcaption>
+    </figure>
+  </div>
+</div>
+
+<!-- ======== MAIN 3-COL LAYOUT ======== -->
+<div class="journey-layout">
+
+<!-- LEFT: Step navigation -->
+<nav class="step-nav" id="stepNav">
+  <ol>
+    <li><a href="#step1" data-step="1"><span class="sn-num">1</span>WiFi-tilkobling</a></li>
+    <li><a href="#step2" data-step="2"><span class="sn-num">2</span>DNS-oppslag</a></li>
+    <li><a href="#step3" data-step="3"><span class="sn-num">3</span>TCP-håndtrykk</a></li>
+    <li><a href="#step4" data-step="4"><span class="sn-num">4</span>TLS-kryptering</a></li>
+    <li><a href="#step5" data-step="5"><span class="sn-num">5</span>HTTP-forespørsel</a></li>
+    <li><a href="#step6" data-step="6"><span class="sn-num">6</span>Enkapsulering &amp; ruting</a></li>
+    <li><a href="#step7" data-step="7"><span class="sn-num">7</span>Respons tilbake</a></li>
+    <li><a href="#step8" data-step="8"><span class="sn-num">8</span>Siden vises</a></li>
+  </ol>
+</nav>
+
+<!-- CENTER: Content -->
+<div class="journey-main" id="journeyMain">
+
+<!-- ════════ STEP 1: WiFi ════════ -->
+<section id="step1" data-layers="link,phys">
+  <div class="step-header">
+    <span class="step-num blue">1</span>
+    <div>
+      <h2 style="margin:0;">WiFi-<em>tilkobling</em></h2>
+      <div class="step-kap"><a href="../kap7/">Kap 7</a> · <a href="../kap4/">Kap 4</a></div>
+    </div>
+  </div>
+  <p class="section-intro">Før noe annet kan skje, må laptopen koble seg til nettet — trådløst.</p>
+  <p>Du åpner laptopen på campus. WiFi-kortet scanner etter aksesspunkter ved å sende <strong>Probe Requests</strong> på ulike kanaler, og finner NTNU sitt nett. Det som følger er en presis dans av meldinger mellom laptopen og aksesspunktet — autentisering, assosiering, og til slutt en DHCP-utveksling for å få en IP-adresse.</p>
+  <p>DHCP gir deg fire viktige ting: en <strong>IP-adresse</strong> (f.eks. 10.22.14.87), en <strong>subnettmaske</strong> (f.eks. 255.255.255.0, som forteller at alle med prefiks 10.22.14.x er på samme lokalnett), adressen til <strong>default gateway</strong> (ruteren som videresender alt utenfor subnettet), og adressen til en <strong>DNS-server</strong>. Merk at 10.22.14.87 er en <em>privat</em> IP-adresse (RFC 1918) — den fungerer bare internt på campus. Når trafikken skal ut på Internett, må en <strong>NAT-ruter</strong> (Network Address Translation) oversette den private adressen til en offentlig IP-adresse.</p>
+
+  <div class="j-stepper" id="wifi-stepper">
+    <div class="stage-area">
+      <div class="stage-title" id="wifiTitle"></div>
+      <div class="stage-text" id="wifiText"></div>
+      <svg id="wifiSvg" viewBox="0 0 620 200" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;display:block;margin:0 auto;">
+        <text x="80" y="20" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#1a1612">Laptop</text>
+        <line x1="80" y1="28" x2="80" y2="190" stroke="#a39886" stroke-width="1.5"/>
+        <text x="540" y="20" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#2d4a7a">AP / DHCP</text>
+        <line x1="540" y1="28" x2="540" y2="190" stroke="#a39886" stroke-width="1.5"/>
+        <g id="wifiAnim"></g>
+      </svg>
+    </div>
+    <div class="controls">
+      <button id="wifiPrev">&larr; Forrige</button>
+      <span class="progress" id="wifiInd"></span>
+      <button id="wifiNext">Neste &rarr;</button>
+    </div>
+  </div>
+
+  <details class="zoom-box">
+    <summary>Zoom inn — 802.11-rammen</summary>
+    <div class="zoom-content">
+      <p>En WiFi-ramme (802.11) har en mer kompleks header enn Ethernet — den inneholder <strong>fire adressefelt</strong> (ikke to) fordi trafikken må rutes gjennom aksesspunktet. Feltene inkluderer <strong>Frame Control</strong> (type og subtype), <strong>Duration</strong> (for NAV/virtuell carrier sensing), <strong>Adresse 1–4</strong> (avsender, mottaker, AP, og ev. mesh-noder), <strong>Sequence Control</strong> (for reassembly), og til slutt <strong>FCS</strong> (CRC-sjekk).</p>
+      <p>CSMA/CA — kollisjonsunngåelse — betyr at laptopen <strong>lytter før den sender</strong>. Hvis kanalen er opptatt, venter den en tilfeldig backoff-tid. Etter sending venter den på en <strong>ACK</strong> fra AP-et. Ingen ACK? Prøv igjen. Dette er forskjellig fra Ethernet sin <strong>CSMA/CD</strong> (collision detection), fordi trådløse enheter ikke kan lytte mens de sender — de kan ikke oppdage kollisjoner, bare unngå dem.</p>
+    </div>
+  </details>
+
+  <details class="zoom-box">
+    <summary>Zoom inn — NAT og private adresser</summary>
+    <div class="zoom-content">
+      <p>Adressen 10.22.14.87 er en <strong>privat RFC 1918-adresse</strong> — den er ikke rutbar på Internett. Tre adresseblokker er reservert for privat bruk: <strong>10.0.0.0/8</strong>, <strong>172.16.0.0/12</strong>, og <strong>192.168.0.0/16</strong>. Hundrevis av organisasjoner kan bruke de samme adressene internt uten konflikt.</p>
+      <p>Når pakken din forlater campus-nettverket, gjør <strong>NAT-ruteren</strong> en oversettelse: den erstatter din private kilde-IP og kildeport med sin egen offentlige IP-adresse og en ny portnummer. Ruteren husker denne mappingen i en <strong>NAT-tabell</strong>, slik at svar kan sendes tilbake til riktig intern maskin. NAT er en av grunnene til at IPv4 med sine 4,3 milliarder adresser fortsatt fungerer trass i milliarder av tilkoblede enheter.</p>
+    </div>
+  </details>
+
+  <details class="zoom-box">
+    <summary>Zoom inn — hidden terminal-problemet</summary>
+    <div class="zoom-content">
+      <p>Et klassisk problem med trådløse nettverk: to enheter (A og C) kan begge nå aksesspunktet (B), men kan <em>ikke</em> høre hverandre fordi de er for langt fra hverandre. Begge tror kanalen er ledig, sender samtidig, og pakkene kolliderer ved AP-et. Dette kalles <strong>hidden terminal-problemet</strong>.</p>
+      <p>Løsningen er <strong>RTS/CTS</strong> (Request to Send / Clear to Send): senderen ber først om tillatelse med en kort RTS-melding. AP-et svarer med CTS som alle i nærheten hører — og de vet da at de må vente. Dette legger til overhead, men eliminerer kollisjoner fra skjulte terminaler.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ════════ STEP 2: DNS ════════ -->
+<section id="step2" data-layers="app">
+  <div class="step-header">
+    <span class="step-num">2</span>
+    <div>
+      <h2 style="margin:0;">DNS-<em>oppslag</em></h2>
+      <div class="step-kap"><a href="../kap2/epost-dns-sockets.html">Kap 2 · DNS</a></div>
+    </div>
+  </div>
+  <p class="section-intro">Nettleseren vet ikke hvor ntnu.no bor. DNS oversetter navnet til en IP-adresse.</p>
+  <p>Nettleseren kaller operativsystemets resolver-funksjon (<code>getaddrinfo</code>), som sender en DNS-spørring via <strong>UDP port 53</strong> til den lokale DNS-resolveren (konfigurert via DHCP i steg 1). Hvorfor UDP og ikke TCP? Fordi en DNS-spørring er liten (typisk under 512 bytes), den trenger ikke pålitelig levering (prøv bare igjen hvis den ikke kommer), og UDP slipper overhead med forbindelsesoppsett.</p>
+  <p>Resolveren gjør et <strong>iterativt oppslag</strong>: den spør rot-serveren om <code>.no</code>, TLD-serveren om <code>ntnu.no</code>, og til slutt den autoritative serveren for selve IP-adressen. I et iterativt oppslag gjør resolveren alt arbeidet — serverne svarer bare «spør heller den». Alternativt kunne resolveren bedt om et <strong>rekursivt oppslag</strong>, der rot-serveren selv kontakter TLD-serveren, som kontakter den autoritative serveren, og svaret bringes hele veien tilbake. I praksis gjør de fleste resolvere iterative oppslag.</p>
+  <p>Et viktig poeng: DNS cacher aggressivt. Hvis noen på campus nylig har besøkt ntnu.no, har resolveren svaret i cachen og kan svare umiddelbart uten å kontakte noen andre servere. Selv operativsystemet og nettleseren har egne DNS-cacher. <strong>TTL</strong> (Time To Live) i DNS-svaret bestemmer hvor lenge cachede svar er gyldige.</p>
+
+  <div class="j-stepper" id="dns-stepper">
+    <div class="stage-area">
+      <div class="stage-title" id="dnsTitle"></div>
+      <div class="stage-text" id="dnsText"></div>
+      <svg id="dnsSvg" viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;display:block;margin:0 auto;">
+        <g id="dnsAnim"></g>
+      </svg>
+    </div>
+    <div class="controls">
+      <button id="dnsPrev">&larr; Forrige</button>
+      <span class="progress" id="dnsInd"></span>
+      <button id="dnsNext">Neste &rarr;</button>
+    </div>
+  </div>
+
+  <details class="zoom-box">
+    <summary>Zoom inn — DNS-meldingsformat og record-typer</summary>
+    <div class="zoom-content">
+      <p>En DNS-melding er bare 12 bytes header + spørsmålsseksjonen. Headeren inneholder en <strong>transaksjons-ID</strong> (for å matche svar med spørsmål), flagg (QR, RD, RA), og tellere for de fire seksjonene: <strong>Questions</strong>, <strong>Answers</strong>, <strong>Authority</strong>, <strong>Additional</strong>.</p>
+      <p>De viktigste record-typene: <strong>A</strong> (IPv4-adresse), <strong>AAAA</strong> (IPv6-adresse), <strong>CNAME</strong> (alias — f.eks. www.ntnu.no → ntnu.no), <strong>MX</strong> (e-postserver for domenet), og <strong>NS</strong> (autoritativ navneserver for domenet). Hvert svar har en <strong>TTL</strong> som forteller hvor lenge det kan caches — typisk 300–3600 sekunder.</p>
+    </div>
+  </details>
+
+  <details class="zoom-box">
+    <summary>Zoom inn — DNS-sikkerhet</summary>
+    <div class="zoom-content">
+      <p>DNS ble designet uten sikkerhet. En angriper kan utnytte dette med <strong>DNS cache poisoning</strong>: den sender et falskt svar til resolveren med riktig transaksjons-ID før det ekte svaret ankommer. Nå peker ntnu.no til angriperens server — og resolveren cacher det falske svaret.</p>
+      <p>Løsningen er <strong>DNSSEC</strong> (DNS Security Extensions), som legger til digitale signaturer på DNS-svar slik at resolveren kan verifisere at svaret virkelig kom fra den autoritative serveren. I tillegg bruker moderne systemer <strong>DNS over HTTPS (DoH)</strong> eller <strong>DNS over TLS (DoT)</strong> for å kryptere selve DNS-trafikken, slik at ingen på nettverket kan se hvilke domener du slår opp.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ════════ STEP 3: TCP ════════ -->
+<section id="step3" data-layers="trans">
+  <div class="step-header">
+    <span class="step-num">3</span>
+    <div>
+      <h2 style="margin:0;">TCP-<em>håndtrykket</em></h2>
+      <div class="step-kap"><a href="../kap3/tcp.html">Kap 3 · TCP</a></div>
+    </div>
+  </div>
+  <p class="section-intro">Nå kjenner vi IP-adressen. Før data kan flyte, må en TCP-forbindelse opprettes.</p>
+  <p>TCP bruker et <strong>three-way handshake</strong> for å synkronisere sekvensnumre og bekrefte at begge sider er klare. Begge sider går gjennom definerte <strong>tilstander</strong>: klienten fra CLOSED → SYN_SENT → ESTABLISHED, serveren fra LISTEN → SYN_RCVD → ESTABLISHED. Ingenting av dette er synlig for deg — nettleseren gjør det automatisk bak kulissene.</p>
+  <p>Under håndtrykket forhandler partene også viktige parametre: <strong>MSS</strong> (Maximum Segment Size, typisk 1460 bytes for Ethernet), <strong>window scaling</strong> (som tillater mottak-vinduer større enn 64 KB), og eventuelt <strong>SACK</strong> (Selective Acknowledgment, som lar mottakeren fortelle senderen nøyaktig hvilke segmenter den mangler). Startsekvensnumrene er <em>tilfeldige</em> — ikke for kryptografisk sikkerhet, men for å hindre at gamle segmenter fra en tidligere forbindelse feiltolkes som gyldige i en ny.</p>
+
+  <div class="j-stepper" id="tcp-stepper">
+    <div class="stage-area">
+      <div class="stage-title" id="tcpTitle"></div>
+      <div class="stage-text" id="tcpText"></div>
+      <svg id="tcpSvg" viewBox="0 0 620 200" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;display:block;margin:0 auto;">
+        <text x="80" y="20" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#1a1612">Laptop</text>
+        <line x1="80" y1="28" x2="80" y2="190" stroke="#a39886" stroke-width="1.5"/>
+        <text x="540" y="20" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#1a1612">ntnu.no</text>
+        <line x1="540" y1="28" x2="540" y2="190" stroke="#a39886" stroke-width="1.5"/>
+        <g id="tcpAnim"></g>
+      </svg>
+    </div>
+    <div class="controls">
+      <button id="tcpPrev">&larr; Forrige</button>
+      <span class="progress" id="tcpInd"></span>
+      <button id="tcpNext">Neste &rarr;</button>
+    </div>
+  </div>
+
+  <details class="zoom-box">
+    <summary>Zoom inn — TCP-segmentet</summary>
+    <div class="zoom-content">
+      <p>SYN-pakken inneholder: <strong>Source Port</strong> (tilfeldig, f.eks. 49152), <strong>Dest Port</strong> (443 for HTTPS), <strong>Sequence Number</strong> (tilfeldig startverdi), <strong>SYN-flagget satt</strong>, og <strong>Receive Window</strong> (bufferstørrelse). I TCP-headeren er det også plass til <strong>Options</strong>-feltet der MSS, window scaling og SACK annonseres. Serveren svarer med SYN-ACK: eget sekvensnummer + acknowledgment av klientens sekvensnummer + 1.</p>
+      <p>Hele håndtrykket tar én <strong>RTT</strong> (round-trip time) — typisk 10–50 ms innenfor Norge. TCP-headeren er minimum <strong>20 bytes</strong> (5 × 32-bit ord), men med options kan den vokse til 60 bytes.</p>
+    </div>
+  </details>
+
+  <details class="zoom-box">
+    <summary>Zoom inn — SYN flood-angrep</summary>
+    <div class="zoom-content">
+      <p>TCP-håndtrykket har en sårbarhet: serveren allokerer ressurser (minne for forbindelsestilstand) allerede ved SYN-ACK, altså <em>før</em> klienten har bekreftet med ACK. En angriper kan utnytte dette med et <strong>SYN flood-angrep</strong>: send tusenvis av SYN-pakker med falske avsender-IP-er. Serveren svarer med SYN-ACK til adresser som aldri responderer, og alle ventende «halvåpne» forbindelser bruker opp serverens ressurser.</p>
+      <p>Forsvaret er <strong>SYN cookies</strong>: i stedet for å lagre tilstand ved SYN-ACK, koder serveren all nødvendig informasjon inn i sekvensnummeret selv. Bare når den endelige ACK-en kommer, allokeres ressurser — og serveren kan verifisere at ACK-en er gyldig uten å ha lagret noe.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ════════ STEP 4: TLS ════════ -->
+<section id="step4" data-layers="app">
+  <div class="step-header">
+    <span class="step-num ochre">4</span>
+    <div>
+      <h2 style="margin:0;">TLS-<em>kryptering</em></h2>
+      <div class="step-kap"><a href="../kap8/protokoller-brannmur.html">Kap 8 · Sikkerhet</a></div>
+    </div>
+  </div>
+  <p class="section-intro">TCP-forbindelsen er oppe, men all data ville gått i klartekst. TLS løser det.</p>
+  <p>Siden du bruker HTTPS (port 443), starter nettleseren en <strong>TLS-handshake</strong> oppå TCP-forbindelsen. TLS gir tre av de fire sikkerhetsegenskapene: <strong>konfidensialitet</strong> (data er kryptert), <strong>autentisering</strong> (vi verifiserer at serveren virkelig er ntnu.no), og <strong>meldingsintegritet</strong> (data kan ikke endres underveis uten at vi oppdager det). Resultatet er en kryptert tunnel der ingen — hverken nettverket, ISP-en, eller noen på det samme WiFi-nettet — kan lese eller manipulere innholdet.</p>
+  <p>Kryptografien bruker to forskjellige teknikker: <strong>asymmetrisk kryptografi</strong> (offentlig/privat nøkkelpar) for å autentisere serveren og utveksle nøkler, og <strong>symmetrisk kryptografi</strong> (felles hemmelig nøkkel, f.eks. AES) for selve datakrypteringen — fordi symmetrisk er tusenvis av ganger raskere.</p>
+
+  <div class="j-stepper" id="tls-stepper">
+    <div class="stage-area">
+      <div class="stage-title" id="tlsTitle"></div>
+      <div class="stage-text" id="tlsText"></div>
+      <svg id="tlsSvg" viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;display:block;margin:0 auto;">
+        <text x="80" y="20" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#1a1612">Laptop</text>
+        <line x1="80" y1="28" x2="80" y2="210" stroke="#a39886" stroke-width="1.5"/>
+        <text x="540" y="20" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#1a1612">ntnu.no</text>
+        <line x1="540" y1="28" x2="540" y2="210" stroke="#a39886" stroke-width="1.5"/>
+        <g id="tlsAnim"></g>
+      </svg>
+    </div>
+    <div class="controls">
+      <button id="tlsPrev">&larr; Forrige</button>
+      <span class="progress" id="tlsInd"></span>
+      <button id="tlsNext">Neste &rarr;</button>
+    </div>
+  </div>
+
+  <details class="zoom-box">
+    <summary>Zoom inn — sertifikater og nøkler</summary>
+    <div class="zoom-content">
+      <p>Sertifikatet fra ntnu.no inneholder: <strong>domenenavnet</strong>, <strong>serverens offentlige nøkkel</strong>, <strong>utsteder (CA)</strong>, gyldighetstid, og en <strong>digital signatur</strong> fra CA-en. Signaturen beviser at CA-en har verifisert at ntnu.no virkelig kontrollerer dette domenet.</p>
+      <p>Nettleseren verifiserer via en <strong>sertifikatkjede</strong> (chain of trust): server-sertifikatet er signert av en mellom-CA, som er signert av en rot-CA som nettleseren har innebygd tillit til. Hvis kjeden er gyldig helt opp til en betrodd rot-CA, er vi trygge.</p>
+      <p>Nøkkelutvekslingen bruker <strong>Diffie-Hellman</strong> (ECDHE): begge sider genererer en felles hemmelighet uten å sende den over nettet. Denne brukes til å utlede <strong>symmetriske sesjonsnøkler</strong> (AES) som krypterer all videre trafikk. I tillegg genereres en <strong>MAC-nøkkel</strong> (Message Authentication Code) som sikrer integritet — mottakeren kan verifisere at ingen har endret meldingen underveis.</p>
+    </div>
+  </details>
+
+  <details class="zoom-box">
+    <summary>Zoom inn — TLS 1.2 vs TLS 1.3</summary>
+    <div class="zoom-content">
+      <p><strong>TLS 1.2</strong> krever <strong>2 RTT</strong> for handshaken: én for ServerHello og sertifikat, én for nøkkelutveksling og Finished. <strong>TLS 1.3</strong> reduserer dette til <strong>1 RTT</strong> ved å kombinere nøkkelutveksling med ClientHello — klienten sender sine Diffie-Hellman-parametre allerede i første melding.</p>
+      <p>TLS 1.3 støtter også <strong>0-RTT resumption</strong>: hvis du har besøkt ntnu.no før, kan nettleseren sende kryptert data allerede i første melding ved å bruke en lagret sesjonsnøkkel. Prisen er at 0-RTT-data kan replays — en angriper kan sende den samme meldingen på nytt — men for idempotente operasjoner (som GET) er dette akseptabelt.</p>
+      <p>TLS 1.3 fjernet også alle usikre krypteringsalgoritmer (RC4, DES, CBC-modus) og krever <strong>forward secrecy</strong>: selv om serverens private nøkkel kompromitteres i fremtiden, kan ikke tidligere sessjoner dekrypteres fordi Diffie-Hellman-nøklene var midlertidige.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ════════ STEP 5: HTTP ════════ -->
+<section id="step5" data-layers="app">
+  <div class="step-header">
+    <span class="step-num">5</span>
+    <div>
+      <h2 style="margin:0;">HTTP-<em>forespørselen</em></h2>
+      <div class="step-kap"><a href="../kap2/http-og-web.html">Kap 2 · HTTP</a></div>
+    </div>
+  </div>
+  <p class="section-intro">Kryptert tunnel er klar. Nettleseren sender endelig forespørselen om nettsiden.</p>
+  <p>Inne i TLS-tunnelen sender nettleseren en <strong>HTTP GET</strong>-forespørsel. HTTP er en <strong>tilstandsløs</strong> protokoll — serveren husker ingenting mellom forespørsler. Det er ren tekst — men kryptert av TLS, så ingen utenfor kan lese den. Headerne forteller serveren hva vi vil ha, hvem vi er, og hva vi aksepterer.</p>
+  <p>HTTP definerer flere <strong>metoder</strong>: <strong>GET</strong> (hent en ressurs), <strong>POST</strong> (send data til serveren, f.eks. skjema), <strong>HEAD</strong> (hent bare headerne, ikke innholdet), og <strong>PUT</strong>/<strong>DELETE</strong> (opprett/slett ressurser). For å laste en nettside bruker vi GET. Forbindelsen er <strong>persistent</strong> (HTTP/1.1 <code>Connection: keep-alive</code>), noe som betyr at vi kan sende mange forespørsler over samme TCP-forbindelse i stedet for å betale TCP-oppsett for hver enkelt ressurs.</p>
+
+  <div class="j-stepper" id="http-stepper">
+    <div class="stage-area">
+      <div class="stage-title" id="httpTitle"></div>
+      <div class="stage-text" id="httpText"></div>
+      <div id="httpContent" style="margin-top:12px;"></div>
+    </div>
+    <div class="controls">
+      <button id="httpPrev">&larr; Forrige</button>
+      <span class="progress" id="httpInd"></span>
+      <button id="httpNext">Neste &rarr;</button>
+    </div>
+  </div>
+
+  <details class="zoom-box">
+    <summary>Zoom inn — HTTP/1.1 vs HTTP/2 vs HTTP/3</summary>
+    <div class="zoom-content">
+      <p><strong>HTTP/1.1</strong>: Én forespørsel om gangen per TCP-forbindelse (head-of-line blocking). Løses delvis med flere parallelle forbindelser. Persistent connection og pipelining var forbedringer, men pipelining ble sjelden brukt i praksis.</p>
+      <p><strong>HTTP/2</strong>: Multipleksing — mange forespørsler over samme TCP-forbindelse via <strong>streams</strong>. Binært format i stedet for tekst. Header-komprimering (HPACK). <strong>Server push</strong>: serveren kan sende ressurser proaktivt før klienten ber om dem. Men: ett TCP-pakketap blokkerer alle strømmer.</p>
+      <p><strong>HTTP/3</strong> (QUIC): Kjører over <strong>UDP</strong> i stedet for TCP. Bygger inn TLS 1.3, har 0-RTT resumption, og unngår head-of-line blocking også på transportnivå — hvert stream har sin egen feilhåndtering.</p>
+    </div>
+  </details>
+
+  <details class="zoom-box">
+    <summary>Zoom inn — cookies og tilstand</summary>
+    <div class="zoom-content">
+      <p>HTTP er tilstandsløst, men mange nettsteder trenger å gjenkjenne deg mellom forespørsler (innlogging, handlekurv, preferanser). Løsningen er <strong>cookies</strong>. Ved første besøk sender serveren et <code>Set-Cookie: id=abc123</code>-hode. Nettleseren lagrer cookien og sender den automatisk med alle fremtidige forespørsler til samme domene: <code>Cookie: id=abc123</code>.</p>
+      <p>Serveren bruker cookien til å slå opp sesjonstilstand i sin database. Fire komponenter spiller sammen: <strong>Set-Cookie</strong>-hode i svaret, <strong>Cookie</strong>-hode i forespørslene, cookie-fil på klientmaskinen, og database på serveren.</p>
+      <p>Cookies brukes også til <strong>sporing</strong>: tredjeparts-cookies (satt av andre domener enn det du besøker) kan følge deg på tvers av nettsteder og bygge en detaljert profil av surfingen din.</p>
+    </div>
+  </details>
+
+  <details class="zoom-box">
+    <summary>Zoom inn — web-caching og betinget GET</summary>
+    <div class="zoom-content">
+      <p>Hvis du hadde besøkt ntnu.no nylig, ville nettleseren (eller en proxy-cache) allerede hatt en kopi av siden. I stedet for å hente alt på nytt, sender cachen en <strong>betinget GET</strong> med headeren <code>If-Modified-Since: &lt;dato&gt;</code>. Hvis innholdet ikke er endret, svarer serveren med <strong>304 Not Modified</strong> — en liten melding helt uten innhold — og cachen serverer sin lagrede kopi.</p>
+      <p>Web-cacher gir to store fordeler: <strong>raskere responstid</strong> (cachen er ofte nærmere enn serveren) og <strong>mindre trafikk</strong> på aksesslinken (populært innhold lastes bare ned én gang).</p>
+    </div>
+  </details>
+</section>
+
+<!-- ════════ STEP 6: Encapsulation & Routing ════════ -->
+<section id="step6" data-layers="net,link">
+  <div class="step-header">
+    <span class="step-num blue">6</span>
+    <div>
+      <h2 style="margin:0;">Enkapsulering <em>&amp; ruting</em></h2>
+      <div class="step-kap"><a href="../kap1/innhold.html">Kap 1</a> · <a href="../kap4/">Kap 4</a> · <a href="../kap6/">Kap 6</a></div>
+    </div>
+  </div>
+  <p class="section-intro">HTTP-meldingen pakkes lag for lag, og finner veien gjennom nettverket ruter for ruter.</p>
+  <p>Nå skjer den virkelige magien. HTTP-forespørselen — som bare er bytes — pakkes først inn i et TCP-segment, deretter i et IP-datagram, og til slutt i en Ethernet-ramme (eller en WiFi-ramme på den trådløse linken). Denne «russiske dukker»-prosessen kalles <strong>enkapsulering</strong>. Hvert lag ser bare sin egen header — innholdet er «bare data» fra lagets perspektiv.</p>
+  <p>Men før Ethernet-rammen kan sendes, må laptopen vite <strong>MAC-adressen</strong> til neste hopp. Destinasjons-IP-en (129.241.160.100) er utenfor vårt subnett (10.22.14.0/24), så pakken må til <strong>default gateway</strong>. Laptopen bruker <strong>ARP</strong> (Address Resolution Protocol) for å finne gatewayens MAC-adresse: den sender en ARP-forespørsel som broadcast («Hvem har IP 10.22.14.1?»), og gatewayen svarer med sin MAC-adresse. Svaret lagres i en <strong>ARP-tabell</strong> slik at fremtidige pakker ikke trenger ny ARP-forespørsel.</p>
+
+  <div class="j-stepper" id="encap-stepper">
+    <div class="stage-area">
+      <div class="stage-title" id="encapTitle"></div>
+      <div class="stage-text" id="encapText"></div>
+      <svg id="encapSvg" viewBox="0 0 620 200" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;display:block;margin:0 auto;">
+        <g id="encapAnim"></g>
+      </svg>
+    </div>
+    <div class="controls">
+      <button id="encapPrev">&larr; Forrige</button>
+      <span class="progress" id="encapInd"></span>
+      <button id="encapNext">Neste &rarr;</button>
+    </div>
+  </div>
+
+  <details class="zoom-box">
+    <summary>Zoom inn — longest prefix match og IP-headeren</summary>
+    <div class="zoom-content">
+      <p>Når en ruter mottar et datagram, slår den opp destinasjons-IP-en i sin <strong>forwarding table</strong>. Den matcher mot det <strong>lengste prefixet</strong> (mest spesifikke ruten). Eksempel: Destinasjon <code>129.241.56.78</code> matcher både <code>129.241.0.0/16</code> og <code>129.241.56.0/24</code> — ruteren velger /24 fordi den er mer spesifikk.</p>
+      <p>For hvert hopp: <strong>IP-headeren</strong> forblir nesten uendret, men <strong>TTL</strong> (Time To Live) dekrementeres med 1. Hvis TTL når 0, droppes pakken og ruteren sender en <strong>ICMP Time Exceeded</strong>-melding tilbake til avsenderen — dette er mekanismen <code>traceroute</code> bruker for å kartlegge ruten. IP-headeren inneholder også et <strong>Protocol-felt</strong> (6 = TCP, 17 = UDP) og en <strong>Header Checksum</strong> som reberegnes i hver ruter fordi TTL endres.</p>
+      <p>For hvert hopp skrives <strong>Ethernet-headeren</strong> om — ny avsender-MAC og ny mottaker-MAC. ARP brukes for å finne MAC-adressen til neste hopp.</p>
+    </div>
+  </details>
+
+  <details class="zoom-box">
+    <summary>Zoom inn — svitsjer og L2-videresending</summary>
+    <div class="zoom-content">
+      <p>Før pakken når den første ruteren, passerer den typisk en <strong>Ethernet-svitsj</strong>. En svitsj opererer på lag 2 og videresender rammer basert på <strong>MAC-adresser</strong>, ikke IP-adresser. Den vedlikeholder en <strong>svitsj-tabell</strong> (MAC-adressetabell) som mapper MAC-adresser til porter.</p>
+      <p>Svitsjen <strong>lærer</strong> tabellen selv: når en ramme ankommer en port, lagrer den avsender-MAC-en. Når en ramme skal videresendes og destinasjons-MAC-en finnes i tabellen, sendes den bare til riktig port (<strong>selektiv videresending</strong>). Hvis den ikke finnes, <strong>floder</strong> svitsjen rammen til alle porter unntatt inngangsport — akkurat som en hub, men bare for ukjente adresser.</p>
+      <p>Svitsjer er <strong>transparente</strong> — endesystemene vet ikke at de finnes. De krever ingen konfigurasjon og bygger opp tabellen automatisk. Dette kalles <strong>selvlæring</strong>.</p>
+    </div>
+  </details>
+
+  <details class="zoom-box">
+    <summary>Zoom inn — CRC og feildeteksjon</summary>
+    <div class="zoom-content">
+      <p>Ethernet-rammens <strong>FCS</strong> (Frame Check Sequence) er en <strong>CRC-32</strong>-sjekksum (Cyclic Redundancy Check). Senderen beregner CRC over hele rammen og legger resultatet i FCS-feltet. Mottakeren gjør samme beregning og sammenligner — hvis de ikke matcher, forkastes rammen stille.</p>
+      <p>CRC er langt kraftigere enn en enkel sjekksum. Den kan oppdage alle burst-feil opptil 32 bit, alle enkelt- og dobbelt-bit-feil, og alle feil med et odde antall flippede bits. Men den kan ikke <em>rette</em> feil — rammen forkastes, og det er opp til TCP å oppdage tapet og sende segmentet på nytt.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ════════ STEP 7: Response ════════ -->
+<section id="step7" data-layers="trans,app">
+  <div class="step-header">
+    <span class="step-num">7</span>
+    <div>
+      <h2 style="margin:0;">Respons <em>tilbake</em></h2>
+      <div class="step-kap"><a href="../kap3/congestion.html">Kap 3 · Congestion</a> · <a href="../kap2/http-og-web.html">Kap 2</a></div>
+    </div>
+  </div>
+  <p class="section-intro">Serveren sender nettsiden tilbake — potensielt hundrevis av TCP-segmenter, styrt av congestion control.</p>
+  <p>Serveren svarer med <code>200 OK</code> og HTML-innholdet, pluss headere som <code>Content-Type: text/html</code>, <code>Content-Length</code>, og kanskje et <code>Set-Cookie</code>-hode. Andre vanlige statuskoder: <strong>301</strong> (permanent omdirigering), <strong>304</strong> (ikke endret — for betinget GET), <strong>404</strong> (ikke funnet), og <strong>505</strong> (HTTP-versjon ikke støttet).</p>
+  <p>Men en nettside er for stor for én pakke — den deles opp i mange TCP-segmenter. TCP styrer overføringen med to parallelle mekanismer: <strong>flow control</strong> (hindrer senderen i å overvelde mottakerens buffer — styrt av <em>rwnd</em>, receive window) og <strong>congestion control</strong> (hindrer senderen i å overvelde nettverket — styrt av <em>cwnd</em>, congestion window). Sendevinduet er alltid <strong>min(cwnd, rwnd)</strong>.</p>
+
+  <div class="j-stepper" id="resp-stepper">
+    <div class="stage-area">
+      <div class="stage-title" id="respTitle"></div>
+      <div class="stage-text" id="respText"></div>
+      <svg id="respSvg" viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;display:block;margin:0 auto;">
+        <g id="respAnim"></g>
+      </svg>
+    </div>
+    <div class="controls">
+      <button id="respPrev">&larr; Forrige</button>
+      <span class="progress" id="respInd"></span>
+      <button id="respNext">Neste &rarr;</button>
+    </div>
+  </div>
+
+  <details class="zoom-box">
+    <summary>Zoom inn — slow start, congestion avoidance og AIMD</summary>
+    <div class="zoom-content">
+      <p><strong>Slow start:</strong> cwnd starter på 1 MSS. For hver ACK dobles vinduet — eksponentiell vekst. Ved <strong>ssthresh</strong> (slow start threshold) bytter TCP til <strong>congestion avoidance</strong>: lineær vekst (+1 MSS per RTT). Hele prinsippet kalles <strong>AIMD</strong> — Additive Increase, Multiplicative Decrease.</p>
+      <p><strong>Pakketap</strong> oppdages på to måter: (1) <strong>3 duplikat-ACK-er</strong>: mottakeren sender samme ACK gjentatte ganger fordi den mangler et segment. TCP Reno halverer cwnd og fortsetter (fast recovery). (2) <strong>Timeout</strong>: ingen ACK i det hele tatt. cwnd settes tilbake til 1 MSS, ssthresh halveres, og ny slow start. TCP bruker <strong>kumulative ACK-er</strong>: en ACK for bytenummer N bekrefter alle bytes opp til N.</p>
+      <p><strong>TCP CUBIC</strong> (standard i Linux) forbedrer Reno ved å bruke en kubisk funksjon for vinduvekst — den vokser raskt tilbake til nivået der forrige tap skjedde, og deretter forsiktig videre. QUIC forbedrer ytterligere med per-strøm flow control.</p>
+    </div>
+  </details>
+
+  <details class="zoom-box">
+    <summary>Zoom inn — flow control (rwnd)</summary>
+    <div class="zoom-content">
+      <p>Flow control forhindrer at senderen overvelder mottakerens buffer. Mottakeren annonserer sin ledige bufferplass i <strong>Receive Window</strong>-feltet (rwnd) i hver ACK. Senderen sørger for å aldri ha mer ubekreftede data i flukt enn rwnd tillater.</p>
+      <p>Hvis mottakerens buffer er full (rwnd = 0), stopper senderen. Men for å unngå deadlock sender den periodisk <strong>probe-segmenter</strong> (med 1 byte data) slik at mottakeren kan svare med en oppdatert rwnd når plass frigjøres.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ════════ STEP 8: Summary ════════ -->
+<section id="step8" data-layers="app">
+  <div class="step-header">
+    <span class="step-num green">8</span>
+    <div>
+      <h2 style="margin:0;">Siden <em>vises</em></h2>
+      <div class="step-kap">Oppsummering</div>
+    </div>
+  </div>
+  <p class="section-intro">Alle bytes er mottatt, HTML parses, og du ser ntnu.no. Alt dette tok under ett sekund.</p>
+  <p>Nettleseren har nå mottatt all HTML. Den parser dokumentet, oppdager referanser til CSS, JavaScript og bilder, og starter <em>nye</em> HTTP-forespørsler for hver ressurs (over samme TCP/TLS-forbindelse, takket være HTTP/2-multipleksing). Når nok er lastet, rendrer nettleseren siden — og du ser NTNU-forsiden.</p>
+
+  <h3>Forbindelsen lukkes</h3>
+  <p>Når du lukker fanen eller nettleseren er ferdig, avsluttes TCP-forbindelsen med en <strong>4-veis lukking</strong>: klienten sender <strong>FIN</strong>, serveren bekrefter med <strong>ACK</strong>, serveren sender sin egen <strong>FIN</strong>, og klienten bekrefter med <strong>ACK</strong>. Klienten går deretter inn i <strong>TIME_WAIT</strong>-tilstand i 2 × MSL (Maximum Segment Lifetime, typisk 60 sekunder) for å sikre at den siste ACK-en kommer frem og at forsinkede segmenter fra den gamle forbindelsen ikke forstyrrer en eventuell ny forbindelse på samme porter.</p>
+
+  <h3>Tidslinjen</h3>
+  <p>Her er en typisk tidsfordeling for hele reisen fra Enter til ferdig side:</p>
+
+  <div class="timeline-bar" id="timelineBar">
+    <div class="tl-seg" style="flex:8;background:#2d4a7a;">WiFi</div>
+    <div class="tl-seg" style="flex:5;background:#b04428;">DNS</div>
+    <div class="tl-seg" style="flex:3;background:#b04428;opacity:0.7;">TCP</div>
+    <div class="tl-seg" style="flex:6;background:#c68a1f;">TLS</div>
+    <div class="tl-seg" style="flex:2;background:#b04428;opacity:0.5;">HTTP</div>
+    <div class="tl-seg" style="flex:10;background:#3d6b3a;">Data</div>
+    <div class="tl-seg" style="flex:5;background:#1a1612;">Render</div>
+  </div>
+
+  <div class="slider-box" style="margin-top:24px;">
+    <div class="label">Tidskalkulator</div>
+    <label>RTT til ntnu.no: <span class="val" id="rttVal">20 ms</span></label>
+    <input type="range" id="rttSlider" min="5" max="200" value="20" step="1">
+    <div class="readout" id="timeOut"></div>
+  </div>
+
+  <div class="callout callout-green" style="margin-top:32px;">
+    <span class="label">Helheten</span>
+    <p>Du trykket Enter og fikk en nettside. Bak kulissene deltok <strong>WiFi</strong> (kap 7), <strong>DHCP</strong> (kap 4), <strong>NAT</strong> (kap 4), <strong>DNS</strong> (kap 2), <strong>TCP</strong> (kap 3), <strong>TLS</strong> (kap 8), <strong>HTTP</strong> (kap 2), <strong>IP-ruting</strong> (kap 4–5), <strong>Ethernet/ARP</strong> (kap 6), <strong>svitsjer</strong> (kap 6), og <strong>congestion control</strong> (kap 3). Hvert lag gjorde sin jobb uavhengig, og sammen leverte de en sømløs opplevelse. Det er kraften i lagdeling.</p>
+  </div>
+
+  <h3 style="margin-top:40px;">Test deg selv</h3>
+
+  <div class="quiz" style="margin-bottom:24px;" id="quiz-reise1">
+    <p class="q-text">Hvorfor bruker DNS normalt UDP i stedet for TCP?</p>
+    <div class="options">
+      <button class="option" data-correct="false">Fordi UDP er mer sikkert enn TCP</button>
+      <button class="option" data-correct="true">Fordi DNS-spørringer er små, trenger ikke pålitelig levering (kan bare prøve igjen), og UDP unngår overhead med forbindelsesoppsett</button>
+      <button class="option" data-correct="false">Fordi UDP er raskere enn lyshastigheten</button>
+      <button class="option" data-correct="false">Fordi TCP ikke støtter port 53</button>
+    </div>
+    <div class="explanation"></div>
+  </div>
+
+  <div class="quiz" style="margin-bottom:24px;" id="quiz-reise2">
+    <p class="q-text">Hva er forskjellen mellom flow control (rwnd) og congestion control (cwnd)?</p>
+    <div class="options">
+      <button class="option" data-correct="false">De er to navn for samme mekanisme</button>
+      <button class="option" data-correct="false">Flow control styrer nettverket, congestion control styrer mottakeren</button>
+      <button class="option" data-correct="true">Flow control hindrer overbelastning av mottakerens buffer (rwnd), mens congestion control hindrer overbelastning av nettverket (cwnd). Sendevinduet = min(cwnd, rwnd)</button>
+      <button class="option" data-correct="false">Congestion control brukes bare i UDP</button>
+    </div>
+    <div class="explanation"></div>
+  </div>
+
+  <div class="quiz" style="margin-bottom:24px;" id="quiz-reise3">
+    <p class="q-text">Hva skjer med Ethernet-headeren og IP-headeren når en pakke passerer gjennom en ruter?</p>
+    <div class="options">
+      <button class="option" data-correct="false">Begge forblir uendret gjennom hele ruten</button>
+      <button class="option" data-correct="false">Begge skrives om ved hvert hopp</button>
+      <button class="option" data-correct="true">IP-headeren forblir nesten uendret (bare TTL dekrementeres), men Ethernet-headeren skrives om med nye MAC-adresser ved hvert hopp</button>
+      <button class="option" data-correct="false">IP-headeren skrives om, Ethernet-headeren forblir uendret</button>
+    </div>
+    <div class="explanation"></div>
+  </div>
+
+  <div class="quiz" style="margin-bottom:24px;" id="quiz-reise4">
+    <p class="q-text">Hvorfor bruker TLS både asymmetrisk og symmetrisk kryptografi?</p>
+    <div class="options">
+      <button class="option" data-correct="false">Fordi asymmetrisk kryptografi er raskere for store datamengder</button>
+      <button class="option" data-correct="true">Asymmetrisk kryptografi brukes for autentisering og nøkkelutveksling (sikkert, men tregt). Symmetrisk kryptografi brukes for selve datakrypteringen (raskt). Kombinasjonen gir både sikkerhet og ytelse.</button>
+      <button class="option" data-correct="false">Fordi symmetrisk kryptografi ikke kan brukes over Internett</button>
+      <button class="option" data-correct="false">Fordi det er et krav fra HTTP-standarden</button>
+    </div>
+    <div class="explanation"></div>
+  </div>
+</section>
+
+</div><!-- /journey-main -->
+
+<!-- RIGHT: Layer stack -->
+<aside class="layer-stack" id="layerStack">
+  <div class="ls-label">Lag</div>
+  <a href="../kap2/" class="ls-layer" data-layer="app" title="Applikasjonslaget">App</a>
+  <a href="../kap3/" class="ls-layer" data-layer="trans" title="Transportlaget">Trans</a>
+  <a href="../kap4/" class="ls-layer" data-layer="net" title="Nettverkslaget">Nett</a>
+  <a href="../kap6/" class="ls-layer" data-layer="link" title="Lenkelaget">Link</a>
+  <a href="../kap7/" class="ls-layer" data-layer="phys" title="Fysisk lag">Fys</a>
+</aside>
+
+</div><!-- /journey-layout -->
+
+<footer>
+  <div class="container">
+    <p>En interaktiv reise gjennom pensum i <em>TTM4100 — Kommunikasjon: Tjenester og nett</em>.</p>
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* ==================== STEPPER ENGINE ==================== */
+  function initStepper(cfg) {
+    var i = 0;
+    var title = document.getElementById(cfg.titleId);
+    var text = document.getElementById(cfg.textId);
+    var anim = cfg.animId ? document.getElementById(cfg.animId) : null;
+    var content = cfg.contentId ? document.getElementById(cfg.contentId) : null;
+    var ind = document.getElementById(cfg.indId);
+    var prev = document.getElementById(cfg.prevId);
+    var next = document.getElementById(cfg.nextId);
+    function render() {
+      var s = cfg.steps[i];
+      title.textContent = s.title;
+      text.textContent = s.text;
+      if (anim && s.anim) anim.innerHTML = s.anim;
+      if (content) content.innerHTML = s.content || '';
+      ind.textContent = (i + 1) + ' / ' + cfg.steps.length;
+      prev.disabled = (i === 0);
+      next.disabled = (i === cfg.steps.length - 1);
+    }
+    prev.addEventListener('click', function() { if (i > 0) { i--; render(); } });
+    next.addEventListener('click', function() { if (i < cfg.steps.length - 1) { i++; render(); } });
+    render();
+  }
+
+  /* Helper: arrow SVG for timeline diagrams */
+  function arr(x1,y1,x2,y2,color,label,lx,ly,extra) {
+    return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+color+'" stroke-width="1.8" '+(extra||'')+'/>' +
+           '<polygon points="'+x2+','+y2+' '+(x2+(x1>x2?8:-8))+','+(y2-4)+' '+(x2+(x1>x2?8:-8))+','+(y2+4)+'" fill="'+color+'"/>' +
+           '<text x="'+lx+'" y="'+ly+'" font-family="IBM Plex Mono" font-size="10" fill="'+color+'" font-weight="600">'+label+'</text>';
+  }
+
+  /* ==================== STEP 1: WiFi ==================== */
+  initStepper({
+    titleId:'wifiTitle', textId:'wifiText', animId:'wifiAnim',
+    indId:'wifiInd', prevId:'wifiPrev', nextId:'wifiNext',
+    steps: [
+      { title:'Probe Request (broadcast)',
+        text:'Laptopen sender en Probe Request på alle kanaler — «er det noen aksesspunkter her?» Dette er en broadcast-melding som alle AP-er i nærheten hører.',
+        anim: arr(80,50,535,70,'#2d4a7a','Probe Request',220,55) },
+      { title:'Probe Response',
+        text:'NTNU sitt aksesspunkt svarer med en Probe Response som inneholder nettverksnavn (SSID), støttede hastigheter, og sikkerhetsinnstillinger (WPA2/WPA3).',
+        anim: arr(540,70,85,90,'#2d4a7a','Probe Response',220,75) },
+      { title:'Autentisering & assosiering',
+        text:'Laptopen autentiserer seg (WPA2-Enterprise med brukernavn/passord på NTNU) og assosieres med AP-et. Nå har du en trådløs link — men ingen IP-adresse ennå.',
+        anim: arr(80,60,535,80,'#3d6b3a','Auth Request',220,55) + arr(540,95,85,115,'#3d6b3a','Auth OK + Assoc',220,110) },
+      { title:'DHCP Discover',
+        text:'Laptopen sender en DHCP Discover-melding som broadcast — «Finnes det en DHCP-server som kan gi meg en IP-adresse?»',
+        anim: arr(80,60,535,80,'#b04428','DHCP Discover (broadcast)',200,55) },
+      { title:'DHCP Offer → Request → ACK',
+        text:'DHCP-serveren tilbyr en IP-adresse (f.eks. 10.22.14.87), laptopen aksepterer, og serveren bekrefter. Nå har laptopen IP-adresse, subnettmaske, default gateway, og DNS-serveradresse.',
+        anim: arr(540,55,85,75,'#b04428','DHCP Offer',220,50) + arr(80,90,535,110,'#b04428','DHCP Request',220,85) + arr(540,125,85,145,'#3d6b3a','DHCP ACK ✓ IP: 10.22.14.87',200,138) }
+    ]
+  });
+
+  /* ==================== STEP 2: DNS ==================== */
+  var dnsBase = '<text x="80" y="20" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#1a1612">Laptop</text>' +
+    '<text x="250" y="20" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#b04428">Lokal resolver</text>' +
+    '<text x="420" y="20" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">Rot-DNS</text>' +
+    '<text x="520" y="20" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">.no TLD</text>' +
+    '<text x="580" y="50" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">ntnu.no auth</text>' +
+    '<line x1="80" y1="28" x2="80" y2="210" stroke="#a39886" stroke-width="1.5"/>' +
+    '<line x1="250" y1="28" x2="250" y2="210" stroke="#a39886" stroke-width="1.5"/>' +
+    '<line x1="420" y1="28" x2="420" y2="210" stroke="#a39886" stroke-width="1"/>' +
+    '<line x1="520" y1="28" x2="520" y2="210" stroke="#a39886" stroke-width="1"/>' +
+    '<line x1="580" y1="58" x2="580" y2="210" stroke="#a39886" stroke-width="1"/>';
+
+  initStepper({
+    titleId:'dnsTitle', textId:'dnsText', animId:'dnsAnim',
+    indId:'dnsInd', prevId:'dnsPrev', nextId:'dnsNext',
+    steps: [
+      { title:'Nettleseren spør lokal resolver',
+        text:'Nettleseren kaller getaddrinfo("ntnu.no") som sender en DNS-spørring (UDP port 53) til den lokale resolveren som ble tildelt via DHCP.',
+        anim: dnsBase + arr(80,55,245,70,'#b04428','Hvem er ntnu.no?',100,50) },
+      { title:'Resolver spør rot-serveren',
+        text:'Resolveren kjenner ikke ntnu.no. Den spør en av de 13 rot-DNS-serverne: «Hvem har ansvaret for .no?» Rot-serveren svarer med adressen til .no sin TLD-server.',
+        anim: dnsBase + arr(250,65,415,80,'#6b6257','Hvem er ntnu.no?',280,60) + arr(420,95,255,110,'#6b6257','Spør .no: 185.x.x.x',280,108) },
+      { title:'Resolver spør .no TLD',
+        text:'Resolveren kontakter .no TLD-serveren og spør etter ntnu.no. TLD-serveren svarer med adressen til NTNU sin autoritative DNS-server.',
+        anim: dnsBase + arr(250,85,515,100,'#6b6257','Hvem er ntnu.no?',310,80) + arr(520,115,255,130,'#6b6257','Spør 129.241.x.x',310,128) },
+      { title:'Resolver spør autoritativ server',
+        text:'Resolveren kontakter NTNU sin autoritative DNS-server som har det definitive svaret: ntnu.no → 129.241.160.100. Svaret caches med TTL.',
+        anim: dnsBase + arr(250,100,575,115,'#b04428','ntnu.no?',350,95) + arr(580,130,255,145,'#3d6b3a','129.241.160.100',350,143) },
+      { title:'Svaret returneres til nettleseren',
+        text:'Resolveren sender IP-adressen tilbake til nettleseren. Nå vet laptopen hvor ntnu.no bor, og kan opprette en TCP-forbindelse dit.',
+        anim: dnsBase + arr(250,70,85,85,'#3d6b3a','129.241.160.100 ✓',100,65) }
+    ]
+  });
+
+  /* ==================== STEP 3: TCP ==================== */
+  initStepper({
+    titleId:'tcpTitle', textId:'tcpText', animId:'tcpAnim',
+    indId:'tcpInd', prevId:'tcpPrev', nextId:'tcpNext',
+    steps: [
+      { title:'SYN',
+        text:'Nettleseren sender et TCP-segment med SYN-flagget satt. Det inneholder et tilfeldig startsekvens­nummer (f.eks. Seq=1000) og destination port 443 (HTTPS).',
+        anim: arr(80,55,535,85,'#b04428','SYN  Seq=1000',200,55) },
+      { title:'SYN-ACK',
+        text:'Serveren svarer med SYN-ACK: eget sekvensnummer (Seq=5000) og acknowledgment av klientens nummer (ACK=1001). Serveren allokerer ressurser for forbindelsen.',
+        anim: arr(80,55,535,85,'#a39886','SYN  Seq=1000',200,55) + arr(540,100,85,130,'#2d4a7a','SYN-ACK  Seq=5000, ACK=1001',180,100) },
+      { title:'ACK — forbindelsen er opprettet',
+        text:'Laptopen sender ACK (ACK=5001). TCP-forbindelsen er nå ESTABLISHED i begge retninger. Hele handshaken tok 1 RTT (~20 ms). Data kan begynne å flyte.',
+        anim: arr(80,55,535,85,'#a39886','SYN',260,55) + arr(540,100,85,130,'#a39886','SYN-ACK',260,100) + arr(80,145,535,170,'#3d6b3a','ACK  ACK=5001 ✓',200,145) +
+              '<text x="310" y="195" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#3d6b3a">Forbindelsen er opprettet!</text>' }
+    ]
+  });
+
+  /* ==================== STEP 4: TLS ==================== */
+  initStepper({
+    titleId:'tlsTitle', textId:'tlsText', animId:'tlsAnim',
+    indId:'tlsInd', prevId:'tlsPrev', nextId:'tlsNext',
+    steps: [
+      { title:'ClientHello',
+        text:'Nettleseren sender en ClientHello med støttede TLS-versjoner, cipher suites (f.eks. TLS_AES_256_GCM_SHA384), og en tilfeldig nonce.',
+        anim: arr(80,50,535,75,'#c68a1f','ClientHello',220,45) },
+      { title:'ServerHello + sertifikat',
+        text:'Serveren svarer med valgt cipher suite, sitt eget sertifikat (utstedt av en CA), og sin offentlige Diffie-Hellman-parameter.',
+        anim: arr(80,45,535,65,'#a39886','ClientHello',240,40) + arr(540,80,85,105,'#c68a1f','ServerHello + Cert + DH-param',180,78) },
+      { title:'Klientverifisering',
+        text:'Nettleseren verifiserer sertifikatet: sjekker CA-signaturen, utløpsdato, og at domenenavnet matcher. Deretter beregner den den delte hemmeligheten via ECDHE.',
+        anim: arr(80,45,535,65,'#a39886','ClientHello',240,40) + arr(540,80,85,105,'#a39886','ServerHello + Cert',220,78) +
+              '<rect x="30" y="120" width="100" height="24" rx="3" fill="#c68a1f" opacity="0.15" stroke="#c68a1f"/><text x="80" y="136" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#c68a1f">Verifiserer ✓</text>' },
+      { title:'Finished — kryptert tunnel',
+        text:'Begge sider sender "Finished"-meldinger kryptert med de nye sesjonsnøklene. Hvis dekrypteringen lykkes, er handshaken ferdig. All videre trafikk er AES-kryptert.',
+        anim: arr(80,50,535,70,'#c68a1f','Client Finished',220,45) + arr(540,85,85,105,'#c68a1f','Server Finished',220,83) +
+              '<rect x="75" y="120" width="470" height="30" rx="4" fill="#c68a1f" opacity="0.12" stroke="#c68a1f" stroke-dasharray="4,3"/>' +
+              '<text x="310" y="140" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#c68a1f" font-weight="600">🔒 Kryptert tunnel opprettet</text>' }
+    ]
+  });
+
+  /* ==================== STEP 5: HTTP ==================== */
+  initStepper({
+    titleId:'httpTitle', textId:'httpText', contentId:'httpContent',
+    indId:'httpInd', prevId:'httpPrev', nextId:'httpNext',
+    steps: [
+      { title:'GET-forespørselen',
+        text:'Inne i TLS-tunnelen sender nettleseren denne HTTP-forespørselen:',
+        content: '<pre style="font-size:12px;line-height:1.5"><code><span class="kw">GET</span> / HTTP/1.1\r\n<span class="c-cmt">Host:</span> ntnu.no\r\n<span class="c-cmt">Accept:</span> text/html\r\n<span class="c-cmt">Accept-Encoding:</span> gzip, br\r\n<span class="c-cmt">User-Agent:</span> Mozilla/5.0 ...\r\n<span class="c-cmt">Connection:</span> keep-alive\r\n</code></pre>' },
+      { title:'Request-linje',
+        text:'Første linje spesifiserer metode (GET), ressurs (/ = forsiden), og protokollversjon. GET betyr «hent denne ressursen» — ingen request body.',
+        content: '<pre style="font-size:13px;line-height:1.5"><code><span class="kw" style="font-size:16px;background:rgba(176,68,40,0.1);padding:2px 6px;">GET / HTTP/1.1</span>\r\nHost: ntnu.no\r\nAccept: text/html\r\n...</code></pre><p style="font-size:14px;color:var(--ink-faded);margin-top:12px;"><strong>GET</strong> = metode &nbsp;|&nbsp; <strong>/</strong> = ressurs &nbsp;|&nbsp; <strong>HTTP/1.1</strong> = versjon</p>' },
+      { title:'Host-headeren',
+        text:'Host er obligatorisk i HTTP/1.1. Den forteller serveren hvilket domene vi vil ha — viktig fordi flere domener kan dele samme IP-adresse (virtuell hosting).',
+        content: '<pre style="font-size:13px;line-height:1.5"><code>GET / HTTP/1.1\r\n<span class="kw" style="font-size:16px;background:rgba(176,68,40,0.1);padding:2px 6px;">Host: ntnu.no</span>\r\nAccept: text/html\r\n...</code></pre>' },
+      { title:'Forespørselen er sendt',
+        text:'Hele forespørselen er typisk under 500 bytes — den passer i ett TCP-segment. Nå venter vi på svar fra serveren.',
+        content: '<div style="text-align:center;padding:24px 0;"><span style="font-family:var(--mono);font-size:48px;color:var(--rust);">→</span><p style="font-size:14px;color:var(--ink-faded);margin-top:8px;">~500 bytes sendt, kryptert, gjennom nettverket</p></div>' }
+    ]
+  });
+
+  /* ==================== STEP 6: Encapsulation ==================== */
+  var encapData = '<rect x="210" y="YVAL" width="200" height="HH" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="2"/><text x="310" y="TVAL" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">LABEL</text>';
+
+  function encapLayer(y,h,label,color,headerW) {
+    var hw = headerW || 50;
+    return '<rect x="'+(210-hw)+'" y="'+y+'" width="'+hw+'" height="'+h+'" fill="'+color+'" opacity="0.2" stroke="'+color+'" stroke-width="1.5" rx="2"/>' +
+           '<text x="'+(210-hw/2)+'" y="'+(y+h/2+4)+'" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="'+color+'" font-weight="600">'+label+'</text>';
+  }
+
+  initStepper({
+    titleId:'encapTitle', textId:'encapText', animId:'encapAnim',
+    indId:'encapInd', prevId:'encapPrev', nextId:'encapNext',
+    steps: [
+      { title:'Applikasjonsdata',
+        text:'HTTP GET-forespørselen er bare data — en streng av bytes. Den vet ingenting om nettverk, porter eller adresser.',
+        anim: '<rect x="210" y="80" width="200" height="40" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="2"/><text x="310" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">HTTP GET / (data)</text><text x="310" y="140" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">Applikasjonslaget</text>' },
+      { title:'TCP legger til header',
+        text:'Transportlaget legger til en TCP-header med source port, dest port (443), sekvensnummer, og flagg. Resultatet er et TCP-segment.',
+        anim: encapLayer(80,40,'TCP Hdr','#b04428',60) + '<rect x="210" y="80" width="200" height="40" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="2"/><text x="310" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">HTTP data</text><text x="310" y="140" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#b04428">→ TCP-segment</text>' },
+      { title:'IP legger til header',
+        text:'Nettverkslaget legger til en IP-header med kilde-IP (10.22.14.87), destinasjons-IP (129.241.160.100), TTL, og protokollfelt. Resultatet er et IP-datagram.',
+        anim: encapLayer(80,40,'IP Hdr','#2d4a7a',50) + encapLayer(80,40,'TCP','#b04428',60).replace(/160/g,'130').replace(/80/g,'80') + '<rect x="210" y="80" width="200" height="40" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="2"/><text x="310" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">data</text>' +
+              '<rect x="100" y="80" width="50" height="40" fill="rgba(45,74,122,0.2)" stroke="#2d4a7a" stroke-width="1.5" rx="2"/><text x="125" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a" font-weight="600">IP Hdr</text>' +
+              '<rect x="150" y="80" width="60" height="40" fill="rgba(176,68,40,0.2)" stroke="#b04428" stroke-width="1.5" rx="2"/><text x="180" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428" font-weight="600">TCP Hdr</text>' +
+              '<text x="310" y="145" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#2d4a7a">→ IP-datagram</text>' },
+      { title:'Ethernet legger til header + trailer',
+        text:'Lenkelaget pakker datagrammet i en Ethernet-ramme med kilde-MAC, destinasjons-MAC (neste hops MAC via ARP), type-felt, og en CRC-sjekksum (FCS) på slutten.',
+        anim: '<rect x="60" y="80" width="40" height="40" fill="rgba(61,107,58,0.2)" stroke="#3d6b3a" stroke-width="1.5" rx="2"/><text x="80" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#3d6b3a" font-weight="600">Eth Hdr</text>' +
+              '<rect x="100" y="80" width="50" height="40" fill="rgba(45,74,122,0.2)" stroke="#2d4a7a" stroke-width="1.5" rx="2"/><text x="125" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a" font-weight="600">IP</text>' +
+              '<rect x="150" y="80" width="60" height="40" fill="rgba(176,68,40,0.2)" stroke="#b04428" stroke-width="1.5" rx="2"/><text x="180" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428" font-weight="600">TCP</text>' +
+              '<rect x="210" y="80" width="200" height="40" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="2"/><text x="310" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">data</text>' +
+              '<rect x="410" y="80" width="36" height="40" fill="rgba(61,107,58,0.2)" stroke="#3d6b3a" stroke-width="1.5" rx="2"/><text x="428" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#3d6b3a" font-weight="600">FCS</text>' +
+              '<text x="270" y="145" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#3d6b3a">→ Ethernet-ramme — klar for sending!</text>' },
+      { title:'Pakken reiser gjennom rutere',
+        text:'Rammen sendes til svitsjen (L2-forwarding basert på MAC), deretter til gateway-ruteren. Hver ruter: pakker ut Ethernet, leser IP-dest, slår opp i forwarding table (longest prefix match), lager ny Ethernet-ramme med neste hops MAC.',
+        anim: '<circle cx="80" cy="100" r="16" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/><text x="80" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#1a1612">Laptop</text>' +
+              '<line x1="96" y1="100" x2="150" y2="100" stroke="#3d6b3a" stroke-width="2"/>' +
+              '<rect x="150" y="88" width="40" height="24" rx="3" fill="#f4f1ea" stroke="#3d6b3a" stroke-width="1.5"/><text x="170" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#3d6b3a">SW</text>' +
+              '<line x1="190" y1="100" x2="240" y2="100" stroke="#2d4a7a" stroke-width="2"/>' +
+              '<circle cx="260" cy="100" r="16" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/><text x="260" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">R1</text>' +
+              '<line x1="276" y1="100" x2="330" y2="100" stroke="#2d4a7a" stroke-width="2"/>' +
+              '<circle cx="350" cy="100" r="16" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/><text x="350" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">R2</text>' +
+              '<line x1="366" y1="100" x2="420" y2="100" stroke="#2d4a7a" stroke-width="2"/>' +
+              '<circle cx="440" cy="100" r="16" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/><text x="440" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">R3</text>' +
+              '<line x1="456" y1="100" x2="510" y2="100" stroke="#1a1612" stroke-width="2"/>' +
+              '<rect x="510" y="86" width="50" height="28" rx="3" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/><text x="535" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#1a1612">ntnu.no</text>' +
+              '<text x="310" y="150" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#6b6257">IP-header forblir uendret — Ethernet-header skrives om ved hvert hopp</text>' },
+      { title:'Dekapsulering på serveren',
+        text:'Serveren mottar Ethernet-rammen, sjekker FCS (CRC), fjerner Ethernet-headeren, fjerner IP-headeren, fjerner TCP-headeren, og leverer HTTP-forespørselen til webserver-prosessen på port 443. Lagene pakkes opp i motsatt rekkefølge.',
+        anim: '<text x="310" y="50" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600" fill="#1a1612">Serveren pakker opp:</text>' +
+              '<rect x="60" y="70" width="500" height="28" fill="rgba(61,107,58,0.1)" stroke="#3d6b3a" rx="2"/><text x="310" y="88" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">Ethernet → fjern</text>' +
+              '<rect x="100" y="104" width="420" height="28" fill="rgba(45,74,122,0.1)" stroke="#2d4a7a" rx="2"/><text x="310" y="122" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">IP → fjern</text>' +
+              '<rect x="140" y="138" width="340" height="28" fill="rgba(176,68,40,0.1)" stroke="#b04428" rx="2"/><text x="310" y="156" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">TCP → fjern</text>' +
+              '<rect x="190" y="172" width="240" height="28" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="2"/><text x="310" y="190" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612" font-weight="600">GET / HTTP/1.1 ✓</text>' }
+    ]
+  });
+
+  /* ==================== STEP 7: Response ==================== */
+  initStepper({
+    titleId:'respTitle', textId:'respText', animId:'respAnim',
+    indId:'respInd', prevId:'respPrev', nextId:'respNext',
+    steps: [
+      { title:'200 OK',
+        text:'Serveren finner filen, genererer HTML-innholdet (kanskje fra en CMS), og sender en HTTP-respons med statuskode 200 OK.',
+        anim: '<text x="80" y="20" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#1a1612">Laptop</text><line x1="80" y1="28" x2="80" y2="210" stroke="#a39886" stroke-width="1.5"/><text x="540" y="20" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#1a1612">ntnu.no</text><line x1="540" y1="28" x2="540" y2="210" stroke="#a39886" stroke-width="1.5"/>' +
+              arr(540,55,85,85,'#3d6b3a','200 OK + HTML (segment 1)',200,50) },
+      { title:'Slow start — cwnd vokser',
+        text:'TCP sender først 1 segment (1 MSS ≈ 1460 bytes). Når ACK kommer tilbake, dobles vinduet: 2, 4, 8, 16... Eksponentiell vekst fyller raskt opp kapasiteten.',
+        anim: '<text x="80" y="20" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#1a1612">Laptop</text><line x1="80" y1="28" x2="80" y2="210" stroke="#a39886" stroke-width="1.5"/><text x="540" y="20" font-family="IBM Plex Mono" font-size="11" font-weight="600" fill="#1a1612">ntnu.no</text><line x1="540" y1="28" x2="540" y2="210" stroke="#a39886" stroke-width="1.5"/>' +
+              arr(540,45,85,65,'#3d6b3a','1 segment',300,40) +
+              arr(80,75,535,90,'#2d4a7a','ACK',300,73) +
+              arr(540,95,85,110,'#3d6b3a','2 segmenter',300,90) + arr(540,100,85,115,'#3d6b3a','',300,95) +
+              arr(80,125,535,140,'#2d4a7a','ACKs',300,123) +
+              arr(540,145,85,160,'#3d6b3a','4 segmenter',300,140) + arr(540,148,85,163,'#3d6b3a','',300,143) + arr(540,151,85,166,'#3d6b3a','',300,146) + arr(540,154,85,169,'#3d6b3a','',300,149) +
+              '<text x="310" y="200" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428" font-weight="600">cwnd: 1 → 2 → 4 → 8 → ...</text>' },
+      { title:'Alle segmenter mottatt',
+        text:'Etter noen RTT-er har TCP overført hele HTML-filen. Laptopen sender ACK for hvert mottatt segment (kumulativt). Eventuelle tap oppdages via duplikat-ACK-er og resendes via fast retransmit.',
+        anim: '<text x="310" y="60" text-anchor="middle" font-family="IBM Plex Sans" font-size="14" font-weight="600" fill="#3d6b3a">Alle data mottatt ✓</text>' +
+              '<text x="310" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">~50 KB HTML</text>' +
+              '<text x="310" y="120" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">≈ 35 TCP-segmenter</text>' +
+              '<text x="310" y="140" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">Over 3–4 RTT-er (~80 ms)</text>' +
+              '<text x="310" y="180" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">Nettleseren begynner å parse HTML umiddelbart — den venter ikke på alt.</text>' }
+    ]
+  });
+
+  /* ==================== STEP 8: Timeline calculator ==================== */
+  var rttSlider = document.getElementById('rttSlider');
+  var rttVal = document.getElementById('rttVal');
+  var timeOut = document.getElementById('timeOut');
+
+  function updateTimeline() {
+    var rtt = parseInt(rttSlider.value);
+    rttVal.textContent = rtt + ' ms';
+    var wifi = 50;
+    var dns = rtt * 2;
+    var tcp = rtt;
+    var tls = rtt * 2;
+    var http = 5;
+    var data = rtt * 3;
+    var render = 40;
+    var total = wifi + dns + tcp + tls + http + data + render;
+    timeOut.innerHTML =
+      '<strong>WiFi-tilkobling:</strong> ~' + wifi + ' ms<br>' +
+      '<strong>DNS-oppslag:</strong> ~' + dns + ' ms (2 RTT)<br>' +
+      '<strong>TCP-håndtrykk:</strong> ~' + tcp + ' ms (1 RTT)<br>' +
+      '<strong>TLS-handshake:</strong> ~' + tls + ' ms (2 RTT for TLS 1.2, 1 RTT for TLS 1.3)<br>' +
+      '<strong>HTTP-forespørsel:</strong> ~' + http + ' ms<br>' +
+      '<strong>Dataoverføring:</strong> ~' + data + ' ms (slow start + segmenter)<br>' +
+      '<strong>Rendering:</strong> ~' + render + ' ms<br>' +
+      '<br><strong style="color:var(--rust);font-size:18px;">Total: ~' + total + ' ms (' + (total/1000).toFixed(2) + ' s)</strong>';
+  }
+  rttSlider.addEventListener('input', updateTimeline);
+  updateTimeline();
+
+  /* ==================== SIDEBAR: IntersectionObserver ==================== */
+  var sections = document.querySelectorAll('.journey-main section[id]');
+  var navLinks = document.querySelectorAll('#stepNav a');
+  var layers = document.querySelectorAll('#layerStack .ls-layer');
+  var layerMap = {
+    step1: ['link','phys'],
+    step2: ['app'],
+    step3: ['trans'],
+    step4: ['app'],
+    step5: ['app'],
+    step6: ['net','link'],
+    step7: ['trans','app'],
+    step8: ['app']
+  };
+  var layerClasses = { app:'active-app', trans:'active-trans', net:'active-net', link:'active-link', phys:'active-phys' };
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var id = entry.target.id;
+        navLinks.forEach(function(link) {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + id) link.classList.add('active');
+        });
+        layers.forEach(function(l) {
+          l.className = 'ls-layer';
+        });
+        var activeLayers = layerMap[id] || [];
+        activeLayers.forEach(function(lay) {
+          layers.forEach(function(l) {
+            if (l.dataset.layer === lay) l.classList.add(layerClasses[lay]);
+          });
+        });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+
+  sections.forEach(function(sec) { observer.observe(sec); });
+
+  /* ==================== QUIZZES ==================== */
+  document.querySelectorAll('.quiz').forEach(function(quiz) {
+    var fb = quiz.querySelector('.explanation');
+    quiz.querySelectorAll('button.option').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var correct = btn.dataset.correct === 'true';
+        quiz.querySelectorAll('button.option').forEach(function(b) {
+          b.disabled = true;
+          if (b.dataset.correct === 'true') b.classList.add('correct');
+          else if (b === btn && !correct) b.classList.add('incorrect');
+        });
+        if (fb) {
+          fb.textContent = correct ? 'Riktig!' : 'Ikke helt — se det riktige svaret markert i grønt.';
+          fb.classList.add('show');
+        }
+      });
+    });
+  });
+})();
+</script>
+<script src="../chat-widget.js"></script>
+<script src="../lang-switch.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>

@@ -269,12 +269,71 @@
   font-size: 14px;
 }
 
+/* Journey banner */
+.journey-banner {
+  display: block;
+  padding: 28px 32px;
+  margin-bottom: 40px;
+  background: linear-gradient(135deg, rgba(176,68,40,0.06) 0%, rgba(45,74,122,0.06) 100%);
+  border: 1.5px solid var(--rust);
+  border-radius: 6px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.journey-banner:hover {
+  border-color: var(--rust-dark);
+  box-shadow: 0 4px 20px rgba(176,68,40,0.12);
+  transform: translateY(-1px);
+}
+.journey-banner .jb-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 8px;
+  display: block;
+}
+.journey-banner .jb-title {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+.journey-banner .jb-title em { font-style: italic; color: var(--rust); font-weight: 400; }
+.journey-banner .jb-desc {
+  font-size: 15px;
+  font-style: italic;
+  color: var(--ink-faded);
+  line-height: 1.5;
+  max-width: 600px;
+}
+.journey-banner .jb-arrow {
+  position: absolute;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--mono);
+  font-size: 22px;
+  color: var(--ink-ghost);
+  transition: color 0.15s, transform 0.15s;
+}
+.journey-banner:hover .jb-arrow { color: var(--rust); transform: translateY(-50%) translateX(4px); }
+
 @media (max-width: 768px) {
   .index-hero { padding: 80px 0 60px; }
   .chapter-card { grid-template-columns: 40px 1fr auto; gap: 16px; }
   .chapter-card .ch-title { font-size: 18px; }
   .info-grid { grid-template-columns: 1fr; gap: 32px; }
   .search-wrapper { max-width: 100%; }
+  .journey-banner { padding: 20px; }
+  .journey-banner .jb-title { font-size: 20px; }
+  .journey-banner .jb-arrow { right: 16px; }
 }
 </style>
 </head>
@@ -295,6 +354,13 @@
 
 <main class="chapter-grid" data-chapter="Home – TTM4100">
   <div class="container">
+    <a href="reisen/" class="journey-banner">
+      <span class="jb-eyebrow">Interactive visualization</span>
+      <div class="jb-title">The Journey of a <em>Web Page</em></div>
+      <div class="jb-desc">Follow a web request through every layer — from WiFi connection to rendered page. Ties together material from all chapters.</div>
+      <span class="jb-arrow">&rarr;</span>
+    </a>
+
     <div class="section-label">Chapters</div>
     <div class="chapters">
 
@@ -433,7 +499,8 @@
     'kap6/grunnleggende-tilgang.html', 'kap6/ethernet-svitsjer.html',
     'kap7/innhold.html',
     'kap8/kryptografi.html', 'kap8/protokoller-brannmur.html',
-    'kap9/innhold.html'
+    'kap9/innhold.html',
+    'reisen/index.html'
   ];
 
   var input = document.getElementById('site-search');

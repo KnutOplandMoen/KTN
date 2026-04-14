@@ -489,7 +489,7 @@
     </table>
 
     <h3>QUIC: Quick UDP Internet Connections</h3>
-    <p>QUIC er en applikasjonslagsprotokoll bygd over UDP. Den implementerer pålitelighet, metningskontroll, kryptering og multipleksing — alt i brukerrommet, uten å vente på OS-oppdateringer.</p>
+    <p>QUIC er en applikasjonslagsprotokoll bygd over UDP. Den implementerer pålitelighet, metningskontroll, kryptering og multipleksing — alt i brukerrommet, uten å vente på OS-oppdateringer. QUIC er grunnlaget for HTTP/3 og er standardisert i RFC 9000 (2021).</p>
 
     <figure>
       <div class="svg-wrap">
@@ -499,7 +499,7 @@
           <rect x="50" y="35" width="180" height="40" rx="3" fill="rgba(45,74,122,0.12)" stroke="#2d4a7a" stroke-width="1.5"/>
           <text x="140" y="60" font-family="IBM Plex Mono" font-size="12" fill="#2d4a7a" text-anchor="middle">HTTP/2</text>
           <rect x="50" y="80" width="180" height="40" rx="3" fill="rgba(61,107,58,0.12)" stroke="#3d6b3a" stroke-width="1.5"/>
-          <text x="140" y="105" font-family="IBM Plex Mono" font-size="12" fill="#3d6b3a" text-anchor="middle">TLS</text>
+          <text x="140" y="105" font-family="IBM Plex Mono" font-size="12" fill="#3d6b3a" text-anchor="middle">TLS 1.3</text>
           <rect x="50" y="125" width="180" height="40" rx="3" fill="rgba(176,68,40,0.12)" stroke="#b04428" stroke-width="1.5"/>
           <text x="140" y="150" font-family="IBM Plex Mono" font-size="12" fill="#b04428" text-anchor="middle">TCP</text>
           <rect x="50" y="170" width="180" height="35" rx="3" fill="rgba(201,192,174,0.3)" stroke="#a39886" stroke-width="1"/>
@@ -529,19 +529,129 @@
       <figcaption>HTTP/2 over TCP krever separate håndtrykk for TCP og TLS. QUIC kombinerer alt i ett håndtrykk over UDP.</figcaption>
     </figure>
 
-    <h3>QUICs fordeler</h3>
-    <table class="compare">
-      <thead><tr><th>Egenskap</th><th>Fordel over TCP</th></tr></thead>
-      <tbody>
-        <tr><td>1-RTT håndtrykk</td><td>TCP + TLS krever 2 serielle håndtrykk. QUIC gjør alt i én RTT — pålitelighet, metningskontroll, autentisering og kryptering.</td></tr>
-        <tr><td>Per-strøm pålitelighet</td><td>TCP har head-of-line (HOL) blocking: ett tapt segment blokkerer <em>alle</em> data bak det. QUIC multiplekser flere strømmer uavhengig — tap i én strøm blokkerer ikke de andre.</td></tr>
-        <tr><td>I brukerrommet</td><td>Oppdateringer krever ikke OS-endringer. Google ruller ut forbedringer i Chrome uten å vente på kjerneendringer.</td></tr>
-      </tbody>
-    </table>
+    <h3>Forbindelsesetablering: 1-RTT og 0-RTT</h3>
+    <p>Med TCP + TLS kreves det minst <strong>to serielle håndtrykk</strong>: først TCPs tre-veis håndtrykk (1 RTT), deretter TLS-håndtrykket (1 RTT til). Først etter 2 RTT kan applikasjonsdata sendes.</p>
+    <p>QUIC kombinerer transport- og krypterings-håndtrykket til <strong>én enkelt prosess</strong>. Klienten sender sin kryptografiske «hello» sammen med forbindelsesparametrene i første pakke, og serveren svarer med sin del — alt i <strong>1 RTT</strong>.</p>
+    <p>Enda bedre: hvis klienten har koblet til serveren tidligere, kan den gjenbruke lagrede kryptografiske nøkler og sende applikasjonsdata allerede i <strong>første pakke</strong> — såkalt <strong>0-RTT</strong>. Serveren kan begynne å behandle forespørselen uten å vente på et komplett håndtrykk.</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg">
+          <!-- TCP + TLS: 2 RTT -->
+          <text x="120" y="20" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612" text-anchor="middle">TCP + TLS (2 RTT)</text>
+          <line x1="60" y1="35" x2="60" y2="280" stroke="#1a1612" stroke-width="1.5"/>
+          <line x1="180" y1="35" x2="180" y2="280" stroke="#1a1612" stroke-width="1.5"/>
+          <text x="60" y="32" font-family="IBM Plex Mono" font-size="10" fill="#6b6257" text-anchor="middle">Klient</text>
+          <text x="180" y="32" font-family="IBM Plex Mono" font-size="10" fill="#6b6257" text-anchor="middle">Server</text>
+          <!-- TCP handshake -->
+          <line x1="60" y1="50" x2="180" y2="70" stroke="#b04428" stroke-width="1.5"/>
+          <text x="122" y="55" font-family="IBM Plex Mono" font-size="9" fill="#b04428" text-anchor="middle">SYN</text>
+          <line x1="180" y1="70" x2="60" y2="90" stroke="#b04428" stroke-width="1.5"/>
+          <text x="122" y="85" font-family="IBM Plex Mono" font-size="9" fill="#b04428" text-anchor="middle">SYN-ACK</text>
+          <line x1="60" y1="90" x2="180" y2="110" stroke="#b04428" stroke-width="1.5"/>
+          <text x="122" y="105" font-family="IBM Plex Mono" font-size="9" fill="#b04428" text-anchor="middle">ACK</text>
+          <text x="200" y="82" font-family="IBM Plex Sans" font-size="10" fill="#b04428">} 1 RTT</text>
+          <!-- TLS handshake -->
+          <line x1="60" y1="130" x2="180" y2="150" stroke="#3d6b3a" stroke-width="1.5"/>
+          <text x="122" y="138" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a" text-anchor="middle">ClientHello</text>
+          <line x1="180" y1="150" x2="60" y2="170" stroke="#3d6b3a" stroke-width="1.5"/>
+          <text x="122" y="167" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a" text-anchor="middle">ServerHello</text>
+          <text x="200" y="158" font-family="IBM Plex Sans" font-size="10" fill="#3d6b3a">} 1 RTT</text>
+          <!-- Data -->
+          <line x1="60" y1="200" x2="180" y2="220" stroke="#2d4a7a" stroke-width="2" stroke-dasharray="6,3"/>
+          <text x="122" y="216" font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a" text-anchor="middle">HTTP-data</text>
+
+          <!-- QUIC: 1 RTT -->
+          <text x="390" y="20" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612" text-anchor="middle">QUIC (1 RTT)</text>
+          <line x1="330" y1="35" x2="330" y2="280" stroke="#1a1612" stroke-width="1.5"/>
+          <line x1="450" y1="35" x2="450" y2="280" stroke="#1a1612" stroke-width="1.5"/>
+          <text x="330" y="32" font-family="IBM Plex Mono" font-size="10" fill="#6b6257" text-anchor="middle">Klient</text>
+          <text x="450" y="32" font-family="IBM Plex Mono" font-size="10" fill="#6b6257" text-anchor="middle">Server</text>
+          <line x1="330" y1="50" x2="450" y2="70" stroke="#b04428" stroke-width="1.5"/>
+          <text x="392" y="55" font-family="IBM Plex Mono" font-size="9" fill="#b04428" text-anchor="middle">CHLO</text>
+          <line x1="450" y1="70" x2="330" y2="90" stroke="#b04428" stroke-width="1.5"/>
+          <text x="392" y="85" font-family="IBM Plex Mono" font-size="9" fill="#b04428" text-anchor="middle">SHLO</text>
+          <text x="470" y="78" font-family="IBM Plex Sans" font-size="10" fill="#b04428">} 1 RTT</text>
+          <line x1="330" y1="110" x2="450" y2="130" stroke="#2d4a7a" stroke-width="2" stroke-dasharray="6,3"/>
+          <text x="392" y="126" font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a" text-anchor="middle">HTTP-data</text>
+
+          <!-- QUIC: 0 RTT -->
+          <text x="620" y="20" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612" text-anchor="middle">QUIC 0-RTT (gjentilkobling)</text>
+          <line x1="570" y1="35" x2="570" y2="280" stroke="#1a1612" stroke-width="1.5"/>
+          <line x1="690" y1="35" x2="690" y2="280" stroke="#1a1612" stroke-width="1.5"/>
+          <text x="570" y="32" font-family="IBM Plex Mono" font-size="10" fill="#6b6257" text-anchor="middle">Klient</text>
+          <text x="690" y="32" font-family="IBM Plex Mono" font-size="10" fill="#6b6257" text-anchor="middle">Server</text>
+          <line x1="570" y1="50" x2="690" y2="70" stroke="#b04428" stroke-width="1.5"/>
+          <text x="632" y="55" font-family="IBM Plex Mono" font-size="9" fill="#b04428" text-anchor="middle">CHLO + data</text>
+          <text x="632" y="85" font-family="IBM Plex Sans" font-size="10" fill="#3d6b3a" text-anchor="middle">0 RTT ventetid!</text>
+        </svg>
+      </div>
+      <figcaption>TCP+TLS bruker 2 RTT før data kan sendes. QUIC klarer det på 1 RTT — og ved gjentilkobling kan data sendes umiddelbart (0-RTT).</figcaption>
+    </figure>
+
+    <h3>Strømmer: førsteklasses multipleksing</h3>
+    <p>En sentral innovasjon i QUIC er at <strong>strømmer</strong> (streams) er et innebygd konsept i selve transportprotokollen. Innenfor én enkelt QUIC-forbindelse kan det opprettes mange parallelle strømmer — uten nye håndtrykk. Hver strøm har:</p>
+    <ul style="margin:1.2em 0;padding-left:1.5em">
+      <li style="padding:6px 0">Egne <strong>sekvensnumre</strong> — uavhengig av de andre strømmene</li>
+      <li style="padding:6px 0">Egen <strong>pålitelig levering</strong> — tap og retransmisjon i én strøm påvirker ikke andre</li>
+      <li style="padding:6px 0">Egen <strong>flytkontroll</strong> — både per strøm og per forbindelse</li>
+    </ul>
+    <p>I HTTP/3 tilsvarer hver strøm typisk én HTTP-forespørsel/respons. Nye strømmer kan opprettes med minimal overhead, noe som gjør multipleksing langt mer effektivt enn HTTP/2 over TCP.</p>
 
     <h3>QUIC og head-of-line blocking</h3>
-    <p>Med TCP og HTTP/2: tre GET-forespørsler deler én TCP-forbindelse. Hvis et segment tilhørende forespørsel 1 går tapt, må <em>alle tre</em> vente på retransmisjonen — selv om data for forespørsel 2 og 3 allerede er mottatt.</p>
-    <p>Med QUIC: hver forespørsel har sin egen strøm med uavhengig pålitelig levering. Tap i strøm 1 blokkerer bare strøm 1 — strøm 2 og 3 leveres uforstyrret.</p>
+    <p>Med TCP og HTTP/2 deler alle forespørsler <strong>én enkelt bytestrøm</strong>. Selv om HTTP/2 logisk multiplekser flere forespørsler, er de alle avhengige av TCPs pålitelige, ordnede levering. Hvis et segment tilhørende forespørsel 1 går tapt, må <em>alle tre</em> vente på retransmisjonen — selv om data for forespørsel 2 og 3 allerede er mottatt.</p>
+
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+          <!-- TCP HOL blocking -->
+          <text x="170" y="18" font-family="IBM Plex Sans" font-size="12" font-weight="600" fill="#1a1612" text-anchor="middle">HTTP/2 over TCP</text>
+          <!-- Single TCP pipe -->
+          <rect x="20" y="30" width="300" height="50" rx="4" fill="rgba(176,68,40,0.08)" stroke="#b04428" stroke-width="1.5"/>
+          <text x="170" y="50" font-family="IBM Plex Mono" font-size="10" fill="#b04428" text-anchor="middle">Én TCP-forbindelse (én bytestrøm)</text>
+          <!-- Segments -->
+          <rect x="30" y="62" width="40" height="14" rx="2" fill="#2d4a7a"/><text x="50" y="73" font-family="IBM Plex Mono" font-size="8" fill="#fff" text-anchor="middle">GET 1</text>
+          <rect x="75" y="62" width="40" height="14" rx="2" fill="#b04428"/><text x="95" y="73" font-family="IBM Plex Mono" font-size="8" fill="#fff" text-anchor="middle">TAPT</text>
+          <rect x="120" y="62" width="40" height="14" rx="2" fill="#3d6b3a"/><text x="140" y="73" font-family="IBM Plex Mono" font-size="8" fill="#fff" text-anchor="middle">GET 2</text>
+          <rect x="165" y="62" width="40" height="14" rx="2" fill="#6b6257"/><text x="185" y="73" font-family="IBM Plex Mono" font-size="8" fill="#fff" text-anchor="middle">GET 3</text>
+          <!-- Block indicator -->
+          <line x1="95" y1="80" x2="95" y2="100" stroke="#b04428" stroke-width="1.5" stroke-dasharray="3,2"/>
+          <text x="170" y="98" font-family="IBM Plex Sans" font-size="10" fill="#b04428" text-anchor="middle">GET 2 og GET 3 blokkert — venter på retransmisjon</text>
+
+          <!-- QUIC no HOL -->
+          <text x="530" y="18" font-family="IBM Plex Sans" font-size="12" font-weight="600" fill="#1a1612" text-anchor="middle">HTTP/3 over QUIC</text>
+          <!-- Three independent streams -->
+          <rect x="380" y="30" width="300" height="16" rx="3" fill="rgba(45,74,122,0.15)" stroke="#2d4a7a" stroke-width="1"/>
+          <text x="530" y="42" font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a" text-anchor="middle">Strøm 1 (GET 1) — tapt segment, retransmitterer</text>
+          <rect x="380" y="52" width="300" height="16" rx="3" fill="rgba(61,107,58,0.15)" stroke="#3d6b3a" stroke-width="1"/>
+          <text x="530" y="64" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a" text-anchor="middle">Strøm 2 (GET 2) — leveres uforstyrret &#10003;</text>
+          <rect x="380" y="74" width="300" height="16" rx="3" fill="rgba(107,98,87,0.15)" stroke="#6b6257" stroke-width="1"/>
+          <text x="530" y="86" font-family="IBM Plex Mono" font-size="9" fill="#6b6257" text-anchor="middle">Strøm 3 (GET 3) — leveres uforstyrret &#10003;</text>
+          <text x="530" y="110" font-family="IBM Plex Sans" font-size="10" fill="#3d6b3a" text-anchor="middle">Tap i strøm 1 blokkerer bare strøm 1</text>
+        </svg>
+      </div>
+      <figcaption>HTTP/2 over TCP: ett tapt segment blokkerer alle forespørsler (HOL-blocking). QUIC: hver strøm er uavhengig — tap i én påvirker ikke de andre.</figcaption>
+    </figure>
+
+    <h3>Connection ID og mobilitet</h3>
+    <p>TCP identifiserer en forbindelse med en 4-tuppel: <em>(kilde-IP, kilde-port, dest-IP, dest-port)</em>. Hvis en av disse endres — for eksempel når telefonen bytter fra Wi-Fi til mobilnett — må TCP-forbindelsen avsluttes og opprettes på nytt, inkludert nye håndtrykk.</p>
+    <p>QUIC bruker i stedet en <strong>connection ID</strong> i pakkene sine. Denne ID-en er uavhengig av de underliggende IP-adressene og portene. Når en klient bytter nettverk, holder connection ID-en forbindelsen i live — klienten fortsetter å sende pakker med samme ID fra sin nye adresse, og serveren gjenkjenner forbindelsen uten re-etablering.</p>
+
+    <h3>Metningskontroll i QUIC</h3>
+    <p>QUIC implementerer sin egen metningskontroll, separat fra operativsystemets TCP-stabel. Som standard bruker QUIC algoritmer som likner på TCP CUBIC, men siden QUIC kjører i brukerrommet (user space) kan metningskontrollalgoritmen oppdateres uavhengig av OS. Google har for eksempel eksperimentert med og rullet ut BBR (Bottleneck Bandwidth and RTT) i sin QUIC-implementasjon, helt uten å måtte oppdatere operativsystemer.</p>
+
+    <h3>Oppsummering: QUICs fordeler over TCP</h3>
+    <table class="compare">
+      <thead><tr><th>Egenskap</th><th>TCP</th><th>QUIC</th></tr></thead>
+      <tbody>
+        <tr><td>Forbindelsesetablering</td><td>TCP-håndtrykk + TLS-håndtrykk = 2 RTT</td><td>Kombinert håndtrykk = 1 RTT (0-RTT ved gjentilkobling)</td></tr>
+        <tr><td>HOL-blocking</td><td>Ett tapt segment blokkerer <em>alle</em> data</td><td>Per-strøm pålitelighet — tap blokkerer bare den berørte strømmen</td></tr>
+        <tr><td>Forbindelsesidentitet</td><td>4-tuppel (IP + port) — brytes ved nettverksbytte</td><td>Connection ID — overlever nettverksbytte</td></tr>
+        <tr><td>Multipleksing</td><td>Én bytestrøm (HTTP/2 multiplekser logisk, men TCP ser bare én strøm)</td><td>Innebygde, uavhengige strømmer med egne sekvensnumre</td></tr>
+        <tr><td>Oppdaterbarhet</td><td>I OS-kjernen — krever kjerneoppgradering</td><td>I brukerrommet — oppdateres med applikasjonen</td></tr>
+        <tr><td>Kryptering</td><td>Valgfri (TLS er separat)</td><td>Alltid på — TLS 1.3 er innebygd i protokollen</td></tr>
+      </tbody>
+    </table>
 
     <div class="quiz" data-correct="2">
       <div class="qlabel">Sjekk forståelsen</div>
@@ -553,6 +663,18 @@
         <button class="opt" data-i="3">QUIC støtter bare HTTP/3 og ingen andre protokoller</button>
       </div>
       <div class="feedback"><strong>Riktig.</strong> TCPs enkelt-strøm-modell betyr at ett tapt segment blokkerer alt bak det. QUIC løser dette med uavhengige strømmer, som eliminerer head-of-line blocking mellom forespørsler.</div>
+    </div>
+
+    <div class="quiz" data-correct="1">
+      <div class="qlabel">Sjekk forståelsen</div>
+      <h4>Hvorfor kan en QUIC-forbindelse overleve at klienten bytter fra Wi-Fi til mobilnett?</h4>
+      <div class="opts">
+        <button class="opt" data-i="0">Fordi QUIC bruker UDP, som er forbindelsesløst</button>
+        <button class="opt" data-i="1">Fordi QUIC identifiserer forbindelsen med en connection ID, ikke med IP-adresser og porter</button>
+        <button class="opt" data-i="2">Fordi QUIC automatisk kopierer all tilstand til det nye nettverket</button>
+        <button class="opt" data-i="3">Fordi QUIC bruker IP-multicast for å sende på begge nettverk samtidig</button>
+      </div>
+      <div class="feedback"><strong>Riktig.</strong> TCP identifiserer forbindelsen med (kilde-IP, kilde-port, dest-IP, dest-port) — et nettverksbytte endrer IP-adressen og bryter forbindelsen. QUIC bruker en connection ID som er uavhengig av IP/port, slik at forbindelsen overlever bytte av underliggende nettverk.</div>
     </div>
 
     <div class="ornament">&#10038; &#10038; &#10038;</div>
