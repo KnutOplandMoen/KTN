@@ -63,6 +63,120 @@ function jsonResponse(body, status = 200) {
   });
 }
 
+const NDJSON_HEADERS = {
+  "Content-Type": "application/x-ndjson; charset=utf-8",
+  "Cache-Control": "no-store",
+  "X-Accel-Buffering": "no",
+};
+
+/**
+ * Reads OpenAI-compatible SSE from upstream and writes NDJSON lines:
+ * {"t":"..."} text deltas, {"e":"..."} error, {"d":true} done.
+ */
+function openRouterSseToNdjsonStream(upstreamBody) {
+  const encoder = new TextEncoder();
+  const decoder = new TextDecoder();
+
+  return new ReadableStream({
+    async start(controller) {
+      const reader = upstreamBody.getReader();
+      let sseBuffer = "";
+
+      const writeLine = (obj) => {
+        controller.enqueue(encoder.encode(JSON.stringify(obj) + "\n"));
+      };
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          sseBuffer += decoder.decode(value ?? new Uint8Array(), { stream: !done });
+          if (done) {
+            sseBuffer += decoder.decode();
+            break;
+          }
+
+          // Normalize CRLF so "\n\n" reliably separates SSE events
+          sseBuffer = sseBuffer.replace(/\r\n/g, "\n");
+
+          while (true) {
+            const sep = sseBuffer.indexOf("\n\n");
+            if (sep === -1) break;
+            const block = sseBuffer.slice(0, sep);
+            sseBuffer = sseBuffer.slice(sep + 2);
+
+            for (const line of block.split("\n")) {
+              if (!line.startsWith("data:")) continue;
+              const raw = line.slice(5).trimStart();
+              if (raw === "[DONE]") continue;
+
+              let json;
+              try {
+                json = JSON.parse(raw);
+              } catch {
+                continue;
+              }
+
+              if (json.error) {
+                const msg =
+                  typeof json.error === "string"
+                    ? json.error
+                    : json.error?.message || JSON.stringify(json.error);
+                writeLine({ e: msg });
+                controller.close();
+                return;
+              }
+
+              const piece = json.choices?.[0]?.delta?.content;
+              if (typeof piece === "string" && piece.length > 0) {
+                writeLine({ t: piece });
+              }
+            }
+          }
+        }
+
+        sseBuffer = sseBuffer.replace(/\r\n/g, "\n");
+        if (sseBuffer.trim()) {
+          for (const part of sseBuffer.split("\n\n")) {
+            for (const line of part.split("\n")) {
+              if (!line.startsWith("data:")) continue;
+              const raw = line.slice(5).trimStart();
+              if (raw === "[DONE]" || !raw) continue;
+              try {
+                const json = JSON.parse(raw);
+                if (json.error) {
+                  const msg =
+                    typeof json.error === "string"
+                      ? json.error
+                      : json.error?.message || JSON.stringify(json.error);
+                  writeLine({ e: msg });
+                  controller.close();
+                  return;
+                }
+                const piece = json.choices?.[0]?.delta?.content;
+                if (typeof piece === "string" && piece.length > 0) {
+                  writeLine({ t: piece });
+                }
+              } catch {
+                /* ignore trailing garbage */
+              }
+            }
+          }
+        }
+
+        writeLine({ d: true });
+        controller.close();
+      } catch (err) {
+        try {
+          writeLine({ e: err.message || String(err) });
+        } catch {
+          /* ignore */
+        }
+        controller.close();
+      }
+    },
+  });
+}
+
 export async function POST(request) {
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
@@ -127,7 +241,7 @@ ${page_context?.visible_text || "(ingen)"}`;
         body: JSON.stringify({
           model: "nvidia/nemotron-3-super-120b-a12b:free",
           messages,
-          stream: false,
+          stream: true,
         }),
       }
     );
@@ -137,9 +251,12 @@ ${page_context?.visible_text || "(ingen)"}`;
       return jsonResponse({ error: `LLM request failed (${llmResp.status}): ${err}` }, 502);
     }
 
-    const data = await llmResp.json();
-    const content = data.choices?.[0]?.message?.content || "";
-    return jsonResponse({ content });
+    if (!llmResp.body) {
+      return jsonResponse({ error: "LLM response had no body" }, 502);
+    }
+
+    const out = openRouterSseToNdjsonStream(llmResp.body);
+    return new Response(out, { status: 200, headers: NDJSON_HEADERS });
   } catch (err) {
     console.error("Chat API error:", err);
     return jsonResponse({ error: err.message }, 500);

@@ -409,6 +409,88 @@
     };
   }
 
+  /**
+   * Reads NDJSON from /api/chat: {"t":"..."} deltas, {"e":"..."} error, {"d":true} done.
+   * Removes loader on first text delta; returns full assistant text.
+   */
+  async function consumeNdjsonChat(resp, loader) {
+    const reader = resp.body.getReader();
+    const dec = new TextDecoder();
+    let buf = "";
+    let accumulated = "";
+    let assistantEl = null;
+    let rafId = 0;
+
+    function paint() {
+      rafId = 0;
+      if (assistantEl) {
+        assistantEl.innerHTML = renderMarkdown(accumulated);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+    }
+
+    function schedulePaint() {
+      if (!rafId) rafId = requestAnimationFrame(paint);
+    }
+
+    function processLine(line) {
+      const trimmed = line.replace(/\r$/, "").trim();
+      if (!trimmed) return false;
+      let o;
+      try {
+        o = JSON.parse(trimmed);
+      } catch {
+        return false;
+      }
+      if (typeof o.e === "string" && o.e) {
+        throw new Error(o.e);
+      }
+      if (typeof o.t === "string" && o.t.length > 0) {
+        if (!assistantEl) {
+          loader.remove();
+          assistantEl = addMessage("assistant", "");
+        }
+        accumulated += o.t;
+        schedulePaint();
+      }
+      if (o.d === true) {
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = 0;
+        }
+        paint();
+        if (!assistantEl) loader.remove();
+        return true;
+      }
+      return false;
+    }
+
+    while (true) {
+      const { value, done } = await reader.read();
+      buf += dec.decode(value || new Uint8Array(), { stream: !done });
+      if (done) break;
+
+      let nl;
+      while ((nl = buf.indexOf("\n")) !== -1) {
+        const line = buf.slice(0, nl);
+        buf = buf.slice(nl + 1);
+        if (processLine(line)) return accumulated;
+      }
+    }
+
+    if (buf.length) {
+      if (processLine(buf)) return accumulated;
+    }
+
+    if (!assistantEl) loader.remove();
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = 0;
+    }
+    paint();
+    return accumulated;
+  }
+
   async function sendMessage(question) {
     if (busy) return;
     busy = true;
@@ -429,16 +511,24 @@
         }),
       });
 
-      const data = await resp.json().catch(() => null);
-
-      loader.remove();
+      const ct = resp.headers.get("content-type") || "";
 
       if (!resp.ok) {
+        loader.remove();
+        const data = await resp.json().catch(() => ({}));
         throw new Error(data?.error || `Server error (${resp.status})`);
       }
 
-      const content = data?.content || "";
-      addMessage("assistant", content);
+      let content = "";
+
+      if (ct.includes("application/x-ndjson") || ct.includes("ndjson")) {
+        content = await consumeNdjsonChat(resp, loader);
+      } else {
+        loader.remove();
+        const data = await resp.json().catch(() => ({}));
+        content = data?.content ?? "";
+        addMessage("assistant", content);
+      }
 
       history.push({ role: "user", content: question });
       history.push({ role: "assistant", content });
