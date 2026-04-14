@@ -25,6 +25,7 @@
   --serif: 'Newsreader', Georgia, serif;
   --mono: 'IBM Plex Mono', Menlo, monospace;
   --sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --packet-hl: #f5eae5;
 }
 
 /* ---------- RESET ---------- */
@@ -485,7 +486,7 @@ figure:has(.packet) figcaption {
 .packet .cell.c32 { grid-column: span 32; }
 .packet .cell.c3  { grid-column: span 3; }
 .packet .cell.c13 { grid-column: span 13; }
-.packet .cell.hl  { background: #f5eae5; }
+.packet .cell.hl  { background: var(--packet-hl); }
 .packet .cell.data {
   background: var(--paper-dark);
   font-family: var(--sans);
@@ -988,8 +989,6 @@ footer p {
   .window-vis { overflow-x: auto; }
   figure:has(.packet) { padding: 0; }
   .packet .cell { min-height: 44px; padding: 6px 3px; }
-  .packet .cell > div strong { font-size: 10px; }
-  .packet .cell > div small { font-size: 9px; }
 }
 
 /* ---------- PAGE NAVIGATION (prev/next) ---------- */
