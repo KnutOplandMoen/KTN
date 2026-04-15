@@ -819,8 +819,85 @@ pre .c-cli { color: #e8b560; }
 .sim-controls {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px 32px;
-  margin-bottom: 24px;
+  gap: 20px 28px;
+  margin-bottom: 20px;
+  align-items: start;
+}
+.sim-control {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  min-width: 0;
+}
+.sim-control label {
+  display: block;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+.sim-control label .val {
+  font-family: var(--mono);
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.simulator input[type="range"] {
+  width: 100%;
+  max-width: 100%;
+  accent-color: var(--rust);
+  cursor: pointer;
+  height: 1.25rem;
+}
+.sim-results {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 20px;
+  margin-bottom: 22px;
+  max-width: 520px;
+}
+.sim-result-block {
+  background: var(--paper-dark);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 14px 18px;
+  border-left: 3px solid var(--line);
+}
+.sim-result-block.cs {
+  border-left-color: var(--rust);
+}
+.sim-result-block.p2p {
+  border-left-color: var(--green);
+}
+.sim-result-block .lbl {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faded);
+  margin-bottom: 6px;
+}
+.sim-result-block .num {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--ink);
+}
+.sim-result-block.cs .num {
+  color: var(--rust);
+}
+.sim-result-block.p2p .num {
+  color: var(--green);
+}
+#sim-chart {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  display: block;
+  margin: 8px auto 0;
 }
 
 /* ---------- REVEAL ---------- */
@@ -980,6 +1057,10 @@ footer p {
   pre { font-size: 12px; }
   .stats { grid-template-columns: 1fr; }
   .sim-controls { grid-template-columns: 1fr; }
+  .sim-results {
+    grid-template-columns: 1fr;
+    max-width: none;
+  }
   p.lead::first-letter,
   .dropcap::first-letter { font-size: 4em; }
   .subpage-list { grid-template-columns: 1fr; }
