@@ -659,10 +659,6 @@
   const hintEl = panel.querySelector(".ktn-chat-hint");
 
   let selectedPreset = DEFAULT_PRESET;
-  try {
-    const stored = localStorage.getItem(PRESET_STORAGE_KEY);
-    if (stored && PRESET_ORDER.includes(stored)) selectedPreset = stored;
-  } catch (_) {}
 
   const listboxId = "ktn-chat-preset-listbox";
   let presetDropdownOpen = false;
@@ -944,6 +940,7 @@
   toggle.addEventListener("click", () => {
     panel.classList.add("open");
     toggle.style.display = "none";
+    setSelectedPreset(DEFAULT_PRESET);
     if (isMobile()) {
       document.body.classList.add("ktn-chat-open");
       scheduleSyncPanelViewport();
