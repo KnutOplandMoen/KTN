@@ -982,8 +982,6 @@ footer p {
   .sim-controls { grid-template-columns: 1fr; }
   p.lead::first-letter,
   .dropcap::first-letter { font-size: 4em; }
-  .page-nav { flex-direction: column; gap: 12px; }
-  .page-nav a { width: 100%; }
   .subpage-list { grid-template-columns: 1fr; }
   .window-vis .cell { width: 36px; height: 36px; font-size: 12px; }
   .window-vis { overflow-x: auto; }
@@ -993,29 +991,63 @@ footer p {
 
 /* ---------- PAGE NAVIGATION (prev/next) ---------- */
 .page-nav {
+  border-top: 1px solid var(--line);
+  background: var(--paper-dark);
+  padding: 40px 0 56px;
   display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 14px 18px;
   justify-content: space-between;
-  gap: 20px;
-  padding: 60px 0;
 }
-.page-nav a {
+.page-nav > .container {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 20px 24px;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 14px 18px;
+  justify-content: space-between;
+  flex: 1 1 100%;
+  min-width: 0;
+}
+.page-nav .container > a,
+.page-nav > a {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 14px 18px;
+  flex: 1 1 300px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 16px 20px;
   border: 1px solid var(--line);
   border-radius: 3px;
   text-decoration: none;
   color: inherit;
-  transition: border-color 0.15s, background 0.15s;
-  max-width: 48%;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
 }
-.page-nav a:hover {
+.page-nav a.next {
+  flex-direction: row-reverse;
+}
+.page-nav .container > a:only-child,
+.page-nav > a:only-child {
+  flex: 0 1 min(100%, 34rem);
+}
+.page-nav .container > a:only-child.next,
+.page-nav > a:only-child.next {
+  margin-left: auto;
+}
+.page-nav .container > a:only-child.prev,
+.page-nav > a:only-child.prev {
+  margin-right: auto;
+}
+.page-nav .container > a:hover,
+.page-nav > a:hover {
   border-color: var(--rust);
-  background: var(--paper-dark);
+  background: var(--paper);
+  box-shadow: 0 1px 0 rgba(26, 22, 18, 0.04);
 }
-.page-nav a.next { margin-left: auto; text-align: right; }
 .page-nav .nav-label {
+  flex: 0 0 auto;
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.15em;
@@ -1023,10 +1055,40 @@ footer p {
   color: var(--ink-ghost);
 }
 .page-nav .nav-title {
+  flex: 1;
+  min-width: 0;
   font-family: var(--serif);
   font-size: 18px;
   font-weight: 500;
+  line-height: 1.35;
   color: var(--ink);
+}
+.page-nav a.next .nav-title {
+  text-align: right;
+}
+@media (max-width: 768px) {
+  .page-nav { padding: 28px 0 40px; }
+  .page-nav > .container { flex-direction: column; }
+  .page-nav .container > a,
+  .page-nav > a {
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: none;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .page-nav .container > a:only-child,
+  .page-nav > a:only-child {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .page-nav a.next {
+    align-items: flex-end;
+  }
+  .page-nav a.next .nav-title {
+    text-align: right;
+  }
 }
 
 /* ---------- CHAPTER TOC (mini-innholdsfortegnelse) ---------- */

@@ -409,7 +409,7 @@ Content-Type: text/html
     <p>HTTP/2 also introduced <strong>server push</strong>: the server can send objects to the client <em>before the client has requested them</em>. When the server receives a request for an HTML page, it knows the client will soon need the CSS file and some images — and can proactively push these out instead of waiting for the client to parse the HTML and send new requests. This eliminates one extra RTT for each object that is pushed.</p>
 
     <figure class="fig-frame">
-      <svg viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg">
         <text x="170" y="22" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600" fill="#6b6257">HTTP/1.1</text>
         <text x="520" y="22" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600" fill="#6b6257">HTTP/2</text>
         <rect x="40" y="40" width="240" height="20" fill="#2d4a7a"/>
@@ -436,18 +436,27 @@ Content-Type: text/html
           <rect x="202" y="40" width="20" height="20" fill="#2d4a7a"/>
         </g>
         <text x="520" y="90" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#3d6b3a">small objects interleaved — all delivered quickly</text>
-        <text x="40" y="140" font-family="IBM Plex Sans" font-size="11" font-weight="600" fill="#6b6257">DELIVERY TIME</text>
-        <line x1="40" y1="150" x2="660" y2="150" stroke="#c9c0ae"/>
-        <text x="40" y="175" font-family="Newsreader" font-size="13" fill="#1a1612">HTTP/1.1:</text>
-        <text x="160" y="175" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a">O₁ ▬▬▬▬</text>
-        <text x="240" y="175" font-family="IBM Plex Mono" font-size="11" fill="#c68a1f">O₂</text>
-        <text x="270" y="175" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">O₃</text>
-        <text x="300" y="175" font-family="IBM Plex Mono" font-size="11" fill="#b04428">O₄</text>
-        <text x="40" y="200" font-family="Newsreader" font-size="13" fill="#1a1612">HTTP/2:</text>
-        <text x="160" y="200" font-family="IBM Plex Mono" font-size="11" fill="#c68a1f">O₂</text>
-        <text x="190" y="200" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">O₃</text>
-        <text x="220" y="200" font-family="IBM Plex Mono" font-size="11" fill="#b04428">O₄</text>
-        <text x="280" y="200" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a">O₁ (slightly delayed)</text>
+        <text x="40" y="118" font-family="IBM Plex Sans" font-size="10" font-weight="600" fill="#9a9085">time →</text>
+        <text x="40" y="136" font-family="IBM Plex Sans" font-size="11" font-weight="600" fill="#6b6257">DELIVERY TIME</text>
+        <line x1="40" y1="146" x2="660" y2="146" stroke="#c9c0ae"/>
+        <text x="40" y="162" font-family="Newsreader" font-size="13" fill="#1a1612">HTTP/1.1:</text>
+        <line x1="468" y1="146" x2="468" y2="156" stroke="#2d4a7a" stroke-width="2"/>
+        <text x="468" y="176" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a">O₁</text>
+        <line x1="502" y1="146" x2="502" y2="156" stroke="#c68a1f" stroke-width="2"/>
+        <text x="502" y="176" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#c68a1f">O₂</text>
+        <line x1="526" y1="146" x2="526" y2="156" stroke="#3d6b3a" stroke-width="2"/>
+        <text x="526" y="176" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">O₃</text>
+        <line x1="550" y1="146" x2="550" y2="156" stroke="#b04428" stroke-width="2"/>
+        <text x="550" y="176" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">O₄</text>
+        <text x="40" y="194" font-family="Newsreader" font-size="13" fill="#1a1612">HTTP/2:</text>
+        <line x1="168" y1="146" x2="168" y2="156" stroke="#c68a1f" stroke-width="2"/>
+        <text x="168" y="208" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#c68a1f">O₂</text>
+        <line x1="198" y1="146" x2="198" y2="156" stroke="#3d6b3a" stroke-width="2"/>
+        <text x="198" y="208" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">O₃</text>
+        <line x1="228" y1="146" x2="228" y2="156" stroke="#b04428" stroke-width="2"/>
+        <text x="228" y="208" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">O₄</text>
+        <line x1="318" y1="146" x2="318" y2="156" stroke="#2d4a7a" stroke-width="2"/>
+        <text x="318" y="208" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a">O₁ (slightly delayed)</text>
       </svg>
       <figcaption>HTTP/1.1 delivers in the ordered sequence — large objects block small ones. HTTP/2 interleaves frames from different objects, so small objects need not wait.</figcaption>
     </figure>
