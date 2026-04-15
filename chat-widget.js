@@ -17,11 +17,63 @@
         hint: "Free models — latency varies by preset. “Smarter, slower” is best for Norwegian and accuracy.",
         errPrefix: "Something went wrong: ",
         presetGroupAria: "Response speed vs quality",
+        presetPros: "Pros",
+        presetCons: "Cons",
+        presetTriggerHint: "Open list to change preset",
         presets: {
-          fast: { lines: ["Small"], badge: "Fast", title: "Lowest latency; Norwegian may be weaker." },
-          balanced: { lines: ["Balanced"], title: "Good default mix of speed and quality." },
-          quality: { lines: ["Smarter", "slower"], title: "Best answers; often slower or queued." },
-          quality_alt: { lines: ["Smarter (alt.)"], title: "Alternative heavy free model (OpenAI GPT-OSS 120B)." },
+          fast: {
+            lines: ["Small"],
+            badge: "Fast",
+            pros: [
+              "Usually the quickest replies",
+              "Light on resources",
+              "Fine for short or simple questions",
+            ],
+            cons: [
+              "Weaker Norwegian and terminology",
+              "Less depth on harder topics",
+              "Higher risk of oversimplifying",
+            ],
+          },
+          balanced: {
+            lines: ["Balanced"],
+            pros: [
+              "Solid tradeoff between speed and quality",
+              "Reliable default for everyday use",
+              "Predictable enough for most pages",
+            ],
+            cons: [
+              "Not as capable as the heavy presets",
+              "Can still take a few seconds when busy",
+              "May miss nuance on very hard questions",
+            ],
+          },
+          quality: {
+            lines: ["Smarter", "slower"],
+            pros: [
+              "Usually best Norwegian and accuracy",
+              "Stronger reasoning on difficult questions",
+              "Better for curriculum-style explanations",
+            ],
+            cons: [
+              "Often slower than lighter presets",
+              "May queue when traffic is high",
+              "More variable latency",
+            ],
+          },
+          quality_alt: {
+            lines: ["Smarter (alt.)"],
+            pros: [
+              "Alternative heavy free model (OpenAI GPT-OSS 120B)",
+              "Can suit some task types better than the default heavy model",
+              "Useful if the default heavy mode misbehaves",
+            ],
+            cons: [
+              "Often heavy and slow",
+              "Can be less stable under load",
+              "Different tone and habits than the default heavy mode",
+            ],
+          },
         },
       }
     : {
@@ -35,11 +87,63 @@
         hint: "Gratis modeller — hastighet varierer med valg. «Smartere, tregere» gir oftest best norsk og presisjon.",
         errPrefix: "Noe gikk galt: ",
         presetGroupAria: "Hastighet mot kvalitet",
+        presetPros: "Fordeler",
+        presetCons: "Ulemper",
+        presetTriggerHint: "Åpne liste for å bytte modus",
         presets: {
-          fast: { lines: ["Lett"], badge: "Rask", title: "Lavest latency; norsk kan svekkes." },
-          balanced: { lines: ["Balansert"], title: "God blanding av fart og kvalitet." },
-          quality: { lines: ["Smartere,", "tregere"], title: "Best svar; ofte tregere eller i kø." },
-          quality_alt: { lines: ["Smartere (alt.)"], title: "Alternativ tung gratismodell (OpenAI GPT-OSS 120B)." },
+          fast: {
+            lines: ["Lett"],
+            badge: "Rask",
+            pros: [
+              "Oftest raskest svar",
+              "Liten modell / lite ressursbruk",
+              "Greit til korte eller enkle spørsmål",
+            ],
+            cons: [
+              "Norsk og fagterminologi kan svekkes",
+              "Mindre dybde på vanskelige oppgaver",
+              "Større risiko for forenklinger",
+            ],
+          },
+          balanced: {
+            lines: ["Balansert"],
+            pros: [
+              "God balanse mellom fart og kvalitet",
+              "Pålitelig standard for daglig bruk",
+              "Stabilt nok til de fleste sider",
+            ],
+            cons: [
+              "Ikke like «smart» som de tunge modusene",
+              "Kan fortsatt ta noen sekunder ved last",
+              "Kan miste nyanser på svært vanskelige spørsmål",
+            ],
+          },
+          quality: {
+            lines: ["Smartere,", "tregere"],
+            pros: [
+              "Vanligvis best norsk og presisjon",
+              "Sterkere resonnering på vanskelige spørsmål",
+              "Bedre til pensum-lignende forklaringer",
+            ],
+            cons: [
+              "Oftest tregere enn lettere moduser",
+              "Kan stå i kø ved høy trafikk",
+              "Mer variabel forsinkelse (latency)",
+            ],
+          },
+          quality_alt: {
+            lines: ["Smartere (alt.)"],
+            pros: [
+              "Alternativ tung gratismodell (OpenAI GPT-OSS 120B)",
+              "Kan treffe bedre på enkelte typer oppgaver",
+              "Nyttig hvis standard tung modus oppfører seg rart",
+            ],
+            cons: [
+              "Ofte tung og treg",
+              "Kan være mindre stabil under høy last",
+              "Annet «tonefall» enn standard tung modus",
+            ],
+          },
         },
       };
 
@@ -68,7 +172,7 @@
       max-width: calc(100vw - 24px); max-height: calc(100vh - 24px);
       background: var(--paper, #f4f1ea);
       border: 1px solid var(--line, #c9c0ae);
-      border-radius: 14px; overflow: hidden;
+      border-radius: 14px; overflow: visible;
       box-shadow: 0 8px 40px rgba(0,0,0,.18);
       z-index: 10000;
       font-family: var(--sans, 'IBM Plex Sans', system-ui, sans-serif);
@@ -95,51 +199,69 @@
 
     .ktn-chat-presets {
       flex-shrink: 0;
+      position: relative;
+      z-index: 5;
       padding: 8px 10px;
       border-bottom: 1px solid var(--line, #c9c0ae);
       background: rgba(26, 22, 18, 0.04);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      align-items: stretch;
     }
     .ktn-chat-presets.ktn-chat-presets--busy { pointer-events: none; opacity: 0.65; }
-    .ktn-chat-preset-btn {
-      flex: 1 1 calc(50% - 3px);
-      min-width: 0;
-      font-size: 11px;
-      line-height: 1.2;
-      padding: 6px 8px;
+
+    .ktn-chat-preset-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 12px;
       border-radius: 8px;
       border: 1px solid var(--line, #c9c0ae);
       background: #fff;
       color: var(--ink, #1a1612);
       cursor: pointer;
       font-family: var(--sans, 'IBM Plex Sans', system-ui, sans-serif);
-      text-align: center;
+      text-align: left;
+      font-size: 13px;
+      line-height: 1.25;
       transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
     }
-    @media (min-width: 400px) {
-      .ktn-chat-preset-btn { flex: 1 1 auto; }
-    }
-    .ktn-chat-preset-btn:hover {
+    .ktn-chat-preset-trigger:hover {
       border-color: var(--ink-ghost, #a39886);
     }
-    .ktn-chat-preset-btn[aria-checked="true"] {
+    .ktn-chat-preset-trigger:focus-visible {
+      outline: 2px solid var(--rust, #b04428);
+      outline-offset: 1px;
+    }
+    .ktn-chat-preset-trigger[aria-expanded="true"] {
       border-color: var(--rust, #b04428);
       box-shadow: 0 0 0 1px var(--rust, #b04428);
       background: var(--paper-dark, #e8e3d6);
     }
-    .ktn-chat-preset-btn:focus-visible {
-      outline: 2px solid var(--rust, #b04428);
-      outline-offset: 1px;
-    }
-    .ktn-chat-preset-btn--fast[aria-checked="true"] {
+    .ktn-chat-preset-trigger--fast.ktn-chat-preset-trigger[aria-expanded="true"] {
       border-color: #1a6e3a;
       box-shadow: 0 0 0 1px #1a6e3a;
     }
+    .ktn-chat-preset-trigger-inner {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      flex: 1;
+    }
+    .ktn-chat-preset-trigger-chevron {
+      flex-shrink: 0;
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--ink-ghost, #a39886);
+      transition: transform 0.15s ease;
+    }
+    .ktn-chat-preset-trigger[aria-expanded="true"] .ktn-chat-preset-trigger-chevron {
+      transform: rotate(180deg);
+    }
     .ktn-chat-preset-badge {
-      display: block;
+      display: inline-block;
       font-size: 9px;
       font-weight: 600;
       letter-spacing: 0.04em;
@@ -148,19 +270,108 @@
       color: #fff;
       padding: 2px 6px;
       border-radius: 4px;
-      margin: 0 auto 3px;
-      width: fit-content;
-      max-width: 100%;
+      flex-shrink: 0;
     }
     .ktn-chat-preset-lines {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
     }
     .ktn-chat-preset-sub {
-      display: block;
-      font-size: 10px;
+      font-size: 11px;
       opacity: 0.78;
       font-weight: 400;
-      margin-top: 1px;
+    }
+
+    .ktn-chat-preset-dropdown {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      top: calc(100% - 1px);
+      margin-top: 4px;
+      max-height: min(340px, 55vh);
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: #fff;
+      border: 1px solid var(--line, #c9c0ae);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.14);
+      z-index: 6;
+    }
+    .ktn-chat-preset-dropdown[hidden] {
+      display: none !important;
+    }
+    .ktn-chat-preset-dropdown::-webkit-scrollbar { width: 5px; }
+    .ktn-chat-preset-dropdown::-webkit-scrollbar-thumb {
+      background: var(--line, #c9c0ae); border-radius: 4px;
+    }
+
+    .ktn-chat-preset-option {
+      display: block;
+      width: 100%;
+      padding: 8px 10px;
+      border: none;
+      border-bottom: 1px solid rgba(201, 192, 174, 0.55);
+      background: #fff;
+      color: var(--ink, #1a1612);
+      cursor: pointer;
+      font-family: var(--sans, 'IBM Plex Sans', system-ui, sans-serif);
+      text-align: left;
+      transition: background 0.12s;
+    }
+    .ktn-chat-preset-option:last-child {
+      border-bottom: none;
+    }
+    .ktn-chat-preset-option:hover {
+      background: var(--paper-dark, #e8e3d6);
+    }
+    .ktn-chat-preset-option:focus-visible {
+      outline: 2px solid var(--rust, #b04428);
+      outline-offset: -2px;
+      z-index: 1;
+      position: relative;
+    }
+    .ktn-chat-preset-option[aria-selected="true"] {
+      background: var(--paper-dark, #e8e3d6);
+      box-shadow: inset 3px 0 0 var(--rust, #b04428);
+    }
+    .ktn-chat-preset-option--fast[aria-selected="true"] {
+      box-shadow: inset 3px 0 0 #1a6e3a;
+    }
+    .ktn-chat-preset-option-head {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .ktn-chat-preset-option-label {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+    .ktn-chat-preset-option-block {
+      margin-top: 4px;
+      font-size: 10px;
+      line-height: 1.35;
+      color: var(--ink, #1a1612);
+    }
+    .ktn-chat-preset-option-block:first-of-type {
+      margin-top: 0;
+    }
+    .ktn-chat-preset-option-k {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-ghost, #a39886);
+      margin-bottom: 2px;
+    }
+    .ktn-chat-preset-option-block ul {
+      margin: 0;
+      padding-left: 14px;
+    }
+    .ktn-chat-preset-option-block li {
+      margin: 1px 0;
     }
 
     .ktn-chat-messages {
@@ -183,7 +394,57 @@
       background: var(--paper-dark, #e8e3d6);
       color: var(--ink, #1a1612);
       padding: 10px 14px; border-radius: 14px 14px 14px 4px;
-      white-space: pre-wrap; word-wrap: break-word;
+      word-wrap: break-word;
+      overflow-x: auto;
+    }
+    .ktn-msg-assistant > :first-child { margin-top: 0; }
+    .ktn-msg-assistant > :last-child { margin-bottom: 0; }
+    .ktn-msg-assistant p { margin: 0.4em 0; }
+    .ktn-msg-assistant h1, .ktn-msg-assistant h2, .ktn-msg-assistant h3,
+    .ktn-msg-assistant h4, .ktn-msg-assistant h5, .ktn-msg-assistant h6 {
+      margin: 0.55em 0 0.35em;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+    .ktn-msg-assistant h1 { font-size: 1.25em; }
+    .ktn-msg-assistant h2 { font-size: 1.15em; }
+    .ktn-msg-assistant h3 { font-size: 1.08em; }
+    .ktn-msg-assistant ul, .ktn-msg-assistant ol {
+      margin: 0.35em 0;
+      padding-left: 1.35em;
+    }
+    .ktn-msg-assistant li { margin: 0.2em 0; }
+    .ktn-msg-assistant blockquote {
+      margin: 0.45em 0;
+      padding: 0.2em 0 0.2em 0.75em;
+      border-left: 3px solid var(--line, #c9c0ae);
+      color: var(--ink-faded, #5c5348);
+    }
+    .ktn-msg-assistant a {
+      color: var(--rust, #b04428);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .ktn-msg-assistant a:hover { color: var(--rust-dark, #8a3420); }
+    .ktn-msg-assistant hr {
+      border: none;
+      border-top: 1px solid var(--line, #c9c0ae);
+      margin: 0.65em 0;
+    }
+    .ktn-msg-assistant table {
+      border-collapse: collapse;
+      margin: 0.5em 0;
+      font-size: 13px;
+      max-width: 100%;
+    }
+    .ktn-msg-assistant th, .ktn-msg-assistant td {
+      border: 1px solid var(--line, #c9c0ae);
+      padding: 4px 8px;
+      text-align: left;
+    }
+    .ktn-msg-assistant th {
+      background: rgba(0,0,0,.06);
+      font-weight: 600;
     }
     .ktn-msg-assistant code {
       font-family: var(--mono, 'IBM Plex Mono', monospace);
@@ -305,7 +566,7 @@
         <button class="ktn-chat-close" aria-label="${strings.closeAria}">&times;</button>
       </div>
     </div>
-    <div class="ktn-chat-presets" id="ktn-chat-presets" role="radiogroup" aria-label="${strings.presetGroupAria.replace(/"/g, "&quot;")}"></div>
+    <div class="ktn-chat-presets" id="ktn-chat-presets"></div>
     <div class="ktn-chat-messages"></div>
     <form class="ktn-chat-form" autocomplete="off">
       <input class="ktn-chat-input" placeholder="${strings.placeholder.replace(/"/g, "&quot;")}" />
@@ -332,35 +593,42 @@
     if (stored && PRESET_ORDER.includes(stored)) selectedPreset = stored;
   } catch (_) {}
 
-  function syncPresetRadios() {
-    presetsEl.querySelectorAll(".ktn-chat-preset-btn").forEach((btn) => {
-      btn.setAttribute("aria-checked", btn.dataset.preset === selectedPreset ? "true" : "false");
-    });
+  const listboxId = "ktn-chat-preset-listbox";
+  let presetDropdownOpen = false;
+  let presetOutsideCloseBound = null;
+  const presetOptionButtons = [];
+
+  function presetHumanLabel(spec) {
+    if (spec.lines.length === 1) return spec.lines[0].trim();
+    const first = spec.lines[0].replace(/\s*,\s*$/, "").trim();
+    return first + ", " + spec.lines[1].trim();
   }
 
-  function setSelectedPreset(id) {
-    if (!PRESET_ORDER.includes(id)) return;
-    selectedPreset = id;
-    try {
-      localStorage.setItem(PRESET_STORAGE_KEY, id);
-    } catch (_) {}
-    syncPresetRadios();
-  }
+  const presetTrigger = document.createElement("button");
+  presetTrigger.type = "button";
+  presetTrigger.className = "ktn-chat-preset-trigger";
+  presetTrigger.id = "ktn-chat-preset-trigger";
+  presetTrigger.setAttribute("aria-haspopup", "listbox");
+  presetTrigger.setAttribute("aria-expanded", "false");
+  presetTrigger.setAttribute("aria-controls", listboxId);
 
-  PRESET_ORDER.forEach((id) => {
-    const spec = strings.presets[id];
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "ktn-chat-preset-btn";
-    if (id === "fast") btn.classList.add("ktn-chat-preset-btn--fast");
-    btn.dataset.preset = id;
-    btn.title = spec.title;
-    btn.setAttribute("role", "radio");
+  const listbox = document.createElement("div");
+  listbox.id = listboxId;
+  listbox.setAttribute("role", "listbox");
+  listbox.className = "ktn-chat-preset-dropdown";
+  listbox.setAttribute("aria-label", strings.presetGroupAria);
+  listbox.hidden = true;
+
+  function renderTriggerInner() {
+    const spec = strings.presets[selectedPreset];
+    presetTrigger.classList.toggle("ktn-chat-preset-trigger--fast", selectedPreset === "fast");
+    const inner = document.createElement("span");
+    inner.className = "ktn-chat-preset-trigger-inner";
     if (spec.badge) {
       const badge = document.createElement("span");
       badge.className = "ktn-chat-preset-badge";
       badge.textContent = spec.badge;
-      btn.appendChild(badge);
+      inner.appendChild(badge);
     }
     const linesWrap = document.createElement("span");
     linesWrap.className = "ktn-chat-preset-lines";
@@ -374,11 +642,193 @@
       }
       linesWrap.appendChild(span);
     });
-    btn.appendChild(linesWrap);
-    btn.addEventListener("click", () => setSelectedPreset(id));
-    presetsEl.appendChild(btn);
+    inner.appendChild(linesWrap);
+    const chev = document.createElement("span");
+    chev.className = "ktn-chat-preset-trigger-chevron";
+    chev.setAttribute("aria-hidden", "true");
+    presetTrigger.replaceChildren(inner, chev);
+    presetTrigger.setAttribute(
+      "aria-label",
+      strings.presetGroupAria + ": " + presetHumanLabel(spec) + ". " + strings.presetTriggerHint
+    );
+  }
+
+  function focusPresetOptionIndex(idx) {
+    const clamped = Math.max(0, Math.min(idx, presetOptionButtons.length - 1));
+    presetOptionButtons.forEach((b, i) => {
+      b.setAttribute("tabindex", i === clamped ? "0" : "-1");
+    });
+    presetOptionButtons[clamped].focus();
+  }
+
+  function getPresetOptionIndex(id) {
+    return PRESET_ORDER.indexOf(id);
+  }
+
+  function closePresetDropdown() {
+    if (!presetDropdownOpen) return;
+    presetDropdownOpen = false;
+    listbox.hidden = true;
+    presetTrigger.setAttribute("aria-expanded", "false");
+    presetOptionButtons.forEach((b) => {
+      b.setAttribute("tabindex", "-1");
+    });
+    if (presetOutsideCloseBound) {
+      document.removeEventListener("mousedown", presetOutsideCloseBound, true);
+      document.removeEventListener("touchstart", presetOutsideCloseBound, true);
+      presetOutsideCloseBound = null;
+    }
+  }
+
+  function openPresetDropdown() {
+    if (presetDropdownOpen) return;
+    presetDropdownOpen = true;
+    listbox.hidden = false;
+    presetTrigger.setAttribute("aria-expanded", "true");
+    const idx = getPresetOptionIndex(selectedPreset);
+    requestAnimationFrame(() => {
+      focusPresetOptionIndex(idx >= 0 ? idx : 0);
+    });
+    presetOutsideCloseBound = function (e) {
+      if (!presetsEl.contains(e.target)) closePresetDropdown();
+    };
+    document.addEventListener("mousedown", presetOutsideCloseBound, true);
+    document.addEventListener("touchstart", presetOutsideCloseBound, true);
+  }
+
+  function togglePresetDropdown() {
+    if (presetDropdownOpen) closePresetDropdown();
+    else openPresetDropdown();
+  }
+
+  presetTrigger.addEventListener("click", function (e) {
+    e.stopPropagation();
+    togglePresetDropdown();
   });
-  syncPresetRadios();
+
+  presetTrigger.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && presetDropdownOpen) {
+      e.preventDefault();
+      closePresetDropdown();
+      return;
+    }
+    if (e.key === "ArrowDown" && !presetDropdownOpen) {
+      e.preventDefault();
+      openPresetDropdown();
+    }
+  });
+
+  listbox.addEventListener("keydown", function (e) {
+    const opts = presetOptionButtons;
+    const cur = opts.findIndex(function (b) {
+      return b.getAttribute("tabindex") === "0";
+    });
+    const i = cur >= 0 ? cur : 0;
+    if (e.key === "Escape") {
+      e.preventDefault();
+      e.stopPropagation();
+      closePresetDropdown();
+      presetTrigger.focus();
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      focusPresetOptionIndex(Math.min(i + 1, opts.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      focusPresetOptionIndex(Math.max(i - 1, 0));
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      focusPresetOptionIndex(0);
+    } else if (e.key === "End") {
+      e.preventDefault();
+      focusPresetOptionIndex(opts.length - 1);
+    }
+  });
+
+  PRESET_ORDER.forEach(function (id) {
+    const spec = strings.presets[id];
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "ktn-chat-preset-option";
+    if (id === "fast") btn.classList.add("ktn-chat-preset-option--fast");
+    btn.dataset.preset = id;
+    btn.setAttribute("role", "option");
+    btn.setAttribute("aria-selected", "false");
+    btn.setAttribute("tabindex", "-1");
+
+    const head = document.createElement("div");
+    head.className = "ktn-chat-preset-option-head";
+    if (spec.badge) {
+      const badge = document.createElement("span");
+      badge.className = "ktn-chat-preset-badge";
+      badge.textContent = spec.badge;
+      head.appendChild(badge);
+    }
+    const labelEl = document.createElement("span");
+    labelEl.className = "ktn-chat-preset-option-label";
+    labelEl.textContent = presetHumanLabel(spec);
+    head.appendChild(labelEl);
+    btn.appendChild(head);
+
+    const prosBlock = document.createElement("div");
+    prosBlock.className = "ktn-chat-preset-option-block";
+    const prosK = document.createElement("div");
+    prosK.className = "ktn-chat-preset-option-k";
+    prosK.textContent = strings.presetPros;
+    const prosUl = document.createElement("ul");
+    spec.pros.forEach(function (t) {
+      const li = document.createElement("li");
+      li.textContent = t;
+      prosUl.appendChild(li);
+    });
+    prosBlock.appendChild(prosK);
+    prosBlock.appendChild(prosUl);
+    btn.appendChild(prosBlock);
+
+    const consBlock = document.createElement("div");
+    consBlock.className = "ktn-chat-preset-option-block";
+    const consK = document.createElement("div");
+    consK.className = "ktn-chat-preset-option-k";
+    consK.textContent = strings.presetCons;
+    const consUl = document.createElement("ul");
+    spec.cons.forEach(function (t) {
+      const li = document.createElement("li");
+      li.textContent = t;
+      consUl.appendChild(li);
+    });
+    consBlock.appendChild(consK);
+    consBlock.appendChild(consUl);
+    btn.appendChild(consBlock);
+
+    btn.addEventListener("click", function () {
+      setSelectedPreset(id);
+      closePresetDropdown();
+      presetTrigger.focus();
+    });
+
+    listbox.appendChild(btn);
+    presetOptionButtons.push(btn);
+  });
+
+  presetsEl.appendChild(presetTrigger);
+  presetsEl.appendChild(listbox);
+
+  function syncPresetUI() {
+    renderTriggerInner();
+    presetOptionButtons.forEach(function (btn) {
+      btn.setAttribute("aria-selected", btn.dataset.preset === selectedPreset ? "true" : "false");
+    });
+  }
+
+  function setSelectedPreset(id) {
+    if (!PRESET_ORDER.includes(id)) return;
+    selectedPreset = id;
+    try {
+      localStorage.setItem(PRESET_STORAGE_KEY, id);
+    } catch (_) {}
+    syncPresetUI();
+  }
+
+  syncPresetUI();
 
   let history = [];
   let busy = false;
@@ -395,6 +845,7 @@
   });
 
   closeBtn.addEventListener("click", () => {
+    closePresetDropdown();
     panel.classList.remove("open");
     toggle.style.display = "flex";
     document.body.classList.remove("ktn-chat-open");
@@ -457,24 +908,150 @@
     return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
-  function renderMarkdown(raw) {
+  const KTN_MARKED_SRC =
+    "https://cdn.jsdelivr.net/npm/marked@15.0.7/lib/marked.umd.min.js";
+  const KTN_MARKED_INTEGRITY =
+    "sha384-EjL6IeH3KCXB9dkBQaYqnb/m6V3TOBP++kooL0bl43Vt6eCFJ2Pxck/B/dU4PB8d";
+  const KTN_DOMPURIFY_SRC =
+    "https://cdn.jsdelivr.net/npm/dompurify@3.2.4/dist/purify.min.js";
+  const KTN_DOMPURIFY_INTEGRITY =
+    "sha384-eEu5CTj3qGvu9PdJuS+YlkNi7d2XxQROAFYOr59zgObtlcux1ae1Il3u7jvdCSWu";
+
+  let markdownLibsPromise = null;
+  let markdownLibsReady = false;
+  let markdownMarkedConfigured = false;
+
+  function loadExternalScript(src, integrity) {
+    return new Promise(function (resolve, reject) {
+      const sel = 'script[data-ktn-chat-lib="' + src.replace(/"/g, "") + '"]';
+      const existing = document.querySelector(sel);
+      if (existing) {
+        if (existing.getAttribute("data-ktn-loaded") === "1") {
+          resolve();
+          return;
+        }
+        existing.addEventListener(
+          "load",
+          function () {
+            resolve();
+          },
+          { once: true }
+        );
+        existing.addEventListener(
+          "error",
+          function () {
+            reject(new Error("script load failed"));
+          },
+          { once: true }
+        );
+        return;
+      }
+      const s = document.createElement("script");
+      s.src = src;
+      s.integrity = integrity;
+      s.crossOrigin = "anonymous";
+      s.setAttribute("data-ktn-chat-lib", src);
+      s.onload = function () {
+        s.setAttribute("data-ktn-loaded", "1");
+        resolve();
+      };
+      s.onerror = function () {
+        reject(new Error("script load failed"));
+      };
+      document.head.appendChild(s);
+    });
+  }
+
+  function configureMarkedOnce() {
+    if (markdownMarkedConfigured) return;
+    const m = typeof marked !== "undefined" ? marked : null;
+    if (!m || typeof m.use !== "function") return;
+    m.use({ breaks: true, gfm: true });
+    markdownMarkedConfigured = true;
+  }
+
+  function ensureMarkdownLibs() {
+    if (markdownLibsReady) return Promise.resolve();
+    if (
+      typeof marked !== "undefined" &&
+      marked &&
+      typeof marked.parse === "function" &&
+      typeof DOMPurify !== "undefined" &&
+      DOMPurify &&
+      typeof DOMPurify.sanitize === "function"
+    ) {
+      configureMarkedOnce();
+      markdownLibsReady = true;
+      return Promise.resolve();
+    }
+    if (!markdownLibsPromise) {
+      markdownLibsPromise = loadExternalScript(
+        "ktn-chat-lib-marked",
+        KTN_MARKED_SRC,
+        KTN_MARKED_INTEGRITY
+      )
+        .then(function () {
+          return loadExternalScript(
+            "ktn-chat-lib-dompurify",
+            KTN_DOMPURIFY_SRC,
+            KTN_DOMPURIFY_INTEGRITY
+          );
+        })
+        .then(function () {
+          if (
+            typeof marked === "undefined" ||
+            !marked.parse ||
+            typeof DOMPurify === "undefined" ||
+            !DOMPurify.sanitize
+          ) {
+            throw new Error("markdown globals missing");
+          }
+          configureMarkedOnce();
+          markdownLibsReady = true;
+        })
+        .catch(function (err) {
+          console.warn("KTN chat: could not load markdown libraries, using plain text fallback", err);
+          markdownLibsPromise = null;
+        });
+    }
+    return markdownLibsPromise || Promise.resolve();
+  }
+
+  function renderMarkdownFallback(raw) {
     let html = escapeHtml(raw);
 
-    // Code blocks: ```...```
     html = html.replace(/```(\w*)\n([\s\S]*?)```/g, function (_, lang, code) {
-      return '<pre><code>' + code.trimEnd() + '</code></pre>';
+      return "<pre><code>" + code.trimEnd() + "</code></pre>";
     });
 
-    // Inline code: `...`
-    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+    html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
 
-    // Bold: **...**
-    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
 
-    // Italic: *...*
-    html = html.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
+    html = html.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, "<em>$1</em>");
 
     return html;
+  }
+
+  function renderMarkdown(raw) {
+    if (raw == null || raw === "") return "";
+    if (
+      markdownLibsReady &&
+      typeof marked !== "undefined" &&
+      marked &&
+      typeof marked.parse === "function" &&
+      typeof DOMPurify !== "undefined" &&
+      DOMPurify &&
+      typeof DOMPurify.sanitize === "function"
+    ) {
+      try {
+        const dirty = marked.parse(String(raw), { async: false });
+        return DOMPurify.sanitize(dirty);
+      } catch (e) {
+        console.warn("KTN chat: markdown parse failed, using fallback", e);
+      }
+    }
+    return renderMarkdownFallback(raw);
   }
 
   function addMessage(role, content) {
@@ -693,11 +1270,15 @@
     sendBtn.disabled = true;
     if (hintEl) hintEl.hidden = true;
 
+    await ensureMarkdownLibs();
+
     addMessage("user", question);
 
     const loader = addLoadingIndicator();
+    closePresetDropdown();
     presetsEl.classList.add("ktn-chat-presets--busy");
-    presetsEl.querySelectorAll(".ktn-chat-preset-btn").forEach((b) => {
+    presetTrigger.disabled = true;
+    presetOptionButtons.forEach((b) => {
       b.disabled = true;
     });
 
@@ -741,7 +1322,8 @@
       busy = false;
       sendBtn.disabled = false;
       presetsEl.classList.remove("ktn-chat-presets--busy");
-      presetsEl.querySelectorAll(".ktn-chat-preset-btn").forEach((b) => {
+      presetTrigger.disabled = false;
+      presetOptionButtons.forEach((b) => {
         b.disabled = false;
       });
     }
