@@ -324,6 +324,7 @@
   const closeBtn = panel.querySelector(".ktn-chat-close");
   const resetBtn = panel.querySelector(".ktn-chat-reset");
   const presetsEl = panel.querySelector("#ktn-chat-presets");
+  const hintEl = panel.querySelector(".ktn-chat-hint");
 
   let selectedPreset = DEFAULT_PRESET;
   try {
@@ -402,6 +403,7 @@
   resetBtn.addEventListener("click", () => {
     history = [];
     messagesEl.innerHTML = "";
+    if (hintEl) hintEl.hidden = false;
   });
 
   function getPageContext() {
@@ -689,6 +691,7 @@
     if (busy) return;
     busy = true;
     sendBtn.disabled = true;
+    if (hintEl) hintEl.hidden = true;
 
     addMessage("user", question);
 
