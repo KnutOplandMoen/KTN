@@ -21,8 +21,9 @@
         openChat: "Open chat",
         title: "KTN study assistant",
         resetAria: "Reset chat",
-        resetTitle: "Reset chat",
+        resetTitle: "Clear all messages and start a new conversation",
         closeAria: "Close chat",
+        closeTitle: "Hide the chat panel",
         placeholder: "Ask about the curriculum…",
         send: "Send",
         hint: "Free models — latency varies by preset. “Smarter, slower” is best for Norwegian and accuracy.",
@@ -95,8 +96,9 @@
         openChat: "Åpne chat",
         title: "KTN Studieassistent",
         resetAria: "Nullstill chat",
-        resetTitle: "Nullstill chat",
+        resetTitle: "Slett alle meldinger og start en ny samtale",
         closeAria: "Lukk chat",
+        closeTitle: "Skjul chatpanelet",
         placeholder: "Spør om pensum…",
         send: "Send",
         hint: "Gratis modeller — hastighet varierer med valg. «Smartere, tregere» gir oftest best norsk og presisjon.",
@@ -168,6 +170,10 @@
 
   const style = document.createElement("style");
   style.textContent = `
+    :root {
+      --ktn-chat-rail-width: 420px;
+    }
+
     #ktn-chat-toggle {
       position: fixed;
       bottom: calc(28px + env(safe-area-inset-bottom, 0px));
@@ -190,7 +196,7 @@
     #ktn-chat-panel {
       display: none; flex-direction: column;
       position: fixed; bottom: 28px; right: 28px;
-      width: 420px; height: 540px;
+      width: var(--ktn-chat-rail-width); height: 540px;
       max-width: calc(100vw - 24px); max-height: calc(100vh - 24px);
       background: var(--paper, #f4f1ea);
       border: 1px solid var(--line, #c9c0ae);
@@ -207,21 +213,31 @@
 
     .ktn-chat-header {
       padding: 14px 18px;
-      background: var(--ink, #1a1612);
-      color: var(--paper, #f4f1ea);
+      background: rgba(244, 241, 234, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line, #c9c0ae);
+      color: var(--ink, #1a1612);
       display: flex; align-items: center; justify-content: space-between;
       flex-shrink: 0;
     }
-    .ktn-chat-header strong { font-size: 15px; letter-spacing: .01em; }
+    .ktn-chat-header strong { font-size: 15px; letter-spacing: .01em; color: var(--ink, #1a1612); }
     .ktn-chat-header-actions { display: flex; align-items: center; gap: 8px; }
     .ktn-chat-reset, .ktn-chat-close {
-      background: none; border: none; color: var(--paper, #f4f1ea);
+      background: none; border: none; color: var(--ink-faded, #6b6257);
       cursor: pointer; padding: 0 4px;
-      line-height: 1; opacity: .7; transition: opacity .15s;
+      line-height: 1; transition: color 0.15s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
-    .ktn-chat-reset { font-size: 16px; }
-    .ktn-chat-close { font-size: 22px; }
-    .ktn-chat-reset:hover, .ktn-chat-close:hover { opacity: 1; }
+    .ktn-chat-header-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      pointer-events: none;
+    }
+    .ktn-chat-reset:hover, .ktn-chat-close:hover { color: var(--rust, #b04428); }
 
     .ktn-chat-presets {
       flex-shrink: 0;
@@ -646,6 +662,42 @@
       font-size: 11px; opacity: .55; margin-top: 4px; text-align: right;
     }
 
+    @keyframes ktnChatRailPanelIn {
+      from { opacity: 0.88; transform: translateX(12px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @media (min-width: 769px) {
+      body {
+        transition: padding-right 0.28s ease;
+      }
+      body.ktn-chat-open {
+        padding-right: var(--ktn-chat-rail-width);
+      }
+      #ktn-chat-panel {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: auto;
+        width: var(--ktn-chat-rail-width);
+        height: 100vh;
+        height: 100dvh;
+        max-width: none;
+        max-height: none;
+        border-radius: 12px 0 0 12px;
+        border-right: none;
+        box-shadow: -8px 0 32px rgba(0,0,0,.14);
+      }
+      #ktn-chat-panel.open {
+        animation: ktnChatRailPanelIn 0.28s ease;
+      }
+    }
+
+    @media (min-width: 769px) and (prefers-reduced-motion: reduce) {
+      body { transition: none; }
+      #ktn-chat-panel.open { animation: none; }
+    }
+
     @media (max-width: 768px) {
       #ktn-chat-panel {
         top: 0; left: 0; bottom: 0; right: 0;
@@ -700,6 +752,7 @@
         max-height: min(320px, 50vh, 38dvh);
       }
       body.ktn-chat-open {
+        padding-right: 0;
         overflow: hidden !important;
         overscroll-behavior: none;
       }
@@ -732,8 +785,20 @@
     <div class="ktn-chat-header">
       <strong>${strings.title}</strong>
       <div class="ktn-chat-header-actions">
-        <button class="ktn-chat-reset" aria-label="${strings.resetAria}" title="${strings.resetTitle}">&#x21bb;</button>
-        <button class="ktn-chat-close" aria-label="${strings.closeAria}">&times;</button>
+        <button class="ktn-chat-reset" type="button" aria-label="${strings.resetAria}" title="${strings.resetTitle.replace(/"/g, "&quot;")}">
+          <svg class="ktn-chat-header-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            <path d="M12 7v6"/>
+            <path d="M9 10h6"/>
+          </svg>
+        </button>
+        <button class="ktn-chat-close" type="button" aria-label="${strings.closeAria}" title="${strings.closeTitle.replace(/"/g, "&quot;")}">
+          <svg class="ktn-chat-header-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="4" width="14" height="16" rx="2" ry="2"/>
+            <line x1="14" y1="4" x2="14" y2="20"/>
+            <polyline points="10 10 7 12 10 14"/>
+          </svg>
+        </button>
       </div>
     </div>
     <div class="ktn-chat-presets" id="ktn-chat-presets"></div>
@@ -1060,8 +1125,8 @@
     panel.classList.add("open");
     toggle.style.display = "none";
     setSelectedPreset(DEFAULT_PRESET);
+    document.body.classList.add("ktn-chat-open");
     if (isMobile()) {
-      document.body.classList.add("ktn-chat-open");
       scheduleSyncPanelViewport();
     }
     input.focus();
