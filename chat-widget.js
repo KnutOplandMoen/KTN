@@ -1098,17 +1098,9 @@
       return Promise.resolve();
     }
     if (!markdownLibsPromise) {
-      markdownLibsPromise = loadExternalScript(
-        "ktn-chat-lib-marked",
-        KTN_MARKED_SRC,
-        KTN_MARKED_INTEGRITY
-      )
+      markdownLibsPromise = loadExternalScript(KTN_MARKED_SRC, KTN_MARKED_INTEGRITY)
         .then(function () {
-          return loadExternalScript(
-            "ktn-chat-lib-dompurify",
-            KTN_DOMPURIFY_SRC,
-            KTN_DOMPURIFY_INTEGRITY
-          );
+          return loadExternalScript(KTN_DOMPURIFY_SRC, KTN_DOMPURIFY_INTEGRITY);
         })
         .then(function () {
           if (
