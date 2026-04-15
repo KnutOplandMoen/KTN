@@ -394,8 +394,8 @@
       background: var(--paper-dark, #e8e3d6);
       color: var(--ink, #1a1612);
       padding: 10px 14px; border-radius: 14px 14px 14px 4px;
+      white-space: pre-wrap;
       word-wrap: break-word;
-      overflow-x: auto;
     }
     .ktn-msg-assistant > :first-child { margin-top: 0; }
     .ktn-msg-assistant > :last-child { margin-bottom: 0; }
