@@ -903,6 +903,7 @@
 
   let history = [];
   let busy = false;
+  const pendingQuestions = [];
 
   function isMobile() {
     return window.matchMedia("(max-width: 768px)").matches;
