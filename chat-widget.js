@@ -394,7 +394,12 @@
       background: var(--line, #c9c0ae); border-radius: 4px;
     }
 
-    .ktn-msg { max-width: 88%; line-height: 1.55; font-size: 14.5px; }
+    .ktn-msg {
+      max-width: 88%;
+      line-height: 1.55;
+      font-size: 14.5px;
+      flex-shrink: 0;
+    }
     .ktn-msg-user {
       align-self: flex-end;
       background: var(--rust, #b04428); color: #fff;
@@ -407,7 +412,8 @@
       padding: 10px 14px; border-radius: 14px 14px 14px 4px;
       white-space: pre-wrap;
       word-wrap: break-word;
-      overflow-x: auto;
+      overflow: visible;
+      min-width: 0;
     }
     .ktn-msg-assistant > :first-child { margin-top: 0; }
     .ktn-msg-assistant > :last-child { margin-bottom: 0; }
