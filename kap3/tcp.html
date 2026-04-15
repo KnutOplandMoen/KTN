@@ -693,59 +693,77 @@ document.querySelectorAll('.quiz').forEach(q => {
       ${content}
     </svg>`;
   }
-  function arrow(x1,y1,x2,y2,color,label,labelX,labelY,extra){
-    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="1.5" marker-end="url(#m1)" ${extra||''}/>
-            <text x="${labelX}" y="${labelY}" font-family="IBM Plex Mono" font-size="11" fill="${color}" font-weight="600">${label}</text>`;
+  function labelAlongLine(x1, y1, x2, y2, color, label, opts) {
+    opts = opts || {};
+    const o = opts.off != null ? opts.off : 13;
+    const mx = (x1 + x2) / 2;
+    const my = (y1 + y2) / 2;
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    let deg = Math.atan2(dy, dx) * 180 / Math.PI;
+    if (deg > 90) deg -= 180;
+    if (deg <= -90) deg += 180;
+    const len = Math.hypot(dx, dy) || 1;
+    const nx = (dy / len) * o;
+    const ny = (-dx / len) * o;
+    const lx = mx + nx;
+    const ly = my + ny;
+    const fw = opts.fontWeight ? ` font-weight="${opts.fontWeight}"` : '';
+    return `<text x="${lx.toFixed(2)}" y="${ly.toFixed(2)}" transform="rotate(${deg.toFixed(3)} ${lx.toFixed(2)} ${ly.toFixed(2)})" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="11" fill="${color}"${fw}>${label}</text>`;
   }
-  function lostArrow(x1,y1,x2,y2,label,labelX,labelY){
+  function arrow(x1,y1,x2,y2,color,label,extra){
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="1.5" marker-end="url(#m1)" ${extra||''}/>
+            ${labelAlongLine(x1,y1,x2,y2,color,label,{ fontWeight: '600' })}`;
+  }
+  function lostArrow(x1,y1,x2,y2,label){
     return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#b04428" stroke-width="1.5" stroke-dasharray="4,3"/>
             <text x="${x2+5}" y="${y2+5}" font-family="IBM Plex Mono" font-size="14" fill="#b04428" font-weight="700">×</text>
-            <text x="${labelX}" y="${labelY}" font-family="IBM Plex Mono" font-size="11" fill="#b04428">${label}</text>`;
+            ${labelAlongLine(x1,y1,x2,y2,'#b04428',label,{ off: 11 })}`;
   }
 
   function stage1a(){
     return stageBase(
-      arrow(100,60,515,110,'#1a1612','Seq=92, 8 bytes',150,82) +
-      lostArrow(515,130,300,200,'ACK=100 (TAPT)',180,180)
+      arrow(100,60,515,110,'#1a1612','Seq=92, 8 bytes') +
+      lostArrow(515,130,300,200,'ACK=100 (TAPT)')
     );
   }
   function stage1b(){
     return stageBase(
       `<text x="20" y="60" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">timeout</text>` +
-      arrow(100,80,515,130,'#b04428','Seq=92 (resendt)',150,102) +
-      arrow(515,150,105,210,'#2d4a7a','ACK=100',280,180)
+      arrow(100,80,515,130,'#b04428','Seq=92 (resendt)') +
+      arrow(515,150,105,210,'#2d4a7a','ACK=100')
     );
   }
   function stage2a(){
     return stageBase(
-      arrow(100,55,515,90,'#1a1612','Seq=92, 8 bytes',150,72) +
-      arrow(100,80,515,120,'#1a1612','Seq=100, 20 bytes',150,100) +
-      arrow(515,140,105,180,'#2d4a7a','ACK=100',270,158) +
-      arrow(515,170,105,210,'#2d4a7a','ACK=120',270,188)
+      arrow(100,55,515,90,'#1a1612','Seq=92, 8 bytes') +
+      arrow(100,80,515,120,'#1a1612','Seq=100, 20 bytes') +
+      arrow(515,140,105,180,'#2d4a7a','ACK=100') +
+      arrow(515,170,105,210,'#2d4a7a','ACK=120')
     );
   }
   function stage2b(){
     return stageBase(
       `<text x="20" y="55" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">premature</text>
        <text x="20" y="68" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">timeout</text>` +
-      arrow(100,90,515,130,'#b04428','Seq=92 (resendt)',150,108) +
-      arrow(515,160,105,200,'#2d4a7a','ACK=120 (kumulativ)',230,178) +
+      arrow(100,90,515,130,'#b04428','Seq=92 (resendt)') +
+      arrow(515,160,105,200,'#2d4a7a','ACK=120 (kumulativ)') +
       `<text x="380" y="225" font-family="Newsreader" font-size="11" font-style="italic" fill="#3d6b3a">B kaster duplikatet</text>`
     );
   }
   function stage3a(){
     return stageBase(
-      arrow(100,55,515,90,'#1a1612','Seq=92, 8 bytes',150,72) +
-      arrow(100,80,515,120,'#1a1612','Seq=100, 20 bytes',150,100) +
-      lostArrow(515,140,300,200,'ACK=100 (TAPT)',180,178)
+      arrow(100,55,515,90,'#1a1612','Seq=92, 8 bytes') +
+      arrow(100,80,515,120,'#1a1612','Seq=100, 20 bytes') +
+      lostArrow(515,140,300,200,'ACK=100 (TAPT)')
     );
   }
   function stage3b(){
     return stageBase(
-      arrow(100,55,515,90,'#1a1612','Seq=92, 8 bytes',150,72) +
-      arrow(100,80,515,120,'#1a1612','Seq=100, 20 bytes',150,100) +
-      lostArrow(515,140,300,200,'ACK=100 (TAPT)',180,178) +
-      arrow(515,210,105,250,'#3d6b3a','ACK=120 ✓',260,228)
+      arrow(100,55,515,90,'#1a1612','Seq=92, 8 bytes') +
+      arrow(100,80,515,120,'#1a1612','Seq=100, 20 bytes') +
+      lostArrow(515,140,300,200,'ACK=100 (TAPT)') +
+      arrow(515,210,105,250,'#3d6b3a','ACK=120 ✓')
     );
   }
 
