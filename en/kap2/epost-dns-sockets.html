@@ -87,21 +87,18 @@
     <h3>SMTP — a conversation in plaintext</h3>
     <p>SMTP is a TCP-based protocol on <strong>port 25</strong>. It is remarkably simple: commands are sent as ASCII text, and the server responds with a three-digit status code followed by a short text. The entire conversation between two mail servers looks like this:</p>
 
-    <pre><span class="c-srv">S: 220 hamburger.edu</span>
-<span class="c-cli">C: HELO crepes.fr</span>
-<span class="c-srv">S: 250 Hello crepes.fr, pleased to meet you</span>
-<span class="c-cli">C: MAIL FROM: &lt;alice@crepes.fr&gt;</span>
-<span class="c-srv">S: 250 alice@crepes.fr... Sender ok</span>
-<span class="c-cli">C: RCPT TO: &lt;bob@hamburger.edu&gt;</span>
-<span class="c-srv">S: 250 bob@hamburger.edu ... Recipient ok</span>
-<span class="c-cli">C: DATA</span>
-<span class="c-srv">S: 354 Enter mail, end with "." on a line by itself</span>
-<span class="c-cli">C: Do you like ketchup?</span>
-<span class="c-cli">C: How about pickles?</span>
-<span class="c-cli">C: .</span>
-<span class="c-srv">S: 250 Message accepted for delivery</span>
-<span class="c-cli">C: QUIT</span>
-<span class="c-srv">S: 221 hamburger.edu closing connection</span></pre>
+    <div class="stepper" id="stepper-smtp">
+      <div class="label">SMTP conversation — step by step</div>
+      <div class="stage">
+        <pre><span class="smtp-line" data-step="1"><span class="c-srv">S: 220 hamburger.edu</span></span><span class="smtp-line" data-step="2"><span class="c-cli">C: HELO crepes.fr</span></span><span class="smtp-line" data-step="3"><span class="c-srv">S: 250 Hello crepes.fr, pleased to meet you</span></span><span class="smtp-line" data-step="4"><span class="c-cli">C: MAIL FROM: &lt;alice@crepes.fr&gt;</span></span><span class="smtp-line" data-step="5"><span class="c-srv">S: 250 alice@crepes.fr... Sender ok</span></span><span class="smtp-line" data-step="6"><span class="c-cli">C: RCPT TO: &lt;bob@hamburger.edu&gt;</span></span><span class="smtp-line" data-step="7"><span class="c-srv">S: 250 bob@hamburger.edu ... Recipient ok</span></span><span class="smtp-line" data-step="8"><span class="c-cli">C: DATA</span></span><span class="smtp-line" data-step="9"><span class="c-srv">S: 354 Enter mail, end with "." on a line by itself</span></span><span class="smtp-line" data-step="10"><span class="c-cli">C: Do you like ketchup?</span></span><span class="smtp-line" data-step="11"><span class="c-cli">C: How about pickles?</span></span><span class="smtp-line" data-step="12"><span class="c-cli">C: .</span></span><span class="smtp-line" data-step="13"><span class="c-srv">S: 250 Message accepted for delivery</span></span><span class="smtp-line" data-step="14"><span class="c-cli">C: QUIT</span></span><span class="smtp-line" data-step="15"><span class="c-srv">S: 221 hamburger.edu closing connection</span></span></pre>
+      </div>
+      <div class="step-desc" id="smtp-desc">Click "Next" to see each line of the SMTP exchange between two mail servers.</div>
+      <div class="controls">
+        <button type="button" id="smtp-prev" disabled>&#8249; Previous</button>
+        <span class="progress" id="smtp-counter">Step 0 / 15</span>
+        <button type="button" id="smtp-next">Next &#8250;</button>
+      </div>
+    </div>
 
     <p>This is the entire protocol in a nutshell. Three phases: handshaking (<code>HELO</code>), transfer (<code>MAIL FROM</code>, <code>RCPT TO</code>, <code>DATA</code>), and closure (<code>QUIT</code>). The client — which is the sending mail server here — writes commands, the server responds with status codes. <code>250</code> means OK, <code>354</code> means "continue," <code>220</code> and <code>221</code> are opening and closing. Just like HTTP, but older.</p>
 
@@ -614,6 +611,53 @@ while True:
       var s = parseInt(l.dataset.step);
       l.style.opacity = (s <= step) ? '1' : '0';
       l.style.transition = 'opacity 0.3s';
+    });
+    counter.textContent = 'Step ' + step + ' / ' + max;
+    desc.textContent = descriptions[step];
+    prev.disabled = step === 0;
+    next.disabled = step === max;
+  }
+
+  next.addEventListener('click', function() { if (step < max) { step++; render(); } });
+  prev.addEventListener('click', function() { if (step > 0) { step--; render(); } });
+  render();
+})();
+
+// SMTP transcript stepper
+(function() {
+  var stepper = document.getElementById('stepper-smtp');
+  if (!stepper) return;
+  var lines = stepper.querySelectorAll('.smtp-line');
+  var prev = document.getElementById('smtp-prev');
+  var next = document.getElementById('smtp-next');
+  var counter = document.getElementById('smtp-counter');
+  var desc = document.getElementById('smtp-desc');
+  var step = 0;
+  var max = 15;
+
+  var descriptions = [
+    'Click "Next" to see each line of the SMTP exchange between two mail servers.',
+    'The receiving server greets with 220 — the connection is up and it is ready.',
+    'The sending server introduces itself with HELO and its domain name.',
+    '250: the server accepts the greeting ("pleased to meet you").',
+    'MAIL FROM states the envelope sender (at the SMTP layer — not necessarily the From: header in the message).',
+    '250 confirms the sender address is accepted.',
+    'RCPT TO states who the message should be delivered to on this server.',
+    '250 confirms the recipient is OK.',
+    'DATA asks to send the actual message content.',
+    '354 means "send the body now" — and reminds you to end with a period on its own line.',
+    'First line of the message body (after DATA) is sent as plain text.',
+    'Next line of the body.',
+    'A line containing only "." marks the end of the message (CRLF.CRLF).',
+    '250: the full message was received and queued for delivery.',
+    'QUIT indicates the client is done and wants to close.',
+    '221 confirms the server is closing the SMTP connection.'
+  ];
+
+  function render() {
+    lines.forEach(function(l) {
+      var s = parseInt(l.dataset.step, 10);
+      l.style.display = (s <= step) ? 'block' : 'none';
     });
     counter.textContent = 'Step ' + step + ' / ' + max;
     desc.textContent = descriptions[step];

@@ -87,21 +87,18 @@
     <h3>SMTP — en samtale i klartekst</h3>
     <p>SMTP er en TCP-basert protokoll på <strong>port 25</strong>. Den er bemerkelsesverdig enkel: kommandoer sendes som ASCII-tekst, og serveren svarer med en tresifret statuskode etterfulgt av en kort tekst. Hele samtalen mellom to mailservere ser slik ut:</p>
 
-    <pre><span class="c-srv">S: 220 hamburger.edu</span>
-<span class="c-cli">C: HELO crepes.fr</span>
-<span class="c-srv">S: 250 Hello crepes.fr, pleased to meet you</span>
-<span class="c-cli">C: MAIL FROM: &lt;alice@crepes.fr&gt;</span>
-<span class="c-srv">S: 250 alice@crepes.fr... Sender ok</span>
-<span class="c-cli">C: RCPT TO: &lt;bob@hamburger.edu&gt;</span>
-<span class="c-srv">S: 250 bob@hamburger.edu ... Recipient ok</span>
-<span class="c-cli">C: DATA</span>
-<span class="c-srv">S: 354 Enter mail, end with "." on a line by itself</span>
-<span class="c-cli">C: Do you like ketchup?</span>
-<span class="c-cli">C: How about pickles?</span>
-<span class="c-cli">C: .</span>
-<span class="c-srv">S: 250 Message accepted for delivery</span>
-<span class="c-cli">C: QUIT</span>
-<span class="c-srv">S: 221 hamburger.edu closing connection</span></pre>
+    <div class="stepper" id="stepper-smtp">
+      <div class="label">SMTP-samtale — steg for steg</div>
+      <div class="stage">
+        <pre><span class="smtp-line" data-step="1"><span class="c-srv">S: 220 hamburger.edu</span></span><span class="smtp-line" data-step="2"><span class="c-cli">C: HELO crepes.fr</span></span><span class="smtp-line" data-step="3"><span class="c-srv">S: 250 Hello crepes.fr, pleased to meet you</span></span><span class="smtp-line" data-step="4"><span class="c-cli">C: MAIL FROM: &lt;alice@crepes.fr&gt;</span></span><span class="smtp-line" data-step="5"><span class="c-srv">S: 250 alice@crepes.fr... Sender ok</span></span><span class="smtp-line" data-step="6"><span class="c-cli">C: RCPT TO: &lt;bob@hamburger.edu&gt;</span></span><span class="smtp-line" data-step="7"><span class="c-srv">S: 250 bob@hamburger.edu ... Recipient ok</span></span><span class="smtp-line" data-step="8"><span class="c-cli">C: DATA</span></span><span class="smtp-line" data-step="9"><span class="c-srv">S: 354 Enter mail, end with "." on a line by itself</span></span><span class="smtp-line" data-step="10"><span class="c-cli">C: Do you like ketchup?</span></span><span class="smtp-line" data-step="11"><span class="c-cli">C: How about pickles?</span></span><span class="smtp-line" data-step="12"><span class="c-cli">C: .</span></span><span class="smtp-line" data-step="13"><span class="c-srv">S: 250 Message accepted for delivery</span></span><span class="smtp-line" data-step="14"><span class="c-cli">C: QUIT</span></span><span class="smtp-line" data-step="15"><span class="c-srv">S: 221 hamburger.edu closing connection</span></span></pre>
+      </div>
+      <div class="step-desc" id="smtp-desc">Trykk «Neste» for å se hver linje i SMTP-samtalen mellom to mailservere.</div>
+      <div class="controls">
+        <button type="button" id="smtp-prev" disabled>‹ Forrige</button>
+        <span class="progress" id="smtp-counter">Steg 0 / 15</span>
+        <button type="button" id="smtp-next">Neste ›</button>
+      </div>
+    </div>
 
     <p>Dette er hele protokollen i et nøtteskall. Tre faser: håndhilsing (<code>HELO</code>), overføring (<code>MAIL FROM</code>, <code>RCPT TO</code>, <code>DATA</code>), og avslutning (<code>QUIT</code>). Klienten — det er den sendende mailserveren her — skriver kommandoer, serveren svarer med statuskoder. <code>250</code> betyr OK, <code>354</code> betyr «fortsett», <code>220</code> og <code>221</code> er åpning og lukking. Akkurat som HTTP, men eldre.</p>
 
@@ -614,6 +611,53 @@ while True:
       var s = parseInt(l.dataset.step);
       l.style.opacity = (s <= step) ? '1' : '0';
       l.style.transition = 'opacity 0.3s';
+    });
+    counter.textContent = 'Steg ' + step + ' / ' + max;
+    desc.textContent = descriptions[step];
+    prev.disabled = step === 0;
+    next.disabled = step === max;
+  }
+
+  next.addEventListener('click', function() { if (step < max) { step++; render(); } });
+  prev.addEventListener('click', function() { if (step > 0) { step--; render(); } });
+  render();
+})();
+
+// SMTP transcript stepper
+(function() {
+  var stepper = document.getElementById('stepper-smtp');
+  if (!stepper) return;
+  var lines = stepper.querySelectorAll('.smtp-line');
+  var prev = document.getElementById('smtp-prev');
+  var next = document.getElementById('smtp-next');
+  var counter = document.getElementById('smtp-counter');
+  var desc = document.getElementById('smtp-desc');
+  var step = 0;
+  var max = 15;
+
+  var descriptions = [
+    'Trykk «Neste» for å se hver linje i SMTP-samtalen mellom to mailservere.',
+    'Mottakerserveren hilser med 220 — forbindelsen er oppe og den er klar.',
+    'Den sendende serveren presenterer seg med HELO og sitt domenenavn.',
+    '250: serveren godtar hilsenen («pleased to meet you»).',
+    'MAIL FROM oppgir konvolutt-avsenderen (SMTP-laget, ikke nødvendigvis From:-headeren i brevet).',
+    '250 bekrefter at avsenderadressen er akseptert.',
+    'RCPT TO oppgir hvem meldingen skal leveres til på denne serveren.',
+    '250 bekrefter at mottakeren er ok.',
+    'DATA ber om å få sende selve meldingsinnholdet.',
+    '354 betyr «send innholdet nå» — og minner om å avslutte med punktum på egen linje.',
+    'Første linje i meldingskroppen (etter DATA) sendes som ren tekst.',
+    'Neste linje i kroppen.',
+    'En linje som bare inneholder «.» markerer slutten på meldingen (CRLF.CRLF).',
+    '250: hele meldingen er mottatt og lagt i kø for levering.',
+    'QUIT sier fra at klienten er ferdig og vil lukke.',
+    '221 bekrefter at serveren lukker SMTP-forbindelsen.'
+  ];
+
+  function render() {
+    lines.forEach(function(l) {
+      var s = parseInt(l.dataset.step, 10);
+      l.style.display = (s <= step) ? 'block' : 'none';
     });
     counter.textContent = 'Steg ' + step + ' / ' + max;
     desc.textContent = descriptions[step];

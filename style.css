@@ -558,6 +558,13 @@ pre .keyword, pre .kw, pre .c-key { color: #c68a1f; }
 pre .value, pre .c-srv { color: #9fb56b; }
 pre .c-cli { color: #e8b560; }
 
+#stepper-smtp .stage pre {
+  margin: 0;
+}
+#stepper-smtp pre .smtp-line {
+  display: block;
+}
+
 /* ---------- DIVIDERS ---------- */
 .divider,
 .ornament {
