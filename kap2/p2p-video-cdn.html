@@ -88,9 +88,9 @@
         <line x1="50" y1="100" x2="580" y2="100" stroke="#ddd5c4" stroke-dasharray="2,3"/>
         <line x1="50" y1="140" x2="580" y2="140" stroke="#ddd5c4" stroke-dasharray="2,3"/>
         <line x1="50" y1="180" x2="580" y2="180" stroke="#ddd5c4" stroke-dasharray="2,3"/>
-        <text x="45" y="103" font-family="IBM Plex Mono" font-size="9" fill="#a39886" text-anchor="end">2.0</text>
-        <text x="45" y="143" font-family="IBM Plex Mono" font-size="9" fill="#a39886" text-anchor="end">1.0</text>
-        <text x="45" y="183" font-family="IBM Plex Mono" font-size="9" fill="#a39886" text-anchor="end">0.0</text>
+        <text id="sim-y-max" x="45" y="103" font-family="IBM Plex Mono" font-size="9" fill="#a39886" text-anchor="end">2.0</text>
+        <text id="sim-y-mid" x="45" y="143" font-family="IBM Plex Mono" font-size="9" fill="#a39886" text-anchor="end">1.0</text>
+        <text id="sim-y-min" x="45" y="183" font-family="IBM Plex Mono" font-size="9" fill="#a39886" text-anchor="end">0.0</text>
         <path id="cs-line" d="" fill="none" stroke="#b04428" stroke-width="2"/>
         <path id="p2p-line" d="" fill="none" stroke="#3d6b3a" stroke-width="2"/>
         <circle id="cs-dot" cx="0" cy="0" r="4" fill="#b04428"/>
@@ -279,6 +279,9 @@ setupQuiz('quiz2');
   var p2pLine = document.getElementById('p2p-line');
   var csDot = document.getElementById('cs-dot');
   var p2pDot = document.getElementById('p2p-dot');
+  var yTickMax = document.getElementById('sim-y-max');
+  var yTickMid = document.getElementById('sim-y-mid');
+  var yTickMin = document.getElementById('sim-y-min');
 
   function csTime(N, us) { return Math.max(N/us, 1); }
   function p2pTime(N, us) {
@@ -286,13 +289,20 @@ setupQuiz('quiz2');
   }
 
   function xMap(n) { return 50 + (n-1) * (530/49); }
-  function yMap(t) { return 200 - Math.min(t, 3.5) * (180/3.5); }
+  function timeAxisMax(us) {
+    var m = 1;
+    for (var n = 1; n <= 50; n++) {
+      m = Math.max(m, csTime(n, us), p2pTime(n, us));
+    }
+    return Math.max(m * 1.08, 0.01);
+  }
+  function yMap(t, tMax) { return 200 - (t / tMax) * 180; }
 
-  function buildPath(fn, us) {
+  function buildPath(fn, us, tMax) {
     var d = '';
     for (var n = 1; n <= 50; n++) {
       var t = fn(n, us);
-      d += (n===1 ? 'M ' : ' L ') + xMap(n).toFixed(1) + ' ' + yMap(t).toFixed(1);
+      d += (n===1 ? 'M ' : ' L ') + xMap(n).toFixed(1) + ' ' + yMap(t, tMax).toFixed(1);
     }
     return d;
   }
@@ -300,18 +310,22 @@ setupQuiz('quiz2');
   function update() {
     var N = +rN.value;
     var us = +rUs.value;
+    var tMax = timeAxisMax(us);
     vN.textContent = N;
     vUs.textContent = us;
     var cs = csTime(N, us);
     var p2p = p2pTime(N, us);
     csOut.textContent = cs.toFixed(2);
     p2pOut.textContent = p2p.toFixed(2);
-    csLine.setAttribute('d', buildPath(csTime, us));
-    p2pLine.setAttribute('d', buildPath(p2pTime, us));
+    csLine.setAttribute('d', buildPath(csTime, us, tMax));
+    p2pLine.setAttribute('d', buildPath(p2pTime, us, tMax));
     csDot.setAttribute('cx', xMap(N));
-    csDot.setAttribute('cy', yMap(cs));
+    csDot.setAttribute('cy', yMap(cs, tMax));
     p2pDot.setAttribute('cx', xMap(N));
-    p2pDot.setAttribute('cy', yMap(p2p));
+    p2pDot.setAttribute('cy', yMap(p2p, tMax));
+    if (yTickMax) yTickMax.textContent = tMax.toFixed(1);
+    if (yTickMid) yTickMid.textContent = (tMax / 2).toFixed(1);
+    if (yTickMin) yTickMin.textContent = '0.0';
   }
   rN.addEventListener('input', update);
   rUs.addEventListener('input', update);
