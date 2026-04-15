@@ -8,6 +8,14 @@
   const DEFAULT_PRESET = "balanced";
   const PRESET_ORDER = ["fast", "balanced", "quality", "quality_alt"];
 
+  /** Display names aligned with default OpenRouter slugs in api/chat.js (env can override server-side). */
+  const PRESET_MODEL_NAMES = {
+    fast: "Liquid LFM 2.5 1.2B Instruct",
+    balanced: "Google Gemma 4 26B IT",
+    quality: "NVIDIA Nemotron 3 Super 120B",
+    quality_alt: "OpenAI GPT-OSS 120B",
+  };
+
   const strings = isEn
     ? {
         openChat: "Open chat",
@@ -22,6 +30,7 @@
         presetGroupAria: "Response speed vs quality",
         presetPros: "Pros",
         presetCons: "Cons",
+        presetModelLabel: "Model",
         presetTriggerHint: "Open list to change preset",
         presets: {
           fast: {
@@ -40,6 +49,7 @@
           },
           balanced: {
             lines: ["Balanced"],
+            badge: "Mid",
             pros: [
               "Solid tradeoff between speed and quality",
               "Reliable default for everyday use",
@@ -53,6 +63,7 @@
           },
           quality: {
             lines: ["Smarter", "slower"],
+            badge: "Heavy",
             pros: [
               "Usually best Norwegian and accuracy",
               "Stronger reasoning on difficult questions",
@@ -66,6 +77,7 @@
           },
           quality_alt: {
             lines: ["Smarter (alt.)"],
+            badge: "Alt.",
             pros: [
               "Alternative heavy free model (OpenAI GPT-OSS 120B)",
               "Can suit some task types better than the default heavy model",
@@ -92,6 +104,7 @@
         presetGroupAria: "Hastighet mot kvalitet",
         presetPros: "Fordeler",
         presetCons: "Ulemper",
+        presetModelLabel: "Modell",
         presetTriggerHint: "Åpne liste for å bytte modus",
         presets: {
           fast: {
@@ -110,6 +123,7 @@
           },
           balanced: {
             lines: ["Balansert"],
+            badge: "Middels",
             pros: [
               "God balanse mellom fart og kvalitet",
               "Pålitelig standard for daglig bruk",
@@ -123,6 +137,7 @@
           },
           quality: {
             lines: ["Smartere,", "tregere"],
+            badge: "Tung",
             pros: [
               "Vanligvis best norsk og presisjon",
               "Sterkere resonnering på vanskelige spørsmål",
@@ -136,6 +151,7 @@
           },
           quality_alt: {
             lines: ["Smartere (alt.)"],
+            badge: "Alt.",
             pros: [
               "Alternativ tung gratismodell (OpenAI GPT-OSS 120B)",
               "Kan treffe bedre på enkelte typer oppgaver",
@@ -242,14 +258,38 @@
       outline: 2px solid var(--rust, #b04428);
       outline-offset: 1px;
     }
+    .ktn-chat-preset-trigger--fast:focus-visible {
+      outline-color: #1a6e3a;
+    }
+    .ktn-chat-preset-trigger--balanced:focus-visible {
+      outline-color: #b04428;
+    }
+    .ktn-chat-preset-trigger--quality:focus-visible {
+      outline-color: #1a5599;
+    }
+    .ktn-chat-preset-trigger--quality_alt:focus-visible {
+      outline-color: #553685;
+    }
     .ktn-chat-preset-trigger[aria-expanded="true"] {
       border-color: var(--rust, #b04428);
       box-shadow: 0 0 0 1px var(--rust, #b04428);
       background: var(--paper-dark, #e8e3d6);
     }
-    .ktn-chat-preset-trigger--fast.ktn-chat-preset-trigger[aria-expanded="true"] {
+    .ktn-chat-preset-trigger--fast[aria-expanded="true"] {
       border-color: #1a6e3a;
       box-shadow: 0 0 0 1px #1a6e3a;
+    }
+    .ktn-chat-preset-trigger--balanced[aria-expanded="true"] {
+      border-color: #b04428;
+      box-shadow: 0 0 0 1px #b04428;
+    }
+    .ktn-chat-preset-trigger--quality[aria-expanded="true"] {
+      border-color: #1a5599;
+      box-shadow: 0 0 0 1px #1a5599;
+    }
+    .ktn-chat-preset-trigger--quality_alt[aria-expanded="true"] {
+      border-color: #553685;
+      box-shadow: 0 0 0 1px #553685;
     }
     .ktn-chat-preset-trigger-inner {
       display: flex;
@@ -276,12 +316,15 @@
       font-weight: 600;
       letter-spacing: 0.04em;
       text-transform: uppercase;
-      background: #1a6e3a;
       color: #fff;
       padding: 2px 6px;
       border-radius: 4px;
       flex-shrink: 0;
     }
+    .ktn-chat-preset-badge--fast { background: #1a6e3a; }
+    .ktn-chat-preset-badge--balanced { background: #b04428; }
+    .ktn-chat-preset-badge--quality { background: #1a5599; }
+    .ktn-chat-preset-badge--quality_alt { background: #553685; }
     .ktn-chat-preset-lines {
       display: flex;
       flex-direction: column;
@@ -348,6 +391,27 @@
     .ktn-chat-preset-option--fast[aria-selected="true"] {
       box-shadow: inset 3px 0 0 #1a6e3a;
     }
+    .ktn-chat-preset-option--balanced[aria-selected="true"] {
+      box-shadow: inset 3px 0 0 #b04428;
+    }
+    .ktn-chat-preset-option--quality[aria-selected="true"] {
+      box-shadow: inset 3px 0 0 #1a5599;
+    }
+    .ktn-chat-preset-option--quality_alt[aria-selected="true"] {
+      box-shadow: inset 3px 0 0 #553685;
+    }
+    .ktn-chat-preset-option--fast:focus-visible {
+      outline-color: #1a6e3a;
+    }
+    .ktn-chat-preset-option--balanced:focus-visible {
+      outline-color: #b04428;
+    }
+    .ktn-chat-preset-option--quality:focus-visible {
+      outline-color: #1a5599;
+    }
+    .ktn-chat-preset-option--quality_alt:focus-visible {
+      outline-color: #553685;
+    }
     .ktn-chat-preset-option-head {
       display: flex;
       align-items: center;
@@ -358,6 +422,41 @@
       font-size: 12px;
       font-weight: 600;
       line-height: 1.2;
+    }
+    .ktn-chat-preset-option-model {
+      margin: 0 0 6px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      line-height: 1.35;
+      background: rgba(26, 22, 18, 0.06);
+    }
+    .ktn-chat-preset-option--fast .ktn-chat-preset-option-model {
+      background: rgba(26, 110, 58, 0.1);
+    }
+    .ktn-chat-preset-option--balanced .ktn-chat-preset-option-model {
+      background: rgba(176, 68, 40, 0.1);
+    }
+    .ktn-chat-preset-option--quality .ktn-chat-preset-option-model {
+      background: rgba(26, 85, 153, 0.1);
+    }
+    .ktn-chat-preset-option--quality_alt .ktn-chat-preset-option-model {
+      background: rgba(85, 54, 133, 0.1);
+    }
+    .ktn-chat-preset-option-model-k {
+      display: block;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-ghost, #a39886);
+      margin-bottom: 2px;
+    }
+    .ktn-chat-preset-option-model-v {
+      display: block;
+      color: var(--ink, #1a1612);
+      font-weight: 500;
+      word-break: break-word;
     }
     .ktn-chat-preset-option-block {
       margin-top: 4px;
@@ -688,12 +787,13 @@
 
   function renderTriggerInner() {
     const spec = strings.presets[selectedPreset];
-    presetTrigger.classList.toggle("ktn-chat-preset-trigger--fast", selectedPreset === "fast");
+    presetTrigger.className =
+      "ktn-chat-preset-trigger ktn-chat-preset-trigger--" + selectedPreset;
     const inner = document.createElement("span");
     inner.className = "ktn-chat-preset-trigger-inner";
     if (spec.badge) {
       const badge = document.createElement("span");
-      badge.className = "ktn-chat-preset-badge";
+      badge.className = "ktn-chat-preset-badge ktn-chat-preset-badge--" + selectedPreset;
       badge.textContent = spec.badge;
       inner.appendChild(badge);
     }
@@ -716,7 +816,15 @@
     presetTrigger.replaceChildren(inner, chev);
     presetTrigger.setAttribute(
       "aria-label",
-      strings.presetGroupAria + ": " + presetHumanLabel(spec) + ". " + strings.presetTriggerHint
+      strings.presetGroupAria +
+        ": " +
+        presetHumanLabel(spec) +
+        ". " +
+        strings.presetModelLabel +
+        ": " +
+        PRESET_MODEL_NAMES[selectedPreset] +
+        ". " +
+        strings.presetTriggerHint
     );
   }
 
@@ -815,8 +923,7 @@
     const spec = strings.presets[id];
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.className = "ktn-chat-preset-option";
-    if (id === "fast") btn.classList.add("ktn-chat-preset-option--fast");
+    btn.className = "ktn-chat-preset-option ktn-chat-preset-option--" + id;
     btn.dataset.preset = id;
     btn.setAttribute("role", "option");
     btn.setAttribute("aria-selected", "false");
@@ -826,7 +933,7 @@
     head.className = "ktn-chat-preset-option-head";
     if (spec.badge) {
       const badge = document.createElement("span");
-      badge.className = "ktn-chat-preset-badge";
+      badge.className = "ktn-chat-preset-badge ktn-chat-preset-badge--" + id;
       badge.textContent = spec.badge;
       head.appendChild(badge);
     }
@@ -835,6 +942,18 @@
     labelEl.textContent = presetHumanLabel(spec);
     head.appendChild(labelEl);
     btn.appendChild(head);
+
+    const modelRow = document.createElement("div");
+    modelRow.className = "ktn-chat-preset-option-model";
+    const modelK = document.createElement("span");
+    modelK.className = "ktn-chat-preset-option-model-k";
+    modelK.textContent = strings.presetModelLabel;
+    const modelV = document.createElement("span");
+    modelV.className = "ktn-chat-preset-option-model-v";
+    modelV.textContent = PRESET_MODEL_NAMES[id];
+    modelRow.appendChild(modelK);
+    modelRow.appendChild(modelV);
+    btn.appendChild(modelRow);
 
     const prosBlock = document.createElement("div");
     prosBlock.className = "ktn-chat-preset-option-block";
