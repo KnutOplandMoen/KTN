@@ -794,9 +794,8 @@
         </button>
         <button class="ktn-chat-close" type="button" aria-label="${strings.closeAria}" title="${strings.closeTitle.replace(/"/g, "&quot;")}">
           <svg class="ktn-chat-header-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="5" y="4" width="14" height="16" rx="2" ry="2"/>
-            <line x1="14" y1="4" x2="14" y2="20"/>
-            <polyline points="10 10 7 12 10 14"/>
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
           </svg>
         </button>
       </div>
