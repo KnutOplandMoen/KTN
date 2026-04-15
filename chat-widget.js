@@ -1409,7 +1409,7 @@
   const loadingMessages = isEn ? loadingMessagesEn : loadingMessagesNo;
 
   function addLoadingIndicator() {
-    const ESTIMATE_MS = 30000;
+    const ESTIMATE_MS = 10000;
     const div = document.createElement("div");
     div.className = "ktn-msg ktn-msg-assistant";
 
