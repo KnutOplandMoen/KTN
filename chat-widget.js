@@ -150,12 +150,15 @@
   const style = document.createElement("style");
   style.textContent = `
     #ktn-chat-toggle {
-      position: fixed; bottom: 28px; right: 28px;
+      position: fixed;
+      bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+      right: calc(28px + env(safe-area-inset-right, 0px));
       width: 54px; height: 54px;
       background: var(--rust, #b04428);
       border: none; border-radius: 50%;
       cursor: pointer; z-index: 10000;
       display: flex; align-items: center; justify-content: center;
+      touch-action: manipulation;
       box-shadow: 0 4px 16px rgba(0,0,0,.22);
       transition: transform .15s ease, box-shadow .15s ease;
     }
@@ -177,7 +180,11 @@
       z-index: 10000;
       font-family: var(--sans, 'IBM Plex Sans', system-ui, sans-serif);
     }
-    #ktn-chat-panel.open { display: flex; }
+    #ktn-chat-panel.open {
+      display: flex;
+      min-height: 0;
+      overscroll-behavior: contain;
+    }
 
     .ktn-chat-header {
       padding: 14px 18px;
@@ -289,7 +296,7 @@
       right: 10px;
       top: calc(100% - 1px);
       margin-top: 4px;
-      max-height: min(340px, 55vh);
+      max-height: min(340px, 55vh, 40dvh);
       overflow-y: auto;
       overflow-x: hidden;
       background: #fff;
@@ -375,7 +382,11 @@
     }
 
     .ktn-chat-messages {
-      flex: 1; overflow-y: auto; padding: 18px;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 18px;
       display: flex; flex-direction: column; gap: 14px;
     }
     .ktn-chat-messages::-webkit-scrollbar { width: 5px; }
@@ -396,6 +407,7 @@
       padding: 10px 14px; border-radius: 14px 14px 14px 4px;
       white-space: pre-wrap;
       word-wrap: break-word;
+      overflow-x: auto;
     }
     .ktn-msg-assistant > :first-child { margin-top: 0; }
     .ktn-msg-assistant > :last-child { margin-bottom: 0; }
@@ -533,9 +545,31 @@
         height: 100dvh;
         max-width: 100%; max-height: 100%;
         border-radius: 0;
+        min-height: 0;
       }
       #ktn-chat-panel .ktn-chat-header {
         padding-top: calc(14px + env(safe-area-inset-top, 0px));
+        padding-left: calc(18px + env(safe-area-inset-left, 0px));
+        padding-right: calc(18px + env(safe-area-inset-right, 0px));
+      }
+      #ktn-chat-panel .ktn-chat-header-actions {
+        gap: 4px;
+      }
+      #ktn-chat-panel .ktn-chat-reset,
+      #ktn-chat-panel .ktn-chat-close {
+        min-width: 44px;
+        min-height: 44px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        touch-action: manipulation;
+      }
+      #ktn-chat-panel .ktn-chat-presets {
+        padding-left: calc(10px + env(safe-area-inset-left, 0px));
+        padding-right: calc(10px + env(safe-area-inset-right, 0px));
+      }
+      #ktn-chat-panel .ktn-chat-messages {
         padding-left: calc(18px + env(safe-area-inset-left, 0px));
         padding-right: calc(18px + env(safe-area-inset-right, 0px));
       }
@@ -544,8 +578,36 @@
         padding-left: calc(14px + env(safe-area-inset-left, 0px));
         padding-right: calc(14px + env(safe-area-inset-right, 0px));
       }
+      #ktn-chat-panel .ktn-chat-input {
+        font-size: 16px;
+        touch-action: manipulation;
+      }
+      #ktn-chat-panel .ktn-chat-send {
+        font-size: 16px;
+        min-height: 44px;
+        padding: 9px 16px;
+        touch-action: manipulation;
+      }
+      #ktn-chat-panel .ktn-chat-preset-dropdown {
+        max-height: min(320px, 50vh, 38dvh);
+      }
       body.ktn-chat-open {
         overflow: hidden !important;
+        overscroll-behavior: none;
+      }
+    }
+
+    @media (max-width: 380px) {
+      #ktn-chat-panel .ktn-chat-form {
+        flex-wrap: wrap;
+      }
+      #ktn-chat-panel .ktn-chat-input {
+        flex: 1 1 100%;
+        min-width: 0;
+      }
+      #ktn-chat-panel .ktn-chat-send {
+        flex: 1 1 100%;
+        width: 100%;
       }
     }
   `;
@@ -837,10 +899,39 @@
     return window.matchMedia("(max-width: 768px)").matches;
   }
 
+  function clearPanelViewportStyles() {
+    panel.style.height = "";
+    panel.style.top = "";
+    panel.style.bottom = "";
+  }
+
+  function syncPanelViewport() {
+    if (!panel.classList.contains("open") || !isMobile()) {
+      clearPanelViewportStyles();
+      return;
+    }
+    if (window.visualViewport) {
+      const vv = window.visualViewport;
+      panel.style.top = vv.offsetTop + "px";
+      panel.style.height = vv.height + "px";
+      panel.style.bottom = "auto";
+    } else {
+      panel.style.top = "0px";
+      panel.style.height = window.innerHeight + "px";
+      panel.style.bottom = "auto";
+    }
+  }
+
   toggle.addEventListener("click", () => {
     panel.classList.add("open");
     toggle.style.display = "none";
-    if (isMobile()) document.body.classList.add("ktn-chat-open");
+    if (isMobile()) {
+      document.body.classList.add("ktn-chat-open");
+      requestAnimationFrame(() => {
+        syncPanelViewport();
+        requestAnimationFrame(syncPanelViewport);
+      });
+    }
     input.focus();
   });
 
@@ -849,6 +940,7 @@
     panel.classList.remove("open");
     toggle.style.display = "flex";
     document.body.classList.remove("ktn-chat-open");
+    clearPanelViewportStyles();
   });
 
   resetBtn.addEventListener("click", () => {
@@ -1329,21 +1421,16 @@
     }
   }
 
-  if (window.visualViewport && isMobile()) {
-    const onViewportResize = () => {
-      if (!panel.classList.contains("open") || !isMobile()) return;
-      const vvh = window.visualViewport.height;
-      const offset = window.visualViewport.offsetTop;
-      panel.style.height = vvh + "px";
-      panel.style.top = offset + "px";
-    };
-    window.visualViewport.addEventListener("resize", onViewportResize);
-    window.visualViewport.addEventListener("scroll", onViewportResize);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", syncPanelViewport);
+    window.visualViewport.addEventListener("scroll", syncPanelViewport);
   }
+  window.addEventListener("resize", syncPanelViewport);
 
   input.addEventListener("focus", () => {
     if (!isMobile()) return;
     setTimeout(() => {
+      syncPanelViewport();
       input.scrollIntoView({ block: "nearest", behavior: "smooth" });
       messagesEl.scrollTop = messagesEl.scrollHeight;
     }, 300);
