@@ -1,5 +1,9 @@
 (function () {
   const API_URL = "/api/chat";
+  const isEn = (document.documentElement.lang || "").toLowerCase().startsWith("en");
+  const hintText = isEn
+    ? "Free-tier AI — answers usually start faster now; very long replies can still take a bit."
+    : "Gratis AI — svar starter som regel raskere nå; veldig lange svar kan fortsatt ta litt tid.";
 
   const style = document.createElement("style");
   style.textContent = `
@@ -196,7 +200,7 @@
     <div class="ktn-chat-messages"></div>
     <form class="ktn-chat-form" autocomplete="off">
       <input class="ktn-chat-input" placeholder="Spør om pensum..." />
-      <div class="ktn-chat-hint">Gratis AI-modell — kan ta opptil 60 sek for lengre svar</div>
+      <div class="ktn-chat-hint">${hintText}</div>
       <button class="ktn-chat-send" type="submit">Send</button>
     </form>
   `;
@@ -277,8 +281,8 @@
       section: currentSection,
       url: window.location.pathname,
       visible_text: visible.length > 0
-        ? visible.join("\n\n").substring(0, 6000)
-        : el.innerText.substring(0, 6000)
+        ?       visible.join("\n\n").substring(0, 3500)
+        : el.innerText.substring(0, 3500)
     };
   }
 

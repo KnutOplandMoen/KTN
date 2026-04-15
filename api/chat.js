@@ -41,7 +41,10 @@ async function getEmbedding(text, apiKey) {
   return data.data[0].embedding;
 }
 
-function findTopChunks(queryEmbedding, allChunks, n = 5, chapterHint = null) {
+/** Max characters from retrieved chunks into the system prompt (speed + cost). */
+const MAX_BOOK_CONTEXT_CHARS = 12000;
+
+function findTopChunks(queryEmbedding, allChunks, n = 3, chapterHint = null) {
   const CHAPTER_BOOST = 0.03;
   const scored = allChunks
     .filter((c) => c.embedding)
@@ -197,12 +200,17 @@ export async function POST(request) {
       searchQuery = `[${page_context.chapter}] ${question}`;
     }
 
-    const queryEmbedding = await getEmbedding(searchQuery, apiKey);
-
+    // Overlap network (embedding) with local work (load + parse chunks).
+    const embeddingPromise = getEmbedding(searchQuery, apiKey);
     const allChunks = loadChunks();
+    const queryEmbedding = await embeddingPromise;
+
     const chapterHint = page_context?.chapter || null;
-    const topChunks = findTopChunks(queryEmbedding, allChunks, 5, chapterHint);
-    const bookContext = topChunks.map((c) => c.text).join("\n\n---\n\n");
+    const topChunks = findTopChunks(queryEmbedding, allChunks, 3, chapterHint);
+    let bookContext = topChunks.map((c) => c.text).join("\n\n---\n\n");
+    if (bookContext.length > MAX_BOOK_CONTEXT_CHARS) {
+      bookContext = bookContext.slice(0, MAX_BOOK_CONTEXT_CHARS) + "\n\n[…kontekst forkortet for hastighet…]";
+    }
 
     let locationInfo = "";
     if (page_context?.chapter) {
@@ -239,7 +247,9 @@ ${page_context?.visible_text || "(ingen)"}`;
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "nvidia/nemotron-3-super-120b-a12b:free",
+          // Default: small free model (much lower latency than 120B free tier).
+          // Override on Vercel: OPENROUTER_CHAT_MODEL=nvidia/nemotron-3-super-120b-a12b:free
+          model: process.env.OPENROUTER_CHAT_MODEL || "liquid/lfm-2.5-1.2b-thinking:free",
           messages,
           stream: true,
         }),
