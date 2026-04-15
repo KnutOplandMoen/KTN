@@ -183,19 +183,24 @@
   font-family: var(--serif);
   font-size: 17px;
   padding: 14px 18px 14px 44px;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(176, 68, 40, 0.38);
   border-radius: 4px;
   background: var(--paper);
   color: var(--ink);
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
   box-sizing: border-box;
+  box-shadow: 0 2px 14px rgba(26, 22, 18, 0.07);
+}
+#site-search:hover {
+  border-color: rgba(176, 68, 40, 0.52);
+  box-shadow: 0 3px 18px rgba(26, 22, 18, 0.09);
 }
 #site-search:focus {
   border-color: var(--rust);
-  box-shadow: 0 0 0 3px rgba(176,68,40,0.1);
+  box-shadow: 0 0 0 3px rgba(176, 68, 40, 0.16), 0 4px 22px rgba(26, 22, 18, 0.08);
 }
-#site-search::placeholder { color: var(--ink-ghost); }
+#site-search::placeholder { color: #8a8073; }
 .search-icon {
   position: absolute;
   left: 15px;
@@ -203,7 +208,7 @@
   transform: translateY(-50%);
   width: 18px;
   height: 18px;
-  color: var(--ink-ghost);
+  color: #8a8073;
   pointer-events: none;
 }
 #search-results {
@@ -273,6 +278,7 @@
 .journey-banner {
   display: block;
   padding: 28px 32px;
+  margin-top: -28px;
   margin-bottom: 40px;
   background: linear-gradient(135deg, rgba(176,68,40,0.06) 0%, rgba(45,74,122,0.06) 100%);
   border: 1.5px solid var(--rust);
