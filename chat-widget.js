@@ -1,4 +1,7 @@
 (function () {
+  if (window.__KTN_CHAT_WIDGET__) return;
+  window.__KTN_CHAT_WIDGET__ = true;
+
   const API_URL = "/api/chat";
   const isEn = (document.documentElement.lang || "").toLowerCase().startsWith("en");
   const PRESET_STORAGE_KEY = "ktn_chat_model_preset";
@@ -928,21 +931,31 @@
     }
   }
 
+  let syncViewportRafId = 0;
+  function scheduleSyncPanelViewport() {
+    if (syncViewportRafId) return;
+    syncViewportRafId = requestAnimationFrame(() => {
+      syncViewportRafId = 0;
+      syncPanelViewport();
+    });
+  }
+
   toggle.addEventListener("click", () => {
     panel.classList.add("open");
     toggle.style.display = "none";
     if (isMobile()) {
       document.body.classList.add("ktn-chat-open");
-      requestAnimationFrame(() => {
-        syncPanelViewport();
-        requestAnimationFrame(syncPanelViewport);
-      });
+      scheduleSyncPanelViewport();
     }
     input.focus();
   });
 
   closeBtn.addEventListener("click", () => {
     closePresetDropdown();
+    if (syncViewportRafId) {
+      cancelAnimationFrame(syncViewportRafId);
+      syncViewportRafId = 0;
+    }
     panel.classList.remove("open");
     toggle.style.display = "flex";
     document.body.classList.remove("ktn-chat-open");
@@ -951,6 +964,7 @@
 
   resetBtn.addEventListener("click", () => {
     history = [];
+    pendingQuestions.length = 0;
     messagesEl.innerHTML = "";
     if (hintEl) hintEl.hidden = false;
   });
@@ -1363,24 +1377,28 @@
   }
 
   async function sendMessage(question) {
-    if (busy) return;
+    if (busy) {
+      pendingQuestions.push(question);
+      return;
+    }
     busy = true;
     sendBtn.disabled = true;
     if (hintEl) hintEl.hidden = true;
 
-    await ensureMarkdownLibs();
-
-    addMessage("user", question);
-
-    const loader = addLoadingIndicator();
-    closePresetDropdown();
-    presetsEl.classList.add("ktn-chat-presets--busy");
-    presetTrigger.disabled = true;
-    presetOptionButtons.forEach((b) => {
-      b.disabled = true;
-    });
-
+    let loader = null;
     try {
+      await ensureMarkdownLibs();
+
+      addMessage("user", question);
+
+      loader = addLoadingIndicator();
+      closePresetDropdown();
+      presetsEl.classList.add("ktn-chat-presets--busy");
+      presetTrigger.disabled = true;
+      presetOptionButtons.forEach((b) => {
+        b.disabled = true;
+      });
+
       const resp = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1414,7 +1432,7 @@
       history.push({ role: "user", content: question });
       history.push({ role: "assistant", content });
     } catch (err) {
-      loader.remove();
+      if (loader) loader.remove();
       addError(strings.errPrefix + err.message);
     } finally {
       busy = false;
@@ -1424,22 +1442,27 @@
       presetOptionButtons.forEach((b) => {
         b.disabled = false;
       });
+      const next = pendingQuestions.shift();
+      if (next !== undefined) {
+        void sendMessage(next);
+      }
     }
   }
 
   if (window.visualViewport) {
-    window.visualViewport.addEventListener("resize", syncPanelViewport);
-    window.visualViewport.addEventListener("scroll", syncPanelViewport);
+    window.visualViewport.addEventListener("resize", scheduleSyncPanelViewport);
+    window.visualViewport.addEventListener("scroll", scheduleSyncPanelViewport);
   }
-  window.addEventListener("resize", syncPanelViewport);
+  window.addEventListener("resize", scheduleSyncPanelViewport);
 
   input.addEventListener("focus", () => {
     if (!isMobile()) return;
+    scheduleSyncPanelViewport();
     setTimeout(() => {
-      syncPanelViewport();
-      input.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      scheduleSyncPanelViewport();
+      input.scrollIntoView({ block: "nearest", behavior: "auto" });
       messagesEl.scrollTop = messagesEl.scrollHeight;
-    }, 300);
+    }, 120);
   });
 
   form.addEventListener("submit", (e) => {
@@ -1447,6 +1470,6 @@
     const q = input.value.trim();
     if (!q) return;
     input.value = "";
-    sendMessage(q);
+    void sendMessage(q);
   });
 })();
