@@ -102,6 +102,49 @@ function resolveModelForPreset(presetId) {
 }
 
 /**
+ * Ordered list: primary first (from preset/env), then fallbacks on 429/503 only.
+ * Balanced defaults to Google Gemma; fallbacks use other providers when Google is rate-limited.
+ */
+const PRESET_MODEL_FALLBACKS = {
+  balanced: [
+    "nvidia/nemotron-3-nano-30b-a3b:free",
+    "minimax/minimax-m2.5:free",
+  ],
+  quality: ["openai/gpt-oss-120b:free"],
+  quality_alt: ["nvidia/nemotron-3-super-120b-a12b:free"],
+  fast: ["liquid/lfm-2.5-1.2b-thinking:free"],
+};
+
+function getModelCandidatesForPreset(presetId) {
+  const primary = resolveModelForPreset(presetId);
+  const extras = PRESET_MODEL_FALLBACKS[presetId] || [];
+  const out = [primary];
+  const seen = new Set([primary]);
+  for (const m of extras) {
+    if (m && !seen.has(m)) {
+      seen.add(m);
+      out.push(m);
+    }
+  }
+  return out;
+}
+
+async function fetchChatCompletionStreaming(apiKey, messages, tryModel) {
+  return fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: tryModel,
+      messages,
+      stream: true,
+    }),
+  });
+}
+
+/**
  * Reads OpenAI-compatible SSE from upstream and writes NDJSON lines:
  * {"t":"..."} text deltas, {"e":"..."} error, {"d":true} done.
  */
@@ -229,7 +272,6 @@ export async function POST(request) {
         400
       );
     }
-    const model = resolveModelForPreset(effectivePreset);
 
     let searchQuery = question;
     if (page_context?.section?.title) {
@@ -315,29 +357,48 @@ ${bookContext}`;
       { role: "user", content: question },
     ];
 
-    const llmResp = await fetch(
-      "https://openrouter.ai/api/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model,
-          messages,
-          stream: true,
-        }),
-      }
-    );
+    const candidates = getModelCandidatesForPreset(effectivePreset);
+    let llmResp = null;
+    let lastStatus = 0;
+    let lastErrText = "";
 
-    if (!llmResp.ok) {
-      const err = await llmResp.text();
-      return jsonResponse({ error: `LLM request failed (${llmResp.status}): ${err}` }, 502);
+    for (let i = 0; i < candidates.length; i++) {
+      const tryModel = candidates[i];
+      if (i > 0) {
+        await new Promise((r) => setTimeout(r, 400));
+      }
+
+      llmResp = await fetchChatCompletionStreaming(apiKey, messages, tryModel);
+
+      if (llmResp.ok && llmResp.body) {
+        if (i > 0) {
+          console.warn(`Chat: preset ${effectivePreset} used fallback after rate limit: ${tryModel}`);
+        }
+        break;
+      }
+
+      lastStatus = llmResp.status;
+      lastErrText = await llmResp.text();
+      const retryable = lastStatus === 429 || lastStatus === 503;
+
+      if (!retryable) {
+        return jsonResponse(
+          { error: `LLM request failed (${lastStatus}): ${lastErrText}` },
+          lastStatus >= 500 ? 502 : lastStatus
+        );
+      }
+
+      if (i === candidates.length - 1) {
+        return jsonResponse({ error: `LLM request failed (${lastStatus}): ${lastErrText}` }, 502);
+      }
+      console.warn(`Chat: ${tryModel} → ${lastStatus}, trying next model…`);
     }
 
-    if (!llmResp.body) {
-      return jsonResponse({ error: "LLM response had no body" }, 502);
+    if (!llmResp?.ok || !llmResp.body) {
+      return jsonResponse(
+        { error: `LLM request failed (${lastStatus}): ${lastErrText}` },
+        502
+      );
     }
 
     const out = openRouterSseToNdjsonStream(llmResp.body);
