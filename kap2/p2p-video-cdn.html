@@ -53,7 +53,7 @@
       <p>Det tredje leddet vokser også med N, <em>men nevneren vokser også</em> — fordi hver ny peer bidrar med sin <em>u<sub>i</sub></em>. Det er dette som gir selv-skalering.</p>
     </div>
 
-    <p>Forskjellen er enklere å se i et eksempel. Anta at hver klient har opplastningshastighet <em>u</em>, at det tar én time å laste opp filen én gang (<em>F/u = 1 t</em>), og at tjenerens hastighet er ti ganger en klients (<em>u<sub>s</sub> = 10u</em>). For klient–server blir det dominerende leddet <em>NF/u<sub>s</sub> = N/10</em> — en rett linje opp og bort. For P2P får vi <em>N/(10+N)</em> — en kurve som stiger raskt i starten, men flater ut og aldri overstiger 1.</p>
+    <p>Forskjellen er enklere å se i et eksempel. Anta at hver klient har opplastningshastighet <em>u</em>, at det tar én time å laste opp filen én gang (<em>F/u = 1 t</em>), og at tjenerens hastighet er ti ganger en klients (<em>u<sub>s</sub> = 10u</em>). For klient–server blir det dominerende leddet <em>NF/u<sub>s</sub> = N/10</em> — en rett linje opp og bort (inntil nedlastingsgulvet <em>F/d<sub>min</sub></em> tar over). For P2P er det tredje leddet <em>N/(10+N)</em> — en kurve som stiger raskt mot 1, men aldri når den. Den <em>faktiske</em> P2P-tiden er likevel max av alle leddene i ulikheten; med normeringen <em>F/d<sub>min</sub> = 1 t</em> ligger dette gulvet ofte øverst, så den effektive tiden i figuren blir en <em>flat</em> strek ved 1 — ikke fordi tredje leddet er irrelevant, men fordi det ligger <em>under</em> max.</p>
 
     <p>Du kan leke med tallene selv:</p>
 
@@ -76,7 +76,7 @@
         </div>
         <div class="sim-result-block p2p">
           <div class="lbl">Peer-to-peer</div>
-          <div class="num"><span id="p2p-time">0.50</span> t</div>
+          <div class="num"><span id="p2p-time">1.00</span> t</div>
         </div>
       </div>
       <svg id="sim-chart" viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
@@ -84,13 +84,9 @@
         <line x1="50" y1="200" x2="580" y2="200" stroke="#6b6257"/>
         <text x="30" y="25" font-family="IBM Plex Mono" font-size="10" fill="#6b6257" text-anchor="end">tid</text>
         <text x="580" y="220" font-family="IBM Plex Mono" font-size="10" fill="#6b6257" text-anchor="end">N</text>
-        <line x1="50" y1="60" x2="580" y2="60" stroke="#ddd5c4" stroke-dasharray="2,3"/>
-        <line x1="50" y1="100" x2="580" y2="100" stroke="#ddd5c4" stroke-dasharray="2,3"/>
-        <line x1="50" y1="140" x2="580" y2="140" stroke="#ddd5c4" stroke-dasharray="2,3"/>
-        <line x1="50" y1="180" x2="580" y2="180" stroke="#ddd5c4" stroke-dasharray="2,3"/>
-        <text id="sim-y-max" x="45" y="103" font-family="IBM Plex Mono" font-size="9" fill="#a39886" text-anchor="end">2.0</text>
-        <text id="sim-y-mid" x="45" y="143" font-family="IBM Plex Mono" font-size="9" fill="#a39886" text-anchor="end">1.0</text>
-        <text id="sim-y-min" x="45" y="183" font-family="IBM Plex Mono" font-size="9" fill="#a39886" text-anchor="end">0.0</text>
+        <g id="sim-y-grid-lines"></g>
+        <line id="sim-y-ref-one" x1="50" y1="110" x2="580" y2="110" stroke="#a39886" stroke-dasharray="4,4" stroke-width="1" fill="none" opacity="0.9" style="display: none"/>
+        <g id="sim-y-tick-labels"></g>
         <path id="cs-line" d="" fill="none" stroke="#b04428" stroke-width="2"/>
         <path id="p2p-line" d="" fill="none" stroke="#3d6b3a" stroke-width="2"/>
         <circle id="cs-dot" cx="0" cy="0" r="4" fill="#b04428"/>
@@ -279,9 +275,10 @@ setupQuiz('quiz2');
   var p2pLine = document.getElementById('p2p-line');
   var csDot = document.getElementById('cs-dot');
   var p2pDot = document.getElementById('p2p-dot');
-  var yTickMax = document.getElementById('sim-y-max');
-  var yTickMid = document.getElementById('sim-y-mid');
-  var yTickMin = document.getElementById('sim-y-min');
+  var yGridG = document.getElementById('sim-y-grid-lines');
+  var yLabelG = document.getElementById('sim-y-tick-labels');
+  var yRefOne = document.getElementById('sim-y-ref-one');
+  var NS = 'http://www.w3.org/2000/svg';
 
   function csTime(N, us) { return Math.max(N/us, 1); }
   function p2pTime(N, us) {
@@ -297,6 +294,55 @@ setupQuiz('quiz2');
     return Math.max(m * 1.08, 0.01);
   }
   function yMap(t, tMax) { return 200 - (t / tMax) * 180; }
+
+  function fmtTick(v, tMax) {
+    if (tMax >= 100) return v.toFixed(0);
+    if (tMax >= 10 && Math.abs(v - Math.round(v)) < 1e-6) return String(Math.round(v));
+    return v.toFixed(1);
+  }
+
+  function tickValues(tMax) {
+    var nDiv = 4;
+    var arr = [];
+    for (var i = 0; i <= nDiv; i++) arr.push((tMax * i) / nDiv);
+    return arr;
+  }
+
+  function renderYAxis(tMax) {
+    if (!yGridG || !yLabelG) return;
+    while (yGridG.firstChild) yGridG.removeChild(yGridG.firstChild);
+    while (yLabelG.firstChild) yLabelG.removeChild(yLabelG.firstChild);
+    tickValues(tMax).forEach(function(tv) {
+      var y = yMap(tv, tMax);
+      var ln = document.createElementNS(NS, 'line');
+      ln.setAttribute('x1', '50');
+      ln.setAttribute('x2', '580');
+      ln.setAttribute('y1', String(y));
+      ln.setAttribute('y2', String(y));
+      ln.setAttribute('stroke', '#ddd5c4');
+      ln.setAttribute('stroke-dasharray', '2,3');
+      yGridG.appendChild(ln);
+      var tx = document.createElementNS(NS, 'text');
+      tx.setAttribute('x', '45');
+      tx.setAttribute('y', String(y + 3));
+      tx.setAttribute('font-family', 'IBM Plex Mono');
+      tx.setAttribute('font-size', '9');
+      tx.setAttribute('fill', '#a39886');
+      tx.setAttribute('text-anchor', 'end');
+      tx.textContent = fmtTick(tv, tMax);
+      yLabelG.appendChild(tx);
+    });
+    if (yRefOne) {
+      if (tMax >= 1) {
+        var y1 = yMap(1, tMax);
+        yRefOne.setAttribute('y1', String(y1));
+        yRefOne.setAttribute('y2', String(y1));
+        yRefOne.style.display = '';
+      } else {
+        yRefOne.style.display = 'none';
+      }
+    }
+  }
 
   function buildPath(fn, us, tMax) {
     var d = '';
@@ -323,9 +369,7 @@ setupQuiz('quiz2');
     csDot.setAttribute('cy', yMap(cs, tMax));
     p2pDot.setAttribute('cx', xMap(N));
     p2pDot.setAttribute('cy', yMap(p2p, tMax));
-    if (yTickMax) yTickMax.textContent = tMax.toFixed(1);
-    if (yTickMid) yTickMid.textContent = (tMax / 2).toFixed(1);
-    if (yTickMin) yTickMin.textContent = '0.0';
+    renderYAxis(tMax);
   }
   rN.addEventListener('input', update);
   rUs.addEventListener('input', update);
