@@ -1,9 +1,47 @@
 (function () {
   const API_URL = "/api/chat";
   const isEn = (document.documentElement.lang || "").toLowerCase().startsWith("en");
-  const hintText = isEn
-    ? "Free-tier AI — answers usually start faster now; very long replies can still take a bit."
-    : "Gratis AI — svar starter som regel raskere nå; veldig lange svar kan fortsatt ta litt tid.";
+  const PRESET_STORAGE_KEY = "ktn_chat_model_preset";
+  const DEFAULT_PRESET = "balanced";
+  const PRESET_ORDER = ["fast", "balanced", "quality", "quality_alt"];
+
+  const strings = isEn
+    ? {
+        openChat: "Open chat",
+        title: "KTN study assistant",
+        resetAria: "Reset chat",
+        resetTitle: "Reset chat",
+        closeAria: "Close chat",
+        placeholder: "Ask about the curriculum…",
+        send: "Send",
+        hint: "Free models — latency varies by preset. “Smarter, slower” is best for Norwegian and accuracy.",
+        errPrefix: "Something went wrong: ",
+        presetGroupAria: "Response speed vs quality",
+        presets: {
+          fast: { lines: ["Small"], badge: "Fast", title: "Lowest latency; Norwegian may be weaker." },
+          balanced: { lines: ["Balanced"], title: "Good default mix of speed and quality." },
+          quality: { lines: ["Smarter", "slower"], title: "Best answers; often slower or queued." },
+          quality_alt: { lines: ["Smarter (alt.)"], title: "Alternative heavy free model (OpenAI GPT-OSS 120B)." },
+        },
+      }
+    : {
+        openChat: "Åpne chat",
+        title: "KTN Studieassistent",
+        resetAria: "Nullstill chat",
+        resetTitle: "Nullstill chat",
+        closeAria: "Lukk chat",
+        placeholder: "Spør om pensum…",
+        send: "Send",
+        hint: "Gratis modeller — hastighet varierer med valg. «Smartere, tregere» gir oftest best norsk og presisjon.",
+        errPrefix: "Noe gikk galt: ",
+        presetGroupAria: "Hastighet mot kvalitet",
+        presets: {
+          fast: { lines: ["Lett"], badge: "Rask", title: "Lavest latency; norsk kan svekkes." },
+          balanced: { lines: ["Balansert"], title: "God blanding av fart og kvalitet." },
+          quality: { lines: ["Smartere,", "tregere"], title: "Best svar; ofte tregere eller i kø." },
+          quality_alt: { lines: ["Smartere (alt.)"], title: "Alternativ tung gratismodell (OpenAI GPT-OSS 120B)." },
+        },
+      };
 
   const style = document.createElement("style");
   style.textContent = `
@@ -54,6 +92,76 @@
     .ktn-chat-reset { font-size: 16px; }
     .ktn-chat-close { font-size: 22px; }
     .ktn-chat-reset:hover, .ktn-chat-close:hover { opacity: 1; }
+
+    .ktn-chat-presets {
+      flex-shrink: 0;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--line, #c9c0ae);
+      background: rgba(26, 22, 18, 0.04);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: stretch;
+    }
+    .ktn-chat-presets.ktn-chat-presets--busy { pointer-events: none; opacity: 0.65; }
+    .ktn-chat-preset-btn {
+      flex: 1 1 calc(50% - 3px);
+      min-width: 0;
+      font-size: 11px;
+      line-height: 1.2;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid var(--line, #c9c0ae);
+      background: #fff;
+      color: var(--ink, #1a1612);
+      cursor: pointer;
+      font-family: var(--sans, 'IBM Plex Sans', system-ui, sans-serif);
+      text-align: center;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+    @media (min-width: 400px) {
+      .ktn-chat-preset-btn { flex: 1 1 auto; }
+    }
+    .ktn-chat-preset-btn:hover {
+      border-color: var(--ink-ghost, #a39886);
+    }
+    .ktn-chat-preset-btn[aria-checked="true"] {
+      border-color: var(--rust, #b04428);
+      box-shadow: 0 0 0 1px var(--rust, #b04428);
+      background: var(--paper-dark, #e8e3d6);
+    }
+    .ktn-chat-preset-btn:focus-visible {
+      outline: 2px solid var(--rust, #b04428);
+      outline-offset: 1px;
+    }
+    .ktn-chat-preset-btn--fast[aria-checked="true"] {
+      border-color: #1a6e3a;
+      box-shadow: 0 0 0 1px #1a6e3a;
+    }
+    .ktn-chat-preset-badge {
+      display: block;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: #1a6e3a;
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin: 0 auto 3px;
+      width: fit-content;
+      max-width: 100%;
+    }
+    .ktn-chat-preset-lines {
+      display: block;
+    }
+    .ktn-chat-preset-sub {
+      display: block;
+      font-size: 10px;
+      opacity: 0.78;
+      font-weight: 400;
+      margin-top: 1px;
+    }
 
     .ktn-chat-messages {
       flex: 1; overflow-y: auto; padding: 18px;
@@ -184,24 +292,25 @@
 
   const toggle = document.createElement("button");
   toggle.id = "ktn-chat-toggle";
-  toggle.setAttribute("aria-label", "Åpne chat");
+  toggle.setAttribute("aria-label", strings.openChat);
   toggle.innerHTML = `<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>`;
 
   const panel = document.createElement("div");
   panel.id = "ktn-chat-panel";
   panel.innerHTML = `
     <div class="ktn-chat-header">
-      <strong>KTN Studieassistent</strong>
+      <strong>${strings.title}</strong>
       <div class="ktn-chat-header-actions">
-        <button class="ktn-chat-reset" aria-label="Nullstill chat" title="Nullstill chat">&#x21bb;</button>
-        <button class="ktn-chat-close" aria-label="Lukk chat">&times;</button>
+        <button class="ktn-chat-reset" aria-label="${strings.resetAria}" title="${strings.resetTitle}">&#x21bb;</button>
+        <button class="ktn-chat-close" aria-label="${strings.closeAria}">&times;</button>
       </div>
     </div>
+    <div class="ktn-chat-presets" id="ktn-chat-presets" role="radiogroup" aria-label="${strings.presetGroupAria.replace(/"/g, "&quot;")}"></div>
     <div class="ktn-chat-messages"></div>
     <form class="ktn-chat-form" autocomplete="off">
-      <input class="ktn-chat-input" placeholder="Spør om pensum..." />
-      <div class="ktn-chat-hint">${hintText}</div>
-      <button class="ktn-chat-send" type="submit">Send</button>
+      <input class="ktn-chat-input" placeholder="${strings.placeholder.replace(/"/g, "&quot;")}" />
+      <div class="ktn-chat-hint">${strings.hint}</div>
+      <button class="ktn-chat-send" type="submit">${strings.send}</button>
     </form>
   `;
 
@@ -214,6 +323,61 @@
   const sendBtn = panel.querySelector(".ktn-chat-send");
   const closeBtn = panel.querySelector(".ktn-chat-close");
   const resetBtn = panel.querySelector(".ktn-chat-reset");
+  const presetsEl = panel.querySelector("#ktn-chat-presets");
+
+  let selectedPreset = DEFAULT_PRESET;
+  try {
+    const stored = localStorage.getItem(PRESET_STORAGE_KEY);
+    if (stored && PRESET_ORDER.includes(stored)) selectedPreset = stored;
+  } catch (_) {}
+
+  function syncPresetRadios() {
+    presetsEl.querySelectorAll(".ktn-chat-preset-btn").forEach((btn) => {
+      btn.setAttribute("aria-checked", btn.dataset.preset === selectedPreset ? "true" : "false");
+    });
+  }
+
+  function setSelectedPreset(id) {
+    if (!PRESET_ORDER.includes(id)) return;
+    selectedPreset = id;
+    try {
+      localStorage.setItem(PRESET_STORAGE_KEY, id);
+    } catch (_) {}
+    syncPresetRadios();
+  }
+
+  PRESET_ORDER.forEach((id) => {
+    const spec = strings.presets[id];
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "ktn-chat-preset-btn";
+    if (id === "fast") btn.classList.add("ktn-chat-preset-btn--fast");
+    btn.dataset.preset = id;
+    btn.title = spec.title;
+    btn.setAttribute("role", "radio");
+    if (spec.badge) {
+      const badge = document.createElement("span");
+      badge.className = "ktn-chat-preset-badge";
+      badge.textContent = spec.badge;
+      btn.appendChild(badge);
+    }
+    const linesWrap = document.createElement("span");
+    linesWrap.className = "ktn-chat-preset-lines";
+    spec.lines.forEach((line, i) => {
+      const span = document.createElement("span");
+      if (i === 0) {
+        span.textContent = line;
+      } else {
+        span.className = "ktn-chat-preset-sub";
+        span.textContent = line;
+      }
+      linesWrap.appendChild(span);
+    });
+    btn.appendChild(linesWrap);
+    btn.addEventListener("click", () => setSelectedPreset(id));
+    presetsEl.appendChild(btn);
+  });
+  syncPresetRadios();
 
   let history = [];
   let busy = false;
@@ -277,12 +441,13 @@
     }
 
     return {
+      locale: isEn ? "en" : "no",
       chapter,
       section: currentSection,
       url: window.location.pathname,
       visible_text: visible.length > 0
-        ?       visible.join("\n\n").substring(0, 3500)
-        : el.innerText.substring(0, 3500)
+        ? visible.join("\n\n").substring(0, 4500)
+        : el.innerText.substring(0, 4500),
     };
   }
 
@@ -331,7 +496,7 @@
     messagesEl.scrollTop = messagesEl.scrollHeight;
   }
 
-  const loadingMessages = [
+  const loadingMessagesNo = [
     "Sender SYN-pakke til serveren...",
     "Venter på tre-veis håndtrykk...",
     "Gjør DNS-oppslag for api.ktn.ntnu.no...",
@@ -353,6 +518,31 @@
     "Slår opp i forwarding-tabellen...",
     "HTTP 200 OK — svaret er nesten klart!",
   ];
+
+  const loadingMessagesEn = [
+    "Sending SYN to the server…",
+    "Waiting for the three-way handshake…",
+    "DNS lookup for the study API…",
+    "Routing the packet through the network…",
+    "Packet passes a NAT gateway…",
+    "Checking TCP sequence numbers…",
+    "Decrypting with RSA…",
+    "Computing a CRC checksum…",
+    "Waiting in the sliding window…",
+    "Queued at a router buffer…",
+    "Running Dijkstra’s algorithm…",
+    "Fragmenting the IP datagram…",
+    "ARP lookup for the MAC address…",
+    "Searching Kurose & Ross…",
+    "Consulting RFC 2616…",
+    "CSMA/CD on the link layer…",
+    "Checking the congestion window…",
+    "Go-Back-N: waiting for ACK…",
+    "Forwarding table lookup…",
+    "HTTP 200 OK — almost there!",
+  ];
+
+  const loadingMessages = isEn ? loadingMessagesEn : loadingMessagesNo;
 
   function addLoadingIndicator() {
     const ESTIMATE_MS = 30000;
@@ -503,6 +693,10 @@
     addMessage("user", question);
 
     const loader = addLoadingIndicator();
+    presetsEl.classList.add("ktn-chat-presets--busy");
+    presetsEl.querySelectorAll(".ktn-chat-preset-btn").forEach((b) => {
+      b.disabled = true;
+    });
 
     try {
       const resp = await fetch(API_URL, {
@@ -510,6 +704,7 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           question,
+          preset: selectedPreset,
           page_context: getPageContext(),
           history: history.slice(-10),
         }),
@@ -538,10 +733,14 @@
       history.push({ role: "assistant", content });
     } catch (err) {
       loader.remove();
-      addError("Noe gikk galt: " + err.message);
+      addError(strings.errPrefix + err.message);
     } finally {
       busy = false;
       sendBtn.disabled = false;
+      presetsEl.classList.remove("ktn-chat-presets--busy");
+      presetsEl.querySelectorAll(".ktn-chat-preset-btn").forEach((b) => {
+        b.disabled = false;
+      });
     }
   }
 

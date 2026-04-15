@@ -72,6 +72,35 @@ const NDJSON_HEADERS = {
   "X-Accel-Buffering": "no",
 };
 
+/** Allowlisted chat presets → OpenRouter slugs (free tier). Override per tier with env on Vercel. */
+const PRESET_MODEL_DEFAULTS = {
+  fast: "liquid/lfm-2.5-1.2b-instruct:free",
+  balanced: "google/gemma-4-26b-a4b-it:free",
+  quality: "nvidia/nemotron-3-super-120b-a12b:free",
+  quality_alt: "openai/gpt-oss-120b:free",
+};
+
+const DEFAULT_PRESET = "balanced";
+
+/** Returns DEFAULT_PRESET if missing/empty; valid id; or null if string is not a known preset. */
+function normalizePreset(raw) {
+  if (raw == null || typeof raw !== "string") return DEFAULT_PRESET;
+  const id = raw.trim();
+  if (!id) return DEFAULT_PRESET;
+  return id in PRESET_MODEL_DEFAULTS ? id : null;
+}
+
+function resolveModelForPreset(presetId) {
+  const envKeys = {
+    fast: process.env.OPENROUTER_CHAT_MODEL_FAST,
+    balanced: process.env.OPENROUTER_CHAT_MODEL_BALANCED,
+    quality: process.env.OPENROUTER_CHAT_MODEL_QUALITY,
+    quality_alt: process.env.OPENROUTER_CHAT_MODEL_QUALITY_ALT,
+  };
+  const slug = envKeys[presetId] || PRESET_MODEL_DEFAULTS[presetId];
+  return slug;
+}
+
 /**
  * Reads OpenAI-compatible SSE from upstream and writes NDJSON lines:
  * {"t":"..."} text deltas, {"e":"..."} error, {"d":true} done.
@@ -187,11 +216,20 @@ export async function POST(request) {
   }
 
   try {
-    const { question, page_context, history } = await request.json();
+    const { question, page_context, history, preset: presetRaw } = await request.json();
 
     if (!question || typeof question !== "string") {
       return jsonResponse({ error: "Missing question" }, 400);
     }
+
+    const effectivePreset = normalizePreset(presetRaw);
+    if (effectivePreset === null) {
+      return jsonResponse(
+        { error: `Unknown preset. Use one of: ${Object.keys(PRESET_MODEL_DEFAULTS).join(", ")}` },
+        400
+      );
+    }
+    const model = resolveModelForPreset(effectivePreset);
 
     let searchQuery = question;
     if (page_context?.section?.title) {
@@ -207,30 +245,69 @@ export async function POST(request) {
 
     const chapterHint = page_context?.chapter || null;
     const topChunks = findTopChunks(queryEmbedding, allChunks, 3, chapterHint);
+    const localeRaw = (page_context?.locale || "no").toLowerCase();
+    const locale = localeRaw.startsWith("en") ? "en" : "no";
+
     let bookContext = topChunks.map((c) => c.text).join("\n\n---\n\n");
     if (bookContext.length > MAX_BOOK_CONTEXT_CHARS) {
-      bookContext = bookContext.slice(0, MAX_BOOK_CONTEXT_CHARS) + "\n\n[…kontekst forkortet for hastighet…]";
+      const truncNote =
+        locale === "en"
+          ? "\n\n[… textbook context truncated for length …]"
+          : "\n\n[…kontekst forkortet for hastighet…]";
+      bookContext = bookContext.slice(0, MAX_BOOK_CONTEXT_CHARS) + truncNote;
     }
 
     let locationInfo = "";
     if (page_context?.chapter) {
-      locationInfo = `\nBrukeren leser: ${page_context.chapter}`;
-      if (page_context.section?.title) {
-        locationInfo += ` — seksjon: «${page_context.section.title}»`;
+      if (locale === "en") {
+        locationInfo = `\nThe user is reading: ${page_context.chapter}`;
+        if (page_context.section?.title) {
+          locationInfo += ` — section: “${page_context.section.title}”`;
+        }
+      } else {
+        locationInfo = `\nBrukeren leser: ${page_context.chapter}`;
+        if (page_context.section?.title) {
+          locationInfo += ` — seksjon: «${page_context.section.title}»`;
+        }
       }
     }
 
-    const systemPrompt = `Du er en hjelpsom studieassistent for TTM4100 – Kommunikasjon: Tjenester og nett (NTNU).
-Svar på norsk med mindre brukeren skriver på engelsk.
-Forklar konsepter tydelig og bruk eksempler fra pensum der det er relevant.
+    const visibleBlock = page_context?.visible_text || (locale === "en" ? "(none)" : "(ingen)");
+
+    const sharedRules =
+      locale === "en"
+        ? `Output language: English only (British or American spelling is fine). Do not reply in Norwegian unless the user explicitly writes Norwegian.
+Tone: helpful course tutor for networking — clear and concrete, not a generic essay.
+If the user asks what they are looking at on this page, or what this section is about, ground your answer primarily in "Visible text from the page" below, then the textbook excerpts.
+If the answer is not supported by the context below, say so instead of inventing facts.
+Never end with meta word counts or labels like "(99 words)" or "Word count:". No "thinking out loud" preambles — answer directly.`
+        : `Språk: Svar alltid på norsk (bokmål). Ikke bytt til engelsk med mindre brukeren uttrykkelig skriver på engelsk.
+Tone: hjelpsom studieassistent — tydelig og konkret, ikke et generisk sammendrag av hele pensum.
+Hvis brukeren spør hva de ser på siden nå, eller hva teksten handler om, bygg svaret først og fremst på «Synlig tekst fra nettsiden» under, deretter utdragene fra boka.
 Hvis du ikke finner svaret i konteksten under, si fra i stedet for å finne på noe.
+Ikke avslutt med ordtelling eller etiketter som «(99 ord)» eller «Antall ord:». Ikke «tenker høyt»-innledning — svar rett på spørsmålet.`;
+
+    const intro =
+      locale === "en"
+        ? `You are a helpful study assistant for TTM4100 – Communication: Services and Networks (NTNU). The course follows Kurose & Ross (the textbook excerpts below).`
+        : `Du er en hjelpsom studieassistent for TTM4100 – Kommunikasjon: Tjenester og nett (NTNU). Pensum følger Kurose & Ross (utdrag under).`;
+
+    const bookHeading =
+      locale === "en" ? "## Textbook excerpts (Kurose & Ross):" : "## Kontekst fra læreboken (Kurose & Ross):";
+    const visibleHeading =
+      locale === "en"
+        ? "## Visible text from the page the user is viewing:"
+        : "## Synlig tekst fra nettsiden brukeren leser akkurat nå:";
+
+    const systemPrompt = `${intro}
+${sharedRules}
 ${locationInfo}
 
-## Kontekst fra læreboken (Kurose & Ross):
-${bookContext}
+${visibleHeading}
+${visibleBlock}
 
-## Synlig tekst fra nettsiden brukeren leser akkurat nå:
-${page_context?.visible_text || "(ingen)"}`;
+${bookHeading}
+${bookContext}`;
 
     const messages = [
       { role: "system", content: systemPrompt },
@@ -247,9 +324,7 @@ ${page_context?.visible_text || "(ingen)"}`;
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          // Default: small free model (much lower latency than 120B free tier).
-          // Override on Vercel: OPENROUTER_CHAT_MODEL=nvidia/nemotron-3-super-120b-a12b:free
-          model: process.env.OPENROUTER_CHAT_MODEL || "liquid/lfm-2.5-1.2b-thinking:free",
+          model,
           messages,
           stream: true,
         }),
