@@ -71,19 +71,19 @@
       <text x="360" y="22" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612">Sikker e-post fra Alice til Bob (kap. 8.5.1)</text>
       <rect x="40" y="45" width="120" height="56" rx="4" fill="#f4f1ea" stroke="#3d6b3a" stroke-width="1.5"/>
       <text x="100" y="68" text-anchor="middle" font-family="Newsreader" font-size="14" fill="#1a1612">Alice</text>
-      <text x="100" y="88" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">K_A−, K_S</text>
+      <text x="100" y="88" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#6b6257">K_A−, K_S, K_B+</text>
       <rect x="560" y="45" width="120" height="56" rx="4" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/>
       <text x="620" y="68" text-anchor="middle" font-family="Newsreader" font-size="14" fill="#1a1612">Bob</text>
       <text x="620" y="88" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">K_B−, K_B+</text>
       <rect x="260" y="40" width="200" height="110" rx="6" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.2"/>
       <text x="360" y="62" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">Sendt over Internett</text>
-      <text x="360" y="82" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#1a1612">K_B+(K_S)  —  sesjonsnøkkel kryptert for Bob</text>
-      <text x="360" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#1a1612">K_S(m, K_A−(H(m)))  —  melding + signatur, alt med K_S</text>
-      <path d="M 160 73 L 255 73" stroke="#1a1612" stroke-width="1.5" marker-end="url(#em)"/>
-      <path d="M 465 73 L 555 73" stroke="#1a1612" stroke-width="1.5" marker-end="url(#em)"/>
+      <text x="360" y="86" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#1a1612">K_B+(K_S)  —  sesjonsnøkkel kryptert for Bob</text>
+      <text x="360" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#1a1612">K_S(m, K_A−(H(m)))  —  melding + signatur, alt med K_S</text>
+      <path d="M 160 70 L 254 70" stroke="#1a1612" stroke-width="1.5" marker-end="url(#em)"/>
+      <path d="M 466 70 L 555 70" stroke="#1a1612" stroke-width="1.5" marker-end="url(#em)"/>
       <text x="360" y="168" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#6b6257">Byggeklosser: symmetrisk K_S for hastighet, K_B+ for konfidensialitet, K_A− for digital signatur på H(m).</text>
     </svg>
-    <figcaption>Hybrid kryptering: den korte sesjonsnøkkelen K<sub>S</sub> beskyttes med Bobs offentlige nøkkel; selve meldingen og signaturen rutes konfidensielt med K<sub>S</sub>.</figcaption>
+    <figcaption>Hybrid kryptering: den korte sesjonsnøkkelen K<sub>S</sub> beskyttes med Bobs offentlige nøkkel; selve meldingen og signaturen krypteres konfidensielt med K<sub>S</sub>.</figcaption>
   </figure>
 </div>
 </section>
