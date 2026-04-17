@@ -434,6 +434,158 @@ figcaption strong { font-style: normal; color: var(--ink-soft); }
   padding: 28px;
 }
 
+/* Hybrid secure-email diagram (kap. 8) */
+.fig-hybrid-email .hybrid-mail {
+  max-width: 680px;
+  margin: 0 auto;
+}
+.fig-hybrid-email .hybrid-mail__title {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  margin: 0 0 4px;
+}
+.fig-hybrid-email .hybrid-mail__flow {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0;
+  margin-top: 20px;
+}
+.fig-hybrid-email .hybrid-mail__party {
+  flex: 0 1 118px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 14px 10px;
+  border-radius: 8px;
+  background: var(--paper);
+  border: 2px solid var(--line);
+  line-height: 1.35;
+}
+.fig-hybrid-email .hybrid-mail__party--alice {
+  border-color: var(--green);
+}
+.fig-hybrid-email .hybrid-mail__party--bob {
+  border-color: var(--blue);
+}
+.fig-hybrid-email .hybrid-mail__name {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.fig-hybrid-email .hybrid-mail__keys {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  letter-spacing: -0.02em;
+}
+.fig-hybrid-email .hybrid-mail__keys sub,
+.fig-hybrid-email .hybrid-mail__keys sup {
+  font-size: 0.72em;
+}
+.fig-hybrid-email .hybrid-mail__arrow {
+  flex: 0 0 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  align-self: center;
+}
+.fig-hybrid-email .hybrid-mail__arrow svg {
+  display: block;
+  width: 34px;
+  height: 14px;
+}
+.fig-hybrid-email .hybrid-mail__wire {
+  flex: 1 1 240px;
+  max-width: 320px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px 14px;
+  border-radius: 8px;
+  background: var(--paper-dark);
+  border: 2px solid var(--ink-soft);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+.fig-hybrid-email .hybrid-mail__wire-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--rust);
+  letter-spacing: 0.02em;
+  margin-bottom: 10px;
+}
+.fig-hybrid-email .hybrid-mail__payload {
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink);
+  text-align: left;
+}
+.fig-hybrid-email .hybrid-mail__payload p {
+  margin: 0 0 8px;
+}
+.fig-hybrid-email .hybrid-mail__payload p:last-child {
+  margin-bottom: 0;
+}
+.fig-hybrid-email .hybrid-mail__expr {
+  font-weight: 500;
+  white-space: nowrap;
+}
+.fig-hybrid-email .hybrid-mail__payload sub,
+.fig-hybrid-email .hybrid-mail__payload sup {
+  font-size: 0.72em;
+}
+.fig-hybrid-email .hybrid-mail__note {
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ink-faded);
+  text-align: center;
+  margin: 22px auto 0;
+  max-width: 52em;
+}
+.fig-hybrid-email .hybrid-mail__note sub,
+.fig-hybrid-email .hybrid-mail__note sup {
+  font-size: 0.75em;
+}
+@media (max-width: 640px) {
+  .fig-hybrid-email .hybrid-mail__flow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .fig-hybrid-email .hybrid-mail__party {
+    flex: none;
+    width: 100%;
+  }
+  .fig-hybrid-email .hybrid-mail__wire {
+    flex: none;
+    max-width: none;
+  }
+  .fig-hybrid-email .hybrid-mail__arrow {
+    transform: rotate(90deg);
+    padding: 4px 0;
+  }
+  .fig-hybrid-email .hybrid-mail__expr {
+    white-space: normal;
+  }
+}
+
 /* ---------- PACKET HEADER DIAGRAM ---------- */
 figure:has(.packet) {
   padding: 0;

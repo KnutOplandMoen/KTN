@@ -63,26 +63,34 @@
 
   <p>Bob performs the complementary operations in reverse order: decrypt K<sub>S</sub> with his private key, decrypt the message with K<sub>S</sub>, verify the signature with Alice's public key.</p>
 
-  <figure class="fig-frame">
-    <svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <marker id="em" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1a1612"/></marker>
-      </defs>
-      <text x="360" y="22" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612">Secure email from Alice to Bob (Sec. 8.5.1)</text>
-      <rect x="40" y="45" width="120" height="56" rx="4" fill="#f4f1ea" stroke="#3d6b3a" stroke-width="1.5"/>
-      <text x="100" y="68" text-anchor="middle" font-family="Newsreader" font-size="14" fill="#1a1612">Alice</text>
-      <text x="100" y="88" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#6b6257">K_A−, K_S, K_B+</text>
-      <rect x="560" y="45" width="120" height="56" rx="4" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/>
-      <text x="620" y="68" text-anchor="middle" font-family="Newsreader" font-size="14" fill="#1a1612">Bob</text>
-      <text x="620" y="88" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">K_B−, K_B+</text>
-      <rect x="260" y="40" width="200" height="110" rx="6" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.2"/>
-      <text x="360" y="62" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">Sent over the Internet</text>
-      <text x="360" y="86" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#1a1612">K_B+(K_S)  —  session key encrypted for Bob</text>
-      <text x="360" y="104" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#1a1612">K_S(m, K_A−(H(m)))  —  message + signature, all under K_S</text>
-      <path d="M 160 70 L 254 70" stroke="#1a1612" stroke-width="1.5" marker-end="url(#em)"/>
-      <path d="M 466 70 L 555 70" stroke="#1a1612" stroke-width="1.5" marker-end="url(#em)"/>
-      <text x="360" y="168" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#6b6257">Building blocks: symmetric K_S for speed, K_B+ for confidentiality, K_A− for a digital signature on H(m).</text>
-    </svg>
+  <figure class="fig-frame fig-hybrid-email">
+    <div class="hybrid-mail">
+      <p class="hybrid-mail__title">Secure email from Alice to Bob (Sec. 8.5.1)</p>
+      <div class="hybrid-mail__flow">
+        <div class="hybrid-mail__party hybrid-mail__party--alice">
+          <span class="hybrid-mail__name">Alice</span>
+          <span class="hybrid-mail__keys">K<sub>A</sub><sup>−</sup>, K<sub>S</sub>, K<sub>B</sub><sup>+</sup></span>
+        </div>
+        <div class="hybrid-mail__arrow" aria-hidden="true">
+          <svg viewBox="0 0 40 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 6h32" stroke="currentColor" stroke-width="1.75" fill="none"/><path d="M32 6 L24 1.5 L24 10.5 Z" fill="currentColor"/></svg>
+        </div>
+        <div class="hybrid-mail__wire">
+          <span class="hybrid-mail__wire-label">Sent over the Internet</span>
+          <div class="hybrid-mail__payload">
+            <p><span class="hybrid-mail__expr">K<sub>B</sub><sup>+</sup>(K<sub>S</sub>)</span> — session key encrypted for Bob</p>
+            <p><span class="hybrid-mail__expr">K<sub>S</sub>(m, K<sub>A</sub><sup>−</sup>(H(m)))</span> — message + signature, all under K<sub>S</sub></p>
+          </div>
+        </div>
+        <div class="hybrid-mail__arrow" aria-hidden="true">
+          <svg viewBox="0 0 40 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 6h32" stroke="currentColor" stroke-width="1.75" fill="none"/><path d="M32 6 L24 1.5 L24 10.5 Z" fill="currentColor"/></svg>
+        </div>
+        <div class="hybrid-mail__party hybrid-mail__party--bob">
+          <span class="hybrid-mail__name">Bob</span>
+          <span class="hybrid-mail__keys">K<sub>B</sub><sup>−</sup>, K<sub>B</sub><sup>+</sup></span>
+        </div>
+      </div>
+      <p class="hybrid-mail__note">Building blocks: symmetric K<sub>S</sub> for speed, K<sub>B</sub><sup>+</sup> for confidentiality, K<sub>A</sub><sup>−</sup> for a digital signature on H(m).</p>
+    </div>
     <figcaption>Hybrid encryption: the short session key K<sub>S</sub> is protected with Bob's public key; the message and signature are encrypted confidentially with K<sub>S</sub>.</figcaption>
   </figure>
 </div>
