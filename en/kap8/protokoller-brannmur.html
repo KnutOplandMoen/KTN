@@ -62,6 +62,29 @@
   </div>
 
   <p>Bob performs the complementary operations in reverse order: decrypt K<sub>S</sub> with his private key, decrypt the message with K<sub>S</sub>, verify the signature with Alice's public key.</p>
+
+  <figure class="fig-frame">
+    <svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="em" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1a1612"/></marker>
+      </defs>
+      <text x="360" y="22" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612">Secure email from Alice to Bob (Sec. 8.5.1)</text>
+      <rect x="40" y="45" width="120" height="56" rx="4" fill="#f4f1ea" stroke="#3d6b3a" stroke-width="1.5"/>
+      <text x="100" y="68" text-anchor="middle" font-family="Newsreader" font-size="14" fill="#1a1612">Alice</text>
+      <text x="100" y="88" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">K_A−, K_S</text>
+      <rect x="560" y="45" width="120" height="56" rx="4" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/>
+      <text x="620" y="68" text-anchor="middle" font-family="Newsreader" font-size="14" fill="#1a1612">Bob</text>
+      <text x="620" y="88" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">K_B−, K_B+</text>
+      <rect x="260" y="40" width="200" height="110" rx="6" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.2"/>
+      <text x="360" y="62" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">Sent over the Internet</text>
+      <text x="360" y="82" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#1a1612">K_B+(K_S)  —  session key encrypted for Bob</text>
+      <text x="360" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#1a1612">K_S(m, K_A−(H(m)))  —  message + signature, all under K_S</text>
+      <path d="M 160 73 L 255 73" stroke="#1a1612" stroke-width="1.5" marker-end="url(#em)"/>
+      <path d="M 465 73 L 555 73" stroke="#1a1612" stroke-width="1.5" marker-end="url(#em)"/>
+      <text x="360" y="168" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#6b6257">Building blocks: symmetric K_S for speed, K_B+ for confidentiality, K_A− for a digital signature on H(m).</text>
+    </svg>
+    <figcaption>Hybrid encryption: the short session key K<sub>S</sub> is protected with Bob's public key; the message and signature are sent confidentially under K<sub>S</sub>.</figcaption>
+  </figure>
 </div>
 </section>
 
@@ -81,6 +104,8 @@
 
   <h3>Four phases of a TLS connection</h3>
   <p>We can understand TLS by building a simplified "toy-TLS" (t-tls) and seeing what each phase needs:</p>
+
+  <p>In <strong>TLS 1.3</strong> (curriculum: Sec. 8.6), <strong>ephemeral Diffie–Hellman</strong> (e.g. on elliptic curves) is often used to derive the shared secret, and confidentiality/integrity use <strong>AEAD</strong> — not necessarily "encrypt the Pre-Master Secret with the server's RSA key" as in older teaching models. The steps below still show <em>what</em> the handshake and records accomplish: authenticate the parties, agree session keys, protect data transfer, and close safely.</p>
 
   <div class="stepper" id="tlsStepper">
     <div class="s-label">Interactive walkthrough — TLS phases</div>
@@ -138,6 +163,9 @@
   </ul>
 
   <p>Because an SA is <em>one-way</em>, two SAs are needed for bidirectional communication — one in each direction, each with its own SPI and its own keys. All active SAs are stored in a <strong>SAD (Security Association Database)</strong> on both endpoints. When an IPsec datagram arrives, the receiver uses the SPI value in the header to look up the correct SA in the SAD and thus find the encryption key and algorithm needed to decrypt.</p>
+
+  <h3>SPD — which traffic should use IPsec?</h3>
+  <p>Besides the SAD, each endpoint has an <strong>SPD (Security Policy Database)</strong>: a set of policy rules that say <em>which</em> packets (e.g. by source/destination subnet, protocol, or port) must be processed by IPsec, and whether they should be dropped, sent in the clear, or tunneled/encrypted with a particular SA. In short: the <strong>SPD decides whether</strong> IPsec applies; the <strong>SAD says how</strong> (keys and algorithms for an active SA).</p>
 
   <h3>Two modes</h3>
 
@@ -213,6 +241,14 @@
 
   <p class="dropcap">Everything we have seen so far — encryption, signatures, CAs — are general mechanisms. But wireless networks have a special need: the device connecting must authenticate itself <em>before</em> it gets any access to the network at all, and all traffic over the air must be encrypted because radio waves are trivially easy to eavesdrop on. Let us see how WiFi and 4G/5G solve this.</p>
 
+  <h3>From WEP to WPA3</h3>
+  <table>
+    <tr><th>Mechanism</th><th>Brief explanation</th></tr>
+    <tr><td class="mono-cell">WEP</td><td>Early 802.11 encryption with weak keys and weak IV use; considered broken and unusable in practice.</td></tr>
+    <tr><td class="mono-cell">WPA2 (802.11i)</td><td>CCMP based on AES; long the industry standard. A strong password is still needed because PSK can still face dictionary attacks.</td></tr>
+    <tr><td class="mono-cell">WPA3</td><td>Stronger handshake (SAE, etc.), better password protection and simpler secure setup — what this chapter emphasizes.</td></tr>
+  </table>
+
   <h3>802.11 WiFi: four steps to secure communication</h3>
   <p>When a mobile device connects to a WiFi network with WPA3, it goes through four steps:</p>
 
@@ -234,11 +270,11 @@
 
   <ol>
     <li><strong>AS sends Nonce<sub>AS</sub></strong> — a random one-time-use number — to the mobile device.</li>
-    <li><strong>The mobile device generates Nonce<sub>M</sub></strong>, derives a symmetric session key K<sub>M-AP</sub> from both nonces, the pre-shared password, and the MAC addresses, and sends Nonce<sub>M</sub> plus an HMAC-signed value back.</li>
+    <li><strong>The mobile device generates Nonce<sub>M</sub></strong>, derives a symmetric session key K<sub>M-AP</sub> from both nonces, the pre-shared password, and the MAC addresses, and sends Nonce<sub>M</sub> plus an <strong>HMAC value</strong> (authentication code derived with the secret keying material — not a digital signature in the PKI sense) back.</li>
     <li><strong>AS derives the same K<sub>M-AP</sub></strong> using the same ingredients, verifies the HMAC, and both parties now have a shared session key — without the password ever having been sent over the air.</li>
   </ol>
 
-  <div class="margin-note">HMAC (Hash-based Message Authentication Code) is a variant of MAC that uses a cryptographic hash function (e.g., SHA-256) together with a secret key to verify integrity and authenticity.</div>
+  <div class="margin-note">HMAC (Hash-based Message Authentication Code) is a symmetric MAC: hash plus shared secret material (RFC 2104). It confirms integrity and that the peer knows the same secret basis as in the handshake.</div>
 
   <h3>4G LTE: authentication with SIM cards</h3>
   <p>Mobile networks are fundamentally different from WiFi because the identity resides in the <strong>SIM card</strong>, not in a password. The SIM card contains a globally unique identifier (IMSI) and a pre-shared secret key K<sub>HSS-M</sub> that only the SIM card and the home network's <strong>HSS (Home Subscriber Server)</strong> know.</p>
@@ -395,7 +431,7 @@
 // TLS STEPPER
 (function(){
   var steps = [
-    {title:'Phase 1: Handshake', text:'Alice and Bob use certificates and public key cryptography to authenticate each other. Then they exchange a shared secret (master secret) — typically by having Alice generate a random Pre-Master Secret, encrypt it with Bob\'s public key (from the certificate), and send it over. Both derive the same master secret from this value.'},
+    {title:'Phase 1: Handshake', text:'Alice and Bob use certificates and asymmetric cryptography to authenticate the server (and often the client). They then agree on a shared secret (master secret). In this toy model, Alice generates a random Pre-Master Secret and sends it encrypted with Bob\'s public key from the certificate — a pedagogical pattern for key exchange; TLS 1.3 usually uses ephemeral DH with fewer round trips, but the goal is the same: a shared secret only the two parties know.'},
     {title:'Phase 2: Key derivation', text:'From the master secret, both derive four separate keys: two encryption keys (one per direction) and two MAC keys (one per direction). Different keys per direction and purpose is good cryptographic practice.'},
     {title:'Phase 3: Data transfer', text:'Data is sent as a series of "records". Each record contains a chunk of data, a MAC for integrity checking, and a length. The entire record is encrypted with the direction-specific session key and sent as ordinary TCP segments. The receiver decrypts, checks the MAC, and delivers data to the application.'},
     {title:'Phase 4: Connection teardown', text:'To close the connection securely, the parties send special messages. This is important because an attacker could otherwise force the connection closed by sending a TCP FIN — without the receiver knowing whether it is a genuine closure or an attack (truncation attack).'}

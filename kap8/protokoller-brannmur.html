@@ -62,6 +62,29 @@
   </div>
 
   <p>Bob gjør de komplementære operasjonene i omvendt rekkefølge: dekrypter K<sub>S</sub> med sin private nøkkel, dekrypter meldingen med K<sub>S</sub>, sjekk signaturen med Alices offentlige nøkkel.</p>
+
+  <figure class="fig-frame">
+    <svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="em" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1a1612"/></marker>
+      </defs>
+      <text x="360" y="22" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612">Sikker e-post fra Alice til Bob (kap. 8.5.1)</text>
+      <rect x="40" y="45" width="120" height="56" rx="4" fill="#f4f1ea" stroke="#3d6b3a" stroke-width="1.5"/>
+      <text x="100" y="68" text-anchor="middle" font-family="Newsreader" font-size="14" fill="#1a1612">Alice</text>
+      <text x="100" y="88" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">K_A−, K_S</text>
+      <rect x="560" y="45" width="120" height="56" rx="4" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/>
+      <text x="620" y="68" text-anchor="middle" font-family="Newsreader" font-size="14" fill="#1a1612">Bob</text>
+      <text x="620" y="88" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">K_B−, K_B+</text>
+      <rect x="260" y="40" width="200" height="110" rx="6" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.2"/>
+      <text x="360" y="62" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">Sendt over Internett</text>
+      <text x="360" y="82" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#1a1612">K_B+(K_S)  —  sesjonsnøkkel kryptert for Bob</text>
+      <text x="360" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#1a1612">K_S(m, K_A−(H(m)))  —  melding + signatur, alt med K_S</text>
+      <path d="M 160 73 L 255 73" stroke="#1a1612" stroke-width="1.5" marker-end="url(#em)"/>
+      <path d="M 465 73 L 555 73" stroke="#1a1612" stroke-width="1.5" marker-end="url(#em)"/>
+      <text x="360" y="168" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#6b6257">Byggeklosser: symmetrisk K_S for hastighet, K_B+ for konfidensialitet, K_A− for digital signatur på H(m).</text>
+    </svg>
+    <figcaption>Hybrid kryptering: den korte sesjonsnøkkelen K<sub>S</sub> beskyttes med Bobs offentlige nøkkel; selve meldingen og signaturen rutes konfidensielt med K<sub>S</sub>.</figcaption>
+  </figure>
 </div>
 </section>
 
@@ -81,6 +104,8 @@
 
   <h3>Fire faser i en TLS-forbindelse</h3>
   <p>Vi kan forstå TLS ved å bygge en forenklet «toy-TLS» (t-tls) og se hva hver fase trenger:</p>
+
+  <p>I <strong>TLS 1.3</strong> (pensum: kap. 8.6) brukes ofte <strong>ephemeral Diffie–Hellman</strong> (f.eks. på elliptiske kurver) til å utlede den delte hemmeligheten, og integritet/kryptering i <strong>AEAD</strong>-modus — ikke nødvendigvis «krypter Pre-Master Secret med serverens RSA-nøkkel» som i eldre forklaringsmodeller. Stegene under illustrerer likevel <em>hva</em> handshake og records løser: autentisering av partene, avtale av sesjonsnøkler, beskyttet dataoverføring og trygg nedkobling.</p>
 
   <div class="stepper" id="tlsStepper">
     <div class="s-label">Interaktiv gjennomgang — TLS-fasene</div>
@@ -138,6 +163,9 @@
   </ul>
 
   <p>Fordi en SA er <em>enveis</em>, trengs det to SA-er for toveis kommunikasjon — én i hver retning, hver med sin egen SPI og sine egne nøkler. Alle aktive SA-er lagres i en <strong>SAD (Security Association Database)</strong> på begge endepunkter. Når et IPsec-datagram ankommer, bruker mottakeren SPI-verdien i headeren til å slå opp riktig SA i SAD-en og dermed finne krypteringsnøkkelen og algoritmen som trengs for å dekryptere.</p>
+
+  <h3>SPD — hvilken trafikk skal inn i IPsec?</h3>
+  <p>I tillegg til SAD finnes <strong>SPD (Security Policy Database)</strong>: en liste med policy-regler som sier <em>hvilke</em> pakker (f.eks. basert på kilde/dest-subnett, protokoll eller port) som skal behandles av IPsec, og om de skal droppes, sendes i klartekst, eller tunneleres/krypteres med en bestemt SA. Kort sagt: <strong>SPD bestemmer om</strong> IPsec skal brukes; <strong>SAD forteller hvordan</strong> (nøkler og algoritmer for en aktiv SA).</p>
 
   <h3>To moduser</h3>
 
@@ -213,6 +241,14 @@
 
   <p class="dropcap">Alt vi har sett så langt — kryptering, signaturer, CA-er — er generelle mekanismer. Men trådløse nettverk har et spesielt behov: enheten som kobler seg til må autentisere seg <em>før</em> den får noen som helst tilgang til nettverket, og all trafikk over lufta må krypteres fordi radiobølger er trivielt enkle å avlytte. La oss se hvordan WiFi og 4G/5G løser dette.</p>
 
+  <h3>Fra WEP til WPA3</h3>
+  <table>
+    <tr><th>Mekanisme</th><th>Kort forklaring</th></tr>
+    <tr><td class="mono-cell">WEP</td><td>Tidlig 802.11-kryptering med svake nøkler og svak IV-bruk; regnes som brutt og er ikke brukbar i praksis.</td></tr>
+    <tr><td class="mono-cell">WPA2 (802.11i)</td><td>CCMP basert på AES; lenge industristandard. Krever sterkt passord fordi PSK fortsatt kan utsettes for ordbokangrep.</td></tr>
+    <tr><td class="mono-cell">WPA3</td><td>Sterkere håndtrykk (SAE m.m.), bedre beskyttelse av passord og enklere sikre oppsett — det er dette kapittelet vektlegger.</td></tr>
+  </table>
+
   <h3>802.11 WiFi: fire steg til sikker kommunikasjon</h3>
   <p>Når en mobilenhet kobler seg til et WiFi-nettverk med WPA3, gjennomgår den fire steg:</p>
 
@@ -234,11 +270,11 @@
 
   <ol>
     <li><strong>AS sender Nonce<sub>AS</sub></strong> — et tilfeldig engangsbrukstall — til mobilenheten.</li>
-    <li><strong>Mobilenheten genererer Nonce<sub>M</sub></strong>, utleder en symmetrisk sesjonsnøkkel K<sub>M-AP</sub> fra begge nonce-ene, det forhåndsdelte passordet og MAC-adressene, og sender Nonce<sub>M</sub> pluss en HMAC-signert verdi tilbake.</li>
+    <li><strong>Mobilenheten genererer Nonce<sub>M</sub></strong>, utleder en symmetrisk sesjonsnøkkel K<sub>M-AP</sub> fra begge nonce-ene, det forhåndsdelte passordet og MAC-adressene, og sender Nonce<sub>M</sub> pluss en <strong>HMAC-verdi</strong> (autentiseringskode utledet med den hemmelige nøkkelmaten — ikke en digital signatur i PKI-forstand) tilbake.</li>
     <li><strong>AS utleder samme K<sub>M-AP</sub></strong> med samme ingredienser, verifiserer HMAC-en, og begge parter har nå en felles sesjonsnøkkel — uten at passordet noensinne ble sendt over lufta.</li>
   </ol>
 
-  <div class="margin-note">HMAC (Hash-based Message Authentication Code) er en variant av MAC som bruker en kryptografisk hashfunksjon (f.eks. SHA-256) sammen med en hemmelig nøkkel for å verifisere integritet og autentisitet.</div>
+  <div class="margin-note">HMAC (Hash-based Message Authentication Code) er en symmetrisk MAC: hash + delt hemmelig materiale (RFC 2104). Den bekrefter integritet og at parten kjenner det samme hemmelige grunnlaget som i håndtrykket.</div>
 
   <h3>4G LTE: autentisering med SIM-kort</h3>
   <p>Mobilnett er fundamentalt annerledes enn WiFi fordi identiteten ligger i <strong>SIM-kortet</strong>, ikke i et passord. SIM-kortet inneholder en globalt unik identifikator (IMSI) og en forhåndsdelt hemmelig nøkkel K<sub>HSS-M</sub> som bare SIM-kortet og hjemmenettverkets <strong>HSS (Home Subscriber Server)</strong> kjenner.</p>
@@ -395,7 +431,7 @@
 // TLS STEPPER
 (function(){
   var steps = [
-    {title:'Fase 1: Håndtrykk (handshake)', text:'Alice og Bob bruker sertifikater og offentlig nøkkelkryptografi til å autentisere hverandre. Deretter utveksler de en felles hemmelighet (master secret) — typisk ved at Alice genererer en tilfeldig Pre-Master Secret, krypterer den med Bobs offentlige nøkkel (fra sertifikatet), og sender den over. Begge utleder samme master secret fra denne verdien.'},
+    {title:'Fase 1: Håndtrykk (handshake)', text:'Alice og Bob bruker sertifikater og asymmetrisk kryptografi til å autentisere server (og ofte klient). Deretter avtaler de en felles hemmelighet (master secret). I denne «toy-TLS»-modellen: Alice genererer en tilfeldig Pre-Master Secret og sender den kryptert med Bobs offentlige nøkkel fra sertifikatet — et pedagogisk mønster som viser nøkkelutveksling; i TLS 1.3 brukes vanligvis ephemeral DH og færre rundtur(er), men målet er det samme: en delt hemmelighet bare de to kjenner.'},
     {title:'Fase 2: Nøkkelutledning (key derivation)', text:'Fra master secret utleder begge fire separate nøkler: to krypteringsnøkler (én per retning) og to MAC-nøkler (én per retning). Forskjellige nøkler per retning og formål er god kryptografisk praksis.'},
     {title:'Fase 3: Dataoverføring', text:'Data sendes som en serie «records». Hver record inneholder et datastykke, en MAC for integritetskontroll, og en lengde. Hele recorden krypteres med den retnings-spesifikke sesjonsnøkkelen og sendes som vanlige TCP-segmenter. Mottakeren dekrypterer, sjekker MAC, og leverer data til applikasjonen.'},
     {title:'Fase 4: Nedkobling', text:'For å lukke forbindelsen trygt sender partene spesielle meldinger. Dette er viktig fordi en angriper ellers kunne tvinge forbindelsen lukket ved å sende en TCP FIN — uten at mottakeren vet om det er en ekte avslutning eller et angrep (truncation attack).'}

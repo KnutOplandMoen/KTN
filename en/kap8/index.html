@@ -38,6 +38,8 @@
   <h2>The big <em>picture</em></h2>
   <p class="section-intro">Network security is about protecting data traveling through a network full of potential attackers — using four tools that each solve one specific problem.</p>
 
+  <p>In the textbook (Sec. 8.1), the <strong>CIA triad</strong> is a common frame: <strong>C</strong>onfidentiality (only authorized parties can read content), <strong>I</strong>ntegrity (content is authentic and unaltered), and <strong>A</strong>vailability (services are reachable for legitimate users). The four properties used in this chapter (confidentiality, authentication, message integrity, availability) align with CIA: authentication and integrity especially support the I dimension, while <em>denial-of-service (DoS)</em> attacks mainly target the A dimension.</p>
+
   <p class="lead">Imagine you need to send a valuable diamond through a postal system full of thieves. You need: (1) a locked box that only the recipient can open (<em>encryption</em>), (2) a seal that shows if someone has opened the box en route (<em>integrity / MAC</em>), (3) a way to prove that it really is you who sent it (<em>authentication / digital signatures</em>), and (4) guards at the door who inspect every single package (<em>firewalls</em>). Each security tool solves one specific problem.</p>
 
   <figure class="fig-frame">
@@ -109,10 +111,10 @@
 
   <div class="callout">
     <span class="label">The toolbox — four layers of security</span>
-    <p><strong>Symmetric encryption</strong> (AES) — fast, but requires both parties to share the same secret key.</p>
-    <p><strong>Public key cryptography</strong> (RSA) — solves the key distribution problem, but is slow. Used to exchange session keys.</p>
-    <p><strong>Message integrity and digital signatures</strong> (HMAC, RSA signature) — guarantees that the content has not been altered and that the sender is genuine.</p>
-    <p><strong>Firewalls and IDS</strong> — filter traffic and detect suspicious activity on the network.</p>
+    <p><strong>Symmetric encryption</strong> (e.g. AES) — fast, but requires both parties to share the same secret key.</p>
+    <p><strong>Public key cryptography</strong> — solves key distribution and digital signatures; the curriculum omits detailed RSA derivations, but the key-pair idea is central to TLS and secure email.</p>
+    <p><strong>Message integrity and digital signatures</strong> (including HMAC and hash-plus-signature) — ensures content is unaltered and the sender can be verified.</p>
+    <p><strong>Firewalls</strong> (Sec. 8.9.1) — stateless and stateful packet filtering, application gateways, and ACL rules that control which traffic is allowed through.</p>
   </div>
 </div>
 </section>
@@ -139,7 +141,7 @@
 <section id="quiz">
 <div class="container">
   <h2>Test yourself</h2>
-  <p class="section-intro">Check whether you have understood the most important concepts from this chapter.</p>
+  <p class="section-intro">Check whether you have understood the most important concepts from this chapter. The questions follow the <strong>Chapter 8 curriculum</strong> in Kurose &amp; Ross (8th ed.): 8.1, 8.2 without detailed RSA, 8.3, 8.5 introduction and 8.5.1, 8.6, 8.7 introduction and 8.7.1, 8.8, 8.9 introduction and 8.9.1 — see <a href="../../pensum.md">pensum.md</a> for the full list.</p>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 1 · Easy</div>
@@ -147,7 +149,7 @@
     <div class="options">
       <button class="option" data-correct="true">Confidentiality, integrity, and availability are the foundational goals of information security.</button>
       <button class="option" data-correct="false">A MAC provides integrity and authentication between parties sharing a secret key.</button>
-      <button class="option" data-correct="false">Salts prevent equal passwords from producing equal hashes and weaken precomputed-table attacks.</button>
+      <button class="option" data-correct="false">WEP is still recommended today as the primary WiFi security mechanism for enterprise networks.</button>
       <button class="option" data-correct="false">MITM places an attacker in the traffic path for eavesdropping, modification, or injection.</button>
     </div>
     <div class="explanation">Correct. Confidentiality, integrity, and availability are the foundational goals of information security.</div>
@@ -182,7 +184,7 @@
     <div class="q-text">In practice, which statement about hybrid encryption is most correct?</div>
     <div class="options">
       <button class="option" data-correct="false">The TLS handshake establishes crypto parameters and shared session keys before application data is sent.</button>
-      <button class="option" data-correct="false">IDS detects and alerts, while IPS can actively block suspicious traffic.</button>
+      <button class="option" data-correct="false">IKE is only used to encrypt email, not to establish IPsec SAs.</button>
       <button class="option" data-correct="false">DNS spoofing tries to make clients resolve wrong IPs and contact attacker-controlled targets.</button>
       <button class="option" data-correct="true">Hybrid schemes use asymmetric methods for key exchange and symmetric methods for data encryption.</button>
     </div>
@@ -195,20 +197,20 @@
     <div class="options">
       <button class="option" data-correct="true">AES is a symmetric block cipher used widely in modern protocols.</button>
       <button class="option" data-correct="false">Session keys are short-lived keys used for efficient encryption of one connection.</button>
-      <button class="option" data-correct="false">DDoS uses many distributed sources to overload targets and make filtering harder.</button>
-      <button class="option" data-correct="false">Least privilege restricts access to what is necessary and limits blast radius on compromise.</button>
+      <button class="option" data-correct="false">A ciphertext-only attack assumes the attacker already knows the entire plaintext in advance.</button>
+      <button class="option" data-correct="false">ESP in IPsec never provides confidentiality, only authentication.</button>
     </div>
     <div class="explanation">Correct. AES is a symmetric block cipher used widely in modern protocols.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 6 · Hard</div>
-    <div class="q-text">In a larger network setting, which evaluation of RSA/ECC keys is most accurate?</div>
+    <div class="q-text">In a larger network setting, which evaluation of public keys and key pairs is most accurate?</div>
     <div class="options">
       <button class="option" data-correct="false">PFS ensures compromise of long-term keys does not reveal past sessions.</button>
       <button class="option" data-correct="true">The private key remains secret, while the public key can be shared for verification and key agreement.</button>
-      <button class="option" data-correct="false">Phishing manipulates users into revealing secrets via convincing but fake messages/sites.</button>
-      <button class="option" data-correct="false">Multiple independent security layers keep systems resilient even if one control fails.</button>
+      <button class="option" data-correct="false">A certificate should always contain the sender's private key in plaintext.</button>
+      <button class="option" data-correct="false">Modern TLS 1.3 never uses ephemeral Diffie–Hellman to derive session secrets.</button>
     </div>
     <div class="explanation">Correct. The private key remains secret, while the public key can be shared for verification and key agreement.</div>
   </div>
@@ -217,7 +219,7 @@
     <div class="q-label">Question 7 · Medium</div>
     <div class="q-text">In practice, which statement about hash functions is most correct?</div>
     <div class="options">
-      <button class="option" data-correct="false">Salts prevent equal passwords from producing equal hashes and weaken precomputed-table attacks.</button>
+      <button class="option" data-correct="false">WEP is still recommended today as the primary WiFi security mechanism for enterprise networks.</button>
       <button class="option" data-correct="false">MITM places an attacker in the traffic path for eavesdropping, modification, or injection.</button>
       <button class="option" data-correct="true">A cryptographic hash gives a short fingerprint that changes dramatically with tiny input changes.</button>
       <button class="option" data-correct="false">Confidentiality, integrity, and availability are the foundational goals of information security.</button>
@@ -253,7 +255,7 @@
     <div class="q-label">Question 10 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of certificates and CAs is most accurate?</div>
     <div class="options">
-      <button class="option" data-correct="false">IDS detects and alerts, while IPS can actively block suspicious traffic.</button>
+      <button class="option" data-correct="false">IKE is only used to encrypt email, not to establish IPsec SAs.</button>
       <button class="option" data-correct="true">A certificate binds identity to a public key through a signature from a trusted CA.</button>
       <button class="option" data-correct="false">DNS spoofing tries to make clients resolve wrong IPs and contact attacker-controlled targets.</button>
       <button class="option" data-correct="false">Hybrid schemes use asymmetric methods for key exchange and symmetric methods for data encryption.</button>
@@ -265,8 +267,8 @@
     <div class="q-label">Question 11 · Medium</div>
     <div class="q-text">In practice, which statement about the TLS handshake is most correct?</div>
     <div class="options">
-      <button class="option" data-correct="false">DDoS uses many distributed sources to overload targets and make filtering harder.</button>
-      <button class="option" data-correct="false">Least privilege restricts access to what is necessary and limits blast radius on compromise.</button>
+      <button class="option" data-correct="false">The TLS handshake runs only after all application data has been sent, to save time.</button>
+      <button class="option" data-correct="false">During the TLS handshake, the server's certificate is irrelevant because TCP already authenticates the server.</button>
       <button class="option" data-correct="true">The TLS handshake establishes crypto parameters and shared session keys before application data is sent.</button>
       <button class="option" data-correct="false">AES is a symmetric block cipher used widely in modern protocols.</button>
     </div>
@@ -277,8 +279,8 @@
     <div class="q-label">Question 12 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of session keys is most accurate?</div>
     <div class="options">
-      <button class="option" data-correct="false">Phishing manipulates users into revealing secrets via convincing but fake messages/sites.</button>
-      <button class="option" data-correct="false">Multiple independent security layers keep systems resilient even if one control fails.</button>
+      <button class="option" data-correct="false">In IPsec, the SPI identifies which TCP port to use for the next hop.</button>
+      <button class="option" data-correct="false">In tunnel mode, AH always encrypts the entire inner IP datagram.</button>
       <button class="option" data-correct="false">The private key remains secret, while the public key can be shared for verification and key agreement.</button>
       <button class="option" data-correct="true">Session keys are short-lived keys used for efficient encryption of one connection.</button>
     </div>
@@ -299,14 +301,14 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 14 · Medium</div>
-    <div class="q-text">In practice, which statement about salted password hashes is most correct?</div>
+    <div class="q-text">Which statement about ciphertext-only attacks (against encryption) is most correct?</div>
     <div class="options">
-      <button class="option" data-correct="false">Replay attacks reuse valid messages later to trick systems into accepting stale actions.</button>
-      <button class="option" data-correct="true">Salts prevent equal passwords from producing equal hashes and weaken precomputed-table attacks.</button>
-      <button class="option" data-correct="false">Symmetric encryption is fast and suitable for bulk data with a shared secret key.</button>
-      <button class="option" data-correct="false">A MAC provides integrity and authentication between parties sharing a secret key.</button>
+      <button class="option" data-correct="false">The attacker has both plaintext and ciphertext for the same message.</button>
+      <button class="option" data-correct="true">The attacker only has captured ciphertexts and tries to recover plaintext or keys.</button>
+      <button class="option" data-correct="false">The attacker can freely choose plaintext and observe the resulting ciphertext.</button>
+      <button class="option" data-correct="false">The attacker must already know the shared symmetric key.</button>
     </div>
-    <div class="explanation">Correct. Salts prevent equal passwords from producing equal hashes and weaken precomputed-table attacks.</div>
+    <div class="explanation">Correct. In ciphertext-only attacks, the attacker only has ciphertext — the weakest attacker starting point, yet still relevant when eavesdropping is possible.</div>
   </div>
 
   <div class="quiz" data-quiz>
@@ -335,21 +337,21 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 17 · Easy</div>
-    <div class="q-text">Which statement best describes IDS versus IPS?</div>
+    <div class="q-text">What is the main idea of an <em>application gateway</em> in a firewall (Sec. 8.9.1)?</div>
     <div class="options">
-      <button class="option" data-correct="true">IDS detects and alerts, while IPS can actively block suspicious traffic.</button>
-      <button class="option" data-correct="false">Least privilege restricts access to what is necessary and limits blast radius on compromise.</button>
-      <button class="option" data-correct="false">AES is a symmetric block cipher used widely in modern protocols.</button>
-      <button class="option" data-correct="false">The TLS handshake establishes crypto parameters and shared session keys before application data is sent.</button>
+      <button class="option" data-correct="true">It acts as an application-layer intermediary, inspecting and filtering traffic for a specific application (e.g., email or HTTP).</button>
+      <button class="option" data-correct="false">It only looks at IP addresses and ports and never keeps state about TCP connections.</button>
+      <button class="option" data-correct="false">It replaces IKE and automatically creates IPsec SAs for all UDP traffic.</button>
+      <button class="option" data-correct="false">It is only used to derive WiFi keys in WPA3, not in enterprise networks.</button>
     </div>
-    <div class="explanation">Correct. IDS detects and alerts, while IPS can actively block suspicious traffic.</div>
+    <div class="explanation">Correct. An application gateway is a specialized firewall that understands the application protocol and can enforce policy at the content level.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 18 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of the DDoS mechanism is most accurate?</div>
     <div class="options">
-      <button class="option" data-correct="false">Multiple independent security layers keep systems resilient even if one control fails.</button>
+      <button class="option" data-correct="false">IPsec encryption means organizations no longer need a firewall.</button>
       <button class="option" data-correct="true">DDoS uses many distributed sources to overload targets and make filtering harder.</button>
       <button class="option" data-correct="false">The private key remains secret, while the public key can be shared for verification and key agreement.</button>
       <button class="option" data-correct="false">Session keys are short-lived keys used for efficient encryption of one connection.</button>
@@ -359,14 +361,14 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 19 · Medium</div>
-    <div class="q-text">In practice, which statement about phishing is most correct?</div>
+    <div class="q-text">Which statement best describes <em>IP spoofing</em> in networking (Sec. 8.1)?</div>
     <div class="options">
-      <button class="option" data-correct="false">Confidentiality, integrity, and availability are the foundational goals of information security.</button>
-      <button class="option" data-correct="false">A cryptographic hash gives a short fingerprint that changes dramatically with tiny input changes.</button>
-      <button class="option" data-correct="true">Phishing manipulates users into revealing secrets via convincing but fake messages/sites.</button>
-      <button class="option" data-correct="false">PFS ensures compromise of long-term keys does not reveal past sessions.</button>
+      <button class="option" data-correct="false">The attacker passively eavesdrops on ciphertext without altering packets.</button>
+      <button class="option" data-correct="false">The attacker replays an old valid message to trick a protocol.</button>
+      <button class="option" data-correct="true">The sender forges the source IP address in the packet header so the receiver thinks the packet came from someone else.</button>
+      <button class="option" data-correct="false">The attacker floods the target with SYN segments without changing the source address.</button>
     </div>
-    <div class="explanation">Correct. Phishing manipulates users into revealing secrets via convincing but fake messages/sites.</div>
+    <div class="explanation">Correct. IP spoofing means emitting packets that appear to come from another host's IP address — a classic issue in best-effort networks without source authentication.</div>
   </div>
 
   <div class="quiz" data-quiz>
@@ -375,7 +377,7 @@
     <div class="options">
       <button class="option" data-correct="false">Symmetric encryption is fast and suitable for bulk data with a shared secret key.</button>
       <button class="option" data-correct="false">A MAC provides integrity and authentication between parties sharing a secret key.</button>
-      <button class="option" data-correct="false">Salts prevent equal passwords from producing equal hashes and weaken precomputed-table attacks.</button>
+      <button class="option" data-correct="false">WEP is still recommended today as the primary WiFi security mechanism for enterprise networks.</button>
       <button class="option" data-correct="true">MITM places an attacker in the traffic path for eavesdropping, modification, or injection.</button>
     </div>
     <div class="explanation">Correct. MITM places an attacker in the traffic path for eavesdropping, modification, or injection.</div>
@@ -412,33 +414,33 @@
       <button class="option" data-correct="false">AES is a symmetric block cipher used widely in modern protocols.</button>
       <button class="option" data-correct="false">The TLS handshake establishes crypto parameters and shared session keys before application data is sent.</button>
       <button class="option" data-correct="true">DNS spoofing tries to make clients resolve wrong IPs and contact attacker-controlled targets.</button>
-      <button class="option" data-correct="false">IDS detects and alerts, while IPS can actively block suspicious traffic.</button>
+      <button class="option" data-correct="false">IKE is only used to encrypt email, not to establish IPsec SAs.</button>
     </div>
     <div class="explanation">Correct. DNS spoofing tries to make clients resolve wrong IPs and contact attacker-controlled targets.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 24 · Medium</div>
-    <div class="q-text">In practice, which statement about least privilege is most correct?</div>
+    <div class="q-text">Which statement about IPsec <em>transport</em> versus <em>tunnel</em> mode (Sec. 8.7.1) is most correct?</div>
     <div class="options">
-      <button class="option" data-correct="false">The private key remains secret, while the public key can be shared for verification and key agreement.</button>
-      <button class="option" data-correct="false">Session keys are short-lived keys used for efficient encryption of one connection.</button>
-      <button class="option" data-correct="false">DDoS uses many distributed sources to overload targets and make filtering harder.</button>
-      <button class="option" data-correct="true">Least privilege restricts access to what is necessary and limits blast radius on compromise.</button>
+      <button class="option" data-correct="false">In tunnel mode, only the payload of the original datagram is encrypted; the IP header always stays readable.</button>
+      <button class="option" data-correct="false">Transport mode always encapsulates the entire original datagram inside a new IP datagram with a new outer header.</button>
+      <button class="option" data-correct="false">Using AH with ESP in the same SA is required in all VPN implementations.</button>
+      <button class="option" data-correct="true">Transport mode typically protects only the payload between two hosts; tunnel mode often encapsulates the entire original IP datagram for gateway-to-gateway (VPN) use.</button>
     </div>
-    <div class="explanation">Correct. Least privilege restricts access to what is necessary and limits blast radius on compromise.</div>
+    <div class="explanation">Correct. Transport mode protects data between endpoints without hiding the whole original IP header; tunnel mode is commonly used when two security gateways wrap the full packet in an encrypted tunnel.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 25 · Hard</div>
-    <div class="q-text">In a larger network setting, which evaluation of defense in depth is most accurate?</div>
+    <div class="q-text">In a larger network setting, which evaluation of firewalls and SYN flooding (Sec. 8.9.1) is most accurate?</div>
     <div class="options">
-      <button class="option" data-correct="true">Multiple independent security layers keep systems resilient even if one control fails.</button>
-      <button class="option" data-correct="false">A cryptographic hash gives a short fingerprint that changes dramatically with tiny input changes.</button>
-      <button class="option" data-correct="false">PFS ensures compromise of long-term keys does not reveal past sessions.</button>
-      <button class="option" data-correct="false">Phishing manipulates users into revealing secrets via convincing but fake messages/sites.</button>
+      <button class="option" data-correct="true">A firewall can limit incoming SYN traffic or use stateful tracking so bogus TCP connection setups are harder.</button>
+      <button class="option" data-correct="false">SYN flooding mainly attacks confidentiality by decrypting TLS records without a key.</button>
+      <button class="option" data-correct="false">Stateless packet filtering can always distinguish legitimate return traffic from spoofed SYN without rule changes.</button>
+      <button class="option" data-correct="false">An application gateway is the only component that can block UDP port 53.</button>
     </div>
-    <div class="explanation">Correct. Multiple independent security layers keep systems resilient even if one control fails.</div>
+    <div class="explanation">Correct. Firewalls are used among other things to mitigate DoS/DDoS including SYN flooding by filtering or managing connection setup (see stateful filtering and limiting half-open connections).</div>
   </div>
 </div>
 </section>

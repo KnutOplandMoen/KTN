@@ -38,6 +38,8 @@
   <h2>Det store <em>bildet</em></h2>
   <p class="section-intro">Nettverkssikkerhet handler om å beskytte data som reiser gjennom et nettverk fullt av potensielle angripere — med fire verktøy som hver løser ett bestemt problem.</p>
 
+  <p>I læreboken (kap. 8.1) møter du ofte <strong>CIA-triaden</strong> som rammeverk: <strong>C</strong>onfidentiality (konfidensialitet — bare autoriserte kan lese innholdet), <strong>I</strong>ntegrity (integritet — innholdet er autentisk og uendret), og <strong>A</strong>vailability (tilgjengelighet — tjenester er tilgjengelige for legitime brukere). De fire egenskapene vi bruker i dette kapittelet (konfidensialitet, autentisering, meldingsintegritet, tilgjengelighet) overlapper med CIA: autentisering og integritet støtter særlig I-delen, mens <em>tjenestenekt (DoS)</em> er et typisk angrep på A-delen.</p>
+
   <p class="lead">Tenk deg at du skal sende en verdifull diamant gjennom et postsystem fullt av tyver. Du trenger: (1) en låst boks som bare mottakeren kan åpne (<em>kryptering</em>), (2) en forsegling som viser om noen har åpnet boksen underveis (<em>integritet / MAC</em>), (3) en måte å bevise at det virkelig er du som sendte den (<em>autentisering / digitale signaturer</em>), og (4) vakter ved døren som sjekker hver eneste pakke (<em>brannmurer</em>). Hvert sikkerhetsverktøy løser ett spesifikt problem.</p>
 
   <figure class="fig-frame">
@@ -109,10 +111,10 @@
 
   <div class="callout">
     <span class="label">Verktøykassen — fire lag med sikkerhet</span>
-    <p><strong>Symmetrisk kryptering</strong> (AES) — rask, men krever at begge parter har samme hemmelige nøkkel.</p>
-    <p><strong>Offentlig nøkkelkryptering</strong> (RSA) — løser nøkkelfordelingen, men er treg. Brukes til å utveksle sesjonsnøkler.</p>
-    <p><strong>Meldingsintegritet og digitale signaturer</strong> (HMAC, RSA-signatur) — garanterer at innholdet ikke er endret og at avsenderen er ekte.</p>
-    <p><strong>Brannmurer og IDS</strong> — filtrerer trafikk og oppdager mistenkelig aktivitet i nettverket.</p>
+    <p><strong>Symmetrisk kryptering</strong> (f.eks. AES) — rask, men krever at begge parter har samme hemmelige nøkkel.</p>
+    <p><strong>Offentlig nøkkelkryptografi</strong> — løser nøkkelfordeling og digitale signaturer; pensum utelater detaljert utledning av RSA, men prinsippet om nøkkelpar er sentralt i TLS og sikker e-post.</p>
+    <p><strong>Meldingsintegritet og digitale signaturer</strong> (bl.a. HMAC og hash + signatur) — garanterer at innholdet ikke er endret og at avsenderen kan verifiseres.</p>
+    <p><strong>Brannmurer</strong> (kap. 8.9.1) — tilstandsløs og tilstandsfull pakkefiltrering, applikasjons-gateway og ACL-regler som styrer hvilken trafikk som slipper gjennom.</p>
   </div>
 </div>
 </section>
@@ -139,7 +141,7 @@
 <section id="quiz">
 <div class="container">
   <h2>Test deg selv</h2>
-  <p class="section-intro">Sjekk om du har forstått de viktigste konseptene fra dette kapittelet.</p>
+  <p class="section-intro">Sjekk om du har forstått de viktigste konseptene fra dette kapittelet. Spørsmålene følger <strong>pensum for kapittel 8</strong> i Kurose &amp; Ross (8. utg.): 8.1, 8.2 uten detaljert RSA, 8.3, 8.5 innledning og 8.5.1, 8.6, 8.7 innledning og 8.7.1, 8.8, 8.9 innledning og 8.9.1 — se <a href="../pensum.md">pensum.md</a> for full liste.</p>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 1 · Lett</div>
@@ -147,7 +149,7 @@
     <div class="options">
       <button class="option" data-correct="true">Konfidensialitet, integritet og tilgjengelighet er grunnmålene i informasjonssikkerhet.</button>
       <button class="option" data-correct="false">MAC gir integritet og autentisering mellom parter som deler en hemmelig nøkkel.</button>
-      <button class="option" data-correct="false">Salt hindrer at like passord får lik hash og svekker effekt av precomputed tabeller.</button>
+      <button class="option" data-correct="false">WEP er i dag anbefalt som primær sikkerhetsmekanisme i bedrifts-WiFi.</button>
       <button class="option" data-correct="false">MITM plasserer angriper i trafikkbanen for avlytting, endring eller injeksjon av data.</button>
     </div>
     <div class="explanation">Riktig. Konfidensialitet, integritet og tilgjengelighet er grunnmålene i informasjonssikkerhet.</div>
@@ -182,7 +184,7 @@
     <div class="q-text">Hvilken påstand er mest korrekt om hybrid kryptering i praksis?</div>
     <div class="options">
       <button class="option" data-correct="false">TLS-handshake etablerer kryptoparametre og felles sesjonsnøkler før applikasjonsdata sendes.</button>
-      <button class="option" data-correct="false">IDS detekterer og varsler, mens IPS kan gripe inn og blokkere mistenkelig trafikk.</button>
+      <button class="option" data-correct="false">IKE brukes bare til å kryptere e-post, ikke til å etablere IPsec-SA-er.</button>
       <button class="option" data-correct="false">DNS-spoofing forsøker å få klienter til å slå opp feil IP og dermed kontakte angriperstyrte mål.</button>
       <button class="option" data-correct="true">Hybridoppsett bruker asymmetri til nøkkelutveksling og symmetri til selve datakrypteringen.</button>
     </div>
@@ -195,20 +197,20 @@
     <div class="options">
       <button class="option" data-correct="true">AES er en symmetrisk blokk-krypteringsalgoritme som brukes bredt i moderne protokoller.</button>
       <button class="option" data-correct="false">Sesjonsnøkler er kortlivede nøkler brukt for effektiv kryptering av en enkelt forbindelse.</button>
-      <button class="option" data-correct="false">DDoS bruker mange distribuerte kilder for å overbelaste mål og vanskeliggjøre filtrering.</button>
-      <button class="option" data-correct="false">Minste privilegium begrenser tilgang til det som er nødvendig og reduserer skadeomfang ved kompromiss.</button>
+      <button class="option" data-correct="false">Ciphertext-only-angrepet forutsetter at angriperen kjenner hele klarteksten på forhånd.</button>
+      <button class="option" data-correct="false">ESP i IPsec gir aldri konfidensialitet, bare autentisering.</button>
     </div>
     <div class="explanation">Riktig. AES er en symmetrisk blokk-krypteringsalgoritme som brukes bredt i moderne protokoller.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 6 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om RSA/ECC-nøkler er faglig best?</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om offentlig nøkkel og nøkkelpar er faglig best?</div>
     <div class="options">
       <button class="option" data-correct="false">PFS gjør at kompromittering av langsiktig nøkkel ikke avslører gamle sesjoner.</button>
       <button class="option" data-correct="true">Private nøkkel holdes hemmelig, mens offentlig nøkkel kan deles for verifisering og nøkkelavtale.</button>
-      <button class="option" data-correct="false">Phishing manipulerer brukere til å avsløre hemmeligheter via troverdige, men falske meldinger/sider.</button>
-      <button class="option" data-correct="false">Flere uavhengige sikkerhetslag gjør systemet robust selv om ett kontrollpunkt svikter.</button>
+      <button class="option" data-correct="false">Et sertifikat skal alltid inneholde avsenderens private nøkkel i klartekst.</button>
+      <button class="option" data-correct="false">I moderne TLS 1.3 brukes aldri ephemeral Diffie–Hellman til utveksling av sesjonshemmeligheter.</button>
     </div>
     <div class="explanation">Riktig. Private nøkkel holdes hemmelig, mens offentlig nøkkel kan deles for verifisering og nøkkelavtale.</div>
   </div>
@@ -217,7 +219,7 @@
     <div class="q-label">Spørsmål 7 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om hashfunksjoner i praksis?</div>
     <div class="options">
-      <button class="option" data-correct="false">Salt hindrer at like passord får lik hash og svekker effekt av precomputed tabeller.</button>
+      <button class="option" data-correct="false">WEP er i dag anbefalt som primær sikkerhetsmekanisme i bedrifts-WiFi.</button>
       <button class="option" data-correct="false">MITM plasserer angriper i trafikkbanen for avlytting, endring eller injeksjon av data.</button>
       <button class="option" data-correct="true">En kryptografisk hash gir et kort fingeravtrykk som endres dramatisk ved små inputendringer.</button>
       <button class="option" data-correct="false">Konfidensialitet, integritet og tilgjengelighet er grunnmålene i informasjonssikkerhet.</button>
@@ -253,7 +255,7 @@
     <div class="q-label">Spørsmål 10 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om sertifikater og CA er faglig best?</div>
     <div class="options">
-      <button class="option" data-correct="false">IDS detekterer og varsler, mens IPS kan gripe inn og blokkere mistenkelig trafikk.</button>
+      <button class="option" data-correct="false">IKE brukes bare til å kryptere e-post, ikke til å etablere IPsec-SA-er.</button>
       <button class="option" data-correct="true">Et sertifikat binder identitet til offentlig nøkkel via en signatur fra en betrodd CA.</button>
       <button class="option" data-correct="false">DNS-spoofing forsøker å få klienter til å slå opp feil IP og dermed kontakte angriperstyrte mål.</button>
       <button class="option" data-correct="false">Hybridoppsett bruker asymmetri til nøkkelutveksling og symmetri til selve datakrypteringen.</button>
@@ -265,8 +267,8 @@
     <div class="q-label">Spørsmål 11 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om TLS-handshake i praksis?</div>
     <div class="options">
-      <button class="option" data-correct="false">DDoS bruker mange distribuerte kilder for å overbelaste mål og vanskeliggjøre filtrering.</button>
-      <button class="option" data-correct="false">Minste privilegium begrenser tilgang til det som er nødvendig og reduserer skadeomfang ved kompromiss.</button>
+      <button class="option" data-correct="false">TLS-handshake kjøres først etter at all applikasjonsdata er sendt, for å spare tid.</button>
+      <button class="option" data-correct="false">Under TLS-handshake er serverens sertifikat irrelevant fordi TCP allerede autentiserer serveren.</button>
       <button class="option" data-correct="true">TLS-handshake etablerer kryptoparametre og felles sesjonsnøkler før applikasjonsdata sendes.</button>
       <button class="option" data-correct="false">AES er en symmetrisk blokk-krypteringsalgoritme som brukes bredt i moderne protokoller.</button>
     </div>
@@ -277,8 +279,8 @@
     <div class="q-label">Spørsmål 12 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om sesjonsnøkler er faglig best?</div>
     <div class="options">
-      <button class="option" data-correct="false">Phishing manipulerer brukere til å avsløre hemmeligheter via troverdige, men falske meldinger/sider.</button>
-      <button class="option" data-correct="false">Flere uavhengige sikkerhetslag gjør systemet robust selv om ett kontrollpunkt svikter.</button>
+      <button class="option" data-correct="false">SPI i IPsec identifiserer hvilken TCP-port som skal brukes for neste hopp.</button>
+      <button class="option" data-correct="false">AH i tunnel-modus krypterer alltid hele det innerste IP-datagrammet.</button>
       <button class="option" data-correct="false">Private nøkkel holdes hemmelig, mens offentlig nøkkel kan deles for verifisering og nøkkelavtale.</button>
       <button class="option" data-correct="true">Sesjonsnøkler er kortlivede nøkler brukt for effektiv kryptering av en enkelt forbindelse.</button>
     </div>
@@ -299,14 +301,14 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 14 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om saltede passordhasher i praksis?</div>
+    <div class="q-text">Hvilken påstand om ciphertext-only-angrep (mot kryptering) er mest korrekt?</div>
     <div class="options">
-      <button class="option" data-correct="false">I replay gjenbrukes gyldige meldinger senere for å lure systemet til å akseptere gammel handling.</button>
-      <button class="option" data-correct="true">Salt hindrer at like passord får lik hash og svekker effekt av precomputed tabeller.</button>
-      <button class="option" data-correct="false">Symmetrisk kryptering er rask og egnet for store datamengder med delt hemmelig nøkkel.</button>
-      <button class="option" data-correct="false">MAC gir integritet og autentisering mellom parter som deler en hemmelig nøkkel.</button>
+      <button class="option" data-correct="false">Angriperen har både klartekst og chiffertekst for samme melding.</button>
+      <button class="option" data-correct="true">Angriperen har bare tilgang til fangede chiffertekster og prøver å utlede klartekst eller nøkkel.</button>
+      <button class="option" data-correct="false">Angriperen kan fritt velge klartekst og se resulterende chiffertekst.</button>
+      <button class="option" data-correct="false">Angriperen må allerede kjenne den hemmelige symmetriske nøkkelen.</button>
     </div>
-    <div class="explanation">Riktig. Salt hindrer at like passord får lik hash og svekker effekt av precomputed tabeller.</div>
+    <div class="explanation">Riktig. Ved ciphertext-only har angriperen kun chiffertekst tilgjengelig — et svakest mulig utgangspunkt for angriperen, men fortsatt relevant i nettverk med avlytting.</div>
   </div>
 
   <div class="quiz" data-quiz>
@@ -335,21 +337,21 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 17 · Lett</div>
-    <div class="q-text">Hva beskriver best IDS kontra IPS?</div>
+    <div class="q-text">Hva er hovedideen med en <em>applikasjons-gateway</em> i brannmur (kap. 8.9.1)?</div>
     <div class="options">
-      <button class="option" data-correct="true">IDS detekterer og varsler, mens IPS kan gripe inn og blokkere mistenkelig trafikk.</button>
-      <button class="option" data-correct="false">Minste privilegium begrenser tilgang til det som er nødvendig og reduserer skadeomfang ved kompromiss.</button>
-      <button class="option" data-correct="false">AES er en symmetrisk blokk-krypteringsalgoritme som brukes bredt i moderne protokoller.</button>
-      <button class="option" data-correct="false">TLS-handshake etablerer kryptoparametre og felles sesjonsnøkler før applikasjonsdata sendes.</button>
+      <button class="option" data-correct="true">Den fungerer som applikasjonslagets mellomtjener, inspiserer og filtrerer trafikk for en bestemt applikasjon (f.eks. e-post eller HTTP).</button>
+      <button class="option" data-correct="false">Den ser kun på IP-adresser og porter og holder aldri tilstand om TCP-forbindelser.</button>
+      <button class="option" data-correct="false">Den erstatter IKE og oppretter IPsec-SA-er automatisk for all UDP-trafikk.</button>
+      <button class="option" data-correct="false">Den brukes kun til å generere WiFi-nøkler i WPA3, ikke til bedriftsnett.</button>
     </div>
-    <div class="explanation">Riktig. IDS detekterer og varsler, mens IPS kan gripe inn og blokkere mistenkelig trafikk.</div>
+    <div class="explanation">Riktig. Applikasjons-gatewayen er en spesialisert brannmur som forstår applikasjonsprotokollen og kan håndheve policy på innholdsnivå.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 18 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om DDoS-mekanismen er faglig best?</div>
     <div class="options">
-      <button class="option" data-correct="false">Flere uavhengige sikkerhetslag gjør systemet robust selv om ett kontrollpunkt svikter.</button>
+      <button class="option" data-correct="false">IPsec-kryptering gjør at organisasjoner ikke trenger brannmur lenger.</button>
       <button class="option" data-correct="true">DDoS bruker mange distribuerte kilder for å overbelaste mål og vanskeliggjøre filtrering.</button>
       <button class="option" data-correct="false">Private nøkkel holdes hemmelig, mens offentlig nøkkel kan deles for verifisering og nøkkelavtale.</button>
       <button class="option" data-correct="false">Sesjonsnøkler er kortlivede nøkler brukt for effektiv kryptering av en enkelt forbindelse.</button>
@@ -359,14 +361,14 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 19 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om phishing i praksis?</div>
+    <div class="q-text">Hva beskriver best <em>IP-spoofing</em> i nettverkssammenheng (kap. 8.1)?</div>
     <div class="options">
-      <button class="option" data-correct="false">Konfidensialitet, integritet og tilgjengelighet er grunnmålene i informasjonssikkerhet.</button>
-      <button class="option" data-correct="false">En kryptografisk hash gir et kort fingeravtrykk som endres dramatisk ved små inputendringer.</button>
-      <button class="option" data-correct="true">Phishing manipulerer brukere til å avsløre hemmeligheter via troverdige, men falske meldinger/sider.</button>
-      <button class="option" data-correct="false">PFS gjør at kompromittering av langsiktig nøkkel ikke avslører gamle sesjoner.</button>
+      <button class="option" data-correct="false">Angriperen avlytter passivt chiffertekst uten å endre pakker.</button>
+      <button class="option" data-correct="false">Angriperen gjenbruker en gammel gyldig melding for å lure en protokoll.</button>
+      <button class="option" data-correct="true">Avsenderen forfalsker kilde-IP-adressen i pakkeheaderen slik at mottakeren tror pakken kommer fra noen andre.</button>
+      <button class="option" data-correct="false">Angriperen oversvømmer målet med SYN-segmenter uten å endre kildeadresse.</button>
     </div>
-    <div class="explanation">Riktig. Phishing manipulerer brukere til å avsløre hemmeligheter via troverdige, men falske meldinger/sider.</div>
+    <div class="explanation">Riktig. IP-spoofing handler om å utgi pakker for å komme fra en annen verts IP-adresse — et klassisk problem i uautentiserte best-effort-nett.</div>
   </div>
 
   <div class="quiz" data-quiz>
@@ -375,7 +377,7 @@
     <div class="options">
       <button class="option" data-correct="false">Symmetrisk kryptering er rask og egnet for store datamengder med delt hemmelig nøkkel.</button>
       <button class="option" data-correct="false">MAC gir integritet og autentisering mellom parter som deler en hemmelig nøkkel.</button>
-      <button class="option" data-correct="false">Salt hindrer at like passord får lik hash og svekker effekt av precomputed tabeller.</button>
+      <button class="option" data-correct="false">WEP er i dag anbefalt som primær sikkerhetsmekanisme i bedrifts-WiFi.</button>
       <button class="option" data-correct="true">MITM plasserer angriper i trafikkbanen for avlytting, endring eller injeksjon av data.</button>
     </div>
     <div class="explanation">Riktig. MITM plasserer angriper i trafikkbanen for avlytting, endring eller injeksjon av data.</div>
@@ -412,33 +414,33 @@
       <button class="option" data-correct="false">AES er en symmetrisk blokk-krypteringsalgoritme som brukes bredt i moderne protokoller.</button>
       <button class="option" data-correct="false">TLS-handshake etablerer kryptoparametre og felles sesjonsnøkler før applikasjonsdata sendes.</button>
       <button class="option" data-correct="true">DNS-spoofing forsøker å få klienter til å slå opp feil IP og dermed kontakte angriperstyrte mål.</button>
-      <button class="option" data-correct="false">IDS detekterer og varsler, mens IPS kan gripe inn og blokkere mistenkelig trafikk.</button>
+      <button class="option" data-correct="false">IKE brukes bare til å kryptere e-post, ikke til å etablere IPsec-SA-er.</button>
     </div>
     <div class="explanation">Riktig. DNS-spoofing forsøker å få klienter til å slå opp feil IP og dermed kontakte angriperstyrte mål.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 24 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om minste privilegium i praksis?</div>
+    <div class="q-text">Hvilken påstand om IPsec <em>transport-</em> versus <em>tunnel-</em>modus (kap. 8.7.1) er mest korrekt?</div>
     <div class="options">
-      <button class="option" data-correct="false">Private nøkkel holdes hemmelig, mens offentlig nøkkel kan deles for verifisering og nøkkelavtale.</button>
-      <button class="option" data-correct="false">Sesjonsnøkler er kortlivede nøkler brukt for effektiv kryptering av en enkelt forbindelse.</button>
-      <button class="option" data-correct="false">DDoS bruker mange distribuerte kilder for å overbelaste mål og vanskeliggjøre filtrering.</button>
-      <button class="option" data-correct="true">Minste privilegium begrenser tilgang til det som er nødvendig og reduserer skadeomfang ved kompromiss.</button>
+      <button class="option" data-correct="false">I tunnel-modus krypteres bare payloaden i det opprinnelige datagrammet; IP-headeren forblir alltid lesbar.</button>
+      <button class="option" data-correct="false">Transport-modus pakker alltid hele det opprinnelige datagrammet inn i et nytt IP-datagram med ny ytter-header.</button>
+      <button class="option" data-correct="false">AH med ESP i samme SA er påkrevd i alle VPN-implementasjoner.</button>
+      <button class="option" data-correct="true">I transport-modus beskyttes typisk bare nyttelasten mellom to verter; i tunnel-modus innkapsles ofte hele det opprinnelige IP-datagrammet for gateway-til-gateway (VPN).</button>
     </div>
-    <div class="explanation">Riktig. Minste privilegium begrenser tilgang til det som er nødvendig og reduserer skadeomfang ved kompromiss.</div>
+    <div class="explanation">Riktig. Transport-modus beskytter data mellom endepunkter uten å skjule hele den opprinnelige IP-headeren; tunnel-modus brukes særlig når to sikkerhetsgatewayer skal «trekke hele pakken» inn i en kryptert tunnel.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 25 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om defense in depth er faglig best?</div>
+    <div class="q-text">I et større nettverk, hvilken vurdering om brannmur og SYN-flooding (kap. 8.9.1) er faglig best?</div>
     <div class="options">
-      <button class="option" data-correct="true">Flere uavhengige sikkerhetslag gjør systemet robust selv om ett kontrollpunkt svikter.</button>
-      <button class="option" data-correct="false">En kryptografisk hash gir et kort fingeravtrykk som endres dramatisk ved små inputendringer.</button>
-      <button class="option" data-correct="false">PFS gjør at kompromittering av langsiktig nøkkel ikke avslører gamle sesjoner.</button>
-      <button class="option" data-correct="false">Phishing manipulerer brukere til å avsløre hemmeligheter via troverdige, men falske meldinger/sider.</button>
+      <button class="option" data-correct="true">En brannmur kan begrense innkommende SYN-trafikk eller bruke tilstandsfull sporing slik at falske oppsett av TCP-forbindelser blir vanskeligere.</button>
+      <button class="option" data-correct="false">SYN-flooding angriper primært konfidensialitet ved å dekryptere TLS-record uten nøkkel.</button>
+      <button class="option" data-correct="false">Tilstandsløs pakkefiltrering kan alltid skille legitim returtrafikk fra spoofet SYN uten regelendringer.</button>
+      <button class="option" data-correct="false">Applikasjons-gateway er det eneste nivået som kan blokkere UDP-port 53.</button>
     </div>
-    <div class="explanation">Riktig. Flere uavhengige sikkerhetslag gjør systemet robust selv om ett kontrollpunkt svikter.</div>
+    <div class="explanation">Riktig. Brannmurer brukes blant annet til å dempe DoS/DDoS inkludert SYN-flooding ved å filtrere eller forvalte tilkoblingsoppsett (jf. tilstandsfull filtrering og begrensning av åpne halvforbindelser).</div>
   </div>
 </div>
 </section>
