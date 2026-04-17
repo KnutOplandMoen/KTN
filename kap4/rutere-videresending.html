@@ -221,7 +221,7 @@
 
     <div class="lpm-box">
       <div class="slabel">Pr&oslash;v selv &mdash; Longest prefix matching</div>
-      <h4>Klikk p&aring; en destinasjonsadresse og se hvilken oppf&oslash;ring som vinner:</h4>
+      <h4>Destinasjonsadressene st&aring;r p&aring; knappene. Klikk for &aring; se hvilken oppf&oslash;ring som vinner:</h4>
       <div class="lpm-table" id="lpm-table">
         <div class="lpm-row" data-prefix="11001000 00010111 00010" data-iface="0"><span class="prefix">11001000 00010111 00010*** ********</span><span class="iface">&rarr; 0</span></div>
         <div class="lpm-row" data-prefix="11001000 00010111 00011000" data-iface="1"><span class="prefix">11001000 00010111 00011000 ********</span><span class="iface">&rarr; 1</span></div>
@@ -229,12 +229,12 @@
         <div class="lpm-row" data-prefix="" data-iface="3"><span class="prefix">(ellers &mdash; default)</span><span class="iface">&rarr; 3</span></div>
       </div>
       <div class="lpm-input-row">
-        <button data-addr="11001000 00010111 00010110 10100001">Adresse A</button>
-        <button data-addr="11001000 00010111 00011000 10101010">Adresse B</button>
-        <button data-addr="11001000 00010111 00011001 11110000">Adresse C</button>
-        <button data-addr="11001000 00010111 00100000 00000001">Adresse D</button>
+        <button type="button" data-addr="11001000 00010111 00010110 10100001"><span class="lpm-btn-label">Adresse A</span><code class="lpm-addr">11001000 00010111 00010110 10100001</code></button>
+        <button type="button" data-addr="11001000 00010111 00011000 10101010"><span class="lpm-btn-label">Adresse B</span><code class="lpm-addr">11001000 00010111 00011000 10101010</code></button>
+        <button type="button" data-addr="11001000 00010111 00011001 11110000"><span class="lpm-btn-label">Adresse C</span><code class="lpm-addr">11001000 00010111 00011001 11110000</code></button>
+        <button type="button" data-addr="11001000 00010111 00100000 00000001"><span class="lpm-btn-label">Adresse D</span><code class="lpm-addr">11001000 00010111 00100000 00000001</code></button>
       </div>
-      <div class="lpm-result" id="lpm-result">Velg en adresse for &aring; se hvilken linje som matcher.</div>
+      <div class="lpm-result" id="lpm-result">Klikk en knapp for &aring; markere hvilken tabellrad som vinner.</div>
     </div>
 
     <p>I praksis gj&oslash;res LPM i maskinvare, i <strong>ternary content-addressable memory (TCAM)</strong>. En TCAM sl&aring;r opp en adresse p&aring; &eacute;n klokkesyklus uansett tabellst&oslash;rrelse, fordi alle oppf&oslash;ringer sammenlignes parallelt. Cisco Catalyst-svitsjer har rundt 1&nbsp;million oppf&oslash;ringer i TCAM.</p>
@@ -373,14 +373,14 @@
   </div>
 </section>
 
-<div class="container">
-  <nav class="page-nav">
+<nav class="page-nav">
+  <div class="container">
     <a href="ip-adressering.html" class="next">
       <span class="nav-label">Neste &rarr;</span>
       <span class="nav-title">IP og adressering</span>
     </a>
-  </nav>
-</div>
+  </div>
+</nav>
 
 </main>
 

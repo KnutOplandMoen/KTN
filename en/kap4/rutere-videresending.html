@@ -221,7 +221,7 @@
 
     <div class="lpm-box">
       <div class="slabel">Try it yourself &mdash; Longest prefix matching</div>
-      <h4>Click on a destination address and see which entry wins:</h4>
+      <h4>The destination addresses are on the buttons. Click to see which table entry wins:</h4>
       <div class="lpm-table" id="lpm-table">
         <div class="lpm-row" data-prefix="11001000 00010111 00010" data-iface="0"><span class="prefix">11001000 00010111 00010*** ********</span><span class="iface">&rarr; 0</span></div>
         <div class="lpm-row" data-prefix="11001000 00010111 00011000" data-iface="1"><span class="prefix">11001000 00010111 00011000 ********</span><span class="iface">&rarr; 1</span></div>
@@ -229,12 +229,12 @@
         <div class="lpm-row" data-prefix="" data-iface="3"><span class="prefix">(otherwise &mdash; default)</span><span class="iface">&rarr; 3</span></div>
       </div>
       <div class="lpm-input-row">
-        <button data-addr="11001000 00010111 00010110 10100001">Address A</button>
-        <button data-addr="11001000 00010111 00011000 10101010">Address B</button>
-        <button data-addr="11001000 00010111 00011001 11110000">Address C</button>
-        <button data-addr="11001000 00010111 00100000 00000001">Address D</button>
+        <button type="button" data-addr="11001000 00010111 00010110 10100001"><span class="lpm-btn-label">Address A</span><code class="lpm-addr">11001000 00010111 00010110 10100001</code></button>
+        <button type="button" data-addr="11001000 00010111 00011000 10101010"><span class="lpm-btn-label">Address B</span><code class="lpm-addr">11001000 00010111 00011000 10101010</code></button>
+        <button type="button" data-addr="11001000 00010111 00011001 11110000"><span class="lpm-btn-label">Address C</span><code class="lpm-addr">11001000 00010111 00011001 11110000</code></button>
+        <button type="button" data-addr="11001000 00010111 00100000 00000001"><span class="lpm-btn-label">Address D</span><code class="lpm-addr">11001000 00010111 00100000 00000001</code></button>
       </div>
-      <div class="lpm-result" id="lpm-result">Select an address to see which entry matches.</div>
+      <div class="lpm-result" id="lpm-result">Click a button to highlight which table row wins.</div>
     </div>
 
     <p>In practice, LPM is performed in hardware, using <strong>ternary content-addressable memory (TCAM)</strong>. A TCAM looks up an address in a single clock cycle regardless of table size, because all entries are compared in parallel. Cisco Catalyst switches have around 1&nbsp;million entries in TCAM.</p>
@@ -373,14 +373,14 @@
   </div>
 </section>
 
-<div class="container">
-  <nav class="page-nav">
+<nav class="page-nav">
+  <div class="container">
     <a href="ip-adressering.html" class="next">
       <span class="nav-label">Next &rarr;</span>
       <span class="nav-title">IP and addressing</span>
     </a>
-  </nav>
-</div>
+  </div>
+</nav>
 
 </main>
 
