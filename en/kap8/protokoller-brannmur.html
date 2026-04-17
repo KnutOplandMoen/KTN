@@ -112,6 +112,8 @@
 
   <h3>TLS 1.3 and cipher suites</h3>
   <p>A "cipher suite" is a set of algorithms used together: one for key exchange, one for encryption, one for MAC, and one for digital signature. TLS 1.3 (RFC 8446, 2018) is the latest version and has significantly tightened the choices.</p>
+
+  <p>In TLS 1.3, <strong>AEAD</strong> (Authenticated Encryption with Associated Data) is often used: encryption and integrity in one operation, instead of older designs with a separate MAC over the payload. Record layout and the need for integrity and replay protection still follow the same principles as in the simplified "toy TLS" explanation above.</p>
 </div>
 </section>
 
@@ -176,6 +178,13 @@
   </table>
 
   <p>ESP is by far the most used of the two — it provides all three properties. AH provides only authentication and integrity (but no encryption), and is rarely used alone in modern networks.</p>
+
+  <h3>IKE — when and how SAs are created</h3>
+  <p>A Security Association describes <em>which</em> keys and algorithms to use — but the SA must be established first. <strong>IKE</strong> (Internet Key Exchange, today IKEv2) is the protocol that runs between the IPsec endpoints (hosts or gateways) to negotiate and install those SAs securely.</p>
+
+  <p>In brief: the parties authenticate each other (e.g. with a shared secret, digital certificates, or both), exchange or derive key material (often with Diffie–Hellman-like steps for <em>perfect forward secrecy</em>), and agree which IPsec SAs (SPI, algorithms, lifetime) to insert into the SAD. Without IKE, an administrator would have to configure keys manually — impractical and risky at scale.</p>
+
+  <p>So the VPN tunnel from the previous paragraph does not merely "encrypt IP"; it relies on IKE first establishing the concrete ESP or AH SAs that the data packet later refers to via the SPI.</p>
 </div>
 </section>
 

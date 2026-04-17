@@ -112,6 +112,8 @@
 
   <h3>TLS 1.3 og cipher suites</h3>
   <p>En «cipher suite» er et sett av algoritmer som brukes sammen: én for nøkkelutveksling, én for kryptering, én for MAC og én for digital signatur. TLS 1.3 (RFC 8446, 2018) er den nyeste versjonen og har strammet inn valgene kraftig.</p>
+
+  <p>I TLS 1.3 brukes ofte <strong>AEAD</strong> (Authenticated Encryption with Associated Data): kryptering og integritet i én operasjon, i stedet for eldre oppsett med separat MAC over payload. Record-struktur og behovet for integritet og beskyttelse mot replay er likevel de samme prinsippene som i «toy-TLS»-forklaringen over.</p>
 </div>
 </section>
 
@@ -176,6 +178,13 @@
   </table>
 
   <p>ESP er klart den mest brukte av de to — den gir alle tre egenskapene. AH gir bare autentisering og integritet (men ingen kryptering), og er sjelden brukt alene i moderne nettverk.</p>
+
+  <h3>IKE — når og hvordan SA-er opprettes</h3>
+  <p>En Security Association beskriver <em>hvilke</em> nøkler og algoritmer som skal brukes — men SA-en må etableres på forhånd. <strong>IKE</strong> (Internet Key Exchange, i dag IKEv2) er protokollen som kjører mellom IPsec-endepunktene (verter eller gatewayer) for å forhandle og installere disse SA-ene på en sikker måte.</p>
+
+  <p>I korte trekk: partene autentiserer hverandre (f.eks. med delt hemmelighet, digitale sertifikater eller begge deler), utveksler eller utleder nøkkemateriale (ofte med Diffie–Hellman-lignende steg for <em>perfect forward secrecy</em>), og avtaler hvilke IPsec-SA-er (SPI, algoritmer, livslengde) som skal legges inn i SAD. Uten IKE ville administratoren måttet konfigurere nøkler manuelt — upraktisk og risikabelt i store nett.</p>
+
+  <p>Resultatet er at VPN-tunnelen du så i forrige avsnitt ikke bare «krypterer IP»; den bygger på at IKE først har etablert de konkrete ESP- eller AH-SA-ene som datapakken senere refererer til via SPI.</p>
 </div>
 </section>
 

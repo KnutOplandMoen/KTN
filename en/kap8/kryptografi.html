@@ -236,6 +236,17 @@
 
   <p class="dropcap">Encryption gives us confidentiality, but that is not enough. Even if Trudy cannot read the message, she may be able to change some bits in the ciphertext without knowing what she is changing. Or she can send an entirely new message and pretend it comes from Bob. We need two more things: <strong>message integrity</strong> (the content is unaltered) and <strong>authentication</strong> (the sender is who they claim to be).</p>
 
+  <h3>MAC — symmetric integrity and sender authentication</h3>
+  <p>When Alice and Bob already share a <strong>secret key K<sub>S</sub></strong>, they can attach a <strong>Message Authentication Code (MAC)</strong> to the message: a short value that only someone who knows K<sub>S</sub> could have computed correctly. The receiver computes the same MAC from the message and the key; if it does not match, the message was altered or forged.</p>
+
+  <p><strong>HMAC</strong> (Hash-based Message Authentication Code) is the usual construction in practice: a cryptographic hash (e.g. SHA-256) is combined with the secret key in a standardized way (RFC 2104). Simply hashing the key and message together with naive patterns (e.g. H(K<sub>S</sub> || m)) is not safe — length-extension attacks and other weaknesses motivated the precise HMAC definition.</p>
+
+  <div class="callout callout-blue">
+    <span class="label">MAC versus digital signature</span>
+    <p><strong>MAC:</strong> requires a shared secret key; provides integrity and that the message must come from someone who knows the key (often two known parties, e.g. in TLS or WiFi).</p>
+    <p><strong>Digital signature:</strong> uses a private/public key pair; the receiver does not need a shared secret with the sender, and you can get <em>non-repudiation</em> toward a third party.</p>
+  </div>
+
   <h3>Digital signatures</h3>
   <p>A digital signature is the cryptographic version of a handwritten signature, but much stronger. Bob signs a message <em>m</em> by encrypting it (or a hash of it) with his <strong>private key K<sub>B</sub><sup>−</sup></strong>. The result is the signature K<sub>B</sub><sup>−</sup>(m).</p>
 

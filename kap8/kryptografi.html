@@ -236,6 +236,17 @@
 
   <p class="dropcap">Kryptering gir oss konfidensialitet, men det er ikke nok. Selv om Trudy ikke kan lese meldingen, kan hun kanskje endre noen bits i chifferteksten uten å vite hva hun endrer. Eller hun kan sende en helt ny melding og late som den kommer fra Bob. Vi trenger to ting til: <strong>meldingsintegritet</strong> (innholdet er uendret) og <strong>autentisering</strong> (avsenderen er den de utgir seg for å være).</p>
 
+  <h3>MAC — symmetrisk integritet og avsenderautentisering</h3>
+  <p>Når Alice og Bob allerede deler en <strong>hemmelig nøkkel K<sub>S</sub></strong>, kan de feste en <strong>Message Authentication Code (MAC)</strong> til meldingen: en kort verdi som bare noen som kjenner K<sub>S</sub> kan ha beregnet riktig. Mottakeren beregner samme MAC fra meldingen og nøkkelen; stemmer den ikke, er meldingen endret eller forfalsket.</p>
+
+  <p><strong>HMAC</strong> (Hash-based Message Authentication Code) er den vanlige konstruksjonen i praksis: man kombinerer en kryptografisk hash (f.eks. SHA-256) med den hemmelige nøkkelen på en standardisert måte (RFC 2104). Det er ikke trygt å «bare» hashe nøkkel og melding sammen med enkle mønstre (f.eks. H(K<sub>S</sub> || m)) — lengdeutvidelsesangrep og andre sårbarheter gjorde at HMAC fikk en presis definisjon.</p>
+
+  <div class="callout callout-blue">
+    <span class="label">MAC mot digital signatur</span>
+    <p><strong>MAC:</strong> krever delt hemmelig nøkkel; gir integritet og at meldingen må komme fra noen som kjenner nøkkelen (ofte to kjente parter, f.eks. i TLS eller WiFi).</p>
+    <p><strong>Digital signatur:</strong> bruker privat/offentlig nøkkelpar; mottakeren trenger ikke delt hemmelighet med avsender, og man kan få <em>ikke-benekting</em> overfor tredjepart.</p>
+  </div>
+
   <h3>Digitale signaturer</h3>
   <p>En digital signatur er den kryptografiske versjonen av en håndskrevet signatur, men mye sterkere. Bob signerer en melding <em>m</em> ved å kryptere den (eller en hash av den) med sin <strong>private nøkkel K<sub>B</sub><sup>−</sup></strong>. Resultatet er signaturen K<sub>B</sub><sup>−</sup>(m).</p>
 
