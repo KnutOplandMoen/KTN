@@ -59,10 +59,11 @@
     </p>
 
     <figure>
-      <svg viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Encapsulation from application data to frame">
+      <svg viewBox="-100 8 780 212" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Encapsulation from application data to frame">
         <style>
           .lbl { font-family: 'IBM Plex Mono', monospace; font-size: 11px; fill: #6b6257; }
           .ttl { font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; font-weight: 600; fill: #1a1612; }
+          .ttl-sm { font-size: 10px; }
         </style>
         <g transform="translate(40,30)">
           <rect x="0" y="0" width="240" height="30" fill="#e8e3d6" stroke="#c9c0ae"/>
@@ -86,8 +87,8 @@
           <text x="-80" y="20" text-anchor="end" class="lbl">Network</text>
         </g>
         <g transform="translate(40,150)">
-          <rect x="-100" y="0" width="40" height="30" fill="#b04428" stroke="#8a3420"/>
-          <text x="-80" y="20" text-anchor="middle" class="ttl" style="fill:#fff">Eth</text>
+          <rect x="-110" y="0" width="50" height="30" fill="#b04428" stroke="#8a3420"/>
+          <text x="-85" y="20" text-anchor="middle" class="ttl ttl-sm" style="fill:#fff">Ethernet</text>
           <rect x="-60" y="0" width="30" height="30" fill="#3d6b3a" stroke="#2a4a28"/>
           <text x="-45" y="20" text-anchor="middle" class="ttl" style="fill:#fff">IP</text>
           <rect x="-30" y="0" width="30" height="30" fill="#c68a1f" stroke="#8a3420"/>
@@ -96,9 +97,9 @@
           <text x="120" y="20" text-anchor="middle" class="ttl">HTTP data</text>
           <rect x="240" y="0" width="30" height="30" fill="#b04428" stroke="#8a3420"/>
           <text x="255" y="20" text-anchor="middle" class="ttl" style="fill:#fff">CRC</text>
-          <text x="-120" y="20" text-anchor="end" class="lbl">Link</text>
+          <text x="-128" y="20" text-anchor="end" class="lbl">Link</text>
         </g>
-        <text x="340" y="195" class="lbl" text-anchor="middle">The Ethernet frame contains everything above it — plus a CRC for error detection.</text>
+        <text x="290" y="195" class="lbl" text-anchor="middle">The Ethernet frame contains everything above it — plus a CRC for error detection.</text>
       </svg>
       <figcaption><strong>Figure 1.</strong> Each layer adds its own header. When the frame is sent out on the cable, the HTTP data lies deep inside multiple layers of encapsulation.</figcaption>
     </figure>
