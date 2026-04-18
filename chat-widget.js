@@ -1358,7 +1358,7 @@
     if (markdownMarkedConfigured) return;
     const m = typeof marked !== "undefined" ? marked : null;
     if (!m || typeof m.use !== "function") return;
-    m.use({ breaks: true, gfm: true });
+    m.use({ breaks: false, gfm: true });
     markdownMarkedConfigured = true;
   }
 

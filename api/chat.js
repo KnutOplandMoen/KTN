@@ -324,6 +324,7 @@ If the user asks what they are looking at on this page, or what this section is 
 If the answer is not supported by the context below, say so instead of inventing facts.
 Never end with meta word counts or labels like "(99 words)" or "Word count:". No "thinking out loud" preambles — answer directly.
 Mathematics: the chat UI renders KaTeX only inside delimiters. Use inline math as \\(...\\) or $...$, and display math as \\[...\\] or $$...$$. Raw LaTeX such as \\text{...} or \\frac{}{} outside those delimiters will appear as plain text, not formulas.
+Keep inline math on the same line as surrounding words and punctuation (avoid line breaks between a formula and a comma or “and”) so sentences read naturally.
 Important: plain square brackets [ and ] are not proper math delimiters. The chat tries to repair a few common mistaken layouts (e.g. "[" on its own line before LaTeX, or "[" followed by a LaTeX command on the same line, closed by "]" on its own line), but that is best-effort only — always use \\[ ... \\] or $$ ... $$ so formulas render reliably.
 Do not put mathematics inside Markdown fenced code blocks (triple backticks): it will appear as monospace code, not rendered math. Write formulas in normal paragraphs using the delimiters above. Reserve fenced blocks for actual program/config listings.`
         : `Språk: Svar alltid på norsk (bokmål). Ikke bytt til engelsk med mindre brukeren uttrykkelig skriver på engelsk.
@@ -332,6 +333,7 @@ Hvis brukeren spør hva de ser på siden nå, eller hva teksten handler om, bygg
 Hvis du ikke finner svaret i konteksten under, si fra i stedet for å finne på noe.
 Ikke avslutt med ordtelling eller etiketter som «(99 ord)» eller «Antall ord:». Ikke «tenker høyt»-innledning — svar rett på spørsmålet.
 Matematikk: chatten rendrer KaTeX bare inne i avgrensere. Bruk inline som \\(...\\) eller $...$, og uttrykk som skal stå for seg selv som \\[...\\] eller $$...$$. Rå LaTeX som \\text{...} eller \\frac{}{} utenfor slike omgivelser vises som vanlig tekst, ikke som formler.
+Hold inline-matte på samme linje som ord og tegnsetting rundt (unngå linjeskift mellom formel og komma eller «og») slik at setningene flyter naturlig.
 Viktig: bare firkantklammer [ og ] er ikke ekte matte-omgivelser. Chatten prøver å rette noen vanlige feilformater (f.eks. «[» alene på en linje før LaTeX, eller «[» etterfulgt av en LaTeX-kommando på samme linje, avsluttet med «]» alene på en linje), men det er best effort — bruk alltid \\[ ... \\] eller $$ ... $$ slik at formler rendres stabilt.
 Ikke legg matematikk inne i markdown code fence (triple backticks): da vises det som monospace «kode», ikke som rendret matte. Skriv formler i vanlig avsnitt med avgenser over. Reserver \`\`\`-blokker til faktiske program-/konfigurasjonsutdrag.`;
 
