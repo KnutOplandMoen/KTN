@@ -528,7 +528,8 @@
       background: var(--paper-dark, #e8e3d6);
       color: var(--ink, #1a1612);
       padding: 10px 14px; border-radius: 14px 14px 14px 4px;
-      white-space: pre-wrap;
+      /* normal: marked outputs newlines between tags; pre-wrap turned those into huge gaps */
+      white-space: normal;
       word-wrap: break-word;
       overflow: visible;
       min-width: 0;
@@ -550,6 +551,9 @@
       padding-left: 1.35em;
     }
     .ktn-msg-assistant li { margin: 0.2em 0; }
+    .ktn-msg-assistant li > p { margin: 0.25em 0; }
+    .ktn-msg-assistant li > p:first-child { margin-top: 0; }
+    .ktn-msg-assistant li > p:last-child { margin-bottom: 0; }
     .ktn-msg-assistant blockquote {
       margin: 0.45em 0;
       padding: 0.2em 0 0.2em 0.75em;
