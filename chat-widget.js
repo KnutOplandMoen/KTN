@@ -531,9 +531,12 @@
       /* normal: marked outputs newlines between tags; pre-wrap turned those into huge gaps */
       white-space: normal;
       word-wrap: break-word;
-      overflow: visible;
+      overflow-x: auto;
+      overflow-y: visible;
       min-width: 0;
     }
+    .ktn-msg-assistant .katex { font-size: 0.95em; }
+    .ktn-msg-assistant .katex-display { margin: 0.5em 0; overflow-x: auto; overflow-y: hidden; }
     .ktn-msg-assistant > :first-child { margin-top: 0; }
     .ktn-msg-assistant > :last-child { margin-bottom: 0; }
     .ktn-msg-assistant p { margin: 0.4em 0; }
@@ -1214,6 +1217,29 @@
   const KTN_DOMPURIFY_INTEGRITY =
     "sha384-eEu5CTj3qGvu9PdJuS+YlkNi7d2XxQROAFYOr59zgObtlcux1ae1Il3u7jvdCSWu";
 
+  const KTN_KATEX_VERSION = "0.16.21";
+  const KTN_KATEX_CSS_HREF =
+    "https://cdn.jsdelivr.net/npm/katex@" + KTN_KATEX_VERSION + "/dist/katex.min.css";
+  const KTN_KATEX_CSS_INTEGRITY =
+    "sha384-zh0CIslj+VczCZtlzBcjt5ppRcsAmDnRem7ESsYwWwg3m/OaJ2l4x7YBZl9Kxxib";
+  const KTN_KATEX_JS_SRC =
+    "https://cdn.jsdelivr.net/npm/katex@" + KTN_KATEX_VERSION + "/dist/katex.min.js";
+  const KTN_KATEX_JS_INTEGRITY =
+    "sha384-Rma6DA2IPUwhNxmrB/7S3Tno0YY7sFu9WSYMCuulLhIqYSGZ2gKCJWIqhBWqMQfh";
+  const KTN_KATEX_AUTORENDER_SRC =
+    "https://cdn.jsdelivr.net/npm/katex@" +
+    KTN_KATEX_VERSION +
+    "/dist/contrib/auto-render.min.js";
+  const KTN_KATEX_AUTORENDER_INTEGRITY =
+    "sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh";
+
+  const KTN_KATEX_DELIMITERS = [
+    { left: "$$", right: "$$", display: true },
+    { left: "$", right: "$", display: false },
+    { left: "\\(", right: "\\)", display: false },
+    { left: "\\[", right: "\\]", display: true },
+  ];
+
   let markdownLibsPromise = null;
   let markdownLibsReady = false;
   let markdownMarkedConfigured = false;
@@ -1259,6 +1285,75 @@
     });
   }
 
+  function loadExternalStylesheet(href, integrity) {
+    return new Promise(function (resolve, reject) {
+      const sel = 'link[data-ktn-chat-lib="' + href.replace(/"/g, "") + '"]';
+      const existing = document.querySelector(sel);
+      if (existing) {
+        if (existing.getAttribute("data-ktn-loaded") === "1") {
+          resolve();
+          return;
+        }
+        existing.addEventListener(
+          "load",
+          function () {
+            resolve();
+          },
+          { once: true }
+        );
+        existing.addEventListener(
+          "error",
+          function () {
+            reject(new Error("stylesheet load failed"));
+          },
+          { once: true }
+        );
+        return;
+      }
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = href;
+      link.integrity = integrity;
+      link.crossOrigin = "anonymous";
+      link.setAttribute("data-ktn-chat-lib", href);
+      link.onload = function () {
+        link.setAttribute("data-ktn-loaded", "1");
+        resolve();
+      };
+      link.onerror = function () {
+        reject(new Error("stylesheet load failed"));
+      };
+      document.head.appendChild(link);
+    });
+  }
+
+  function loadKatexAssets() {
+    return loadExternalStylesheet(KTN_KATEX_CSS_HREF, KTN_KATEX_CSS_INTEGRITY)
+      .then(function () {
+        return loadExternalScript(KTN_KATEX_JS_SRC, KTN_KATEX_JS_INTEGRITY);
+      })
+      .then(function () {
+        return loadExternalScript(KTN_KATEX_AUTORENDER_SRC, KTN_KATEX_AUTORENDER_INTEGRITY);
+      })
+      .catch(function (err) {
+        console.warn("KTN chat: KaTeX could not load; formulas stay as plain text", err);
+      });
+  }
+
+  function typesetMathIn(el) {
+    if (!el || typeof renderMathInElement !== "function") return;
+    try {
+      renderMathInElement(el, {
+        delimiters: KTN_KATEX_DELIMITERS,
+        ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code", "option"],
+        strict: false,
+        throwOnError: false,
+      });
+    } catch (e) {
+      console.warn("KTN chat: KaTeX typeset failed", e);
+    }
+  }
+
   function configureMarkedOnce() {
     if (markdownMarkedConfigured) return;
     const m = typeof marked !== "undefined" ? marked : null;
@@ -1269,6 +1364,12 @@
 
   function ensureMarkdownLibs() {
     if (markdownLibsReady) return Promise.resolve();
+
+    function afterMarkdownGlobalsLoaded() {
+      configureMarkedOnce();
+      return loadKatexAssets();
+    }
+
     if (
       typeof marked !== "undefined" &&
       marked &&
@@ -1277,9 +1378,18 @@
       DOMPurify &&
       typeof DOMPurify.sanitize === "function"
     ) {
-      configureMarkedOnce();
-      markdownLibsReady = true;
-      return Promise.resolve();
+      if (!markdownLibsPromise) {
+        markdownLibsPromise = afterMarkdownGlobalsLoaded()
+          .then(function () {
+            markdownLibsReady = true;
+          })
+          .catch(function (err) {
+            console.warn("KTN chat: setup after markdown globals failed", err);
+            markdownLibsReady = true;
+            markdownLibsPromise = null;
+          });
+      }
+      return markdownLibsPromise;
     }
     if (!markdownLibsPromise) {
       markdownLibsPromise = loadExternalScript(KTN_MARKED_SRC, KTN_MARKED_INTEGRITY)
@@ -1295,7 +1405,9 @@
           ) {
             throw new Error("markdown globals missing");
           }
-          configureMarkedOnce();
+          return afterMarkdownGlobalsLoaded();
+        })
+        .then(function () {
           markdownLibsReady = true;
         })
         .catch(function (err) {
@@ -1350,6 +1462,7 @@
       div.textContent = content;
     } else {
       div.innerHTML = renderMarkdown(content);
+      typesetMathIn(div);
     }
     messagesEl.appendChild(div);
     messagesEl.scrollTop = messagesEl.scrollHeight;
@@ -1487,6 +1600,7 @@
       rafId = 0;
       if (assistantEl) {
         assistantEl.innerHTML = renderMarkdown(accumulated);
+        typesetMathIn(assistantEl);
         messagesEl.scrollTop = messagesEl.scrollHeight;
       }
     }
