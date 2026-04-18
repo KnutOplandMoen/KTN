@@ -169,6 +169,131 @@
       If you arrange the data in a grid and set parity on both each row and each column, you can not only <em>detect</em> a single bit error — you can <em>correct</em> it. The error is located where the flagged row and flagged column intersect.
     </p>
 
+    <figure>
+      <svg id="fig-parity2d" viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grid of data bits with row and column parity. One received bit is wrong; row and column parity checks point to the intersection where the error can be corrected.">
+        <defs>
+          <style>
+            #fig-parity2d .p2d-lbl { font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; fill: #6b6257; }
+            #fig-parity2d .p2d-bit { font-family: 'IBM Plex Mono', monospace; font-size: 18px; font-weight: 600; fill: #1a1612; }
+            #fig-parity2d .p2d-cell { fill: #e8e3d6; stroke: #c9c0ae; stroke-width: 1.5; }
+            #fig-parity2d .p2d-rp { fill: #efe9dc; stroke: #b8ae9a; }
+            #fig-parity2d .p2d-cp { fill: #efe9dc; stroke: #b8ae9a; }
+            #fig-parity2d .p2d-corner { fill: #e0d8c8; stroke: #a89880; }
+            #fig-parity2d .p2d-band-row {
+              fill: #c68a1f;
+              opacity: 0;
+              animation: p2dRowBand 11s ease-in-out infinite;
+            }
+            #fig-parity2d .p2d-band-col {
+              fill: #3d6b3a;
+              opacity: 0;
+              animation: p2dColBand 11s ease-in-out infinite;
+            }
+            #fig-parity2d .p2d-cross {
+              fill: #b04428;
+              opacity: 0;
+              animation: p2dCross 11s ease-in-out infinite;
+            }
+            #fig-parity2d .p2d-dc { animation: p2dShowCorrect 11s ease-in-out infinite; }
+            #fig-parity2d .p2d-dw { animation: p2dShowWrong 11s ease-in-out infinite; }
+            @keyframes p2dShowCorrect {
+              0%, 9% { opacity: 1; }
+              11%, 100% { opacity: 0; }
+            }
+            @keyframes p2dShowWrong {
+              0%, 9% { opacity: 0; }
+              11%, 100% { opacity: 1; }
+            }
+            @keyframes p2dRowBand {
+              0%, 10% { opacity: 0; }
+              14%, 32% { opacity: 0.38; }
+              36%, 100% { opacity: 0; }
+            }
+            @keyframes p2dColBand {
+              0%, 32% { opacity: 0; }
+              36%, 54% { opacity: 0.32; }
+              58%, 100% { opacity: 0; }
+            }
+            @keyframes p2dCross {
+              0%, 54% { opacity: 0; }
+              58%, 88% { opacity: 0.42; }
+              92%, 100% { opacity: 0; }
+            }
+            #fig-parity2d .p2d-static-row { fill: #c68a1f; opacity: 0; }
+            #fig-parity2d .p2d-static-col { fill: #3d6b3a; opacity: 0; }
+            #fig-parity2d .p2d-static-cross { fill: #b04428; opacity: 0; }
+            @media (prefers-reduced-motion: reduce) {
+              #fig-parity2d .p2d-band-row,
+              #fig-parity2d .p2d-band-col,
+              #fig-parity2d .p2d-cross,
+              #fig-parity2d .p2d-dc,
+              #fig-parity2d .p2d-dw {
+                animation: none !important;
+              }
+              #fig-parity2d .p2d-dc { opacity: 0; }
+              #fig-parity2d .p2d-dw { opacity: 1; }
+              #fig-parity2d .p2d-band-row,
+              #fig-parity2d .p2d-band-col,
+              #fig-parity2d .p2d-cross { opacity: 0 !important; }
+              #fig-parity2d .p2d-static-row,
+              #fig-parity2d .p2d-static-col { opacity: 0.35; }
+              #fig-parity2d .p2d-static-cross { opacity: 0.45; }
+            }
+          </style>
+        </defs>
+        <text x="178" y="22" text-anchor="middle" class="p2d-lbl">Data bits (even parity per row and column)</text>
+        <text x="292" y="48" text-anchor="middle" class="p2d-lbl" style="font-size:10px">Row par.</text>
+        <text x="48" y="258" text-anchor="middle" class="p2d-lbl" style="font-size:10px">Col par.</text>
+        <g transform="translate(88,40)">
+          <g class="p2d-cells">
+            <rect class="p2d-cell" x="0" y="0" width="40" height="40"/>
+            <rect class="p2d-cell" x="44" y="0" width="40" height="40"/>
+            <rect class="p2d-cell" x="88" y="0" width="40" height="40"/>
+            <rect class="p2d-rp" x="132" y="0" width="40" height="40"/>
+            <rect class="p2d-cell" x="0" y="44" width="40" height="40"/>
+            <rect class="p2d-cell" x="44" y="44" width="40" height="40"/>
+            <rect class="p2d-cell" x="88" y="44" width="40" height="40"/>
+            <rect class="p2d-rp" x="132" y="44" width="40" height="40"/>
+            <rect class="p2d-cell" x="0" y="88" width="40" height="40"/>
+            <rect class="p2d-cell" x="44" y="88" width="40" height="40"/>
+            <rect class="p2d-cell" x="88" y="88" width="40" height="40"/>
+            <rect class="p2d-rp" x="132" y="88" width="40" height="40"/>
+            <rect class="p2d-cp" x="0" y="132" width="40" height="40"/>
+            <rect class="p2d-cp" x="44" y="132" width="40" height="40"/>
+            <rect class="p2d-cp" x="88" y="132" width="40" height="40"/>
+            <rect class="p2d-corner" x="132" y="132" width="40" height="40"/>
+          </g>
+          <rect class="p2d-static-row" x="-4" y="48" width="188" height="40" rx="3"/>
+          <rect class="p2d-static-col" x="44" y="-4" width="40" height="176" rx="3"/>
+          <rect class="p2d-static-cross" x="44" y="48" width="40" height="40" rx="3"/>
+          <rect class="p2d-band-row" x="-4" y="48" width="188" height="40" rx="3"/>
+          <rect class="p2d-band-col" x="44" y="-4" width="40" height="176" rx="3"/>
+          <rect class="p2d-cross" x="44" y="48" width="40" height="40" rx="3"/>
+          <g class="p2d-labels">
+            <text x="20" y="26" text-anchor="middle" class="p2d-bit">1</text>
+            <text x="64" y="26" text-anchor="middle" class="p2d-bit">0</text>
+            <text x="108" y="26" text-anchor="middle" class="p2d-bit">1</text>
+            <text x="152" y="26" text-anchor="middle" class="p2d-bit">0</text>
+            <text x="20" y="70" text-anchor="middle" class="p2d-bit">0</text>
+            <text x="64" y="70" text-anchor="middle" class="p2d-bit p2d-dc">1</text>
+            <text x="64" y="70" text-anchor="middle" class="p2d-bit p2d-dw">0</text>
+            <text x="108" y="70" text-anchor="middle" class="p2d-bit">1</text>
+            <text x="152" y="70" text-anchor="middle" class="p2d-bit">0</text>
+            <text x="20" y="114" text-anchor="middle" class="p2d-bit">1</text>
+            <text x="64" y="114" text-anchor="middle" class="p2d-bit">1</text>
+            <text x="108" y="114" text-anchor="middle" class="p2d-bit">0</text>
+            <text x="152" y="114" text-anchor="middle" class="p2d-bit">0</text>
+            <text x="20" y="158" text-anchor="middle" class="p2d-bit">0</text>
+            <text x="64" y="158" text-anchor="middle" class="p2d-bit">0</text>
+            <text x="108" y="158" text-anchor="middle" class="p2d-bit">0</text>
+            <text x="152" y="158" text-anchor="middle" class="p2d-bit">0</text>
+          </g>
+        </g>
+        <text x="178" y="292" text-anchor="middle" class="p2d-lbl">Receiver: row 2 and column 2 disagree — the error is at the intersection (the center bit should be 1).</text>
+      </svg>
+      <figcaption><strong>Figure 2.</strong> Example where one data bit is received incorrectly. Row and column parity each flag a line; at the intersection the bit is flipped back.</figcaption>
+    </figure>
+
     <h3>CRC — what is actually used</h3>
     <p>
       Ethernet, WiFi, and almost all modern link layer technologies use <strong>Cyclic Redundancy Check (CRC)</strong>. It is a clever construction based on polynomial division in modulo-2 arithmetic (which in practice means XOR operations), and it is both cheap to implement in hardware and very good at catching <em>burst</em> errors — where several adjacent bits flip simultaneously, which is typical for electrical noise.
@@ -309,7 +434,7 @@
           <text x="240" y="90" class="cap" text-anchor="middle" font-style="italic">nodes 1, 3, and 4 have data; slots 2, 5, 6 are empty</text>
         </g>
       </svg>
-      <figcaption><strong>Figure 2.</strong> TDMA with 6 slots. Only nodes 1, 3, and 4 have data. The three empty slots are used by nobody, but they remain idle. That is the price we pay for predictability.</figcaption>
+      <figcaption><strong>Figure 3.</strong> TDMA with 6 slots. Only nodes 1, 3, and 4 have data. The three empty slots are used by nobody, but they remain idle. That is the price we pay for predictability.</figcaption>
     </figure>
 
     <h3>Class 2 — Random Access</h3>
