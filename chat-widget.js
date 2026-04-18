@@ -1480,22 +1480,83 @@
   }
 
   /**
+   * If a ``` fence was opened but not yet closed (common while streaming), marked treats the
+   * rest of the message as one code block. Append a synthetic closing fence for parse only.
+   */
+  function closeOddCodeFencesForParse(md) {
+    const t = String(md);
+    const lines = t.split(/\r?\n/);
+    let n = 0;
+    for (let i = 0; i < lines.length; i++) {
+      if (/^[\t ]{0,3}```\s*[\w.-]*\s*$/.test(lines[i])) n++;
+    }
+    if (n % 2 === 1) return t + "\n```\n";
+    return t;
+  }
+
+  /**
+   * Apply a transform only to text outside GFM-style ``` fenced regions (toggle on fence lines).
+   * Inline $...$ must not be touched inside fences or valid code (e.g. `$HOME`) could break.
+   */
+  function transformOutsideCodeFences(md, lineTransform) {
+    const lines = String(md).split(/\r?\n/);
+    const out = [];
+    let buf = [];
+    let inFence = false;
+    function flush() {
+      if (!buf.length) return;
+      const chunk = lineTransform(buf.join("\n"));
+      out.push.apply(out, chunk.split(/\n/));
+      buf = [];
+    }
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (/^[\t ]{0,3}```\s*[\w.-]*\s*$/.test(line)) {
+        flush();
+        out.push(line);
+        inFence = !inFence;
+        continue;
+      }
+      if (inFence) {
+        flush();
+        out.push(line);
+      } else {
+        buf.push(line);
+      }
+    }
+    flush();
+    return out.join("\n");
+  }
+
+  /**
    * marked/GFM treats "_" as emphasis and breaks LaTeX (e.g. \\sum_{n=1}). Strip delimited math
    * out before Markdown, then splice it back into the HTML so KaTeX still sees $$...$$ etc.
+   * Inline $...$ must be masked too (after $$) or underscores and backticks corrupt it.
+   * Placeholders stay inline (no blank lines) so $$...$$ is not forced into its own <p>.
    */
   function protectDelimitedMathForMarkdown(mdIn) {
     const blocks = [];
     let s = String(mdIn);
+    const INLINE_DOLLAR_MAX = 1500;
+    const inlineDollarRe = /(?<!\$)\$(?!\$)((?:\\.|[^$\n\r\\])+?)\$(?!\$)/g;
     function mask(re) {
       s = s.replace(re, function (m) {
         const id = blocks.length;
         blocks.push(m);
-        return "\n\nKTNXMTHPH" + id + "XZ\n\n";
+        return "KTNXMTHPH" + id + "XZ";
       });
     }
     mask(/\$\$[\s\S]*?\$\$/g);
     mask(/\\\[[\s\S]*?\\\]/g);
     mask(/\\\([\s\S]*?\\\)/g);
+    s = transformOutsideCodeFences(s, function (chunk) {
+      return chunk.replace(inlineDollarRe, function (full, inner) {
+        if (!inner || inner.length > INLINE_DOLLAR_MAX) return full;
+        const id = blocks.length;
+        blocks.push(full);
+        return "KTNXMTHPH" + id + "XZ";
+      });
+    });
     return { md: s, blocks: blocks };
   }
 
@@ -1503,6 +1564,7 @@
     let h = html;
     for (let i = 0; i < blocks.length; i++) {
       const tok = "KTNXMTHPH" + i + "XZ";
+      /* Legacy: newline-wrapped tokens used to become a whole <p>; keep for old cached HTML. */
       h = h.replace(new RegExp("<p>\\s*" + tok + "\\s*</p>", "gi"), blocks[i]);
       h = h.split(tok).join(blocks[i]);
     }
@@ -1640,7 +1702,8 @@
       typeof DOMPurify.sanitize === "function"
     ) {
       try {
-        const unwrapped = unwrapLatexFencedBlocks(raw);
+        const fenced = closeOddCodeFencesForParse(raw);
+        const unwrapped = unwrapLatexFencedBlocks(fenced);
         const prepared = normalizeLooseMathDelimiters(unwrapped);
         const withParen = normalizeParenInlineMath(prepared);
         const prot = protectDelimitedMathForMarkdown(withParen);
