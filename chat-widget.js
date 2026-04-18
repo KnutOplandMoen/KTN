@@ -1469,6 +1469,8 @@
   /**
    * Models often wrap display math in plain "[" ... "]" lines instead of "\\[...\\]" or "$$".
    * KaTeX auto-render only sees standard delimiters; normalize likely LaTeX blocks to $$...$$.
+   * Covers: "[" alone on a line … "]" alone; "[" then "\\cmd" on the same line … "]" alone;
+   * and a single line "[ ... \\cmd ... ]".
    */
   function normalizeLooseMathDelimiters(raw) {
     const text = String(raw);
@@ -1512,7 +1514,54 @@
       return out.join("\n");
     }
 
+    /**
+     * "[ \\foo ..." on the first line with a later line that is only "]" (common LLM mistake).
+     * multilineBlocks only handles when "[" is alone on its line.
+     */
+    function sameLineOpenBracketBlocks(s) {
+      const lines = s.split("\n");
+      const out = [];
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (!/^\[\s*\\[a-zA-Z]/.test(line)) {
+          out.push(line);
+          continue;
+        }
+        if (line.trim() === "[") {
+          out.push(line);
+          continue;
+        }
+        let closeIdx = -1;
+        for (let j = i + 1; j < lines.length; j++) {
+          if (lines[j].trim() === "]") {
+            closeIdx = j;
+            break;
+          }
+        }
+        if (closeIdx === -1) {
+          out.push(line);
+          continue;
+        }
+        const firstInner = line.replace(/^\[\s*/, "");
+        const middle = lines.slice(i + 1, closeIdx);
+        const inner = middle.length ? firstInner + "\n" + middle.join("\n") : firstInner;
+        if (!/\\[a-zA-Z]/.test(inner) || /\]\s*\(/.test(inner)) {
+          for (let k = i; k <= closeIdx; k++) {
+            out.push(lines[k]);
+          }
+          i = closeIdx;
+          continue;
+        }
+        out.push("$$");
+        out.push(inner);
+        out.push("$$");
+        i = closeIdx;
+      }
+      return out.join("\n");
+    }
+
     let s = multilineBlocks(text);
+    s = sameLineOpenBracketBlocks(s);
     s = s.replace(/^\[\s*(\\[a-zA-Z]+[\s\S]*)\s*\]$/gm, function (full, inner) {
       if (/\]\s*\(/.test(inner)) return full;
       return "$$" + inner + "$$";
