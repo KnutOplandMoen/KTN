@@ -1727,7 +1727,7 @@
       typesetMathIn(div);
     }
     messagesEl.appendChild(div);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
+    scrollMessagesToBottom(true);
     return div;
   }
 
@@ -1736,6 +1736,15 @@
     div.className = "ktn-msg ktn-msg-error";
     div.textContent = msg;
     messagesEl.appendChild(div);
+    scrollMessagesToBottom(true);
+  }
+
+  function isMessagesNearBottom(threshold = 48) {
+    return messagesEl.scrollHeight - messagesEl.clientHeight - messagesEl.scrollTop <= threshold;
+  }
+
+  function scrollMessagesToBottom(force = false) {
+    if (!force && !isMessagesNearBottom()) return;
     messagesEl.scrollTop = messagesEl.scrollHeight;
   }
 
@@ -1811,7 +1820,7 @@
     div.appendChild(barTrack);
     div.appendChild(timerEl);
     messagesEl.appendChild(div);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
+    scrollMessagesToBottom(true);
 
     let msgIdx = firstIdx;
     const startTime = Date.now();
@@ -1822,7 +1831,7 @@
       textEl.offsetHeight; // reflow
       textEl.style.animation = "";
       textEl.textContent = loadingMessages[msgIdx];
-      messagesEl.scrollTop = messagesEl.scrollHeight;
+      scrollMessagesToBottom();
     }, 2500);
 
     const timerInterval = setInterval(() => {
@@ -1857,76 +1866,85 @@
     let accumulated = "";
     let assistantEl = null;
     let rafId = 0;
+    let shouldFollowStream = true;
+    const onMessagesScroll = () => {
+      shouldFollowStream = isMessagesNearBottom();
+    };
+    messagesEl.addEventListener("scroll", onMessagesScroll, { passive: true });
 
-    function paint() {
-      rafId = 0;
-      if (assistantEl) {
-        assistantEl.innerHTML = renderMarkdown(accumulated);
-        typesetMathIn(assistantEl);
-        messagesEl.scrollTop = messagesEl.scrollHeight;
+    try {
+      function paint() {
+        rafId = 0;
+        if (assistantEl) {
+          assistantEl.innerHTML = renderMarkdown(accumulated);
+          typesetMathIn(assistantEl);
+          if (shouldFollowStream) scrollMessagesToBottom(true);
+        }
       }
-    }
 
-    function schedulePaint() {
-      if (!rafId) rafId = requestAnimationFrame(paint);
-    }
+      function schedulePaint() {
+        if (!rafId) rafId = requestAnimationFrame(paint);
+      }
 
-    function processLine(line) {
-      const trimmed = line.replace(/\r$/, "").trim();
-      if (!trimmed) return false;
-      let o;
-      try {
-        o = JSON.parse(trimmed);
-      } catch {
+      function processLine(line) {
+        const trimmed = line.replace(/\r$/, "").trim();
+        if (!trimmed) return false;
+        let o;
+        try {
+          o = JSON.parse(trimmed);
+        } catch {
+          return false;
+        }
+        if (typeof o.e === "string" && o.e) {
+          throw new Error(o.e);
+        }
+        if (typeof o.t === "string" && o.t.length > 0) {
+          if (!assistantEl) {
+            loader.remove();
+            assistantEl = addMessage("assistant", "");
+          }
+          accumulated += o.t;
+          schedulePaint();
+        }
+        if (o.d === true) {
+          if (rafId) {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+          paint();
+          if (!assistantEl) loader.remove();
+          return true;
+        }
         return false;
       }
-      if (typeof o.e === "string" && o.e) {
-        throw new Error(o.e);
-      }
-      if (typeof o.t === "string" && o.t.length > 0) {
-        if (!assistantEl) {
-          loader.remove();
-          assistantEl = addMessage("assistant", "");
+
+      while (true) {
+        const { value, done } = await reader.read();
+        buf += dec.decode(value || new Uint8Array(), { stream: !done });
+        if (done) break;
+
+        let nl;
+        while ((nl = buf.indexOf("\n")) !== -1) {
+          const line = buf.slice(0, nl);
+          buf = buf.slice(nl + 1);
+          if (processLine(line)) return accumulated;
         }
-        accumulated += o.t;
-        schedulePaint();
       }
-      if (o.d === true) {
-        if (rafId) {
-          cancelAnimationFrame(rafId);
-          rafId = 0;
-        }
-        paint();
-        if (!assistantEl) loader.remove();
-        return true;
+
+      if (buf.length) {
+        if (processLine(buf)) return accumulated;
       }
-      return false;
-    }
 
-    while (true) {
-      const { value, done } = await reader.read();
-      buf += dec.decode(value || new Uint8Array(), { stream: !done });
-      if (done) break;
-
-      let nl;
-      while ((nl = buf.indexOf("\n")) !== -1) {
-        const line = buf.slice(0, nl);
-        buf = buf.slice(nl + 1);
-        if (processLine(line)) return accumulated;
+      if (!assistantEl) loader.remove();
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = 0;
       }
+      paint();
+      return accumulated;
+    } finally {
+      messagesEl.removeEventListener("scroll", onMessagesScroll);
     }
-
-    if (buf.length) {
-      if (processLine(buf)) return accumulated;
-    }
-
-    if (!assistantEl) loader.remove();
-    if (rafId) {
-      cancelAnimationFrame(rafId);
-      rafId = 0;
-    }
-    paint();
-    return accumulated;
   }
 
   async function sendMessage(question) {
@@ -2014,7 +2032,7 @@
     setTimeout(() => {
       scheduleSyncPanelViewport();
       input.scrollIntoView({ block: "nearest", behavior: "auto" });
-      messagesEl.scrollTop = messagesEl.scrollHeight;
+      scrollMessagesToBottom(true);
     }, 120);
   });
 
