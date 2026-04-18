@@ -2,6 +2,8 @@
 alwaysApply: true
 ---
 
-Always look at pensum.md and check what chapters and other stuff the students should know, then look at thos chapters in KTN_BOK.md (Computer Networking A Top-Down Approach - EIGHTH EDITION) to see what the students should know from chapters. 
+Always look at pensum.md and check what chapters and other stuff the students should know, then look at thos chapters in KTN_BOK.md (Computer Networking A Top-Down Approach - EIGHTH EDITION) to see what the students should know from chapters.
+
+you must also check in the /powerpoints folder to see if any relevant presentations are available - then you must read those as well as those also are needed.
 
 Make sure that all from pensum.md is covered - that is the priority
