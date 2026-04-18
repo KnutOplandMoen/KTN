@@ -21,6 +21,12 @@
     <div class="eyebrow">Kapittel 2 · Del 3</div>
     <h1>Hvordan internett <em>snakker</em>: e-post, navn og sokler</h1>
     <p class="lede">En grundig gjennomgang av tre av applikasjonslagets viktigste byggesteiner — protokollene som flytter e-posten din, oversetter navn til adresser, og lar prosesser snakke sammen på tvers av jordkloden.</p>
+    <nav class="toc">
+      <a href="#smtp"><span class="toc-num">01</span><span>E-post og SMTP</span></a>
+      <a href="#dns"><span class="toc-num">02</span><span>DNS — domenenavnsystemet</span></a>
+      <a href="#sockets"><span class="toc-num">03</span><span>Socket-programmering</span></a>
+      <a href="#avslutning"><span class="toc-num">04</span><span>De gjennomgående temaene</span></a>
+    </nav>
     <div class="what-youll-learn">
       <div class="label">Det du sitter igjen med</div>
       <ul>
@@ -34,7 +40,7 @@
 </header>
 
 <!-- ============ DEL 1: E-POST ============ -->
-<section>
+<section id="smtp">
   <div class="container">
     <div class="section-badge">01 · E-post og SMTP</div>
     <h2>Den eldste meldingstjenesten på <em>nettet</em></h2>
@@ -152,7 +158,7 @@
 <div class="container"><div class="divider">❋ ❋ ❋</div></div>
 
 <!-- ============ DEL 2: DNS ============ -->
-<section>
+<section id="dns">
   <div class="container">
     <div class="section-badge">02 · DNS — Domain Name System</div>
     <h2>Hvordan internett finner ut <em>hvor</em> ting er</h2>
@@ -339,7 +345,7 @@
 <div class="container"><div class="divider">❋ ❋ ❋</div></div>
 
 <!-- ============ DEL 3: SOCKETS ============ -->
-<section>
+<section id="sockets">
   <div class="container">
     <div class="section-badge">03 · Socket-programmering</div>
     <h2>Når du selv skal skrive noe som <em>snakker</em></h2>
@@ -528,7 +534,7 @@ while True:
 </section>
 
 <!-- ============ KONKLUSJON ============ -->
-<section>
+<section id="avslutning">
   <div class="container">
     <div class="section-badge">Til slutt</div>
     <h2>De gjennomgående <em>temaene</em></h2>
