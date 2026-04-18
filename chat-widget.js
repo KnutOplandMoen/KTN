@@ -1419,6 +1419,54 @@
   }
 
   /**
+   * Fenced blocks become &lt;pre&gt;&lt;code&gt; and are skipped by KaTeX.
+   * Unwrap ```latex|tex|math ... ``` and bare ``` ... ``` when the body looks like LaTeX math.
+   */
+  function unwrapLatexFencedBlocks(raw) {
+    const lines = String(raw).split(/\r?\n/);
+    const out = [];
+    for (let i = 0; i < lines.length; i++) {
+      const openM = lines[i].match(/^```(\w*)\s*$/);
+      if (!openM) {
+        out.push(lines[i]);
+        continue;
+      }
+      const lang = (openM[1] || "").toLowerCase();
+      const start = i;
+      const inner = [];
+      i++;
+      while (i < lines.length && !/^```\s*$/.test(lines[i])) {
+        inner.push(lines[i]);
+        i++;
+      }
+      const closed = i < lines.length && /^```\s*$/.test(lines[i]);
+      if (!closed) {
+        for (let k = start; k < lines.length; k++) {
+          out.push(lines[k]);
+        }
+        break;
+      }
+      const body = inner.join("\n");
+      const unwrapLang = lang === "latex" || lang === "tex" || lang === "math";
+      const t = body.trim();
+      const unwrapBare =
+        lang === "" &&
+        (/^\$\$/.test(t) || /^\\\[/m.test(t) || /^\\\(/m.test(t)) &&
+        /\\[a-zA-Z]/.test(body);
+      if (unwrapLang || unwrapBare) {
+        out.push(body);
+      } else {
+        out.push(lines[start]);
+        for (let z = 0; z < inner.length; z++) {
+          out.push(inner[z]);
+        }
+        out.push(lines[i]);
+      }
+    }
+    return out.join("\n");
+  }
+
+  /**
    * Models often wrap display math in plain "[" ... "]" lines instead of "\\[...\\]" or "$$".
    * KaTeX auto-render only sees standard delimiters; normalize likely LaTeX blocks to $$...$$.
    */
@@ -1500,7 +1548,8 @@
       typeof DOMPurify.sanitize === "function"
     ) {
       try {
-        const prepared = normalizeLooseMathDelimiters(raw);
+        const unwrapped = unwrapLatexFencedBlocks(raw);
+        const prepared = normalizeLooseMathDelimiters(unwrapped);
         const dirty = marked.parse(prepared, { async: false });
         return DOMPurify.sanitize(dirty);
       } catch (e) {
