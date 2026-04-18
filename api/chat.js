@@ -333,7 +333,7 @@ Hvis du ikke finner svaret i konteksten under, si fra i stedet for å finne på 
 Ikke avslutt med ordtelling eller etiketter som «(99 ord)» eller «Antall ord:». Ikke «tenker høyt»-innledning — svar rett på spørsmålet.
 Matematikk: chatten rendrer KaTeX bare inne i avgrensere. Bruk inline som \\(...\\) eller $...$, og uttrykk som skal stå for seg selv som \\[...\\] eller $$...$$. Rå LaTeX som \\text{...} eller \\frac{}{} utenfor slike omgivelser vises som vanlig tekst, ikke som formler.
 Viktig: bare firkantklammer [ og ] (også på egne linjer) er ikke matte-omgivelser og blir ikke rendret. Ikke bruk det mønsteret for formler — bruk alltid bakslash-klammer \\[ ... \\] eller $$ ... $$.
-Ikke legg matematikk inne i markdown code fence (triple backticks): da vises det som monospace «kode», ikke som rendret matte. Skriv formler i vanlig avsnitt med avgenser over. Reserver ```-blokker til faktiske program-/konfigurasjonsutdrag.`;
+Ikke legg matematikk inne i markdown code fence (triple backticks): da vises det som monospace «kode», ikke som rendret matte. Skriv formler i vanlig avsnitt med avgenser over. Reserver \`\`\`-blokker til faktiske program-/konfigurasjonsutdrag.`;
 
     const intro =
       locale === "en"
