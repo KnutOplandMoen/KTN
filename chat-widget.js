@@ -1467,6 +1467,49 @@
   }
 
   /**
+   * Models sometimes put a one-line expression in parentheses instead of "\\(...\\)".
+   * Only lines that look like formulas (has ^, \\, or =) to avoid normal prose in parens.
+   */
+  function normalizeParenInlineMath(raw) {
+    return String(raw).replace(/^\(([^)\n]{1,200})\)\s*$/gm, function (full, inner) {
+      if (/]\s*\(/.test(inner)) return full;
+      if (/https?:\/\//i.test(inner)) return full;
+      if (!/[\\^=]/.test(inner)) return full;
+      return "\\(" + inner + "\\)";
+    });
+  }
+
+  /**
+   * marked/GFM treats "_" as emphasis and breaks LaTeX (e.g. \\sum_{n=1}). Strip delimited math
+   * out before Markdown, then splice it back into the HTML so KaTeX still sees $$...$$ etc.
+   */
+  function protectDelimitedMathForMarkdown(mdIn) {
+    const blocks = [];
+    let s = String(mdIn);
+    function mask(re) {
+      s = s.replace(re, function (m) {
+        const id = blocks.length;
+        blocks.push(m);
+        return "\n\nKTNXMTHPH" + id + "XZ\n\n";
+      });
+    }
+    mask(/\$\$[\s\S]*?\$\$/g);
+    mask(/\\\[[\s\S]*?\\\]/g);
+    mask(/\\\([\s\S]*?\\\)/g);
+    return { md: s, blocks: blocks };
+  }
+
+  function restoreMathPlaceholders(html, blocks) {
+    let h = html;
+    for (let i = 0; i < blocks.length; i++) {
+      const tok = "KTNXMTHPH" + i + "XZ";
+      h = h.replace(new RegExp("<p>\\s*" + tok + "\\s*</p>", "gi"), blocks[i]);
+      h = h.split(tok).join(blocks[i]);
+    }
+    return h;
+  }
+
+  /**
    * Models often wrap display math in plain "[" ... "]" lines instead of "\\[...\\]" or "$$".
    * KaTeX auto-render only sees standard delimiters; normalize likely LaTeX blocks to $$...$$.
    * Covers: "[" alone on a line … "]" alone; "[" then "\\cmd" on the same line … "]" alone;
@@ -1599,8 +1642,11 @@
       try {
         const unwrapped = unwrapLatexFencedBlocks(raw);
         const prepared = normalizeLooseMathDelimiters(unwrapped);
-        const dirty = marked.parse(prepared, { async: false });
-        return DOMPurify.sanitize(dirty);
+        const withParen = normalizeParenInlineMath(prepared);
+        const prot = protectDelimitedMathForMarkdown(withParen);
+        const dirty = marked.parse(prot.md, { async: false });
+        const restored = restoreMathPlaceholders(dirty, prot.blocks);
+        return DOMPurify.sanitize(restored);
       } catch (e) {
         console.warn("KTN chat: markdown parse failed, using fallback", e);
       }
