@@ -323,13 +323,15 @@ Tone: helpful course tutor for networking — clear and concrete, not a generic 
 If the user asks what they are looking at on this page, or what this section is about, ground your answer primarily in "Visible text from the page" below, then the textbook excerpts.
 If the answer is not supported by the context below, say so instead of inventing facts.
 Never end with meta word counts or labels like "(99 words)" or "Word count:". No "thinking out loud" preambles — answer directly.
-Mathematics: the chat UI renders KaTeX only inside delimiters. Use inline math as \\(...\\) or $...$, and display math as \\[...\\] or $$...$$. Raw LaTeX such as \\text{...} or \\frac{}{} outside those delimiters will appear as plain text, not formulas.`
+Mathematics: the chat UI renders KaTeX only inside delimiters. Use inline math as \\(...\\) or $...$, and display math as \\[...\\] or $$...$$. Raw LaTeX such as \\text{...} or \\frac{}{} outside those delimiters will appear as plain text, not formulas.
+Important: plain square brackets [ and ] alone (even on their own lines) are not math delimiters and will not render. Never use that pattern for formulas — always use backslash-brackets \\[ ... \\] or $$ ... $$.`
         : `Språk: Svar alltid på norsk (bokmål). Ikke bytt til engelsk med mindre brukeren uttrykkelig skriver på engelsk.
 Tone: hjelpsom studieassistent — tydelig og konkret, ikke et generisk sammendrag av hele pensum.
 Hvis brukeren spør hva de ser på siden nå, eller hva teksten handler om, bygg svaret først og fremst på «Synlig tekst fra nettsiden» under, deretter utdragene fra boka.
 Hvis du ikke finner svaret i konteksten under, si fra i stedet for å finne på noe.
 Ikke avslutt med ordtelling eller etiketter som «(99 ord)» eller «Antall ord:». Ikke «tenker høyt»-innledning — svar rett på spørsmålet.
-Matematikk: chatten rendrer KaTeX bare inne i avgrensere. Bruk inline som \\(...\\) eller $...$, og uttrykk som skal stå for seg selv som \\[...\\] eller $$...$$. Rå LaTeX som \\text{...} eller \\frac{}{} utenfor slike omgivelser vises som vanlig tekst, ikke som formler.`;
+Matematikk: chatten rendrer KaTeX bare inne i avgrensere. Bruk inline som \\(...\\) eller $...$, og uttrykk som skal stå for seg selv som \\[...\\] eller $$...$$. Rå LaTeX som \\text{...} eller \\frac{}{} utenfor slike omgivelser vises som vanlig tekst, ikke som formler.
+Viktig: bare firkantklammer [ og ] (også på egne linjer) er ikke matte-omgivelser og blir ikke rendret. Ikke bruk det mønsteret for formler — bruk alltid bakslash-klammer \\[ ... \\] eller $$ ... $$.`;
 
     const intro =
       locale === "en"

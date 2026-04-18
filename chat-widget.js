@@ -1418,6 +1418,60 @@
     return markdownLibsPromise || Promise.resolve();
   }
 
+  /**
+   * Models often wrap display math in plain "[" ... "]" lines instead of "\\[...\\]" or "$$".
+   * KaTeX auto-render only sees standard delimiters; normalize likely LaTeX blocks to $$...$$.
+   */
+  function normalizeLooseMathDelimiters(raw) {
+    const text = String(raw);
+
+    function multilineBlocks(s) {
+      const lines = s.split("\n");
+      const out = [];
+      for (let i = 0; i < lines.length; i++) {
+        if (lines[i].trim() !== "[") {
+          out.push(lines[i]);
+          continue;
+        }
+        const start = i;
+        const innerLines = [];
+        let j = i + 1;
+        let closeIdx = -1;
+        for (; j < lines.length; j++) {
+          if (lines[j].trim() === "]") {
+            closeIdx = j;
+            break;
+          }
+          innerLines.push(lines[j]);
+        }
+        if (closeIdx === -1) {
+          out.push(lines[i]);
+          continue;
+        }
+        const inner = innerLines.join("\n");
+        if (!/\\[a-zA-Z]/.test(inner)) {
+          for (let k = start; k <= closeIdx; k++) {
+            out.push(lines[k]);
+          }
+          i = closeIdx;
+          continue;
+        }
+        out.push("$$");
+        out.push(inner);
+        out.push("$$");
+        i = closeIdx;
+      }
+      return out.join("\n");
+    }
+
+    let s = multilineBlocks(text);
+    s = s.replace(/^\[\s*(\\[a-zA-Z]+[\s\S]*)\s*\]$/gm, function (full, inner) {
+      if (/\]\s*\(/.test(inner)) return full;
+      return "$$" + inner + "$$";
+    });
+    return s;
+  }
+
   function renderMarkdownFallback(raw) {
     let html = escapeHtml(raw);
 
@@ -1446,7 +1500,8 @@
       typeof DOMPurify.sanitize === "function"
     ) {
       try {
-        const dirty = marked.parse(String(raw), { async: false });
+        const prepared = normalizeLooseMathDelimiters(raw);
+        const dirty = marked.parse(prepared, { async: false });
         return DOMPurify.sanitize(dirty);
       } catch (e) {
         console.warn("KTN chat: markdown parse failed, using fallback", e);
