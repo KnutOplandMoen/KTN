@@ -1997,8 +1997,10 @@
     let accumulated = "";
     let assistantEl = null;
     let rafId = 0;
-    let shouldFollowStream = true;
+    let shouldFollowStream = isMessagesNearBottom();
+    let isProgrammaticScroll = false;
     const onMessagesScroll = () => {
+      if (isProgrammaticScroll) return;
       const near = isMessagesNearBottom();
       shouldFollowStream = near;
       if (near) {
@@ -2016,7 +2018,9 @@
           assistantEl.innerHTML = renderMarkdown(accumulated);
           typesetMathIn(assistantEl);
           if (shouldFollowStream) {
+            isProgrammaticScroll = true;
             scrollMessagesToBottom(true);
+            isProgrammaticScroll = false;
           } else {
             showScrollArrow();
           }
