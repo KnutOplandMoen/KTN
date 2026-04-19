@@ -11,6 +11,11 @@
   <div class="container">
     <a href="../" class="brand">TTM4100</a>
     <a href="../" class="nav-back">&larr; Alle kapitler</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
   </div>
 </nav>
 <main data-chapter="Kapittel 4: Nettverkslaget – Dataplanet">
@@ -155,7 +160,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 1 · Lett</div>
-    <div class="q-text">Hva beskriver best forwarding i dataplanet?</div>
+    <div class="q-text">Hva er forwarding i dataplanet?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Forwarding er den raske per-pakke-operasjonen som sender en pakke til riktig utport.</div>
@@ -164,7 +169,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 2 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om longest-prefix matching i praksis?</div>
+    <div class="q-text">Forklar longest-prefix matching.</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Når flere ruter matcher, velges den med lengst og mest spesifikt prefiks.</div>
@@ -173,7 +178,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 3 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om CIDR-prefikser er faglig best?</div>
+    <div class="q-text">Hva er CIDR, og hvordan noteres adresser?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">CIDR skriver nett med adresse/prefikslengde og muliggjør fleksibel adresseallokering.</div>
@@ -182,7 +187,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 4 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om default-rute i praksis?</div>
+    <div class="q-text">Hva er en default-rute?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Default-ruten brukes når ingen mer spesifikk oppføring matcher destinasjonsadressen.</div>
@@ -191,7 +196,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 5 · Lett</div>
-    <div class="q-text">Hva beskriver best subnettmaske?</div>
+    <div class="q-text">Hva er en subnettmaske?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Subnettmasken skiller nettverksdel fra hostdel i en IPv4-adresse.</div>
@@ -200,7 +205,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 6 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om vert som sender til annet subnett er faglig best?</div>
+    <div class="q-text">Hva skjer når en vert sender pakker til et annet subnett?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Verten sender rammen til default gateway når målet ligger utenfor eget subnett.</div>
@@ -209,25 +214,25 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 7 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om ARP-oppslag i praksis?</div>
+    <div class="q-text">Hva gjør ARP?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">ARP oversetter lokal IP-adresse til lokal MAC-adresse på samme lenke.</div>
+      <div class="answer">ARP (Address Resolution Protocol) oversetter en IP-adresse til MAC-adresse på samme lenke. Avsender broadcaster en ARP Request («Hvem har IP x.x.x.x?»), og verten med den adressen svarer med sin MAC. Svaret lagres i ARP-cachen for fremtidig gjenbruk.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 8 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om DHCP DORA-sekvensen er faglig best?</div>
+    <div class="q-text">Forklar DHCP DORA-sekvensen.</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Typisk DHCP-forløp er Discover, Offer, Request og Ack.</div>
+      <div class="answer">DHCP DORA: klienten broadcaster Discover, serveren svarer med Offer (inkl. tilbudt IP-adresse, subnettmaske, gateway, DNS), klienten velger tilbudet med Request, og serveren bekrefter med Ack. Prosessen automatiserer fullstendig tildeling av nettverkskonfigurasjon.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 9 · Lett</div>
-    <div class="q-text">Hva beskriver best NAT med portoversettelse?</div>
+    <div class="q-text">Hva er NAT med portoversettelse?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">NAT mapper mange interne adresser til én offentlig adresse ved hjelp av portnumre.</div>
@@ -236,7 +241,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 10 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om private IPv4-adresser er faglig best?</div>
+    <div class="q-text">Hva er private IPv4-adresser, og hvordan brukes de?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Private adresser er ikke globalt rutbare og brukes bak NAT i lokale nett.</div>
@@ -245,7 +250,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 11 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om TTL-feltet i IPv4 i praksis?</div>
+    <div class="q-text">Hva er TTL-feltet i IPv4?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">TTL reduseres per hopp for å hindre at pakker sirkulerer uendelig ved rutingfeil.</div>
@@ -254,7 +259,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 12 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om IPv4-headerchecksum er faglig best?</div>
+    <div class="q-text">Hvorfor må IPv4-headerchecksum oppdateres i hver ruter?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">IPv4-headerchecksum må oppdateres i hver ruter fordi headerfelter som TTL endres.</div>
@@ -263,7 +268,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 13 · Lett</div>
-    <div class="q-text">Hva beskriver best IP-fragmentering?</div>
+    <div class="q-text">Hva er IP-fragmentering?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Hvis et datagram er større enn linkens MTU og DF=0, kan det fragmenteres i flere biter.</div>
@@ -272,7 +277,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 14 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om DF-bit satt til 1 i praksis?</div>
+    <div class="q-text">Hva skjer hvis DF-biten er satt og pakken er for stor for lenken?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Med DF=1 droppes for store pakker, og avsender må normalt redusere pakkestørrelse.</div>
@@ -281,7 +286,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 15 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om IPv6 fast header er faglig best?</div>
+    <div class="q-text">Hva kjennetegner IPv6 sin faste basisheader?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">IPv6 bruker en fast 40-byte basisheader som forenkler rask forwarding.</div>
@@ -290,7 +295,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 16 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om hvorfor IPv6 fjernet headerchecksum i praksis?</div>
+    <div class="q-text">Hvorfor fjernet IPv6 headerchecksum?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">IPv6 fjernet headerchecksum for å redusere arbeid per hopp siden andre lag allerede har feilkontroll.</div>
@@ -299,7 +304,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 17 · Lett</div>
-    <div class="q-text">Hva beskriver best utgående kø i ruter?</div>
+    <div class="q-text">Hva er utgående kø i en ruter?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Når utgående lenke er fullbooket, bygges kø; ved full buffer må pakker droppes.</div>
@@ -308,7 +313,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 18 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om oppslag i forwarding-tabell er faglig best?</div>
+    <div class="q-text">Hvordan gjøres oppslag i forwarding-tabellen?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Ruteren gjør prefiksoppslag på destinasjonsadresse for å velge riktig neste hopp.</div>
@@ -317,7 +322,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 19 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om switching fabric i en ruter i praksis?</div>
+    <div class="q-text">Hva er switching fabric i en ruter?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Switching fabric flytter pakker fra valgt inngangsport til valgt utgangsport internt i ruteren.</div>
@@ -326,7 +331,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 20 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om ruteaggregering er faglig best?</div>
+    <div class="q-text">Hva er ruteaggregering?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Aggregering slår sammen prefikser for å redusere tabellstørrelse og kontrollplane-belastning.</div>
@@ -335,7 +340,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 21 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om best-effort i IP i praksis?</div>
+    <div class="q-text">Hva betyr best-effort i IP?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">IP lover ikke levering, rekkefølge eller båndbreddegaranti; det håndteres i endesystemene.</div>
@@ -344,16 +349,16 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 22 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om hvordan MAC-adresser endres hop-for-hop er faglig best?</div>
+    <div class="q-text">Hvordan endres MAC-adresser hop-for-hop gjennom et nettverk?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">MAC-adresser er lokale per lenke og byttes for hvert hopp, mens IP-destinasjonen er ende-til-ende.</div>
+      <div class="answer">MAC-adresser er kun gyldige på én lenke. For hvert hopp erstatter ruteren kilde-MAC med sin egen utport-MAC og destinasjons-MAC med neste hopps MAC (funnet via ARP). IP-kilde og -destinasjon forblir uendret hele veien (bortsett fra ved NAT).</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 23 · Lett</div>
-    <div class="q-text">Hva beskriver best NAT og innkommende forbindelser?</div>
+    <div class="q-text">Hva er utfordringen med NAT og innkommende forbindelser?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">NAT skjuler interne verter og krever port forwarding eller lignende for å nå interne tjenester utenfra.</div>
@@ -362,7 +367,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 24 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om CIDR og variabel subnetting i praksis?</div>
+    <div class="q-text">Hvorfor er CIDR og variabel subnetting nyttig?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">CIDR gjør det mulig å tilpasse subnettstørrelse etter faktisk behov i stedet for faste klasser.</div>
@@ -371,7 +376,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 25 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om når default-rute er en god strategi er faglig best?</div>
+    <div class="q-text">Når er default-rute en god strategi?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Små nett bruker ofte default-rute for å sende ukjent trafikk mot en upstream-ruter.</div>
@@ -389,7 +394,7 @@
 </footer>
 <script src="../quiz.js"></script>
 <script src="../chat-widget.js"></script>
-<script src="../lang-switch.js"></script>
+<script src="../nav-search.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 <script defer src="/_vercel/speed-insights/script.js"></script>
 </body>

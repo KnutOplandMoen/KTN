@@ -11,6 +11,11 @@
   <div class="container">
     <a href="../" class="brand">TTM4100</a>
     <a href="../" class="nav-back">&larr; Alle kapitler</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
   </div>
 </nav>
 <main data-chapter="Kapittel 7: Trådløse og mobile nettverk">
@@ -145,7 +150,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 1 · Lett</div>
-    <div class="q-text">Hva beskriver best forholdet mellom trådløshet og mobilitet?</div>
+    <div class="q-text">Hva er forskjellen mellom trådløshet og mobilitet?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Trådløshet beskriver overføringsmedium, mens mobilitet beskriver bevegelse mellom tilgangspunkter.</div>
@@ -154,7 +159,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 2 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om støy og fading i radiolinker i praksis?</div>
+    <div class="q-text">Hva er fading og støy i radiolinker, og hva er konsekvensen?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Interferens, fading og lav SNR øker bitfeilrate og krever robuste MAC-/PHY-mekanismer.</div>
@@ -163,16 +168,16 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 3 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om skjult terminal-problemet er faglig best?</div>
+    <div class="q-text">Hva er det skjulte terminal-problemet?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">To sendere kan være utenfor hverandres rekkevidde, men kollidere hos samme mottaker.</div>
+      <div class="answer">To sendere A og C kan være utenfor hverandres rekkevidde (og ikke høre hverandre), men likevel kollidere hos felles mottaker B. Fordi CSMA baserer seg på at man "hører" kanalen fri, vil A og C feilaktig tro det er trygt å sende. RTS/CTS løser dette: B sender CTS, som A og C begge hører, og de vet da at de må vente.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 4 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om eksponert terminal-problemet i praksis?</div>
+    <div class="q-text">Hva er det eksponerte terminal-problemet?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">En node kan unødvendig tie fordi den hører en sender som ikke faktisk forstyrrer dens egen mottaker.</div>
@@ -181,16 +186,16 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 5 · Lett</div>
-    <div class="q-text">Hva beskriver best RTS/CTS?</div>
+    <div class="q-text">Hva er RTS/CTS, og hvordan løser det det skjulte terminal-problemet?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">RTS/CTS reserverer kanal før datasending og reduserer kollisjoner fra skjulte terminaler.</div>
+      <div class="answer">RTS/CTS (Request to Send / Clear to Send) reserverer kanalen før datasending. Senderen sender RTS til AP, som svarer med CTS. Alle noder som hører CTS vet at kanalen er opptatt og venter (Network Allocation Vector, NAV). Dermed kan skjulte terminaler unngå kollisjoner selv om de ikke hørte den opprinnelige RTS.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 6 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om 802.11-assosiering er faglig best?</div>
+    <div class="q-text">Hva innebærer assosiering i 802.11 WiFi?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">En klient må assosiere med et access point før normal datatrafikk kan sendes.</div>
@@ -199,7 +204,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 7 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om beacon-rammer i praksis?</div>
+    <div class="q-text">Hva er beacon-rammer i WiFi?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Access points sender beacons som annonserer SSID, kanal og timing-informasjon.</div>
@@ -208,7 +213,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 8 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om tilfeldig backoff i WiFi er faglig best?</div>
+    <div class="q-text">Hva er rollen til tilfeldig backoff i CSMA/CA?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">CSMA/CA bruker tilfeldig backoff for å redusere sannsynlighet for samtidig sending.</div>
@@ -217,7 +222,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 9 · Lett</div>
-    <div class="q-text">Hva beskriver best kanalplan i 2.4 GHz WiFi?</div>
+    <div class="q-text">Hvilke kanaler brukes i 2.4 GHz WiFi for minst mulig interferens?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Kanalene 1, 6 og 11 brukes ofte for minimal overlapp og mindre interferens.</div>
@@ -226,7 +231,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 10 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om WiFi-handover er faglig best?</div>
+    <div class="q-text">Hva skjer under en WiFi-handover?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Handover innebærer skanning, valg av nytt AP og re-assosiering med minst mulig avbrudd.</div>
@@ -235,16 +240,16 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 11 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om cellestruktur i mobilnett i praksis?</div>
+    <div class="q-text">Hva er cellestruktur i mobilnett, og hva er fordelen?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Mobilnett deler dekning i celler for frekvensgjenbruk og høyere total kapasitet.</div>
+      <div class="answer">Mobilnett deler dekningsområdet i celler, hver betjent av en basestasjon. Samme frekvenser kan gjenbrukes i celler som er langt nok fra hverandre til at interferens er akseptabel — dette kalles frekvensgjenbruk. Jo mindre cellene er, desto tettere er gjenbruket og desto høyere er den totale systemkapasiteten.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 12 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om planlagt tilgang i mobil uplink er faglig best?</div>
+    <div class="q-text">Hva er planlagt tilgang i mobilnett-uplink?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Basestasjonen planlegger ressurser slik at terminaler får koordinerte tids-/frekvensblokker.</div>
@@ -253,7 +258,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 13 · Lett</div>
-    <div class="q-text">Hva beskriver best arkitektur i 4G/5G-kjernenett?</div>
+    <div class="q-text">Hva er kjernenettets rolle i 4G/5G?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Kjernenett skiller brukerplan og kontrollplan for skalerbar mobilitet og tjenestestyring.</div>
@@ -262,7 +267,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 14 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om FR1 kontra FR2 i praksis?</div>
+    <div class="q-text">Hva er forskjellen mellom FR1 og FR2 i 5G?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">FR1 gir bedre dekning, mens FR2 (mmWave) gir høyere kapasitet men kortere rekkevidde.</div>
@@ -271,16 +276,16 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 15 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om mmWave-utfordringer er faglig best?</div>
+    <div class="q-text">Hva er de viktigste utfordringene med mmWave-frekvenser i 5G?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">mmWave blokkeres lett av objekter og krever tett nett av småceller og stråleforming.</div>
+      <div class="answer">mmWave (over 24 GHz) blokkeres lett av bygninger, trær og til og med regn — rekkevidde er svært kort. Dette krever tett nett av småceller og avansert beamforming for å rette strålen presist mot terminalen. Til gjengjeld gir mmWave enorme mengder tilgjengelig spektrum og svært høy kapasitet.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 16 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om MIMO og beamforming i praksis?</div>
+    <div class="q-text">Hva er MIMO og beamforming?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Flere antenner muliggjør spatial multiplexing og målrettede stråler for høyere spektral effektivitet.</div>
@@ -289,7 +294,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 17 · Lett</div>
-    <div class="q-text">Hva beskriver best mobilitetshåndtering?</div>
+    <div class="q-text">Hva er mobilitetshåndtering i mobilnett?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Mobilitetshåndtering flytter tilkobling mellom basestasjoner uten å bryte aktive sesjoner unødig.</div>
@@ -298,16 +303,16 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 18 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om GTP-tunneler er faglig best?</div>
+    <div class="q-text">Hva er GTP-tunneler, og hvorfor brukes de?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">GTP kapsler brukertrafikk mellom mobilnoder slik at enhetens IP kan holdes stabil under handover.</div>
+      <div class="answer">GTP (GPRS Tunnelling Protocol) kapsler brukertrafikk mellom basestasjonen og kjernenettets brukerplan-funksjon (UPF i 5G). Tunnelen identifiseres med en TEID (Tunnel Endpoint ID). Fordi trafikken sendes gjennom GTP-tunnelen, kan terminalens IP-adresse holdes stabil selv under handover til ny basestasjon.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 19 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om roaming mellom operatører i praksis?</div>
+    <div class="q-text">Hva innebærer roaming mellom operatører?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Roaming krever autentisering, policy og avregning mellom besøkt og hjemmenett.</div>
@@ -316,7 +321,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 20 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om effekten av sendeeffektkontroll er faglig best?</div>
+    <div class="q-text">Hva er sendeeffektkontroll, og hva er formålet?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Effektkontroll reduserer interferens, forbedrer kapasitet og sparer batteri i terminalen.</div>
@@ -325,7 +330,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 21 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om hvorfor kollisjonsdeteksjon er vanskelig i radio i praksis?</div>
+    <div class="q-text">Hvorfor er kollisjonsdeteksjon vanskelig i trådløse nett?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Eget sendesignal dominerer mottakskjeden, så samtidige kollisjoner er vanskelige å høre direkte.</div>
@@ -334,7 +339,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 22 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om småceller og kapasitetsøkning er faglig best?</div>
+    <div class="q-text">Hva er småceller, og hvordan øker de kapasiteten?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Småceller øker kapasitet gjennom tettere frekvensgjenbruk over mindre geografiske områder.</div>
@@ -378,7 +383,7 @@
   </div>
 </footer>
 <script src="../chat-widget.js"></script>
-<script src="../lang-switch.js"></script>
+<script src="../nav-search.js"></script>
 <script src="../quiz.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 <script defer src="/_vercel/speed-insights/script.js"></script>

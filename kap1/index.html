@@ -11,6 +11,11 @@
   <div class="container">
     <a href="../" class="brand">TTM4100</a>
     <a href="../" class="nav-back">&larr; Alle kapitler</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
   </div>
 </nav>
 <main data-chapter="Kapittel 1: Datanett og Internett">
@@ -152,16 +157,16 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 1 · Lett</div>
-    <div class="q-text">Hva beskriver best forskjellen mellom pakkesvitsjing og linjesvitsjing?</div>
+    <div class="q-text">Hva er forskjellen mellom pakkesvitsjing og linjesvitsjing?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Pakkesvitsjing deler kapasitet dynamisk mellom brukere, mens linjesvitsjing reserverer kapasitet per forbindelse.</div>
+      <div class="answer">Pakkesvitsjing deler kapasitet dynamisk mellom brukere, mens linjesvitsjing reserverer dedikert kapasitet per forbindelse. Pakkesvitsjing gir bedre ressursutnyttelse og betjener langt flere brukere totalt, men gir variabel forsinkelse og kan miste pakker under høy last.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 2 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om hva en nettverksprotokoll faktisk definerer i praksis?</div>
+    <div class="q-text">Hva definerer en nettverksprotokoll?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">En protokoll definerer meldingsformat, rekkefølge og handlinger ved sending og mottak.</div>
@@ -170,7 +175,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 3 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om rollen til endesystemer i Internett er faglig best?</div>
+    <div class="q-text">Hva er rollen til endesystemer i Internett?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Endesystemer kjører applikasjoner og er kilder/mål for data, mens rutere bare videresender pakker.</div>
@@ -179,7 +184,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 4 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om store-and-forward-prinsippet i praksis?</div>
+    <div class="q-text">Forklar store-and-forward-prinsippet.</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">En ruter må motta hele pakken før den kan sende den videre på neste lenke.</div>
@@ -188,16 +193,16 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 5 · Lett</div>
-    <div class="q-text">Hva beskriver best hvordan transmisjonsforsinkelse beregnes?</div>
+    <div class="q-text">Hvordan beregnes transmisjonsforsinkelse?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Transmisjonsforsinkelsen er L/R, altså pakkestørrelse i bits delt på linkhastighet.</div>
+      <div class="answer">Transmisjonsforsinkelsen er L/R, altså pakkestørrelse i bits delt på linkhastigheten i bit/s. For eksempel tar en 1 Mbit pakke over en 10 Mbps lenke 0,1 sekunder å overføre fullt ut.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 6 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om hvordan propageringsforsinkelse beregnes er faglig best?</div>
+    <div class="q-text">Hvordan beregnes propageringsforsinkelse?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Propageringsforsinkelsen er avstand delt på signalhastigheten i mediet.</div>
@@ -206,7 +211,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 7 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om hvorfor køforsinkelse er vanskelig å forutsi i praksis?</div>
+    <div class="q-text">Hvorfor er køforsinkelse vanskelig å forutsi?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Køforsinkelse varierer med momentan trafikkbelastning og antall pakker som allerede venter.</div>
@@ -215,16 +220,16 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 8 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om hva trafikkintensitet La/R forteller er faglig best?</div>
+    <div class="q-text">Hva forteller trafikkintensiteten La/R om belastningen på en lenke?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">La/R måler hvor hardt en lenke belastes; når verdien nærmer seg 1, vokser køene kraftig.</div>
+      <div class="answer">La/R måler hvor hardt en lenke belastes; når verdien nærmer seg 1, vokser køene kraftig og forsinkelsen eksploderer. Over 1 ankommer trafikk raskere enn lenken klarer å sende, og pakker må droppes kontinuerlig.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 9 · Lett</div>
-    <div class="q-text">Hva beskriver best hva som er en flaskehalslenke?</div>
+    <div class="q-text">Hva er en flaskehalslenke?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Flaskehalslenken er den med lavest kapasitet på ruten og begrenser ende-til-ende-gjennomstrømning.</div>
@@ -233,7 +238,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 10 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om statistisk multipleksing er faglig best?</div>
+    <div class="q-text">Hva er statistisk multipleksing, og hvorfor gjør det pakkesvitsjing effektivt?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Statistisk multipleksing utnytter at brukere er aktive til ulike tider, så kapasitet kan deles effektivt.</div>
@@ -242,7 +247,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 11 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om hvorfor pakkedropp skjer i rutere i praksis?</div>
+    <div class="q-text">Hvorfor skjer pakkedropp i rutere?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Pakker droppes når bufferen er full og nye pakker ankommer raskere enn de kan sendes ut.</div>
@@ -251,16 +256,16 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 12 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om hvordan traceroute avdekker rutehopp er faglig best?</div>
+    <div class="q-text">Hvordan avdekker traceroute rutehopp langs en rute?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Traceroute øker TTL trinnvis slik at hver mellomruter svarer med ICMP time exceeded.</div>
+      <div class="answer">Traceroute øker TTL trinnvis: ved TTL=1 svarer første ruter med ICMP time exceeded, ved TTL=2 svarer andre ruter osv. Slik kartlegges hele ruten hopp for hopp med IP-adresse og forsinkelse til hvert hopp.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 13 · Lett</div>
-    <div class="q-text">Hva beskriver best hva ping faktisk måler?</div>
+    <div class="q-text">Hva måler ping?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Ping måler rundturstid (RTT) mellom ICMP echo request og echo reply.</div>
@@ -269,7 +274,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 14 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om hvorfor lagdeling brukes i nettverk i praksis?</div>
+    <div class="q-text">Hvorfor brukes lagdeling i nettverksarkitektur?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Lagdeling isolerer kompleksitet, gjør design modulært og lar lag utvikles uavhengig.</div>
@@ -278,25 +283,25 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 15 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om enkapsulering i protokollstakken er faglig best?</div>
+    <div class="q-text">Hva innebærer enkapsulering i protokollstakken?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Hvert lag legger til sin egen header rundt data fra laget over.</div>
+      <div class="answer">Hvert lag legger til sin egen header (og eventuelt trailer) rundt data fra laget over — dette kalles enkapsulering. Transportlaget legger til TCP/UDP-header, nettverkslaget legger til IP-header og danner en pakke, og lenkelaget pakker alt inn i en ramme med MAC-adresser og feilkontroll (FCS).</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 16 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om hva et aksessnett er i praksis?</div>
+    <div class="q-text">Hva er et aksessnett?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Aksessnettet kobler endesystemet til første ruter hos ISP-en.</div>
+      <div class="answer">Aksessnettet kobler endesystemet til første ruter hos ISP-en. Vanlige teknologier er DSL over telefonlinjer, kabelnett via koaksial, fiber til hjemmet (FTTH), og mobilnett (4G/5G). Teknologivalget påvirker kapasitet, symmetri og pris.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 17 · Lett</div>
-    <div class="q-text">Hva beskriver best hvorfor DSL ofte er asymmetrisk?</div>
+    <div class="q-text">Hvorfor er DSL-tilkobling ofte asymmetrisk?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">DSL tildeler typisk mer kapasitet nedstrøms enn oppstrøms fordi brukertrafikk ofte er nedlastningstung.</div>
@@ -305,7 +310,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 18 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om hva det betyr at kabelnett er delt medium er faglig best?</div>
+    <div class="q-text">Hva betyr det at kabelnett er et delt medium?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Flere hus deler samme kanal, så brukerhastighet varierer med naboenes aktivitet.</div>
@@ -314,7 +319,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 19 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om hvorfor fiber brukes i kjernen av Internett i praksis?</div>
+    <div class="q-text">Hvorfor brukes fiber i kjernen av Internett?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Fiber gir høy kapasitet, lav demping og god robusthet mot elektromagnetisk støy.</div>
@@ -323,16 +328,16 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 20 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om hvordan ISP-hierarkiet er organisert er faglig best?</div>
+    <div class="q-text">Hvordan er ISP-hierarkiet organisert?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Aksess-ISP-er kobles mot regionale/tier-1-nett og utveksler trafikk via peering og transitt.</div>
+      <div class="answer">Aksess-ISP-er kobles mot regionale ISP-er, som igjen kobles mot tier-1-nett med global dekning. ISP-er utveksler trafikk gjennom peering (bilateral, ofte uten betaling) eller betalt transitt. IXP-er er fysiske noder der mange ISP-er møtes for direkte trafikkutveksling.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 21 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om rollen til IXP-er i praksis?</div>
+    <div class="q-text">Hva er rollen til IXP-er (Internet Exchange Points)?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">IXP-er lar nettverk utveksle trafikk direkte, noe som reduserer kostnad og ofte forsinkelse.</div>
@@ -341,7 +346,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 22 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om hva et botnet gjør i et DDoS-angrep er faglig best?</div>
+    <div class="q-text">Hva gjør et botnet i et DDoS-angrep?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Et botnet koordinerer mange kompromitterte maskiner for å oversvømme et mål med trafikk.</div>
@@ -350,7 +355,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 23 · Lett</div>
-    <div class="q-text">Hva beskriver best hva IP-spoofing innebærer?</div>
+    <div class="q-text">Hva innebærer IP-spoofing?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">IP-spoofing er å sende pakker med forfalsket kildeadresse for å skjule eller forvirre avsenderidentitet.</div>
@@ -359,7 +364,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 24 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om hvorfor kjerneutstyr holdes enkelt i praksis?</div>
+    <div class="q-text">Hvorfor holdes nettverksutstyr i Internetts kjerne enkelt?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Enkle dataplane-operasjoner i kjernen gir bedre skalerbarhet og høyere videresendingshastighet.</div>
@@ -368,7 +373,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 25 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om hva socket-grensesnittet gir applikasjoner er faglig best?</div>
+    <div class="q-text">Hva gir socket-grensesnittet applikasjoner?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Socket-grensesnittet lar applikasjoner sende/motta data over nett uten å implementere ruting selv.</div>
@@ -385,7 +390,7 @@
   </div>
 </footer>
 <script src="../chat-widget.js"></script>
-<script src="../lang-switch.js"></script>
+<script src="../nav-search.js"></script>
 <script src="../quiz.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 <script defer src="/_vercel/speed-insights/script.js"></script>

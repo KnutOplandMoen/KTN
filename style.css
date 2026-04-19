@@ -110,6 +110,107 @@ body::before {
 }
 .site-nav .nav-back:hover { color: var(--rust); }
 
+/* ---------- NAV SEARCH ---------- */
+.nav-search-wrapper {
+  position: relative;
+  width: 240px;
+  margin-left: auto;
+}
+#nav-search {
+  width: 100%;
+  font-family: var(--sans);
+  font-size: 13px;
+  padding: 6px 12px 6px 32px;
+  border: 1px solid rgba(176, 68, 40, 0.3);
+  border-radius: 3px;
+  background: var(--paper);
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+#nav-search:hover { border-color: rgba(176, 68, 40, 0.5); }
+#nav-search:focus {
+  border-color: var(--rust);
+  box-shadow: 0 0 0 2px rgba(176, 68, 40, 0.14);
+}
+#nav-search::placeholder { color: var(--ink-ghost); }
+.nav-search-icon {
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 13px;
+  height: 13px;
+  color: var(--ink-ghost);
+  pointer-events: none;
+}
+#nav-search-results {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  left: 0;
+  min-width: 320px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  box-shadow: 0 8px 24px rgba(26,22,18,0.13);
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 200;
+}
+#nav-search-results.active { display: block; }
+.nav-sr-item {
+  display: block;
+  padding: 12px 14px;
+  text-decoration: none;
+  color: inherit;
+  border-bottom: 1px solid var(--line-soft);
+  transition: background 0.1s;
+}
+.nav-sr-item:last-child { border-bottom: none; }
+.nav-sr-item:hover, .nav-sr-item.nav-sr-active { background: var(--paper-dark); }
+.nav-sr-chapter {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--rust);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.nav-sr-title {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+.nav-sr-body {
+  font-size: 12px;
+  color: var(--ink-faded);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.nav-sr-body mark {
+  background: rgba(176,68,40,0.15);
+  color: var(--rust);
+  padding: 0 1px;
+  border-radius: 2px;
+}
+.nav-sr-empty {
+  padding: 14px;
+  color: var(--ink-ghost);
+  font-style: italic;
+  font-size: 13px;
+}
+@media (max-width: 600px) {
+  .nav-search-wrapper { width: 140px; }
+  #nav-search-results { min-width: 260px; }
+}
+
 /* ---------- HERO ---------- */
 .hero {
   padding: 100px 0 70px;

@@ -292,6 +292,45 @@
       </tbody>
     </table>
 
+    <figure>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg">
+          <line x1="60" y1="20" x2="60" y2="240" stroke="#c9c0ae" stroke-width="1"/>
+          <line x1="60" y1="240" x2="680" y2="240" stroke="#c9c0ae" stroke-width="1"/>
+          <text x="10" y="18" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">cwnd (MSS)</text>
+          <text x="638" y="255" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">time (RTT)</text>
+
+          <line x1="56" y1="230" x2="60" y2="230" stroke="#c9c0ae" stroke-width="1"/>
+          <text x="52" y="234" font-family="IBM Plex Mono" font-size="9" fill="#6b6257" text-anchor="end">1</text>
+          <line x1="56" y1="140" x2="60" y2="140" stroke="#c9c0ae" stroke-width="1"/>
+          <text x="52" y="144" font-family="IBM Plex Mono" font-size="9" fill="#6b6257" text-anchor="end">10</text>
+          <line x1="56" y1="40" x2="60" y2="40" stroke="#c9c0ae" stroke-width="1"/>
+          <text x="52" y="44" font-family="IBM Plex Mono" font-size="9" fill="#6b6257" text-anchor="end">20</text>
+
+          <line x1="60" y1="140" x2="548" y2="140" stroke="#c9c0ae" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="552" y="136" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">ssthresh=10</text>
+
+          <line x1="252" y1="20" x2="252" y2="240" stroke="#2d4a7a" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="255" y="30" font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a">3 dup-ACKs</text>
+
+          <!-- TCP Tahoe: slow start → CA → drop to 1 MSS → slow start restart -->
+          <polyline points="60,230 84,220 108,200 132,160 156,80 180,70 204,60 228,50 252,40 252,230 276,220 300,200 324,160 348,140 372,130 396,120 420,110 444,100 468,90 492,80" fill="none" stroke="#a39886" stroke-width="2" stroke-dasharray="6,3"/>
+
+          <!-- TCP Reno: slow start → CA → drop to 13 MSS (fast recovery) → CA from ssthresh=10 -->
+          <polyline points="60,230 84,220 108,200 132,160 156,80 180,70 204,60 228,50 252,40 252,110 264,106 276,140 300,130 324,120 348,110 372,100 396,90 420,80 444,70 468,60" fill="none" stroke="#b04428" stroke-width="2.5"/>
+
+          <text x="68" y="218" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">slow start</text>
+          <text x="162" y="65" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">cong. avoidance</text>
+          <text x="256" y="98" font-family="IBM Plex Mono" font-size="9" fill="#b04428">fast recovery</text>
+          <text x="276" y="210" font-family="IBM Plex Mono" font-size="9" fill="#a39886">slow start</text>
+
+          <text x="430" y="68" font-family="IBM Plex Mono" font-size="10" fill="#b04428" font-weight="600">TCP Reno</text>
+          <text x="430" y="108" font-family="IBM Plex Mono" font-size="10" fill="#a39886">TCP Tahoe</text>
+        </svg>
+      </div>
+      <figcaption>Reno vs. Tahoe upon 3 duplicate ACKs from cwnd = 20 MSS. Tahoe (dashed) drops to 1 MSS and restarts slow start. Reno (solid) drops only to ssthresh + 3 = 13 MSS, holds fast recovery for one RTT, then resumes congestion avoidance from ssthresh = 10 — recovering throughput much faster.</figcaption>
+    </figure>
+
     <p>Reno avoids the costly trip back to 1 MSS upon duplicate ACKs — which can save many RTTs of low throughput.</p>
 
     <div class="quiz" data-correct="1">

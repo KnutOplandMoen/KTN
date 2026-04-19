@@ -11,6 +11,11 @@
   <div class="container">
     <a href="../" class="brand">TTM4100</a>
     <a href="../" class="nav-back">&larr; Alle kapitler</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
   </div>
 </nav>
 <main data-chapter="Kapittel 2: Applikasjonslaget">
@@ -150,7 +155,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 1 · Lett</div>
-    <div class="q-text">Hva beskriver best klient–server-arkitektur?</div>
+    <div class="q-text">Hva kjennetegner klient–server-arkitektur?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Klient–server samler tjenestelogikk i alltid-tilgjengelige servere som betjener mange klienter.</div>
@@ -159,7 +164,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 2 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om selv-skalering i P2P i praksis?</div>
+    <div class="q-text">Hva menes med selv-skalering i P2P-nettverk?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">I P2P bidrar hver ny peer med både etterspørsel og opplastingskapasitet.</div>
@@ -168,7 +173,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 3 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om socketens rolle i applikasjonslaget er faglig best?</div>
+    <div class="q-text">Hvilken rolle spiller socket-grensesnittet mellom applikasjons- og transportlaget?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Socketen er API-et mellom applikasjon og transportlag for sending/mottak av data.</div>
@@ -177,7 +182,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 4 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om hva TCP tilbyr applikasjoner i praksis?</div>
+    <div class="q-text">Hva tilbyr TCP applikasjoner?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">TCP tilbyr pålitelig, ordnet byte-strøm med flyt- og køkontroll, men med mer overhead.</div>
@@ -186,7 +191,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 5 · Lett</div>
-    <div class="q-text">Hva beskriver best hva UDP tilbyr applikasjoner?</div>
+    <div class="q-text">Hva tilbyr UDP applikasjoner?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">UDP tilbyr lav latenst og enkel datagramtransport uten leveringsgarantier.</div>
@@ -195,7 +200,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 6 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om HTTP request–response-modellen er faglig best?</div>
+    <div class="q-text">Forklar HTTP sin request–response-modell.</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">I HTTP initierer klienten forespørselen, og serveren svarer med statuslinje, headere og eventuelt innhold.</div>
@@ -204,7 +209,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 7 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om hva det betyr at HTTP er stateless i praksis?</div>
+    <div class="q-text">Hva betyr det at HTTP er stateless?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">HTTP-serveren behandler hver forespørsel uavhengig av tidligere forespørsler.</div>
@@ -213,7 +218,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 8 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om cookies i webapplikasjoner er faglig best?</div>
+    <div class="q-text">Hvordan brukes cookies for å håndtere tilstand i HTTP?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Cookies legger en klient-ID i forespørsler slik at serveren kan knytte handlinger til en sesjon.</div>
@@ -222,7 +227,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 9 · Lett</div>
-    <div class="q-text">Hva beskriver best persistent HTTP-forbindelser?</div>
+    <div class="q-text">Hva er persistent HTTP, og hva er fordelen?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Persistent HTTP reduserer antall TCP-oppsett og RTT-kostnad ved flere objekter.</div>
@@ -231,16 +236,16 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 10 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om betinget GET og 304 Not Modified er faglig best?</div>
+    <div class="q-text">Hva er betinget GET, og hva brukes det til?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Betinget GET sparer båndbredde ved å hente objektet kun når det faktisk er endret.</div>
+      <div class="answer">Betinget GET bruker If-Modified-Since-headeren med dato fra forrige henting. Serveren svarer med 304 Not Modified (uten body) hvis ressursen ikke er endret, og med 200 + ny body hvis den er endret. Sparer båndbredde og reduserer lastetid.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 11 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om webcache/proxy i praksis?</div>
+    <div class="q-text">Hva er en webcache, og hva er fordelen med den?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">En webcache kan svare lokalt på populære objekter og redusere både forsinkelse og backbone-trafikk.</div>
@@ -249,7 +254,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 12 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om CDN-strategi er faglig best?</div>
+    <div class="q-text">Hva er et CDN, og hvordan forbedrer det ytelse?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">CDN-er flytter innhold nær brukeren med edge-servere for lavere latenstid og høyere skalerbarhet.</div>
@@ -258,7 +263,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 13 · Lett</div>
-    <div class="q-text">Hva beskriver best DASH-adaptiv strømming?</div>
+    <div class="q-text">Forklar DASH-adaptiv videostrømming.</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">I DASH velger klienten bitrate per segment basert på målt throughput og bufferstatus.</div>
@@ -267,7 +272,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 14 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om segmentering av videostrøm i praksis?</div>
+    <div class="q-text">Hvordan segmenteres video i adaptiv strømming?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Video deles i korte segmenter i flere kvaliteter for dynamisk tilpasning under avspilling.</div>
@@ -276,7 +281,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 15 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om SMTP som push-protokoll er faglig best?</div>
+    <div class="q-text">Hva kjennetegner SMTP som e-postprotokoll?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">SMTP dytter e-post mellom servere og bruker kølagring når mottakerserver ikke er umiddelbart tilgjengelig.</div>
@@ -285,16 +290,16 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 16 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om IMAP i moderne e-post i praksis?</div>
+    <div class="q-text">Hva er IMAP, og hva skiller det fra POP3?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">IMAP lar klienter synkronisere mapper og meldingsstatus mens e-posten forblir på serveren.</div>
+      <div class="answer">IMAP lar klienter synkronisere mapper, flagg og meldingsstatus mens e-posten forblir lagret på serveren. Dette gjør at man kan lese e-post fra flere enheter og se samme tilstand overalt — i motsetning til POP3 som laster ned og typisk sletter meldinger fra serveren.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 17 · Lett</div>
-    <div class="q-text">Hva beskriver best DNS sin kjernefunksjon?</div>
+    <div class="q-text">Hva er DNS sin kjernefunksjon?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">DNS oversetter domenenavn til IP-adresser slik at applikasjoner kan kontakte riktig vert.</div>
@@ -303,25 +308,25 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 18 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om DNS-hierarkiet er faglig best?</div>
+    <div class="q-text">Forklar hierarkiet i DNS.</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">DNS er hierarkisk med root-, TLD- og autoritative navneservere for skalerbar navneoppløsning.</div>
+      <div class="answer">DNS er organisert i tre nivåer: rotnivå (13 rotservere globalt), TLD-nivå (f.eks. .no, .com) og autoritative navneservere for hvert enkelt domene. Hierarkiet fordeler last og gjør det skalerbart å betjene milliarder av oppslag daglig.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 19 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om iterativ DNS-oppslag i praksis?</div>
+    <div class="q-text">Forklar iterativt DNS-oppslag.</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">I iterativ oppslag gir hver server henvisning videre i stedet for å fullføre hele oppslaget selv.</div>
+      <div class="answer">I iterativt DNS-oppslag spør klienten (eller lokal DNS-server) hver navneserver i tur og orden: rotserver gir TLD-adresse, TLD-server gir autoritativ server, autoritativ server gir endelig svar. Hver server gir kun et tips videre — ikke hele svaret.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 20 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om DNS-caching og TTL er faglig best?</div>
+    <div class="q-text">Hva er DNS-caching, og hva styrer TTL?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Caching reduserer oppslagstid og belastning, mens TTL begrenser hvor lenge et svar kan gjenbrukes.</div>
@@ -330,7 +335,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 21 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om MX-poster i DNS i praksis?</div>
+    <div class="q-text">Hva er MX-poster i DNS?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">MX-poster peker til hvilke mailservere som mottar e-post for et domene.</div>
@@ -339,7 +344,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 22 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om TCP-serverens velkomstsokkel er faglig best?</div>
+    <div class="q-text">Hva er en velkomstsokkel i en TCP-server?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Velkomstsokkelen aksepterer nye forbindelser, og OS oppretter en egen forbindelsessokkel per klient.</div>
@@ -348,7 +353,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 23 · Lett</div>
-    <div class="q-text">Hva beskriver best hvorfor UDP-servere ofte bruker én sokkel?</div>
+    <div class="q-text">Hvorfor bruker UDP-servere typisk én sokkel for alle klienter?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">UDP har ikke forbindelser; samme sokkel håndterer datagrammer fra mange klienter.</div>
@@ -357,7 +362,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 24 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om HTTP-metoder i REST-lignende API-er i praksis?</div>
+    <div class="q-text">Forklar de vanligste HTTP-metodene i et REST API.</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">GET leser ressurser, POST oppretter/trigger handlinger, og PUT/PATCH brukes for oppdatering.</div>
@@ -366,7 +371,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 25 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om HTTPS i praksis er faglig best?</div>
+    <div class="q-text">Hva er HTTPS, og hva gir det?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">HTTPS er HTTP over TLS og gir konfidensialitet, integritet og serverautentisering.</div>
@@ -383,7 +388,7 @@
   </div>
 </footer>
 <script src="../chat-widget.js"></script>
-<script src="../lang-switch.js"></script>
+<script src="../nav-search.js"></script>
 <script src="../quiz.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 <script defer src="/_vercel/speed-insights/script.js"></script>

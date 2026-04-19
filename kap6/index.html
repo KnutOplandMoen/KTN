@@ -11,6 +11,11 @@
   <div class="container">
     <a href="../" class="brand">TTM4100</a>
     <a href="../" class="nav-back">&larr; Alle kapitler</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
   </div>
 </nav>
 <main data-chapter="Kapittel 6: Lenkelaget og LAN">
@@ -158,7 +163,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 1 · Lett</div>
-    <div class="q-text">Hva beskriver best framing i lenkelaget?</div>
+    <div class="q-text">Hva er framing i lenkelaget?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Lenkelaget kapsler nettverkslagspakker i rammer med lokale adresse- og kontrollfelt.</div>
@@ -167,7 +172,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 2 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om medietilgang på delt kanal i praksis?</div>
+    <div class="q-text">Hva er problemet med medietilgang på delt kanal?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">MAC-protokoller bestemmer hvem som får sende når flere noder deler samme medium.</div>
@@ -176,7 +181,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 3 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om CRC-feildeteksjon er faglig best?</div>
+    <div class="q-text">Hva er CRC, og hva kan den oppdage?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">CRC oppdager enkeltfeil og mange burstfeil med høy sannsynlighet.</div>
@@ -185,7 +190,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 4 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om MAC-adresser i praksis?</div>
+    <div class="q-text">Hva er MAC-adresser?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">MAC-adresser er 48-bit identifikatorer brukt for lokal levering på lenken.</div>
@@ -194,7 +199,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 5 · Lett</div>
-    <div class="q-text">Hva beskriver best ARP-request?</div>
+    <div class="q-text">Hva er en ARP Request?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">ARP-request sendes som broadcast når avsender mangler MAC-adressen til målet.</div>
@@ -203,7 +208,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 6 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om svitsjens læringstabell er faglig best?</div>
+    <div class="q-text">Hvordan lærer en svitsj sin adressetabell?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Svitsjen lærer kilde-MAC mot inngangsport ved å observere innkommende rammer.</div>
@@ -212,7 +217,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 7 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om flooding ved ukjent destinasjon i praksis?</div>
+    <div class="q-text">Hva gjør en svitsj når destinasjons-MAC er ukjent?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Når destinasjons-MAC er ukjent, kopierer svitsjen rammen til alle andre porter.</div>
@@ -221,7 +226,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 8 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om hub versus svitsj er faglig best?</div>
+    <div class="q-text">Hva er forskjellen mellom hub og svitsj?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">En hub gjentar signal til alle porter, mens en svitsj videresender selektivt.</div>
@@ -230,7 +235,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 9 · Lett</div>
-    <div class="q-text">Hva beskriver best kollisjonsdomener?</div>
+    <div class="q-text">Hva er et kollisjonsdomene, og hva gjør svitsjer med dem?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Svitsjer splitter kollisjonsdomener per port, noe som øker effektiv kapasitet.</div>
@@ -239,7 +244,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 10 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om CSMA/CD er faglig best?</div>
+    <div class="q-text">Forklar CSMA/CD.</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">CSMA/CD lytter før sending, oppdager kollisjon, stopper og prøver igjen senere.</div>
@@ -248,7 +253,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 11 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om jam-signal ved Ethernet-kollisjon i praksis?</div>
+    <div class="q-text">Hva er jam-signalet i Ethernet?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Jam-signalet varsler andre noder om kollisjonen slik at alle avbryter sending.</div>
@@ -257,25 +262,25 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 12 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om binary exponential backoff er faglig best?</div>
+    <div class="q-text">Hva er binary exponential backoff?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Etter hver kollisjon velges ventetid tilfeldig fra et større tidsvindu for å spre forsøk.</div>
+      <div class="answer">Etter hver kollisjon velger senderen en tilfeldig ventetid fra intervallet [0, 2ⁿ−1] · 512 bit-tider, der n er antall kollisjoner (inntil maks 10). Etter første kollisjon velges fra {0,1}, etter andre fra {0,1,2,3}, osv. Dette sprer forsøkene i tid og reduserer sannsynligheten for gjentatte kollisjoner.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 13 · Lett</div>
-    <div class="q-text">Hva beskriver best minimum Ethernet-rammestørrelse?</div>
+    <div class="q-text">Hvorfor har Ethernet en minimumsstørrelse på 64 byte?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Minimum 64 byte sikrer at kollisjon kan oppdages før en ramme er ferdig sendt.</div>
+      <div class="answer">Minimum 64 byte sikrer at kollisjon kan oppdages før en ramme er ferdig sendt. For at CSMA/CD skal fungere, må sendertiden være minst like lang som rundturstiden (2·propageringstid). Ved 10 Mbit/s og maks segmentlengde 2500 m gir dette nettopp kravet om 64 byte (512 bit). Kortere rammer ville bli sendt ferdig før kollisjonsignalet når frem.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 14 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om full-dupleks Ethernet i praksis?</div>
+    <div class="q-text">Hvorfor er CSMA/CD unødvendig i full-dupleks Ethernet?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">I full-dupleks punkt-til-punkt Ethernet oppstår ikke kollisjoner, så CSMA/CD er unødvendig.</div>
@@ -284,16 +289,16 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 15 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om VLAN er faglig best?</div>
+    <div class="q-text">Hva er VLAN, og hvilket problem løser det?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">VLAN deler ett fysisk svitsjenett i flere logiske broadcast-domener.</div>
+      <div class="answer">VLAN (Virtual LAN) deler ett fysisk svitsjenett i flere logiske broadcast-domener. Dette gir sikkerhetsisolasjon mellom grupper (f.eks. ansatte og gjester), reduserer unødvendig broadcast-trafikk, og gjør det mulig å flytte noder logisk mellom nett uten fysisk omkabling. Kommunikasjon mellom VLAN krever en ruter (eller lag-3-svitsj).</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 16 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om hvorfor WiFi bruker CSMA/CA i praksis?</div>
+    <div class="q-text">Hvorfor bruker WiFi CSMA/CA i stedet for CSMA/CD?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">WiFi kan ikke pålitelig oppdage kollisjoner under sending og prøver derfor å unngå dem.</div>
@@ -302,7 +307,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 17 · Lett</div>
-    <div class="q-text">Hva beskriver best ACK i 802.11?</div>
+    <div class="q-text">Hva er rollen til ACK i 802.11 WiFi?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">WiFi bruker linklags-ACK og retransmisjon for å håndtere høyere radiofeilrate.</div>
@@ -311,25 +316,25 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 18 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om slotted ALOHA-effektivitet er faglig best?</div>
+    <div class="q-text">Hva er maksimal effektivitet i slotted ALOHA, og hva betyr det?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Maksimal gjennomstrømningsandel i slotted ALOHA er 1/e under ideelle antakelser.</div>
+      <div class="answer">Maksimal gjennomstrømningsandel i slotted ALOHA er 1/e ≈ 37 % under ideelle antakelser (uendelig mange noder, like sannsynlige frames). Det betyr at selv i beste fall er kanalen ledig eller har kollisjoner i 63 % av tidslukene. Optimum nås når gjennomsnittlig 1 node sender per tidsluke.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 19 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om pure ALOHA-effektivitet i praksis?</div>
+    <div class="q-text">Hva er maksimal effektivitet i pure ALOHA, og hvorfor er den lavere enn slotted?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Pure ALOHA har lavere maksimal effektivitet (1/2e) enn slotted ALOHA.</div>
+      <div class="answer">Pure ALOHA har maksimal effektivitet 1/(2e) ≈ 18 %, halvparten av slotted ALOHA. Grunnen er at uten tidsluke-synkronisering kan en ny frame kollidere med slutten av en pågående frame i tillegg til starten av neste — sårbar periode er dobbelt så lang (2·T vs T).</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 20 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om broadcast-MAC-adressen er faglig best?</div>
+    <div class="q-text">Hva er broadcast-MAC-adressen, og hva brukes den til?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">ff:ff:ff:ff:ff:ff betyr at rammen skal leveres til alle noder på lokal lenke.</div>
@@ -338,7 +343,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 21 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om aging i svitsjtabeller i praksis?</div>
+    <div class="q-text">Hva er aging i svitsjtabeller?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Lærte MAC-oppføringer utløper etter inaktivitet for å håndtere topologiske endringer.</div>
@@ -347,16 +352,16 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 22 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om Spanning Tree i Ethernet er faglig best?</div>
+    <div class="q-text">Hva er Spanning Tree Protocol (STP), og hvilket problem løser det?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Spanning Tree blokkerer utvalgte lenker logisk for å hindre lag-2-løkker.</div>
+      <div class="answer">STP hindrer lag-2-løkker i Ethernet-nett med redundante lenker. Uten STP ville broadcast-frames sendes rundt i en evig sløyfe (broadcast storm). STP velger en rot-svitsj, beregner korteste sti fra alle svitsjer til roten, og blokkerer logisk alle lenker som ikke tilhører dette treet. Blokkerte lenker kan aktiveres igjen hvis primærlenken feiler.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 23 · Lett</div>
-    <div class="q-text">Hva beskriver best Ethernet-rammens felt?</div>
+    <div class="q-text">Hva inneholder en Ethernet-ramme?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">En Ethernet-ramme inneholder blant annet destinasjon, kilde, type/length, payload og FCS.</div>
@@ -365,7 +370,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 24 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om Ethernet MTU i praksis?</div>
+    <div class="q-text">Hva er Ethernet MTU?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Standard Ethernet MTU er typisk 1500 byte IP-payload før fragmentering vurderes.</div>
@@ -374,7 +379,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 25 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om lokal retransmisjon i lenkelaget er faglig best?</div>
+    <div class="q-text">Hva er fordelen med retransmisjon i lenkelaget?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Lenkelagsretransmisjon kan skjule enkelte feil fra transportlaget og forbedre opplevd ytelse.</div>
@@ -387,7 +392,7 @@
 <footer><div class="container"><div class="ornament">&#10043; &#10043; &#10043;</div><p>NTNU · TTM4100 · Vår 2026</p></div></footer>
 <script src="../quiz.js"></script>
 <script src="../chat-widget.js"></script>
-<script src="../lang-switch.js"></script>
+<script src="../nav-search.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 <script defer src="/_vercel/speed-insights/script.js"></script>
 </body>
