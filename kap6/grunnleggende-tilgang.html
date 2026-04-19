@@ -457,6 +457,110 @@
       Den maksimale effektiviteten til slotted ALOHA er <code>1/e ≈ 37%</code>. Det betyr at selv i beste fall er 63 prosent av tiden enten kollisjoner eller tomme slots. Unslotted (ren) ALOHA er enda verre — bare 18 prosent.
     </p>
 
+    <figure>
+      <svg id="fig-aloha" viewBox="0 0 500 218" xmlns="http://www.w3.org/2000/svg" role="img"
+           aria-label="Slotted ALOHA tidslinje: tre noder (A, B, C) og fem tidsslots. Slot 1: kun A sender, vellykket (grønn). Slot 2: B og C sender samtidig, kollisjon (rød). Slot 3: tomt. Slot 4: B retransmitterer, vellykket (grønn). Slot 5: C retransmitterer, vellykket (grønn)."
+           style="max-width:540px;width:100%;display:block;margin:0 auto;">
+        <defs>
+          <style>
+            #fig-aloha .fa-hdr { font-family:'IBM Plex Sans',sans-serif; font-size:12px; fill:#1a1612; font-weight:600; }
+            #fig-aloha .fa-nod { font-family:'IBM Plex Sans',sans-serif; font-size:12px; fill:#1a1612; font-weight:600; }
+            #fig-aloha .fa-ico { font-family:'IBM Plex Mono',monospace; font-size:17px; font-weight:700; }
+            #fig-aloha .fa-cap { font-family:'IBM Plex Sans',sans-serif; font-size:11px; fill:#5a5248; font-style:italic; }
+            #fig-aloha .fa-s1 { opacity:0; animation: faS1 16s ease-in-out infinite; }
+            #fig-aloha .fa-s2 { opacity:0; animation: faS2 16s ease-in-out infinite; }
+            #fig-aloha .fa-s3 { opacity:0; animation: faS3 16s ease-in-out infinite; }
+            #fig-aloha .fa-s4 { opacity:0; animation: faS4 16s ease-in-out infinite; }
+            #fig-aloha .fa-s5 { opacity:0; animation: faS5 16s ease-in-out infinite; }
+            @keyframes faS1 { 0%,5%{opacity:0} 8%,20%{opacity:1} 23%,100%{opacity:0} }
+            @keyframes faS2 { 0%,23%{opacity:0} 26%,38%{opacity:1} 41%,100%{opacity:0} }
+            @keyframes faS3 { 0%,41%{opacity:0} 44%,56%{opacity:1} 59%,100%{opacity:0} }
+            @keyframes faS4 { 0%,59%{opacity:0} 62%,74%{opacity:1} 77%,100%{opacity:0} }
+            @keyframes faS5 { 0%,77%{opacity:0} 80%,92%{opacity:1} 95%,100%{opacity:0} }
+            @media (prefers-reduced-motion: reduce) {
+              #fig-aloha .fa-s1, #fig-aloha .fa-s2, #fig-aloha .fa-s3,
+              #fig-aloha .fa-s4, #fig-aloha .fa-s5 {
+                animation: none !important; opacity: 0.9 !important;
+              }
+            }
+          </style>
+        </defs>
+        <!-- Header row -->
+        <rect x="0"   y="0" width="60" height="30" fill="#ddd5c3" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="60"  y="0" width="88" height="30" fill="#ddd5c3" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="148" y="0" width="88" height="30" fill="#ddd5c3" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="236" y="0" width="88" height="30" fill="#ddd5c3" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="324" y="0" width="88" height="30" fill="#ddd5c3" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="412" y="0" width="88" height="30" fill="#ddd5c3" stroke="#c9c0ae" stroke-width="1"/>
+        <text x="104" y="20" text-anchor="middle" class="fa-hdr">Slot 1</text>
+        <text x="192" y="20" text-anchor="middle" class="fa-hdr">Slot 2</text>
+        <text x="280" y="20" text-anchor="middle" class="fa-hdr">Slot 3</text>
+        <text x="368" y="20" text-anchor="middle" class="fa-hdr">Slot 4</text>
+        <text x="456" y="20" text-anchor="middle" class="fa-hdr">Slot 5</text>
+        <!-- Node label column -->
+        <rect x="0" y="30"  width="60" height="50" fill="#ddd5c3" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="0" y="80"  width="60" height="50" fill="#ddd5c3" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="0" y="130" width="60" height="50" fill="#ddd5c3" stroke="#c9c0ae" stroke-width="1"/>
+        <text x="30" y="61"  text-anchor="middle" class="fa-nod">Node A</text>
+        <text x="30" y="111" text-anchor="middle" class="fa-nod">Node B</text>
+        <text x="30" y="161" text-anchor="middle" class="fa-nod">Node C</text>
+        <!-- Base grid cells — Node A -->
+        <rect x="60"  y="30" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="148" y="30" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="236" y="30" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="324" y="30" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="412" y="30" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <!-- Base grid cells — Node B -->
+        <rect x="60"  y="80" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="148" y="80" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="236" y="80" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="324" y="80" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="412" y="80" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <!-- Base grid cells — Node C -->
+        <rect x="60"  y="130" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="148" y="130" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="236" y="130" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="324" y="130" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="412" y="130" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <!-- Slot 1 animation group: only A sends (green) -->
+        <g class="fa-s1">
+          <rect x="60" y="0" width="88" height="180" fill="#c68a1f" opacity="0.12"/>
+          <rect x="62" y="32" width="84" height="46" fill="#3d6b3a" rx="3"/>
+          <text x="104" y="63" text-anchor="middle" class="fa-ico" fill="white">&#10003;</text>
+        </g>
+        <!-- Slot 2 animation group: B and C collide (red) -->
+        <g class="fa-s2">
+          <rect x="148" y="0" width="88" height="180" fill="#c68a1f" opacity="0.12"/>
+          <rect x="150" y="82"  width="84" height="46" fill="#b04428" rx="3"/>
+          <rect x="150" y="132" width="84" height="46" fill="#b04428" rx="3"/>
+          <text x="192" y="113" text-anchor="middle" class="fa-ico" fill="white">&#9889;</text>
+          <text x="192" y="163" text-anchor="middle" class="fa-ico" fill="white">&#9889;</text>
+        </g>
+        <!-- Slot 3 animation group: empty -->
+        <g class="fa-s3">
+          <rect x="236" y="0" width="88" height="180" fill="#c68a1f" opacity="0.12"/>
+          <text x="280" y="63"  text-anchor="middle" class="fa-ico" fill="#a09585">&#8212;</text>
+          <text x="280" y="113" text-anchor="middle" class="fa-ico" fill="#a09585">&#8212;</text>
+          <text x="280" y="163" text-anchor="middle" class="fa-ico" fill="#a09585">&#8212;</text>
+        </g>
+        <!-- Slot 4 animation group: B retransmits (green) -->
+        <g class="fa-s4">
+          <rect x="324" y="0" width="88" height="180" fill="#c68a1f" opacity="0.12"/>
+          <rect x="326" y="82" width="84" height="46" fill="#3d6b3a" rx="3"/>
+          <text x="368" y="113" text-anchor="middle" class="fa-ico" fill="white">&#10003;</text>
+        </g>
+        <!-- Slot 5 animation group: C retransmits (green) -->
+        <g class="fa-s5">
+          <rect x="412" y="0" width="88" height="180" fill="#c68a1f" opacity="0.12"/>
+          <rect x="414" y="132" width="84" height="46" fill="#3d6b3a" rx="3"/>
+          <text x="456" y="163" text-anchor="middle" class="fa-ico" fill="white">&#10003;</text>
+        </g>
+        <!-- Summary -->
+        <text x="250" y="198" text-anchor="middle" class="fa-cap">Effektivitet: 3 av 5 slots nyttige = 60 % (lav last). Teoretisk maks ved høy last: 1/e &#8776; 37 %.</text>
+      </svg>
+      <figcaption><strong>Figur 4.</strong> Slotted ALOHA med tre noder og fem tidsslots. Animasjonen fremhever én slot av gangen: grønn = vellykket transmisjon, rød = kollisjon, grå = tomt. Med lav trafikk brukes kanalen godt; ved høy last øker kollisjonsraten og effektiviteten nærmer seg det teoretiske taket på 1/e ≈ 37 %.</figcaption>
+    </figure>
+
     <h4>CSMA — hør etter før du snakker</h4>
     <p>
       Den mest opplagte forbedringen: lytt på kanalen først. Hvis ingen snakker, send. Hvis noen snakker, vent. <strong>Carrier Sense Multiple Access</strong>. Den polite samtalemetoden.
@@ -464,6 +568,66 @@
     <p>
       Men selv med carrier sensing kan kollisjoner skje. Hvorfor? <em>Propageringsforsinkelse</em>. Signaler beveger seg raskt, men ikke uendelig raskt. Hvis node A begynner å sende, tar det en liten brøkdel av et sekund før signalet når node B i den andre enden av kabelen. I den tiden tror B at kanalen er ledig. B starter også å sende. Når signalene til slutt møtes — kollisjon. Jo lengre kabel, jo større vindu for denne typen feil.
     </p>
+
+    <figure>
+      <svg id="fig-csma-prop" viewBox="0 0 480 278" xmlns="http://www.w3.org/2000/svg" role="img"
+           aria-label="Tidrom-diagram: Node A starter å sende ved t=0 (venstre). Signalet propagerer mot høyre. Ved t tilnærmet 0,75 ganger propageringstiden har signalet ikke nådd Node B ennå. B tror kanalen er ledig og begynner å sende. Signalene møtes og kolliderer ca. 85 prosent av veien fra A til B."
+           style="max-width:500px;width:100%;display:block;margin:0 auto;">
+        <defs>
+          <style>
+            #fig-csma-prop .cp-lbl { font-family:'IBM Plex Sans',sans-serif; font-size:12px; fill:#1a1612; font-weight:600; }
+            #fig-csma-prop .cp-ann { font-family:'IBM Plex Sans',sans-serif; font-size:10px; fill:#3d3530; }
+            #fig-csma-prop .cp-ax  { font-family:'IBM Plex Sans',sans-serif; font-size:10px; fill:#6b6257; }
+          </style>
+        </defs>
+        <!-- Time axis -->
+        <line x1="32" y1="58" x2="32" y2="246" stroke="#6b6257" stroke-width="1.5"/>
+        <polygon points="28,246 36,246 32,256" fill="#6b6257"/>
+        <text x="22" y="155" text-anchor="middle" transform="rotate(-90,22,155)" class="cp-ax">Tid &#8595;</text>
+        <!-- Time tick marks and labels -->
+        <line x1="29" y1="70"  x2="35" y2="70"  stroke="#6b6257" stroke-width="1"/>
+        <text x="27" y="74"  text-anchor="end" class="cp-ax">0</text>
+        <line x1="29" y1="204" x2="35" y2="204" stroke="#6b6257" stroke-width="1" stroke-dasharray="2,2"/>
+        <text x="27" y="208" text-anchor="end" class="cp-ax">&#8776;0,75t</text>
+        <line x1="29" y1="248" x2="35" y2="248" stroke="#6b6257" stroke-width="1"/>
+        <text x="27" y="252" text-anchor="end" class="cp-ax">t<tspan dy="3" font-size="8">prop</tspan></text>
+        <!-- Cable -->
+        <line x1="90" y1="50" x2="390" y2="50" stroke="#1a1612" stroke-width="3" stroke-linecap="round"/>
+        <!-- Node A -->
+        <circle cx="90"  cy="50" r="8" fill="#2d4a7a"/>
+        <text x="90"  y="36" text-anchor="middle" class="cp-lbl" fill="#2d4a7a">Node A</text>
+        <!-- Node B -->
+        <circle cx="390" cy="50" r="8" fill="#2d4a7a"/>
+        <text x="390" y="36" text-anchor="middle" class="cp-lbl" fill="#2d4a7a">Node B</text>
+        <!-- Vertical dashed guides from nodes -->
+        <line x1="90"  y1="58" x2="90"  y2="252" stroke="#2d4a7a" stroke-width="1" stroke-dasharray="3,4" opacity="0.3"/>
+        <line x1="390" y1="58" x2="390" y2="252" stroke="#2d4a7a" stroke-width="1" stroke-dasharray="3,4" opacity="0.3"/>
+        <!-- Signal from A (blue solid) — (90,70) to collision at (353,226) -->
+        <line x1="90"  y1="70"  x2="353" y2="226" stroke="#2d4a7a" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- A signal continues faded past collision -->
+        <line x1="353" y1="226" x2="390" y2="248" stroke="#2d4a7a" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.3"/>
+        <!-- A sends annotation -->
+        <circle cx="90" cy="70" r="3.5" fill="#2d4a7a"/>
+        <text x="96" y="68" class="cp-ann" fill="#2d4a7a">A sender (t = 0)</text>
+        <!-- A's signal front indicator at t=0.75·t_prop: x = 90 + 0.75*300 = 315, y = 204 -->
+        <circle cx="315" cy="204" r="4" fill="#2d4a7a" opacity="0.55"/>
+        <!-- Arrow showing the "gap" — signal front hasn't reached B yet -->
+        <line x1="319" y1="204" x2="382" y2="204" stroke="#2d4a7a" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+        <text x="346" y="198" text-anchor="middle" class="cp-ax">ikke fremme ennå</text>
+        <!-- Signal from B (red solid) — (390,204) to collision at (353,226) -->
+        <line x1="390" y1="204" x2="353" y2="226" stroke="#b04428" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- B signal continues faded past collision -->
+        <line x1="353" y1="226" x2="90"  y2="268" stroke="#b04428" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.3"/>
+        <!-- B sends annotation -->
+        <circle cx="390" cy="204" r="3.5" fill="#b04428"/>
+        <text x="384" y="201" text-anchor="end" class="cp-ann" fill="#b04428">B hører ingenting &#8212; sender</text>
+        <!-- Collision burst at (353, 226) -->
+        <circle cx="353" cy="226" r="14" fill="#b04428" opacity="0.88"/>
+        <text x="353" y="231" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="15" font-weight="700" fill="white">!</text>
+        <text x="353" y="253" text-anchor="middle" class="cp-lbl" fill="#b04428">Kollisjon!</text>
+      </svg>
+      <figcaption><strong>Figur 5.</strong> Tidrom-diagram for CSMA-kollisjon. Node A starter å sende ved t = 0. Signalet beveger seg mot høyre med endelig hastighet. Like før signalet når B (t ≈ 0,75·t<sub>prop</sub>), hører B ingenting og tror kanalen er ledig — og starter å sende. Signalene møtes og kolliderer mellom nodene. Jo lengre kabelen er, jo lenger tid har B til å starte sendingen uten å vite om A.</figcaption>
+    </figure>
 
     <h4>CSMA/CD — og hør etter mens du snakker</h4>
     <p>
@@ -482,6 +646,19 @@
 
     <div class="margin-note">
       Binær eksponentiell backoff er genialt: når kollisjoner er sjeldne, er ventetiden kort. Når de blir hyppige (mange noder kjemper), øker ventetiden automatisk, og systemet roer seg ned av seg selv.
+    </div>
+
+    <div class="stepper" id="csmacd-stepper">
+      <div class="s-label">Interaktiv gjennomgang — CSMA/CD steg for steg</div>
+      <div class="stage" id="csmacd-stage">
+        <h5 id="csmacd-title">Trinn 1 av 6</h5>
+        <div id="csmacd-body"></div>
+      </div>
+      <div class="controls">
+        <button id="csmacd-prev">&#8592; Forrige</button>
+        <span class="progress" id="csmacd-progress">1 / 6</span>
+        <button id="csmacd-next">Neste &#8594;</button>
+      </div>
     </div>
 
     <h3>Klasse 3 — «Ta tur»</h3>
@@ -602,6 +779,116 @@ document.querySelectorAll('.reveal').forEach(r => {
   prev.addEventListener('click', () => { if (i > 0) { i--; render(); } });
   next.addEventListener('click', () => { if (i < steps.length - 1) { i++; render(); } });
   render();
+})();
+
+(function() {
+  const steps = [
+    {
+      title: 'Trinn 1 — NIC mottar datagram',
+      body: `<div style="text-align:center;margin-bottom:10px">
+        <svg viewBox="0 0 240 100" width="220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="70" y="5"  width="100" height="32" rx="4" fill="#ddd5c3" stroke="#c9c0ae" stroke-width="1.5"/>
+          <text x="120" y="25" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="11" fill="#1a1612">Nettverkslag</text>
+          <polygon points="115,42 125,42 120,54" fill="#6b6257"/>
+          <rect x="70" y="58" width="100" height="32" rx="4" fill="#2d4a7a" stroke="#1e3355" stroke-width="1.5"/>
+          <text x="120" y="78" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="11" fill="white">NIC</text>
+          <rect x="148" y="38" width="30" height="18" rx="2" fill="#c68a1f" stroke="#a0701a" stroke-width="1"/>
+          <text x="163" y="50" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="white">DATA</text>
+        </svg>
+      </div>
+      <p>NIC mottar en IP-pakke fra nettverkslaget og pakker den inn i en Ethernet-ramme med kilde- og destinasjons-MAC-adresse, lengde/type-felt og CRC-kontrollsum.</p>`
+    },
+    {
+      title: 'Trinn 2 — Lytter på kanalen',
+      body: `<div style="text-align:center;margin-bottom:10px">
+        <svg viewBox="0 0 260 80" width="220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="10" y="24" width="60" height="32" rx="4" fill="#2d4a7a" stroke="#1e3355" stroke-width="1.5"/>
+          <text x="40" y="44" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="11" fill="white">NIC</text>
+          <line x1="70" y1="40" x2="240" y2="40" stroke="#1a1612" stroke-width="3" stroke-linecap="round"/>
+          <text x="155" y="30" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="10" fill="#3d6b3a" font-weight="600">&#10003; Ledig</text>
+          <line x1="110" y1="34" x2="200" y2="34" stroke="#3d6b3a" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+        </svg>
+      </div>
+      <p>Carrier Sense: NIC lytter på kabelen. Ingen aktivitet detektert — kanalen er ledig. NIC er klar til å sende rammen ved neste anledning.</p>`
+    },
+    {
+      title: 'Trinn 3 — Sender rammen',
+      body: `<div style="text-align:center;margin-bottom:10px">
+        <svg viewBox="0 0 260 80" width="220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="10" y="24" width="60" height="32" rx="4" fill="#2d4a7a" stroke="#1e3355" stroke-width="1.5"/>
+          <text x="40" y="44" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="11" fill="white">NIC</text>
+          <line x1="70" y1="40" x2="240" y2="40" stroke="#1a1612" stroke-width="3" stroke-linecap="round"/>
+          <rect x="80" y="30" width="50" height="20" rx="3" fill="#c68a1f" stroke="#a0701a" stroke-width="1"/>
+          <text x="105" y="43" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="white">RAMME</text>
+          <polygon points="133,37 143,40 133,43" fill="#c68a1f"/>
+        </svg>
+      </div>
+      <p>Rammen sendes ut på kabelen i full fart. Samtidig lytter NIC på sin egen sending (<em>Collision Detection</em>) — hvis signalet den mottar avviker fra det den sender, er det en kollisjon.</p>`
+    },
+    {
+      title: 'Trinn 4 — Kollisjon oppdaget!',
+      body: `<div style="text-align:center;margin-bottom:10px">
+        <svg viewBox="0 0 260 80" width="220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="5"   y="24" width="55" height="32" rx="4" fill="#2d4a7a" stroke="#1e3355" stroke-width="1.5"/>
+          <text x="32"  y="44" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="10" fill="white">NIC A</text>
+          <rect x="200" y="24" width="55" height="32" rx="4" fill="#2d4a7a" stroke="#1e3355" stroke-width="1.5"/>
+          <text x="227" y="44" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="10" fill="white">NIC B</text>
+          <line x1="60" y1="40" x2="200" y2="40" stroke="#1a1612" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="130" cy="40" r="14" fill="#b04428" opacity="0.9"/>
+          <text x="130" y="45" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="14" font-weight="700" fill="white">!</text>
+          <text x="130" y="66" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="9" fill="#b04428" font-weight="600">JAM-signal</text>
+        </svg>
+      </div>
+      <p>Kollisjon oppdaget! NIC avbryter sendingen umiddelbart og sender et 48-bits <strong>jam-signal</strong> slik at alle noder på segmentet registrerer at en kollisjon har skjedd. Rammefragmentet som ble sendt er ubrukelig og forkastes.</p>`
+    },
+    {
+      title: 'Trinn 5 — Binær eksponentiell backoff',
+      body: `<div style="text-align:center;margin-bottom:10px">
+        <svg viewBox="0 0 260 85" width="220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="20" y="5" width="220" height="40" rx="5" fill="#eee8db" stroke="#c9c0ae" stroke-width="1.5"/>
+          <text x="130" y="20" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#1a1612">K &#8712; {0, 1, &#8230;, 2&#7511;&#8722;1}</text>
+          <text x="130" y="36" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="10" fill="#5a5248">vent K &#215; 512 bit-tider</text>
+          <text x="60"  y="62" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="10" fill="#3d3530">m=1: K&#8712;{0,1}</text>
+          <text x="130" y="62" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="10" fill="#3d3530">m=2: K&#8712;{0&#8211;3}</text>
+          <text x="200" y="62" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="10" fill="#3d3530">m=10: K&#8712;{0&#8211;1023}</text>
+          <text x="130" y="78" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="9" fill="#6b6257" font-style="italic">Flere kollisjoner &#8594; lengre forventet ventetid</text>
+        </svg>
+      </div>
+      <p>Etter den <em>m</em>-te kollisjonen velges et tilfeldig heltall K fra {0, 1, …, 2<sup>m</sup>−1}. NIC venter K · 512 bit-tider før neste forsøk. Dette sprer nodenes forsøk i tid og reduserer sannsynligheten for at de kolliderer igjen.</p>`
+    },
+    {
+      title: 'Trinn 6 — Prøver igjen',
+      body: `<div style="text-align:center;margin-bottom:10px">
+        <svg viewBox="0 0 260 80" width="220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="10" y="24" width="60" height="32" rx="4" fill="#2d4a7a" stroke="#1e3355" stroke-width="1.5"/>
+          <text x="40" y="44" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="11" fill="white">NIC</text>
+          <line x1="70" y1="40" x2="220" y2="40" stroke="#1a1612" stroke-width="3" stroke-linecap="round"/>
+          <rect x="80" y="30" width="50" height="20" rx="3" fill="#3d6b3a" stroke="#2a4d28" stroke-width="1"/>
+          <text x="105" y="43" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="white">RAMME</text>
+          <polygon points="133,37 143,40 133,43" fill="#3d6b3a"/>
+          <circle cx="220" cy="40" r="10" fill="#3d6b3a" opacity="0.9"/>
+          <text x="220" y="44" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="12" font-weight="700" fill="white">&#10003;</text>
+        </svg>
+      </div>
+      <p>NIC lytter på nytt (tilbake til trinn 2). Kanalen er ledig — rammen sendes vellykket uten kollisjon. <strong>Ferdig!</strong> Hvis en ny kollisjon oppstår, økes kollisjonstelleren og backoff-prosessen gjentas — inntil maksimalt 10 forsøk, hvorpå NIC gir opp og rapporterer feil.</p>`
+    }
+  ];
+  let j = 0;
+  const title2 = document.getElementById('csmacd-title');
+  const body2  = document.getElementById('csmacd-body');
+  const prog2  = document.getElementById('csmacd-progress');
+  const prev2  = document.getElementById('csmacd-prev');
+  const next2  = document.getElementById('csmacd-next');
+  function render2() {
+    title2.textContent = steps[j].title;
+    body2.innerHTML   = steps[j].body;
+    prog2.textContent = (j+1) + ' / ' + steps.length;
+    prev2.disabled = j === 0;
+    next2.disabled = j === steps.length - 1;
+  }
+  prev2.addEventListener('click', () => { if (j > 0) { j--; render2(); } });
+  next2.addEventListener('click', () => { if (j < steps.length - 1) { j++; render2(); } });
+  render2();
 })();
 </script>
 <script src="../chat-widget.js"></script>
