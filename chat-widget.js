@@ -1997,7 +1997,7 @@
     let accumulated = "";
     let assistantEl = null;
     let rafId = 0;
-    let shouldFollowStream = isMessagesNearBottom();
+    let shouldFollowStream = false;
     let isProgrammaticScroll = false;
     const onMessagesScroll = () => {
       if (isProgrammaticScroll) return;
@@ -2047,6 +2047,7 @@
           if (!assistantEl) {
             loader.remove();
             assistantEl = addMessage("assistant", "");
+            showScrollArrow();
           }
           accumulated += o.t;
           schedulePaint();
