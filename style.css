@@ -150,7 +150,6 @@ body::before {
   position: absolute;
   top: calc(100% + 4px);
   right: 0;
-  left: 0;
   min-width: 320px;
   background: var(--paper);
   border: 1px solid var(--line);
@@ -207,8 +206,16 @@ body::before {
   font-size: 13px;
 }
 @media (max-width: 600px) {
-  .nav-search-wrapper { width: 140px; }
-  #nav-search-results { min-width: 260px; }
+  .nav-search-wrapper { width: 160px; }
+  #nav-search-results {
+    position: fixed;
+    top: 56px;
+    left: 8px;
+    right: 8px;
+    min-width: 0;
+    width: auto;
+    max-height: 60vh;
+  }
 }
 
 /* ---------- HERO ---------- */
