@@ -570,9 +570,14 @@
     </p>
 
     <figure>
-      <svg id="fig-csma-prop" viewBox="0 0 480 278" xmlns="http://www.w3.org/2000/svg" role="img"
-           aria-label="Tidrom-diagram: Node A starter å sende ved t=0 (venstre). Signalet propagerer mot høyre. Ved t tilnærmet 0,75 ganger propageringstiden har signalet ikke nådd Node B ennå. B tror kanalen er ledig og begynner å sende. Signalene møtes og kolliderer ca. 85 prosent av veien fra A til B."
-           style="max-width:500px;width:100%;display:block;margin:0 auto;">
+      <!--
+        Geometri: kabel A(x=85)→B(x=405), bredde=320px. Tidsakse: t=0 → y=62, t=t_prop → y=242 (Δy=180).
+        B starter ved t=0.4·t_prop → y=134. Kollisjon ved t=0.7·t_prop → (x=309, y=188).
+        A's signalfront ved t=0.4: x=213 — tydelig gap til B.
+      -->
+      <svg id="fig-csma-prop" viewBox="0 0 520 265" xmlns="http://www.w3.org/2000/svg" role="img"
+           aria-label="Tidrom-diagram: Node A starter å sende ved t=0 (venstre). Signalet propagerer mot høyre. Ved t tilnærmet 0,4 ganger propageringstiden har signalet nådd 40 prosent av kabelen. Node B hører ingenting og begynner å sende. Signalene møtes og kolliderer omtrent midt på kabelen ved t tilnærmet 0,7 ganger propageringstiden."
+           style="max-width:540px;width:100%;display:block;margin:0 auto;">
         <defs>
           <style>
             #fig-csma-prop .cp-lbl { font-family:'IBM Plex Sans',sans-serif; font-size:12px; fill:#1a1612; font-weight:600; }
@@ -581,52 +586,54 @@
           </style>
         </defs>
         <!-- Time axis -->
-        <line x1="32" y1="58" x2="32" y2="246" stroke="#6b6257" stroke-width="1.5"/>
-        <polygon points="28,246 36,246 32,256" fill="#6b6257"/>
-        <text x="22" y="155" text-anchor="middle" transform="rotate(-90,22,155)" class="cp-ax">Tid &#8595;</text>
-        <!-- Time tick marks and labels -->
-        <line x1="29" y1="70"  x2="35" y2="70"  stroke="#6b6257" stroke-width="1"/>
-        <text x="27" y="74"  text-anchor="end" class="cp-ax">0</text>
-        <line x1="29" y1="204" x2="35" y2="204" stroke="#6b6257" stroke-width="1" stroke-dasharray="2,2"/>
-        <text x="27" y="208" text-anchor="end" class="cp-ax">&#8776;0,75t</text>
-        <line x1="29" y1="248" x2="35" y2="248" stroke="#6b6257" stroke-width="1"/>
-        <text x="27" y="252" text-anchor="end" class="cp-ax">t<tspan dy="3" font-size="8">prop</tspan></text>
+        <line x1="32" y1="55" x2="32" y2="244" stroke="#6b6257" stroke-width="1.5"/>
+        <polygon points="28,244 36,244 32,254" fill="#6b6257"/>
+        <text x="21" y="152" text-anchor="middle" transform="rotate(-90,21,152)" class="cp-ax">Tid &#8595;</text>
+        <!-- Time ticks -->
+        <line x1="29" y1="62"  x2="35" y2="62"  stroke="#6b6257" stroke-width="1"/>
+        <text x="27" y="66"  text-anchor="end" class="cp-ax">0</text>
+        <line x1="29" y1="134" x2="35" y2="134" stroke="#6b6257" stroke-width="1" stroke-dasharray="2,2"/>
+        <text x="27" y="132" text-anchor="end" class="cp-ax">&#8776;0,4&#183;t</text>
+        <text x="27" y="142" text-anchor="end" class="cp-ax" font-size="8" dy="0">prop</text>
+        <line x1="29" y1="242" x2="35" y2="242" stroke="#6b6257" stroke-width="1"/>
+        <text x="27" y="246" text-anchor="end" class="cp-ax">t<tspan dy="3" font-size="8">prop</tspan></text>
         <!-- Cable -->
-        <line x1="90" y1="50" x2="390" y2="50" stroke="#1a1612" stroke-width="3" stroke-linecap="round"/>
+        <line x1="85" y1="45" x2="405" y2="45" stroke="#1a1612" stroke-width="3" stroke-linecap="round"/>
         <!-- Node A -->
-        <circle cx="90"  cy="50" r="8" fill="#2d4a7a"/>
-        <text x="90"  y="36" text-anchor="middle" class="cp-lbl" fill="#2d4a7a">Node A</text>
+        <circle cx="85"  cy="45" r="8" fill="#2d4a7a"/>
+        <text x="85"  y="30" text-anchor="middle" class="cp-lbl" fill="#2d4a7a">Node A</text>
         <!-- Node B -->
-        <circle cx="390" cy="50" r="8" fill="#2d4a7a"/>
-        <text x="390" y="36" text-anchor="middle" class="cp-lbl" fill="#2d4a7a">Node B</text>
-        <!-- Vertical dashed guides from nodes -->
-        <line x1="90"  y1="58" x2="90"  y2="252" stroke="#2d4a7a" stroke-width="1" stroke-dasharray="3,4" opacity="0.3"/>
-        <line x1="390" y1="58" x2="390" y2="252" stroke="#2d4a7a" stroke-width="1" stroke-dasharray="3,4" opacity="0.3"/>
-        <!-- Signal from A (blue solid) — (90,70) to collision at (353,226) -->
-        <line x1="90"  y1="70"  x2="353" y2="226" stroke="#2d4a7a" stroke-width="2.5" stroke-linecap="round"/>
-        <!-- A signal continues faded past collision -->
-        <line x1="353" y1="226" x2="390" y2="248" stroke="#2d4a7a" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.3"/>
-        <!-- A sends annotation -->
-        <circle cx="90" cy="70" r="3.5" fill="#2d4a7a"/>
-        <text x="96" y="68" class="cp-ann" fill="#2d4a7a">A sender (t = 0)</text>
-        <!-- A's signal front indicator at t=0.75·t_prop: x = 90 + 0.75*300 = 315, y = 204 -->
-        <circle cx="315" cy="204" r="4" fill="#2d4a7a" opacity="0.55"/>
-        <!-- Arrow showing the "gap" — signal front hasn't reached B yet -->
-        <line x1="319" y1="204" x2="382" y2="204" stroke="#2d4a7a" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
-        <text x="346" y="198" text-anchor="middle" class="cp-ax">ikke fremme ennå</text>
-        <!-- Signal from B (red solid) — (390,204) to collision at (353,226) -->
-        <line x1="390" y1="204" x2="353" y2="226" stroke="#b04428" stroke-width="2.5" stroke-linecap="round"/>
-        <!-- B signal continues faded past collision -->
-        <line x1="353" y1="226" x2="90"  y2="268" stroke="#b04428" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.3"/>
-        <!-- B sends annotation -->
-        <circle cx="390" cy="204" r="3.5" fill="#b04428"/>
-        <text x="384" y="201" text-anchor="end" class="cp-ann" fill="#b04428">B hører ingenting &#8212; sender</text>
-        <!-- Collision burst at (353, 226) -->
-        <circle cx="353" cy="226" r="14" fill="#b04428" opacity="0.88"/>
-        <text x="353" y="231" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="15" font-weight="700" fill="white">!</text>
-        <text x="353" y="253" text-anchor="middle" class="cp-lbl" fill="#b04428">Kollisjon!</text>
+        <circle cx="405" cy="45" r="8" fill="#2d4a7a"/>
+        <text x="405" y="30" text-anchor="middle" class="cp-lbl" fill="#2d4a7a">Node B</text>
+        <!-- Vertical dashed guides -->
+        <line x1="85"  y1="53" x2="85"  y2="248" stroke="#2d4a7a" stroke-width="1" stroke-dasharray="3,4" opacity="0.25"/>
+        <line x1="405" y1="53" x2="405" y2="248" stroke="#2d4a7a" stroke-width="1" stroke-dasharray="3,4" opacity="0.25"/>
+        <!-- Signal from A (blue solid): (85,62)→(309,188) -->
+        <line x1="85"  y1="62"  x2="309" y2="188" stroke="#2d4a7a" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- A signal faded past collision: (309,188)→(405,242) -->
+        <line x1="309" y1="188" x2="405" y2="242" stroke="#2d4a7a" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.3"/>
+        <!-- A sends at t=0 -->
+        <circle cx="85" cy="62" r="3.5" fill="#2d4a7a"/>
+        <text x="91" y="60" class="cp-ann" fill="#2d4a7a">A sender (t = 0)</text>
+        <!-- A's signal front at t=0.4·t_prop: x=213, y=134 -->
+        <circle cx="213" cy="134" r="4" fill="#2d4a7a" opacity="0.65"/>
+        <!-- Gap indicator: dashed line from signal front to B's guide -->
+        <line x1="217" y1="134" x2="401" y2="134" stroke="#9b8e7e" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="307" y="128" text-anchor="middle" class="cp-ax">&#8212; signal ikke fremme ennå &#8212;</text>
+        <!-- Signal from B (red solid): (405,134)→(309,188) -->
+        <line x1="405" y1="134" x2="309" y2="188" stroke="#b04428" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- B signal faded past collision: (309,188)→(85,242) -->
+        <line x1="309" y1="188" x2="85"  y2="242" stroke="#b04428" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.3"/>
+        <!-- B sends — annotation to the right of B's start point -->
+        <circle cx="405" cy="134" r="3.5" fill="#b04428"/>
+        <text x="410" y="130" class="cp-ann" fill="#b04428">B hører ingenting</text>
+        <text x="410" y="142" class="cp-ann" fill="#b04428">&#8212; sender</text>
+        <!-- Collision burst at (309,188) — near middle of cable -->
+        <circle cx="309" cy="188" r="14" fill="#b04428" opacity="0.88"/>
+        <text x="309" y="193" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="15" font-weight="700" fill="white">!</text>
+        <text x="309" y="216" text-anchor="middle" class="cp-lbl" fill="#b04428">Kollisjon!</text>
       </svg>
-      <figcaption><strong>Figur 5.</strong> Tidrom-diagram for CSMA-kollisjon. Node A starter å sende ved t = 0. Signalet beveger seg mot høyre med endelig hastighet. Like før signalet når B (t ≈ 0,75·t<sub>prop</sub>), hører B ingenting og tror kanalen er ledig — og starter å sende. Signalene møtes og kolliderer mellom nodene. Jo lengre kabelen er, jo lenger tid har B til å starte sendingen uten å vite om A.</figcaption>
+      <figcaption><strong>Figur 5.</strong> Tidrom-diagram for CSMA-kollisjon. Node A starter å sende ved t = 0. Signalet beveger seg mot høyre med endelig hastighet. Når signalet har nådd ca. 40 % av kabelen (t ≈ 0,4·t<sub>prop</sub>), hører B ingenting og tror kanalen er ledig — og starter å sende. Signalene møtes og kolliderer omtrent midt på kabelen. Jo lengre kabelen er, jo lenger tid har B til å starte sendingen uten å vite om A.</figcaption>
     </figure>
 
     <h4>CSMA/CD — og hør etter mens du snakker</h4>

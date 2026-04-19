@@ -214,6 +214,11 @@
 
     <p>DHCP delivers more than just an IP address. The reply typically also includes: the address of the <strong>first-hop router</strong> (default gateway), the address of the <strong>DNS server</strong>, and the <strong>subnet mask</strong>.</p>
 
+    <div class="callout callout-blue">
+      <span class="label">&#9432; Implementation detail: UDP ports 67 and 68</span>
+      <p>DHCP runs over <strong>UDP</strong> (not TCP &mdash; there is no established connection yet). The server always listens on port <strong>67</strong>; the client listens on port <strong>68</strong>. These port numbers are fixed and inherited from the older BOOTP protocol. Because the client does not yet have an IP address, both the initial Discover and the Request are sent from source address <code>0.0.0.0:68</code> to <code>255.255.255.255:67</code>.</p>
+    </div>
+
     <div class="quiz">
       <p class="q-text">Why is the DHCP request sent as broadcast, even when the client knows the server address?</p>
       <div class="options">
@@ -234,7 +239,18 @@
     <h2>Why the entire household shares <em>one IP</em></h2>
     <p class="section-intro">Network Address Translation lets an entire private network share one public IP address. It saved IPv4 &mdash; but violates the end-to-end principle.</p>
 
-    <p class="dropcap">IPv4 has 2&sup3;&sup2; &asymp; 4.3 billion addresses. That is not enough for all the world&rsquo;s devices. <strong>NAT</strong> solves this by having all machines on a private network (typically <code>10.0.0.0/8</code> or <code>192.168.0.0/16</code>) share one public address externally.</p>
+    <p class="dropcap">IPv4 has 2&sup3;&sup2; &asymp; 4.3 billion addresses. That is not enough for all the world&rsquo;s devices. <strong>NAT</strong> solves this by having all machines on a private network share one public address externally. Three address ranges are reserved for private use and are never routable on the public Internet:</p>
+
+    <table>
+      <thead><tr><th>Range</th><th>Prefix</th><th>Number of addresses</th><th>Typical use</th></tr></thead>
+      <tbody>
+        <tr><td class="mono-cell">10.0.0.0 &ndash; 10.255.255.255</td><td><code>10.0.0.0/8</code></td><td>~16 million</td><td>Large enterprises, carrier networks</td></tr>
+        <tr><td class="mono-cell">172.16.0.0 &ndash; 172.31.255.255</td><td><code>172.16.0.0/12</code></td><td>~1 million</td><td>Medium networks, VPNs</td></tr>
+        <tr><td class="mono-cell">192.168.0.0 &ndash; 192.168.255.255</td><td><code>192.168.0.0/16</code></td><td>65 536</td><td>Home routers, small offices</td></tr>
+      </tbody>
+    </table>
+
+    <p>Your home router most likely uses <code>192.168.1.0/24</code> or <code>192.168.0.0/24</code> internally. The range <code>172.16.0.0/12</code> is less well known but equally standard &mdash; you often see it in cloud environments (e.g. Docker uses <code>172.17.0.0/16</code> by default).</p>
 
     <p>The trick lies in the <strong>port numbers</strong>. When your machine sends a packet out, the NAT router rewrites the source address to its public IP and changes the source port to a unique number that it stores in a <strong>NAT table</strong>. When the reply comes back, it looks up the port number in the table and sends the packet to the correct internal machine.</p>
 
