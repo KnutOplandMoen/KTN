@@ -893,7 +893,7 @@ pre .c-cli { color: #e8b560; }
 .quiz .answer.show { display: block; }
 
 /* MCQ opt buttons */
-.quiz .opts { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+.quiz .opts { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; max-width: 560px; }
 .quiz button.opt {
   font-family: var(--serif);
   font-size: 15px;
