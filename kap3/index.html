@@ -135,301 +135,226 @@
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 1 · Lett</div>
     <div class="q-text">Hva beskriver best multiplexing og demultiplexing i transportlaget?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Portnumre brukes til å levere data til riktig prosess på riktig vert.</button>
-      <button class="option" data-correct="false">Sekvensnumre gjør det mulig å oppdage duplikater og rekonstruere riktig rekkefølge.</button>
-      <button class="option" data-correct="false">I congestion avoidance øker cwnd lineært, omtrent 1 MSS per RTT.</button>
-      <button class="option" data-correct="false">TCP bruker glattet RTT og varians for å sette en robust retransmisjonstimer.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Portnumre brukes til å levere data til riktig prosess på riktig vert.</div>
     </div>
-    <div class="explanation">Riktig. Portnumre brukes til å levere data til riktig prosess på riktig vert.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 2 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om størrelsen på UDP-headeren i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Et ACK-nummer bekrefter at alle bytes før nummeret er mottatt korrekt.</button>
-      <button class="option" data-correct="true">UDP-headeren er 8 byte, noe som gir lav protokolloverhead.</button>
-      <button class="option" data-correct="false">TCP bruker additiv økning og multiplikativ reduksjon for stabil og rettferdig deling.</button>
-      <button class="option" data-correct="false">Sekvensnummeret peker på første byte i segmentets nyttelast, ikke på pakketeller.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">UDP-headeren er 8 byte, noe som gir lav protokolloverhead.</div>
     </div>
-    <div class="explanation">Riktig. UDP-headeren er 8 byte, noe som gir lav protokolloverhead.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 3 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om begrensningen til enkel sjekksumdeteksjon er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Treveis håndtrykk synkroniserer sekvensnumre og etablerer forbindelsestilstand i begge ender.</button>
-      <button class="option" data-correct="false">Ved timeout settes cwnd lavt igjen og forbindelsen går tilbake til forsiktig oppstart.</button>
-      <button class="option" data-correct="true">Sjekksum oppdager mange feil, men kan i sjeldne tilfeller overse bestemte bitmønstre.</button>
-      <button class="option" data-correct="false">Tap av ett segment kan blokkere levering av senere data selv om de allerede er mottatt.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Sjekksum oppdager mange feil, men kan i sjeldne tilfeller overse bestemte bitmønstre.</div>
     </div>
-    <div class="explanation">Riktig. Sjekksum oppdager mange feil, men kan i sjeldne tilfeller overse bestemte bitmønstre.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 4 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om stop-and-wait-overføring i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Mottakeren annonserer rwnd for å hindre at avsender oversvømmer mottaksbufferen.</button>
-      <button class="option" data-correct="false">Tre duplikat-ACK-er tolkes som sannsynlig tap og utløser fast retransmit før timeout.</button>
-      <button class="option" data-correct="false">QUIC bruker uavhengige strømmer slik at tap i én strøm ikke stopper alle andre.</button>
-      <button class="option" data-correct="true">Stop-and-wait tillater kun én utestående pakke før avsender må vente på ACK.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Stop-and-wait tillater kun én utestående pakke før avsender må vente på ACK.</div>
     </div>
-    <div class="explanation">Riktig. Stop-and-wait tillater kun én utestående pakke før avsender må vente på ACK.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 5 · Lett</div>
     <div class="q-text">Hva beskriver best hvorfor pipelining øker effektivitet?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Pipelining holder flere pakker i flyt samtidig og reduserer tomgang mellom RTT-er.</button>
-      <button class="option" data-correct="false">Avsender begrenser sendevindu med cwnd for å unngå overbelastning i nettverket.</button>
-      <button class="option" data-correct="false">Reno holder forbindelsen i gang etter fast retransmit i stedet for å starte helt fra null.</button>
-      <button class="option" data-correct="false">Servere lytter ofte på velkjente porter, mens klienter bruker midlertidige ephemeral porter.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Pipelining holder flere pakker i flyt samtidig og reduserer tomgang mellom RTT-er.</div>
     </div>
-    <div class="explanation">Riktig. Pipelining holder flere pakker i flyt samtidig og reduserer tomgang mellom RTT-er.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 6 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om Go-Back-N-oppførsel ved tap er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">I slow start vokser cwnd omtrent eksponentielt, typisk en dobling per RTT.</button>
-      <button class="option" data-correct="true">Go-Back-N sender den tapte pakken og alle etterfølgende pakker i vinduet på nytt.</button>
-      <button class="option" data-correct="false">MSS er nyttelaststørrelsen TCP kan sende uten IP-fragmentering gitt aktuell MTU.</button>
-      <button class="option" data-correct="false">Pseudo-headeren binder kontrollsummen til IP-adressene og protokollfeltet for ekstra beskyttelse.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Go-Back-N sender den tapte pakken og alle etterfølgende pakker i vinduet på nytt.</div>
     </div>
-    <div class="explanation">Riktig. Go-Back-N sender den tapte pakken og alle etterfølgende pakker i vinduet på nytt.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 7 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om Selective Repeat-oppførsel ved tap i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">I congestion avoidance øker cwnd lineært, omtrent 1 MSS per RTT.</button>
-      <button class="option" data-correct="false">TCP bruker glattet RTT og varians for å sette en robust retransmisjonstimer.</button>
-      <button class="option" data-correct="true">Selective Repeat retransmitterer kun de manglende pakkene og bufferer resten.</button>
-      <button class="option" data-correct="false">Portnumre brukes til å levere data til riktig prosess på riktig vert.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Selective Repeat retransmitterer kun de manglende pakkene og bufferer resten.</div>
     </div>
-    <div class="explanation">Riktig. Selective Repeat retransmitterer kun de manglende pakkene og bufferer resten.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 8 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om sekvensnumre i pålitelig overføring er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">TCP bruker additiv økning og multiplikativ reduksjon for stabil og rettferdig deling.</button>
-      <button class="option" data-correct="false">Sekvensnummeret peker på første byte i segmentets nyttelast, ikke på pakketeller.</button>
-      <button class="option" data-correct="false">UDP-headeren er 8 byte, noe som gir lav protokolloverhead.</button>
-      <button class="option" data-correct="true">Sekvensnumre gjør det mulig å oppdage duplikater og rekonstruere riktig rekkefølge.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Sekvensnumre gjør det mulig å oppdage duplikater og rekonstruere riktig rekkefølge.</div>
     </div>
-    <div class="explanation">Riktig. Sekvensnumre gjør det mulig å oppdage duplikater og rekonstruere riktig rekkefølge.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 9 · Lett</div>
     <div class="q-text">Hva beskriver best kumulative ACK-er i TCP?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Et ACK-nummer bekrefter at alle bytes før nummeret er mottatt korrekt.</button>
-      <button class="option" data-correct="false">Ved timeout settes cwnd lavt igjen og forbindelsen går tilbake til forsiktig oppstart.</button>
-      <button class="option" data-correct="false">Tap av ett segment kan blokkere levering av senere data selv om de allerede er mottatt.</button>
-      <button class="option" data-correct="false">Sjekksum oppdager mange feil, men kan i sjeldne tilfeller overse bestemte bitmønstre.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Et ACK-nummer bekrefter at alle bytes før nummeret er mottatt korrekt.</div>
     </div>
-    <div class="explanation">Riktig. Et ACK-nummer bekrefter at alle bytes før nummeret er mottatt korrekt.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 10 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om treveis håndtrykk i TCP er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Tre duplikat-ACK-er tolkes som sannsynlig tap og utløser fast retransmit før timeout.</button>
-      <button class="option" data-correct="true">Treveis håndtrykk synkroniserer sekvensnumre og etablerer forbindelsestilstand i begge ender.</button>
-      <button class="option" data-correct="false">QUIC bruker uavhengige strømmer slik at tap i én strøm ikke stopper alle andre.</button>
-      <button class="option" data-correct="false">Stop-and-wait tillater kun én utestående pakke før avsender må vente på ACK.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Treveis håndtrykk synkroniserer sekvensnumre og etablerer forbindelsestilstand i begge ender.</div>
     </div>
-    <div class="explanation">Riktig. Treveis håndtrykk synkroniserer sekvensnumre og etablerer forbindelsestilstand i begge ender.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 11 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om flytkontroll med rwnd i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Reno holder forbindelsen i gang etter fast retransmit i stedet for å starte helt fra null.</button>
-      <button class="option" data-correct="false">Servere lytter ofte på velkjente porter, mens klienter bruker midlertidige ephemeral porter.</button>
-      <button class="option" data-correct="true">Mottakeren annonserer rwnd for å hindre at avsender oversvømmer mottaksbufferen.</button>
-      <button class="option" data-correct="false">Pipelining holder flere pakker i flyt samtidig og reduserer tomgang mellom RTT-er.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Mottakeren annonserer rwnd for å hindre at avsender oversvømmer mottaksbufferen.</div>
     </div>
-    <div class="explanation">Riktig. Mottakeren annonserer rwnd for å hindre at avsender oversvømmer mottaksbufferen.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 12 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om køkontroll med cwnd er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">MSS er nyttelaststørrelsen TCP kan sende uten IP-fragmentering gitt aktuell MTU.</button>
-      <button class="option" data-correct="false">Pseudo-headeren binder kontrollsummen til IP-adressene og protokollfeltet for ekstra beskyttelse.</button>
-      <button class="option" data-correct="false">Go-Back-N sender den tapte pakken og alle etterfølgende pakker i vinduet på nytt.</button>
-      <button class="option" data-correct="true">Avsender begrenser sendevindu med cwnd for å unngå overbelastning i nettverket.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Avsender begrenser sendevindu med cwnd for å unngå overbelastning i nettverket.</div>
     </div>
-    <div class="explanation">Riktig. Avsender begrenser sendevindu med cwnd for å unngå overbelastning i nettverket.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 13 · Lett</div>
     <div class="q-text">Hva beskriver best slow start?</div>
-    <div class="options">
-      <button class="option" data-correct="true">I slow start vokser cwnd omtrent eksponentielt, typisk en dobling per RTT.</button>
-      <button class="option" data-correct="false">TCP bruker glattet RTT og varians for å sette en robust retransmisjonstimer.</button>
-      <button class="option" data-correct="false">Portnumre brukes til å levere data til riktig prosess på riktig vert.</button>
-      <button class="option" data-correct="false">Selective Repeat retransmitterer kun de manglende pakkene og bufferer resten.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">I slow start vokser cwnd omtrent eksponentielt, typisk en dobling per RTT.</div>
     </div>
-    <div class="explanation">Riktig. I slow start vokser cwnd omtrent eksponentielt, typisk en dobling per RTT.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 14 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om congestion avoidance i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Sekvensnummeret peker på første byte i segmentets nyttelast, ikke på pakketeller.</button>
-      <button class="option" data-correct="true">I congestion avoidance øker cwnd lineært, omtrent 1 MSS per RTT.</button>
-      <button class="option" data-correct="false">UDP-headeren er 8 byte, noe som gir lav protokolloverhead.</button>
-      <button class="option" data-correct="false">Sekvensnumre gjør det mulig å oppdage duplikater og rekonstruere riktig rekkefølge.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">I congestion avoidance øker cwnd lineært, omtrent 1 MSS per RTT.</div>
     </div>
-    <div class="explanation">Riktig. I congestion avoidance øker cwnd lineært, omtrent 1 MSS per RTT.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 15 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om AIMD-prinsippet er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Tap av ett segment kan blokkere levering av senere data selv om de allerede er mottatt.</button>
-      <button class="option" data-correct="false">Sjekksum oppdager mange feil, men kan i sjeldne tilfeller overse bestemte bitmønstre.</button>
-      <button class="option" data-correct="true">TCP bruker additiv økning og multiplikativ reduksjon for stabil og rettferdig deling.</button>
-      <button class="option" data-correct="false">Et ACK-nummer bekrefter at alle bytes før nummeret er mottatt korrekt.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">TCP bruker additiv økning og multiplikativ reduksjon for stabil og rettferdig deling.</div>
     </div>
-    <div class="explanation">Riktig. TCP bruker additiv økning og multiplikativ reduksjon for stabil og rettferdig deling.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 16 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om reaksjon på timeout i klassisk TCP Reno i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">QUIC bruker uavhengige strømmer slik at tap i én strøm ikke stopper alle andre.</button>
-      <button class="option" data-correct="false">Stop-and-wait tillater kun én utestående pakke før avsender må vente på ACK.</button>
-      <button class="option" data-correct="false">Treveis håndtrykk synkroniserer sekvensnumre og etablerer forbindelsestilstand i begge ender.</button>
-      <button class="option" data-correct="true">Ved timeout settes cwnd lavt igjen og forbindelsen går tilbake til forsiktig oppstart.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Ved timeout settes cwnd lavt igjen og forbindelsen går tilbake til forsiktig oppstart.</div>
     </div>
-    <div class="explanation">Riktig. Ved timeout settes cwnd lavt igjen og forbindelsen går tilbake til forsiktig oppstart.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 17 · Lett</div>
     <div class="q-text">Hva beskriver best tre duplikat-ACK-er?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Tre duplikat-ACK-er tolkes som sannsynlig tap og utløser fast retransmit før timeout.</button>
-      <button class="option" data-correct="false">Servere lytter ofte på velkjente porter, mens klienter bruker midlertidige ephemeral porter.</button>
-      <button class="option" data-correct="false">Pipelining holder flere pakker i flyt samtidig og reduserer tomgang mellom RTT-er.</button>
-      <button class="option" data-correct="false">Mottakeren annonserer rwnd for å hindre at avsender oversvømmer mottaksbufferen.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Tre duplikat-ACK-er tolkes som sannsynlig tap og utløser fast retransmit før timeout.</div>
     </div>
-    <div class="explanation">Riktig. Tre duplikat-ACK-er tolkes som sannsynlig tap og utløser fast retransmit før timeout.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 18 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om fast recovery i Reno er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Pseudo-headeren binder kontrollsummen til IP-adressene og protokollfeltet for ekstra beskyttelse.</button>
-      <button class="option" data-correct="true">Reno holder forbindelsen i gang etter fast retransmit i stedet for å starte helt fra null.</button>
-      <button class="option" data-correct="false">Go-Back-N sender den tapte pakken og alle etterfølgende pakker i vinduet på nytt.</button>
-      <button class="option" data-correct="false">Avsender begrenser sendevindu med cwnd for å unngå overbelastning i nettverket.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Reno holder forbindelsen i gang etter fast retransmit i stedet for å starte helt fra null.</div>
     </div>
-    <div class="explanation">Riktig. Reno holder forbindelsen i gang etter fast retransmit i stedet for å starte helt fra null.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 19 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om forholdet mellom MTU og MSS i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Portnumre brukes til å levere data til riktig prosess på riktig vert.</button>
-      <button class="option" data-correct="false">Selective Repeat retransmitterer kun de manglende pakkene og bufferer resten.</button>
-      <button class="option" data-correct="true">MSS er nyttelaststørrelsen TCP kan sende uten IP-fragmentering gitt aktuell MTU.</button>
-      <button class="option" data-correct="false">I slow start vokser cwnd omtrent eksponentielt, typisk en dobling per RTT.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">MSS er nyttelaststørrelsen TCP kan sende uten IP-fragmentering gitt aktuell MTU.</div>
     </div>
-    <div class="explanation">Riktig. MSS er nyttelaststørrelsen TCP kan sende uten IP-fragmentering gitt aktuell MTU.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 20 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om RTT-estimering i TCP er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">UDP-headeren er 8 byte, noe som gir lav protokolloverhead.</button>
-      <button class="option" data-correct="false">Sekvensnumre gjør det mulig å oppdage duplikater og rekonstruere riktig rekkefølge.</button>
-      <button class="option" data-correct="false">I congestion avoidance øker cwnd lineært, omtrent 1 MSS per RTT.</button>
-      <button class="option" data-correct="true">TCP bruker glattet RTT og varians for å sette en robust retransmisjonstimer.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">TCP bruker glattet RTT og varians for å sette en robust retransmisjonstimer.</div>
     </div>
-    <div class="explanation">Riktig. TCP bruker glattet RTT og varians for å sette en robust retransmisjonstimer.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 21 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om TCP-sekvensnumre er byte-orienterte i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Sekvensnummeret peker på første byte i segmentets nyttelast, ikke på pakketeller.</button>
-      <button class="option" data-correct="false">Sjekksum oppdager mange feil, men kan i sjeldne tilfeller overse bestemte bitmønstre.</button>
-      <button class="option" data-correct="false">Et ACK-nummer bekrefter at alle bytes før nummeret er mottatt korrekt.</button>
-      <button class="option" data-correct="false">TCP bruker additiv økning og multiplikativ reduksjon for stabil og rettferdig deling.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Sekvensnummeret peker på første byte i segmentets nyttelast, ikke på pakketeller.</div>
     </div>
-    <div class="explanation">Riktig. Sekvensnummeret peker på første byte i segmentets nyttelast, ikke på pakketeller.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 22 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om head-of-line blocking i TCP er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Stop-and-wait tillater kun én utestående pakke før avsender må vente på ACK.</button>
-      <button class="option" data-correct="true">Tap av ett segment kan blokkere levering av senere data selv om de allerede er mottatt.</button>
-      <button class="option" data-correct="false">Treveis håndtrykk synkroniserer sekvensnumre og etablerer forbindelsestilstand i begge ender.</button>
-      <button class="option" data-correct="false">Ved timeout settes cwnd lavt igjen og forbindelsen går tilbake til forsiktig oppstart.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Tap av ett segment kan blokkere levering av senere data selv om de allerede er mottatt.</div>
     </div>
-    <div class="explanation">Riktig. Tap av ett segment kan blokkere levering av senere data selv om de allerede er mottatt.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 23 · Lett</div>
     <div class="q-text">Hva beskriver best hvorfor QUIC reduserer HOL-problemer?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Pipelining holder flere pakker i flyt samtidig og reduserer tomgang mellom RTT-er.</button>
-      <button class="option" data-correct="false">Mottakeren annonserer rwnd for å hindre at avsender oversvømmer mottaksbufferen.</button>
-      <button class="option" data-correct="true">QUIC bruker uavhengige strømmer slik at tap i én strøm ikke stopper alle andre.</button>
-      <button class="option" data-correct="false">Tre duplikat-ACK-er tolkes som sannsynlig tap og utløser fast retransmit før timeout.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">QUIC bruker uavhengige strømmer slik at tap i én strøm ikke stopper alle andre.</div>
     </div>
-    <div class="explanation">Riktig. QUIC bruker uavhengige strømmer slik at tap i én strøm ikke stopper alle andre.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 24 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om well-known og ephemeral porter i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Go-Back-N sender den tapte pakken og alle etterfølgende pakker i vinduet på nytt.</button>
-      <button class="option" data-correct="false">Avsender begrenser sendevindu med cwnd for å unngå overbelastning i nettverket.</button>
-      <button class="option" data-correct="false">Reno holder forbindelsen i gang etter fast retransmit i stedet for å starte helt fra null.</button>
-      <button class="option" data-correct="true">Servere lytter ofte på velkjente porter, mens klienter bruker midlertidige ephemeral porter.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Servere lytter ofte på velkjente porter, mens klienter bruker midlertidige ephemeral porter.</div>
     </div>
-    <div class="explanation">Riktig. Servere lytter ofte på velkjente porter, mens klienter bruker midlertidige ephemeral porter.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 25 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om pseudo-header i transport-sjekksum er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Pseudo-headeren binder kontrollsummen til IP-adressene og protokollfeltet for ekstra beskyttelse.</button>
-      <button class="option" data-correct="false">Selective Repeat retransmitterer kun de manglende pakkene og bufferer resten.</button>
-      <button class="option" data-correct="false">I slow start vokser cwnd omtrent eksponentielt, typisk en dobling per RTT.</button>
-      <button class="option" data-correct="false">MSS er nyttelaststørrelsen TCP kan sende uten IP-fragmentering gitt aktuell MTU.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Pseudo-headeren binder kontrollsummen til IP-adressene og protokollfeltet for ekstra beskyttelse.</div>
     </div>
-    <div class="explanation">Riktig. Pseudo-headeren binder kontrollsummen til IP-adressene og protokollfeltet for ekstra beskyttelse.</div>
   </div>
 </div>
 </section>

@@ -156,301 +156,226 @@
   <div class="quiz" data-quiz>
     <div class="q-label">Question 1 · Easy</div>
     <div class="q-text">Which statement best describes data-plane forwarding?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Forwarding is the fast per-packet operation that sends a packet to the correct output port.</button>
-      <button class="option" data-correct="false">A typical DHCP flow is Discover, Offer, Request, and Ack.</button>
-      <button class="option" data-correct="false">With DF=1, oversized packets are dropped, and the sender typically must reduce packet size.</button>
-      <button class="option" data-correct="false">Aggregation combines prefixes to reduce table size and control-plane load.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Forwarding is the fast per-packet operation that sends a packet to the correct output port.</div>
     </div>
-    <div class="explanation">Correct. Forwarding is the fast per-packet operation that sends a packet to the correct output port.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 2 · Medium</div>
     <div class="q-text">In practice, which statement about longest-prefix matching is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">NAT maps many internal addresses to one public address using port numbers.</button>
-      <button class="option" data-correct="true">When multiple routes match, the one with the longest, most specific prefix is selected.</button>
-      <button class="option" data-correct="false">IPv6 uses a fixed 40-byte base header, simplifying fast forwarding.</button>
-      <button class="option" data-correct="false">IP does not guarantee delivery, ordering, or bandwidth; that is handled by end systems.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">When multiple routes match, the one with the longest, most specific prefix is selected.</div>
     </div>
-    <div class="explanation">Correct. When multiple routes match, the one with the longest, most specific prefix is selected.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 3 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of CIDR prefixes is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Private addresses are not globally routable and are used behind NAT in local networks.</button>
-      <button class="option" data-correct="false">IPv6 removed the header checksum to reduce per-hop work since other layers already provide error checks.</button>
-      <button class="option" data-correct="true">CIDR expresses networks as address/prefix-length and enables flexible address allocation.</button>
-      <button class="option" data-correct="false">MAC addresses are link-local and change each hop, while the IP destination remains end-to-end.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">CIDR expresses networks as address/prefix-length and enables flexible address allocation.</div>
     </div>
-    <div class="explanation">Correct. CIDR expresses networks as address/prefix-length and enables flexible address allocation.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 4 · Medium</div>
     <div class="q-text">In practice, which statement about the default route is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">TTL is decremented per hop to prevent packets from looping forever during routing failures.</button>
-      <button class="option" data-correct="false">When the outgoing link is saturated, queues build up; if buffers fill, packets must be dropped.</button>
-      <button class="option" data-correct="false">NAT hides internal hosts and requires port forwarding or similar mechanisms for inbound access.</button>
-      <button class="option" data-correct="true">The default route is used when no more specific entry matches the destination address.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">The default route is used when no more specific entry matches the destination address.</div>
     </div>
-    <div class="explanation">Correct. The default route is used when no more specific entry matches the destination address.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 5 · Easy</div>
     <div class="q-text">Which statement best describes subnet masks?</div>
-    <div class="options">
-      <button class="option" data-correct="true">A subnet mask separates the network part from the host part of an IPv4 address.</button>
-      <button class="option" data-correct="false">The IPv4 header checksum must be recomputed at each router because header fields like TTL change.</button>
-      <button class="option" data-correct="false">The router performs prefix lookup on destination address to choose the next hop.</button>
-      <button class="option" data-correct="false">CIDR allows subnet sizing to fit actual needs instead of fixed address classes.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">A subnet mask separates the network part from the host part of an IPv4 address.</div>
     </div>
-    <div class="explanation">Correct. A subnet mask separates the network part from the host part of an IPv4 address.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 6 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of a host sending to another subnet is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">If a datagram exceeds link MTU and DF=0, it may be fragmented into multiple pieces.</button>
-      <button class="option" data-correct="true">The host sends the frame to the default gateway when the destination is outside its subnet.</button>
-      <button class="option" data-correct="false">The switching fabric moves packets from selected input ports to selected output ports inside the router.</button>
-      <button class="option" data-correct="false">Small networks often use a default route to send unknown traffic to an upstream router.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">The host sends the frame to the default gateway when the destination is outside its subnet.</div>
     </div>
-    <div class="explanation">Correct. The host sends the frame to the default gateway when the destination is outside its subnet.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 7 · Medium</div>
     <div class="q-text">In practice, which statement about ARP resolution is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">With DF=1, oversized packets are dropped, and the sender typically must reduce packet size.</button>
-      <button class="option" data-correct="false">Aggregation combines prefixes to reduce table size and control-plane load.</button>
-      <button class="option" data-correct="true">ARP maps a local IP address to a local MAC address on the same link.</button>
-      <button class="option" data-correct="false">Forwarding is the fast per-packet operation that sends a packet to the correct output port.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">ARP maps a local IP address to a local MAC address on the same link.</div>
     </div>
-    <div class="explanation">Correct. ARP maps a local IP address to a local MAC address on the same link.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 8 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of the DHCP DORA sequence is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">IPv6 uses a fixed 40-byte base header, simplifying fast forwarding.</button>
-      <button class="option" data-correct="false">IP does not guarantee delivery, ordering, or bandwidth; that is handled by end systems.</button>
-      <button class="option" data-correct="false">When multiple routes match, the one with the longest, most specific prefix is selected.</button>
-      <button class="option" data-correct="true">A typical DHCP flow is Discover, Offer, Request, and Ack.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">A typical DHCP flow is Discover, Offer, Request, and Ack.</div>
     </div>
-    <div class="explanation">Correct. A typical DHCP flow is Discover, Offer, Request, and Ack.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 9 · Easy</div>
     <div class="q-text">Which statement best describes NAT with port translation?</div>
-    <div class="options">
-      <button class="option" data-correct="true">NAT maps many internal addresses to one public address using port numbers.</button>
-      <button class="option" data-correct="false">IPv6 removed the header checksum to reduce per-hop work since other layers already provide error checks.</button>
-      <button class="option" data-correct="false">MAC addresses are link-local and change each hop, while the IP destination remains end-to-end.</button>
-      <button class="option" data-correct="false">CIDR expresses networks as address/prefix-length and enables flexible address allocation.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">NAT maps many internal addresses to one public address using port numbers.</div>
     </div>
-    <div class="explanation">Correct. NAT maps many internal addresses to one public address using port numbers.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 10 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of private IPv4 addresses is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">When the outgoing link is saturated, queues build up; if buffers fill, packets must be dropped.</button>
-      <button class="option" data-correct="true">Private addresses are not globally routable and are used behind NAT in local networks.</button>
-      <button class="option" data-correct="false">NAT hides internal hosts and requires port forwarding or similar mechanisms for inbound access.</button>
-      <button class="option" data-correct="false">The default route is used when no more specific entry matches the destination address.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Private addresses are not globally routable and are used behind NAT in local networks.</div>
     </div>
-    <div class="explanation">Correct. Private addresses are not globally routable and are used behind NAT in local networks.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 11 · Medium</div>
     <div class="q-text">In practice, which statement about the IPv4 TTL field is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">The router performs prefix lookup on destination address to choose the next hop.</button>
-      <button class="option" data-correct="false">CIDR allows subnet sizing to fit actual needs instead of fixed address classes.</button>
-      <button class="option" data-correct="true">TTL is decremented per hop to prevent packets from looping forever during routing failures.</button>
-      <button class="option" data-correct="false">A subnet mask separates the network part from the host part of an IPv4 address.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">TTL is decremented per hop to prevent packets from looping forever during routing failures.</div>
     </div>
-    <div class="explanation">Correct. TTL is decremented per hop to prevent packets from looping forever during routing failures.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 12 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of the IPv4 header checksum is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">The switching fabric moves packets from selected input ports to selected output ports inside the router.</button>
-      <button class="option" data-correct="false">Small networks often use a default route to send unknown traffic to an upstream router.</button>
-      <button class="option" data-correct="false">The host sends the frame to the default gateway when the destination is outside its subnet.</button>
-      <button class="option" data-correct="true">The IPv4 header checksum must be recomputed at each router because header fields like TTL change.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">The IPv4 header checksum must be recomputed at each router because header fields like TTL change.</div>
     </div>
-    <div class="explanation">Correct. The IPv4 header checksum must be recomputed at each router because header fields like TTL change.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 13 · Easy</div>
     <div class="q-text">Which statement best describes IP fragmentation?</div>
-    <div class="options">
-      <button class="option" data-correct="true">If a datagram exceeds link MTU and DF=0, it may be fragmented into multiple pieces.</button>
-      <button class="option" data-correct="false">Aggregation combines prefixes to reduce table size and control-plane load.</button>
-      <button class="option" data-correct="false">Forwarding is the fast per-packet operation that sends a packet to the correct output port.</button>
-      <button class="option" data-correct="false">ARP maps a local IP address to a local MAC address on the same link.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">If a datagram exceeds link MTU and DF=0, it may be fragmented into multiple pieces.</div>
     </div>
-    <div class="explanation">Correct. If a datagram exceeds link MTU and DF=0, it may be fragmented into multiple pieces.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 14 · Medium</div>
     <div class="q-text">In practice, which statement about the DF bit set to 1 is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">IP does not guarantee delivery, ordering, or bandwidth; that is handled by end systems.</button>
-      <button class="option" data-correct="true">With DF=1, oversized packets are dropped, and the sender typically must reduce packet size.</button>
-      <button class="option" data-correct="false">When multiple routes match, the one with the longest, most specific prefix is selected.</button>
-      <button class="option" data-correct="false">A typical DHCP flow is Discover, Offer, Request, and Ack.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">With DF=1, oversized packets are dropped, and the sender typically must reduce packet size.</div>
     </div>
-    <div class="explanation">Correct. With DF=1, oversized packets are dropped, and the sender typically must reduce packet size.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 15 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of the fixed IPv6 header is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">MAC addresses are link-local and change each hop, while the IP destination remains end-to-end.</button>
-      <button class="option" data-correct="false">CIDR expresses networks as address/prefix-length and enables flexible address allocation.</button>
-      <button class="option" data-correct="true">IPv6 uses a fixed 40-byte base header, simplifying fast forwarding.</button>
-      <button class="option" data-correct="false">NAT maps many internal addresses to one public address using port numbers.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">IPv6 uses a fixed 40-byte base header, simplifying fast forwarding.</div>
     </div>
-    <div class="explanation">Correct. IPv6 uses a fixed 40-byte base header, simplifying fast forwarding.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 16 · Medium</div>
     <div class="q-text">In practice, which statement about why IPv6 removed the header checksum is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">NAT hides internal hosts and requires port forwarding or similar mechanisms for inbound access.</button>
-      <button class="option" data-correct="false">The default route is used when no more specific entry matches the destination address.</button>
-      <button class="option" data-correct="false">Private addresses are not globally routable and are used behind NAT in local networks.</button>
-      <button class="option" data-correct="true">IPv6 removed the header checksum to reduce per-hop work since other layers already provide error checks.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">IPv6 removed the header checksum to reduce per-hop work since other layers already provide error checks.</div>
     </div>
-    <div class="explanation">Correct. IPv6 removed the header checksum to reduce per-hop work since other layers already provide error checks.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 17 · Easy</div>
     <div class="q-text">Which statement best describes router output queues?</div>
-    <div class="options">
-      <button class="option" data-correct="true">When the outgoing link is saturated, queues build up; if buffers fill, packets must be dropped.</button>
-      <button class="option" data-correct="false">CIDR allows subnet sizing to fit actual needs instead of fixed address classes.</button>
-      <button class="option" data-correct="false">A subnet mask separates the network part from the host part of an IPv4 address.</button>
-      <button class="option" data-correct="false">TTL is decremented per hop to prevent packets from looping forever during routing failures.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">When the outgoing link is saturated, queues build up; if buffers fill, packets must be dropped.</div>
     </div>
-    <div class="explanation">Correct. When the outgoing link is saturated, queues build up; if buffers fill, packets must be dropped.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 18 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of forwarding-table lookups is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Small networks often use a default route to send unknown traffic to an upstream router.</button>
-      <button class="option" data-correct="true">The router performs prefix lookup on destination address to choose the next hop.</button>
-      <button class="option" data-correct="false">The host sends the frame to the default gateway when the destination is outside its subnet.</button>
-      <button class="option" data-correct="false">The IPv4 header checksum must be recomputed at each router because header fields like TTL change.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">The router performs prefix lookup on destination address to choose the next hop.</div>
     </div>
-    <div class="explanation">Correct. The router performs prefix lookup on destination address to choose the next hop.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 19 · Medium</div>
     <div class="q-text">In practice, which statement about the switching fabric inside a router is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Forwarding is the fast per-packet operation that sends a packet to the correct output port.</button>
-      <button class="option" data-correct="false">ARP maps a local IP address to a local MAC address on the same link.</button>
-      <button class="option" data-correct="true">The switching fabric moves packets from selected input ports to selected output ports inside the router.</button>
-      <button class="option" data-correct="false">If a datagram exceeds link MTU and DF=0, it may be fragmented into multiple pieces.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">The switching fabric moves packets from selected input ports to selected output ports inside the router.</div>
     </div>
-    <div class="explanation">Correct. The switching fabric moves packets from selected input ports to selected output ports inside the router.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 20 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of route aggregation is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">When multiple routes match, the one with the longest, most specific prefix is selected.</button>
-      <button class="option" data-correct="false">A typical DHCP flow is Discover, Offer, Request, and Ack.</button>
-      <button class="option" data-correct="false">With DF=1, oversized packets are dropped, and the sender typically must reduce packet size.</button>
-      <button class="option" data-correct="true">Aggregation combines prefixes to reduce table size and control-plane load.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Aggregation combines prefixes to reduce table size and control-plane load.</div>
     </div>
-    <div class="explanation">Correct. Aggregation combines prefixes to reduce table size and control-plane load.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 21 · Medium</div>
     <div class="q-text">In practice, which statement about best-effort in IP is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="true">IP does not guarantee delivery, ordering, or bandwidth; that is handled by end systems.</button>
-      <button class="option" data-correct="false">CIDR expresses networks as address/prefix-length and enables flexible address allocation.</button>
-      <button class="option" data-correct="false">NAT maps many internal addresses to one public address using port numbers.</button>
-      <button class="option" data-correct="false">IPv6 uses a fixed 40-byte base header, simplifying fast forwarding.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">IP does not guarantee delivery, ordering, or bandwidth; that is handled by end systems.</div>
     </div>
-    <div class="explanation">Correct. IP does not guarantee delivery, ordering, or bandwidth; that is handled by end systems.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 22 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of how MAC addresses change hop-by-hop is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">The default route is used when no more specific entry matches the destination address.</button>
-      <button class="option" data-correct="true">MAC addresses are link-local and change each hop, while the IP destination remains end-to-end.</button>
-      <button class="option" data-correct="false">Private addresses are not globally routable and are used behind NAT in local networks.</button>
-      <button class="option" data-correct="false">IPv6 removed the header checksum to reduce per-hop work since other layers already provide error checks.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">MAC addresses are link-local and change each hop, while the IP destination remains end-to-end.</div>
     </div>
-    <div class="explanation">Correct. MAC addresses are link-local and change each hop, while the IP destination remains end-to-end.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 23 · Easy</div>
     <div class="q-text">Which statement best describes NAT and incoming connections?</div>
-    <div class="options">
-      <button class="option" data-correct="false">A subnet mask separates the network part from the host part of an IPv4 address.</button>
-      <button class="option" data-correct="false">TTL is decremented per hop to prevent packets from looping forever during routing failures.</button>
-      <button class="option" data-correct="true">NAT hides internal hosts and requires port forwarding or similar mechanisms for inbound access.</button>
-      <button class="option" data-correct="false">When the outgoing link is saturated, queues build up; if buffers fill, packets must be dropped.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">NAT hides internal hosts and requires port forwarding or similar mechanisms for inbound access.</div>
     </div>
-    <div class="explanation">Correct. NAT hides internal hosts and requires port forwarding or similar mechanisms for inbound access.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 24 · Medium</div>
     <div class="q-text">In practice, which statement about CIDR and variable subnetting is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">The host sends the frame to the default gateway when the destination is outside its subnet.</button>
-      <button class="option" data-correct="false">The IPv4 header checksum must be recomputed at each router because header fields like TTL change.</button>
-      <button class="option" data-correct="false">The router performs prefix lookup on destination address to choose the next hop.</button>
-      <button class="option" data-correct="true">CIDR allows subnet sizing to fit actual needs instead of fixed address classes.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">CIDR allows subnet sizing to fit actual needs instead of fixed address classes.</div>
     </div>
-    <div class="explanation">Correct. CIDR allows subnet sizing to fit actual needs instead of fixed address classes.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 25 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of when a default route is useful is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Small networks often use a default route to send unknown traffic to an upstream router.</button>
-      <button class="option" data-correct="false">ARP maps a local IP address to a local MAC address on the same link.</button>
-      <button class="option" data-correct="false">If a datagram exceeds link MTU and DF=0, it may be fragmented into multiple pieces.</button>
-      <button class="option" data-correct="false">The switching fabric moves packets from selected input ports to selected output ports inside the router.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Small networks often use a default route to send unknown traffic to an upstream router.</div>
     </div>
-    <div class="explanation">Correct. Small networks often use a default route to send unknown traffic to an upstream router.</div>
   </div>
 </div>
 </section>

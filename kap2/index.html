@@ -151,301 +151,226 @@
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 1 · Lett</div>
     <div class="q-text">Hva beskriver best klient–server-arkitektur?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Klient–server samler tjenestelogikk i alltid-tilgjengelige servere som betjener mange klienter.</button>
-      <button class="option" data-correct="false">Cookies legger en klient-ID i forespørsler slik at serveren kan knytte handlinger til en sesjon.</button>
-      <button class="option" data-correct="false">Video deles i korte segmenter i flere kvaliteter for dynamisk tilpasning under avspilling.</button>
-      <button class="option" data-correct="false">Caching reduserer oppslagstid og belastning, mens TTL begrenser hvor lenge et svar kan gjenbrukes.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Klient–server samler tjenestelogikk i alltid-tilgjengelige servere som betjener mange klienter.</div>
     </div>
-    <div class="explanation">Riktig. Klient–server samler tjenestelogikk i alltid-tilgjengelige servere som betjener mange klienter.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 2 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om selv-skalering i P2P i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Persistent HTTP reduserer antall TCP-oppsett og RTT-kostnad ved flere objekter.</button>
-      <button class="option" data-correct="true">I P2P bidrar hver ny peer med både etterspørsel og opplastingskapasitet.</button>
-      <button class="option" data-correct="false">SMTP dytter e-post mellom servere og bruker kølagring når mottakerserver ikke er umiddelbart tilgjengelig.</button>
-      <button class="option" data-correct="false">MX-poster peker til hvilke mailservere som mottar e-post for et domene.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">I P2P bidrar hver ny peer med både etterspørsel og opplastingskapasitet.</div>
     </div>
-    <div class="explanation">Riktig. I P2P bidrar hver ny peer med både etterspørsel og opplastingskapasitet.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 3 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om socketens rolle i applikasjonslaget er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Betinget GET sparer båndbredde ved å hente objektet kun når det faktisk er endret.</button>
-      <button class="option" data-correct="false">IMAP lar klienter synkronisere mapper og meldingsstatus mens e-posten forblir på serveren.</button>
-      <button class="option" data-correct="true">Socketen er API-et mellom applikasjon og transportlag for sending/mottak av data.</button>
-      <button class="option" data-correct="false">Velkomstsokkelen aksepterer nye forbindelser, og OS oppretter en egen forbindelsessokkel per klient.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Socketen er API-et mellom applikasjon og transportlag for sending/mottak av data.</div>
     </div>
-    <div class="explanation">Riktig. Socketen er API-et mellom applikasjon og transportlag for sending/mottak av data.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 4 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om hva TCP tilbyr applikasjoner i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">En webcache kan svare lokalt på populære objekter og redusere både forsinkelse og backbone-trafikk.</button>
-      <button class="option" data-correct="false">DNS oversetter domenenavn til IP-adresser slik at applikasjoner kan kontakte riktig vert.</button>
-      <button class="option" data-correct="false">UDP har ikke forbindelser; samme sokkel håndterer datagrammer fra mange klienter.</button>
-      <button class="option" data-correct="true">TCP tilbyr pålitelig, ordnet byte-strøm med flyt- og køkontroll, men med mer overhead.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">TCP tilbyr pålitelig, ordnet byte-strøm med flyt- og køkontroll, men med mer overhead.</div>
     </div>
-    <div class="explanation">Riktig. TCP tilbyr pålitelig, ordnet byte-strøm med flyt- og køkontroll, men med mer overhead.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 5 · Lett</div>
     <div class="q-text">Hva beskriver best hva UDP tilbyr applikasjoner?</div>
-    <div class="options">
-      <button class="option" data-correct="true">UDP tilbyr lav latenst og enkel datagramtransport uten leveringsgarantier.</button>
-      <button class="option" data-correct="false">CDN-er flytter innhold nær brukeren med edge-servere for lavere latenstid og høyere skalerbarhet.</button>
-      <button class="option" data-correct="false">DNS er hierarkisk med root-, TLD- og autoritative navneservere for skalerbar navneoppløsning.</button>
-      <button class="option" data-correct="false">GET leser ressurser, POST oppretter/trigger handlinger, og PUT/PATCH brukes for oppdatering.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">UDP tilbyr lav latenst og enkel datagramtransport uten leveringsgarantier.</div>
     </div>
-    <div class="explanation">Riktig. UDP tilbyr lav latenst og enkel datagramtransport uten leveringsgarantier.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 6 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om HTTP request–response-modellen er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">I DASH velger klienten bitrate per segment basert på målt throughput og bufferstatus.</button>
-      <button class="option" data-correct="true">I HTTP initierer klienten forespørselen, og serveren svarer med statuslinje, headere og eventuelt innhold.</button>
-      <button class="option" data-correct="false">I iterativ oppslag gir hver server henvisning videre i stedet for å fullføre hele oppslaget selv.</button>
-      <button class="option" data-correct="false">HTTPS er HTTP over TLS og gir konfidensialitet, integritet og serverautentisering.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">I HTTP initierer klienten forespørselen, og serveren svarer med statuslinje, headere og eventuelt innhold.</div>
     </div>
-    <div class="explanation">Riktig. I HTTP initierer klienten forespørselen, og serveren svarer med statuslinje, headere og eventuelt innhold.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 7 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om hva det betyr at HTTP er stateless i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Video deles i korte segmenter i flere kvaliteter for dynamisk tilpasning under avspilling.</button>
-      <button class="option" data-correct="false">Caching reduserer oppslagstid og belastning, mens TTL begrenser hvor lenge et svar kan gjenbrukes.</button>
-      <button class="option" data-correct="true">HTTP-serveren behandler hver forespørsel uavhengig av tidligere forespørsler.</button>
-      <button class="option" data-correct="false">Klient–server samler tjenestelogikk i alltid-tilgjengelige servere som betjener mange klienter.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">HTTP-serveren behandler hver forespørsel uavhengig av tidligere forespørsler.</div>
     </div>
-    <div class="explanation">Riktig. HTTP-serveren behandler hver forespørsel uavhengig av tidligere forespørsler.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 8 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om cookies i webapplikasjoner er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">SMTP dytter e-post mellom servere og bruker kølagring når mottakerserver ikke er umiddelbart tilgjengelig.</button>
-      <button class="option" data-correct="false">MX-poster peker til hvilke mailservere som mottar e-post for et domene.</button>
-      <button class="option" data-correct="false">I P2P bidrar hver ny peer med både etterspørsel og opplastingskapasitet.</button>
-      <button class="option" data-correct="true">Cookies legger en klient-ID i forespørsler slik at serveren kan knytte handlinger til en sesjon.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Cookies legger en klient-ID i forespørsler slik at serveren kan knytte handlinger til en sesjon.</div>
     </div>
-    <div class="explanation">Riktig. Cookies legger en klient-ID i forespørsler slik at serveren kan knytte handlinger til en sesjon.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 9 · Lett</div>
     <div class="q-text">Hva beskriver best persistent HTTP-forbindelser?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Persistent HTTP reduserer antall TCP-oppsett og RTT-kostnad ved flere objekter.</button>
-      <button class="option" data-correct="false">IMAP lar klienter synkronisere mapper og meldingsstatus mens e-posten forblir på serveren.</button>
-      <button class="option" data-correct="false">Velkomstsokkelen aksepterer nye forbindelser, og OS oppretter en egen forbindelsessokkel per klient.</button>
-      <button class="option" data-correct="false">Socketen er API-et mellom applikasjon og transportlag for sending/mottak av data.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Persistent HTTP reduserer antall TCP-oppsett og RTT-kostnad ved flere objekter.</div>
     </div>
-    <div class="explanation">Riktig. Persistent HTTP reduserer antall TCP-oppsett og RTT-kostnad ved flere objekter.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 10 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om betinget GET og 304 Not Modified er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">DNS oversetter domenenavn til IP-adresser slik at applikasjoner kan kontakte riktig vert.</button>
-      <button class="option" data-correct="true">Betinget GET sparer båndbredde ved å hente objektet kun når det faktisk er endret.</button>
-      <button class="option" data-correct="false">UDP har ikke forbindelser; samme sokkel håndterer datagrammer fra mange klienter.</button>
-      <button class="option" data-correct="false">TCP tilbyr pålitelig, ordnet byte-strøm med flyt- og køkontroll, men med mer overhead.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Betinget GET sparer båndbredde ved å hente objektet kun når det faktisk er endret.</div>
     </div>
-    <div class="explanation">Riktig. Betinget GET sparer båndbredde ved å hente objektet kun når det faktisk er endret.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 11 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om webcache/proxy i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">DNS er hierarkisk med root-, TLD- og autoritative navneservere for skalerbar navneoppløsning.</button>
-      <button class="option" data-correct="false">GET leser ressurser, POST oppretter/trigger handlinger, og PUT/PATCH brukes for oppdatering.</button>
-      <button class="option" data-correct="true">En webcache kan svare lokalt på populære objekter og redusere både forsinkelse og backbone-trafikk.</button>
-      <button class="option" data-correct="false">UDP tilbyr lav latenst og enkel datagramtransport uten leveringsgarantier.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">En webcache kan svare lokalt på populære objekter og redusere både forsinkelse og backbone-trafikk.</div>
     </div>
-    <div class="explanation">Riktig. En webcache kan svare lokalt på populære objekter og redusere både forsinkelse og backbone-trafikk.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 12 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om CDN-strategi er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">I iterativ oppslag gir hver server henvisning videre i stedet for å fullføre hele oppslaget selv.</button>
-      <button class="option" data-correct="false">HTTPS er HTTP over TLS og gir konfidensialitet, integritet og serverautentisering.</button>
-      <button class="option" data-correct="false">I HTTP initierer klienten forespørselen, og serveren svarer med statuslinje, headere og eventuelt innhold.</button>
-      <button class="option" data-correct="true">CDN-er flytter innhold nær brukeren med edge-servere for lavere latenstid og høyere skalerbarhet.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">CDN-er flytter innhold nær brukeren med edge-servere for lavere latenstid og høyere skalerbarhet.</div>
     </div>
-    <div class="explanation">Riktig. CDN-er flytter innhold nær brukeren med edge-servere for lavere latenstid og høyere skalerbarhet.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 13 · Lett</div>
     <div class="q-text">Hva beskriver best DASH-adaptiv strømming?</div>
-    <div class="options">
-      <button class="option" data-correct="true">I DASH velger klienten bitrate per segment basert på målt throughput og bufferstatus.</button>
-      <button class="option" data-correct="false">Caching reduserer oppslagstid og belastning, mens TTL begrenser hvor lenge et svar kan gjenbrukes.</button>
-      <button class="option" data-correct="false">Klient–server samler tjenestelogikk i alltid-tilgjengelige servere som betjener mange klienter.</button>
-      <button class="option" data-correct="false">HTTP-serveren behandler hver forespørsel uavhengig av tidligere forespørsler.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">I DASH velger klienten bitrate per segment basert på målt throughput og bufferstatus.</div>
     </div>
-    <div class="explanation">Riktig. I DASH velger klienten bitrate per segment basert på målt throughput og bufferstatus.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 14 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om segmentering av videostrøm i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">MX-poster peker til hvilke mailservere som mottar e-post for et domene.</button>
-      <button class="option" data-correct="true">Video deles i korte segmenter i flere kvaliteter for dynamisk tilpasning under avspilling.</button>
-      <button class="option" data-correct="false">I P2P bidrar hver ny peer med både etterspørsel og opplastingskapasitet.</button>
-      <button class="option" data-correct="false">Cookies legger en klient-ID i forespørsler slik at serveren kan knytte handlinger til en sesjon.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Video deles i korte segmenter i flere kvaliteter for dynamisk tilpasning under avspilling.</div>
     </div>
-    <div class="explanation">Riktig. Video deles i korte segmenter i flere kvaliteter for dynamisk tilpasning under avspilling.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 15 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om SMTP som push-protokoll er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Velkomstsokkelen aksepterer nye forbindelser, og OS oppretter en egen forbindelsessokkel per klient.</button>
-      <button class="option" data-correct="false">Socketen er API-et mellom applikasjon og transportlag for sending/mottak av data.</button>
-      <button class="option" data-correct="true">SMTP dytter e-post mellom servere og bruker kølagring når mottakerserver ikke er umiddelbart tilgjengelig.</button>
-      <button class="option" data-correct="false">Persistent HTTP reduserer antall TCP-oppsett og RTT-kostnad ved flere objekter.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">SMTP dytter e-post mellom servere og bruker kølagring når mottakerserver ikke er umiddelbart tilgjengelig.</div>
     </div>
-    <div class="explanation">Riktig. SMTP dytter e-post mellom servere og bruker kølagring når mottakerserver ikke er umiddelbart tilgjengelig.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 16 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om IMAP i moderne e-post i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">UDP har ikke forbindelser; samme sokkel håndterer datagrammer fra mange klienter.</button>
-      <button class="option" data-correct="false">TCP tilbyr pålitelig, ordnet byte-strøm med flyt- og køkontroll, men med mer overhead.</button>
-      <button class="option" data-correct="false">Betinget GET sparer båndbredde ved å hente objektet kun når det faktisk er endret.</button>
-      <button class="option" data-correct="true">IMAP lar klienter synkronisere mapper og meldingsstatus mens e-posten forblir på serveren.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">IMAP lar klienter synkronisere mapper og meldingsstatus mens e-posten forblir på serveren.</div>
     </div>
-    <div class="explanation">Riktig. IMAP lar klienter synkronisere mapper og meldingsstatus mens e-posten forblir på serveren.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 17 · Lett</div>
     <div class="q-text">Hva beskriver best DNS sin kjernefunksjon?</div>
-    <div class="options">
-      <button class="option" data-correct="true">DNS oversetter domenenavn til IP-adresser slik at applikasjoner kan kontakte riktig vert.</button>
-      <button class="option" data-correct="false">GET leser ressurser, POST oppretter/trigger handlinger, og PUT/PATCH brukes for oppdatering.</button>
-      <button class="option" data-correct="false">UDP tilbyr lav latenst og enkel datagramtransport uten leveringsgarantier.</button>
-      <button class="option" data-correct="false">En webcache kan svare lokalt på populære objekter og redusere både forsinkelse og backbone-trafikk.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">DNS oversetter domenenavn til IP-adresser slik at applikasjoner kan kontakte riktig vert.</div>
     </div>
-    <div class="explanation">Riktig. DNS oversetter domenenavn til IP-adresser slik at applikasjoner kan kontakte riktig vert.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 18 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om DNS-hierarkiet er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">HTTPS er HTTP over TLS og gir konfidensialitet, integritet og serverautentisering.</button>
-      <button class="option" data-correct="true">DNS er hierarkisk med root-, TLD- og autoritative navneservere for skalerbar navneoppløsning.</button>
-      <button class="option" data-correct="false">I HTTP initierer klienten forespørselen, og serveren svarer med statuslinje, headere og eventuelt innhold.</button>
-      <button class="option" data-correct="false">CDN-er flytter innhold nær brukeren med edge-servere for lavere latenstid og høyere skalerbarhet.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">DNS er hierarkisk med root-, TLD- og autoritative navneservere for skalerbar navneoppløsning.</div>
     </div>
-    <div class="explanation">Riktig. DNS er hierarkisk med root-, TLD- og autoritative navneservere for skalerbar navneoppløsning.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 19 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om iterativ DNS-oppslag i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Klient–server samler tjenestelogikk i alltid-tilgjengelige servere som betjener mange klienter.</button>
-      <button class="option" data-correct="false">HTTP-serveren behandler hver forespørsel uavhengig av tidligere forespørsler.</button>
-      <button class="option" data-correct="true">I iterativ oppslag gir hver server henvisning videre i stedet for å fullføre hele oppslaget selv.</button>
-      <button class="option" data-correct="false">I DASH velger klienten bitrate per segment basert på målt throughput og bufferstatus.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">I iterativ oppslag gir hver server henvisning videre i stedet for å fullføre hele oppslaget selv.</div>
     </div>
-    <div class="explanation">Riktig. I iterativ oppslag gir hver server henvisning videre i stedet for å fullføre hele oppslaget selv.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 20 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om DNS-caching og TTL er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">I P2P bidrar hver ny peer med både etterspørsel og opplastingskapasitet.</button>
-      <button class="option" data-correct="false">Cookies legger en klient-ID i forespørsler slik at serveren kan knytte handlinger til en sesjon.</button>
-      <button class="option" data-correct="false">Video deles i korte segmenter i flere kvaliteter for dynamisk tilpasning under avspilling.</button>
-      <button class="option" data-correct="true">Caching reduserer oppslagstid og belastning, mens TTL begrenser hvor lenge et svar kan gjenbrukes.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Caching reduserer oppslagstid og belastning, mens TTL begrenser hvor lenge et svar kan gjenbrukes.</div>
     </div>
-    <div class="explanation">Riktig. Caching reduserer oppslagstid og belastning, mens TTL begrenser hvor lenge et svar kan gjenbrukes.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 21 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om MX-poster i DNS i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="true">MX-poster peker til hvilke mailservere som mottar e-post for et domene.</button>
-      <button class="option" data-correct="false">Socketen er API-et mellom applikasjon og transportlag for sending/mottak av data.</button>
-      <button class="option" data-correct="false">Persistent HTTP reduserer antall TCP-oppsett og RTT-kostnad ved flere objekter.</button>
-      <button class="option" data-correct="false">SMTP dytter e-post mellom servere og bruker kølagring når mottakerserver ikke er umiddelbart tilgjengelig.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">MX-poster peker til hvilke mailservere som mottar e-post for et domene.</div>
     </div>
-    <div class="explanation">Riktig. MX-poster peker til hvilke mailservere som mottar e-post for et domene.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 22 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om TCP-serverens velkomstsokkel er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">TCP tilbyr pålitelig, ordnet byte-strøm med flyt- og køkontroll, men med mer overhead.</button>
-      <button class="option" data-correct="true">Velkomstsokkelen aksepterer nye forbindelser, og OS oppretter en egen forbindelsessokkel per klient.</button>
-      <button class="option" data-correct="false">Betinget GET sparer båndbredde ved å hente objektet kun når det faktisk er endret.</button>
-      <button class="option" data-correct="false">IMAP lar klienter synkronisere mapper og meldingsstatus mens e-posten forblir på serveren.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Velkomstsokkelen aksepterer nye forbindelser, og OS oppretter en egen forbindelsessokkel per klient.</div>
     </div>
-    <div class="explanation">Riktig. Velkomstsokkelen aksepterer nye forbindelser, og OS oppretter en egen forbindelsessokkel per klient.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 23 · Lett</div>
     <div class="q-text">Hva beskriver best hvorfor UDP-servere ofte bruker én sokkel?</div>
-    <div class="options">
-      <button class="option" data-correct="false">UDP tilbyr lav latenst og enkel datagramtransport uten leveringsgarantier.</button>
-      <button class="option" data-correct="false">En webcache kan svare lokalt på populære objekter og redusere både forsinkelse og backbone-trafikk.</button>
-      <button class="option" data-correct="true">UDP har ikke forbindelser; samme sokkel håndterer datagrammer fra mange klienter.</button>
-      <button class="option" data-correct="false">DNS oversetter domenenavn til IP-adresser slik at applikasjoner kan kontakte riktig vert.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">UDP har ikke forbindelser; samme sokkel håndterer datagrammer fra mange klienter.</div>
     </div>
-    <div class="explanation">Riktig. UDP har ikke forbindelser; samme sokkel håndterer datagrammer fra mange klienter.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 24 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om HTTP-metoder i REST-lignende API-er i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">I HTTP initierer klienten forespørselen, og serveren svarer med statuslinje, headere og eventuelt innhold.</button>
-      <button class="option" data-correct="false">CDN-er flytter innhold nær brukeren med edge-servere for lavere latenstid og høyere skalerbarhet.</button>
-      <button class="option" data-correct="false">DNS er hierarkisk med root-, TLD- og autoritative navneservere for skalerbar navneoppløsning.</button>
-      <button class="option" data-correct="true">GET leser ressurser, POST oppretter/trigger handlinger, og PUT/PATCH brukes for oppdatering.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">GET leser ressurser, POST oppretter/trigger handlinger, og PUT/PATCH brukes for oppdatering.</div>
     </div>
-    <div class="explanation">Riktig. GET leser ressurser, POST oppretter/trigger handlinger, og PUT/PATCH brukes for oppdatering.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 25 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om HTTPS i praksis er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="true">HTTPS er HTTP over TLS og gir konfidensialitet, integritet og serverautentisering.</button>
-      <button class="option" data-correct="false">HTTP-serveren behandler hver forespørsel uavhengig av tidligere forespørsler.</button>
-      <button class="option" data-correct="false">I DASH velger klienten bitrate per segment basert på målt throughput og bufferstatus.</button>
-      <button class="option" data-correct="false">I iterativ oppslag gir hver server henvisning videre i stedet for å fullføre hele oppslaget selv.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">HTTPS er HTTP over TLS og gir konfidensialitet, integritet og serverautentisering.</div>
     </div>
-    <div class="explanation">Riktig. HTTPS er HTTP over TLS og gir konfidensialitet, integritet og serverautentisering.</div>
   </div>
 </div>
 </section>

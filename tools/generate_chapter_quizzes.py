@@ -1448,17 +1448,17 @@ def render_quiz_section(chapter_num, lang, facts):
         intro = "Sjekk om du har forstått de viktigste konseptene fra dette kapittelet."
         tag_map = NO_TAG
         q_label_prefix = "Spørsmål"
+        reveal_label = "Se svar"
     else:
         title = "Test yourself"
         intro = "Check whether you have understood the most important concepts from this chapter."
         tag_map = EN_TAG
         q_label_prefix = "Question"
+        reveal_label = "Show answer"
 
     n = len(facts)
     if n != 25:
         raise ValueError(f"Chapter {chapter_num} has {n} facts, expected 25.")
-
-    answers = [f["answer_no"] if lang == "no" else f["answer_en"] for f in facts]
 
     blocks = []
     for i, fact in enumerate(facts):
@@ -1468,39 +1468,17 @@ def render_quiz_section(chapter_num, lang, facts):
         q_text = prompt_for(lang, diff, topic)
         q_label = f"{q_label_prefix} {i + 1} · {tag_map[diff]}"
 
-        d_idx = pick_distractor_indices(n, i)
-        distractors = [answers[idx] for idx in d_idx]
-
-        correct_pos = i % 4
-        options = []
-        d_cursor = 0
-        for pos in range(4):
-            if pos == correct_pos:
-                options.append((True, correct))
-            else:
-                options.append((False, distractors[d_cursor]))
-                d_cursor += 1
-
-        explanation = f'{"Riktig" if lang == "no" else "Correct"}. {correct}'
-
         block = [
             '  <div class="quiz" data-quiz>',
             f'    <div class="q-label">{html.escape(q_label)}</div>',
             f'    <div class="q-text">{html.escape(q_text)}</div>',
-            '    <div class="options">',
+            '    <div class="quiz-reveal">',
+            f'      <button class="reveal-btn">{html.escape(reveal_label)}</button>',
+            f'      <div class="answer">{html.escape(correct)}</div>',
+            "    </div>",
+            "  </div>",
+            "",
         ]
-        for is_correct, option_text in options:
-            block.append(
-                f'      <button class="option" data-correct="{"true" if is_correct else "false"}">{html.escape(option_text)}</button>'
-            )
-        block.extend(
-            [
-                "    </div>",
-                f'    <div class="explanation">{html.escape(explanation)}</div>',
-                "  </div>",
-                "",
-            ]
-        )
         blocks.append("\n".join(block))
 
     section = (

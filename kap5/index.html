@@ -177,301 +177,226 @@
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 1 · Lett</div>
     <div class="q-text">Hva beskriver best hva kontrollplanet gjør?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Kontrollplanet beregner ruter og fyller forwarding-tabeller som dataplanet bruker.</button>
-      <button class="option" data-correct="false">Rask og stabil konvergens reduserer perioder med tap, løkker og suboptimale ruter.</button>
-      <button class="option" data-correct="false">I SDN flyttes kontrolllogikk til en logisk sentral kontroller som programmerer nettutstyr.</button>
-      <button class="option" data-correct="false">Flooding sprer topologiendringer raskt slik at alle rutere kan rekalkulere konsekvent.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Kontrollplanet beregner ruter og fyller forwarding-tabeller som dataplanet bruker.</div>
     </div>
-    <div class="explanation">Riktig. Kontrollplanet beregner ruter og fyller forwarding-tabeller som dataplanet bruker.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 2 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om link-state-prinsippet i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">OSPF er en link-state IGP som bruker kostnadsmetrikker og flooding av LSAs.</button>
-      <button class="option" data-correct="true">I link-state kjenner rutere hele topologien og beregner egne korteste veier lokalt.</button>
-      <button class="option" data-correct="false">Match-action-regler bestemmer hvordan pakker behandles basert på headerfelter.</button>
-      <button class="option" data-correct="false">Sekvensnummer og alder hindrer at gamle link-state-meldinger overskriver nye.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">I link-state kjenner rutere hele topologien og beregner egne korteste veier lokalt.</div>
     </div>
-    <div class="explanation">Riktig. I link-state kjenner rutere hele topologien og beregner egne korteste veier lokalt.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 3 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om Dijkstra i ruting er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">RIP er en enkel distance-vector-protokoll med hop count som metrikk.</button>
-      <button class="option" data-correct="false">Southbound-grensesnitt lar kontrolleren installere og oppdatere regler i svitsjer/rutere.</button>
-      <button class="option" data-correct="true">Dijkstra bygger et korteste-veier-tre fra én kilde gitt kjente linkkostnader.</button>
-      <button class="option" data-correct="false">Hierarki reduserer kontrollplane-skala ved å dele nettet i administrative områder.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Dijkstra bygger et korteste-veier-tre fra én kilde gitt kjente linkkostnader.</div>
     </div>
-    <div class="explanation">Riktig. Dijkstra bygger et korteste-veier-tre fra én kilde gitt kjente linkkostnader.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 4 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om distance-vector-prinsippet i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">BGP annonserer AS-path og policy-attributter mellom autonome systemer.</button>
-      <button class="option" data-correct="false">Dataplanet videresender pakker, mens kontrollplanet beregner reglene dataplanet følger.</button>
-      <button class="option" data-correct="false">Et AS sender ofte trafikk ut ved nærmeste utgang for å minimere intern transportkostnad.</button>
-      <button class="option" data-correct="true">Distance-vector utveksler kostnadsestimater nabo-til-nabo og oppdaterer iterativt.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Distance-vector utveksler kostnadsestimater nabo-til-nabo og oppdaterer iterativt.</div>
     </div>
-    <div class="explanation">Riktig. Distance-vector utveksler kostnadsestimater nabo-til-nabo og oppdaterer iterativt.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 5 · Lett</div>
     <div class="q-text">Hva beskriver best Bellman-Ford i DV?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Bellman-Ford oppdaterer beste rute via minimering over naboers annonserte kostnader.</button>
-      <button class="option" data-correct="false">BGP velger ofte ruter etter økonomi og policy, ikke bare teknisk korteste vei.</button>
-      <button class="option" data-correct="false">Ping tester nåbarhet ved å sende ICMP echo request og måle tiden til echo reply.</button>
-      <button class="option" data-correct="false">Konfliktende policyer og raske endringer kan gi oscillering og midlertidig ustabile ruter.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Bellman-Ford oppdaterer beste rute via minimering over naboers annonserte kostnader.</div>
     </div>
-    <div class="explanation">Riktig. Bellman-Ford oppdaterer beste rute via minimering over naboers annonserte kostnader.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 6 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om count-to-infinity-problemet er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">eBGP brukes mellom AS-er, mens iBGP distribuerer eksterne ruter internt i et AS.</button>
-      <button class="option" data-correct="true">I DV kan feil informasjon om utilgjengelige ruter leve lenge og øke metrikk gradvis.</button>
-      <button class="option" data-correct="false">Traceroute bruker stigende TTL for å få svar fra hver ruter langs veien.</button>
-      <button class="option" data-correct="false">Hurtig deteksjon og rekonvergens etter feil reduserer nedetid og pakketap.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">I DV kan feil informasjon om utilgjengelige ruter leve lenge og øke metrikk gradvis.</div>
     </div>
-    <div class="explanation">Riktig. I DV kan feil informasjon om utilgjengelige ruter leve lenge og øke metrikk gradvis.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 7 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om poison reverse i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">I SDN flyttes kontrolllogikk til en logisk sentral kontroller som programmerer nettutstyr.</button>
-      <button class="option" data-correct="false">Flooding sprer topologiendringer raskt slik at alle rutere kan rekalkulere konsekvent.</button>
-      <button class="option" data-correct="true">Poison reverse annonserer uendelig kost via naboen som ga ruten, for å dempe enkle løkker.</button>
-      <button class="option" data-correct="false">Kontrollplanet beregner ruter og fyller forwarding-tabeller som dataplanet bruker.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Poison reverse annonserer uendelig kost via naboen som ga ruten, for å dempe enkle løkker.</div>
     </div>
-    <div class="explanation">Riktig. Poison reverse annonserer uendelig kost via naboen som ga ruten, for å dempe enkle løkker.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 8 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om konvergens i rutingprotokoller er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Match-action-regler bestemmer hvordan pakker behandles basert på headerfelter.</button>
-      <button class="option" data-correct="false">Sekvensnummer og alder hindrer at gamle link-state-meldinger overskriver nye.</button>
-      <button class="option" data-correct="false">I link-state kjenner rutere hele topologien og beregner egne korteste veier lokalt.</button>
-      <button class="option" data-correct="true">Rask og stabil konvergens reduserer perioder med tap, løkker og suboptimale ruter.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Rask og stabil konvergens reduserer perioder med tap, løkker og suboptimale ruter.</div>
     </div>
-    <div class="explanation">Riktig. Rask og stabil konvergens reduserer perioder med tap, løkker og suboptimale ruter.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 9 · Lett</div>
     <div class="q-text">Hva beskriver best OSPF?</div>
-    <div class="options">
-      <button class="option" data-correct="true">OSPF er en link-state IGP som bruker kostnadsmetrikker og flooding av LSAs.</button>
-      <button class="option" data-correct="false">Southbound-grensesnitt lar kontrolleren installere og oppdatere regler i svitsjer/rutere.</button>
-      <button class="option" data-correct="false">Hierarki reduserer kontrollplane-skala ved å dele nettet i administrative områder.</button>
-      <button class="option" data-correct="false">Dijkstra bygger et korteste-veier-tre fra én kilde gitt kjente linkkostnader.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">OSPF er en link-state IGP som bruker kostnadsmetrikker og flooding av LSAs.</div>
     </div>
-    <div class="explanation">Riktig. OSPF er en link-state IGP som bruker kostnadsmetrikker og flooding av LSAs.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 10 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om RIP er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Dataplanet videresender pakker, mens kontrollplanet beregner reglene dataplanet følger.</button>
-      <button class="option" data-correct="true">RIP er en enkel distance-vector-protokoll med hop count som metrikk.</button>
-      <button class="option" data-correct="false">Et AS sender ofte trafikk ut ved nærmeste utgang for å minimere intern transportkostnad.</button>
-      <button class="option" data-correct="false">Distance-vector utveksler kostnadsestimater nabo-til-nabo og oppdaterer iterativt.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">RIP er en enkel distance-vector-protokoll med hop count som metrikk.</div>
     </div>
-    <div class="explanation">Riktig. RIP er en enkel distance-vector-protokoll med hop count som metrikk.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 11 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om BGP som inter-AS-protokoll i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Ping tester nåbarhet ved å sende ICMP echo request og måle tiden til echo reply.</button>
-      <button class="option" data-correct="false">Konfliktende policyer og raske endringer kan gi oscillering og midlertidig ustabile ruter.</button>
-      <button class="option" data-correct="true">BGP annonserer AS-path og policy-attributter mellom autonome systemer.</button>
-      <button class="option" data-correct="false">Bellman-Ford oppdaterer beste rute via minimering over naboers annonserte kostnader.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">BGP annonserer AS-path og policy-attributter mellom autonome systemer.</div>
     </div>
-    <div class="explanation">Riktig. BGP annonserer AS-path og policy-attributter mellom autonome systemer.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 12 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om policy i BGP er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Traceroute bruker stigende TTL for å få svar fra hver ruter langs veien.</button>
-      <button class="option" data-correct="false">Hurtig deteksjon og rekonvergens etter feil reduserer nedetid og pakketap.</button>
-      <button class="option" data-correct="false">I DV kan feil informasjon om utilgjengelige ruter leve lenge og øke metrikk gradvis.</button>
-      <button class="option" data-correct="true">BGP velger ofte ruter etter økonomi og policy, ikke bare teknisk korteste vei.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">BGP velger ofte ruter etter økonomi og policy, ikke bare teknisk korteste vei.</div>
     </div>
-    <div class="explanation">Riktig. BGP velger ofte ruter etter økonomi og policy, ikke bare teknisk korteste vei.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 13 · Lett</div>
     <div class="q-text">Hva beskriver best eBGP versus iBGP?</div>
-    <div class="options">
-      <button class="option" data-correct="true">eBGP brukes mellom AS-er, mens iBGP distribuerer eksterne ruter internt i et AS.</button>
-      <button class="option" data-correct="false">Flooding sprer topologiendringer raskt slik at alle rutere kan rekalkulere konsekvent.</button>
-      <button class="option" data-correct="false">Kontrollplanet beregner ruter og fyller forwarding-tabeller som dataplanet bruker.</button>
-      <button class="option" data-correct="false">Poison reverse annonserer uendelig kost via naboen som ga ruten, for å dempe enkle løkker.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">eBGP brukes mellom AS-er, mens iBGP distribuerer eksterne ruter internt i et AS.</div>
     </div>
-    <div class="explanation">Riktig. eBGP brukes mellom AS-er, mens iBGP distribuerer eksterne ruter internt i et AS.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 14 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om SDN-kontroller i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Sekvensnummer og alder hindrer at gamle link-state-meldinger overskriver nye.</button>
-      <button class="option" data-correct="true">I SDN flyttes kontrolllogikk til en logisk sentral kontroller som programmerer nettutstyr.</button>
-      <button class="option" data-correct="false">I link-state kjenner rutere hele topologien og beregner egne korteste veier lokalt.</button>
-      <button class="option" data-correct="false">Rask og stabil konvergens reduserer perioder med tap, løkker og suboptimale ruter.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">I SDN flyttes kontrolllogikk til en logisk sentral kontroller som programmerer nettutstyr.</div>
     </div>
-    <div class="explanation">Riktig. I SDN flyttes kontrolllogikk til en logisk sentral kontroller som programmerer nettutstyr.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 15 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om match-action-tabeller er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Hierarki reduserer kontrollplane-skala ved å dele nettet i administrative områder.</button>
-      <button class="option" data-correct="false">Dijkstra bygger et korteste-veier-tre fra én kilde gitt kjente linkkostnader.</button>
-      <button class="option" data-correct="true">Match-action-regler bestemmer hvordan pakker behandles basert på headerfelter.</button>
-      <button class="option" data-correct="false">OSPF er en link-state IGP som bruker kostnadsmetrikker og flooding av LSAs.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Match-action-regler bestemmer hvordan pakker behandles basert på headerfelter.</div>
     </div>
-    <div class="explanation">Riktig. Match-action-regler bestemmer hvordan pakker behandles basert på headerfelter.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 16 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om OpenFlow-lignende southbound API i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Et AS sender ofte trafikk ut ved nærmeste utgang for å minimere intern transportkostnad.</button>
-      <button class="option" data-correct="false">Distance-vector utveksler kostnadsestimater nabo-til-nabo og oppdaterer iterativt.</button>
-      <button class="option" data-correct="false">RIP er en enkel distance-vector-protokoll med hop count som metrikk.</button>
-      <button class="option" data-correct="true">Southbound-grensesnitt lar kontrolleren installere og oppdatere regler i svitsjer/rutere.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Southbound-grensesnitt lar kontrolleren installere og oppdatere regler i svitsjer/rutere.</div>
     </div>
-    <div class="explanation">Riktig. Southbound-grensesnitt lar kontrolleren installere og oppdatere regler i svitsjer/rutere.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 17 · Lett</div>
     <div class="q-text">Hva beskriver best dataplan versus kontrollplan?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Dataplanet videresender pakker, mens kontrollplanet beregner reglene dataplanet følger.</button>
-      <button class="option" data-correct="false">Konfliktende policyer og raske endringer kan gi oscillering og midlertidig ustabile ruter.</button>
-      <button class="option" data-correct="false">Bellman-Ford oppdaterer beste rute via minimering over naboers annonserte kostnader.</button>
-      <button class="option" data-correct="false">BGP annonserer AS-path og policy-attributter mellom autonome systemer.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Dataplanet videresender pakker, mens kontrollplanet beregner reglene dataplanet følger.</div>
     </div>
-    <div class="explanation">Riktig. Dataplanet videresender pakker, mens kontrollplanet beregner reglene dataplanet følger.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 18 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om ping og ICMP echo er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Hurtig deteksjon og rekonvergens etter feil reduserer nedetid og pakketap.</button>
-      <button class="option" data-correct="true">Ping tester nåbarhet ved å sende ICMP echo request og måle tiden til echo reply.</button>
-      <button class="option" data-correct="false">I DV kan feil informasjon om utilgjengelige ruter leve lenge og øke metrikk gradvis.</button>
-      <button class="option" data-correct="false">BGP velger ofte ruter etter økonomi og policy, ikke bare teknisk korteste vei.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Ping tester nåbarhet ved å sende ICMP echo request og måle tiden til echo reply.</div>
     </div>
-    <div class="explanation">Riktig. Ping tester nåbarhet ved å sende ICMP echo request og måle tiden til echo reply.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 19 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om traceroute og TTL i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Kontrollplanet beregner ruter og fyller forwarding-tabeller som dataplanet bruker.</button>
-      <button class="option" data-correct="false">Poison reverse annonserer uendelig kost via naboen som ga ruten, for å dempe enkle løkker.</button>
-      <button class="option" data-correct="true">Traceroute bruker stigende TTL for å få svar fra hver ruter langs veien.</button>
-      <button class="option" data-correct="false">eBGP brukes mellom AS-er, mens iBGP distribuerer eksterne ruter internt i et AS.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Traceroute bruker stigende TTL for å få svar fra hver ruter langs veien.</div>
     </div>
-    <div class="explanation">Riktig. Traceroute bruker stigende TTL for å få svar fra hver ruter langs veien.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 20 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om flooding av link-state annonser er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">I link-state kjenner rutere hele topologien og beregner egne korteste veier lokalt.</button>
-      <button class="option" data-correct="false">Rask og stabil konvergens reduserer perioder med tap, løkker og suboptimale ruter.</button>
-      <button class="option" data-correct="false">I SDN flyttes kontrolllogikk til en logisk sentral kontroller som programmerer nettutstyr.</button>
-      <button class="option" data-correct="true">Flooding sprer topologiendringer raskt slik at alle rutere kan rekalkulere konsekvent.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Flooding sprer topologiendringer raskt slik at alle rutere kan rekalkulere konsekvent.</div>
     </div>
-    <div class="explanation">Riktig. Flooding sprer topologiendringer raskt slik at alle rutere kan rekalkulere konsekvent.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 21 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om sekvensnummer i LSAs i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Sekvensnummer og alder hindrer at gamle link-state-meldinger overskriver nye.</button>
-      <button class="option" data-correct="false">Dijkstra bygger et korteste-veier-tre fra én kilde gitt kjente linkkostnader.</button>
-      <button class="option" data-correct="false">OSPF er en link-state IGP som bruker kostnadsmetrikker og flooding av LSAs.</button>
-      <button class="option" data-correct="false">Match-action-regler bestemmer hvordan pakker behandles basert på headerfelter.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Sekvensnummer og alder hindrer at gamle link-state-meldinger overskriver nye.</div>
     </div>
-    <div class="explanation">Riktig. Sekvensnummer og alder hindrer at gamle link-state-meldinger overskriver nye.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 22 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om hierarkisk ruting er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Distance-vector utveksler kostnadsestimater nabo-til-nabo og oppdaterer iterativt.</button>
-      <button class="option" data-correct="true">Hierarki reduserer kontrollplane-skala ved å dele nettet i administrative områder.</button>
-      <button class="option" data-correct="false">RIP er en enkel distance-vector-protokoll med hop count som metrikk.</button>
-      <button class="option" data-correct="false">Southbound-grensesnitt lar kontrolleren installere og oppdatere regler i svitsjer/rutere.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Hierarki reduserer kontrollplane-skala ved å dele nettet i administrative områder.</div>
     </div>
-    <div class="explanation">Riktig. Hierarki reduserer kontrollplane-skala ved å dele nettet i administrative områder.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 23 · Lett</div>
     <div class="q-text">Hva beskriver best hot-potato-ruting?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Bellman-Ford oppdaterer beste rute via minimering over naboers annonserte kostnader.</button>
-      <button class="option" data-correct="false">BGP annonserer AS-path og policy-attributter mellom autonome systemer.</button>
-      <button class="option" data-correct="true">Et AS sender ofte trafikk ut ved nærmeste utgang for å minimere intern transportkostnad.</button>
-      <button class="option" data-correct="false">Dataplanet videresender pakker, mens kontrollplanet beregner reglene dataplanet følger.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Et AS sender ofte trafikk ut ved nærmeste utgang for å minimere intern transportkostnad.</div>
     </div>
-    <div class="explanation">Riktig. Et AS sender ofte trafikk ut ved nærmeste utgang for å minimere intern transportkostnad.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 24 · Middels</div>
     <div class="q-text">Hvilken påstand er mest korrekt om rutinginstabilitet i praksis?</div>
-    <div class="options">
-      <button class="option" data-correct="false">I DV kan feil informasjon om utilgjengelige ruter leve lenge og øke metrikk gradvis.</button>
-      <button class="option" data-correct="false">BGP velger ofte ruter etter økonomi og policy, ikke bare teknisk korteste vei.</button>
-      <button class="option" data-correct="false">Ping tester nåbarhet ved å sende ICMP echo request og måle tiden til echo reply.</button>
-      <button class="option" data-correct="true">Konfliktende policyer og raske endringer kan gi oscillering og midlertidig ustabile ruter.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Konfliktende policyer og raske endringer kan gi oscillering og midlertidig ustabile ruter.</div>
     </div>
-    <div class="explanation">Riktig. Konfliktende policyer og raske endringer kan gi oscillering og midlertidig ustabile ruter.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 25 · Vanskelig</div>
     <div class="q-text">I et større nettverk, hvilken vurdering om rask feilrespons i kontrollplanet er faglig best?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Hurtig deteksjon og rekonvergens etter feil reduserer nedetid og pakketap.</button>
-      <button class="option" data-correct="false">Poison reverse annonserer uendelig kost via naboen som ga ruten, for å dempe enkle løkker.</button>
-      <button class="option" data-correct="false">eBGP brukes mellom AS-er, mens iBGP distribuerer eksterne ruter internt i et AS.</button>
-      <button class="option" data-correct="false">Traceroute bruker stigende TTL for å få svar fra hver ruter langs veien.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Hurtig deteksjon og rekonvergens etter feil reduserer nedetid og pakketap.</div>
     </div>
-    <div class="explanation">Riktig. Hurtig deteksjon og rekonvergens etter feil reduserer nedetid og pakketap.</div>
   </div>
 </div>
 </section>

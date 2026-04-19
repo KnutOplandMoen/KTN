@@ -135,301 +135,226 @@
   <div class="quiz" data-quiz>
     <div class="q-label">Question 1 · Easy</div>
     <div class="q-text">Which statement best describes transport-layer multiplexing and demultiplexing?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Port numbers are used to deliver data to the correct process on the correct host.</button>
-      <button class="option" data-correct="false">Sequence numbers allow duplicate detection and correct ordering at the receiver.</button>
-      <button class="option" data-correct="false">In congestion avoidance, cwnd increases linearly, about 1 MSS per RTT.</button>
-      <button class="option" data-correct="false">TCP uses smoothed RTT and variance to set a robust retransmission timer.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Port numbers are used to deliver data to the correct process on the correct host.</div>
     </div>
-    <div class="explanation">Correct. Port numbers are used to deliver data to the correct process on the correct host.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 2 · Medium</div>
     <div class="q-text">In practice, which statement about the UDP header size is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">An ACK number confirms that all bytes before that number were received correctly.</button>
-      <button class="option" data-correct="true">The UDP header is 8 bytes, giving low protocol overhead.</button>
-      <button class="option" data-correct="false">TCP uses additive increase and multiplicative decrease for stable and fair sharing.</button>
-      <button class="option" data-correct="false">The sequence number identifies the first payload byte in the segment, not a packet counter.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">The UDP header is 8 bytes, giving low protocol overhead.</div>
     </div>
-    <div class="explanation">Correct. The UDP header is 8 bytes, giving low protocol overhead.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 3 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of the limitation of simple checksum error detection is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">The three-way handshake synchronizes sequence numbers and establishes state at both ends.</button>
-      <button class="option" data-correct="false">On timeout, cwnd is reduced sharply and the connection returns to cautious startup behavior.</button>
-      <button class="option" data-correct="true">Checksums detect many errors, but can rarely miss certain bit patterns.</button>
-      <button class="option" data-correct="false">Loss of one segment can block delivery of later data even if they have already arrived.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Checksums detect many errors, but can rarely miss certain bit patterns.</div>
     </div>
-    <div class="explanation">Correct. Checksums detect many errors, but can rarely miss certain bit patterns.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 4 · Medium</div>
     <div class="q-text">In practice, which statement about stop-and-wait transmission is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">The receiver advertises rwnd to prevent the sender from overrunning the receive buffer.</button>
-      <button class="option" data-correct="false">Three duplicate ACKs are treated as likely loss and trigger fast retransmit before timeout.</button>
-      <button class="option" data-correct="false">QUIC uses independent streams so loss in one stream does not block all others.</button>
-      <button class="option" data-correct="true">Stop-and-wait allows only one outstanding packet before the sender waits for an ACK.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Stop-and-wait allows only one outstanding packet before the sender waits for an ACK.</div>
     </div>
-    <div class="explanation">Correct. Stop-and-wait allows only one outstanding packet before the sender waits for an ACK.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 5 · Easy</div>
     <div class="q-text">Which statement best describes why pipelining improves efficiency?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Pipelining keeps multiple packets in flight and reduces idle time between RTTs.</button>
-      <button class="option" data-correct="false">The sender limits its send window with cwnd to avoid overloading the network.</button>
-      <button class="option" data-correct="false">Reno keeps data flowing after fast retransmit instead of restarting from scratch.</button>
-      <button class="option" data-correct="false">Servers often listen on well-known ports, while clients use temporary ephemeral ports.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Pipelining keeps multiple packets in flight and reduces idle time between RTTs.</div>
     </div>
-    <div class="explanation">Correct. Pipelining keeps multiple packets in flight and reduces idle time between RTTs.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 6 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of Go-Back-N behavior on loss is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">In slow start, cwnd grows roughly exponentially, typically doubling per RTT.</button>
-      <button class="option" data-correct="true">Go-Back-N retransmits the lost packet and all subsequent packets in the window.</button>
-      <button class="option" data-correct="false">MSS is the TCP payload size that avoids IP fragmentation for the current MTU.</button>
-      <button class="option" data-correct="false">The pseudo-header binds the checksum to IP addresses and protocol fields for extra protection.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Go-Back-N retransmits the lost packet and all subsequent packets in the window.</div>
     </div>
-    <div class="explanation">Correct. Go-Back-N retransmits the lost packet and all subsequent packets in the window.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 7 · Medium</div>
     <div class="q-text">In practice, which statement about Selective Repeat behavior on loss is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">In congestion avoidance, cwnd increases linearly, about 1 MSS per RTT.</button>
-      <button class="option" data-correct="false">TCP uses smoothed RTT and variance to set a robust retransmission timer.</button>
-      <button class="option" data-correct="true">Selective Repeat retransmits only missing packets and buffers the rest.</button>
-      <button class="option" data-correct="false">Port numbers are used to deliver data to the correct process on the correct host.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Selective Repeat retransmits only missing packets and buffers the rest.</div>
     </div>
-    <div class="explanation">Correct. Selective Repeat retransmits only missing packets and buffers the rest.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 8 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of sequence numbers in reliable transfer is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">TCP uses additive increase and multiplicative decrease for stable and fair sharing.</button>
-      <button class="option" data-correct="false">The sequence number identifies the first payload byte in the segment, not a packet counter.</button>
-      <button class="option" data-correct="false">The UDP header is 8 bytes, giving low protocol overhead.</button>
-      <button class="option" data-correct="true">Sequence numbers allow duplicate detection and correct ordering at the receiver.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Sequence numbers allow duplicate detection and correct ordering at the receiver.</div>
     </div>
-    <div class="explanation">Correct. Sequence numbers allow duplicate detection and correct ordering at the receiver.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 9 · Easy</div>
     <div class="q-text">Which statement best describes cumulative ACKs in TCP?</div>
-    <div class="options">
-      <button class="option" data-correct="true">An ACK number confirms that all bytes before that number were received correctly.</button>
-      <button class="option" data-correct="false">On timeout, cwnd is reduced sharply and the connection returns to cautious startup behavior.</button>
-      <button class="option" data-correct="false">Loss of one segment can block delivery of later data even if they have already arrived.</button>
-      <button class="option" data-correct="false">Checksums detect many errors, but can rarely miss certain bit patterns.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">An ACK number confirms that all bytes before that number were received correctly.</div>
     </div>
-    <div class="explanation">Correct. An ACK number confirms that all bytes before that number were received correctly.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 10 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of the TCP three-way handshake is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Three duplicate ACKs are treated as likely loss and trigger fast retransmit before timeout.</button>
-      <button class="option" data-correct="true">The three-way handshake synchronizes sequence numbers and establishes state at both ends.</button>
-      <button class="option" data-correct="false">QUIC uses independent streams so loss in one stream does not block all others.</button>
-      <button class="option" data-correct="false">Stop-and-wait allows only one outstanding packet before the sender waits for an ACK.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">The three-way handshake synchronizes sequence numbers and establishes state at both ends.</div>
     </div>
-    <div class="explanation">Correct. The three-way handshake synchronizes sequence numbers and establishes state at both ends.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 11 · Medium</div>
     <div class="q-text">In practice, which statement about flow control with rwnd is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Reno keeps data flowing after fast retransmit instead of restarting from scratch.</button>
-      <button class="option" data-correct="false">Servers often listen on well-known ports, while clients use temporary ephemeral ports.</button>
-      <button class="option" data-correct="true">The receiver advertises rwnd to prevent the sender from overrunning the receive buffer.</button>
-      <button class="option" data-correct="false">Pipelining keeps multiple packets in flight and reduces idle time between RTTs.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">The receiver advertises rwnd to prevent the sender from overrunning the receive buffer.</div>
     </div>
-    <div class="explanation">Correct. The receiver advertises rwnd to prevent the sender from overrunning the receive buffer.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 12 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of congestion control with cwnd is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">MSS is the TCP payload size that avoids IP fragmentation for the current MTU.</button>
-      <button class="option" data-correct="false">The pseudo-header binds the checksum to IP addresses and protocol fields for extra protection.</button>
-      <button class="option" data-correct="false">Go-Back-N retransmits the lost packet and all subsequent packets in the window.</button>
-      <button class="option" data-correct="true">The sender limits its send window with cwnd to avoid overloading the network.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">The sender limits its send window with cwnd to avoid overloading the network.</div>
     </div>
-    <div class="explanation">Correct. The sender limits its send window with cwnd to avoid overloading the network.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 13 · Easy</div>
     <div class="q-text">Which statement best describes slow start?</div>
-    <div class="options">
-      <button class="option" data-correct="true">In slow start, cwnd grows roughly exponentially, typically doubling per RTT.</button>
-      <button class="option" data-correct="false">TCP uses smoothed RTT and variance to set a robust retransmission timer.</button>
-      <button class="option" data-correct="false">Port numbers are used to deliver data to the correct process on the correct host.</button>
-      <button class="option" data-correct="false">Selective Repeat retransmits only missing packets and buffers the rest.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">In slow start, cwnd grows roughly exponentially, typically doubling per RTT.</div>
     </div>
-    <div class="explanation">Correct. In slow start, cwnd grows roughly exponentially, typically doubling per RTT.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 14 · Medium</div>
     <div class="q-text">In practice, which statement about congestion avoidance is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">The sequence number identifies the first payload byte in the segment, not a packet counter.</button>
-      <button class="option" data-correct="true">In congestion avoidance, cwnd increases linearly, about 1 MSS per RTT.</button>
-      <button class="option" data-correct="false">The UDP header is 8 bytes, giving low protocol overhead.</button>
-      <button class="option" data-correct="false">Sequence numbers allow duplicate detection and correct ordering at the receiver.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">In congestion avoidance, cwnd increases linearly, about 1 MSS per RTT.</div>
     </div>
-    <div class="explanation">Correct. In congestion avoidance, cwnd increases linearly, about 1 MSS per RTT.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 15 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of the AIMD principle is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Loss of one segment can block delivery of later data even if they have already arrived.</button>
-      <button class="option" data-correct="false">Checksums detect many errors, but can rarely miss certain bit patterns.</button>
-      <button class="option" data-correct="true">TCP uses additive increase and multiplicative decrease for stable and fair sharing.</button>
-      <button class="option" data-correct="false">An ACK number confirms that all bytes before that number were received correctly.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">TCP uses additive increase and multiplicative decrease for stable and fair sharing.</div>
     </div>
-    <div class="explanation">Correct. TCP uses additive increase and multiplicative decrease for stable and fair sharing.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 16 · Medium</div>
     <div class="q-text">In practice, which statement about response to timeout in classic TCP Reno is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">QUIC uses independent streams so loss in one stream does not block all others.</button>
-      <button class="option" data-correct="false">Stop-and-wait allows only one outstanding packet before the sender waits for an ACK.</button>
-      <button class="option" data-correct="false">The three-way handshake synchronizes sequence numbers and establishes state at both ends.</button>
-      <button class="option" data-correct="true">On timeout, cwnd is reduced sharply and the connection returns to cautious startup behavior.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">On timeout, cwnd is reduced sharply and the connection returns to cautious startup behavior.</div>
     </div>
-    <div class="explanation">Correct. On timeout, cwnd is reduced sharply and the connection returns to cautious startup behavior.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 17 · Easy</div>
     <div class="q-text">Which statement best describes three duplicate ACKs?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Three duplicate ACKs are treated as likely loss and trigger fast retransmit before timeout.</button>
-      <button class="option" data-correct="false">Servers often listen on well-known ports, while clients use temporary ephemeral ports.</button>
-      <button class="option" data-correct="false">Pipelining keeps multiple packets in flight and reduces idle time between RTTs.</button>
-      <button class="option" data-correct="false">The receiver advertises rwnd to prevent the sender from overrunning the receive buffer.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Three duplicate ACKs are treated as likely loss and trigger fast retransmit before timeout.</div>
     </div>
-    <div class="explanation">Correct. Three duplicate ACKs are treated as likely loss and trigger fast retransmit before timeout.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 18 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of fast recovery in Reno is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">The pseudo-header binds the checksum to IP addresses and protocol fields for extra protection.</button>
-      <button class="option" data-correct="true">Reno keeps data flowing after fast retransmit instead of restarting from scratch.</button>
-      <button class="option" data-correct="false">Go-Back-N retransmits the lost packet and all subsequent packets in the window.</button>
-      <button class="option" data-correct="false">The sender limits its send window with cwnd to avoid overloading the network.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Reno keeps data flowing after fast retransmit instead of restarting from scratch.</div>
     </div>
-    <div class="explanation">Correct. Reno keeps data flowing after fast retransmit instead of restarting from scratch.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 19 · Medium</div>
     <div class="q-text">In practice, which statement about the relation between MTU and MSS is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Port numbers are used to deliver data to the correct process on the correct host.</button>
-      <button class="option" data-correct="false">Selective Repeat retransmits only missing packets and buffers the rest.</button>
-      <button class="option" data-correct="true">MSS is the TCP payload size that avoids IP fragmentation for the current MTU.</button>
-      <button class="option" data-correct="false">In slow start, cwnd grows roughly exponentially, typically doubling per RTT.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">MSS is the TCP payload size that avoids IP fragmentation for the current MTU.</div>
     </div>
-    <div class="explanation">Correct. MSS is the TCP payload size that avoids IP fragmentation for the current MTU.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 20 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of RTT estimation in TCP is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">The UDP header is 8 bytes, giving low protocol overhead.</button>
-      <button class="option" data-correct="false">Sequence numbers allow duplicate detection and correct ordering at the receiver.</button>
-      <button class="option" data-correct="false">In congestion avoidance, cwnd increases linearly, about 1 MSS per RTT.</button>
-      <button class="option" data-correct="true">TCP uses smoothed RTT and variance to set a robust retransmission timer.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">TCP uses smoothed RTT and variance to set a robust retransmission timer.</div>
     </div>
-    <div class="explanation">Correct. TCP uses smoothed RTT and variance to set a robust retransmission timer.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 21 · Medium</div>
     <div class="q-text">In practice, which statement about TCP sequence numbers are byte-oriented is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="true">The sequence number identifies the first payload byte in the segment, not a packet counter.</button>
-      <button class="option" data-correct="false">Checksums detect many errors, but can rarely miss certain bit patterns.</button>
-      <button class="option" data-correct="false">An ACK number confirms that all bytes before that number were received correctly.</button>
-      <button class="option" data-correct="false">TCP uses additive increase and multiplicative decrease for stable and fair sharing.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">The sequence number identifies the first payload byte in the segment, not a packet counter.</div>
     </div>
-    <div class="explanation">Correct. The sequence number identifies the first payload byte in the segment, not a packet counter.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 22 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of head-of-line blocking in TCP is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Stop-and-wait allows only one outstanding packet before the sender waits for an ACK.</button>
-      <button class="option" data-correct="true">Loss of one segment can block delivery of later data even if they have already arrived.</button>
-      <button class="option" data-correct="false">The three-way handshake synchronizes sequence numbers and establishes state at both ends.</button>
-      <button class="option" data-correct="false">On timeout, cwnd is reduced sharply and the connection returns to cautious startup behavior.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Loss of one segment can block delivery of later data even if they have already arrived.</div>
     </div>
-    <div class="explanation">Correct. Loss of one segment can block delivery of later data even if they have already arrived.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 23 · Easy</div>
     <div class="q-text">Which statement best describes why QUIC reduces HOL problems?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Pipelining keeps multiple packets in flight and reduces idle time between RTTs.</button>
-      <button class="option" data-correct="false">The receiver advertises rwnd to prevent the sender from overrunning the receive buffer.</button>
-      <button class="option" data-correct="true">QUIC uses independent streams so loss in one stream does not block all others.</button>
-      <button class="option" data-correct="false">Three duplicate ACKs are treated as likely loss and trigger fast retransmit before timeout.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">QUIC uses independent streams so loss in one stream does not block all others.</div>
     </div>
-    <div class="explanation">Correct. QUIC uses independent streams so loss in one stream does not block all others.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 24 · Medium</div>
     <div class="q-text">In practice, which statement about well-known and ephemeral ports is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Go-Back-N retransmits the lost packet and all subsequent packets in the window.</button>
-      <button class="option" data-correct="false">The sender limits its send window with cwnd to avoid overloading the network.</button>
-      <button class="option" data-correct="false">Reno keeps data flowing after fast retransmit instead of restarting from scratch.</button>
-      <button class="option" data-correct="true">Servers often listen on well-known ports, while clients use temporary ephemeral ports.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Servers often listen on well-known ports, while clients use temporary ephemeral ports.</div>
     </div>
-    <div class="explanation">Correct. Servers often listen on well-known ports, while clients use temporary ephemeral ports.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 25 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of the pseudo-header in transport checksums is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="true">The pseudo-header binds the checksum to IP addresses and protocol fields for extra protection.</button>
-      <button class="option" data-correct="false">Selective Repeat retransmits only missing packets and buffers the rest.</button>
-      <button class="option" data-correct="false">In slow start, cwnd grows roughly exponentially, typically doubling per RTT.</button>
-      <button class="option" data-correct="false">MSS is the TCP payload size that avoids IP fragmentation for the current MTU.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">The pseudo-header binds the checksum to IP addresses and protocol fields for extra protection.</div>
     </div>
-    <div class="explanation">Correct. The pseudo-header binds the checksum to IP addresses and protocol fields for extra protection.</div>
   </div>
 </div>
 </section>

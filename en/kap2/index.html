@@ -151,301 +151,226 @@
   <div class="quiz" data-quiz>
     <div class="q-label">Question 1 · Easy</div>
     <div class="q-text">Which statement best describes client-server architecture?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Client-server centralizes service logic in always-on servers that serve many clients.</button>
-      <button class="option" data-correct="false">Cookies place a client identifier in requests so the server can associate actions with a session.</button>
-      <button class="option" data-correct="false">Video is split into short segments at multiple qualities for dynamic adaptation during playback.</button>
-      <button class="option" data-correct="false">Caching reduces lookup delay and load, while TTL limits how long a response can be reused.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Client-server centralizes service logic in always-on servers that serve many clients.</div>
     </div>
-    <div class="explanation">Correct. Client-server centralizes service logic in always-on servers that serve many clients.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 2 · Medium</div>
     <div class="q-text">In practice, which statement about self-scaling in P2P is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Persistent HTTP reduces TCP setup and RTT overhead when transferring multiple objects.</button>
-      <button class="option" data-correct="true">In P2P, every new peer contributes both demand and upload capacity.</button>
-      <button class="option" data-correct="false">SMTP pushes email between servers and uses queued storage when the destination server is not immediately available.</button>
-      <button class="option" data-correct="false">MX records indicate which mail servers receive email for a domain.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">In P2P, every new peer contributes both demand and upload capacity.</div>
     </div>
-    <div class="explanation">Correct. In P2P, every new peer contributes both demand and upload capacity.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 3 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of the role of sockets in the application layer is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Conditional GET saves bandwidth by transferring the object only when it has changed.</button>
-      <button class="option" data-correct="false">IMAP lets clients synchronize folders and message state while keeping mail on the server.</button>
-      <button class="option" data-correct="true">A socket is the API between the application and transport layer for data send/receive.</button>
-      <button class="option" data-correct="false">The welcome socket accepts new connections, and the OS creates a dedicated connection socket per client.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">A socket is the API between the application and transport layer for data send/receive.</div>
     </div>
-    <div class="explanation">Correct. A socket is the API between the application and transport layer for data send/receive.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 4 · Medium</div>
     <div class="q-text">In practice, which statement about what TCP offers applications is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">A web cache can serve popular objects locally, reducing both delay and backbone traffic.</button>
-      <button class="option" data-correct="false">DNS maps domain names to IP addresses so applications can contact the correct host.</button>
-      <button class="option" data-correct="false">UDP has no connections; one socket handles datagrams from many clients.</button>
-      <button class="option" data-correct="true">TCP provides reliable, ordered byte-stream delivery with flow and congestion control, but with more overhead.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">TCP provides reliable, ordered byte-stream delivery with flow and congestion control, but with more overhead.</div>
     </div>
-    <div class="explanation">Correct. TCP provides reliable, ordered byte-stream delivery with flow and congestion control, but with more overhead.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 5 · Easy</div>
     <div class="q-text">Which statement best describes what UDP offers applications?</div>
-    <div class="options">
-      <button class="option" data-correct="true">UDP offers low-latency, simple datagram transport without delivery guarantees.</button>
-      <button class="option" data-correct="false">CDNs move content close to users using edge servers for lower latency and higher scalability.</button>
-      <button class="option" data-correct="false">DNS is hierarchical with root, TLD, and authoritative name servers for scalable name resolution.</button>
-      <button class="option" data-correct="false">GET reads resources, POST creates/triggers actions, and PUT/PATCH are used for updates.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">UDP offers low-latency, simple datagram transport without delivery guarantees.</div>
     </div>
-    <div class="explanation">Correct. UDP offers low-latency, simple datagram transport without delivery guarantees.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 6 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of the HTTP request-response model is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">In DASH, the client selects bitrate per segment based on measured throughput and buffer state.</button>
-      <button class="option" data-correct="true">In HTTP, the client initiates a request, and the server replies with status line, headers, and optional content.</button>
-      <button class="option" data-correct="false">In iterative resolution, each server returns the next referral instead of completing the whole lookup itself.</button>
-      <button class="option" data-correct="false">HTTPS is HTTP over TLS and provides confidentiality, integrity, and server authentication.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">In HTTP, the client initiates a request, and the server replies with status line, headers, and optional content.</div>
     </div>
-    <div class="explanation">Correct. In HTTP, the client initiates a request, and the server replies with status line, headers, and optional content.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 7 · Medium</div>
     <div class="q-text">In practice, which statement about what it means that HTTP is stateless is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Video is split into short segments at multiple qualities for dynamic adaptation during playback.</button>
-      <button class="option" data-correct="false">Caching reduces lookup delay and load, while TTL limits how long a response can be reused.</button>
-      <button class="option" data-correct="true">An HTTP server treats each request independently of earlier requests.</button>
-      <button class="option" data-correct="false">Client-server centralizes service logic in always-on servers that serve many clients.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">An HTTP server treats each request independently of earlier requests.</div>
     </div>
-    <div class="explanation">Correct. An HTTP server treats each request independently of earlier requests.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 8 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of cookies in web applications is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">SMTP pushes email between servers and uses queued storage when the destination server is not immediately available.</button>
-      <button class="option" data-correct="false">MX records indicate which mail servers receive email for a domain.</button>
-      <button class="option" data-correct="false">In P2P, every new peer contributes both demand and upload capacity.</button>
-      <button class="option" data-correct="true">Cookies place a client identifier in requests so the server can associate actions with a session.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Cookies place a client identifier in requests so the server can associate actions with a session.</div>
     </div>
-    <div class="explanation">Correct. Cookies place a client identifier in requests so the server can associate actions with a session.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 9 · Easy</div>
     <div class="q-text">Which statement best describes persistent HTTP connections?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Persistent HTTP reduces TCP setup and RTT overhead when transferring multiple objects.</button>
-      <button class="option" data-correct="false">IMAP lets clients synchronize folders and message state while keeping mail on the server.</button>
-      <button class="option" data-correct="false">The welcome socket accepts new connections, and the OS creates a dedicated connection socket per client.</button>
-      <button class="option" data-correct="false">A socket is the API between the application and transport layer for data send/receive.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Persistent HTTP reduces TCP setup and RTT overhead when transferring multiple objects.</div>
     </div>
-    <div class="explanation">Correct. Persistent HTTP reduces TCP setup and RTT overhead when transferring multiple objects.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 10 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of conditional GET and 304 Not Modified is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">DNS maps domain names to IP addresses so applications can contact the correct host.</button>
-      <button class="option" data-correct="true">Conditional GET saves bandwidth by transferring the object only when it has changed.</button>
-      <button class="option" data-correct="false">UDP has no connections; one socket handles datagrams from many clients.</button>
-      <button class="option" data-correct="false">TCP provides reliable, ordered byte-stream delivery with flow and congestion control, but with more overhead.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Conditional GET saves bandwidth by transferring the object only when it has changed.</div>
     </div>
-    <div class="explanation">Correct. Conditional GET saves bandwidth by transferring the object only when it has changed.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 11 · Medium</div>
     <div class="q-text">In practice, which statement about web caching/proxies is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">DNS is hierarchical with root, TLD, and authoritative name servers for scalable name resolution.</button>
-      <button class="option" data-correct="false">GET reads resources, POST creates/triggers actions, and PUT/PATCH are used for updates.</button>
-      <button class="option" data-correct="true">A web cache can serve popular objects locally, reducing both delay and backbone traffic.</button>
-      <button class="option" data-correct="false">UDP offers low-latency, simple datagram transport without delivery guarantees.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">A web cache can serve popular objects locally, reducing both delay and backbone traffic.</div>
     </div>
-    <div class="explanation">Correct. A web cache can serve popular objects locally, reducing both delay and backbone traffic.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 12 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of CDN strategy is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">In iterative resolution, each server returns the next referral instead of completing the whole lookup itself.</button>
-      <button class="option" data-correct="false">HTTPS is HTTP over TLS and provides confidentiality, integrity, and server authentication.</button>
-      <button class="option" data-correct="false">In HTTP, the client initiates a request, and the server replies with status line, headers, and optional content.</button>
-      <button class="option" data-correct="true">CDNs move content close to users using edge servers for lower latency and higher scalability.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">CDNs move content close to users using edge servers for lower latency and higher scalability.</div>
     </div>
-    <div class="explanation">Correct. CDNs move content close to users using edge servers for lower latency and higher scalability.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 13 · Easy</div>
     <div class="q-text">Which statement best describes DASH adaptive streaming?</div>
-    <div class="options">
-      <button class="option" data-correct="true">In DASH, the client selects bitrate per segment based on measured throughput and buffer state.</button>
-      <button class="option" data-correct="false">Caching reduces lookup delay and load, while TTL limits how long a response can be reused.</button>
-      <button class="option" data-correct="false">Client-server centralizes service logic in always-on servers that serve many clients.</button>
-      <button class="option" data-correct="false">An HTTP server treats each request independently of earlier requests.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">In DASH, the client selects bitrate per segment based on measured throughput and buffer state.</div>
     </div>
-    <div class="explanation">Correct. In DASH, the client selects bitrate per segment based on measured throughput and buffer state.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 14 · Medium</div>
     <div class="q-text">In practice, which statement about video segmentation is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">MX records indicate which mail servers receive email for a domain.</button>
-      <button class="option" data-correct="true">Video is split into short segments at multiple qualities for dynamic adaptation during playback.</button>
-      <button class="option" data-correct="false">In P2P, every new peer contributes both demand and upload capacity.</button>
-      <button class="option" data-correct="false">Cookies place a client identifier in requests so the server can associate actions with a session.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Video is split into short segments at multiple qualities for dynamic adaptation during playback.</div>
     </div>
-    <div class="explanation">Correct. Video is split into short segments at multiple qualities for dynamic adaptation during playback.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 15 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of SMTP as a push protocol is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">The welcome socket accepts new connections, and the OS creates a dedicated connection socket per client.</button>
-      <button class="option" data-correct="false">A socket is the API between the application and transport layer for data send/receive.</button>
-      <button class="option" data-correct="true">SMTP pushes email between servers and uses queued storage when the destination server is not immediately available.</button>
-      <button class="option" data-correct="false">Persistent HTTP reduces TCP setup and RTT overhead when transferring multiple objects.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">SMTP pushes email between servers and uses queued storage when the destination server is not immediately available.</div>
     </div>
-    <div class="explanation">Correct. SMTP pushes email between servers and uses queued storage when the destination server is not immediately available.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 16 · Medium</div>
     <div class="q-text">In practice, which statement about IMAP in modern email is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">UDP has no connections; one socket handles datagrams from many clients.</button>
-      <button class="option" data-correct="false">TCP provides reliable, ordered byte-stream delivery with flow and congestion control, but with more overhead.</button>
-      <button class="option" data-correct="false">Conditional GET saves bandwidth by transferring the object only when it has changed.</button>
-      <button class="option" data-correct="true">IMAP lets clients synchronize folders and message state while keeping mail on the server.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">IMAP lets clients synchronize folders and message state while keeping mail on the server.</div>
     </div>
-    <div class="explanation">Correct. IMAP lets clients synchronize folders and message state while keeping mail on the server.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 17 · Easy</div>
     <div class="q-text">Which statement best describes DNS core function?</div>
-    <div class="options">
-      <button class="option" data-correct="true">DNS maps domain names to IP addresses so applications can contact the correct host.</button>
-      <button class="option" data-correct="false">GET reads resources, POST creates/triggers actions, and PUT/PATCH are used for updates.</button>
-      <button class="option" data-correct="false">UDP offers low-latency, simple datagram transport without delivery guarantees.</button>
-      <button class="option" data-correct="false">A web cache can serve popular objects locally, reducing both delay and backbone traffic.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">DNS maps domain names to IP addresses so applications can contact the correct host.</div>
     </div>
-    <div class="explanation">Correct. DNS maps domain names to IP addresses so applications can contact the correct host.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 18 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of the DNS hierarchy is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">HTTPS is HTTP over TLS and provides confidentiality, integrity, and server authentication.</button>
-      <button class="option" data-correct="true">DNS is hierarchical with root, TLD, and authoritative name servers for scalable name resolution.</button>
-      <button class="option" data-correct="false">In HTTP, the client initiates a request, and the server replies with status line, headers, and optional content.</button>
-      <button class="option" data-correct="false">CDNs move content close to users using edge servers for lower latency and higher scalability.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">DNS is hierarchical with root, TLD, and authoritative name servers for scalable name resolution.</div>
     </div>
-    <div class="explanation">Correct. DNS is hierarchical with root, TLD, and authoritative name servers for scalable name resolution.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 19 · Medium</div>
     <div class="q-text">In practice, which statement about iterative DNS resolution is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Client-server centralizes service logic in always-on servers that serve many clients.</button>
-      <button class="option" data-correct="false">An HTTP server treats each request independently of earlier requests.</button>
-      <button class="option" data-correct="true">In iterative resolution, each server returns the next referral instead of completing the whole lookup itself.</button>
-      <button class="option" data-correct="false">In DASH, the client selects bitrate per segment based on measured throughput and buffer state.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">In iterative resolution, each server returns the next referral instead of completing the whole lookup itself.</div>
     </div>
-    <div class="explanation">Correct. In iterative resolution, each server returns the next referral instead of completing the whole lookup itself.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 20 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of DNS caching and TTL is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">In P2P, every new peer contributes both demand and upload capacity.</button>
-      <button class="option" data-correct="false">Cookies place a client identifier in requests so the server can associate actions with a session.</button>
-      <button class="option" data-correct="false">Video is split into short segments at multiple qualities for dynamic adaptation during playback.</button>
-      <button class="option" data-correct="true">Caching reduces lookup delay and load, while TTL limits how long a response can be reused.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Caching reduces lookup delay and load, while TTL limits how long a response can be reused.</div>
     </div>
-    <div class="explanation">Correct. Caching reduces lookup delay and load, while TTL limits how long a response can be reused.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 21 · Medium</div>
     <div class="q-text">In practice, which statement about MX records in DNS is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="true">MX records indicate which mail servers receive email for a domain.</button>
-      <button class="option" data-correct="false">A socket is the API between the application and transport layer for data send/receive.</button>
-      <button class="option" data-correct="false">Persistent HTTP reduces TCP setup and RTT overhead when transferring multiple objects.</button>
-      <button class="option" data-correct="false">SMTP pushes email between servers and uses queued storage when the destination server is not immediately available.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">MX records indicate which mail servers receive email for a domain.</div>
     </div>
-    <div class="explanation">Correct. MX records indicate which mail servers receive email for a domain.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 22 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of the TCP server welcome socket is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">TCP provides reliable, ordered byte-stream delivery with flow and congestion control, but with more overhead.</button>
-      <button class="option" data-correct="true">The welcome socket accepts new connections, and the OS creates a dedicated connection socket per client.</button>
-      <button class="option" data-correct="false">Conditional GET saves bandwidth by transferring the object only when it has changed.</button>
-      <button class="option" data-correct="false">IMAP lets clients synchronize folders and message state while keeping mail on the server.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">The welcome socket accepts new connections, and the OS creates a dedicated connection socket per client.</div>
     </div>
-    <div class="explanation">Correct. The welcome socket accepts new connections, and the OS creates a dedicated connection socket per client.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 23 · Easy</div>
     <div class="q-text">Which statement best describes why UDP servers often use one socket?</div>
-    <div class="options">
-      <button class="option" data-correct="false">UDP offers low-latency, simple datagram transport without delivery guarantees.</button>
-      <button class="option" data-correct="false">A web cache can serve popular objects locally, reducing both delay and backbone traffic.</button>
-      <button class="option" data-correct="true">UDP has no connections; one socket handles datagrams from many clients.</button>
-      <button class="option" data-correct="false">DNS maps domain names to IP addresses so applications can contact the correct host.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">UDP has no connections; one socket handles datagrams from many clients.</div>
     </div>
-    <div class="explanation">Correct. UDP has no connections; one socket handles datagrams from many clients.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 24 · Medium</div>
     <div class="q-text">In practice, which statement about HTTP methods in REST-like APIs is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">In HTTP, the client initiates a request, and the server replies with status line, headers, and optional content.</button>
-      <button class="option" data-correct="false">CDNs move content close to users using edge servers for lower latency and higher scalability.</button>
-      <button class="option" data-correct="false">DNS is hierarchical with root, TLD, and authoritative name servers for scalable name resolution.</button>
-      <button class="option" data-correct="true">GET reads resources, POST creates/triggers actions, and PUT/PATCH are used for updates.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">GET reads resources, POST creates/triggers actions, and PUT/PATCH are used for updates.</div>
     </div>
-    <div class="explanation">Correct. GET reads resources, POST creates/triggers actions, and PUT/PATCH are used for updates.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 25 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of HTTPS in practice is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="true">HTTPS is HTTP over TLS and provides confidentiality, integrity, and server authentication.</button>
-      <button class="option" data-correct="false">An HTTP server treats each request independently of earlier requests.</button>
-      <button class="option" data-correct="false">In DASH, the client selects bitrate per segment based on measured throughput and buffer state.</button>
-      <button class="option" data-correct="false">In iterative resolution, each server returns the next referral instead of completing the whole lookup itself.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">HTTPS is HTTP over TLS and provides confidentiality, integrity, and server authentication.</div>
     </div>
-    <div class="explanation">Correct. HTTPS is HTTP over TLS and provides confidentiality, integrity, and server authentication.</div>
   </div>
 </div>
 </section>

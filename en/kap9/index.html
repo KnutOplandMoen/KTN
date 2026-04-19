@@ -129,301 +129,226 @@
   <div class="quiz" data-quiz>
     <div class="q-label">Question 1 · Easy</div>
     <div class="q-text">Which statement best describes the difference between streaming and full download?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Streaming starts playback before the full file is received by using continuous buffering.</button>
-      <button class="option" data-correct="false">RTP sequence numbers are used to detect loss and handle reordering at the receiver.</button>
-      <button class="option" data-correct="false">TCP retransmissions and head-of-line blocking can add unacceptable delay to live media.</button>
-      <button class="option" data-correct="false">I-frames provide reference points, while P/B-frames improve compression via temporal prediction.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Streaming starts playback before the full file is received by using continuous buffering.</div>
     </div>
-    <div class="explanation">Correct. Streaming starts playback before the full file is received by using continuous buffering.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 2 · Medium</div>
     <div class="q-text">In practice, which statement about the role of the playout buffer is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">RTP timestamps help receivers place media correctly on the playback timeline.</button>
-      <button class="option" data-correct="true">The playout buffer smooths uneven packet arrivals to keep playback steady.</button>
-      <button class="option" data-correct="false">FEC adds redundancy so receivers can recover losses without retransmission.</button>
-      <button class="option" data-correct="false">A shorter keyframe interval improves seeking and robustness but requires more bitrate.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">The playout buffer smooths uneven packet arrivals to keep playback steady.</div>
     </div>
-    <div class="explanation">Correct. The playout buffer smooths uneven packet arrivals to keep playback steady.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 3 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of the tradeoff of a larger buffer is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">RTCP reports quality metrics such as loss and jitter for adaptive stream control.</button>
-      <button class="option" data-correct="false">Interleaving spreads burst losses over time so impairments are less noticeable.</button>
-      <button class="option" data-correct="true">A larger buffer tolerates more jitter but increases end-to-end delay.</button>
-      <button class="option" data-correct="false">Audio and video must be synchronized with timestamps and clock handling for natural playback.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">A larger buffer tolerates more jitter but increases end-to-end delay.</div>
     </div>
-    <div class="explanation">Correct. A larger buffer tolerates more jitter but increases end-to-end delay.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 4 · Medium</div>
     <div class="q-text">In practice, which statement about what jitter means is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Roughly below 150 ms feels natural for conversation; higher delay makes dialogue harder.</button>
-      <button class="option" data-correct="false">Startup time, rebuffering, visual quality, and quality switches strongly affect user experience.</button>
-      <button class="option" data-correct="false">Multicast can scale one-to-many efficiently where infrastructure supports it.</button>
-      <button class="option" data-correct="true">Jitter is variation in packet delay, not necessarily high average delay.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Jitter is variation in packet delay, not necessarily high average delay.</div>
     </div>
-    <div class="explanation">Correct. Jitter is variation in packet delay, not necessarily high average delay.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 5 · Easy</div>
     <div class="q-text">Which statement best describes DASH client bitrate selection?</div>
-    <div class="options">
-      <button class="option" data-correct="true">A DASH client selects segment quality dynamically based on network measurements and buffer level.</button>
-      <button class="option" data-correct="false">At very high delay, participants talk over each other and conversation flow degrades.</button>
-      <button class="option" data-correct="false">When capacity drops, the client should lower bitrate early to avoid playback stalls.</button>
-      <button class="option" data-correct="false">Unicast works across today&#x27;s Internet without requiring global multicast support.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">A DASH client selects segment quality dynamically based on network measurements and buffer level.</div>
     </div>
-    <div class="explanation">Correct. A DASH client selects segment quality dynamically based on network measurements and buffer level.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 6 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of segment length in adaptive video is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">UDP avoids retransmission latency and lets applications directly control loss-time tradeoffs.</button>
-      <button class="option" data-correct="true">Shorter segments adapt faster but increase protocol and request overhead.</button>
-      <button class="option" data-correct="false">Low-latency setups use smaller buffers and shorter segments but tolerate less network variation.</button>
-      <button class="option" data-correct="false">Smooth pacing and congestion-aware control reduce bursts, loss, and arrival variance.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Shorter segments adapt faster but increase protocol and request overhead.</div>
     </div>
-    <div class="explanation">Correct. Shorter segments adapt faster but increase protocol and request overhead.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 7 · Medium</div>
     <div class="q-text">In practice, which statement about CDNs for multimedia is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">TCP retransmissions and head-of-line blocking can add unacceptable delay to live media.</button>
-      <button class="option" data-correct="false">I-frames provide reference points, while P/B-frames improve compression via temporal prediction.</button>
-      <button class="option" data-correct="true">A CDN reduces delay and backbone load by serving media from nearby edge nodes.</button>
-      <button class="option" data-correct="false">Streaming starts playback before the full file is received by using continuous buffering.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">A CDN reduces delay and backbone load by serving media from nearby edge nodes.</div>
     </div>
-    <div class="explanation">Correct. A CDN reduces delay and backbone load by serving media from nearby edge nodes.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 8 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of RTP sequence numbers is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">FEC adds redundancy so receivers can recover losses without retransmission.</button>
-      <button class="option" data-correct="false">A shorter keyframe interval improves seeking and robustness but requires more bitrate.</button>
-      <button class="option" data-correct="false">The playout buffer smooths uneven packet arrivals to keep playback steady.</button>
-      <button class="option" data-correct="true">RTP sequence numbers are used to detect loss and handle reordering at the receiver.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">RTP sequence numbers are used to detect loss and handle reordering at the receiver.</div>
     </div>
-    <div class="explanation">Correct. RTP sequence numbers are used to detect loss and handle reordering at the receiver.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 9 · Easy</div>
     <div class="q-text">Which statement best describes RTP timestamps?</div>
-    <div class="options">
-      <button class="option" data-correct="true">RTP timestamps help receivers place media correctly on the playback timeline.</button>
-      <button class="option" data-correct="false">Interleaving spreads burst losses over time so impairments are less noticeable.</button>
-      <button class="option" data-correct="false">Audio and video must be synchronized with timestamps and clock handling for natural playback.</button>
-      <button class="option" data-correct="false">A larger buffer tolerates more jitter but increases end-to-end delay.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">RTP timestamps help receivers place media correctly on the playback timeline.</div>
     </div>
-    <div class="explanation">Correct. RTP timestamps help receivers place media correctly on the playback timeline.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 10 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of RTCP feedback is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Startup time, rebuffering, visual quality, and quality switches strongly affect user experience.</button>
-      <button class="option" data-correct="true">RTCP reports quality metrics such as loss and jitter for adaptive stream control.</button>
-      <button class="option" data-correct="false">Multicast can scale one-to-many efficiently where infrastructure supports it.</button>
-      <button class="option" data-correct="false">Jitter is variation in packet delay, not necessarily high average delay.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">RTCP reports quality metrics such as loss and jitter for adaptive stream control.</div>
     </div>
-    <div class="explanation">Correct. RTCP reports quality metrics such as loss and jitter for adaptive stream control.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 11 · Medium</div>
     <div class="q-text">In practice, which statement about delay bounds for natural voice conversation is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">When capacity drops, the client should lower bitrate early to avoid playback stalls.</button>
-      <button class="option" data-correct="false">Unicast works across today&#x27;s Internet without requiring global multicast support.</button>
-      <button class="option" data-correct="true">Roughly below 150 ms feels natural for conversation; higher delay makes dialogue harder.</button>
-      <button class="option" data-correct="false">A DASH client selects segment quality dynamically based on network measurements and buffer level.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Roughly below 150 ms feels natural for conversation; higher delay makes dialogue harder.</div>
     </div>
-    <div class="explanation">Correct. Roughly below 150 ms feels natural for conversation; higher delay makes dialogue harder.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 12 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of what happens beyond 400 ms voice delay is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Low-latency setups use smaller buffers and shorter segments but tolerate less network variation.</button>
-      <button class="option" data-correct="false">Smooth pacing and congestion-aware control reduce bursts, loss, and arrival variance.</button>
-      <button class="option" data-correct="false">Shorter segments adapt faster but increase protocol and request overhead.</button>
-      <button class="option" data-correct="true">At very high delay, participants talk over each other and conversation flow degrades.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">At very high delay, participants talk over each other and conversation flow degrades.</div>
     </div>
-    <div class="explanation">Correct. At very high delay, participants talk over each other and conversation flow degrades.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 13 · Easy</div>
     <div class="q-text">Which statement best describes why UDP is often used for real-time media?</div>
-    <div class="options">
-      <button class="option" data-correct="true">UDP avoids retransmission latency and lets applications directly control loss-time tradeoffs.</button>
-      <button class="option" data-correct="false">I-frames provide reference points, while P/B-frames improve compression via temporal prediction.</button>
-      <button class="option" data-correct="false">Streaming starts playback before the full file is received by using continuous buffering.</button>
-      <button class="option" data-correct="false">A CDN reduces delay and backbone load by serving media from nearby edge nodes.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">UDP avoids retransmission latency and lets applications directly control loss-time tradeoffs.</div>
     </div>
-    <div class="explanation">Correct. UDP avoids retransmission latency and lets applications directly control loss-time tradeoffs.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 14 · Medium</div>
     <div class="q-text">In practice, which statement about a drawback of TCP for live media is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">A shorter keyframe interval improves seeking and robustness but requires more bitrate.</button>
-      <button class="option" data-correct="true">TCP retransmissions and head-of-line blocking can add unacceptable delay to live media.</button>
-      <button class="option" data-correct="false">The playout buffer smooths uneven packet arrivals to keep playback steady.</button>
-      <button class="option" data-correct="false">RTP sequence numbers are used to detect loss and handle reordering at the receiver.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">TCP retransmissions and head-of-line blocking can add unacceptable delay to live media.</div>
     </div>
-    <div class="explanation">Correct. TCP retransmissions and head-of-line blocking can add unacceptable delay to live media.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 15 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of FEC in media streams is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Audio and video must be synchronized with timestamps and clock handling for natural playback.</button>
-      <button class="option" data-correct="false">A larger buffer tolerates more jitter but increases end-to-end delay.</button>
-      <button class="option" data-correct="true">FEC adds redundancy so receivers can recover losses without retransmission.</button>
-      <button class="option" data-correct="false">RTP timestamps help receivers place media correctly on the playback timeline.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">FEC adds redundancy so receivers can recover losses without retransmission.</div>
     </div>
-    <div class="explanation">Correct. FEC adds redundancy so receivers can recover losses without retransmission.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 16 · Medium</div>
     <div class="q-text">In practice, which statement about interleaving is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Multicast can scale one-to-many efficiently where infrastructure supports it.</button>
-      <button class="option" data-correct="false">Jitter is variation in packet delay, not necessarily high average delay.</button>
-      <button class="option" data-correct="false">RTCP reports quality metrics such as loss and jitter for adaptive stream control.</button>
-      <button class="option" data-correct="true">Interleaving spreads burst losses over time so impairments are less noticeable.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Interleaving spreads burst losses over time so impairments are less noticeable.</div>
     </div>
-    <div class="explanation">Correct. Interleaving spreads burst losses over time so impairments are less noticeable.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 17 · Easy</div>
     <div class="q-text">Which statement best describes video QoE factors?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Startup time, rebuffering, visual quality, and quality switches strongly affect user experience.</button>
-      <button class="option" data-correct="false">Unicast works across today&#x27;s Internet without requiring global multicast support.</button>
-      <button class="option" data-correct="false">A DASH client selects segment quality dynamically based on network measurements and buffer level.</button>
-      <button class="option" data-correct="false">Roughly below 150 ms feels natural for conversation; higher delay makes dialogue harder.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Startup time, rebuffering, visual quality, and quality switches strongly affect user experience.</div>
     </div>
-    <div class="explanation">Correct. Startup time, rebuffering, visual quality, and quality switches strongly affect user experience.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 18 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of adaptive bitrate under poor networks is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Smooth pacing and congestion-aware control reduce bursts, loss, and arrival variance.</button>
-      <button class="option" data-correct="true">When capacity drops, the client should lower bitrate early to avoid playback stalls.</button>
-      <button class="option" data-correct="false">Shorter segments adapt faster but increase protocol and request overhead.</button>
-      <button class="option" data-correct="false">At very high delay, participants talk over each other and conversation flow degrades.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">When capacity drops, the client should lower bitrate early to avoid playback stalls.</div>
     </div>
-    <div class="explanation">Correct. When capacity drops, the client should lower bitrate early to avoid playback stalls.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 19 · Medium</div>
     <div class="q-text">In practice, which statement about low-latency live streaming is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Streaming starts playback before the full file is received by using continuous buffering.</button>
-      <button class="option" data-correct="false">A CDN reduces delay and backbone load by serving media from nearby edge nodes.</button>
-      <button class="option" data-correct="true">Low-latency setups use smaller buffers and shorter segments but tolerate less network variation.</button>
-      <button class="option" data-correct="false">UDP avoids retransmission latency and lets applications directly control loss-time tradeoffs.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Low-latency setups use smaller buffers and shorter segments but tolerate less network variation.</div>
     </div>
-    <div class="explanation">Correct. Low-latency setups use smaller buffers and shorter segments but tolerate less network variation.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 20 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of I/P/B frames in video coding is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">The playout buffer smooths uneven packet arrivals to keep playback steady.</button>
-      <button class="option" data-correct="false">RTP sequence numbers are used to detect loss and handle reordering at the receiver.</button>
-      <button class="option" data-correct="false">TCP retransmissions and head-of-line blocking can add unacceptable delay to live media.</button>
-      <button class="option" data-correct="true">I-frames provide reference points, while P/B-frames improve compression via temporal prediction.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">I-frames provide reference points, while P/B-frames improve compression via temporal prediction.</div>
     </div>
-    <div class="explanation">Correct. I-frames provide reference points, while P/B-frames improve compression via temporal prediction.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 21 · Medium</div>
     <div class="q-text">In practice, which statement about keyframe interval is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="true">A shorter keyframe interval improves seeking and robustness but requires more bitrate.</button>
-      <button class="option" data-correct="false">A larger buffer tolerates more jitter but increases end-to-end delay.</button>
-      <button class="option" data-correct="false">RTP timestamps help receivers place media correctly on the playback timeline.</button>
-      <button class="option" data-correct="false">FEC adds redundancy so receivers can recover losses without retransmission.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">A shorter keyframe interval improves seeking and robustness but requires more bitrate.</div>
     </div>
-    <div class="explanation">Correct. A shorter keyframe interval improves seeking and robustness but requires more bitrate.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 22 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of lip-sync is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Jitter is variation in packet delay, not necessarily high average delay.</button>
-      <button class="option" data-correct="true">Audio and video must be synchronized with timestamps and clock handling for natural playback.</button>
-      <button class="option" data-correct="false">RTCP reports quality metrics such as loss and jitter for adaptive stream control.</button>
-      <button class="option" data-correct="false">Interleaving spreads burst losses over time so impairments are less noticeable.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Audio and video must be synchronized with timestamps and clock handling for natural playback.</div>
     </div>
-    <div class="explanation">Correct. Audio and video must be synchronized with timestamps and clock handling for natural playback.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 23 · Easy</div>
     <div class="q-text">Which statement best describes multicast in distribution networks?</div>
-    <div class="options">
-      <button class="option" data-correct="false">A DASH client selects segment quality dynamically based on network measurements and buffer level.</button>
-      <button class="option" data-correct="false">Roughly below 150 ms feels natural for conversation; higher delay makes dialogue harder.</button>
-      <button class="option" data-correct="true">Multicast can scale one-to-many efficiently where infrastructure supports it.</button>
-      <button class="option" data-correct="false">Startup time, rebuffering, visual quality, and quality switches strongly affect user experience.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Multicast can scale one-to-many efficiently where infrastructure supports it.</div>
     </div>
-    <div class="explanation">Correct. Multicast can scale one-to-many efficiently where infrastructure supports it.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 24 · Medium</div>
     <div class="q-text">In practice, which statement about why OTT often uses unicast is most correct?</div>
-    <div class="options">
-      <button class="option" data-correct="false">Shorter segments adapt faster but increase protocol and request overhead.</button>
-      <button class="option" data-correct="false">At very high delay, participants talk over each other and conversation flow degrades.</button>
-      <button class="option" data-correct="false">When capacity drops, the client should lower bitrate early to avoid playback stalls.</button>
-      <button class="option" data-correct="true">Unicast works across today&#x27;s Internet without requiring global multicast support.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Unicast works across today&#x27;s Internet without requiring global multicast support.</div>
     </div>
-    <div class="explanation">Correct. Unicast works across today&#x27;s Internet without requiring global multicast support.</div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 25 · Hard</div>
     <div class="q-text">In a larger network setting, which evaluation of pacing and congestion control in media delivery is most accurate?</div>
-    <div class="options">
-      <button class="option" data-correct="true">Smooth pacing and congestion-aware control reduce bursts, loss, and arrival variance.</button>
-      <button class="option" data-correct="false">A CDN reduces delay and backbone load by serving media from nearby edge nodes.</button>
-      <button class="option" data-correct="false">UDP avoids retransmission latency and lets applications directly control loss-time tradeoffs.</button>
-      <button class="option" data-correct="false">Low-latency setups use smaller buffers and shorter segments but tolerate less network variation.</button>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Show answer</button>
+      <div class="answer">Smooth pacing and congestion-aware control reduce bursts, loss, and arrival variance.</div>
     </div>
-    <div class="explanation">Correct. Smooth pacing and congestion-aware control reduce bursts, loss, and arrival variance.</div>
   </div>
 </div>
 </section>
