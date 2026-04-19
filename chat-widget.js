@@ -897,13 +897,8 @@
     <div class="ktn-chat-presets" id="ktn-chat-presets"></div>
     <div class="ktn-chat-messages-wrap">
       <div class="ktn-chat-messages"></div>
-<<<<<<< HEAD
-      <button class="ktn-scroll-to-bottom" type="button" aria-label="${isEn ? "Scroll to bottom" : "Rull til bunnen"}">
-        <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-=======
       <button class="ktn-chat-scroll-arrow" type="button" aria-label="Scroll to bottom">
         <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
->>>>>>> 4c9a89faeea30302deef824de0c573fc0d23b768
       </button>
     </div>
     <form class="ktn-chat-form" autocomplete="off">
@@ -917,11 +912,7 @@
   document.body.appendChild(panel);
 
   const messagesEl = panel.querySelector(".ktn-chat-messages");
-<<<<<<< HEAD
-  const scrollToBottomBtn = panel.querySelector(".ktn-scroll-to-bottom");
-=======
   const scrollArrow = panel.querySelector(".ktn-chat-scroll-arrow");
->>>>>>> 4c9a89faeea30302deef824de0c573fc0d23b768
   const form = panel.querySelector(".ktn-chat-form");
   const input = panel.querySelector(".ktn-chat-input");
   const sendBtn = panel.querySelector(".ktn-chat-send");
@@ -941,17 +932,17 @@
 
   function updateScrollButton() {
     if (isNearBottom()) {
-      scrollToBottomBtn.classList.remove("visible");
+      scrollArrow.classList.remove("visible");
     } else {
-      scrollToBottomBtn.classList.add("visible");
+      scrollArrow.classList.add("visible");
     }
   }
 
   messagesEl.addEventListener("scroll", updateScrollButton, { passive: true });
 
-  scrollToBottomBtn.addEventListener("click", () => {
+  scrollArrow.addEventListener("click", () => {
     messagesEl.scrollTop = messagesEl.scrollHeight;
-    scrollToBottomBtn.classList.remove("visible");
+    scrollArrow.classList.remove("visible");
   });
 
   let selectedPreset = DEFAULT_PRESET;
@@ -1854,14 +1845,7 @@
       typesetMathIn(div);
     }
     messagesEl.appendChild(div);
-<<<<<<< HEAD
-    if (role === "user" || isNearBottom()) {
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-    }
-    updateScrollButton();
-=======
     scrollMessagesToBottom(true);
->>>>>>> 4c9a89faeea30302deef824de0c573fc0d23b768
     return div;
   }
 
@@ -1870,12 +1854,7 @@
     div.className = "ktn-msg ktn-msg-error";
     div.textContent = msg;
     messagesEl.appendChild(div);
-<<<<<<< HEAD
-    if (isNearBottom()) messagesEl.scrollTop = messagesEl.scrollHeight;
-    updateScrollButton();
-=======
     scrollMessagesToBottom(true);
->>>>>>> 4c9a89faeea30302deef824de0c573fc0d23b768
   }
 
   function isMessagesNearBottom(threshold = 48) {
@@ -1983,11 +1962,7 @@
       textEl.offsetHeight; // reflow
       textEl.style.animation = "";
       textEl.textContent = loadingMessages[msgIdx];
-<<<<<<< HEAD
-      if (isNearBottom()) messagesEl.scrollTop = messagesEl.scrollHeight;
-=======
       scrollMessagesToBottom();
->>>>>>> 4c9a89faeea30302deef824de0c573fc0d23b768
     }, 2500);
 
     const timerInterval = setInterval(() => {
@@ -2022,16 +1997,6 @@
     let accumulated = "";
     let assistantEl = null;
     let rafId = 0;
-<<<<<<< HEAD
-
-    function paint() {
-      rafId = 0;
-      if (assistantEl) {
-        assistantEl.innerHTML = renderMarkdown(accumulated);
-        typesetMathIn(assistantEl);
-        if (isNearBottom()) messagesEl.scrollTop = messagesEl.scrollHeight;
-        updateScrollButton();
-=======
     let shouldFollowStream = true;
     const onMessagesScroll = () => {
       const near = isMessagesNearBottom();
@@ -2040,7 +2005,6 @@
         hideScrollArrow();
       } else if (assistantEl) {
         showScrollArrow();
->>>>>>> 4c9a89faeea30302deef824de0c573fc0d23b768
       }
     };
     messagesEl.addEventListener("scroll", onMessagesScroll, { passive: true });
