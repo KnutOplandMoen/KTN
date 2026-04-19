@@ -133,7 +133,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 1 · Lett</div>
-    <div class="q-text">Hva beskriver best forskjellen mellom streaming og full nedlasting?</div>
+    <div class="q-text">Hva er forskjellen mellom streaming og full nedlasting?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Streaming starter avspilling før hele filen er mottatt ved å bruke fortløpende buffring.</div>
@@ -142,7 +142,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 2 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om playout-bufferens rolle i praksis?</div>
+    <div class="q-text">Hva er playout-bufferen, og hva er dens rolle?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Playout-buffer glatter ut ujevn pakkeankomst slik at avspilling blir jevnere.</div>
@@ -151,7 +151,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 3 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om tradeoff ved større buffer er faglig best?</div>
+    <div class="q-text">Hva er avveiingen ved å øke playout-bufferstørrelsen?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Større buffer tåler mer jitter, men øker opplevd ende-til-ende-forsinkelse.</div>
@@ -160,7 +160,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 4 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om hva jitter betyr i praksis?</div>
+    <div class="q-text">Hva er jitter i nettverkskontekst?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Jitter er variasjon i pakkeforsinkelse, ikke nødvendigvis høy gjennomsnittsforsinkelse.</div>
@@ -169,16 +169,16 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 5 · Lett</div>
-    <div class="q-text">Hva beskriver best DASH-klientens bitratevalg?</div>
+    <div class="q-text">Hva er DASH, og hvordan velger klienten bitrate?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">DASH-klienten velger segmentkvalitet dynamisk basert på nettmålinger og bufferfylling.</div>
+      <div class="answer">DASH (Dynamic Adaptive Streaming over HTTP) deler video i segmenter tilgjengelig i flere kvalitetsnivåer. Klienten velger segmentkvalitet dynamisk basert på estimert nettkapasitet (f.eks. nedlastet bitrate) og bufferfylling. Ved god tilkobling velges høy kvalitet; ved treg tilkobling reduseres kvaliteten for å unngå stopp.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 6 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om segmentlengde i adaptiv video er faglig best?</div>
+    <div class="q-text">Hva er avveiingen ved valg av segmentlengde i DASH?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Kortere segmenter gir raskere tilpasning, men høyere protokoll- og request-overhead.</div>
@@ -187,7 +187,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 7 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om CDN for multimedia i praksis?</div>
+    <div class="q-text">Hva er en CDN, og hva er fordelen for multimedia?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">CDN reduserer forsinkelse og backbone-belastning ved å servere media fra nære edge-noder.</div>
@@ -196,16 +196,16 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 8 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om RTP-sekvensnummer er faglig best?</div>
+    <div class="q-text">Hva er RTP-sekvensnummeret, og hva brukes det til?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">RTP-sekvensnumre brukes til å oppdage tap og håndtere omrekkefølge i mottakeren.</div>
+      <div class="answer">RTP-sekvensnumre brukes til å oppdage pakketap og håndtere omrekkefølge i mottakeren. Mottakeren kan se hull i sekvensnumre og vite at en pakke er tapt, eller re-sortere pakker som ankom i feil rekkefølge. Sekvensnummer øker med én for hver RTP-pakke.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 9 · Lett</div>
-    <div class="q-text">Hva beskriver best RTP-tidsstempel?</div>
+    <div class="q-text">Hva er RTP-tidsstempelet, og hva brukes det til?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">RTP-tidsstempel hjelper mottakeren å plassere mediedata riktig i tidslinjen.</div>
@@ -214,16 +214,16 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 10 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om RTCP-tilbakemelding er faglig best?</div>
+    <div class="q-text">Hva er RTCP, og hva rapporterer det?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">RTCP rapporterer kvalitetsmål som tap og jitter for adaptiv styring av strømmen.</div>
+      <div class="answer">RTCP (RTP Control Protocol) er en tilbakemeldingsprotokoll som går parallelt med RTP. Mottakeren sender RTCP Receiver Reports med mål som pakketap, jitter og rundtursforsinkelse. Senderen bruker disse til å tilpasse bitrate, og rapporten hjelper diagnostisere nettverkskvalitet. RTCP er begrenset til en brøkdel av total båndbredde for å ikke forstyrre mediestrømmen.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 11 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om forsinkelsesgrense for naturlig tale i praksis?</div>
+    <div class="q-text">Hva er forsinkelsesgrensen for naturlig talesamtale?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Rundt under 150 ms oppleves samtale som naturlig; større forsinkelse gjør dialog vanskeligere.</div>
@@ -232,7 +232,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 12 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om hva som skjer over 400 ms taleforsinkelse er faglig best?</div>
+    <div class="q-text">Hva skjer med talesamtalen når forsinkelsen overstiger 400 ms?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Ved svært høy forsinkelse begynner deltakere å snakke i munnen på hverandre og opplever dårlig flyt.</div>
@@ -241,7 +241,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 13 · Lett</div>
-    <div class="q-text">Hva beskriver best hvorfor UDP ofte brukes for sanntidsmedia?</div>
+    <div class="q-text">Hvorfor brukes UDP fremfor TCP for sanntidsmedia?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">UDP unngår retransmisjonslatens og lar applikasjonen styre taps- og tidsstrategi direkte.</div>
@@ -250,7 +250,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 14 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om ulempe med TCP for live media i praksis?</div>
+    <div class="q-text">Hva er ulempen med TCP for live mediastrømming?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">TCP-retransmisjoner og head-of-line blocking kan øke latenstid uakseptabelt for liveinnhold.</div>
@@ -259,25 +259,25 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 15 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om FEC i mediestrømmer er faglig best?</div>
+    <div class="q-text">Hva er FEC (Forward Error Correction) i mediestrømmer?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">FEC legger til redundans slik at mottaker kan rekonstruere tapte pakker uten retransmisjon.</div>
+      <div class="answer">FEC legger til redundante pakker (f.eks. XOR av flere originalpakker) slik at mottakeren kan rekonstruere tapte pakker uten å be om retransmisjon. Dette er spesielt nyttig for sanntidsmedia der retransmisjoner er for trege. Ulempen er økt båndbreddebruk (overhead proporsjonal med redundansnivå).</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 16 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om interleaving i praksis?</div>
+    <div class="q-text">Hva er interleaving i mediestrømmer?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Interleaving sprer bursttap over tid slik at feil blir mindre hørbare/synlige.</div>
+      <div class="answer">Interleaving omstokker rekkefølgen på mediepakker slik at bursttap — der mange pakker tapes på rad — spres over tid ved avspilling. I stedet for å miste f.eks. 50 ms sammenhengende lyd, mistes 5 ms lyd spredt over 500 ms, noe som er langt mindre hørbart. Ulempen er økt forsinkelse fordi klienten må vente på pakker som er spredt ut.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 17 · Lett</div>
-    <div class="q-text">Hva beskriver best QoE-faktorer i video?</div>
+    <div class="q-text">Hvilke faktorer påvirker QoE (Quality of Experience) i videostrømming?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Oppstartstid, rebuffering, bildekvalitet og kvalitetsbytter påvirker brukeropplevelse mest.</div>
@@ -286,7 +286,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 18 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om adaptiv bitrate ved dårlig nett er faglig best?</div>
+    <div class="q-text">Hva bør en DASH-klient gjøre når nettkapasiteten synker?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Ved redusert kapasitet bør klienten senke bitrate tidlig for å unngå avspillingsstopp.</div>
@@ -295,7 +295,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 19 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om lavlatens live-streaming i praksis?</div>
+    <div class="q-text">Hva er avveiingen ved lavlatens live-streaming?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Lavlatensoppsett bruker mindre buffere og kortere segmenter, men tåler mindre nettverksvariasjon.</div>

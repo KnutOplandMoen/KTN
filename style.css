@@ -884,6 +884,36 @@ pre .c-cli { color: #e8b560; }
 }
 .quiz .answer.show { display: block; }
 
+/* MCQ opt buttons */
+.quiz .opts { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+.quiz button.opt {
+  font-family: var(--serif);
+  font-size: 15px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 10px 16px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.15s;
+  text-align: left;
+}
+.quiz button.opt:hover:not(:disabled) { border-color: var(--rust); background: #fff9ee; }
+.quiz button.opt:disabled { cursor: default; }
+.quiz button.opt.correct { border-color: var(--green); background: #f0f7f0; color: var(--ink); }
+.quiz button.opt.wrong { border-color: #c0392b; background: #fdf0f0; color: #c0392b; }
+.quiz .feedback {
+  display: none;
+  padding: 16px 20px;
+  background: var(--paper);
+  border-left: 3px solid var(--green);
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.quiz .feedback.show { display: block; }
+
 /* ---------- STEPPER ---------- */
 .stepper {
   background: var(--paper-dark);

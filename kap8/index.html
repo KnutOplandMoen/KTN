@@ -150,16 +150,16 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 1 · Lett</div>
-    <div class="q-text">Hva beskriver best CIA-triaden?</div>
+    <div class="q-text">Hva er CIA-triaden?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Konfidensialitet, integritet og tilgjengelighet er grunnmålene i informasjonssikkerhet.</div>
+      <div class="answer">CIA-triaden er de tre grunnmålene i informasjonssikkerhet: Konfidensialitet (kun autoriserte kan lese data), Integritet (data kan ikke endres uten oppdagelse) og Tilgjengelighet (systemer skal være tilgjengelige når de trengs). Alle sikkerhetstiltak kan knyttes til ett eller flere av disse målene.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 2 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om symmetrisk kryptering i praksis?</div>
+    <div class="q-text">Hva er symmetrisk kryptering, og når brukes den?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Symmetrisk kryptering er rask og egnet for store datamengder med delt hemmelig nøkkel.</div>
@@ -168,16 +168,16 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 3 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om asymmetrisk kryptering er faglig best?</div>
+    <div class="q-text">Hva er asymmetrisk kryptering, og hva brukes det til?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Asymmetrisk kryptografi bruker nøkkelpar og er nyttig for nøkkeldeling og signaturer.</div>
+      <div class="answer">Asymmetrisk kryptografi bruker et nøkkelpar: offentlig nøkkel (kan deles fritt) og privat nøkkel (holdes hemmelig). Det er nyttig for nøkkeldeling (krypter sesjonsnøkkel med mottakers offentlige nøkkel) og digitale signaturer (signer med privat nøkkel, verifiser med offentlig). Ulempen er at det er mye tregere enn symmetrisk kryptering.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 4 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om hybrid kryptering i praksis?</div>
+    <div class="q-text">Hva er hybrid kryptering?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Hybridoppsett bruker asymmetri til nøkkelutveksling og symmetri til selve datakrypteringen.</div>
@@ -186,7 +186,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 5 · Lett</div>
-    <div class="q-text">Hva beskriver best AES?</div>
+    <div class="q-text">Hva er AES?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">AES er en symmetrisk blokk-krypteringsalgoritme som brukes bredt i moderne protokoller.</div>
@@ -195,7 +195,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 6 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om RSA/ECC-nøkler er faglig best?</div>
+    <div class="q-text">Hva er forskjellen mellom offentlig og privat nøkkel i RSA/ECC?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Private nøkkel holdes hemmelig, mens offentlig nøkkel kan deles for verifisering og nøkkelavtale.</div>
@@ -204,7 +204,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 7 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om hashfunksjoner i praksis?</div>
+    <div class="q-text">Hva er en kryptografisk hashfunksjon?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">En kryptografisk hash gir et kort fingeravtrykk som endres dramatisk ved små inputendringer.</div>
@@ -213,43 +213,43 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 8 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om MAC (Message Authentication Code) er faglig best?</div>
+    <div class="q-text">Hva er en MAC (Message Authentication Code)?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">MAC gir integritet og autentisering mellom parter som deler en hemmelig nøkkel.</div>
+      <div class="answer">En MAC gir integritet og autentisering mellom parter som deler en hemmelig nøkkel. Senderen beregner MAC = hash(melding + hemmelig nøkkel) og sender begge. Mottakeren beregner selv MAC og sammenligner — avvik avslører enten manipulering eller feil avsender. I motsetning til digital signatur krever MAC ingen PKI, men begge parter må ha den samme hemmelige nøkkelen.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 9 · Lett</div>
-    <div class="q-text">Hva beskriver best digitale signaturer?</div>
+    <div class="q-text">Hva er digitale signaturer?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Digitale signaturer gir verifiserbar avsenderautentisering og ikke-benektbarhet.</div>
+      <div class="answer">Digitale signaturer gir verifiserbar avsenderautentisering og ikke-benektbarhet. Senderen hasher meldingen og krypterer hashen med sin private nøkkel — dette er signaturen. Mottakeren dekrypterer signaturen med avsenderens offentlige nøkkel og sammenligner med sin egen hash av meldingen. Siden kun avsenderen har den private nøkkelen, kan han ikke benekte å ha signert.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 10 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om sertifikater og CA er faglig best?</div>
+    <div class="q-text">Hva er et digitalt sertifikat, og hva er en CA?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Et sertifikat binder identitet til offentlig nøkkel via en signatur fra en betrodd CA.</div>
+      <div class="answer">Et sertifikat binder identitet (f.eks. domenenavn) til en offentlig nøkkel via en signatur fra en betrodd Certificate Authority (CA). Nettleseren stoler på CA-er som er forhåndsinstallert. Sertifikater følger X.509-standarden og inneholder blant annet eier, offentlig nøkkel, utstedende CA og utløpsdato. Sertifikatkjeden tillater hierarki av CA-er.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 11 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om TLS-handshake i praksis?</div>
+    <div class="q-text">Hva skjer under en TLS-handshake?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">TLS-handshake etablerer kryptoparametre og felles sesjonsnøkler før applikasjonsdata sendes.</div>
+      <div class="answer">TLS-handshake etablerer kryptoparametre og felles sesjonsnøkler. Klienten sender ClientHello (støttede cipher suites), serveren svarer med ServerHello og sertifikat, klienten verifiserer sertifikatet mot CA. Deretter kjøres nøkkelutveksling (f.eks. ECDHE) og begge deriverer sesjonsnøkler. Først etter handshake sendes kryptert applikasjonsdata.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 12 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om sesjonsnøkler er faglig best?</div>
+    <div class="q-text">Hva er sesjonsnøkler, og hvorfor brukes de?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Sesjonsnøkler er kortlivede nøkler brukt for effektiv kryptering av en enkelt forbindelse.</div>
@@ -258,7 +258,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 13 · Lett</div>
-    <div class="q-text">Hva beskriver best Perfect Forward Secrecy?</div>
+    <div class="q-text">Hva er Perfect Forward Secrecy (PFS)?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">PFS gjør at kompromittering av langsiktig nøkkel ikke avslører gamle sesjoner.</div>
@@ -267,7 +267,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 14 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om saltede passordhasher i praksis?</div>
+    <div class="q-text">Hva er salt i passordhasher, og hvorfor er det viktig?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Salt hindrer at like passord får lik hash og svekker effekt av precomputed tabeller.</div>
@@ -276,7 +276,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 15 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om stateless pakkefiltrering er faglig best?</div>
+    <div class="q-text">Hva er stateless pakkefiltrering?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Stateless filtrering matcher pakker mot regler uten kontekst om tidligere pakker i flyten.</div>
@@ -285,7 +285,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 16 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om stateful brannmur i praksis?</div>
+    <div class="q-text">Hva er en stateful brannmur?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Stateful brannmur holder tilstand på forbindelser og kan tillate returtrafikk dynamisk.</div>
@@ -294,7 +294,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 17 · Lett</div>
-    <div class="q-text">Hva beskriver best IDS kontra IPS?</div>
+    <div class="q-text">Hva er forskjellen mellom IDS og IPS?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">IDS detekterer og varsler, mens IPS kan gripe inn og blokkere mistenkelig trafikk.</div>
@@ -303,7 +303,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 18 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om DDoS-mekanismen er faglig best?</div>
+    <div class="q-text">Hva er et DDoS-angrep, og hva gjør det effektivt?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">DDoS bruker mange distribuerte kilder for å overbelaste mål og vanskeliggjøre filtrering.</div>
@@ -312,7 +312,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 19 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om phishing i praksis?</div>
+    <div class="q-text">Hva er phishing?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Phishing manipulerer brukere til å avsløre hemmeligheter via troverdige, men falske meldinger/sider.</div>
@@ -321,7 +321,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 20 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om man-in-the-middle-angrep er faglig best?</div>
+    <div class="q-text">Hva er et man-in-the-middle-angrep?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">MITM plasserer angriper i trafikkbanen for avlytting, endring eller injeksjon av data.</div>
@@ -330,7 +330,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 21 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om replay-angrep i praksis?</div>
+    <div class="q-text">Hva er et replay-angrep?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">I replay gjenbrukes gyldige meldinger senere for å lure systemet til å akseptere gammel handling.</div>
@@ -339,7 +339,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 22 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om nonces og tidsstempler er faglig best?</div>
+    <div class="q-text">Hva er nonces og tidsstempler, og hva beskytter de mot?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Unike nonces/tidsstempler gjør meldinger ferske og reduserer replay-risiko.</div>
@@ -348,7 +348,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 23 · Lett</div>
-    <div class="q-text">Hva beskriver best DNS-spoofing?</div>
+    <div class="q-text">Hva er DNS-spoofing?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">DNS-spoofing forsøker å få klienter til å slå opp feil IP og dermed kontakte angriperstyrte mål.</div>
@@ -357,7 +357,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 24 · Middels</div>
-    <div class="q-text">Hvilken påstand er mest korrekt om minste privilegium i praksis?</div>
+    <div class="q-text">Hva er prinsippet om minste privilegium?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Minste privilegium begrenser tilgang til det som er nødvendig og reduserer skadeomfang ved kompromiss.</div>
@@ -366,7 +366,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 25 · Vanskelig</div>
-    <div class="q-text">I et større nettverk, hvilken vurdering om defense in depth er faglig best?</div>
+    <div class="q-text">Hva er defense in depth?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Flere uavhengige sikkerhetslag gjør systemet robust selv om ett kontrollpunkt svikter.</div>
