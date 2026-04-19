@@ -451,6 +451,110 @@
       The maximum efficiency of slotted ALOHA is <code>1/e ≈ 37%</code>. This means that even in the best case, 63 percent of the time is either collisions or empty slots. Unslotted (pure) ALOHA is even worse — only 18 percent.
     </p>
 
+    <figure>
+      <svg id="fig-aloha" viewBox="0 0 500 218" xmlns="http://www.w3.org/2000/svg" role="img"
+           aria-label="Slotted ALOHA timeline: three nodes (A, B, C) and five time slots. Slot 1: only A sends, successful (green). Slot 2: B and C send simultaneously, collision (red). Slot 3: empty. Slot 4: B retransmits, successful (green). Slot 5: C retransmits, successful (green)."
+           style="max-width:540px;width:100%;display:block;margin:0 auto;">
+        <defs>
+          <style>
+            #fig-aloha .fa-hdr { font-family:'IBM Plex Sans',sans-serif; font-size:12px; fill:#1a1612; font-weight:600; }
+            #fig-aloha .fa-nod { font-family:'IBM Plex Sans',sans-serif; font-size:12px; fill:#1a1612; font-weight:600; }
+            #fig-aloha .fa-ico { font-family:'IBM Plex Mono',monospace; font-size:17px; font-weight:700; }
+            #fig-aloha .fa-cap { font-family:'IBM Plex Sans',sans-serif; font-size:11px; fill:#5a5248; font-style:italic; }
+            #fig-aloha .fa-s1 { opacity:0; animation: faS1 16s ease-in-out infinite; }
+            #fig-aloha .fa-s2 { opacity:0; animation: faS2 16s ease-in-out infinite; }
+            #fig-aloha .fa-s3 { opacity:0; animation: faS3 16s ease-in-out infinite; }
+            #fig-aloha .fa-s4 { opacity:0; animation: faS4 16s ease-in-out infinite; }
+            #fig-aloha .fa-s5 { opacity:0; animation: faS5 16s ease-in-out infinite; }
+            @keyframes faS1 { 0%,5%{opacity:0} 8%,20%{opacity:1} 23%,100%{opacity:0} }
+            @keyframes faS2 { 0%,23%{opacity:0} 26%,38%{opacity:1} 41%,100%{opacity:0} }
+            @keyframes faS3 { 0%,41%{opacity:0} 44%,56%{opacity:1} 59%,100%{opacity:0} }
+            @keyframes faS4 { 0%,59%{opacity:0} 62%,74%{opacity:1} 77%,100%{opacity:0} }
+            @keyframes faS5 { 0%,77%{opacity:0} 80%,92%{opacity:1} 95%,100%{opacity:0} }
+            @media (prefers-reduced-motion: reduce) {
+              #fig-aloha .fa-s1, #fig-aloha .fa-s2, #fig-aloha .fa-s3,
+              #fig-aloha .fa-s4, #fig-aloha .fa-s5 {
+                animation: none !important; opacity: 0.9 !important;
+              }
+            }
+          </style>
+        </defs>
+        <!-- Header row -->
+        <rect x="0"   y="0" width="60" height="30" fill="#ddd5c3" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="60"  y="0" width="88" height="30" fill="#ddd5c3" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="148" y="0" width="88" height="30" fill="#ddd5c3" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="236" y="0" width="88" height="30" fill="#ddd5c3" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="324" y="0" width="88" height="30" fill="#ddd5c3" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="412" y="0" width="88" height="30" fill="#ddd5c3" stroke="#c9c0ae" stroke-width="1"/>
+        <text x="104" y="20" text-anchor="middle" class="fa-hdr">Slot 1</text>
+        <text x="192" y="20" text-anchor="middle" class="fa-hdr">Slot 2</text>
+        <text x="280" y="20" text-anchor="middle" class="fa-hdr">Slot 3</text>
+        <text x="368" y="20" text-anchor="middle" class="fa-hdr">Slot 4</text>
+        <text x="456" y="20" text-anchor="middle" class="fa-hdr">Slot 5</text>
+        <!-- Node label column -->
+        <rect x="0" y="30"  width="60" height="50" fill="#ddd5c3" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="0" y="80"  width="60" height="50" fill="#ddd5c3" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="0" y="130" width="60" height="50" fill="#ddd5c3" stroke="#c9c0ae" stroke-width="1"/>
+        <text x="30" y="61"  text-anchor="middle" class="fa-nod">Node A</text>
+        <text x="30" y="111" text-anchor="middle" class="fa-nod">Node B</text>
+        <text x="30" y="161" text-anchor="middle" class="fa-nod">Node C</text>
+        <!-- Base grid cells — Node A -->
+        <rect x="60"  y="30" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="148" y="30" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="236" y="30" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="324" y="30" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="412" y="30" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <!-- Base grid cells — Node B -->
+        <rect x="60"  y="80" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="148" y="80" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="236" y="80" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="324" y="80" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="412" y="80" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <!-- Base grid cells — Node C -->
+        <rect x="60"  y="130" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="148" y="130" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="236" y="130" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="324" y="130" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <rect x="412" y="130" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
+        <!-- Slot 1 animation group: only A sends (green) -->
+        <g class="fa-s1">
+          <rect x="60" y="0" width="88" height="180" fill="#c68a1f" opacity="0.12"/>
+          <rect x="62" y="32" width="84" height="46" fill="#3d6b3a" rx="3"/>
+          <text x="104" y="63" text-anchor="middle" class="fa-ico" fill="white">&#10003;</text>
+        </g>
+        <!-- Slot 2 animation group: B and C collide (red) -->
+        <g class="fa-s2">
+          <rect x="148" y="0" width="88" height="180" fill="#c68a1f" opacity="0.12"/>
+          <rect x="150" y="82"  width="84" height="46" fill="#b04428" rx="3"/>
+          <rect x="150" y="132" width="84" height="46" fill="#b04428" rx="3"/>
+          <text x="192" y="113" text-anchor="middle" class="fa-ico" fill="white">&#9889;</text>
+          <text x="192" y="163" text-anchor="middle" class="fa-ico" fill="white">&#9889;</text>
+        </g>
+        <!-- Slot 3 animation group: empty -->
+        <g class="fa-s3">
+          <rect x="236" y="0" width="88" height="180" fill="#c68a1f" opacity="0.12"/>
+          <text x="280" y="63"  text-anchor="middle" class="fa-ico" fill="#a09585">&#8212;</text>
+          <text x="280" y="113" text-anchor="middle" class="fa-ico" fill="#a09585">&#8212;</text>
+          <text x="280" y="163" text-anchor="middle" class="fa-ico" fill="#a09585">&#8212;</text>
+        </g>
+        <!-- Slot 4 animation group: B retransmits (green) -->
+        <g class="fa-s4">
+          <rect x="324" y="0" width="88" height="180" fill="#c68a1f" opacity="0.12"/>
+          <rect x="326" y="82" width="84" height="46" fill="#3d6b3a" rx="3"/>
+          <text x="368" y="113" text-anchor="middle" class="fa-ico" fill="white">&#10003;</text>
+        </g>
+        <!-- Slot 5 animation group: C retransmits (green) -->
+        <g class="fa-s5">
+          <rect x="412" y="0" width="88" height="180" fill="#c68a1f" opacity="0.12"/>
+          <rect x="414" y="132" width="84" height="46" fill="#3d6b3a" rx="3"/>
+          <text x="456" y="163" text-anchor="middle" class="fa-ico" fill="white">&#10003;</text>
+        </g>
+        <!-- Summary -->
+        <text x="250" y="198" text-anchor="middle" class="fa-cap">Efficiency: 3 of 5 slots useful = 60% (low load). Theoretical maximum at high load: 1/e &#8776; 37%.</text>
+      </svg>
+      <figcaption><strong>Figure 4.</strong> Slotted ALOHA with three nodes and five time slots. The animation highlights one slot at a time: green = successful transmission, red = collision, grey = empty. Under low traffic the channel is used efficiently; under high load the collision rate rises and efficiency approaches the theoretical ceiling of 1/e ≈ 37%.</figcaption>
+    </figure>
+
     <h4>CSMA — listen before you speak</h4>
     <p>
       The most obvious improvement: listen to the channel first. If nobody is talking, send. If someone is talking, wait. <strong>Carrier Sense Multiple Access</strong>. The polite conversational approach.
@@ -458,6 +562,65 @@
     <p>
       But even with carrier sensing, collisions can happen. Why? <em>Propagation delay</em>. Signals travel fast, but not infinitely fast. If node A starts transmitting, it takes a small fraction of a second before the signal reaches node B at the other end of the cable. During that time, B thinks the channel is idle. B also starts transmitting. When the signals finally meet — collision. The longer the cable, the larger the window for this kind of error.
     </p>
+
+    <figure>
+      <svg id="fig-csma-prop" viewBox="0 0 480 278" xmlns="http://www.w3.org/2000/svg" role="img"
+           aria-label="Space-time diagram: Node A starts transmitting at t=0 (left). The signal propagates rightward. At t approximately 0.75 times the propagation time the signal has not yet reached Node B. B thinks the channel is idle and starts transmitting. The signals meet and collide about 85 percent of the way from A to B."
+           style="max-width:500px;width:100%;display:block;margin:0 auto;">
+        <defs>
+          <style>
+            #fig-csma-prop .cp-lbl { font-family:'IBM Plex Sans',sans-serif; font-size:12px; fill:#1a1612; font-weight:600; }
+            #fig-csma-prop .cp-ann { font-family:'IBM Plex Sans',sans-serif; font-size:10px; fill:#3d3530; }
+            #fig-csma-prop .cp-ax  { font-family:'IBM Plex Sans',sans-serif; font-size:10px; fill:#6b6257; }
+          </style>
+        </defs>
+        <!-- Time axis -->
+        <line x1="32" y1="58" x2="32" y2="246" stroke="#6b6257" stroke-width="1.5"/>
+        <polygon points="28,246 36,246 32,256" fill="#6b6257"/>
+        <text x="22" y="155" text-anchor="middle" transform="rotate(-90,22,155)" class="cp-ax">Time &#8595;</text>
+        <!-- Time tick marks and labels -->
+        <line x1="29" y1="70"  x2="35" y2="70"  stroke="#6b6257" stroke-width="1"/>
+        <text x="27" y="74"  text-anchor="end" class="cp-ax">0</text>
+        <line x1="29" y1="204" x2="35" y2="204" stroke="#6b6257" stroke-width="1" stroke-dasharray="2,2"/>
+        <text x="27" y="208" text-anchor="end" class="cp-ax">&#8776;0.75t</text>
+        <line x1="29" y1="248" x2="35" y2="248" stroke="#6b6257" stroke-width="1"/>
+        <text x="27" y="252" text-anchor="end" class="cp-ax">t<tspan dy="3" font-size="8">prop</tspan></text>
+        <!-- Cable -->
+        <line x1="90" y1="50" x2="390" y2="50" stroke="#1a1612" stroke-width="3" stroke-linecap="round"/>
+        <!-- Node A -->
+        <circle cx="90"  cy="50" r="8" fill="#2d4a7a"/>
+        <text x="90"  y="36" text-anchor="middle" class="cp-lbl" fill="#2d4a7a">Node A</text>
+        <!-- Node B -->
+        <circle cx="390" cy="50" r="8" fill="#2d4a7a"/>
+        <text x="390" y="36" text-anchor="middle" class="cp-lbl" fill="#2d4a7a">Node B</text>
+        <!-- Vertical dashed guides from nodes -->
+        <line x1="90"  y1="58" x2="90"  y2="252" stroke="#2d4a7a" stroke-width="1" stroke-dasharray="3,4" opacity="0.3"/>
+        <line x1="390" y1="58" x2="390" y2="252" stroke="#2d4a7a" stroke-width="1" stroke-dasharray="3,4" opacity="0.3"/>
+        <!-- Signal from A (blue solid) -->
+        <line x1="90"  y1="70"  x2="353" y2="226" stroke="#2d4a7a" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- A signal continues faded past collision -->
+        <line x1="353" y1="226" x2="390" y2="248" stroke="#2d4a7a" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.3"/>
+        <!-- A sends annotation -->
+        <circle cx="90" cy="70" r="3.5" fill="#2d4a7a"/>
+        <text x="96" y="68" class="cp-ann" fill="#2d4a7a">A transmits (t = 0)</text>
+        <!-- A's signal front indicator at t=0.75·t_prop -->
+        <circle cx="315" cy="204" r="4" fill="#2d4a7a" opacity="0.55"/>
+        <line x1="319" y1="204" x2="382" y2="204" stroke="#2d4a7a" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+        <text x="346" y="198" text-anchor="middle" class="cp-ax">not there yet</text>
+        <!-- Signal from B (red solid) -->
+        <line x1="390" y1="204" x2="353" y2="226" stroke="#b04428" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- B signal continues faded past collision -->
+        <line x1="353" y1="226" x2="90"  y2="268" stroke="#b04428" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.3"/>
+        <!-- B sends annotation -->
+        <circle cx="390" cy="204" r="3.5" fill="#b04428"/>
+        <text x="384" y="201" text-anchor="end" class="cp-ann" fill="#b04428">B hears nothing &#8212; transmits</text>
+        <!-- Collision burst -->
+        <circle cx="353" cy="226" r="14" fill="#b04428" opacity="0.88"/>
+        <text x="353" y="231" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="15" font-weight="700" fill="white">!</text>
+        <text x="353" y="253" text-anchor="middle" class="cp-lbl" fill="#b04428">Collision!</text>
+      </svg>
+      <figcaption><strong>Figure 5.</strong> Space-time diagram of a CSMA collision. Node A starts transmitting at t = 0. The signal propagates rightward at finite speed. Just before the signal reaches B (t ≈ 0.75·t<sub>prop</sub>), B hears nothing and assumes the channel is idle — and starts transmitting. The two signals meet and collide between the nodes. The longer the cable, the more time B has to start transmitting without knowing about A.</figcaption>
+    </figure>
 
     <h4>CSMA/CD — and listen while you speak</h4>
     <p>
@@ -476,6 +639,19 @@
 
     <div class="margin-note">
       Binary exponential backoff is ingenious: when collisions are rare, the wait time is short. When they become frequent (many nodes competing), the wait time automatically increases, and the system calms itself down.
+    </div>
+
+    <div class="stepper" id="csmacd-stepper">
+      <div class="s-label">Interactive walkthrough — CSMA/CD step by step</div>
+      <div class="stage" id="csmacd-stage">
+        <h5 id="csmacd-title">Step 1 of 6</h5>
+        <div id="csmacd-body"></div>
+      </div>
+      <div class="controls">
+        <button id="csmacd-prev">&#8592; Previous</button>
+        <span class="progress" id="csmacd-progress">1 / 6</span>
+        <button id="csmacd-next">Next &#8594;</button>
+      </div>
     </div>
 
     <h3>Class 3 — Taking Turns</h3>
