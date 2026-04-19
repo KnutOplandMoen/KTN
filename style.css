@@ -207,6 +207,7 @@ body::before {
 }
 @media (max-width: 600px) {
   .nav-search-wrapper { width: 160px; }
+  #nav-search { font-size: 16px; }
   #nav-search-results {
     position: fixed;
     top: 56px;
