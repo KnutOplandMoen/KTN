@@ -499,6 +499,14 @@
       margin: 1px 0;
     }
 
+    .ktn-chat-messages-wrap {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
     .ktn-chat-messages {
       flex: 1;
       min-height: 0;
@@ -510,6 +518,40 @@
     .ktn-chat-messages::-webkit-scrollbar { width: 5px; }
     .ktn-chat-messages::-webkit-scrollbar-thumb {
       background: var(--line, #c9c0ae); border-radius: 4px;
+    }
+
+    .ktn-scroll-to-bottom {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--rust, #b04428);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,.28);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease;
+      z-index: 2;
+    }
+    .ktn-scroll-to-bottom.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .ktn-scroll-to-bottom:hover {
+      background: var(--rust-dark, #8a3420);
+    }
+    .ktn-scroll-to-bottom svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
     }
 
     .ktn-msg {
@@ -808,7 +850,12 @@
       </div>
     </div>
     <div class="ktn-chat-presets" id="ktn-chat-presets"></div>
-    <div class="ktn-chat-messages"></div>
+    <div class="ktn-chat-messages-wrap">
+      <div class="ktn-chat-messages"></div>
+      <button class="ktn-scroll-to-bottom" type="button" aria-label="${isEn ? "Scroll to bottom" : "Rull til bunnen"}">
+        <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+      </button>
+    </div>
     <form class="ktn-chat-form" autocomplete="off">
       <input class="ktn-chat-input" placeholder="${strings.placeholder.replace(/"/g, "&quot;")}" />
       <div class="ktn-chat-hint">${strings.hint}</div>
@@ -820,6 +867,7 @@
   document.body.appendChild(panel);
 
   const messagesEl = panel.querySelector(".ktn-chat-messages");
+  const scrollToBottomBtn = panel.querySelector(".ktn-scroll-to-bottom");
   const form = panel.querySelector(".ktn-chat-form");
   const input = panel.querySelector(".ktn-chat-input");
   const sendBtn = panel.querySelector(".ktn-chat-send");
@@ -827,6 +875,30 @@
   const resetBtn = panel.querySelector(".ktn-chat-reset");
   const presetsEl = panel.querySelector("#ktn-chat-presets");
   const hintEl = panel.querySelector(".ktn-chat-hint");
+
+  const SCROLL_BOTTOM_THRESHOLD = 60;
+
+  function isNearBottom() {
+    return (
+      messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight <
+      SCROLL_BOTTOM_THRESHOLD
+    );
+  }
+
+  function updateScrollButton() {
+    if (isNearBottom()) {
+      scrollToBottomBtn.classList.remove("visible");
+    } else {
+      scrollToBottomBtn.classList.add("visible");
+    }
+  }
+
+  messagesEl.addEventListener("scroll", updateScrollButton, { passive: true });
+
+  scrollToBottomBtn.addEventListener("click", () => {
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    scrollToBottomBtn.classList.remove("visible");
+  });
 
   let selectedPreset = DEFAULT_PRESET;
 
@@ -1135,6 +1207,7 @@
     if (isMobile()) {
       scheduleSyncPanelViewport();
     }
+    updateScrollButton();
     input.focus();
   });
 
@@ -1727,7 +1800,10 @@
       typesetMathIn(div);
     }
     messagesEl.appendChild(div);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
+    if (role === "user" || isNearBottom()) {
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+    updateScrollButton();
     return div;
   }
 
@@ -1736,7 +1812,8 @@
     div.className = "ktn-msg ktn-msg-error";
     div.textContent = msg;
     messagesEl.appendChild(div);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
+    if (isNearBottom()) messagesEl.scrollTop = messagesEl.scrollHeight;
+    updateScrollButton();
   }
 
   const loadingMessagesNo = [
@@ -1822,7 +1899,7 @@
       textEl.offsetHeight; // reflow
       textEl.style.animation = "";
       textEl.textContent = loadingMessages[msgIdx];
-      messagesEl.scrollTop = messagesEl.scrollHeight;
+      if (isNearBottom()) messagesEl.scrollTop = messagesEl.scrollHeight;
     }, 2500);
 
     const timerInterval = setInterval(() => {
@@ -1863,7 +1940,8 @@
       if (assistantEl) {
         assistantEl.innerHTML = renderMarkdown(accumulated);
         typesetMathIn(assistantEl);
-        messagesEl.scrollTop = messagesEl.scrollHeight;
+        if (isNearBottom()) messagesEl.scrollTop = messagesEl.scrollHeight;
+        updateScrollButton();
       }
     }
 
