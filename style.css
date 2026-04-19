@@ -922,6 +922,36 @@ pre .c-cli { color: #e8b560; }
 }
 .quiz .feedback.show { display: block; }
 
+/* MCQ option buttons (alternative class names used across site) */
+.quiz .options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; max-width: 560px; }
+.quiz button.option {
+  font-family: var(--serif);
+  font-size: 15px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 10px 16px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.15s;
+  text-align: left;
+}
+.quiz button.option:hover:not(:disabled) { border-color: var(--rust); background: #fff9ee; }
+.quiz button.option:disabled { cursor: default; }
+.quiz button.option.correct { border-color: var(--green); background: #f0f7f0; color: var(--ink); }
+.quiz button.option.incorrect { border-color: #c0392b; background: #fdf0f0; color: #c0392b; }
+.quiz .explanation {
+  display: none;
+  padding: 16px 20px;
+  background: var(--paper);
+  border-left: 3px solid var(--green);
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.quiz .explanation.show { display: block; }
+
 /* ---------- STEPPER ---------- */
 .stepper {
   background: var(--paper-dark);
