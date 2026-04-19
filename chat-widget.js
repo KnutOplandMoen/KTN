@@ -609,6 +609,51 @@
       font-style: italic; padding: 4px 0;
     }
 
+    .ktn-chat-messages-wrap {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .ktn-chat-messages-wrap .ktn-chat-messages {
+      flex: 1;
+    }
+    .ktn-chat-scroll-arrow {
+      display: none;
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--line, #c9c0ae);
+      background: var(--paper, #f4f1ea);
+      box-shadow: 0 2px 8px rgba(0,0,0,.15);
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      transition: opacity .18s ease, transform .18s ease;
+      opacity: 0;
+    }
+    .ktn-chat-scroll-arrow.visible {
+      display: flex;
+      opacity: 1;
+    }
+    .ktn-chat-scroll-arrow:hover {
+      background: var(--paper-dark, #e8e3d6);
+      transform: translateX(-50%) scale(1.08);
+    }
+    .ktn-chat-scroll-arrow svg {
+      width: 18px; height: 18px;
+      fill: none;
+      stroke: var(--ink, #1a1612);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
     .ktn-chat-form {
       display: flex; gap: 8px;
       padding: 12px 14px;
@@ -808,7 +853,12 @@
       </div>
     </div>
     <div class="ktn-chat-presets" id="ktn-chat-presets"></div>
-    <div class="ktn-chat-messages"></div>
+    <div class="ktn-chat-messages-wrap">
+      <div class="ktn-chat-messages"></div>
+      <button class="ktn-chat-scroll-arrow" type="button" aria-label="Scroll to bottom">
+        <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+    </div>
     <form class="ktn-chat-form" autocomplete="off">
       <input class="ktn-chat-input" placeholder="${strings.placeholder.replace(/"/g, "&quot;")}" />
       <div class="ktn-chat-hint">${strings.hint}</div>
@@ -820,6 +870,7 @@
   document.body.appendChild(panel);
 
   const messagesEl = panel.querySelector(".ktn-chat-messages");
+  const scrollArrow = panel.querySelector(".ktn-chat-scroll-arrow");
   const form = panel.querySelector(".ktn-chat-form");
   const input = panel.querySelector(".ktn-chat-input");
   const sendBtn = panel.querySelector(".ktn-chat-send");
@@ -1746,7 +1797,20 @@
   function scrollMessagesToBottom(force = false) {
     if (!force && !isMessagesNearBottom()) return;
     messagesEl.scrollTop = messagesEl.scrollHeight;
+    scrollArrow.classList.remove("visible");
   }
+
+  function showScrollArrow() {
+    scrollArrow.classList.add("visible");
+  }
+
+  function hideScrollArrow() {
+    scrollArrow.classList.remove("visible");
+  }
+
+  scrollArrow.addEventListener("click", () => {
+    scrollMessagesToBottom(true);
+  });
 
   const loadingMessagesNo = [
     "Sender SYN-pakke til serveren...",
@@ -1868,7 +1932,13 @@
     let rafId = 0;
     let shouldFollowStream = true;
     const onMessagesScroll = () => {
-      shouldFollowStream = isMessagesNearBottom();
+      const near = isMessagesNearBottom();
+      shouldFollowStream = near;
+      if (near) {
+        hideScrollArrow();
+      } else if (assistantEl) {
+        showScrollArrow();
+      }
     };
     messagesEl.addEventListener("scroll", onMessagesScroll, { passive: true });
 
@@ -1878,7 +1948,11 @@
         if (assistantEl) {
           assistantEl.innerHTML = renderMarkdown(accumulated);
           typesetMathIn(assistantEl);
-          if (shouldFollowStream) scrollMessagesToBottom(true);
+          if (shouldFollowStream) {
+            scrollMessagesToBottom(true);
+          } else {
+            showScrollArrow();
+          }
         }
       }
 
@@ -1944,6 +2018,7 @@
       return accumulated;
     } finally {
       messagesEl.removeEventListener("scroll", onMessagesScroll);
+      hideScrollArrow();
     }
   }
 
