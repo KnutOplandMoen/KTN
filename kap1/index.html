@@ -128,6 +128,89 @@
     <span class="label">Hvorfor betyr dette noe?</span>
     <p>Alt du lærer i resten av kurset — HTTP, TCP, IP, Ethernet — er <em>ett lag i denne stabelen</em>. Når du forstår lagdelingen, forstår du også hvorfor kurset er bygd opp slik det er: vi starter øverst (applikasjoner du kjenner) og jobber oss nedover til bitene i kabelen. Kapittel 1 gir deg hele kartet; resten av kapitlene zoomer inn på hvert lag.</p>
   </div>
+
+  <h3>Hva hvis målet ikke er på samme LAN?</h3>
+  <p>Når laptopen din sender en pakke til en server på Internett, er målet ikke på samme lokale nett. Pakken kan ikke leveres direkte — den må gjennom en <strong>standardruter</strong> (default gateway). Ruteren sender den videre til neste ruter, som igjen sender den videre, hopp for hopp, til pakken når frem. IP-adressen identifiserer <em>hvem</em> pakken skal til; ruternes jobber er å finne ut <em>veien dit</em>.</p>
+
+  <figure>
+    <svg viewBox="0 0 760 210" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;margin:0 auto;display:block;">
+      <defs>
+        <marker id="arrRust" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6" fill="none" stroke="#b04428" stroke-width="1.2"/>
+        </marker>
+        <marker id="arrBlue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6" fill="none" stroke="#2d4a7a" stroke-width="1.2"/>
+        </marker>
+      </defs>
+
+      <!-- LAN A box -->
+      <rect x="10" y="28" width="158" height="158" rx="8" fill="#d4e6d4" stroke="#3d6b3a" stroke-width="1.5"/>
+      <text x="89" y="48" text-anchor="middle" font-family="'IBM Plex Sans', sans-serif" font-size="12" font-weight="600" fill="#3d6b3a">LAN A (hjemmenett)</text>
+      <text x="89" y="62" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="9" fill="#6b6257">192.168.1.0/24</text>
+      <!-- Laptop -->
+      <rect x="59" y="82" width="60" height="40" rx="3" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/>
+      <rect x="49" y="122" width="80" height="6" rx="2" fill="#c9c0ae"/>
+      <text x="89" y="108" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="9" fill="#1a1612">laptop</text>
+      <text x="89" y="146" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="8" fill="#6b6257">192.168.1.10</text>
+      <text x="89" y="160" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="8" fill="#6b6257">MAC: aa:bb:cc:…</text>
+
+      <!-- Arrow LAN A → gateway -->
+      <line x1="168" y1="107" x2="202" y2="107" stroke="#b04428" stroke-width="1.5" marker-end="url(#arrRust)"/>
+      <text x="185" y="100" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="8" fill="#b04428">til GW</text>
+
+      <!-- Gateway router -->
+      <circle cx="228" cy="107" r="24" fill="#f4f1ea" stroke="#b04428" stroke-width="2"/>
+      <text x="228" y="104" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="9" font-weight="700" fill="#b04428">GW</text>
+      <text x="228" y="116" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="8" fill="#b04428">R1</text>
+      <text x="228" y="143" text-anchor="middle" font-family="'IBM Plex Sans', sans-serif" font-size="9" fill="#1a1612">Standardruter</text>
+      <text x="228" y="155" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="8" fill="#6b6257">192.168.1.1</text>
+
+      <!-- Internet dashed region -->
+      <rect x="264" y="38" width="228" height="140" rx="8" fill="none" stroke="#c9c0ae" stroke-width="1.5" stroke-dasharray="6 3"/>
+      <text x="378" y="58" text-anchor="middle" font-family="'IBM Plex Sans', sans-serif" font-size="11" font-weight="600" fill="#6b6257">Internett</text>
+      <text x="378" y="71" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="8" fill="#c9c0ae">(mange rutere)</text>
+
+      <!-- Arrow GW → R2 -->
+      <line x1="252" y1="100" x2="296" y2="95" stroke="#b04428" stroke-width="1.5" marker-end="url(#arrRust)"/>
+
+      <!-- Router R2 -->
+      <circle cx="318" cy="90" r="20" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/>
+      <text x="318" y="95" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="9" fill="#2d4a7a">R2</text>
+
+      <!-- Arrow R2 → R3 -->
+      <line x1="338" y1="97" x2="402" y2="118" stroke="#2d4a7a" stroke-width="1.5" marker-end="url(#arrBlue)"/>
+
+      <!-- Router R3 -->
+      <circle cx="424" cy="126" r="20" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/>
+      <text x="424" y="131" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="9" fill="#2d4a7a">R3</text>
+
+      <!-- Arrow R3 → LAN B -->
+      <line x1="444" y1="119" x2="490" y2="107" stroke="#b04428" stroke-width="1.5" marker-end="url(#arrRust)"/>
+
+      <!-- LAN B box -->
+      <rect x="502" y="28" width="248" height="158" rx="8" fill="#d4dce8" stroke="#2d4a7a" stroke-width="1.5"/>
+      <text x="626" y="48" text-anchor="middle" font-family="'IBM Plex Sans', sans-serif" font-size="12" font-weight="600" fill="#2d4a7a">LAN B (fjern server)</text>
+      <text x="626" y="62" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="9" fill="#6b6257">142.250.74.0/24</text>
+      <!-- Server icon -->
+      <rect x="596" y="80" width="60" height="46" rx="3" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/>
+      <line x1="596" y1="93" x2="656" y2="93" stroke="#c9c0ae" stroke-width="1"/>
+      <line x1="596" y1="106" x2="656" y2="106" stroke="#c9c0ae" stroke-width="1"/>
+      <text x="626" y="123" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="9" fill="#1a1612">server</text>
+      <text x="626" y="146" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="8" fill="#6b6257">142.250.74.4</text>
+      <text x="626" y="160" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="8" fill="#6b6257">MAC: cc:dd:ee:…</text>
+
+      <!-- Key annotation: same LAN vs different -->
+      <text x="89" y="196" text-anchor="middle" font-family="'IBM Plex Sans', sans-serif" font-size="9" fill="#3d6b3a" font-style="italic">direkte levering (MAC)</text>
+      <text x="378" y="196" text-anchor="middle" font-family="'IBM Plex Sans', sans-serif" font-size="9" fill="#6b6257" font-style="italic">IP-ruting hopp for hopp</text>
+      <text x="626" y="196" text-anchor="middle" font-family="'IBM Plex Sans', sans-serif" font-size="9" fill="#2d4a7a" font-style="italic">direkte levering (MAC)</text>
+    </svg>
+    <figcaption>Når kilden og målet er på <em>samme LAN</em>, leveres pakken direkte via MAC-adresser (lenkelaget). Når målet er på et <em>annet nettverk</em>, sendes pakken til standardruteren (gateway), som ruter den hopp for hopp gjennom Internett til riktig LAN — der den igjen leveres direkte via MAC.</figcaption>
+  </figure>
+
+  <div class="callout">
+    <span class="label">Samme LAN vs. ulikt nettverk</span>
+    <p>Laptopen din sjekker om mål-IP-en er i samme subnett som seg selv. Hvis ja: bruk ARP til å finne MAC-adressen og lever direkte. Hvis nei: send pakken til <strong>standardruteren</strong> (din hjemruter). Ruteren gjør det samme — er neste hopp nærme? Nei? Send videre. Slik går pakken hopp for hopp gjennom nettet, og bare IP-adressen i pakken holdes konstant hele veien.</p>
+  </div>
 </div>
 </section>
 
