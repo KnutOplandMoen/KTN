@@ -64,47 +64,48 @@
     </p>
 
     <figure>
-      <svg viewBox="-100 8 780 212" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Innkapsling fra applikasjonsdata til ramme">
+      <svg viewBox="0 0 520 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Innkapsling fra applikasjonsdata til ramme">
         <style>
           .lbl { font-family: 'IBM Plex Mono', monospace; font-size: 11px; fill: #6b6257; }
           .ttl { font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; font-weight: 600; fill: #1a1612; }
           .ttl-sm { font-size: 10px; }
         </style>
-        <g transform="translate(40,30)">
-          <rect x="0" y="0" width="240" height="30" fill="#e8e3d6" stroke="#c9c0ae"/>
-          <text x="120" y="20" text-anchor="middle" class="ttl">HTTP-data</text>
-          <text x="-10" y="20" text-anchor="end" class="lbl">Applikasjon</text>
-        </g>
-        <g transform="translate(40,70)">
-          <rect x="-30" y="0" width="30" height="30" fill="#c68a1f" stroke="#8a3420"/>
-          <text x="-15" y="20" text-anchor="middle" class="ttl" style="fill:#fff">TCP</text>
-          <rect x="0" y="0" width="240" height="30" fill="#e8e3d6" stroke="#c9c0ae"/>
-          <text x="120" y="20" text-anchor="middle" class="ttl">HTTP-data</text>
-          <text x="-50" y="20" text-anchor="end" class="lbl">Transport</text>
-        </g>
-        <g transform="translate(40,110)">
-          <rect x="-60" y="0" width="30" height="30" fill="#3d6b3a" stroke="#2a4a28"/>
-          <text x="-45" y="20" text-anchor="middle" class="ttl" style="fill:#fff">IP</text>
-          <rect x="-30" y="0" width="30" height="30" fill="#c68a1f" stroke="#8a3420"/>
-          <text x="-15" y="20" text-anchor="middle" class="ttl" style="fill:#fff">TCP</text>
-          <rect x="0" y="0" width="240" height="30" fill="#e8e3d6" stroke="#c9c0ae"/>
-          <text x="120" y="20" text-anchor="middle" class="ttl">HTTP-data</text>
-          <text x="-80" y="20" text-anchor="end" class="lbl">Nettverk</text>
-        </g>
-        <g transform="translate(40,150)">
-          <rect x="-110" y="0" width="50" height="30" fill="#b04428" stroke="#8a3420"/>
-          <text x="-85" y="20" text-anchor="middle" class="ttl ttl-sm" style="fill:#fff">Ethernet</text>
-          <rect x="-60" y="0" width="30" height="30" fill="#3d6b3a" stroke="#2a4a28"/>
-          <text x="-45" y="20" text-anchor="middle" class="ttl" style="fill:#fff">IP</text>
-          <rect x="-30" y="0" width="30" height="30" fill="#c68a1f" stroke="#8a3420"/>
-          <text x="-15" y="20" text-anchor="middle" class="ttl" style="fill:#fff">TCP</text>
-          <rect x="0" y="0" width="240" height="30" fill="#e8e3d6" stroke="#c9c0ae"/>
-          <text x="120" y="20" text-anchor="middle" class="ttl">HTTP-data</text>
-          <rect x="240" y="0" width="30" height="30" fill="#b04428" stroke="#8a3420"/>
-          <text x="255" y="20" text-anchor="middle" class="ttl" style="fill:#fff">CRC</text>
-          <text x="-128" y="20" text-anchor="end" class="lbl">Lenke</text>
-        </g>
-        <text x="290" y="195" class="lbl" text-anchor="middle">Ethernet-rammen inneholder alt over den — pluss en CRC til feildeteksjon.</text>
+
+        <!-- Applikasjon -->
+        <text x="88" y="50" text-anchor="end" class="lbl">Applikasjon</text>
+        <rect x="100" y="30" width="320" height="30" fill="#e8e3d6" stroke="#c9c0ae"/>
+        <text x="260" y="50" text-anchor="middle" class="ttl">HTTP-data</text>
+
+        <!-- Transport -->
+        <text x="88" y="90" text-anchor="end" class="lbl">Transport</text>
+        <rect x="100" y="70" width="40" height="30" fill="#c68a1f" stroke="#8a3420"/>
+        <text x="120" y="90" text-anchor="middle" class="ttl" style="fill:#fff">TCP</text>
+        <rect x="140" y="70" width="280" height="30" fill="#e8e3d6" stroke="#c9c0ae"/>
+        <text x="280" y="90" text-anchor="middle" class="ttl">HTTP-data</text>
+
+        <!-- Nettverk -->
+        <text x="88" y="130" text-anchor="end" class="lbl">Nettverk</text>
+        <rect x="100" y="110" width="40" height="30" fill="#3d6b3a" stroke="#2a4a28"/>
+        <text x="120" y="130" text-anchor="middle" class="ttl" style="fill:#fff">IP</text>
+        <rect x="140" y="110" width="40" height="30" fill="#c68a1f" stroke="#8a3420"/>
+        <text x="160" y="130" text-anchor="middle" class="ttl" style="fill:#fff">TCP</text>
+        <rect x="180" y="110" width="240" height="30" fill="#e8e3d6" stroke="#c9c0ae"/>
+        <text x="300" y="130" text-anchor="middle" class="ttl">HTTP-data</text>
+
+        <!-- Lenke -->
+        <text x="88" y="170" text-anchor="end" class="lbl">Lenke</text>
+        <rect x="100" y="150" width="60" height="30" fill="#b04428" stroke="#8a3420"/>
+        <text x="130" y="170" text-anchor="middle" class="ttl ttl-sm" style="fill:#fff">Ethernet</text>
+        <rect x="160" y="150" width="40" height="30" fill="#3d6b3a" stroke="#2a4a28"/>
+        <text x="180" y="170" text-anchor="middle" class="ttl" style="fill:#fff">IP</text>
+        <rect x="200" y="150" width="40" height="30" fill="#c68a1f" stroke="#8a3420"/>
+        <text x="220" y="170" text-anchor="middle" class="ttl" style="fill:#fff">TCP</text>
+        <rect x="240" y="150" width="200" height="30" fill="#e8e3d6" stroke="#c9c0ae"/>
+        <text x="340" y="170" text-anchor="middle" class="ttl">HTTP-data</text>
+        <rect x="440" y="150" width="40" height="30" fill="#b04428" stroke="#8a3420"/>
+        <text x="460" y="170" text-anchor="middle" class="ttl" style="fill:#fff">CRC</text>
+
+        <text x="280" y="200" class="lbl" text-anchor="middle">Ethernet-rammen inneholder alt over den — pluss en CRC til feildeteksjon.</text>
       </svg>
       <figcaption><strong>Figur 1.</strong> Hvert lag legger til sitt eget hode. Når rammen sendes ut på kabelen, ligger HTTP-data dypt inne i flere lag med innpakning.</figcaption>
     </figure>
