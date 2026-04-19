@@ -170,7 +170,7 @@
     </p>
 
     <figure>
-      <svg id="fig-parity2d" viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grid of data bits with row and column parity. One received bit is wrong; row and column parity checks point to the intersection where the error can be corrected.">
+      <svg id="fig-parity2d" viewBox="0 0 430 264" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grid of data bits with row and column parity. One received bit is wrong; row and column parity checks point to the intersection where the error can be corrected." style="max-width:450px;width:100%;display:block;margin:0 auto;">
         <defs>
           <style>
             #fig-parity2d .p2d-lbl { font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; fill: #6b6257; }
@@ -241,9 +241,9 @@
             }
           </style>
         </defs>
-        <text x="178" y="22" text-anchor="middle" class="p2d-lbl">Data bits (even parity per row and column)</text>
-        <text x="292" y="48" text-anchor="middle" class="p2d-lbl" style="font-size:10px">Row par.</text>
-        <text x="48" y="258" text-anchor="middle" class="p2d-lbl" style="font-size:10px">Col par.</text>
+        <text x="215" y="22" text-anchor="middle" class="p2d-lbl">Data bits (even parity per row and column)</text>
+        <text x="268" y="126" text-anchor="start" class="p2d-lbl" style="font-size:10px">Row par.</text>
+        <text x="174" y="228" text-anchor="middle" class="p2d-lbl" style="font-size:10px">Col par.</text>
         <g transform="translate(88,40)">
           <g class="p2d-cells">
             <rect class="p2d-cell" x="0" y="0" width="40" height="40"/>
@@ -289,7 +289,8 @@
             <text x="152" y="158" text-anchor="middle" class="p2d-bit">0</text>
           </g>
         </g>
-        <text x="178" y="292" text-anchor="middle" class="p2d-lbl">Receiver: row 2 and column 2 disagree — the error is at the intersection (the center bit should be 1).</text>
+        <text x="215" y="243" text-anchor="middle" class="p2d-lbl">Receiver: row 2 and column 2 disagree —</text>
+        <text x="215" y="256" text-anchor="middle" class="p2d-lbl">the error is at the intersection (the center bit should be 1).</text>
       </svg>
       <figcaption><strong>Figure 2.</strong> Example where one data bit is received incorrectly. Row and column parity each flag a line; at the intersection the bit is flipped back.</figcaption>
     </figure>
