@@ -36,6 +36,7 @@
     <a href="#fec"><span>07</span> Tapsgjenoppretting: FEC og interleaving</a>
     <a href="#skype"><span>08</span> Skype: P2P VoIP i praksis</a>
     <a href="#rtp"><span>09</span> RTP — Real-Time Protocol</a>
+    <a href="#summary"><span>10</span> Oppsummering</a>
   </nav>
 </div>
 </header>
@@ -754,6 +755,47 @@
   </div>
   <div class="explanation" id="qFeedback7"></div>
 </div>
+
+<!-- ============================================================ -->
+<!-- SECTION 10: Summary                                          -->
+<!-- ============================================================ -->
+<section id="summary">
+<div class="container">
+  <div class="section-badge">10 · Oppsummering</div>
+  <h2>Det du skal sitte igjen med</h2>
+
+  <p class="dropcap">Multimedia over pakkenett handler om én fundamental spenning: innholdet krever jevn, tidssensitiv levering, mens Internett bare lover «best effort». Resten av kapittelet er en serie teknikker for å brø seg mellom disse to verdenene — i endepunktene, ikke i nettverket.</p>
+
+  <p>De fem nøkkelpunktene fra kapittelet:</p>
+
+  <div class="callout">
+    <span class="label">1 — Tre typer applikasjoner, tre sett krav</span>
+    <p>Streaming av lagret video tåler sekunder med innledende forsinkelse, men krever jevn playout. Live streaming er lik, men uten spole-mulighet. VoIP/videosamtale er hardest: over 400 ms ende-til-ende-forsinkelse ødelegger samtalen fullstendig. Løsningene er forskjellige fordi kravene er forskjellige.</p>
+  </div>
+
+  <div class="callout callout-blue">
+    <span class="label">2 — Klient-side buffering løser jitter</span>
+    <p>Nettverket leverer pakker med variabel forsinkelse (jitter). Klienten kompenserer ved å bygge opp en buffer og vente med å starte avspillingen. Avveiningen er universal: stor buffer gir robust avspilling, liten buffer gir raskere oppstart. Bufferen tømmes bare hvis gjennomsnittlig nettverksrate x(t) faller under avspillingsraten r over tid.</p>
+  </div>
+
+  <div class="callout callout-green">
+    <span class="label">3 — VoIP: adaptiv playout og tapsskjuling</span>
+    <p>For interaktiv tale er forsinkelsesbudsjettet knepent (mål: under 150 ms). Adaptiv playout-forsinkelse justerer bufferstørrelsen ved starten av hver snakkefase ved hjelp av EWMA — samme struktur som TCPs RTO-estimering. Tap kan skjules med FEC (XOR eller piggyback med lavkvalitetsstrøm) eller interleaving, som sprer tap utover slik at hvert hull er umerkelig kort.</p>
+  </div>
+
+  <div class="callout">
+    <span class="label">4 — HTTP/TCP vant over UDP for streaming</span>
+    <p>UDP gir lavere forsinkelse og ingen retransmisjon, men blokkeres av brannmurer og krever egen serverinfrastruktur. HTTP/TCP passerer port 80/443 overalt, fungerer med standard webservere, og gir pålitelig levering. Den høyere playout-bufferen som trengs for å jevne ut TCPs variable sende-rate er akseptabel for lagret video. Moderne tjenester bruker DASH på toppen av HTTP for adaptiv kvalitet.</p>
+  </div>
+
+  <div class="callout callout-blue">
+    <span class="label">5 — RTP gir struktur, ikke garantier</span>
+    <p>RTP kjører oppå UDP og legger til tre felter multimedia trenger men UDP mangler: payload-type (hvilken koding), sekvensnummer (tapsdeteksjon og rekkefølge) og tidsstempel (playout-timing). RTP gir <em>ingen</em> QoS-garantier — rutere ser bare vanlige UDP-pakker. All intelligens — adaptiv playout, FEC, jitterbuffer — ligger i endepunktene. Standardiseringen gir interoperabilitet mellom leverandører.</p>
+  </div>
+
+  <p>Den røde tråden: <em>alle</em> disse teknikkene — buffering, adaptiv playout, FEC, interleaving, RTP — er svar på det samme grunnproblemet: et tidssensitivt medium som skal fungere over et nettverk som ikke gir noen tidsgarantier. Løsningen ligger alltid i endepunktene, aldri i nettverket.</p>
+</div>
+</section>
 
 <footer>
   <div class="container">
