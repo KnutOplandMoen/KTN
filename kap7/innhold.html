@@ -39,6 +39,7 @@
     <a href="#cellular"><span>10</span> Mobilnett: 4G LTE-arkitektur</a>
     <a href="#lte-data"><span>11</span> LTE dataplan og tunneling</a>
     <a href="#5g"><span>12</span> 5G: hva er nytt</a>
+    <a href="#summary"><span>13</span> Oppsummering</a>
   </nav>
 </div>
 </header>
@@ -651,6 +652,44 @@
   <div class="explanation" id="qFeedback4"></div>
 </div>
 
+<section id="summary">
+<div class="container">
+  <div class="section-badge">13 · Oppsummering</div>
+  <h2>Det du skal sitte igjen med</h2>
+
+  <p class="dropcap">Trådløst er ikke bare "Ethernet uten ledning". Tre fysiske fenomener — signaltap, interferens og flerveispropagering — gjør at radiolinker er fundamentalt annerledes enn kabel. Den viktigste konsekvensen: du kan ikke oppdage kollisjoner mens du sender, fordi ditt eget signal overdøver alt annet. Derfor bruker 802.11 <strong>CSMA/CA</strong> (unngåelse) i stedet for Ethernetets CSMA/CD (deteksjon).</p>
+
+  <p>De fem nøkkelpunktene fra kapittelet:</p>
+
+  <div class="callout">
+    <span class="label">1 — Skjult terminal-problemet</span>
+    <p>To noder kan kollidere hos en tredje uten at noen av dem merker det, fordi de er utenfor rekkevidde for hverandre. "Lytt før du sender" hjelper ikke. RTS/CTS-mekanismen løser det ved å la basestasjonen — som kan høre alle — formidle en kanaireservasjon.</p>
+  </div>
+
+  <div class="callout callout-blue">
+    <span class="label">2 — 802.11-rammens fire adresser</span>
+    <p>Ethernet trenger to MAC-adresser (kilde og destinasjon). WiFi trenger tre i infrastrukturmodus: hvem som mottar rammen fra lufta (AP), hvem som sendte den (verten), og hvem AP-en skal videresende til på Ethernet-siden (ruteren). Fjerde adresse er reservert for ad hoc og WDS.</p>
+  </div>
+
+  <div class="callout callout-green">
+    <span class="label">3 — Mobilitet innen subnett</span>
+    <p>Når du går fra ett rom til et annet og bytter AP, beholder du IP-adressen — forutsatt at begge AP-ene henger på samme svitsj og subnett. Svitsjen oppdaterer tabellen sin automatisk (self-learning) første gang en ramme ankommer fra den nye porten. TCP-laget merker ingenting.</p>
+  </div>
+
+  <div class="callout">
+    <span class="label">4 — LTE-arkitekturen: EPC og tunneling</span>
+    <p>4G er ikke bare en stor WiFi. EPC har spesialiserte komponenter: eNode-B (basestasjon), MME (kontrollplan, mobilitet), HSS (abonnentdatabase), S-GW og P-GW (dataplan). Telefonens IP-adresse ligger hos P-GW og forblir fast. GTP-tunneling over UDP gjør at pakker alltid finner veien, uansett hvilken basestasjon telefonen er koblet til akkurat nå.</p>
+  </div>
+
+  <div class="callout callout-blue">
+    <span class="label">5 — 5G: mer spektrum, kortere rekkevidde</span>
+    <p>FR1 (under 6 GHz) gir grei rekkevidde og penetrasjon, men begrenset hastighetsgevinst. FR2 (mmWave, 24–52 GHz) gir opp til 10 Gbps, men signalet stoppes av en vegg — eller en menneskekropp. Ekte mmWave-dekning krever en pico-celle på hvert gatehjørne. MIMO og beamforming skviser mer kapasitet ut av hvert frekvensbånd, mens 5G Core viderefører SDN-idéen med programmerbar nettverksarkitektur.</p>
+  </div>
+
+  <p>Den røde tråden: <em>alle</em> disse designvalgene — fra CSMA/CA til GTP-tunneling til mmWave pico-celler — er svar på det samme grunnproblemet: hvordan håndterer vi et delt, upålitelig radiomedium der brukerne hele tiden kan flytte på seg?</p>
+</div>
+</section>
+
 <footer>
   <div class="container">
     <p>Basert på <em>Computer Networking: A Top-Down Approach</em>, 8. utgave, av Kurose &amp; Ross — kapittel 7. Denne siden går dypere enn lysbildene, fyller inn motivasjonen og forklarer mekanismene fra grunnen av.</p>
@@ -741,9 +780,10 @@
         quiz.querySelectorAll('button.option').forEach(b=>{
           b.disabled = true;
           if (b.dataset.correct === 'true') b.classList.add('correct');
-          else if (b === btn) b.classList.add('wrong');
+          else if (b === btn) b.classList.add('incorrect');
         });
         fb.textContent = correct ? feedback[fbId].correct : feedback[fbId].wrong;
+        fb.classList.add('show');
       });
     });
   });
