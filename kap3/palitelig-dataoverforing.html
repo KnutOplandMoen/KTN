@@ -1,10 +1,10 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="no">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kapittel 3 â€” Prinsipper for pÃ¥litelig dataoverfÃ¸ring</title>
-<link rel="stylesheet" href="../style.css">
+<title>Kapittel 3 — Prinsipper for pålitelig dataoverføring</title>
+<link rel="icon" type="image/png" href="/favicon.png">`n<link rel="stylesheet" href="../style.css">
 </head>
 <body>
 
@@ -20,19 +20,19 @@
   </div>
 </nav>
 
-<main data-chapter="Kapittel 3: Prinsipper for pÃ¥litelig dataoverfÃ¸ring â€” rdt, pipelining, GBN og SR">
+<main data-chapter="Kapittel 3: Prinsipper for pålitelig dataoverføring — rdt, pipelining, GBN og SR">
 <header class="hero">
   <div class="container">
-    <div class="eyebrow">Kapittel 3 Â· Transportlaget</div>
-    <h1>PÃ¥litelig <em>dataoverfÃ¸ring</em></h1>
-    <p class="sub">Steg for steg fra en perfekt kanal til en realistisk verden med bitfeil, tap og forsinkelse â€” og protokollene som mestrer dem.</p>
+    <div class="eyebrow">Kapittel 3 · Transportlaget</div>
+    <h1>Pålitelig <em>dataoverføring</em></h1>
+    <p class="sub">Steg for steg fra en perfekt kanal til en realistisk verden med bitfeil, tap og forsinkelse — og protokollene som mestrer dem.</p>
     <nav class="toc">
       <a href="#intro"><span>00</span> Problemet</a>
       <a href="#rdt10"><span>01</span> rdt 1.0</a>
-      <a href="#rdt20"><span>02</span> rdt 2.0 â€” ACK/NAK</a>
-      <a href="#rdt21"><span>03</span> rdt 2.1 â€” sekvensnummer</a>
-      <a href="#rdt22"><span>04</span> rdt 2.2 â€” NAK-fri</a>
-      <a href="#rdt30"><span>05</span> rdt 3.0 â€” tap og timeout</a>
+      <a href="#rdt20"><span>02</span> rdt 2.0 — ACK/NAK</a>
+      <a href="#rdt21"><span>03</span> rdt 2.1 — sekvensnummer</a>
+      <a href="#rdt22"><span>04</span> rdt 2.2 — NAK-fri</a>
+      <a href="#rdt30"><span>05</span> rdt 3.0 — tap og timeout</a>
       <a href="#utilization"><span>06</span> Utnyttelsesanalyse</a>
       <a href="#pipelining"><span>07</span> Pipelining</a>
       <a href="#gbn"><span>08</span> Go-Back-N</a>
@@ -44,29 +44,29 @@
 <!-- ============ INTRO ============ -->
 <section id="intro">
   <div class="container">
-    <div class="badge">00 Â· Problemet</div>
-    <h2>PÃ¥litelig over <em>upÃ¥litelig</em></h2>
-    <p class="section-intro">Applikasjoner vil ha en pÃ¥litelig kanal. Nettverket gir dem alt annet. Transportlagets jobb er Ã¥ bygge bro mellom drÃ¸m og virkelighet.</p>
+    <div class="badge">00 · Problemet</div>
+    <h2>Pålitelig over <em>upålitelig</em></h2>
+    <p class="section-intro">Applikasjoner vil ha en pålitelig kanal. Nettverket gir dem alt annet. Transportlagets jobb er å bygge bro mellom drøm og virkelighet.</p>
 
-    <p class="lead">Tenk deg to prosesser som kommuniserer. Applikasjonen ser det slik: data sendes inn i en magisk pipe pÃ¥ den ene siden og kommer ut, uforandret og i riktig rekkefÃ¸lge, pÃ¥ den andre. Ingen tap, ingen feil, ingen forsinkelse. Det er abstraksjon â€” en <em>tjeneste</em> som transportlaget tilbyr oppover.</p>
+    <p class="lead">Tenk deg to prosesser som kommuniserer. Applikasjonen ser det slik: data sendes inn i en magisk pipe på den ene siden og kommer ut, uforandret og i riktig rekkefølge, på den andre. Ingen tap, ingen feil, ingen forsinkelse. Det er abstraksjon — en <em>tjeneste</em> som transportlaget tilbyr oppover.</p>
 
-    <p>Men under denne abstraksjonens overflate ligger virkeligheten: et nettverk som kan <strong>flippe bits</strong>, <strong>miste pakker</strong> og <strong>levere ting i feil rekkefÃ¸lge</strong>. Kompleksiteten til protokollen vi trenger avhenger direkte av hvor ille den underliggende kanalen oppfÃ¸rer seg.</p>
+    <p>Men under denne abstraksjonens overflate ligger virkeligheten: et nettverk som kan <strong>flippe bits</strong>, <strong>miste pakker</strong> og <strong>levere ting i feil rekkefølge</strong>. Kompleksiteten til protokollen vi trenger avhenger direkte av hvor ille den underliggende kanalen oppfører seg.</p>
 
     <div class="box insight">
       <div class="label">Kjerneprinsipp</div>
-      <p>Sender og mottaker kjenner ikke hverandres tilstand â€” de vet ikke om den andre har mottatt noe som helst, <em>med mindre de eksplisitt kommuniserer det</em> via meldinger. Det er derfor vi trenger en protokoll.</p>
+      <p>Sender og mottaker kjenner ikke hverandres tilstand — de vet ikke om den andre har mottatt noe som helst, <em>med mindre de eksplisitt kommuniserer det</em> via meldinger. Det er derfor vi trenger en protokoll.</p>
     </div>
 
-    <h3>Grensesnittene â€” fire funksjoner</h3>
+    <h3>Grensesnittene — fire funksjoner</h3>
     <p>Uansett hvor kompleks protokollen blir, bruker vi alltid de samme fire grensesnittene:</p>
 
     <table class="compare">
       <thead><tr><th>Funksjon</th><th>Rolle</th></tr></thead>
       <tbody>
-        <tr><td>rdt_send()</td><td>Kalles fra applikasjonen ovenfor. Overleverer data som skal sendes pÃ¥litelig.</td></tr>
-        <tr><td>udt_send()</td><td>Kalles av protokollen for Ã¥ sende en pakke over den <em>upÃ¥litelige</em> kanalen.</td></tr>
-        <tr><td>rdt_rcv()</td><td>Kalles nÃ¥r en pakke ankommer mottakersiden fra den upÃ¥litelige kanalen.</td></tr>
-        <tr><td>deliver_data()</td><td>Kalles av protokollen for Ã¥ levere data opp til mottaker-applikasjonen.</td></tr>
+        <tr><td>rdt_send()</td><td>Kalles fra applikasjonen ovenfor. Overleverer data som skal sendes pålitelig.</td></tr>
+        <tr><td>udt_send()</td><td>Kalles av protokollen for å sende en pakke over den <em>upålitelige</em> kanalen.</td></tr>
+        <tr><td>rdt_rcv()</td><td>Kalles når en pakke ankommer mottakersiden fra den upålitelige kanalen.</td></tr>
+        <tr><td>deliver_data()</td><td>Kalles av protokollen for å levere data opp til mottaker-applikasjonen.</td></tr>
       </tbody>
     </table>
 
@@ -88,7 +88,7 @@
           <text x="590" y="130" font-family="IBM Plex Mono" font-size="12" fill="#b04428" text-anchor="middle">rdt mottaker</text>
 
           <rect x="200" y="190" width="300" height="40" rx="4" fill="none" stroke="#a39886" stroke-width="1.5" stroke-dasharray="6,3"/>
-          <text x="350" y="215" font-family="IBM Plex Mono" font-size="12" fill="#6b6257" text-anchor="middle">upÃ¥litelig kanal</text>
+          <text x="350" y="215" font-family="IBM Plex Mono" font-size="12" fill="#6b6257" text-anchor="middle">upålitelig kanal</text>
 
           <line x1="110" y1="70" x2="110" y2="98" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ar0)"/>
           <text x="135" y="88" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">rdt_send()</text>
@@ -103,19 +103,19 @@
           <text x="541.93" y="168.54" transform="rotate(-28.610 541.93 168.54)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">rdt_rcv()</text>
         </svg>
       </div>
-      <figcaption>De fire grensesnittene i pÃ¥litelig dataoverfÃ¸ring. Applikasjonen ser en pÃ¥litelig kanal; protokollen hÃ¥ndterer den upÃ¥litelige virkeligheten under.</figcaption>
+      <figcaption>De fire grensesnittene i pålitelig dataoverføring. Applikasjonen ser en pålitelig kanal; protokollen håndterer den upålitelige virkeligheten under.</figcaption>
     </figure>
 
-    <p>NÃ¥ bygger vi opp protokollen steg for steg â€” fra det trivielle til det realistiske. Hvert steg legger til Ã©n ny komplikasjon, og vi ser nÃ¸yaktig hva som kreves for Ã¥ hÃ¥ndtere den.</p>
+    <p>Nå bygger vi opp protokollen steg for steg — fra det trivielle til det realistiske. Hvert steg legger til én ny komplikasjon, og vi ser nøyaktig hva som kreves for å håndtere den.</p>
   </div>
 </section>
 
 <!-- ============ RDT 1.0 ============ -->
 <section id="rdt10">
   <div class="container">
-    <div class="badge">01 Â· rdt 1.0</div>
-    <h2>Perfekt kanal â€” <em>trivielt</em></h2>
-    <p class="section-intro">Utgangspunktet: en kanal som aldri gjÃ¸r feil. Protokollen trenger ikke gjÃ¸re noe spesielt.</p>
+    <div class="badge">01 · rdt 1.0</div>
+    <h2>Perfekt kanal — <em>trivielt</em></h2>
+    <p class="section-intro">Utgangspunktet: en kanal som aldri gjør feil. Protokollen trenger ikke gjøre noe spesielt.</p>
 
     <p class="lead">Vi starter med den enkleste modellen: den underliggende kanalen er perfekt. Ingen bitfeil, ingen pakketap. I denne utopien er protokollen triviell.</p>
 
@@ -134,7 +134,7 @@
         <svg viewBox="0 0 700 160" xmlns="http://www.w3.org/2000/svg">
           <text x="130" y="25" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612">Sender FSM</text>
           <ellipse cx="130" cy="90" rx="80" ry="35" fill="none" stroke="#b04428" stroke-width="2"/>
-          <text x="130" y="85" font-family="IBM Plex Mono" font-size="11" fill="#b04428" text-anchor="middle">Vent pÃ¥ kall</text>
+          <text x="130" y="85" font-family="IBM Plex Mono" font-size="11" fill="#b04428" text-anchor="middle">Vent på kall</text>
           <text x="130" y="100" font-family="IBM Plex Mono" font-size="11" fill="#b04428" text-anchor="middle">ovenfra</text>
           <path d="M 130 55 C 180 20 220 40 210 55" fill="none" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ar0)"/>
           <text x="220" y="30" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">rdt_send(data)</text>
@@ -142,37 +142,37 @@
 
           <text x="530" y="25" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612">Mottaker FSM</text>
           <ellipse cx="530" cy="90" rx="80" ry="35" fill="none" stroke="#2d4a7a" stroke-width="2"/>
-          <text x="530" y="85" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a" text-anchor="middle">Vent pÃ¥ kall</text>
+          <text x="530" y="85" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a" text-anchor="middle">Vent på kall</text>
           <text x="530" y="100" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a" text-anchor="middle">nedenfra</text>
           <path d="M 530 55 C 580 20 620 40 610 55" fill="none" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ar0)"/>
           <text x="620" y="30" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">rdt_rcv(pkt)</text>
           <text x="620" y="45" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a">extract(pkt,data); deliver_data(data)</text>
         </svg>
       </div>
-      <figcaption>FSM for rdt 1.0 â€” begge sider har Ã©n tilstand. Ingen feilhÃ¥ndtering, ingen bekreftelser.</figcaption>
+      <figcaption>FSM for rdt 1.0 — begge sider har én tilstand. Ingen feilhåndtering, ingen bekreftelser.</figcaption>
     </figure>
 
-    <p>Poenget med rdt 1.0 er ikke at den er nyttig â€” det er at den etablerer grunnlinjen. Alt som fÃ¸lger handler om hva som skjer nÃ¥r vi fjerner antakelsen om en perfekt kanal.</p>
+    <p>Poenget med rdt 1.0 er ikke at den er nyttig — det er at den etablerer grunnlinjen. Alt som følger handler om hva som skjer når vi fjerner antakelsen om en perfekt kanal.</p>
   </div>
 </section>
 
 <!-- ============ RDT 2.0 ============ -->
 <section id="rdt20">
   <div class="container">
-    <div class="badge">02 Â· rdt 2.0</div>
-    <h2>Bitfeil â€” <em>ACK og NAK</em></h2>
-    <p class="section-intro">Kanalen kan nÃ¥ flippe bits i pakker. Vi trenger en mekanisme for at mottakeren kan si Â«fikk denÂ» eller Â«fikk den ikkeÂ».</p>
+    <div class="badge">02 · rdt 2.0</div>
+    <h2>Bitfeil — <em>ACK og NAK</em></h2>
+    <p class="section-intro">Kanalen kan nå flippe bits i pakker. Vi trenger en mekanisme for at mottakeren kan si «fikk den» eller «fikk den ikke».</p>
 
-    <p class="lead">Forestill deg at du dikterer en tekst over telefon. Etter hvert ord sier lytteren enten Â«OKÂ» eller Â«gjenta detÂ». Det er nÃ¸yaktig det rdt 2.0 gjÃ¸r: mottakeren bruker en <strong>sjekksum</strong> for Ã¥ oppdage bitfeil, og svarer med <strong>ACK</strong> (alt vel) eller <strong>NAK</strong> (feil oppdaget â€” send pÃ¥ nytt).</p>
+    <p class="lead">Forestill deg at du dikterer en tekst over telefon. Etter hvert ord sier lytteren enten «OK» eller «gjenta det». Det er nøyaktig det rdt 2.0 gjør: mottakeren bruker en <strong>sjekksum</strong> for å oppdage bitfeil, og svarer med <strong>ACK</strong> (alt vel) eller <strong>NAK</strong> (feil oppdaget — send på nytt).</p>
 
     <div class="box solution">
       <div class="label">Nye mekanismer i rdt 2.0</div>
       <p><strong>Feildeteksjon:</strong> Sjekksum i hver pakke lar mottakeren oppdage korrupte data.<br>
       <strong>Tilbakemelding:</strong> ACK og NAK fra mottaker til sender.<br>
-      <strong>Retransmisjon:</strong> Ved NAK sender senderen pakken pÃ¥ nytt.</p>
+      <strong>Retransmisjon:</strong> Ved NAK sender senderen pakken på nytt.</p>
     </div>
 
-    <p>Protokollen er <strong>stop-and-wait</strong>: senderen sender Ã©n pakke, og venter deretter pÃ¥ respons fra mottakeren fÃ¸r den sender neste.</p>
+    <p>Protokollen er <strong>stop-and-wait</strong>: senderen sender én pakke, og venter deretter på respons fra mottakeren før den sender neste.</p>
 
     <figure>
       <div class="fsm-wrap">
@@ -180,41 +180,41 @@
           <text x="350" y="18" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612" text-anchor="middle">Sender FSM (rdt 2.0)</text>
 
           <ellipse cx="150" cy="110" rx="85" ry="32" fill="none" stroke="#b04428" stroke-width="2"/>
-          <text x="150" y="105" font-family="IBM Plex Mono" font-size="10" fill="#b04428" text-anchor="middle">Vent pÃ¥ kall</text>
+          <text x="150" y="105" font-family="IBM Plex Mono" font-size="10" fill="#b04428" text-anchor="middle">Vent på kall</text>
           <text x="150" y="120" font-family="IBM Plex Mono" font-size="10" fill="#b04428" text-anchor="middle">ovenfra</text>
 
           <ellipse cx="500" cy="110" rx="85" ry="32" fill="none" stroke="#b04428" stroke-width="2"/>
-          <text x="500" y="105" font-family="IBM Plex Mono" font-size="10" fill="#b04428" text-anchor="middle">Vent pÃ¥</text>
+          <text x="500" y="105" font-family="IBM Plex Mono" font-size="10" fill="#b04428" text-anchor="middle">Vent på</text>
           <text x="500" y="120" font-family="IBM Plex Mono" font-size="10" fill="#b04428" text-anchor="middle">ACK/NAK</text>
 
           <line x1="235" y1="100" x2="413" y2="100" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ar0)"/>
           <text x="325" y="90" font-family="IBM Plex Mono" font-size="9" fill="#6b6257" text-anchor="middle">rdt_send(data) / make_pkt, udt_send</text>
 
           <line x1="413" y1="125" x2="237" y2="125" stroke="#3d6b3a" stroke-width="1.5" marker-end="url(#ar0)"/>
-          <text x="325" y="148" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a" text-anchor="middle">rcv ACK â†’ Î›</text>
+          <text x="325" y="148" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a" text-anchor="middle">rcv ACK ? ?</text>
 
           <path d="M 500 78 C 530 40 570 50 585 78" fill="none" stroke="#b04428" stroke-width="1.5" marker-end="url(#ar0)"/>
-          <text x="560" y="42" font-family="IBM Plex Mono" font-size="9" fill="#b04428">rcv NAK â†’ udt_send(pkt)</text>
+          <text x="560" y="42" font-family="IBM Plex Mono" font-size="9" fill="#b04428">rcv NAK ? udt_send(pkt)</text>
         </svg>
       </div>
-      <figcaption>Senderen venter pÃ¥ ACK/NAK. Ved NAK retransmitteres pakken. Ved ACK fortsetter senderen med neste.</figcaption>
+      <figcaption>Senderen venter på ACK/NAK. Ved NAK retransmitteres pakken. Ved ACK fortsetter senderen med neste.</figcaption>
     </figure>
 
     <div class="box problem">
       <div class="label">Fatalt problem med rdt 2.0</div>
-      <p>Hva skjer hvis <em>selve ACK/NAK-en</em> blir korrupt? Senderen vet ikke om mottakeren fikk pakken eller ei. Ã… bare sende pÃ¥ nytt kan gi <strong>duplikater</strong> som mottakeren ikke kan skille fra nye data. rdt 2.0 er <em>Ã¸delagt</em>.</p>
+      <p>Hva skjer hvis <em>selve ACK/NAK-en</em> blir korrupt? Senderen vet ikke om mottakeren fikk pakken eller ei. Å bare sende på nytt kan gi <strong>duplikater</strong> som mottakeren ikke kan skille fra nye data. rdt 2.0 er <em>ødelagt</em>.</p>
     </div>
 
     <div class="quiz" data-correct="2">
-      <div class="qlabel">Sjekk forstÃ¥elsen</div>
+      <div class="qlabel">Sjekk forståelsen</div>
       <h4>Hva er det fundamentale problemet med rdt 2.0?</h4>
       <div class="opts">
         <button class="opt" data-i="0">Den kan ikke oppdage bitfeil i data</button>
         <button class="opt" data-i="1">Den mangler timeout-mekanisme</button>
-        <button class="opt" data-i="2">Den hÃ¥ndterer ikke korrupte ACK/NAK-meldinger â€” senderen vet ikke om hun skal retransmittere eller gÃ¥ videre</button>
-        <button class="opt" data-i="3">Den bruker for mye bÃ¥ndbredde</button>
+        <button class="opt" data-i="2">Den håndterer ikke korrupte ACK/NAK-meldinger — senderen vet ikke om hun skal retransmittere eller gå videre</button>
+        <button class="opt" data-i="3">Den bruker for mye båndbredde</button>
       </div>
-      <div class="feedback"><strong>Riktig.</strong> Hvis ACK/NAK selv er korrupt, er senderen i en umulig situasjon: retransmisjon kan gi duplikater, men Ã¥ gÃ¥ videre kan bety tapt data. LÃ¸sningen er sekvensnumre.</div>
+      <div class="feedback"><strong>Riktig.</strong> Hvis ACK/NAK selv er korrupt, er senderen i en umulig situasjon: retransmisjon kan gi duplikater, men å gå videre kan bety tapt data. Løsningen er sekvensnumre.</div>
     </div>
   </div>
 </section>
@@ -222,22 +222,22 @@
 <!-- ============ RDT 2.1 ============ -->
 <section id="rdt21">
   <div class="container">
-    <div class="badge">03 Â· rdt 2.1</div>
-    <h2>Sekvensnumre â€” <em>hÃ¥ndtere duplikater</em></h2>
-    <p class="section-intro">LÃ¸sningen pÃ¥ det fatale problemet: legg til et sekvensnummer slik at mottakeren kan gjenkjenne og kaste duplikater.</p>
+    <div class="badge">03 · rdt 2.1</div>
+    <h2>Sekvensnumre — <em>håndtere duplikater</em></h2>
+    <p class="section-intro">Løsningen på det fatale problemet: legg til et sekvensnummer slik at mottakeren kan gjenkjenne og kaste duplikater.</p>
 
-    <p class="lead">Ideen er enkel men kraftfull: senderen merker hver pakke med et <strong>sekvensnummer</strong>. Hvis ACK/NAK er korrupt, retransmitterer senderen uansett. Mottakeren sjekker sekvensnummeret â€” er det det hun forventer, leverer hun data opp. Er det et duplikat, kaster hun det stille og sender ACK pÃ¥ nytt.</p>
+    <p class="lead">Ideen er enkel men kraftfull: senderen merker hver pakke med et <strong>sekvensnummer</strong>. Hvis ACK/NAK er korrupt, retransmitterer senderen uansett. Mottakeren sjekker sekvensnummeret — er det det hun forventer, leverer hun data opp. Er det et duplikat, kaster hun det stille og sender ACK på nytt.</p>
 
     <div class="box insight">
-      <div class="label">NÃ¸kkelobservasjon</div>
-      <p>For stop-and-wait trenger vi bare <strong>to sekvensnumre: 0 og 1</strong>. Hvorfor? Fordi senderen aldri har mer enn Ã©n ubekreft pakke ute om gangen. Mottakeren trenger bare skille mellom Â«den pakken jeg venter pÃ¥Â» og Â«den forrige pakken (duplikat)Â».</p>
+      <div class="label">Nøkkelobservasjon</div>
+      <p>For stop-and-wait trenger vi bare <strong>to sekvensnumre: 0 og 1</strong>. Hvorfor? Fordi senderen aldri har mer enn én ubekreft pakke ute om gangen. Mottakeren trenger bare skille mellom «den pakken jeg venter på» og «den forrige pakken (duplikat)».</p>
     </div>
 
     <h3>Hva endret seg?</h3>
     <table class="compare">
       <thead><tr><th>Komponent</th><th>Endring fra rdt 2.0</th></tr></thead>
       <tbody>
-        <tr><td>Sender</td><td>Legger til <code>seq#</code> (0 eller 1) i pakken. Ved korrupt eller NAK: retransmitterer med <em>samme</em> seq#. Dobbelt sÃ¥ mange tilstander â€” mÃ¥ huske om forventet seq# er 0 eller 1.</td></tr>
+        <tr><td>Sender</td><td>Legger til <code>seq#</code> (0 eller 1) i pakken. Ved korrupt eller NAK: retransmitterer med <em>samme</em> seq#. Dobbelt så mange tilstander — må huske om forventet seq# er 0 eller 1.</td></tr>
         <tr><td>Mottaker</td><td>Sjekker seq# mot forventet. Hvis riktig: lever data opp, send ACK. Hvis duplikat: kast data, send ACK likevel (senderen trenger bekreftelsen).</td></tr>
       </tbody>
     </table>
@@ -245,7 +245,7 @@
     <figure>
       <div class="fsm-wrap">
         <svg viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg">
-          <text x="360" y="18" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612" text-anchor="middle">Sender FSM (rdt 2.1) â€” forenklet</text>
+          <text x="360" y="18" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#1a1612" text-anchor="middle">Sender FSM (rdt 2.1) — forenklet</text>
 
           <ellipse cx="120" cy="100" rx="80" ry="30" fill="none" stroke="#b04428" stroke-width="2"/>
           <text x="120" y="95" font-family="IBM Plex Mono" font-size="10" fill="#b04428" text-anchor="middle">Vent kall 0</text>
@@ -266,15 +266,15 @@
           <text x="445" y="85" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a">rcv ACK</text>
 
           <path d="M 340 70 C 360 30 400 30 420 70" fill="none" stroke="#b04428" stroke-width="1.5" marker-end="url(#ar0)"/>
-          <text x="370" y="40" font-family="IBM Plex Mono" font-size="9" fill="#b04428">corrupt/NAK â†’ resend</text>
+          <text x="370" y="40" font-family="IBM Plex Mono" font-size="9" fill="#b04428">corrupt/NAK ? resend</text>
 
           <text x="360" y="180" font-family="Newsreader" font-size="14" font-style="italic" fill="#6b6257" text-anchor="middle">... og speilbilde for seq# 1 (vist forenklet)</text>
 
           <path d="M 560 130 C 560 190 120 190 120 132" fill="none" stroke="#a39886" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#ar0)"/>
-          <text x="340" y="210" font-family="IBM Plex Mono" font-size="9" fill="#a39886" text-anchor="middle">etter ACK for seq 1 â†’ tilbake til seq 0</text>
+          <text x="340" y="210" font-family="IBM Plex Mono" font-size="9" fill="#a39886" text-anchor="middle">etter ACK for seq 1 ? tilbake til seq 0</text>
         </svg>
       </div>
-      <figcaption>rdt 2.1 har dobbelt sÃ¥ mange tilstander fordi senderen mÃ¥ huske om neste pakke skal ha seq# 0 eller 1. Mottakeren veksler tilsvarende.</figcaption>
+      <figcaption>rdt 2.1 har dobbelt så mange tilstander fordi senderen må huske om neste pakke skal ha seq# 0 eller 1. Mottakeren veksler tilsvarende.</figcaption>
     </figure>
   </div>
 </section>
@@ -282,32 +282,32 @@
 <!-- ============ RDT 2.2 ============ -->
 <section id="rdt22">
   <div class="container">
-    <div class="badge">04 Â· rdt 2.2</div>
-    <h2>NAK-fri â€” <em>bare ACK</em></h2>
-    <p class="section-intro">Vi dropper NAK helt. I stedet sender mottakeren alltid en ACK â€” men med sekvensnummeret til den siste pakken hun mottok korrekt.</p>
+    <div class="badge">04 · rdt 2.2</div>
+    <h2>NAK-fri — <em>bare ACK</em></h2>
+    <p class="section-intro">Vi dropper NAK helt. I stedet sender mottakeren alltid en ACK — men med sekvensnummeret til den siste pakken hun mottok korrekt.</p>
 
-    <p class="lead">Ideen er elegant: i stedet for Ã¥ si Â«den var feilÂ» (NAK), sier mottakeren Â«den forrige var OKÂ» (duplikat-ACK). Effekten er den samme, men vi eliminerer en hel meldingstype.</p>
+    <p class="lead">Ideen er elegant: i stedet for å si «den var feil» (NAK), sier mottakeren «den forrige var OK» (duplikat-ACK). Effekten er den samme, men vi eliminerer en hel meldingstype.</p>
 
     <div class="box solution">
       <div class="label">Slik fungerer det</div>
       <p><strong>Mottaker:</strong> Send alltid ACK med sekvensnummeret til den <em>sist korrekt mottatte</em> pakken.<br>
-      <strong>Sender:</strong> Hvis ACK-ens sekvensnummer ikke matcher det hun nettopp sendte, behandler hun det som en NAK â€” retransmitter.</p>
+      <strong>Sender:</strong> Hvis ACK-ens sekvensnummer ikke matcher det hun nettopp sendte, behandler hun det som en NAK — retransmitter.</p>
     </div>
 
-    <p>Eksempel: Senderen sender pakke med <code>seq=0</code>. Mottakeren finner bitfeil. I stedet for NAK sender hun <code>ACK(1)</code> â€” altsÃ¥ Â«den siste pakken jeg fikk korrekt hadde seq# 1Â». Senderen ser at hun ventet pÃ¥ ACK(0), men fikk ACK(1) â€” tolker det som feil og retransmitterer.</p>
+    <p>Eksempel: Senderen sender pakke med <code>seq=0</code>. Mottakeren finner bitfeil. I stedet for NAK sender hun <code>ACK(1)</code> — altså «den siste pakken jeg fikk korrekt hadde seq# 1». Senderen ser at hun ventet på ACK(0), men fikk ACK(1) — tolker det som feil og retransmitterer.</p>
 
     <div class="margin-note">
       <strong>TCP bruker dette</strong>
-      TCP er NAK-fri â€” den bruker kun ACK-er med sekvensnummer, akkurat som rdt 2.2. Duplikat-ACK-er er det grunnleggende signalet for tap i TCP.
+      TCP er NAK-fri — den bruker kun ACK-er med sekvensnummer, akkurat som rdt 2.2. Duplikat-ACK-er er det grunnleggende signalet for tap i TCP.
     </div>
 
     <div class="quiz" data-correct="1">
-      <div class="qlabel">Sjekk forstÃ¥elsen</div>
-      <h4>I rdt 2.2, hva gjÃ¸r mottakeren nÃ¥r hun mottar en korrupt pakke?</h4>
+      <div class="qlabel">Sjekk forståelsen</div>
+      <h4>I rdt 2.2, hva gjør mottakeren når hun mottar en korrupt pakke?</h4>
       <div class="opts">
         <button class="opt" data-i="0">Sender en NAK-melding</button>
         <button class="opt" data-i="1">Sender en ACK med sekvensnummeret til den sist korrekt mottatte pakken (duplikat-ACK)</button>
-        <button class="opt" data-i="2">Ignorerer pakken helt uten Ã¥ sende noe</button>
+        <button class="opt" data-i="2">Ignorerer pakken helt uten å sende noe</button>
         <button class="opt" data-i="3">Sender pakken tilbake til senderen</button>
       </div>
       <div class="feedback"><strong>Riktig.</strong> I stedet for NAK sender mottakeren en ACK for den forrige pakken. Senderen ser at det ikke er ACK for den pakken hun nettopp sendte, og retransmitterer.</div>
@@ -318,21 +318,21 @@
 <!-- ============ RDT 3.0 ============ -->
 <section id="rdt30">
   <div class="container">
-    <div class="badge">05 Â· rdt 3.0</div>
-    <h2>Tap og timeout â€” <em>den komplette protokollen</em></h2>
-    <p class="section-intro">Den underliggende kanalen kan nÃ¥ ogsÃ¥ <strong>miste pakker</strong> helt â€” bÃ¥de datapakker og ACK-er. Sjekksum og sekvensnumre alene er ikke nok.</p>
+    <div class="badge">05 · rdt 3.0</div>
+    <h2>Tap og timeout — <em>den komplette protokollen</em></h2>
+    <p class="section-intro">Den underliggende kanalen kan nå også <strong>miste pakker</strong> helt — både datapakker og ACK-er. Sjekksum og sekvensnumre alene er ikke nok.</p>
 
-    <p class="lead">Med bitfeil og duplikathÃ¥ndtering pÃ¥ plass, gjenstÃ¥r Ã©n stor utfordring: pakker kan forsvinne sporlÃ¸st. Senderen sender en pakke, og det kommer rett og slett aldri noe svar. Uten en ny mekanisme ville senderen ventet evig.</p>
+    <p class="lead">Med bitfeil og duplikathåndtering på plass, gjenstår én stor utfordring: pakker kan forsvinne sporløst. Senderen sender en pakke, og det kommer rett og slett aldri noe svar. Uten en ny mekanisme ville senderen ventet evig.</p>
 
     <div class="box solution">
-      <div class="label">LÃ¸sning: countdown timer</div>
-      <p>Senderen starter en <strong>timer</strong> etter Ã¥ ha sendt en pakke. Hvis ACK ikke kommer innen en Â«rimeligÂ» tid, antar senderen at pakken (eller ACK-en) er tapt, og <strong>retransmitterer</strong>.</p>
+      <div class="label">Løsning: countdown timer</div>
+      <p>Senderen starter en <strong>timer</strong> etter å ha sendt en pakke. Hvis ACK ikke kommer innen en «rimelig» tid, antar senderen at pakken (eller ACK-en) er tapt, og <strong>retransmitterer</strong>.</p>
     </div>
 
-    <p>Men hva om pakken bare var forsinket, ikke tapt? Da vil retransmisjonen skape et <strong>duplikat</strong> â€” men det er greit! Sekvensnumrene fra rdt 2.1/2.2 lar mottakeren gjenkjenne og kaste duplikater. Mottakeren sender bare ACK med riktig sekvensnummer.</p>
+    <p>Men hva om pakken bare var forsinket, ikke tapt? Da vil retransmisjonen skape et <strong>duplikat</strong> — men det er greit! Sekvensnumrene fra rdt 2.1/2.2 lar mottakeren gjenkjenne og kaste duplikater. Mottakeren sender bare ACK med riktig sekvensnummer.</p>
 
     <h3>Fire scenarier</h3>
-    <p>rdt 3.0 hÃ¥ndterer alle disse situasjonene korrekt:</p>
+    <p>rdt 3.0 håndterer alle disse situasjonene korrekt:</p>
 
     <figure>
       <div class="svg-wrap">
@@ -369,7 +369,7 @@
           <line x1="360" y1="100" x2="245" y2="125" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#ar5b)"/>
           <text x="303.94" y="119.14" transform="rotate(-12.265 303.94 119.14)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">ack0</text>
           <line x1="240" y1="140" x2="308" y2="155" stroke="#1a1612" stroke-width="1.2" stroke-dasharray="4,3"/>
-          <text x="312" y="159" font-family="IBM Plex Mono" font-size="12" fill="#b04428" font-weight="700">Ã—</text>
+          <text x="312" y="159" font-family="IBM Plex Mono" font-size="12" fill="#b04428" font-weight="700">×</text>
           <text x="275.46" y="140.86" transform="rotate(12.440 275.46 140.86)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="8" fill="#b04428">pkt1</text>
           <text x="210" y="187" font-family="IBM Plex Mono" font-size="8" fill="#c68a1f">timeout</text>
           <line x1="240" y1="192" x2="355" y2="217" stroke="#b04428" stroke-width="1.2" marker-end="url(#ar5r)"/>
@@ -384,12 +384,12 @@
           <line x1="425" y1="65" x2="545" y2="90" stroke="#1a1612" stroke-width="1.2" marker-end="url(#ar5)"/>
           <text x="486.39" y="70.84" transform="rotate(11.768 486.39 70.84)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="8" fill="#1a1612">pkt0</text>
           <line x1="550" y1="100" x2="495" y2="115" stroke="#2d4a7a" stroke-width="1.2" stroke-dasharray="4,3"/>
-          <text x="499" y="119" font-family="IBM Plex Mono" font-size="12" fill="#b04428" font-weight="700">Ã—</text>
+          <text x="499" y="119" font-family="IBM Plex Mono" font-size="12" fill="#b04428" font-weight="700">×</text>
           <text x="524.29" y="114.06" transform="rotate(-15.255 524.29 114.06)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="8" fill="#b04428">ack0</text>
           <text x="395" y="162" font-family="IBM Plex Mono" font-size="8" fill="#c68a1f">timeout</text>
           <line x1="425" y1="167" x2="545" y2="192" stroke="#b04428" stroke-width="1.2" marker-end="url(#ar5r)"/>
           <text x="486.39" y="172.84" transform="rotate(11.768 486.39 172.84)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="8" fill="#b04428">pkt0</text>
-          <text x="553" y="200" font-family="IBM Plex Mono" font-size="7" fill="#3d6b3a">dup â†’ kast</text>
+          <text x="553" y="200" font-family="IBM Plex Mono" font-size="7" fill="#3d6b3a">dup ? kast</text>
           <line x1="550" y1="207" x2="430" y2="232" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#ar5b)"/>
           <text x="491.39" y="226.16" transform="rotate(-11.768 491.39 226.16)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">ack0</text>
 
@@ -406,29 +406,29 @@
           <line x1="615" y1="138" x2="695" y2="168" stroke="#b04428" stroke-width="1.2" marker-end="url(#ar5r)"/>
           <text x="657.09" y="147.43" transform="rotate(20.556 657.09 147.43)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="7" fill="#b04428">pkt0</text>
           <text x="664.21" y="142.21" transform="rotate(-45.000 664.21 142.21)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="7" fill="#2d4a7a">ack0</text>
-          <text x="703" y="176" font-family="IBM Plex Mono" font-size="6" fill="#3d6b3a">dupâ†’kast</text>
+          <text x="703" y="176" font-family="IBM Plex Mono" font-size="6" fill="#3d6b3a">dup?kast</text>
           <line x1="700" y1="182" x2="620" y2="225" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#ar5b)"/>
           <text x="662.82" y="208.74" transform="rotate(-28.258 662.82 208.74)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="7" fill="#2d4a7a">ack0</text>
         </svg>
       </div>
-      <figcaption>rdt 3.0 i aksjon: (a) alt fungerer, (b) datapakke tapt, (c) ACK tapt, (d) for tidlig timeout. Protokollen hÃ¥ndterer alle korrekt takket vÃ¦re sekvensnumre og timer.</figcaption>
+      <figcaption>rdt 3.0 i aksjon: (a) alt fungerer, (b) datapakke tapt, (c) ACK tapt, (d) for tidlig timeout. Protokollen håndterer alle korrekt takket være sekvensnumre og timer.</figcaption>
     </figure>
 
     <div class="box insight">
       <div class="label">rdt 3.0 er korrekt, men...</div>
-      <p>rdt 3.0 â€” ogsÃ¥ kalt <strong>alternating-bit protocol</strong> â€” er en funksjonelt korrekt protokoll for pÃ¥litelig overfÃ¸ring over en kanal med bitfeil og tap. Men den er <strong>katastrofalt treg</strong>. Det skal vi se i neste seksjon.</p>
+      <p>rdt 3.0 — også kalt <strong>alternating-bit protocol</strong> — er en funksjonelt korrekt protokoll for pålitelig overføring over en kanal med bitfeil og tap. Men den er <strong>katastrofalt treg</strong>. Det skal vi se i neste seksjon.</p>
     </div>
 
     <div class="quiz" data-correct="3">
-      <div class="qlabel">Sjekk forstÃ¥elsen</div>
+      <div class="qlabel">Sjekk forståelsen</div>
       <h4>Hva skjer i rdt 3.0 hvis senderen timer ut men pakken bare var forsinket (ikke tapt)?</h4>
       <div class="opts">
-        <button class="opt" data-i="0">Mottakeren krasjer fordi den fÃ¥r to pakker med samme data</button>
+        <button class="opt" data-i="0">Mottakeren krasjer fordi den får to pakker med samme data</button>
         <button class="opt" data-i="1">Senderen ignorerer den forsinkede ACK-en</button>
         <button class="opt" data-i="2">Protokollen feiler og data blir korrupt</button>
-        <button class="opt" data-i="3">Mottakeren kaster duplikatet (sjekker seq#), sender ACK pÃ¥ nytt, og alt fungerer korrekt</button>
+        <button class="opt" data-i="3">Mottakeren kaster duplikatet (sjekker seq#), sender ACK på nytt, og alt fungerer korrekt</button>
       </div>
-      <div class="feedback"><strong>Riktig.</strong> Sekvensnumrene redder oss: mottakeren gjenkjenner duplikatet og kaster det. ACK-en sendes pÃ¥ nytt, og senderen kommer seg videre. Litt slÃ¸sing med bÃ¥ndbredde, men ingen feil.</div>
+      <div class="feedback"><strong>Riktig.</strong> Sekvensnumrene redder oss: mottakeren gjenkjenner duplikatet og kaster det. ACK-en sendes på nytt, og senderen kommer seg videre. Litt sløsing med båndbredde, men ingen feil.</div>
     </div>
   </div>
 </section>
@@ -436,23 +436,23 @@
 <!-- ============ UTILIZATION ============ -->
 <section id="utilization">
   <div class="container">
-    <div class="badge">06 Â· Utnyttelsesanalyse</div>
+    <div class="badge">06 · Utnyttelsesanalyse</div>
     <h2>Stop-and-wait er <em>forferdelig</em></h2>
-    <p class="section-intro">rdt 3.0 er korrekt. Den er ogsÃ¥ sÃ¥ treg at den slÃ¸ser bort nesten all tilgjengelig bÃ¥ndbredde.</p>
+    <p class="section-intro">rdt 3.0 er korrekt. Den er også så treg at den sløser bort nesten all tilgjengelig båndbredde.</p>
 
-    <p class="lead">La oss regne pÃ¥ et realistisk eksempel: en 1 Gbps lenke med 15 ms forsinkelse i hver retning (30 ms RTT), og pakker pÃ¥ 8000 bit.</p>
+    <p class="lead">La oss regne på et realistisk eksempel: en 1 Gbps lenke med 15 ms forsinkelse i hver retning (30 ms RTT), og pakker på 8000 bit.</p>
 
     <div class="box insight">
       <div class="label">Beregning</div>
       <p style="font-family:'IBM Plex Mono',monospace;font-size:14px;line-height:2.2">
-        D<sub>trans</sub> = L/R = 8000 bit / 10<sup>9</sup> bit/s = <strong>8 Î¼s</strong><br><br>
-        U<sub>sender</sub> = L/R Ã· (RTT + L/R)<br>
+        D<sub>trans</sub> = L/R = 8000 bit / 10<sup>9</sup> bit/s = <strong>8 µs</strong><br><br>
+        U<sub>sender</sub> = L/R ÷ (RTT + L/R)<br>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 0,008 ms / 30,008 ms<br>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <strong>0,00027</strong> = <strong>0,027 %</strong>
       </p>
     </div>
 
-    <p>Senderen bruker bare 0,027 % av lenkens kapasitet. Resten av tiden â€” 99,97 % â€” sitter hun og venter pÃ¥ ACK. En gigabit-lenke oppfÃ¸rer seg som en 267 kbps-lenke. Protokollen er den dominerende flaskehalsen, ikke nettverket.</p>
+    <p>Senderen bruker bare 0,027 % av lenkens kapasitet. Resten av tiden — 99,97 % — sitter hun og venter på ACK. En gigabit-lenke oppfører seg som en 267 kbps-lenke. Protokollen er den dominerende flaskehalsen, ikke nettverket.</p>
 
     <figure>
       <div class="svg-wrap">
@@ -481,7 +481,7 @@
           <text x="350" y="185" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257" text-anchor="middle">Senderen er aktiv i kun L/R av hele syklusen</text>
         </svg>
       </div>
-      <figcaption>Stop-and-wait: senderen sender Ã©n pakke og venter hele RTT + L/R fÃ¸r neste. Resultatet er katastrofalt lav utnyttelse.</figcaption>
+      <figcaption>Stop-and-wait: senderen sender én pakke og venter hele RTT + L/R før neste. Resultatet er katastrofalt lav utnyttelse.</figcaption>
     </figure>
   </div>
 </section>
@@ -489,17 +489,17 @@
 <!-- ============ PIPELINING ============ -->
 <section id="pipelining">
   <div class="container">
-    <div class="badge">07 Â· Pipelining</div>
-    <h2>Fyll rÃ¸ret â€” <em>send flere pakker</em></h2>
-    <p class="section-intro">LÃ¸sningen pÃ¥ stop-and-wait-problemet: la senderen sende flere pakker uten Ã¥ vente pÃ¥ ACK for den forrige.</p>
+    <div class="badge">07 · Pipelining</div>
+    <h2>Fyll røret — <em>send flere pakker</em></h2>
+    <p class="section-intro">Løsningen på stop-and-wait-problemet: la senderen sende flere pakker uten å vente på ACK for den forrige.</p>
 
-    <p class="lead">Pipelining er konseptuelt enkelt: i stedet for Ã¥ vente pÃ¥ ACK etter hver pakke, sender vi <em>flere</em> pakker fÃ¸r noen ACK har kommet tilbake. Akkurat som et samlebÃ¥nd â€” vi skyver kontinuerlig nye enheter inn, i stedet for Ã¥ vente til den fÃ¸rste er ferdig fÃ¸r vi starter den neste.</p>
+    <p class="lead">Pipelining er konseptuelt enkelt: i stedet for å vente på ACK etter hver pakke, sender vi <em>flere</em> pakker før noen ACK har kommet tilbake. Akkurat som et samlebånd — vi skyver kontinuerlig nye enheter inn, i stedet for å vente til den første er ferdig før vi starter den neste.</p>
 
     <div class="box solution">
       <div class="label">Konsekvenser av pipelining</div>
-      <p><strong>1.</strong> Vi trenger et <em>stÃ¸rre rom av sekvensnumre</em> â€” to (0 og 1) er ikke lenger nok.<br>
-      <strong>2.</strong> Senderen og/eller mottakeren trenger <strong>buffere</strong> for Ã¥ holde styr pÃ¥ pakker som er sendt men ikke bekreftet, eller mottatt men ikke levert.<br>
-      <strong>3.</strong> Vi trenger nye regler for hvordan vi hÃ¥ndterer tap og retransmisjon nÃ¥r mange pakker er Â«i fluktÂ» samtidig.</p>
+      <p><strong>1.</strong> Vi trenger et <em>større rom av sekvensnumre</em> — to (0 og 1) er ikke lenger nok.<br>
+      <strong>2.</strong> Senderen og/eller mottakeren trenger <strong>buffere</strong> for å holde styr på pakker som er sendt men ikke bekreftet, eller mottatt men ikke levert.<br>
+      <strong>3.</strong> Vi trenger nye regler for hvordan vi håndterer tap og retransmisjon når mange pakker er «i flukt» samtidig.</p>
     </div>
 
     <h3>Effekten</h3>
@@ -508,25 +508,25 @@
     <div class="box insight">
       <div class="label">Forbedring</div>
       <p style="font-family:'IBM Plex Mono',monospace;font-size:14px;line-height:2.2">
-        U<sub>sender</sub> = 3 Ã— L/R Ã· (RTT + L/R)<br>
+        U<sub>sender</sub> = 3 × L/R ÷ (RTT + L/R)<br>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 0,024 ms / 30,008 ms<br>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <strong>0,00081</strong> = <strong>0,081 %</strong>
       </p>
-      <p>Tredoblet utnyttelse med bare 3 pakker i pipeline! Med et stÃ¸rre vindu nÃ¦rmer vi oss 100 % utnyttelse.</p>
+      <p>Tredoblet utnyttelse med bare 3 pakker i pipeline! Med et større vindu nærmer vi oss 100 % utnyttelse.</p>
     </div>
 
-    <p>To fundamentalt forskjellige tilnÃ¦rminger til pipelining har vokst fram: <strong>Go-Back-N</strong> og <strong>Selective Repeat</strong>. De gjÃ¸r ulike avveininger mellom enkelhet og effektivitet.</p>
+    <p>To fundamentalt forskjellige tilnærminger til pipelining har vokst fram: <strong>Go-Back-N</strong> og <strong>Selective Repeat</strong>. De gjør ulike avveininger mellom enkelhet og effektivitet.</p>
 
     <div class="quiz" data-correct="0">
-      <div class="qlabel">Sjekk forstÃ¥elsen</div>
+      <div class="qlabel">Sjekk forståelsen</div>
       <h4>Hvorfor trenger pipelining mer enn to sekvensnumre (0 og 1)?</h4>
       <div class="opts">
-        <button class="opt" data-i="0">Fordi flere pakker er Â«i fluktÂ» samtidig â€” senderen og mottakeren mÃ¥ kunne skille mellom dem</button>
+        <button class="opt" data-i="0">Fordi flere pakker er «i flukt» samtidig — senderen og mottakeren må kunne skille mellom dem</button>
         <button class="opt" data-i="1">Fordi TCP krever det i sin spesifikasjon</button>
         <button class="opt" data-i="2">Fordi kanalen kan omorganisere pakker</button>
         <button class="opt" data-i="3">Fordi sjekksummen trenger mer plass</button>
       </div>
-      <div class="feedback"><strong>Riktig.</strong> Med stop-and-wait er det alltid bare Ã©n utestÃ¥ende pakke, sÃ¥ 0/1 er nok. Med pipelining kan det vÃ¦re mange ubekreftede pakker, og hver trenger et unikt sekvensnummer for Ã¥ identifiseres.</div>
+      <div class="feedback"><strong>Riktig.</strong> Med stop-and-wait er det alltid bare én utestående pakke, så 0/1 er nok. Med pipelining kan det være mange ubekreftede pakker, og hver trenger et unikt sekvensnummer for å identifiseres.</div>
     </div>
   </div>
 </section>
@@ -534,11 +534,11 @@
 <!-- ============ GO-BACK-N ============ -->
 <section id="gbn">
   <div class="container">
-    <div class="badge">08 Â· Go-Back-N</div>
+    <div class="badge">08 · Go-Back-N</div>
     <h2>Kumulativ ACK og <em>vinduet</em></h2>
-    <p class="section-intro">Go-Back-N (GBN) er den enkleste pipelining-protokollen: mottakeren buffrer ingenting, og senderen gÃ¥r tilbake og sender alt pÃ¥ nytt fra der det gikk galt.</p>
+    <p class="section-intro">Go-Back-N (GBN) er den enkleste pipelining-protokollen: mottakeren buffrer ingenting, og senderen går tilbake og sender alt på nytt fra der det gikk galt.</p>
 
-    <p class="lead">I GBN har senderen et <strong>vindu</strong> av stÃ¸rrelse N: hun fÃ¥r lov til Ã¥ ha opptil N pakker Â«i fluktÂ» (sendt men ikke bekreftet) samtidig. Vinduet glir framover etterhvert som ACK-er kommer. Mottakeren er enkel â€” hun godtar bare pakker <em>i riktig rekkefÃ¸lge</em>.</p>
+    <p class="lead">I GBN har senderen et <strong>vindu</strong> av størrelse N: hun får lov til å ha opptil N pakker «i flukt» (sendt men ikke bekreftet) samtidig. Vinduet glir framover etterhvert som ACK-er kommer. Mottakeren er enkel — hun godtar bare pakker <em>i riktig rekkefølge</em>.</p>
 
     <h3>Senderens vindu</h3>
     <div class="window-vis">
@@ -556,19 +556,19 @@
       <div class="cell blocked">11</div>
     </div>
     <p style="font-size:14px;color:var(--ink-faded);margin-top:8px">
-      <span style="color:var(--green)">â– </span> ACK-et &nbsp;&nbsp;
-      <span style="color:var(--rust)">â– </span> Sendt, venter pÃ¥ ACK &nbsp;&nbsp;
-      <span style="color:var(--ochre)">â– </span> Kan sendes (vindu ledig) &nbsp;&nbsp;
-      <span style="color:var(--ink-ghost)">â– </span> Kan ikke sendes ennÃ¥
+      <span style="color:var(--green)">¦</span> ACK-et &nbsp;&nbsp;
+      <span style="color:var(--rust)">¦</span> Sendt, venter på ACK &nbsp;&nbsp;
+      <span style="color:var(--ochre)">¦</span> Kan sendes (vindu ledig) &nbsp;&nbsp;
+      <span style="color:var(--ink-ghost)">¦</span> Kan ikke sendes ennå
     </p>
 
-    <h3>NÃ¸kkelregler</h3>
+    <h3>Nøkkelregler</h3>
     <table class="compare">
       <thead><tr><th>Egenskap</th><th>GBN-regelen</th></tr></thead>
       <tbody>
         <tr><td>ACK-type</td><td><strong>Kumulativ:</strong> ACK(n) bekrefter alle pakker opp til og med n.</td></tr>
-        <tr><td>Timer</td><td><strong>Ã‰n timer</strong> for den eldste ubekreftede pakken.</td></tr>
-        <tr><td>Timeout</td><td>Ved timeout: retransmitter <em>alle</em> pakker i vinduet â€” fra den eldste ubekreftede og utover.</td></tr>
+        <tr><td>Timer</td><td><strong>Én timer</strong> for den eldste ubekreftede pakken.</td></tr>
+        <tr><td>Timeout</td><td>Ved timeout: retransmitter <em>alle</em> pakker i vinduet — fra den eldste ubekreftede og utover.</td></tr>
         <tr><td>Mottaker</td><td>Godtar bare neste forventede sekvensnummer. Alt annet kastes. Sender ACK for siste korrekte.</td></tr>
       </tbody>
     </table>
@@ -590,7 +590,7 @@
           <text x="358.04" y="76.52" transform="rotate(3.614 358.04 76.52)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">pkt1</text>
 
           <line x1="120" y1="90" x2="400" y2="115" stroke="#1a1612" stroke-width="1.2" stroke-dasharray="3,2"/>
-          <text x="405" y="119" font-family="IBM Plex Mono" font-size="12" fill="#b04428" font-weight="700">Ã—</text>
+          <text x="405" y="119" font-family="IBM Plex Mono" font-size="12" fill="#b04428" font-weight="700">×</text>
           <text x="260.76" y="94.03" transform="rotate(5.102 260.76 94.03)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">pkt2 (TAPT)</text>
 
           <line x1="120" y1="110" x2="595" y2="140" stroke="#1a1612" stroke-width="1.2" marker-end="url(#ar7)"/>
@@ -603,12 +603,12 @@
           <text x="361.29" y="152.40" transform="rotate(-8.710 361.29 152.40)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">ack1</text>
 
           <text x="605" y="148" font-family="IBM Plex Mono" font-size="9" fill="#b04428">pkt3 out-of-order</text>
-          <text x="605" y="160" font-family="IBM Plex Mono" font-size="9" fill="#b04428">â†’ kast, send ack1</text>
+          <text x="605" y="160" font-family="IBM Plex Mono" font-size="9" fill="#b04428">? kast, send ack1</text>
           <line x1="595" y1="165" x2="125" y2="240" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#ar7)"/>
           <text x="361.34" y="210.89" transform="rotate(-9.067 361.34 210.89)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">ack1 (dup)</text>
 
           <text x="30" y="260" font-family="IBM Plex Mono" font-size="10" fill="#c68a1f">pkt2 timeout!</text>
-          <text x="30" y="275" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">Send alt fra pkt2 pÃ¥ nytt</text>
+          <text x="30" y="275" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">Send alt fra pkt2 på nytt</text>
 
           <line x1="120" y1="290" x2="595" y2="320" stroke="#b04428" stroke-width="1.5" marker-end="url(#ar7)"/>
           <text x="358.04" y="296.52" transform="rotate(3.614 358.04 296.52)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">pkt2 (resendt)</text>
@@ -623,24 +623,24 @@
           <text x="361.11" y="387.43" transform="rotate(-7.515 361.11 387.43)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">ack3</text>
         </svg>
       </div>
-      <figcaption>Go-Back-N i aksjon: pkt2 gÃ¥r tapt. Mottakeren kaster pkt3 (out-of-order). Ved timeout sender senderen pkt2, pkt3 (og evt. flere) pÃ¥ nytt.</figcaption>
+      <figcaption>Go-Back-N i aksjon: pkt2 går tapt. Mottakeren kaster pkt3 (out-of-order). Ved timeout sender senderen pkt2, pkt3 (og evt. flere) på nytt.</figcaption>
     </figure>
 
     <div class="box problem">
       <div class="label">Ulempen med GBN</div>
-      <p>Ã‰n tapt pakke kan fÃ¸re til at <em>mange</em> korrekt mottatte pakker kastes og mÃ¥ sendes pÃ¥ nytt. Med et stort vindu (f.eks. N=1000) kan et enkelt tap utlÃ¸se retransmisjon av hundrevis av pakker â€” en enorm slÃ¸sing med bÃ¥ndbredde.</p>
+      <p>Én tapt pakke kan føre til at <em>mange</em> korrekt mottatte pakker kastes og må sendes på nytt. Med et stort vindu (f.eks. N=1000) kan et enkelt tap utløse retransmisjon av hundrevis av pakker — en enorm sløsing med båndbredde.</p>
     </div>
 
     <div class="quiz" data-correct="1">
-      <div class="qlabel">Sjekk forstÃ¥elsen</div>
-      <h4>I Go-Back-N med vinduestÃ¸rrelse N=4, hva gjÃ¸r mottakeren nÃ¥r hun mottar pkt5 men venter pÃ¥ pkt3?</h4>
+      <div class="qlabel">Sjekk forståelsen</div>
+      <h4>I Go-Back-N med vinduestørrelse N=4, hva gjør mottakeren når hun mottar pkt5 men venter på pkt3?</h4>
       <div class="opts">
-        <button class="opt" data-i="0">Buffrer pkt5 og venter pÃ¥ pkt3</button>
-        <button class="opt" data-i="1">Kaster pkt5 og sender ACK(2) â€” den siste pakken hun mottok i riktig rekkefÃ¸lge</button>
-        <button class="opt" data-i="2">Sender NAK(3) for Ã¥ be om retransmisjon</button>
+        <button class="opt" data-i="0">Buffrer pkt5 og venter på pkt3</button>
+        <button class="opt" data-i="1">Kaster pkt5 og sender ACK(2) — den siste pakken hun mottok i riktig rekkefølge</button>
+        <button class="opt" data-i="2">Sender NAK(3) for å be om retransmisjon</button>
         <button class="opt" data-i="3">Aksepterer pkt5 og leverer den opp med et hull</button>
       </div>
-      <div class="feedback"><strong>Riktig.</strong> I GBN godtar mottakeren kun neste forventede pakke. Alt annet kastes, og hun re-ACK-er den siste in-order pakken. Enkelt for mottakeren, men slÃ¸sete med bÃ¥ndbredde.</div>
+      <div class="feedback"><strong>Riktig.</strong> I GBN godtar mottakeren kun neste forventede pakke. Alt annet kastes, og hun re-ACK-er den siste in-order pakken. Enkelt for mottakeren, men sløsete med båndbredde.</div>
     </div>
   </div>
 </section>
@@ -648,21 +648,21 @@
 <!-- ============ SELECTIVE REPEAT ============ -->
 <section id="sr">
   <div class="container">
-    <div class="badge">09 Â· Selective Repeat</div>
+    <div class="badge">09 · Selective Repeat</div>
     <h2>Individuell ACK og <em>buffring</em></h2>
-    <p class="section-intro">Selective Repeat (SR) unngÃ¥r unÃ¸dvendig retransmisjon: mottakeren buffrer out-of-order pakker og senderen retransmitterer bare den ene pakken som faktisk gikk tapt.</p>
+    <p class="section-intro">Selective Repeat (SR) unngår unødvendig retransmisjon: mottakeren buffrer out-of-order pakker og senderen retransmitterer bare den ene pakken som faktisk gikk tapt.</p>
 
-    <p class="lead">GBN kaster alt som kommer ute av rekkefÃ¸lge. Det er enkelt, men i et nettverk med lave tapsnivÃ¥er er det vanvittig slÃ¸sete. Selective Repeat tar en annen tilnÃ¦rming: mottakeren <strong>buffrer</strong> pakker som kommer ut av rekkefÃ¸lge, og sender <strong>individuelle ACK-er</strong> for hver pakke hun mottar korrekt â€” uavhengig av rekkefÃ¸lge.</p>
+    <p class="lead">GBN kaster alt som kommer ute av rekkefølge. Det er enkelt, men i et nettverk med lave tapsnivåer er det vanvittig sløsete. Selective Repeat tar en annen tilnærming: mottakeren <strong>buffrer</strong> pakker som kommer ut av rekkefølge, og sender <strong>individuelle ACK-er</strong> for hver pakke hun mottar korrekt — uavhengig av rekkefølge.</p>
 
-    <h3>NÃ¸kkelforskjeller fra GBN</h3>
+    <h3>Nøkkelforskjeller fra GBN</h3>
     <table class="compare">
       <thead><tr><th>Egenskap</th><th>Go-Back-N</th><th>Selective Repeat</th></tr></thead>
       <tbody>
         <tr><td>ACK-type</td><td>Kumulativ</td><td><strong>Individuell</strong> per pakke</td></tr>
-        <tr><td>Timer</td><td>Ã‰n for eldste</td><td><strong>Ã‰n per uACK-et pakke</strong></td></tr>
-        <tr><td>Mottaker-buffer</td><td>Nei â€” kast out-of-order</td><td><strong>Ja</strong> â€” buffr out-of-order</td></tr>
+        <tr><td>Timer</td><td>Én for eldste</td><td><strong>Én per uACK-et pakke</strong></td></tr>
+        <tr><td>Mottaker-buffer</td><td>Nei — kast out-of-order</td><td><strong>Ja</strong> — buffr out-of-order</td></tr>
         <tr><td>Retransmisjon</td><td>Alt fra tap-punktet</td><td><strong>Bare den tapte</strong></td></tr>
-        <tr><td>Kompleksitet</td><td>Lav</td><td>HÃ¸yere</td></tr>
+        <tr><td>Kompleksitet</td><td>Lav</td><td>Høyere</td></tr>
       </tbody>
     </table>
 
@@ -676,8 +676,8 @@
 
     <div class="box solution">
       <div class="label">SR-mottakeren</div>
-      <p><strong>Pakke n i [rcvbase, rcvbase+N-1]:</strong> Send ACK(n). Hvis ut av rekkefÃ¸lge: buffr. Hvis in-order: lever alle sammenhengende buffrede pakker opp, skyv vinduet.<br>
-      <strong>Pakke n i [rcvbase-N, rcvbase-1]:</strong> Send ACK(n) likevel â€” senderen trenger kanskje bekreftelsen.<br>
+      <p><strong>Pakke n i [rcvbase, rcvbase+N-1]:</strong> Send ACK(n). Hvis ut av rekkefølge: buffr. Hvis in-order: lever alle sammenhengende buffrede pakker opp, skyv vinduet.<br>
+      <strong>Pakke n i [rcvbase-N, rcvbase-1]:</strong> Send ACK(n) likevel — senderen trenger kanskje bekreftelsen.<br>
       <strong>Ellers:</strong> Ignorer.</p>
     </div>
 
@@ -698,7 +698,7 @@
           <text x="358.04" y="76.52" transform="rotate(3.614 358.04 76.52)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="10" fill="#1a1612">pkt1</text>
 
           <line x1="120" y1="90" x2="400" y2="115" stroke="#1a1612" stroke-width="1.2" stroke-dasharray="3,2"/>
-          <text x="405" y="119" font-family="IBM Plex Mono" font-size="12" fill="#b04428" font-weight="700">Ã—</text>
+          <text x="405" y="119" font-family="IBM Plex Mono" font-size="12" fill="#b04428" font-weight="700">×</text>
           <text x="260.76" y="94.03" transform="rotate(5.102 260.76 94.03)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">pkt2 (TAPT)</text>
 
           <line x1="120" y1="110" x2="595" y2="140" stroke="#1a1612" stroke-width="1.2" marker-end="url(#ar8)"/>
@@ -715,60 +715,60 @@
           <text x="361.34" y="200.89" transform="rotate(-9.067 361.34 200.89)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">ack3</text>
 
           <text x="30" y="265" font-family="IBM Plex Mono" font-size="10" fill="#c68a1f">pkt2 timeout!</text>
-          <text x="30" y="280" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">Send bare pkt2 pÃ¥ nytt</text>
+          <text x="30" y="280" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">Send bare pkt2 på nytt</text>
 
           <line x1="120" y1="295" x2="595" y2="325" stroke="#b04428" stroke-width="1.5" marker-end="url(#ar8)"/>
           <text x="358.04" y="301.52" transform="rotate(3.614 358.04 301.52)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">pkt2 (resendt)</text>
 
-          <text x="605" y="338" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a">pkt2 mottatt â†’</text>
+          <text x="605" y="338" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a">pkt2 mottatt ?</text>
           <text x="605" y="352" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a">lever 2,3 opp</text>
 
           <line x1="595" y1="360" x2="125" y2="410" stroke="#3d6b3a" stroke-width="1.2" marker-end="url(#ar8)"/>
           <text x="360.90" y="393.45" transform="rotate(-6.072 360.90 393.45)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">ack2</text>
         </svg>
       </div>
-      <figcaption>Selective Repeat: pkt2 tapt, men pkt3 buffres hos mottakeren. Bare pkt2 retransmitteres. NÃ¥r den ankommer, leveres bÃ¥de pkt2 og pkt3 opp.</figcaption>
+      <figcaption>Selective Repeat: pkt2 tapt, men pkt3 buffres hos mottakeren. Bare pkt2 retransmitteres. Når den ankommer, leveres både pkt2 og pkt3 opp.</figcaption>
     </figure>
 
-    <h3>SR-dilemmaet: sekvensnummerrom og vinduestÃ¸rrelse</h3>
-    <p>Selective Repeat har en subtil felle: hvis sekvensnummerrommet er for lite i forhold til vinduestÃ¸rrelsen, kan mottakeren ikke skille mellom en <em>ny</em> pakke og en <em>retransmisjon</em> av en gammel.</p>
+    <h3>SR-dilemmaet: sekvensnummerrom og vinduestørrelse</h3>
+    <p>Selective Repeat har en subtil felle: hvis sekvensnummerrommet er for lite i forhold til vinduestørrelsen, kan mottakeren ikke skille mellom en <em>ny</em> pakke og en <em>retransmisjon</em> av en gammel.</p>
 
     <div class="box problem">
-      <div class="label">Eksempel pÃ¥ dilemmaet</div>
-      <p>Sekvensnumre: 0, 1, 2, 3 (4 mulige). VinduestÃ¸rrelse: 3.<br>
-      <strong>Scenario A:</strong> Sender sender pkt0, pkt1, pkt2. Alle ACK-er kommer fram. Sender sender pkt3, pkt0 (ny data), pkt1. Alt er bra â€” mottakeren vet at den nye pkt0 er <em>ny</em> data.<br>
-      <strong>Scenario B:</strong> Sender sender pkt0, pkt1, pkt2. Alle tre ACK-er <em>gÃ¥r tapt</em>. Sender timeouter og resender pkt0. Mottakeren har allerede mottatt pkt0, pkt1, pkt2 og venter nÃ¥ pÃ¥ pkt3 â€” men hun ser pkt0 komme og tror det er <em>ny</em> data med seq# 0.</p>
-      <p style="margin-top:12px"><strong>Mottakeren kan ikke se forskjell!</strong> OppfÃ¸rselen hennes er identisk i begge scenarier.</p>
+      <div class="label">Eksempel på dilemmaet</div>
+      <p>Sekvensnumre: 0, 1, 2, 3 (4 mulige). Vinduestørrelse: 3.<br>
+      <strong>Scenario A:</strong> Sender sender pkt0, pkt1, pkt2. Alle ACK-er kommer fram. Sender sender pkt3, pkt0 (ny data), pkt1. Alt er bra — mottakeren vet at den nye pkt0 er <em>ny</em> data.<br>
+      <strong>Scenario B:</strong> Sender sender pkt0, pkt1, pkt2. Alle tre ACK-er <em>går tapt</em>. Sender timeouter og resender pkt0. Mottakeren har allerede mottatt pkt0, pkt1, pkt2 og venter nå på pkt3 — men hun ser pkt0 komme og tror det er <em>ny</em> data med seq# 0.</p>
+      <p style="margin-top:12px"><strong>Mottakeren kan ikke se forskjell!</strong> Oppførselen hennes er identisk i begge scenarier.</p>
     </div>
 
     <div class="box solution">
-      <div class="label">Regelen for vinduestÃ¸rrelse</div>
-      <p>For Ã¥ unngÃ¥ dette dilemmaet mÃ¥ vinduestÃ¸rrelsen N oppfylle:<br>
+      <div class="label">Regelen for vinduestørrelse</div>
+      <p>For å unngå dette dilemmaet må vinduestørrelsen N oppfylle:<br>
       <span style="font-family:'IBM Plex Mono',monospace;font-size:16px;color:var(--rust);font-weight:600">
-      Selective Repeat: N â‰¤ 2<sup>k-1</sup></span> (der k = antall bits i seq#-feltet)<br>
+      Selective Repeat: N = 2<sup>k-1</sup></span> (der k = antall bits i seq#-feltet)<br>
       <span style="font-family:'IBM Plex Mono',monospace;font-size:16px;color:var(--blue);font-weight:600">
-      Go-Back-N: N â‰¤ 2<sup>k</sup> - 1</span></p>
+      Go-Back-N: N = 2<sup>k</sup> - 1</span></p>
     </div>
 
     <div class="quiz" data-correct="2">
-      <div class="qlabel">Sjekk forstÃ¥elsen</div>
-      <h4>Hva er den viktigste forskjellen mellom Go-Back-N og Selective Repeat nÃ¥r en pakke gÃ¥r tapt?</h4>
+      <div class="qlabel">Sjekk forståelsen</div>
+      <h4>Hva er den viktigste forskjellen mellom Go-Back-N og Selective Repeat når en pakke går tapt?</h4>
       <div class="opts">
         <button class="opt" data-i="0">GBN sender en NAK, SR sender en ACK</button>
-        <button class="opt" data-i="1">GBN buffrer pakker hos mottakeren, SR gjÃ¸r det ikke</button>
+        <button class="opt" data-i="1">GBN buffrer pakker hos mottakeren, SR gjør det ikke</button>
         <button class="opt" data-i="2">GBN retransmitterer alle pakker fra tap-punktet og utover; SR retransmitterer bare den ene pakken som gikk tapt</button>
-        <button class="opt" data-i="3">GBN bruker flere timer, SR bruker Ã©n timer</button>
+        <button class="opt" data-i="3">GBN bruker flere timer, SR bruker én timer</button>
       </div>
-      <div class="feedback"><strong>Riktig.</strong> GBN Â«gÃ¥r tilbakeÂ» til der feilen skjedde og sender alt pÃ¥ nytt (derav navnet). SR er selektiv â€” den sender bare den ene tapte pakken, fordi mottakeren buffrer resten. SR sparer bÃ¥ndbredde, men krever mer kompleksitet hos mottakeren.</div>
+      <div class="feedback"><strong>Riktig.</strong> GBN «går tilbake» til der feilen skjedde og sender alt på nytt (derav navnet). SR er selektiv — den sender bare den ene tapte pakken, fordi mottakeren buffrer resten. SR sparer båndbredde, men krever mer kompleksitet hos mottakeren.</div>
     </div>
 
-    <h3>Oppsummering: evolusjon av pÃ¥litelig overfÃ¸ring</h3>
+    <h3>Oppsummering: evolusjon av pålitelig overføring</h3>
 
     <div class="proto-timeline">
       <div class="proto-step">
         <div class="proto-name">rdt 1.0</div>
         <div class="proto-channel">Perfekt kanal</div>
-        <p>Triviell: send og motta. Ingen mekanismer nÃ¸dvendig.</p>
+        <p>Triviell: send og motta. Ingen mekanismer nødvendig.</p>
       </div>
       <div class="proto-step">
         <div class="proto-name">rdt 2.0</div>
@@ -783,7 +783,7 @@
       <div class="proto-step">
         <div class="proto-name">rdt 2.2</div>
         <div class="proto-channel">Samme som 2.1</div>
-        <p>âˆ’ NAK fjernet. Duplikat-ACK erstatter NAK. TCP gjÃ¸r dette.</p>
+        <p>- NAK fjernet. Duplikat-ACK erstatter NAK. TCP gjør dette.</p>
       </div>
       <div class="proto-step">
         <div class="proto-name">rdt 3.0 (alternating-bit)</div>
@@ -793,16 +793,16 @@
       <div class="proto-step">
         <div class="proto-name">Pipelining</div>
         <div class="proto-channel">Realistisk nettverk</div>
-        <p>+ Flere pakker i flukt. Krever stÃ¸rre seq#-rom og buffring. â†’ GBN eller SR.</p>
+        <p>+ Flere pakker i flukt. Krever større seq#-rom og buffring. ? GBN eller SR.</p>
       </div>
     </div>
 
     <div class="ornament">&#10038; &#10038; &#10038;</div>
 
-    <p>Denne seksjonen har bygget opp hele det konseptuelle grunnlaget for <strong>pÃ¥litelig overfÃ¸ring</strong>. Hvert prinsipp vi har sett â€” sekvensnumre, ACK-er, timer, kumulative bekreftelser, vindu, pipelining â€” dukker opp igjen i TCP. Forskjellen er at TCP kombinerer <em>alle</em> disse mekanismene i Ã©n protokoll, tilpasset den virkelige verdens behov.</p>
+    <p>Denne seksjonen har bygget opp hele det konseptuelle grunnlaget for <strong>pålitelig overføring</strong>. Hvert prinsipp vi har sett — sekvensnumre, ACK-er, timer, kumulative bekreftelser, vindu, pipelining — dukker opp igjen i TCP. Forskjellen er at TCP kombinerer <em>alle</em> disse mekanismene i én protokoll, tilpasset den virkelige verdens behov.</p>
 
-    <p>Neste steg: <a href="tcp.html">TCP i praksis</a> â€” segmentstruktur, pÃ¥litelig levering, flytkontroll og forbindelsesstyring.</p>
-    <p>Se ogsÃ¥: <a href="transport-udp.html">Transportlagets tjenester, multipleksing og UDP</a> â€” grunnlaget vi bygger videre pÃ¥.</p>
+    <p>Neste steg: <a href="tcp.html">TCP i praksis</a> — segmentstruktur, pålitelig levering, flytkontroll og forbindelsesstyring.</p>
+    <p>Se også: <a href="transport-udp.html">Transportlagets tjenester, multipleksing og UDP</a> — grunnlaget vi bygger videre på.</p>
   </div>
 </section>
 
@@ -816,8 +816,8 @@
 <footer>
   <div class="container">
     <div class="ornament">&#10038; &#10038; &#10038;</div>
-    <p>Basert pÃ¥ Kurose &amp; Ross, <em>Computer Networking</em>, 8. utgave â€” Kapittel 3</p>
-    <p>NTNU Â· TTM4100 Â· VÃ¥r 2026</p>
+    <p>Basert på Kurose &amp; Ross, <em>Computer Networking</em>, 8. utgave — Kapittel 3</p>
+    <p>NTNU · TTM4100 · Vår 2026</p>
   </div>
 </footer>
 

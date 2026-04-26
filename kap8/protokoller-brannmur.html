@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="no">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>8b — Protokoller og brannmurer · Sikkerhet i datanettverk</title>
-<link rel="stylesheet" href="../style.css">
+<title>8b � Protokoller og brannmurer � Sikkerhet i datanettverk</title>
+<link rel="icon" type="image/png" href="/favicon.png">`n<link rel="stylesheet" href="../style.css">
 </head>
 <body>
 
@@ -24,56 +24,56 @@
 
 <header class="hero">
   <div class="container">
-    <div class="eyebrow">Kapittel 8b · Sikkerhet</div>
+    <div class="eyebrow">Kapittel 8b � Sikkerhet</div>
     <h1>Protokoller og <em>brannmurer</em></h1>
-    <p class="lede">Sikker e-post, TLS, IPsec, trådløs sikkerhet og brannmurer — fra teori til praktiske sikkerhetsprotokoller.</p>
+    <p class="lede">Sikker e-post, TLS, IPsec, tr�dl�s sikkerhet og brannmurer � fra teori til praktiske sikkerhetsprotokoller.</p>
     <nav class="toc">
       <a href="#epost"><span>05</span>Sikker e-post</a>
       <a href="#tls"><span>06</span>TLS</a>
       <a href="#ipsec"><span>07</span>IPsec</a>
-      <a href="#tradlos"><span>08</span>Trådløs sikkerhet</a>
+      <a href="#tradlos"><span>08</span>Tr�dl�s sikkerhet</a>
       <a href="#brannmur"><span>09</span>Brannmurer</a>
     </nav>
   </div>
 </header>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     SEKSJON 5 — Sikker e-post
-     ═══════════════════════════════════════════════════════════════ -->
+<!-- ---------------------------------------------------------------
+     SEKSJON 5 � Sikker e-post
+     --------------------------------------------------------------- -->
 <section id="epost">
 <div class="container">
-  <div class="section-badge">05 · Sikker e-post</div>
+  <div class="section-badge">05 � Sikker e-post</div>
   <h2>Sikker <em>e-post</em></h2>
-  <p class="section-intro">Tre mål: konfidensialitet, integritet og autentisering — og Alice bruker tre forskjellige nøkler for å oppnå dem alle.</p>
+  <p class="section-intro">Tre m�l: konfidensialitet, integritet og autentisering � og Alice bruker tre forskjellige n�kler for � oppn� dem alle.</p>
 
-  <p class="dropcap">E-post er det perfekte eksempelet for å sette sammen alle «puslespillbitene» vi har lært så langt. Tenk deg at Alice vil sende en e-post til Bob som er (1) konfidensiell — bare Bob kan lese den, (2) autentisert — Bob kan verifisere at det er Alice som har skrevet den, og (3) integritetssjekket — innholdet kan ikke endres underveis. La oss bygge opp løsningen trinn for trinn.</p>
+  <p class="dropcap">E-post er det perfekte eksempelet for � sette sammen alle �puslespillbitene� vi har l�rt s� langt. Tenk deg at Alice vil sende en e-post til Bob som er (1) konfidensiell � bare Bob kan lese den, (2) autentisert � Bob kan verifisere at det er Alice som har skrevet den, og (3) integritetssjekket � innholdet kan ikke endres underveis. La oss bygge opp l�sningen trinn for trinn.</p>
 
   <h3>Steg 1: Bare konfidensialitet</h3>
-  <p>Alice kunne kryptere hele meldingen med Bobs offentlige nøkkel, men det er altfor tregt for en lang e-post. I stedet gjør hun noe smart:</p>
+  <p>Alice kunne kryptere hele meldingen med Bobs offentlige n�kkel, men det er altfor tregt for en lang e-post. I stedet gj�r hun noe smart:</p>
 
   <ol>
-    <li>Generer en tilfeldig <strong>symmetrisk sesjonsnøkkel K<sub>S</sub></strong></li>
+    <li>Generer en tilfeldig <strong>symmetrisk sesjonsn�kkel K<sub>S</sub></strong></li>
     <li>Krypter meldingen med K<sub>S</sub> (raskt, med f.eks. AES)</li>
-    <li>Krypter K<sub>S</sub> med <strong>Bobs offentlige nøkkel K<sub>B</sub><sup>+</sup></strong> (tregt, men K<sub>S</sub> er kort)</li>
-    <li>Send både K<sub>S</sub>(m) og K<sub>B</sub><sup>+</sup>(K<sub>S</sub>) til Bob</li>
+    <li>Krypter K<sub>S</sub> med <strong>Bobs offentlige n�kkel K<sub>B</sub><sup>+</sup></strong> (tregt, men K<sub>S</sub> er kort)</li>
+    <li>Send b�de K<sub>S</sub>(m) og K<sub>B</sub><sup>+</sup>(K<sub>S</sub>) til Bob</li>
   </ol>
 
-  <p>Bob bruker sin private nøkkel til å dekryptere K<sub>S</sub>, og bruker deretter K<sub>S</sub> til å dekryptere selve meldingen. Dette er <em>hybridkryptering</em> — det beste fra begge verdener.</p>
+  <p>Bob bruker sin private n�kkel til � dekryptere K<sub>S</sub>, og bruker deretter K<sub>S</sub> til � dekryptere selve meldingen. Dette er <em>hybridkryptering</em> � det beste fra begge verdener.</p>
 
   <h3>Steg 2: Bare integritet og autentisering</h3>
-  <p>Noen ganger trenger ikke meldingen å være hemmelig, men mottakeren skal kunne verifisere hvem som sendte den. Alice beregner H(m), signerer hashen med <strong>sin egen private nøkkel K<sub>A</sub><sup>−</sup></strong>, og sender både meldingen (i klartekst) og signaturen K<sub>A</sub><sup>−</sup>(H(m)). Bob verifiserer med Alices offentlige nøkkel.</p>
+  <p>Noen ganger trenger ikke meldingen � v�re hemmelig, men mottakeren skal kunne verifisere hvem som sendte den. Alice beregner H(m), signerer hashen med <strong>sin egen private n�kkel K<sub>A</sub><sup>-</sup></strong>, og sender b�de meldingen (i klartekst) og signaturen K<sub>A</sub><sup>-</sup>(H(m)). Bob verifiserer med Alices offentlige n�kkel.</p>
 
   <h3>Steg 3: Alt sammen</h3>
-  <p>For full sikkerhet kombinerer Alice de to teknikkene. Hun bruker tre nøkler:</p>
+  <p>For full sikkerhet kombinerer Alice de to teknikkene. Hun bruker tre n�kler:</p>
 
   <div class="callout callout-green">
-    <span class="label">Alices tre nøkler for sikker e-post</span>
-    <p><strong>1. K<sub>A</sub><sup>−</sup></strong> (Alices private nøkkel) — signerer H(m) for integritet og autentisering.</p>
-    <p><strong>2. K<sub>S</sub></strong> (tilfeldig symmetrisk sesjonsnøkkel) — krypterer meldingen + signaturen for konfidensialitet.</p>
-    <p><strong>3. K<sub>B</sub><sup>+</sup></strong> (Bobs offentlige nøkkel) — krypterer K<sub>S</sub> slik at bare Bob kan dekryptere.</p>
+    <span class="label">Alices tre n�kler for sikker e-post</span>
+    <p><strong>1. K<sub>A</sub><sup>-</sup></strong> (Alices private n�kkel) � signerer H(m) for integritet og autentisering.</p>
+    <p><strong>2. K<sub>S</sub></strong> (tilfeldig symmetrisk sesjonsn�kkel) � krypterer meldingen + signaturen for konfidensialitet.</p>
+    <p><strong>3. K<sub>B</sub><sup>+</sup></strong> (Bobs offentlige n�kkel) � krypterer K<sub>S</sub> slik at bare Bob kan dekryptere.</p>
   </div>
 
-  <p>Bob gjør de komplementære operasjonene i omvendt rekkefølge: dekrypter K<sub>S</sub> med sin private nøkkel, dekrypter meldingen med K<sub>S</sub>, sjekk signaturen med Alices offentlige nøkkel.</p>
+  <p>Bob gj�r de komplement�re operasjonene i omvendt rekkef�lge: dekrypter K<sub>S</sub> med sin private n�kkel, dekrypter meldingen med K<sub>S</sub>, sjekk signaturen med Alices offentlige n�kkel.</p>
 
   <figure class="fig-frame fig-hybrid-email">
     <div class="hybrid-mail">
@@ -81,7 +81,7 @@
       <div class="hybrid-mail__flow">
         <div class="hybrid-mail__party hybrid-mail__party--alice">
           <span class="hybrid-mail__name">Alice</span>
-          <span class="hybrid-mail__keys">K<sub>A</sub><sup>−</sup>, K<sub>S</sub>, K<sub>B</sub><sup>+</sup></span>
+          <span class="hybrid-mail__keys">K<sub>A</sub><sup>-</sup>, K<sub>S</sub>, K<sub>B</sub><sup>+</sup></span>
         </div>
         <div class="hybrid-mail__arrow" aria-hidden="true">
           <svg viewBox="0 0 40 12" xmlns="http://www.w3.org/2000/svg"><path d="M0 6h32" stroke="currentColor" stroke-width="1.75" fill="none"/><path d="M32 6 L24 1.5 L24 10.5 Z" fill="currentColor"/></svg>
@@ -89,8 +89,8 @@
         <div class="hybrid-mail__wire">
           <span class="hybrid-mail__wire-label">Sendt over Internett</span>
           <div class="hybrid-mail__payload">
-            <p><span class="hybrid-mail__expr">K<sub>B</sub><sup>+</sup>(K<sub>S</sub>)</span> — sesjonsnøkkel kryptert for Bob</p>
-            <p><span class="hybrid-mail__expr">K<sub>S</sub>(m, K<sub>A</sub><sup>−</sup>(H(m)))</span> — melding + signatur, alt med K<sub>S</sub></p>
+            <p><span class="hybrid-mail__expr">K<sub>B</sub><sup>+</sup>(K<sub>S</sub>)</span> � sesjonsn�kkel kryptert for Bob</p>
+            <p><span class="hybrid-mail__expr">K<sub>S</sub>(m, K<sub>A</sub><sup>-</sup>(H(m)))</span> � melding + signatur, alt med K<sub>S</sub></p>
           </div>
         </div>
         <div class="hybrid-mail__arrow" aria-hidden="true">
@@ -98,37 +98,37 @@
         </div>
         <div class="hybrid-mail__party hybrid-mail__party--bob">
           <span class="hybrid-mail__name">Bob</span>
-          <span class="hybrid-mail__keys">K<sub>B</sub><sup>−</sup>, K<sub>B</sub><sup>+</sup></span>
+          <span class="hybrid-mail__keys">K<sub>B</sub><sup>-</sup>, K<sub>B</sub><sup>+</sup></span>
         </div>
       </div>
-      <p class="hybrid-mail__note">Byggeklosser: symmetrisk K<sub>S</sub> for hastighet, K<sub>B</sub><sup>+</sup> for konfidensialitet, K<sub>A</sub><sup>−</sup> for digital signatur på H(m).</p>
+      <p class="hybrid-mail__note">Byggeklosser: symmetrisk K<sub>S</sub> for hastighet, K<sub>B</sub><sup>+</sup> for konfidensialitet, K<sub>A</sub><sup>-</sup> for digital signatur p� H(m).</p>
     </div>
-    <figcaption>Hybrid kryptering: den korte sesjonsnøkkelen K<sub>S</sub> beskyttes med Bobs offentlige nøkkel; selve meldingen og signaturen krypteres konfidensielt med K<sub>S</sub>.</figcaption>
+    <figcaption>Hybrid kryptering: den korte sesjonsn�kkelen K<sub>S</sub> beskyttes med Bobs offentlige n�kkel; selve meldingen og signaturen krypteres konfidensielt med K<sub>S</sub>.</figcaption>
   </figure>
 </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     SEKSJON 6 — TLS
-     ═══════════════════════════════════════════════════════════════ -->
+<!-- ---------------------------------------------------------------
+     SEKSJON 6 � TLS
+     --------------------------------------------------------------- -->
 <section id="tls">
 <div class="container">
-  <div class="section-badge">06 · TLS</div>
+  <div class="section-badge">06 � TLS</div>
   <h2>TLS: sikring av <em>TCP-forbindelser</em></h2>
-  <p class="section-intro">Det mest utbredte sikkerhetslaget på Internett — det som gjør HTTPS mulig.</p>
+  <p class="section-intro">Det mest utbredte sikkerhetslaget p� Internett � det som gj�r HTTPS mulig.</p>
 
-  <p class="dropcap">Transport Layer Security (TLS) er protokollen som legger et sikkerhetslag oppå TCP. Når du ser hengelåsen i nettleseren og «https» i URL-en, er det TLS som arbeider under panseret. TLS gir de tre klassiske egenskapene — <strong>konfidensialitet</strong> (via symmetrisk kryptering), <strong>integritet</strong> (via kryptografisk hashing) og <strong>autentisering</strong> (via offentlig nøkkelkryptografi og sertifikater) — med alle teknikkene vi allerede har lært.</p>
+  <p class="dropcap">Transport Layer Security (TLS) er protokollen som legger et sikkerhetslag opp� TCP. N�r du ser hengel�sen i nettleseren og �https� i URL-en, er det TLS som arbeider under panseret. TLS gir de tre klassiske egenskapene � <strong>konfidensialitet</strong> (via symmetrisk kryptering), <strong>integritet</strong> (via kryptografisk hashing) og <strong>autentisering</strong> (via offentlig n�kkelkryptografi og sertifikater) � med alle teknikkene vi allerede har l�rt.</p>
 
   <h3>Hvor bor TLS i protokollstabelen?</h3>
-  <p>TLS er ikke et eget lag i tradisjonell forstand — det er et <strong>sublag</strong> som ligger mellom TCP og applikasjonslaget. Applikasjonen (f.eks. en nettleser) skriver data til en «TLS socket» i stedet for en vanlig TCP-socket. TLS krypterer dataene og sender dem ned til TCP som vanlige TCP-segmenter. For TCP og IP under ser alt normalt ut — de vet ikke at innholdet er kryptert.</p>
+  <p>TLS er ikke et eget lag i tradisjonell forstand � det er et <strong>sublag</strong> som ligger mellom TCP og applikasjonslaget. Applikasjonen (f.eks. en nettleser) skriver data til en �TLS socket� i stedet for en vanlig TCP-socket. TLS krypterer dataene og sender dem ned til TCP som vanlige TCP-segmenter. For TCP og IP under ser alt normalt ut � de vet ikke at innholdet er kryptert.</p>
 
   <h3>Fire faser i en TLS-forbindelse</h3>
-  <p>Vi kan forstå TLS ved å bygge en forenklet «toy-TLS» (t-tls) og se hva hver fase trenger:</p>
+  <p>Vi kan forst� TLS ved � bygge en forenklet �toy-TLS� (t-tls) og se hva hver fase trenger:</p>
 
-  <p>I <strong>TLS 1.3</strong> (pensum: kap. 8.6) brukes ofte <strong>ephemeral Diffie–Hellman</strong> (f.eks. på elliptiske kurver) til å utlede den delte hemmeligheten, og integritet/kryptering i <strong>AEAD</strong>-modus — ikke nødvendigvis «krypter Pre-Master Secret med serverens RSA-nøkkel» som i eldre forklaringsmodeller. Stegene under illustrerer likevel <em>hva</em> handshake og records løser: autentisering av partene, avtale av sesjonsnøkler, beskyttet dataoverføring og trygg nedkobling.</p>
+  <p>I <strong>TLS 1.3</strong> (pensum: kap. 8.6) brukes ofte <strong>ephemeral Diffie�Hellman</strong> (f.eks. p� elliptiske kurver) til � utlede den delte hemmeligheten, og integritet/kryptering i <strong>AEAD</strong>-modus � ikke n�dvendigvis �krypter Pre-Master Secret med serverens RSA-n�kkel� som i eldre forklaringsmodeller. Stegene under illustrerer likevel <em>hva</em> handshake og records l�ser: autentisering av partene, avtale av sesjonsn�kler, beskyttet dataoverf�ring og trygg nedkobling.</p>
 
   <div class="stepper" id="tlsStepper">
-    <div class="s-label">Interaktiv gjennomgang — TLS-fasene</div>
+    <div class="s-label">Interaktiv gjennomgang � TLS-fasene</div>
     <div class="stage">
       <h5 id="tlsTitle">Fase 1 av 4</h5>
       <p id="tlsText"></p>
@@ -140,52 +140,52 @@
     </div>
   </div>
 
-  <h3>Nøkkelutledning (key derivation)</h3>
-  <p>Etter håndtrykket har Alice og Bob en felles «master secret». Men det anses som dårlig praksis å bruke én nøkkel til alt. Derfor utleder de <strong>fire separate nøkler</strong> fra master secret:</p>
+  <h3>N�kkelutledning (key derivation)</h3>
+  <p>Etter h�ndtrykket har Alice og Bob en felles �master secret�. Men det anses som d�rlig praksis � bruke �n n�kkel til alt. Derfor utleder de <strong>fire separate n�kler</strong> fra master secret:</p>
 
   <ul>
-    <li><strong>E<sub>A</sub></strong> — krypteringsnøkkel for data fra Alice til Bob</li>
-    <li><strong>E<sub>B</sub></strong> — krypteringsnøkkel for data fra Bob til Alice</li>
-    <li><strong>M<sub>A</sub></strong> — MAC-nøkkel for data fra Alice til Bob</li>
-    <li><strong>M<sub>B</sub></strong> — MAC-nøkkel for data fra Bob til Alice</li>
+    <li><strong>E<sub>A</sub></strong> � krypteringsn�kkel for data fra Alice til Bob</li>
+    <li><strong>E<sub>B</sub></strong> � krypteringsn�kkel for data fra Bob til Alice</li>
+    <li><strong>M<sub>A</sub></strong> � MAC-n�kkel for data fra Alice til Bob</li>
+    <li><strong>M<sub>B</sub></strong> � MAC-n�kkel for data fra Bob til Alice</li>
   </ul>
 
   <h3>Record-basert kryptering</h3>
-  <p>TCP gir en byte-strøm, men TLS kan ikke kryptere strømmen fortløpende — for da ville MAC-en først komme på slutten, og mottakeren ville ikke kunne sjekke integriteten før hele forbindelsen lukkes. Løsningen: TLS deler strømmen opp i <strong>records</strong>. Hver record inneholder data, en MAC for integritet, og en lengde. Hele recorden krypteres med sesjonsnøkkelen før den sendes til TCP.</p>
+  <p>TCP gir en byte-str�m, men TLS kan ikke kryptere str�mmen fortl�pende � for da ville MAC-en f�rst komme p� slutten, og mottakeren ville ikke kunne sjekke integriteten f�r hele forbindelsen lukkes. L�sningen: TLS deler str�mmen opp i <strong>records</strong>. Hver record inneholder data, en MAC for integritet, og en lengde. Hele recorden krypteres med sesjonsn�kkelen f�r den sendes til TCP.</p>
 
-  <p>Et viktig poeng: MAC-en beregnes ikke bare over selve dataene i recorden — den inkluderer også et <strong>sekvensnummer</strong>. Selv om sekvensnummeret ikke sendes eksplisitt i recorden, holder begge parter en intern teller. Uten sekvensnumre kunne Trudy fange opp en record og spille den av på nytt (replay-angrep), eller omorganisere rekkefølgen på records uten at mottakeren oppdager det. Med sekvensnummeret i MAC-beregningen vil enhver slik manipulasjon føre til at MAC-verifiseringen feiler.</p>
+  <p>Et viktig poeng: MAC-en beregnes ikke bare over selve dataene i recorden � den inkluderer ogs� et <strong>sekvensnummer</strong>. Selv om sekvensnummeret ikke sendes eksplisitt i recorden, holder begge parter en intern teller. Uten sekvensnumre kunne Trudy fange opp en record og spille den av p� nytt (replay-angrep), eller omorganisere rekkef�lgen p� records uten at mottakeren oppdager det. Med sekvensnummeret i MAC-beregningen vil enhver slik manipulasjon f�re til at MAC-verifiseringen feiler.</p>
 
   <h3>TLS 1.3 og cipher suites</h3>
-  <p>En «cipher suite» er et sett av algoritmer som brukes sammen: én for nøkkelutveksling, én for kryptering, én for MAC og én for digital signatur. TLS 1.3 (RFC 8446, 2018) er den nyeste versjonen og har strammet inn valgene kraftig.</p>
+  <p>En �cipher suite� er et sett av algoritmer som brukes sammen: �n for n�kkelutveksling, �n for kryptering, �n for MAC og �n for digital signatur. TLS 1.3 (RFC 8446, 2018) er den nyeste versjonen og har strammet inn valgene kraftig.</p>
 
-  <p>I TLS 1.3 brukes ofte <strong>AEAD</strong> (Authenticated Encryption with Associated Data): kryptering og integritet i én operasjon, i stedet for eldre oppsett med separat MAC over payload. Record-struktur og behovet for integritet og beskyttelse mot replay er likevel de samme prinsippene som i «toy-TLS»-forklaringen over.</p>
+  <p>I TLS 1.3 brukes ofte <strong>AEAD</strong> (Authenticated Encryption with Associated Data): kryptering og integritet i �n operasjon, i stedet for eldre oppsett med separat MAC over payload. Record-struktur og behovet for integritet og beskyttelse mot replay er likevel de samme prinsippene som i �toy-TLS�-forklaringen over.</p>
 </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     SEKSJON 7 — IPsec og VPN
-     ═══════════════════════════════════════════════════════════════ -->
+<!-- ---------------------------------------------------------------
+     SEKSJON 7 � IPsec og VPN
+     --------------------------------------------------------------- -->
 <section id="ipsec">
 <div class="container">
-  <div class="section-badge">07 · IPsec</div>
+  <div class="section-badge">07 � IPsec</div>
   <h2>IPsec og <em>VPN</em></h2>
-  <p class="section-intro">Sikkerhet på nettverkslaget — der hele IP-datagrammer krypteres og autentiseres.</p>
+  <p class="section-intro">Sikkerhet p� nettverkslaget � der hele IP-datagrammer krypteres og autentiseres.</p>
 
-  <p class="dropcap">TLS sikrer enkelttransportforbindelser (én TCP-forbindelse om gangen). Men hva om du vil sikre <em>all</em> trafikk mellom to nettverk — uansett applikasjon, uansett port? Da trenger du sikkerhet på nettverkslaget, og det er der <strong>IPsec</strong> kommer inn. IPsec gir kryptering, autentisering og integritetskontroll på datagram-nivå, for både brukerdata og kontrolltrafikk (BGP, DNS, osv.).</p>
+  <p class="dropcap">TLS sikrer enkelttransportforbindelser (�n TCP-forbindelse om gangen). Men hva om du vil sikre <em>all</em> trafikk mellom to nettverk � uansett applikasjon, uansett port? Da trenger du sikkerhet p� nettverkslaget, og det er der <strong>IPsec</strong> kommer inn. IPsec gir kryptering, autentisering og integritetskontroll p� datagram-niv�, for b�de brukerdata og kontrolltrafikk (BGP, DNS, osv.).</p>
 
   <h3>Security Association (SA)</h3>
-  <p>Før IPsec kan sende et eneste kryptert datagram, må de to endepunktene opprette en <strong>Security Association (SA)</strong> — en enveis logisk forbindelse som definerer sikkerhetsparameterne for trafikken. Hver SA identifiseres av tre ting:</p>
+  <p>F�r IPsec kan sende et eneste kryptert datagram, m� de to endepunktene opprette en <strong>Security Association (SA)</strong> � en enveis logisk forbindelse som definerer sikkerhetsparameterne for trafikken. Hver SA identifiseres av tre ting:</p>
 
   <ul>
-    <li><strong>SPI (Security Parameter Index):</strong> et 32-bits tall som inkluderes i hvert IPsec-datagram, slik at mottakeren vet hvilken SA (og dermed hvilke nøkler og algoritmer) pakken tilhører.</li>
+    <li><strong>SPI (Security Parameter Index):</strong> et 32-bits tall som inkluderes i hvert IPsec-datagram, slik at mottakeren vet hvilken SA (og dermed hvilke n�kler og algoritmer) pakken tilh�rer.</li>
     <li><strong>Destinasjons-IP:</strong> adressen til den andre enden av SA-en.</li>
     <li><strong>Protokollidentifikator:</strong> om SA-en bruker AH eller ESP.</li>
   </ul>
 
-  <p>Fordi en SA er <em>enveis</em>, trengs det to SA-er for toveis kommunikasjon — én i hver retning, hver med sin egen SPI og sine egne nøkler. Alle aktive SA-er lagres i en <strong>SAD (Security Association Database)</strong> på begge endepunkter. Når et IPsec-datagram ankommer, bruker mottakeren SPI-verdien i headeren til å slå opp riktig SA i SAD-en og dermed finne krypteringsnøkkelen og algoritmen som trengs for å dekryptere.</p>
+  <p>Fordi en SA er <em>enveis</em>, trengs det to SA-er for toveis kommunikasjon � �n i hver retning, hver med sin egen SPI og sine egne n�kler. Alle aktive SA-er lagres i en <strong>SAD (Security Association Database)</strong> p� begge endepunkter. N�r et IPsec-datagram ankommer, bruker mottakeren SPI-verdien i headeren til � sl� opp riktig SA i SAD-en og dermed finne krypteringsn�kkelen og algoritmen som trengs for � dekryptere.</p>
 
-  <h3>SPD — hvilken trafikk skal inn i IPsec?</h3>
-  <p>I tillegg til SAD finnes <strong>SPD (Security Policy Database)</strong>: en liste med policy-regler som sier <em>hvilke</em> pakker (f.eks. basert på kilde/dest-subnett, protokoll eller port) som skal behandles av IPsec, og om de skal droppes, sendes i klartekst, eller tunneleres/krypteres med en bestemt SA. Kort sagt: <strong>SPD bestemmer om</strong> IPsec skal brukes; <strong>SAD forteller hvordan</strong> (nøkler og algoritmer for en aktiv SA).</p>
+  <h3>SPD � hvilken trafikk skal inn i IPsec?</h3>
+  <p>I tillegg til SAD finnes <strong>SPD (Security Policy Database)</strong>: en liste med policy-regler som sier <em>hvilke</em> pakker (f.eks. basert p� kilde/dest-subnett, protokoll eller port) som skal behandles av IPsec, og om de skal droppes, sendes i klartekst, eller tunneleres/krypteres med en bestemt SA. Kort sagt: <strong>SPD bestemmer om</strong> IPsec skal brukes; <strong>SAD forteller hvordan</strong> (n�kler og algoritmer for en aktiv SA).</p>
 
   <h3>To moduser</h3>
 
@@ -199,11 +199,11 @@
     <tr>
       <td class="mono-cell">Tunnel</td>
       <td>Hele det opprinnelige datagrammet, pakket inn i nytt</td>
-      <td>Mellom to gateways (VPN) — vanligst i praksis</td>
+      <td>Mellom to gateways (VPN) � vanligst i praksis</td>
     </tr>
   </table>
 
-  <p>Tunnel-modus er fundamentet for <strong>VPN (Virtual Private Network)</strong>. Tenk på et selskap med kontorer i Oslo og Trondheim. Begge kontorene er koblet til Internett, og mellom gateway-ruterne på hvert kontor settes det opp en IPsec-tunnel. All trafikk mellom de to kontornettene pakkes inn i krypterte IP-datagrammer og tunneleres over det offentlige Internett. For brukerens PC ser det ut som om den er på samme lokalnett — men i virkeligheten er alt kryptert underveis.</p>
+  <p>Tunnel-modus er fundamentet for <strong>VPN (Virtual Private Network)</strong>. Tenk p� et selskap med kontorer i Oslo og Trondheim. Begge kontorene er koblet til Internett, og mellom gateway-ruterne p� hvert kontor settes det opp en IPsec-tunnel. All trafikk mellom de to kontornettene pakkes inn i krypterte IP-datagrammer og tunneleres over det offentlige Internett. For brukerens PC ser det ut som om den er p� samme lokalnett � men i virkeligheten er alt kryptert underveis.</p>
 
   <h3>To protokoller</h3>
 
@@ -221,18 +221,18 @@
       <td>Ja</td>
       <td>Ja</td>
       <td>Ja</td>
-      <td>Mest brukt — gir alt</td>
+      <td>Mest brukt � gir alt</td>
     </tr>
   </table>
 
-  <p>ESP er klart den mest brukte av de to — den gir alle tre egenskapene. AH gir bare autentisering og integritet (men ingen kryptering), og er sjelden brukt alene i moderne nettverk.</p>
+  <p>ESP er klart den mest brukte av de to � den gir alle tre egenskapene. AH gir bare autentisering og integritet (men ingen kryptering), og er sjelden brukt alene i moderne nettverk.</p>
 
-  <h3>IKE — når og hvordan SA-er opprettes</h3>
-  <p>En Security Association beskriver <em>hvilke</em> nøkler og algoritmer som skal brukes — men SA-en må etableres på forhånd. <strong>IKE</strong> (Internet Key Exchange, i dag IKEv2) er protokollen som kjører mellom IPsec-endepunktene (verter eller gatewayer) for å forhandle og installere disse SA-ene på en sikker måte.</p>
+  <h3>IKE � n�r og hvordan SA-er opprettes</h3>
+  <p>En Security Association beskriver <em>hvilke</em> n�kler og algoritmer som skal brukes � men SA-en m� etableres p� forh�nd. <strong>IKE</strong> (Internet Key Exchange, i dag IKEv2) er protokollen som kj�rer mellom IPsec-endepunktene (verter eller gatewayer) for � forhandle og installere disse SA-ene p� en sikker m�te.</p>
 
-  <p>I korte trekk: partene autentiserer hverandre (f.eks. med delt hemmelighet, digitale sertifikater eller begge deler), utveksler eller utleder nøkkemateriale (ofte med Diffie–Hellman-lignende steg for <em>perfect forward secrecy</em>), og avtaler hvilke IPsec-SA-er (SPI, algoritmer, livslengde) som skal legges inn i SAD. Uten IKE ville administratoren måttet konfigurere nøkler manuelt — upraktisk og risikabelt i store nett.</p>
+  <p>I korte trekk: partene autentiserer hverandre (f.eks. med delt hemmelighet, digitale sertifikater eller begge deler), utveksler eller utleder n�kkemateriale (ofte med Diffie�Hellman-lignende steg for <em>perfect forward secrecy</em>), og avtaler hvilke IPsec-SA-er (SPI, algoritmer, livslengde) som skal legges inn i SAD. Uten IKE ville administratoren m�ttet konfigurere n�kler manuelt � upraktisk og risikabelt i store nett.</p>
 
-  <p>Resultatet er at VPN-tunnelen du så i forrige avsnitt ikke bare «krypterer IP»; den bygger på at IKE først har etablert de konkrete ESP- eller AH-SA-ene som datapakken senere refererer til via SPI.</p>
+  <p>Resultatet er at VPN-tunnelen du s� i forrige avsnitt ikke bare �krypterer IP�; den bygger p� at IKE f�rst har etablert de konkrete ESP- eller AH-SA-ene som datapakken senere refererer til via SPI.</p>
 </div>
 </section>
 
@@ -250,30 +250,30 @@
   <div class="explanation" id="qf3"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     SEKSJON 8 — Sikkerhet i trådløse nett
-     ═══════════════════════════════════════════════════════════════ -->
+<!-- ---------------------------------------------------------------
+     SEKSJON 8 � Sikkerhet i tr�dl�se nett
+     --------------------------------------------------------------- -->
 <section id="tradlos">
 <div class="container">
-  <div class="section-badge">08 · Trådløs sikkerhet</div>
-  <h2>Sikkerhet i <em>trådløse</em> nett</h2>
+  <div class="section-badge">08 � Tr�dl�s sikkerhet</div>
+  <h2>Sikkerhet i <em>tr�dl�se</em> nett</h2>
   <p class="section-intro">Hvordan WiFi (802.11) og mobilnett (4G/5G) autentiserer enheter og krypterer trafikk over lufta.</p>
 
-  <p class="dropcap">Alt vi har sett så langt — kryptering, signaturer, CA-er — er generelle mekanismer. Men trådløse nettverk har et spesielt behov: enheten som kobler seg til må autentisere seg <em>før</em> den får noen som helst tilgang til nettverket, og all trafikk over lufta må krypteres fordi radiobølger er trivielt enkle å avlytte. La oss se hvordan WiFi og 4G/5G løser dette.</p>
+  <p class="dropcap">Alt vi har sett s� langt � kryptering, signaturer, CA-er � er generelle mekanismer. Men tr�dl�se nettverk har et spesielt behov: enheten som kobler seg til m� autentisere seg <em>f�r</em> den f�r noen som helst tilgang til nettverket, og all trafikk over lufta m� krypteres fordi radiob�lger er trivielt enkle � avlytte. La oss se hvordan WiFi og 4G/5G l�ser dette.</p>
 
   <h3>Fra WEP til WPA3</h3>
   <table>
     <tr><th>Mekanisme</th><th>Kort forklaring</th></tr>
-    <tr><td class="mono-cell">WEP</td><td>Tidlig 802.11-kryptering med svake nøkler og svak IV-bruk; regnes som brutt og er ikke brukbar i praksis.</td></tr>
-    <tr><td class="mono-cell">WPA2 (802.11i)</td><td>CCMP basert på AES; lenge industristandard. Krever sterkt passord fordi PSK fortsatt kan utsettes for ordbokangrep.</td></tr>
-    <tr><td class="mono-cell">WPA3</td><td>Sterkere håndtrykk (SAE m.m.), bedre beskyttelse av passord og enklere sikre oppsett — det er dette kapittelet vektlegger.</td></tr>
+    <tr><td class="mono-cell">WEP</td><td>Tidlig 802.11-kryptering med svake n�kler og svak IV-bruk; regnes som brutt og er ikke brukbar i praksis.</td></tr>
+    <tr><td class="mono-cell">WPA2 (802.11i)</td><td>CCMP basert p� AES; lenge industristandard. Krever sterkt passord fordi PSK fortsatt kan utsettes for ordbokangrep.</td></tr>
+    <tr><td class="mono-cell">WPA3</td><td>Sterkere h�ndtrykk (SAE m.m.), bedre beskyttelse av passord og enklere sikre oppsett � det er dette kapittelet vektlegger.</td></tr>
   </table>
 
   <h3>802.11 WiFi: fire steg til sikker kommunikasjon</h3>
-  <p>Når en mobilenhet kobler seg til et WiFi-nettverk med WPA3, gjennomgår den fire steg:</p>
+  <p>N�r en mobilenhet kobler seg til et WiFi-nettverk med WPA3, gjennomg�r den fire steg:</p>
 
   <div class="stepper" id="wifiStepper">
-    <div class="s-label">Interaktiv gjennomgang — WiFi-autentisering</div>
+    <div class="s-label">Interaktiv gjennomgang � WiFi-autentisering</div>
     <div class="stage">
       <h5 id="wifiTitle">Steg 1 av 4</h5>
       <p id="wifiText"></p>
@@ -285,61 +285,61 @@
     </div>
   </div>
 
-  <h3>WPA3-håndtrykket i detalj</h3>
-  <p>Steg 2 (gjensidig autentisering og nøkkelutledning) er det mest interessante. I WPA3 foregår det slik:</p>
+  <h3>WPA3-h�ndtrykket i detalj</h3>
+  <p>Steg 2 (gjensidig autentisering og n�kkelutledning) er det mest interessante. I WPA3 foreg�r det slik:</p>
 
   <ol>
-    <li><strong>AS sender Nonce<sub>AS</sub></strong> — et tilfeldig engangsbrukstall — til mobilenheten.</li>
-    <li><strong>Mobilenheten genererer Nonce<sub>M</sub></strong>, utleder en symmetrisk sesjonsnøkkel K<sub>M-AP</sub> fra begge nonce-ene, det forhåndsdelte passordet og MAC-adressene, og sender Nonce<sub>M</sub> pluss en <strong>HMAC-verdi</strong> (autentiseringskode utledet med den hemmelige nøkkelmaten — ikke en digital signatur i PKI-forstand) tilbake.</li>
-    <li><strong>AS utleder samme K<sub>M-AP</sub></strong> med samme ingredienser, verifiserer HMAC-en, og begge parter har nå en felles sesjonsnøkkel — uten at passordet noensinne ble sendt over lufta.</li>
+    <li><strong>AS sender Nonce<sub>AS</sub></strong> � et tilfeldig engangsbrukstall � til mobilenheten.</li>
+    <li><strong>Mobilenheten genererer Nonce<sub>M</sub></strong>, utleder en symmetrisk sesjonsn�kkel K<sub>M-AP</sub> fra begge nonce-ene, det forh�ndsdelte passordet og MAC-adressene, og sender Nonce<sub>M</sub> pluss en <strong>HMAC-verdi</strong> (autentiseringskode utledet med den hemmelige n�kkelmaten � ikke en digital signatur i PKI-forstand) tilbake.</li>
+    <li><strong>AS utleder samme K<sub>M-AP</sub></strong> med samme ingredienser, verifiserer HMAC-en, og begge parter har n� en felles sesjonsn�kkel � uten at passordet noensinne ble sendt over lufta.</li>
   </ol>
 
-  <div class="margin-note">HMAC (Hash-based Message Authentication Code) er en symmetrisk MAC: hash + delt hemmelig materiale (RFC 2104). Den bekrefter integritet og at parten kjenner det samme hemmelige grunnlaget som i håndtrykket.</div>
+  <div class="margin-note">HMAC (Hash-based Message Authentication Code) er en symmetrisk MAC: hash + delt hemmelig materiale (RFC 2104). Den bekrefter integritet og at parten kjenner det samme hemmelige grunnlaget som i h�ndtrykket.</div>
 
   <h3>4G LTE: autentisering med SIM-kort</h3>
-  <p>Mobilnett er fundamentalt annerledes enn WiFi fordi identiteten ligger i <strong>SIM-kortet</strong>, ikke i et passord. SIM-kortet inneholder en globalt unik identifikator (IMSI) og en forhåndsdelt hemmelig nøkkel K<sub>HSS-M</sub> som bare SIM-kortet og hjemmenettverkets <strong>HSS (Home Subscriber Server)</strong> kjenner.</p>
+  <p>Mobilnett er fundamentalt annerledes enn WiFi fordi identiteten ligger i <strong>SIM-kortet</strong>, ikke i et passord. SIM-kortet inneholder en globalt unik identifikator (IMSI) og en forh�ndsdelt hemmelig n�kkel K<sub>HSS-M</sub> som bare SIM-kortet og hjemmenettverkets <strong>HSS (Home Subscriber Server)</strong> kjenner.</p>
 
-  <p>Autentiseringsflyten i 4G involverer flere aktører:</p>
+  <p>Autentiseringsflyten i 4G involverer flere akt�rer:</p>
 
   <table>
     <tr><th>Komponent</th><th>Rolle</th></tr>
-    <tr><td class="mono-cell">UE (mobilenhet)</td><td>Inneholder SIM med IMSI og forhåndsdelt nøkkel</td></tr>
+    <tr><td class="mono-cell">UE (mobilenhet)</td><td>Inneholder SIM med IMSI og forh�ndsdelt n�kkel</td></tr>
     <tr><td class="mono-cell">eNode-B (basestasjon)</td><td>Videreformidler autentiseringsmeldinger</td></tr>
-    <tr><td class="mono-cell">MME</td><td>Tar autentiseringsbeslutningen i besøkt nett</td></tr>
-    <tr><td class="mono-cell">HSS</td><td>Endelig autoritet — kjenner alle abonnenter og deres nøkler</td></tr>
+    <tr><td class="mono-cell">MME</td><td>Tar autentiseringsbeslutningen i bes�kt nett</td></tr>
+    <tr><td class="mono-cell">HSS</td><td>Endelig autoritet � kjenner alle abonnenter og deres n�kler</td></tr>
   </table>
 
   <h4>Autentiseringsflyt (forenklet)</h4>
   <ol>
     <li><strong>a)</strong> Mobilen sender <em>attach</em>-melding med IMSI via basestasjon og MME til HSS i hjemmenettverket.</li>
-    <li><strong>b)</strong> HSS bruker den forhåndsdelte nøkkelen K<sub>HSS-M</sub> til å beregne et <em>auth_token</em> og en forventet respons <em>xres<sub>HSS</sub></em>. Auth_token inneholder kryptert informasjon som bare mobilenheten kan verifisere. HSS sender begge til MME.</li>
-    <li><strong>c)</strong> MME sender auth_token videre til mobilen. Mobilen verifiserer auth_token med sin egen nøkkel — og vet dermed at nettverket er ekte. Mobilen beregner sin egen respons <em>res<sub>M</sub></em> og sender den tilbake.</li>
-    <li><strong>d)</strong> MME sammenligner res<sub>M</sub> med xres<sub>HSS</sub>. Hvis de stemmer, er mobilen autentisert. MME informerer basestasjon og genererer sesjonsnøkler.</li>
-    <li><strong>e)</strong> Mobilen og basestasjonen utleder krypteringsnøkler K<sub>BS-M</sub> for å kryptere all videre kommunikasjon over 4G-linken (typisk med AES).</li>
+    <li><strong>b)</strong> HSS bruker den forh�ndsdelte n�kkelen K<sub>HSS-M</sub> til � beregne et <em>auth_token</em> og en forventet respons <em>xres<sub>HSS</sub></em>. Auth_token inneholder kryptert informasjon som bare mobilenheten kan verifisere. HSS sender begge til MME.</li>
+    <li><strong>c)</strong> MME sender auth_token videre til mobilen. Mobilen verifiserer auth_token med sin egen n�kkel � og vet dermed at nettverket er ekte. Mobilen beregner sin egen respons <em>res<sub>M</sub></em> og sender den tilbake.</li>
+    <li><strong>d)</strong> MME sammenligner res<sub>M</sub> med xres<sub>HSS</sub>. Hvis de stemmer, er mobilen autentisert. MME informerer basestasjon og genererer sesjonsn�kler.</li>
+    <li><strong>e)</strong> Mobilen og basestasjonen utleder krypteringsn�kler K<sub>BS-M</sub> for � kryptere all videre kommunikasjon over 4G-linken (typisk med AES).</li>
   </ol>
 
   <h3>Fra 4G til 5G: viktige endringer</h3>
   <table>
     <tr><th></th><th>4G LTE</th><th>5G</th></tr>
-    <tr><td>Autentiseringsbeslutning</td><td>MME i besøkt nett</td><td>Hjemmenettverket</td></tr>
-    <tr><td>Nøkkeltype</td><td>Forhåndsdelte nøkler</td><td>Støtter også nøkler for IoT</td></tr>
+    <tr><td>Autentiseringsbeslutning</td><td>MME i bes�kt nett</td><td>Hjemmenettverket</td></tr>
+    <tr><td>N�kkeltype</td><td>Forh�ndsdelte n�kler</td><td>St�tter ogs� n�kler for IoT</td></tr>
     <tr><td>IMSI-beskyttelse</td><td>Sendes i klartekst</td><td>Krypteres med public-key</td></tr>
   </table>
 
-  <p>Den mest bemerkelsesverdige forbedringen i 5G er at IMSI nå krypteres — i 4G ble den sendt i klartekst, noe som muliggjorde IMSI-catchers (falske basestasjoner som fanger opp mobil-identiteter).</p>
+  <p>Den mest bemerkelsesverdige forbedringen i 5G er at IMSI n� krypteres � i 4G ble den sendt i klartekst, noe som muliggjorde IMSI-catchers (falske basestasjoner som fanger opp mobil-identiteter).</p>
 </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     SEKSJON 9 — Brannmurer
-     ═══════════════════════════════════════════════════════════════ -->
+<!-- ---------------------------------------------------------------
+     SEKSJON 9 � Brannmurer
+     --------------------------------------------------------------- -->
 <section id="brannmur">
 <div class="container">
-  <div class="section-badge">09 · Operasjonell sikkerhet</div>
+  <div class="section-badge">09 � Operasjonell sikkerhet</div>
   <h2><em>Brannmurer</em></h2>
-  <p class="section-intro">Den første forsvarslinjen mellom det interne nettverket og det ville Internett.</p>
+  <p class="section-intro">Den f�rste forsvarslinjen mellom det interne nettverket og det ville Internett.</p>
 
-  <p class="dropcap">Kryptografi beskytter innholdet i kommunikasjonen, men det er ikke alltid nok. En organisasjon trenger også å kontrollere <em>hvilken</em> trafikk som i det hele tatt slipper inn og ut av nettverket. Det er jobben til en <strong>brannmur (firewall)</strong>: den sitter mellom organisasjonens interne nettverk og det offentlige Internett, og filtrerer pakker basert på et sett med regler.</p>
+  <p class="dropcap">Kryptografi beskytter innholdet i kommunikasjonen, men det er ikke alltid nok. En organisasjon trenger ogs� � kontrollere <em>hvilken</em> trafikk som i det hele tatt slipper inn og ut av nettverket. Det er jobben til en <strong>brannmur (firewall)</strong>: den sitter mellom organisasjonens interne nettverk og det offentlige Internett, og filtrerer pakker basert p� et sett med regler.</p>
 
   <figure>
     <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
@@ -362,15 +362,15 @@
 
   <h3>Hvorfor brannmur?</h3>
   <ul>
-    <li><strong>Forhindre DoS-angrep:</strong> f.eks. SYN-flooding der en angriper fyller opp serverens forbindelsesmessige ressurser med falske TCP-forespørsler.</li>
+    <li><strong>Forhindre DoS-angrep:</strong> f.eks. SYN-flooding der en angriper fyller opp serverens forbindelsesmessige ressurser med falske TCP-foresp�rsler.</li>
     <li><strong>Forhindre uautorisert tilgang:</strong> blokkere tilgang til interne tjenester som ikke skal eksponeres for Internett.</li>
     <li><strong>Tillate bare autorisert trafikk:</strong> begrense tilgangen til et sett av godkjente brukere, protokoller og porter.</li>
   </ul>
 
   <h3>Tre typer brannmurer</h3>
 
-  <h4>1. Tilstandsløs pakkefiltrering (stateless)</h4>
-  <p>Den enkleste formen: brannmuren ser på hver pakke <em>isolert</em> og bestemmer om den skal slippes gjennom eller droppes, basert på informasjon i headeren:</p>
+  <h4>1. Tilstandsl�s pakkefiltrering (stateless)</h4>
+  <p>Den enkleste formen: brannmuren ser p� hver pakke <em>isolert</em> og bestemmer om den skal slippes gjennom eller droppes, basert p� informasjon i headeren:</p>
 
   <ul>
     <li>Kilde- og destinasjons-IP-adresse</li>
@@ -379,7 +379,7 @@
     <li>TCP SYN- og ACK-flagg</li>
   </ul>
 
-  <p>Reglene uttrykkes i en <strong>Access Control List (ACL)</strong> — en tabell der reglene sjekkes fra topp til bunn, og første treff avgjør:</p>
+  <p>Reglene uttrykkes i en <strong>Access Control List (ACL)</strong> � en tabell der reglene sjekkes fra topp til bunn, og f�rste treff avgj�r:</p>
 
   <table>
     <tr><th>Handling</th><th>Kilde</th><th>Dest</th><th>Proto</th><th>Kilde-port</th><th>Dest-port</th><th>Flagg</th></tr>
@@ -391,38 +391,38 @@
   </table>
 
   <div class="callout">
-    <span class="label">Eksempler på filtrering</span>
-    <p><strong>Blokker all innkommende UDP:</strong> drop alle pakker med IP-protokollfelt = 17. Resultat: ingen UDP-trafikk (f.eks. DNS-forespørsler utenfra) slipper inn.</p>
+    <span class="label">Eksempler p� filtrering</span>
+    <p><strong>Blokker all innkommende UDP:</strong> drop alle pakker med IP-protokollfelt = 17. Resultat: ingen UDP-trafikk (f.eks. DNS-foresp�rsler utenfra) slipper inn.</p>
     <p><strong>Blokker all Telnet:</strong> drop alle TCP-segmenter med destinasjonsport 23. Resultat: ingen kan opprette Telnet-forbindelser til interne maskiner.</p>
     <p><strong>Blokker innkommende TCP-forbindelser:</strong> drop innkommende TCP-segmenter med ACK=0. Resultat: eksterne klienter kan ikke opprette TCP-forbindelser innover, men interne klienter kan koble seg ut.</p>
   </div>
 
   <h4>2. Tilstandsfull pakkefiltrering (stateful)</h4>
-  <p>Problemet med tilstandsløs filtrering er at den er for grovkornet. Den slipper gjennom pakker som «ser riktige ut» men ikke tilhører noen reell forbindelse — f.eks. en pakke med ACK-flagg satt som ser ut som et svar, men ingen forespørsel ble noensinne sendt.</p>
+  <p>Problemet med tilstandsl�s filtrering er at den er for grovkornet. Den slipper gjennom pakker som �ser riktige ut� men ikke tilh�rer noen reell forbindelse � f.eks. en pakke med ACK-flagg satt som ser ut som et svar, men ingen foresp�rsel ble noensinne sendt.</p>
 
-  <p>En <strong>tilstandsfull brannmur</strong> løser dette ved å holde styr på <em>alle aktive TCP-forbindelser</em>. Den sporer oppsett (SYN), nedrigging (FIN), og timeout for inaktive forbindelser. En innkommende pakke slippes bare gjennom hvis den tilhører en forbindelse som allerede er satt opp i forbindelsestabellen.</p>
+  <p>En <strong>tilstandsfull brannmur</strong> l�ser dette ved � holde styr p� <em>alle aktive TCP-forbindelser</em>. Den sporer oppsett (SYN), nedrigging (FIN), og timeout for inaktive forbindelser. En innkommende pakke slippes bare gjennom hvis den tilh�rer en forbindelse som allerede er satt opp i forbindelsestabellen.</p>
 
   <h4>3. Applikasjonsgateway</h4>
-  <p>En applikasjonsgateway filtrerer ikke bare på IP/TCP-headere, men inspiserer også <em>applikasjonsdata</em>. For eksempel: kun utvalgte interne brukere tillates å bruke Telnet. Alle Telnet-forbindelser må gå gjennom gatewayen, som verifiserer brukeridentiteten før den setter opp en viderekoblet forbindelse til det endelige målet.</p>
+  <p>En applikasjonsgateway filtrerer ikke bare p� IP/TCP-headere, men inspiserer ogs� <em>applikasjonsdata</em>. For eksempel: kun utvalgte interne brukere tillates � bruke Telnet. Alle Telnet-forbindelser m� g� gjennom gatewayen, som verifiserer brukeridentiteten f�r den setter opp en viderekoblet forbindelse til det endelige m�let.</p>
 
   <h3>Begrensninger</h3>
-  <p>Brannmurer er ingen magisk løsning:</p>
+  <p>Brannmurer er ingen magisk l�sning:</p>
 
   <ul>
     <li><strong>IP-spoofing:</strong> ruteren kan ikke verifisere at kilde-IP er ekte.</li>
     <li><strong>Skalerbarhet:</strong> hver applikasjon som trenger spesialbehandling krever sin egen gateway.</li>
-    <li><strong>Alt-eller-ingenting for UDP:</strong> vanskelig å skille «god» fra «dårlig» UDP-trafikk.</li>
-    <li><strong>Avveining:</strong> jo strengere filtrering, jo mer begrenses også legitim kommunikasjon.</li>
+    <li><strong>Alt-eller-ingenting for UDP:</strong> vanskelig � skille �god� fra �d�rlig� UDP-trafikk.</li>
+    <li><strong>Avveining:</strong> jo strengere filtrering, jo mer begrenses ogs� legitim kommunikasjon.</li>
   </ul>
 </div>
 </section>
 
 <!-- QUIZ 4 -->
 <div class="quiz" style="max-width:820px;margin:0 auto 80px;">
-  <p class="q-text">En tilstandsløs brannmur slipper gjennom en innkommende TCP-pakke med dest-port 80 og ACK-flagg satt. Hva er problemet?</p>
+  <p class="q-text">En tilstandsl�s brannmur slipper gjennom en innkommende TCP-pakke med dest-port 80 og ACK-flagg satt. Hva er problemet?</p>
   <div class="options">
     <button class="option" data-correct="false">Pakken kan inneholde et virus i payloaden</button>
-    <button class="option" data-correct="true">Pakken kan være fabrikkert — det finnes kanskje ingen aktiv TCP-forbindelse den hører til, men den tilstandsløse brannmuren sjekker ikke dette</button>
+    <button class="option" data-correct="true">Pakken kan v�re fabrikkert � det finnes kanskje ingen aktiv TCP-forbindelse den h�rer til, men den tilstandsl�se brannmuren sjekker ikke dette</button>
     <button class="option" data-correct="false">Port 80 er alltid blokkert av brannmurer</button>
     <button class="option" data-correct="false">ACK-flagget betyr at pakken er kryptert og ikke kan inspiseres</button>
   </div>
@@ -434,7 +434,7 @@
 <div class="container">
   <nav class="page-nav">
     <a href="kryptografi.html">
-      <span class="nav-label">← Forrige</span>
+      <span class="nav-label">? Forrige</span>
       <span class="nav-title">Kryptografi og integritet</span>
     </a>
   </nav>
@@ -443,7 +443,7 @@
 <footer>
   <div class="container">
     <div class="ornament">&#10043; &#10043; &#10043;</div>
-    <p>NTNU · TTM4100 · Vår 2026</p>
+    <p>NTNU � TTM4100 � V�r 2026</p>
   </div>
 </footer>
 
@@ -451,10 +451,10 @@
 // TLS STEPPER
 (function(){
   var steps = [
-    {title:'Fase 1: Håndtrykk (handshake)', text:'Alice og Bob bruker sertifikater og asymmetrisk kryptografi til å autentisere server (og ofte klient). Deretter avtaler de en felles hemmelighet (master secret). I denne «toy-TLS»-modellen: Alice genererer en tilfeldig Pre-Master Secret og sender den kryptert med Bobs offentlige nøkkel fra sertifikatet — et pedagogisk mønster som viser nøkkelutveksling; i TLS 1.3 brukes vanligvis ephemeral DH og færre rundtur(er), men målet er det samme: en delt hemmelighet bare de to kjenner.'},
-    {title:'Fase 2: Nøkkelutledning (key derivation)', text:'Fra master secret utleder begge fire separate nøkler: to krypteringsnøkler (én per retning) og to MAC-nøkler (én per retning). Forskjellige nøkler per retning og formål er god kryptografisk praksis.'},
-    {title:'Fase 3: Dataoverføring', text:'Data sendes som en serie «records». Hver record inneholder et datastykke, en MAC for integritetskontroll, og en lengde. Hele recorden krypteres med den retnings-spesifikke sesjonsnøkkelen og sendes som vanlige TCP-segmenter. Mottakeren dekrypterer, sjekker MAC, og leverer data til applikasjonen.'},
-    {title:'Fase 4: Nedkobling', text:'For å lukke forbindelsen trygt sender partene spesielle meldinger. Dette er viktig fordi en angriper ellers kunne tvinge forbindelsen lukket ved å sende en TCP FIN — uten at mottakeren vet om det er en ekte avslutning eller et angrep (truncation attack).'}
+    {title:'Fase 1: H�ndtrykk (handshake)', text:'Alice og Bob bruker sertifikater og asymmetrisk kryptografi til � autentisere server (og ofte klient). Deretter avtaler de en felles hemmelighet (master secret). I denne �toy-TLS�-modellen: Alice genererer en tilfeldig Pre-Master Secret og sender den kryptert med Bobs offentlige n�kkel fra sertifikatet � et pedagogisk m�nster som viser n�kkelutveksling; i TLS 1.3 brukes vanligvis ephemeral DH og f�rre rundtur(er), men m�let er det samme: en delt hemmelighet bare de to kjenner.'},
+    {title:'Fase 2: N�kkelutledning (key derivation)', text:'Fra master secret utleder begge fire separate n�kler: to krypteringsn�kler (�n per retning) og to MAC-n�kler (�n per retning). Forskjellige n�kler per retning og form�l er god kryptografisk praksis.'},
+    {title:'Fase 3: Dataoverf�ring', text:'Data sendes som en serie �records�. Hver record inneholder et datastykke, en MAC for integritetskontroll, og en lengde. Hele recorden krypteres med den retnings-spesifikke sesjonsn�kkelen og sendes som vanlige TCP-segmenter. Mottakeren dekrypterer, sjekker MAC, og leverer data til applikasjonen.'},
+    {title:'Fase 4: Nedkobling', text:'For � lukke forbindelsen trygt sender partene spesielle meldinger. Dette er viktig fordi en angriper ellers kunne tvinge forbindelsen lukket ved � sende en TCP FIN � uten at mottakeren vet om det er en ekte avslutning eller et angrep (truncation attack).'}
   ];
   var i = 0;
   var title = document.getElementById('tlsTitle');
@@ -477,10 +477,10 @@
 // WIFI AUTH STEPPER
 (function(){
   var steps = [
-    {title:'Steg 1: Oppdagelse av sikkerhetskapabiliteter', text:'AP-et annonserer sin tilstedeværelse og hvilke former for autentisering og kryptering det støtter. Mobilenheten velger den ønskede formen. På dette tidspunktet er enheten ikke autentisert og har ingen krypteringsnøkler (bortsett fra et forhåndsdelt passord).'},
-    {title:'Steg 2: Gjensidig autentisering og nøkkelutledning', text:'Authentication Server (AS) og mobilenheten bruker det forhåndsdelte passordet, nonce-verdier (engangsbrukstall) og kryptografisk hashing til å autentisere hverandre — uten å sende passordet over lufta. Begge utleder en felles symmetrisk sesjonsnøkkel K_M-AP.'},
-    {title:'Steg 3: Distribusjon av sesjonsnøkkel', text:'AS informerer AP-et om den delte symmetriske sesjonsnøkkelen, slik at AP-et kan kryptere trafikken mellom seg og mobilenheten.'},
-    {title:'Steg 4: Kryptert kommunikasjon', text:'Mobilenheten og AP-et bruker nå den symmetriske sesjonsnøkkelen (typisk AES) til å kryptere all videre kommunikasjon over WiFi-linken. All trafikk er nå konfidensiell.'}
+    {title:'Steg 1: Oppdagelse av sikkerhetskapabiliteter', text:'AP-et annonserer sin tilstedev�relse og hvilke former for autentisering og kryptering det st�tter. Mobilenheten velger den �nskede formen. P� dette tidspunktet er enheten ikke autentisert og har ingen krypteringsn�kler (bortsett fra et forh�ndsdelt passord).'},
+    {title:'Steg 2: Gjensidig autentisering og n�kkelutledning', text:'Authentication Server (AS) og mobilenheten bruker det forh�ndsdelte passordet, nonce-verdier (engangsbrukstall) og kryptografisk hashing til � autentisere hverandre � uten � sende passordet over lufta. Begge utleder en felles symmetrisk sesjonsn�kkel K_M-AP.'},
+    {title:'Steg 3: Distribusjon av sesjonsn�kkel', text:'AS informerer AP-et om den delte symmetriske sesjonsn�kkelen, slik at AP-et kan kryptere trafikken mellom seg og mobilenheten.'},
+    {title:'Steg 4: Kryptert kommunikasjon', text:'Mobilenheten og AP-et bruker n� den symmetriske sesjonsn�kkelen (typisk AES) til � kryptere all videre kommunikasjon over WiFi-linken. All trafikk er n� konfidensiell.'}
   ];
   var i = 0;
   var title = document.getElementById('wifiTitle');
@@ -505,11 +505,11 @@
   var feedback = {
     'qf3': {
       correct: 'Riktig! I transport-modus krypteres bare payloaden (dataene), mens i tunnel-modus krypteres hele det opprinnelige datagrammet og pakkes inn i et nytt med ny IP-header.',
-      wrong: 'Tenk på hva som skjer med IP-headeren i de to modusene — i den ene er den synlig, i den andre er den kryptert.'
+      wrong: 'Tenk p� hva som skjer med IP-headeren i de to modusene � i den ene er den synlig, i den andre er den kryptert.'
     },
     'qf4': {
-      correct: 'Nettopp! En tilstandsløs brannmur ser ikke på om pakken tilhører en reell forbindelse. En tilstandsfull brannmur ville sjekket forbindelsestabellen og droppet pakken hvis ingen SYN-oppsett var registrert.',
-      wrong: 'Tenk på forskjellen mellom tilstandsløs og tilstandsfull filtrering: den ene sjekker bare headerfelt, den andre sporer aktive forbindelser.'
+      correct: 'Nettopp! En tilstandsl�s brannmur ser ikke p� om pakken tilh�rer en reell forbindelse. En tilstandsfull brannmur ville sjekket forbindelsestabellen og droppet pakken hvis ingen SYN-oppsett var registrert.',
+      wrong: 'Tenk p� forskjellen mellom tilstandsl�s og tilstandsfull filtrering: den ene sjekker bare headerfelt, den andre sporer aktive forbindelser.'
     }
   };
   document.querySelectorAll('.quiz').forEach(function(quiz){

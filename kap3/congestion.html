@@ -1,10 +1,10 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="no">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kapittel 3b â€” Metningskontroll og evolusjon</title>
-<link rel="stylesheet" href="../style.css">
+<title>Kapittel 3b — Metningskontroll og evolusjon</title>
+<link rel="icon" type="image/png" href="/favicon.png">`n<link rel="stylesheet" href="../style.css">
 </head>
 <body>
 
@@ -23,11 +23,11 @@
 <main data-chapter="Kapittel 3: Metningskontroll og evolusjon">
 <header class="hero">
   <div class="container">
-    <div class="eyebrow">Kapittel 3 Â· Transportlaget</div>
+    <div class="eyebrow">Kapittel 3 · Transportlaget</div>
     <h1>Metningskontroll<br>og <em>evolusjon</em></h1>
-    <p class="sub">Hvordan tusenvis av TCP-forbindelser deler et begrenset nettverk uten Ã¥ kollapse det â€” fra slow start til CUBIC og QUIC.</p>
+    <p class="sub">Hvordan tusenvis av TCP-forbindelser deler et begrenset nettverk uten å kollapse det — fra slow start til CUBIC og QUIC.</p>
     <nav class="toc">
-      <a href="#intro"><span>00</span> Metningskontroll â€” hvorfor?</a>
+      <a href="#intro"><span>00</span> Metningskontroll — hvorfor?</a>
       <a href="#slowstart"><span>01</span> Slow start</a>
       <a href="#aimd"><span>02</span> AIMD og congestion avoidance</a>
       <a href="#fastrecovery"><span>03</span> Fast recovery og Reno vs. Tahoe</a>
@@ -41,20 +41,20 @@
 <!-- ============ INTRO ============ -->
 <section id="intro">
   <div class="container">
-    <div class="badge">00 Â· Motivasjon</div>
+    <div class="badge">00 · Motivasjon</div>
     <h2>Hvorfor <em>metningskontroll</em>?</h2>
-    <p class="section-intro">Flow control beskytter Ã©n mottaker. Metningskontroll beskytter det delte nettverket mellom alle sendere.</p>
+    <p class="section-intro">Flow control beskytter én mottaker. Metningskontroll beskytter det delte nettverket mellom alle sendere.</p>
 
-    <p class="lead">Tenk deg en motorvei der hver sjÃ¥fÃ¸r bestemmer sin egen fart. Uten noen form for regulering â€” trafikklys, fartsgrenser, pÃ¥kjÃ¸ringsramper â€” vil veien til slutt gÃ¥ i lÃ¥s. Metningskontroll i TCP er trafikklyset: en mekanisme som lar sende ren justere farten sin basert pÃ¥ hvor fullt nettverket virker Ã¥ vÃ¦re, uten at noen sentral myndighet styrer det.</p>
+    <p class="lead">Tenk deg en motorvei der hver sjåfør bestemmer sin egen fart. Uten noen form for regulering — trafikklys, fartsgrenser, påkjøringsramper — vil veien til slutt gå i lås. Metningskontroll i TCP er trafikklyset: en mekanisme som lar sende ren justere farten sin basert på hvor fullt nettverket virker å være, uten at noen sentral myndighet styrer det.</p>
 
-    <h3>To vinduer, Ã©n begrensning</h3>
+    <h3>To vinduer, én begrensning</h3>
     <p>TCP-senderen styres av <em>to</em> vinduer som begge legger begrensninger:</p>
 
     <table class="compare">
       <thead><tr><th>Vindu</th><th>Hva det beskytter</th></tr></thead>
       <tbody>
-        <tr><td>rwnd</td><td><strong>Receive window</strong> â€” satt av mottakeren i TCP-headeren. Beskytter mottakerens buffer mot overflyt.</td></tr>
-        <tr><td>cwnd</td><td><strong>Congestion window</strong> â€” vedlikeholdt av senderen lokalt, usynlig i headeren. Beskytter nettverket mot overbelastning.</td></tr>
+        <tr><td>rwnd</td><td><strong>Receive window</strong> — satt av mottakeren i TCP-headeren. Beskytter mottakerens buffer mot overflyt.</td></tr>
+        <tr><td>cwnd</td><td><strong>Congestion window</strong> — vedlikeholdt av senderen lokalt, usynlig i headeren. Beskytter nettverket mot overbelastning.</td></tr>
       </tbody>
     </table>
 
@@ -62,9 +62,9 @@
     <div class="box insight">
       <div class="label">Senderens lov</div>
       <p style="font-family:'IBM Plex Mono',monospace;font-size:15px;text-align:center;padding:12px 0">
-        LastByteSent âˆ’ LastByteAcked &le; min(cwnd, rwnd)
+        LastByteSent - LastByteAcked &le; min(cwnd, rwnd)
       </p>
-      <p>Senderen kan aldri ha mer data Â«in flightÂ» enn den minste av de to vinduene. I praksis, nÃ¥r nettverket er flaskehalsen, er <code>cwnd &lt; rwnd</code>, og det er cwnd som styrer.</p>
+      <p>Senderen kan aldri ha mer data «in flight» enn den minste av de to vinduene. I praksis, når nettverket er flaskehalsen, er <code>cwnd &lt; rwnd</code>, og det er cwnd som styrer.</p>
     </div>
 
     <p>TCPs senderrate blir da omtrent:</p>
@@ -77,47 +77,47 @@
 
     <div class="margin-note">
       <strong>cwnd er usynlig</strong>
-      Merk at <code>rwnd</code> annonseres i TCP-headeren og kan observeres i en pakkefangst. <code>cwnd</code> derimot eksisterer bare internt hos senderen â€” den er aldri synlig pÃ¥ trÃ¥den.
+      Merk at <code>rwnd</code> annonseres i TCP-headeren og kan observeres i en pakkefangst. <code>cwnd</code> derimot eksisterer bare internt hos senderen — den er aldri synlig på tråden.
     </div>
 
     <h3>Bottleneck-lenken</h3>
-    <p>NÃ¥r TCP Ã¸ker sendraten, er det til slutt Ã©n lenke i stien som blir mettet â€” <strong>bottleneck-lenken</strong>. Ruterens utgangskÃ¸ fyller seg opp, og pakker begynner Ã¥ gÃ¥ tapt. NÃ¸kkelinnsikten:</p>
+    <p>Når TCP øker sendraten, er det til slutt én lenke i stien som blir mettet — <strong>bottleneck-lenken</strong>. Ruterens utgangskø fyller seg opp, og pakker begynner å gå tapt. Nøkkelinnsikten:</p>
     <div class="box insight">
       <div class="label">To innsikter om bottleneck</div>
-      <p><strong>1.</strong> Ã… Ã¸ke sendraten utover bottleneck-kapasiteten gir <em>ikke</em> hÃ¸yere gjennomstrÃ¸mning â€” det gir bare mer pakketap.</p>
-      <p><strong>2.</strong> Ã… Ã¸ke sendraten utover bottleneck-kapasiteten <em>Ã¸ker</em> RTT, fordi pakker venter lenger i kÃ¸en.</p>
-      <p style="margin-top:12px;font-weight:600;color:var(--ink)">MÃ¥let: Â«Keep the end-end pipe just full, but not fuller.Â»</p>
+      <p><strong>1.</strong> Å øke sendraten utover bottleneck-kapasiteten gir <em>ikke</em> høyere gjennomstrømning — det gir bare mer pakketap.</p>
+      <p><strong>2.</strong> Å øke sendraten utover bottleneck-kapasiteten <em>øker</em> RTT, fordi pakker venter lenger i køen.</p>
+      <p style="margin-top:12px;font-weight:600;color:var(--ink)">Målet: «Keep the end-end pipe just full, but not fuller.»</p>
     </div>
 
-    <h3>To tilnÃ¦rminger til metningskontroll</h3>
-    <p>Det finnes to fundamentalt forskjellige mÃ¥ter Ã¥ angripe metningsproblemet pÃ¥:</p>
+    <h3>To tilnærminger til metningskontroll</h3>
+    <p>Det finnes to fundamentalt forskjellige måter å angripe metningsproblemet på:</p>
 
     <table class="compare">
-      <thead><tr><th>TilnÃ¦rming</th><th>Hvordan det fungerer</th></tr></thead>
+      <thead><tr><th>Tilnærming</th><th>Hvordan det fungerer</th></tr></thead>
       <tbody>
-        <tr><td>End-to-end</td><td>Nettverket gir <strong>ingen eksplisitt tilbakemelding</strong> om metning. Senderen mÃ¥ selv utlede tilstanden â€” basert pÃ¥ observert tap (timeout eller dupliserte ACK-er) og forsinkelse. <em>TCP bruker denne tilnÃ¦rmingen.</em></td></tr>
-        <tr><td>Nettverksassistert</td><td>Rutere gir <strong>eksplisitt tilbakemelding</strong> til senderen om metningsnivÃ¥et â€” for eksempel via spesielle kontrollmeldinger, eller ved Ã¥ sette bits i pakkeheaderen som signaliserer at en lenke nÃ¦rmer seg metning.</td></tr>
+        <tr><td>End-to-end</td><td>Nettverket gir <strong>ingen eksplisitt tilbakemelding</strong> om metning. Senderen må selv utlede tilstanden — basert på observert tap (timeout eller dupliserte ACK-er) og forsinkelse. <em>TCP bruker denne tilnærmingen.</em></td></tr>
+        <tr><td>Nettverksassistert</td><td>Rutere gir <strong>eksplisitt tilbakemelding</strong> til senderen om metningsnivået — for eksempel via spesielle kontrollmeldinger, eller ved å sette bits i pakkeheaderen som signaliserer at en lenke nærmer seg metning.</td></tr>
       </tbody>
     </table>
 
-    <p>Internettets TCP har tradisjonelt vÃ¦rt rent end-to-end: IP-laget gir ingen hjelp, og senderen er overlatt til seg selv. All informasjon om nettverkets tilstand mÃ¥ utledes indirekte â€” fra ACK-er som uteblir, fra forsinkelser som Ã¸ker, eller fra pakker som forsvinner. Det er nettopp dette som gjÃ¸r TCP-metningskontroll til et sÃ¥ elegant og utfordrende problem.</p>
+    <p>Internettets TCP har tradisjonelt vært rent end-to-end: IP-laget gir ingen hjelp, og senderen er overlatt til seg selv. All informasjon om nettverkets tilstand må utledes indirekte — fra ACK-er som uteblir, fra forsinkelser som øker, eller fra pakker som forsvinner. Det er nettopp dette som gjør TCP-metningskontroll til et så elegant og utfordrende problem.</p>
   </div>
 </section>
 
 <!-- ============ SLOW START ============ -->
 <section id="slowstart">
   <div class="container">
-    <div class="badge">01 Â· Slow start</div>
+    <div class="badge">01 · Slow start</div>
     <h2>Eksponentiell <em>opptrapping</em></h2>
-    <p class="section-intro">Navnet er misvisende â€” slow start er faktisk den raskeste fasen av TCP. Vinduet dobles hver RTT.</p>
+    <p class="section-intro">Navnet er misvisende — slow start er faktisk den raskeste fasen av TCP. Vinduet dobles hver RTT.</p>
 
-    <p class="lead">NÃ¥r en TCP-forbindelse nettopp er opprettet, vet senderen ingenting om nettverkets kapasitet. Ã… sende for mye umiddelbart kan forÃ¥rsake metning. Ã… sende for lite kaster bort tid. LÃ¸sningen er Ã¥ starte forsiktig og <em>doble</em> sendraten for hver RTT til man treffer en grense.</p>
+    <p class="lead">Når en TCP-forbindelse nettopp er opprettet, vet senderen ingenting om nettverkets kapasitet. Å sende for mye umiddelbart kan forårsake metning. Å sende for lite kaster bort tid. Løsningen er å starte forsiktig og <em>doble</em> sendraten for hver RTT til man treffer en grense.</p>
 
     <h3>Mekanismen</h3>
     <div class="box solution">
       <div class="label">Slow start-algoritmen</div>
       <p><strong>1.</strong> Start med <code>cwnd = 1 MSS</code>.<br>
-      <strong>2.</strong> For <em>hver mottatte ACK</em>, Ã¸k <code>cwnd</code> med 1 MSS: <code>cwnd = cwnd + MSS</code>.<br>
+      <strong>2.</strong> For <em>hver mottatte ACK</em>, øk <code>cwnd</code> med 1 MSS: <code>cwnd = cwnd + MSS</code>.<br>
       <strong>3.</strong> Effekten: cwnd dobles per RTT (eksponentiell vekst).</p>
     </div>
 
@@ -135,29 +135,29 @@
     </table>
     <p>Initiell rate: <code>1500 / 0.2 = 7.5 kB/s</code>. Etter 4 RTT-er: <code>24 000 / 0.2 = 120 kB/s</code>. Eksponentiell vekst rammer raskt opp til tilgjengelig kapasitet.</p>
 
-    <h3>NÃ¥r slutter slow start?</h3>
+    <h3>Når slutter slow start?</h3>
     <p>Slow start avsluttes ved ett av tre hendelser:</p>
     <ul style="list-style:none;padding:0;margin:24px 0">
-      <li style="padding:12px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">Timeout</strong> â€” cwnd settes tilbake til 1 MSS, <code>ssthresh = cwnd/2</code>, og slow start starter pÃ¥ nytt.</li>
-      <li style="padding:12px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">cwnd &ge; ssthresh</strong> â€” overgang til <em>congestion avoidance</em> (lineÃ¦r vekst).</li>
-      <li style="padding:12px 0"><strong style="color:var(--rust)">3 dupliserte ACKs</strong> â€” overgang til <em>fast recovery</em>.</li>
+      <li style="padding:12px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">Timeout</strong> — cwnd settes tilbake til 1 MSS, <code>ssthresh = cwnd/2</code>, og slow start starter på nytt.</li>
+      <li style="padding:12px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">cwnd &ge; ssthresh</strong> — overgang til <em>congestion avoidance</em> (lineær vekst).</li>
+      <li style="padding:12px 0"><strong style="color:var(--rust)">3 dupliserte ACKs</strong> — overgang til <em>fast recovery</em>.</li>
     </ul>
 
     <div class="margin-note">
       <strong>ssthresh</strong>
-      <code>ssthresh</code> (slow start threshold) er en variabel som husker omtrent hvor det gikk galt sist. Den starter typisk pÃ¥ en hÃ¸y verdi (f.eks. 64 KB) og halveres ved hvert tap. Den markerer grensen mellom eksponentiell og lineÃ¦r vekst.
+      <code>ssthresh</code> (slow start threshold) er en variabel som husker omtrent hvor det gikk galt sist. Den starter typisk på en høy verdi (f.eks. 64 KB) og halveres ved hvert tap. Den markerer grensen mellom eksponentiell og lineær vekst.
     </div>
 
     <div class="quiz" data-correct="2">
-      <div class="qlabel">Sjekk forstÃ¥elsen</div>
+      <div class="qlabel">Sjekk forståelsen</div>
       <h4>Under slow start med cwnd = 4 MSS sender TCP 4 segmenter og mottar 4 ACKs. Hva blir ny cwnd?</h4>
       <div class="opts">
-        <button class="opt" data-i="0">5 MSS (lineÃ¦r Ã¸kning)</button>
+        <button class="opt" data-i="0">5 MSS (lineær økning)</button>
         <button class="opt" data-i="1">6 MSS</button>
         <button class="opt" data-i="2">8 MSS (dobling)</button>
         <button class="opt" data-i="3">16 MSS</button>
       </div>
-      <div class="feedback"><strong>Riktig.</strong> I slow start Ã¸kes cwnd med 1 MSS for <em>hver ACK</em>. Med 4 ACKs: 4 + 4 = 8 MSS. Cwnd dobles per RTT.</div>
+      <div class="feedback"><strong>Riktig.</strong> I slow start økes cwnd med 1 MSS for <em>hver ACK</em>. Med 4 ACKs: 4 + 4 = 8 MSS. Cwnd dobles per RTT.</div>
     </div>
   </div>
 </section>
@@ -165,20 +165,20 @@
 <!-- ============ AIMD ============ -->
 <section id="aimd">
   <div class="container">
-    <div class="badge">02 Â· Congestion avoidance</div>
+    <div class="badge">02 · Congestion avoidance</div>
     <h2>Additive increase, <em>multiplicative</em> decrease</h2>
-    <p class="section-intro">NÃ¥r cwnd har nÃ¥dd ssthresh, skifter TCP fra eksponentiell til forsiktig lineÃ¦r vekst â€” og halverer brutalt ved tap.</p>
+    <p class="section-intro">Når cwnd har nådd ssthresh, skifter TCP fra eksponentiell til forsiktig lineær vekst — og halverer brutalt ved tap.</p>
 
-    <p class="lead">AIMD (Additive Increase, Multiplicative Decrease) er kjernen i TCPs metningskontroll. Ideen er vakker i sin asymmetri: voks sakte oppover, kutt raskt nedover. Denne asymmetrien gir stabilitet og rettferdighet â€” egenskaper som ren eksponentiell vekst aldri kunne gitt.</p>
+    <p class="lead">AIMD (Additive Increase, Multiplicative Decrease) er kjernen i TCPs metningskontroll. Ideen er vakker i sin asymmetri: voks sakte oppover, kutt raskt nedover. Denne asymmetrien gir stabilitet og rettferdighet — egenskaper som ren eksponentiell vekst aldri kunne gitt.</p>
 
     <h3>Additive increase</h3>
-    <p>I congestion avoidance-fasen Ã¸ker cwnd med <strong>1 MSS per RTT</strong> â€” ikke per ACK som i slow start. Formelen per ACK er:</p>
+    <p>I congestion avoidance-fasen øker cwnd med <strong>1 MSS per RTT</strong> — ikke per ACK som i slow start. Formelen per ACK er:</p>
     <div class="box solution">
-      <div class="label">Congestion avoidance â€” per ACK</div>
+      <div class="label">Congestion avoidance — per ACK</div>
       <p style="font-family:'IBM Plex Mono',monospace;font-size:15px;text-align:center;padding:8px 0">
         cwnd = cwnd + MSS &times; (MSS / cwnd)
       </p>
-      <p>Siden det kommer omtrent <code>cwnd/MSS</code> ACKs per RTT, gir dette en total Ã¸kning pÃ¥ 1 MSS per RTT â€” lineÃ¦r vekst.</p>
+      <p>Siden det kommer omtrent <code>cwnd/MSS</code> ACKs per RTT, gir dette en total økning på 1 MSS per RTT — lineær vekst.</p>
     </div>
 
     <h3>Multiplicative decrease</h3>
@@ -192,8 +192,8 @@
       </p>
     </div>
 
-    <h3>Sagtann-mÃ¸nsteret</h3>
-    <p>Resultatet er det karakteristiske sagtannmÃ¸nsteret: cwnd vokser lineÃ¦rt oppover, faller brÃ¥tt ved tap, vokser lineÃ¦rt igjen. TCP Â«sondererÂ» stadig etter mer bÃ¥ndbredde.</p>
+    <h3>Sagtann-mønsteret</h3>
+    <p>Resultatet er det karakteristiske sagtannmønsteret: cwnd vokser lineært oppover, faller brått ved tap, vokser lineært igjen. TCP «sonderer» stadig etter mer båndbredde.</p>
 
     <figure>
       <div class="svg-wrap">
@@ -211,30 +211,30 @@
           <line x1="132" y1="100" x2="132" y2="155" stroke="#b04428" stroke-width="1" stroke-dasharray="3,2"/>
         </svg>
       </div>
-      <figcaption>AIMD-sagtannen. LineÃ¦r oppgang, brÃ¥ halvering ved tap, lineÃ¦r oppgang igjen. TCP prÃ¸ver stadig Ã¥ finne den rette sendraten.</figcaption>
+      <figcaption>AIMD-sagtannen. Lineær oppgang, brå halvering ved tap, lineær oppgang igjen. TCP prøver stadig å finne den rette sendraten.</figcaption>
     </figure>
 
     <h3>Regneeksempel: congestion avoidance</h3>
     <div class="box insight">
       <div class="label">Eksempel</div>
-      <p>Anta <code>cwnd = 3000 bytes</code> og <code>MSS = 1500 bytes</code>. Det betyr 2 segmenter i flight, altsÃ¥ 2 ACKs per RTT.</p>
+      <p>Anta <code>cwnd = 3000 bytes</code> og <code>MSS = 1500 bytes</code>. Det betyr 2 segmenter i flight, altså 2 ACKs per RTT.</p>
       <p style="font-family:'IBM Plex Mono',monospace;font-size:13px;margin-top:12px">
         ACK 1: cwnd = 3000 + 1500&times;(1500/3000) = 3750<br>
         ACK 2: cwnd = 3750 + 1500&times;(1500/3750) = 4350
       </p>
-      <p style="margin-top:8px">Netto Ã¸kning over hele RTT-en: omtrent 1 MSS (fra 3000 til ~4500). LineÃ¦r vekst, som forventet.</p>
+      <p style="margin-top:8px">Netto økning over hele RTT-en: omtrent 1 MSS (fra 3000 til ~4500). Lineær vekst, som forventet.</p>
     </div>
 
     <div class="quiz" data-correct="0">
-      <div class="qlabel">Sjekk forstÃ¥elsen</div>
-      <h4>I congestion avoidance med cwnd = 10 MSS, hvor mye vokser cwnd pÃ¥ Ã©n RTT?</h4>
+      <div class="qlabel">Sjekk forståelsen</div>
+      <h4>I congestion avoidance med cwnd = 10 MSS, hvor mye vokser cwnd på én RTT?</h4>
       <div class="opts">
         <button class="opt" data-i="0">1 MSS</button>
         <button class="opt" data-i="1">10 MSS (dobling)</button>
         <button class="opt" data-i="2">2 MSS</button>
         <button class="opt" data-i="3">0.1 MSS</button>
       </div>
-      <div class="feedback"><strong>Riktig.</strong> I congestion avoidance er veksten alltid 1 MSS per RTT, uavhengig av cwnd-stÃ¸rrelsen. Det er nettopp dette som gjÃ¸r den lineÃ¦r.</div>
+      <div class="feedback"><strong>Riktig.</strong> I congestion avoidance er veksten alltid 1 MSS per RTT, uavhengig av cwnd-størrelsen. Det er nettopp dette som gjør den lineær.</div>
     </div>
   </div>
 </section>
@@ -242,49 +242,49 @@
 <!-- ============ FAST RECOVERY ============ -->
 <section id="fastrecovery">
   <div class="container">
-    <div class="badge">03 Â· Fast recovery</div>
+    <div class="badge">03 · Fast recovery</div>
     <h2>Reno vs. <em>Tahoe</em></h2>
-    <p class="section-intro">Ikke alle pakketap er like alvorlige. Tre dupliserte ACKs betyr at noe fortsatt kommer frem â€” og TCP kan reagere mildere.</p>
+    <p class="section-intro">Ikke alle pakketap er like alvorlige. Tre dupliserte ACKs betyr at noe fortsatt kommer frem — og TCP kan reagere mildere.</p>
 
-    <p class="lead">Det er en vesentlig forskjell mellom en timeout og tre dupliserte ACKs. En timeout betyr: Â«Jeg har ikke hÃ¸rt noe som helst pÃ¥ lenge â€” nettverket er kanskje helt nede.Â» Tre dupliserte ACKs betyr: Â«Ett segment gikk tapt, men andre segmenter <em>kommer frem</em> â€” for mottakeren sender jo ACKs.Â» TCP Reno utnytter denne forskjellen.</p>
+    <p class="lead">Det er en vesentlig forskjell mellom en timeout og tre dupliserte ACKs. En timeout betyr: «Jeg har ikke hørt noe som helst på lenge — nettverket er kanskje helt nede.» Tre dupliserte ACKs betyr: «Ett segment gikk tapt, men andre segmenter <em>kommer frem</em> — for mottakeren sender jo ACKs.» TCP Reno utnytter denne forskjellen.</p>
 
     <h3>TCP Tahoe (den opprinnelige)</h3>
     <p>TCP Tahoe (1988) behandler alle tap likt:</p>
     <div class="box problem">
-      <div class="label">Tahoe â€” ved ethvert tap</div>
+      <div class="label">Tahoe — ved ethvert tap</div>
       <p style="font-family:'IBM Plex Mono',monospace;font-size:14px">
         ssthresh = cwnd / 2<br>
         cwnd = 1 MSS<br>
-        Start slow start pÃ¥ nytt
+        Start slow start på nytt
       </p>
     </div>
 
     <h3>TCP Reno (forbedringen)</h3>
     <p>TCP Reno (1990) differensierer:</p>
     <div class="box solution">
-      <div class="label">Reno â€” ved 3 dupliserte ACKs</div>
+      <div class="label">Reno — ved 3 dupliserte ACKs</div>
       <p style="font-family:'IBM Plex Mono',monospace;font-size:14px">
         ssthresh = cwnd / 2<br>
         cwnd = ssthresh + 3 MSS<br>
-        GÃ¥ til <strong>fast recovery</strong>
+        Gå til <strong>fast recovery</strong>
       </p>
     </div>
     <div class="box problem">
-      <div class="label">Reno â€” ved timeout</div>
+      <div class="label">Reno — ved timeout</div>
       <p style="font-family:'IBM Plex Mono',monospace;font-size:14px">
         ssthresh = cwnd / 2<br>
         cwnd = 1 MSS<br>
-        Start slow start pÃ¥ nytt
+        Start slow start på nytt
       </p>
     </div>
 
     <h3>Hva skjer i fast recovery?</h3>
-    <p>Under fast recovery Ã¸ker cwnd med 1 MSS for hver <em>dupliserte</em> ACK som ankommer (disse tyder pÃ¥ at etterfÃ¸lgende segmenter kommer frem). NÃ¥r en <strong>ny ACK</strong> ankommer (som bekrefter det retransmitterte segmentet), avsluttes fast recovery:</p>
+    <p>Under fast recovery øker cwnd med 1 MSS for hver <em>dupliserte</em> ACK som ankommer (disse tyder på at etterfølgende segmenter kommer frem). Når en <strong>ny ACK</strong> ankommer (som bekrefter det retransmitterte segmentet), avsluttes fast recovery:</p>
     <div class="box solution">
       <div class="label">Ny ACK i fast recovery</div>
       <p style="font-family:'IBM Plex Mono',monospace;font-size:14px">
         cwnd = ssthresh<br>
-        GÃ¥ til congestion avoidance
+        Gå til congestion avoidance
       </p>
     </div>
 
@@ -313,15 +313,15 @@
       <div class="rtw-stats">
         <div class="rtw-stat">
           <div class="rtw-stat-label">Tid (RTT)</div>
-          <div id="rtw-stat-time" class="rtw-stat-val">0â€“4</div>
+          <div id="rtw-stat-time" class="rtw-stat-val">0–4</div>
         </div>
         <div class="rtw-stat rtw-stat-reno">
           <div class="rtw-stat-label">&#9644; TCP Reno (cwnd)</div>
-          <div id="rtw-stat-reno" class="rtw-stat-val">1 â†’ 10 MSS</div>
+          <div id="rtw-stat-reno" class="rtw-stat-val">1 ? 10 MSS</div>
         </div>
         <div class="rtw-stat rtw-stat-tahoe">
           <div class="rtw-stat-label">&#9548; TCP Tahoe (cwnd)</div>
-          <div id="rtw-stat-tahoe" class="rtw-stat-val">1 â†’ 10 MSS</div>
+          <div id="rtw-stat-tahoe" class="rtw-stat-val">1 ? 10 MSS</div>
         </div>
       </div>
 
@@ -334,7 +334,7 @@
           <text x="10" y="14" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">cwnd (MSS)</text>
           <text x="655" y="265" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">tid (RTT)</text>
 
-          <!-- Y-axis ticks: log scale. cwnd=1â†’y=250, cwnd=10â†’yâ‰ˆ112, cwnd=20â†’y=70 -->
+          <!-- Y-axis ticks: log scale. cwnd=1?y=250, cwnd=10?y˜112, cwnd=20?y=70 -->
           <line x1="55" y1="250" x2="60" y2="250" stroke="#c9c0ae" stroke-width="1"/>
           <text x="50" y="254" font-family="IBM Plex Mono" font-size="10" fill="#6b6257" text-anchor="end">1</text>
           <line x1="55" y1="112" x2="60" y2="112" stroke="#c9c0ae" stroke-width="1"/>
@@ -342,11 +342,11 @@
           <line x1="55" y1="70" x2="60" y2="70" stroke="#c9c0ae" stroke-width="1"/>
           <text x="50" y="74" font-family="IBM Plex Mono" font-size="10" fill="#6b6257" text-anchor="end">20</text>
 
-          <!-- ssthresh reference line at cwnd=10 â†’ yâ‰ˆ112 -->
+          <!-- ssthresh reference line at cwnd=10 ? y˜112 -->
           <line id="rtw-ssthresh" x1="60" y1="112" x2="690" y2="112" stroke="#c9c0ae" stroke-width="1" stroke-dasharray="4,3"/>
           <text x="63" y="108" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">ssthresh=10</text>
 
-          <!-- 3 dup-ACKs event marker at t=9 â†’ x=375 (hidden until step 3) -->
+          <!-- 3 dup-ACKs event marker at t=9 ? x=375 (hidden until step 3) -->
           <line id="rtw-event" x1="375" y1="20" x2="375" y2="250" stroke="#2d4a7a" stroke-width="1.5" stroke-dasharray="4,3" opacity="0"/>
           <text id="rtw-event-label" x="379" y="32" font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a" opacity="0">3 dup-ACKs</text>
 
@@ -377,16 +377,16 @@
       </div>
     </div>
 
-    <p>Reno unngÃ¥r den kostbare turen tilbake til 1 MSS ved dupliserte ACKs â€” noe som kan spare mange RTT-er med lav gjennomstrÃ¸mning.</p>
+    <p>Reno unngår den kostbare turen tilbake til 1 MSS ved dupliserte ACKs — noe som kan spare mange RTT-er med lav gjennomstrømning.</p>
 
     <script>
     (function() {
       // Coordinate mapping (log scale)
-      // cwnd=1 â†’ y=250, cwnd=10 â†’ y=160, cwnd=20 â†’ y=70
-      // Time: x = 60 + t*35  (RTT 0â†’x=60, RTT 1â†’x=95, ..., RTT 9â†’x=375, RTT 17â†’x=655)
+      // cwnd=1 ? y=250, cwnd=10 ? y=160, cwnd=20 ? y=70
+      // Time: x = 60 + t*35  (RTT 0?x=60, RTT 1?x=95, ..., RTT 9?x=375, RTT 17?x=655)
       function xOf(t) { return 60 + t * 35; }
       function yOf(cwnd) {
-        // Log scale anchored: cwnd=1â†’y=250, cwnd=20â†’y=70
+        // Log scale anchored: cwnd=1?y=250, cwnd=20?y=70
         // y = 250 - (log(cwnd)/log(20)) * 180
         if (cwnd <= 1) return 250;
         if (cwnd >= 20) return 70;
@@ -394,27 +394,27 @@
       }
       function pt(t, cwnd) { return xOf(t) + ',' + yOf(cwnd); }
 
-      // Shared slow start + CA path: t0â†’cwnd1 up through t9â†’cwnd20
-      // Slow start: 0â†’1, 1â†’2, 2â†’4, 3â†’8, 4â†’10 (hits ssthresh)
-      // CA: 5â†’11, 6â†’12, 7â†’13 (skip; just linear), actually:
+      // Shared slow start + CA path: t0?cwnd1 up through t9?cwnd20
+      // Slow start: 0?1, 1?2, 2?4, 3?8, 4?10 (hits ssthresh)
+      // CA: 5?11, 6?12, 7?13 (skip; just linear), actually:
       // Slow start doubles: cwnd 1,2,4,8 then hits ssthresh=10 at t=4
-      // CA +1/RTT: t4â†’10, t5â†’11, t6â†’12, t7â†’13, t8â†’14... wait spec says t9â†’20
+      // CA +1/RTT: t4?10, t5?11, t6?12, t7?13, t8?14... wait spec says t9?20
       // Let me re-read: "CA linearly up to (9, 20)" so +2/RTT? cwnd 10,12,14,16,18,20 over t4..t9
-      // Actually spec says "Congestion avoidance: tid 5-9, cwnd 10â†’20" so +2/RTT
+      // Actually spec says "Congestion avoidance: tid 5-9, cwnd 10?20" so +2/RTT
       // That's a simplification for visual clarity. Let's go with that.
       const sharedPts = [
         [0,1],[1,2],[2,4],[3,8],[4,10],[5,12],[6,14],[7,16],[8,18],[9,20]
       ];
 
       // Tahoe after event: falls to (9,1) then slow start: (9,1),(10,2),(11,4),(12,8),(13,10),(14,12)...
-      // Actually per spec step 6: (9,1)â†’(10,2)â†’(11,4), step 7 continues to ssthresh=10 then CA
+      // Actually per spec step 6: (9,1)?(10,2)?(11,4), step 7 continues to ssthresh=10 then CA
       const tahoePts = [
         [9,1],[10,2],[11,4],[12,8],[13,10],[14,12],[15,14],[16,16],[17,18]
       ];
 
       // Reno after event:
-      // Step 5: (9,20)â†’(9,13) then plateau (9,13)â†’(10,13)
-      // Step 6: (10,13)â†’(10,10)
+      // Step 5: (9,20)?(9,13) then plateau (9,13)?(10,13)
+      // Step 6: (10,13)?(10,10)
       // Step 7: (10,10) CA linearly: (11,11),(12,12),...(17,17)
       const renoPts = [
         [9,20],[9,13],[10,13],[10,10],[11,11],[12,12],[13,13],[14,14],[15,15],[16,16],[17,17]
@@ -427,26 +427,26 @@
 
       const steps = [
         {
-          // Step 1: Slow start, shared curve 0â†’4
-          time: '0â€“4', reno: '1 â†’ 10 MSS', tahoe: '1 â†’ 10 MSS',
-          shared: sharedPts.slice(0, 5), // t0â†’t4
+          // Step 1: Slow start, shared curve 0?4
+          time: '0–4', reno: '1 ? 10 MSS', tahoe: '1 ? 10 MSS',
+          shared: sharedPts.slice(0, 5), // t0?t4
           tahoeExtra: [], renoExtra: [],
           event: false,
           fastRecovery: false,
           annSharedSS: true, annSharedCA: false, annTahoeSS: false, annRenoCA: false,
-          title: 'Steg 1 â€” Slow start',
-          body: 'Begge protokoller starter med cwnd = 1 MSS og dobler for hver RTT. Eksponentiell vekst er effektiv for raskt Ã¥ finne nettverkets kapasitet. NÃ¥r cwnd nÃ¥r ssthresh = 10, bytter begge til congestion avoidance. Her er Reno og Tahoe helt identiske â€” det er ingen grunn til Ã¥ skille dem ennÃ¥.'
+          title: 'Steg 1 — Slow start',
+          body: 'Begge protokoller starter med cwnd = 1 MSS og dobler for hver RTT. Eksponentiell vekst er effektiv for raskt å finne nettverkets kapasitet. Når cwnd når ssthresh = 10, bytter begge til congestion avoidance. Her er Reno og Tahoe helt identiske — det er ingen grunn til å skille dem ennå.'
         },
         {
-          // Step 2: CA, shared curve 4â†’9
-          time: '5â€“9', reno: '10 â†’ 20 MSS', tahoe: '10 â†’ 20 MSS',
-          shared: sharedPts, // t0â†’t9
+          // Step 2: CA, shared curve 4?9
+          time: '5–9', reno: '10 ? 20 MSS', tahoe: '10 ? 20 MSS',
+          shared: sharedPts, // t0?t9
           tahoeExtra: [], renoExtra: [],
           event: false,
           fastRecovery: false,
           annSharedSS: true, annSharedCA: true, annTahoeSS: false, annRenoCA: false,
-          title: 'Steg 2 â€” Congestion avoidance',
-          body: 'Etter ssthresh-knekket vokser cwnd forsiktig med +2 MSS per RTT. Knekket i kurven ved cwnd = 10 er pedagogisk viktig: det markerer faseskiftet fra eksplosiv til forsiktig vekst. Begge protokoller tenker seg om â€” de leter etter mer bÃ¥ndbredde uten Ã¥ bruke for mye.'
+          title: 'Steg 2 — Congestion avoidance',
+          body: 'Etter ssthresh-knekket vokser cwnd forsiktig med +2 MSS per RTT. Knekket i kurven ved cwnd = 10 er pedagogisk viktig: det markerer faseskiftet fra eksplosiv til forsiktig vekst. Begge protokoller tenker seg om — de leter etter mer båndbredde uten å bruke for mye.'
         },
         {
           // Step 3: Event marker appears
@@ -456,8 +456,8 @@
           event: true,
           fastRecovery: false,
           annSharedSS: true, annSharedCA: true, annTahoeSS: false, annRenoCA: false,
-          title: 'Steg 3 â€” 3 dupliserte ACKs!',
-          body: 'Tap er oppdaget. Mottakeren sender samme ACK tre ganger â€” ett segment er borte, men nettverket lever. Begge protokoller setter ssthresh = cwnd/2 = 10. Grafen endrer seg ikke ennÃ¥ â€” ta deg tid til Ã¥ registrere hva som utlÃ¸ser det som skjer videre.'
+          title: 'Steg 3 — 3 dupliserte ACKs!',
+          body: 'Tap er oppdaget. Mottakeren sender samme ACK tre ganger — ett segment er borte, men nettverket lever. Begge protokoller setter ssthresh = cwnd/2 = 10. Grafen endrer seg ikke ennå — ta deg tid til å registrere hva som utløser det som skjer videre.'
         },
         {
           // Step 4: Tahoe falls to 1
@@ -467,42 +467,42 @@
           event: true,
           fastRecovery: false,
           annSharedSS: true, annSharedCA: true, annTahoeSS: false, annRenoCA: false,
-          title: 'Steg 4 â€” Tahoe: tilbake til 1',
-          body: 'Tahoe er brutal. Alt som er bygget opp â€” 20 MSS over 9 RTT-er â€” er borte pÃ¥ et Ã¸yeblikk. cwnd settes til 1 MSS og slow start starter helt pÃ¥ nytt. Tahoe skiller ikke mellom tap via timeout og via dupliserte ACKs: begge behandles som katastrofe. Reno-linjen rÃ¸res ikke â€” den bestemmer seg ennÃ¥.'
+          title: 'Steg 4 — Tahoe: tilbake til 1',
+          body: 'Tahoe er brutal. Alt som er bygget opp — 20 MSS over 9 RTT-er — er borte på et øyeblikk. cwnd settes til 1 MSS og slow start starter helt på nytt. Tahoe skiller ikke mellom tap via timeout og via dupliserte ACKs: begge behandles som katastrofe. Reno-linjen røres ikke — den bestemmer seg ennå.'
         },
         {
           // Step 5: Reno fast recovery at 13
-          time: '9â€“10', reno: '13 MSS', tahoe: '1 MSS',
+          time: '9–10', reno: '13 MSS', tahoe: '1 MSS',
           shared: sharedPts,
           tahoeExtra: [[9,20],[9,1]], renoExtra: [[9,20],[9,13],[10,13]],
           event: true,
           fastRecovery: true,
           annSharedSS: true, annSharedCA: true, annTahoeSS: false, annRenoCA: false,
-          title: 'Steg 5 â€” Reno: fast recovery',
-          body: 'Reno tenker seg om. Tre dupliserte ACKs betyr at tre pakker fortsatt er ute i nettverket â€” det er altsÃ¥ plass til mer data. cwnd settes til ssthresh + 3 = 13 MSS (ikke 10!). Det tapte segmentet sendes pÃ¥ nytt. Reno venter Ã©n RTT i fast recovery mens Tahoe allerede er pÃ¥ vei opp fra 1 MSS.'
+          title: 'Steg 5 — Reno: fast recovery',
+          body: 'Reno tenker seg om. Tre dupliserte ACKs betyr at tre pakker fortsatt er ute i nettverket — det er altså plass til mer data. cwnd settes til ssthresh + 3 = 13 MSS (ikke 10!). Det tapte segmentet sendes på nytt. Reno venter én RTT i fast recovery mens Tahoe allerede er på vei opp fra 1 MSS.'
         },
         {
           // Step 6: Reno deflates to 10, Tahoe starts climbing
-          time: '10â€“11', reno: '10 MSS', tahoe: '2 MSS',
+          time: '10–11', reno: '10 MSS', tahoe: '2 MSS',
           shared: sharedPts,
           tahoeExtra: [[9,20],[9,1],[10,2],[11,4]], renoExtra: [[9,20],[9,13],[10,13],[10,10]],
           event: true,
           fastRecovery: false,
           annSharedSS: true, annSharedCA: true, annTahoeSS: true, annRenoCA: false,
-          title: 'Steg 6 â€” Reno: deflasjon, Tahoe: slow start',
-          body: 'Den nye ACK-en ankommer og bekrefter det retransmitterte segmentet. Fast recovery avsluttes: cwnd deflateres fra 13 til ssthresh = 10. Herfra starter Reno congestion avoidance direkte â€” ingen tur tilbake til 1. Tahoe er pÃ¥ vei opp igjen, men er langt bak med cwnd = 2 MSS.'
+          title: 'Steg 6 — Reno: deflasjon, Tahoe: slow start',
+          body: 'Den nye ACK-en ankommer og bekrefter det retransmitterte segmentet. Fast recovery avsluttes: cwnd deflateres fra 13 til ssthresh = 10. Herfra starter Reno congestion avoidance direkte — ingen tur tilbake til 1. Tahoe er på vei opp igjen, men er langt bak med cwnd = 2 MSS.'
         },
         {
-          // Step 7: Full picture â€” Reno wins
-          time: '10â€“17', reno: '10 â†’ 17 MSS', tahoe: '2 â†’ 14 MSS',
+          // Step 7: Full picture — Reno wins
+          time: '10–17', reno: '10 ? 17 MSS', tahoe: '2 ? 14 MSS',
           shared: sharedPts,
           tahoeExtra: [[9,20],[9,1],[10,2],[11,4],[12,8],[13,10],[14,12],[15,14],[16,16],[17,18]],
           renoExtra: [[9,20],[9,13],[10,13],[10,10],[11,11],[12,12],[13,13],[14,14],[15,15],[16,16],[17,17]],
           event: true,
           fastRecovery: false,
           annSharedSS: true, annSharedCA: true, annTahoeSS: true, annRenoCA: true,
-          title: 'Steg 7 â€” Reno vinner kapplÃ¸pet',
-          body: 'Konklusjonen er visuelt Ã¥penbar: den rÃ¸de linjen ligger konsekvent over den grÃ¥. Reno henter aldri inn det tapte ved Ã¥ starte fra bunnen â€” det er simpelthen unÃ¸dvendig nÃ¥r nettverket fortsatt lever. Fast recovery koster Ã©n RTT; Tahoes slow-start-tur koster mange. For hÃ¸yhastighets- og langdistanseforbindelser er forskjellen dramatisk.'
+          title: 'Steg 7 — Reno vinner kappløpet',
+          body: 'Konklusjonen er visuelt åpenbar: den røde linjen ligger konsekvent over den grå. Reno henter aldri inn det tapte ved å starte fra bunnen — det er simpelthen unødvendig når nettverket fortsatt lever. Fast recovery koster én RTT; Tahoes slow-start-tur koster mange. For høyhastighets- og langdistanseforbindelser er forskjellen dramatisk.'
         }
       ];
 
@@ -585,10 +585,10 @@
     </script>
     </div>
 
-    <p>Reno unngÃ¥r den kostbare turen tilbake til 1 MSS ved dupliserte ACKs â€” noe som kan spare mange RTT-er med lav gjennomstrÃ¸mning.</p>
+    <p>Reno unngår den kostbare turen tilbake til 1 MSS ved dupliserte ACKs — noe som kan spare mange RTT-er med lav gjennomstrømning.</p>
 
     <div class="quiz" data-correct="1">
-      <div class="qlabel">Sjekk forstÃ¥elsen</div>
+      <div class="qlabel">Sjekk forståelsen</div>
       <h4>TCP Reno registrerer 3 dupliserte ACKs mens cwnd = 20 MSS. Hva skjer?</h4>
       <div class="opts">
         <button class="opt" data-i="0">cwnd settes til 1 MSS og slow start begynner</button>
@@ -596,7 +596,7 @@
         <button class="opt" data-i="2">cwnd dobles til 40 MSS</button>
         <button class="opt" data-i="3">cwnd halveres til 10 MSS og congestion avoidance begynner direkte</button>
       </div>
-      <div class="feedback"><strong>Riktig.</strong> ssthresh = 20/2 = 10. cwnd = ssthresh + 3 = 13 MSS. Reno gÃ¥r til fast recovery i stedet for slow start.</div>
+      <div class="feedback"><strong>Riktig.</strong> ssthresh = 20/2 = 10. cwnd = ssthresh + 3 = 13 MSS. Reno går til fast recovery i stedet for slow start.</div>
     </div>
   </div>
 </section>
@@ -604,27 +604,27 @@
 <!-- ============ CUBIC ============ -->
 <section id="cubic">
   <div class="container">
-    <div class="badge">04 Â· TCP CUBIC</div>
+    <div class="badge">04 · TCP CUBIC</div>
     <h2>Raskere tilbake med <em>kubisk</em> funksjon</h2>
-    <p class="section-intro">AIMD er rettferdig, men langsom. CUBIC bruker en smartere kurve for Ã¥ utnytte kapasiteten raskere.</p>
+    <p class="section-intro">AIMD er rettferdig, men langsom. CUBIC bruker en smartere kurve for å utnytte kapasiteten raskere.</p>
 
-    <p class="lead">Klassisk TCP bruker AIMD: lineÃ¦r Ã¸kning med 1 MSS per RTT. PÃ¥ en lenke med hÃ¸y kapasitet og lang forsinkelse kan det ta <em>mange</em> RTT-er Ã¥ fylle lenken etter et tap. CUBIC stiller spÃ¸rsmÃ¥let: kan vi gjÃ¸re det bedre?</p>
+    <p class="lead">Klassisk TCP bruker AIMD: lineær økning med 1 MSS per RTT. På en lenke med høy kapasitet og lang forsinkelse kan det ta <em>mange</em> RTT-er å fylle lenken etter et tap. CUBIC stiller spørsmålet: kan vi gjøre det bedre?</p>
 
     <h3>Innsikten</h3>
     <div class="box insight">
       <div class="label">CUBIC-prinsippet</div>
-      <p>La <strong>W<sub>max</sub></strong> vÃ¦re sendraten da det siste tapet skjedde. Etter et tap vet vi at nettverket sannsynligvis ikke har endret seg mye. Da er det trygt Ã¥ raskt nÃ¦rme seg W<sub>max</sub> igjen â€” men vi bÃ¸r vÃ¦re forsiktige nÃ¦r W<sub>max</sub>, fordi det var <em>der</em> det gikk galt sist.</p>
+      <p>La <strong>W<sub>max</sub></strong> være sendraten da det siste tapet skjedde. Etter et tap vet vi at nettverket sannsynligvis ikke har endret seg mye. Da er det trygt å raskt nærme seg W<sub>max</sub> igjen — men vi bør være forsiktige nær W<sub>max</sub>, fordi det var <em>der</em> det gikk galt sist.</p>
     </div>
 
     <h3>Kubisk vekst</h3>
-    <p>CUBIC Ã¸ker cwnd som en funksjon av <em>tiden</em> siden siste tap, ikke av RTT:</p>
+    <p>CUBIC øker cwnd som en funksjon av <em>tiden</em> siden siste tap, ikke av RTT:</p>
     <ul style="list-style:none;padding:0;margin:24px 0">
-      <li style="padding:12px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">Langt fra W<sub>max</sub></strong> â€” store, raske Ã¸kninger (kurven er bratt).</li>
-      <li style="padding:12px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">NÃ¦r W<sub>max</sub></strong> â€” forsiktige, smÃ¥ Ã¸kninger (kurven flater ut).</li>
-      <li style="padding:12px 0"><strong style="color:var(--rust)">Forbi W<sub>max</sub></strong> â€” sonderer forsiktig etter ny kapasitet (kurven stiger igjen).</li>
+      <li style="padding:12px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">Langt fra W<sub>max</sub></strong> — store, raske økninger (kurven er bratt).</li>
+      <li style="padding:12px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">Nær W<sub>max</sub></strong> — forsiktige, små økninger (kurven flater ut).</li>
+      <li style="padding:12px 0"><strong style="color:var(--rust)">Forbi W<sub>max</sub></strong> — sonderer forsiktig etter ny kapasitet (kurven stiger igjen).</li>
     </ul>
 
-    <p>Punktet <strong>K</strong> er tidspunktet der cwnd ville nÃ¥ W<sub>max</sub>. K er tunbart. Kurven er symmetrisk rundt K â€” den ligner en kubisk funksjon (derav navnet).</p>
+    <p>Punktet <strong>K</strong> er tidspunktet der cwnd ville nå W<sub>max</sub>. K er tunbart. Kurven er symmetrisk rundt K — den ligner en kubisk funksjon (derav navnet).</p>
 
     <figure>
       <div class="svg-wrap">
@@ -655,24 +655,24 @@
           <text x="430" y="145" font-family="IBM Plex Mono" font-size="10" fill="#b04428">tap</text>
         </svg>
       </div>
-      <figcaption>TCP CUBIC vs. klassisk AIMD. CUBIC vokser raskt langt fra W<sub>max</sub>, bremser nÃ¦r W<sub>max</sub>, og sonderer forsiktig forbi. Resultatet: hÃ¸yere gjennomstrÃ¸mning.</figcaption>
+      <figcaption>TCP CUBIC vs. klassisk AIMD. CUBIC vokser raskt langt fra W<sub>max</sub>, bremser nær W<sub>max</sub>, og sonderer forsiktig forbi. Resultatet: høyere gjennomstrømning.</figcaption>
     </figure>
 
     <div class="margin-note">
       <strong>Standard i Linux</strong>
-      TCP CUBIC er standard metningskontrollalgoritme i Linux og er den mest brukte varianten blant populÃ¦re webservere i dag.
+      TCP CUBIC er standard metningskontrollalgoritme i Linux og er den mest brukte varianten blant populære webservere i dag.
     </div>
 
     <div class="quiz" data-correct="2">
-      <div class="qlabel">Sjekk forstÃ¥elsen</div>
+      <div class="qlabel">Sjekk forståelsen</div>
       <h4>Hva er den viktigste fordelen med CUBIC over klassisk AIMD?</h4>
       <div class="opts">
         <button class="opt" data-i="0">CUBIC bruker mindre minne</button>
         <button class="opt" data-i="1">CUBIC gir lavere latens</button>
-        <button class="opt" data-i="2">CUBIC utnytter tilgjengelig kapasitet raskere ved Ã¥ ramme opp raskt mot W_max, men bremse forsiktig nÃ¦r den</button>
-        <button class="opt" data-i="3">CUBIC fungerer bare pÃ¥ trÃ¥dlÃ¸se nettverk</button>
+        <button class="opt" data-i="2">CUBIC utnytter tilgjengelig kapasitet raskere ved å ramme opp raskt mot W_max, men bremse forsiktig nær den</button>
+        <button class="opt" data-i="3">CUBIC fungerer bare på trådløse nettverk</button>
       </div>
-      <div class="feedback"><strong>Riktig.</strong> CUBIC kombinerer aggressiv vekst (langt fra W<sub>max</sub>) med forsiktighet (nÃ¦r W<sub>max</sub>), og utnytter dermed kapasiteten mer effektivt enn ren lineÃ¦r AIMD.</div>
+      <div class="feedback"><strong>Riktig.</strong> CUBIC kombinerer aggressiv vekst (langt fra W<sub>max</sub>) med forsiktighet (nær W<sub>max</sub>), og utnytter dermed kapasiteten mer effektivt enn ren lineær AIMD.</div>
     </div>
   </div>
 </section>
@@ -680,14 +680,14 @@
 <!-- ============ FAIRNESS ============ -->
 <section id="fairness">
   <div class="container">
-    <div class="badge">05 Â· Rettferdighet</div>
+    <div class="badge">05 · Rettferdighet</div>
     <h2>Er TCP <em>fair</em>?</h2>
-    <p class="section-intro">Hvis K TCP-sesjoner deler en flaskehals med kapasitet R, bÃ¸r hver ideelt sett fÃ¥ R/K.</p>
+    <p class="section-intro">Hvis K TCP-sesjoner deler en flaskehals med kapasitet R, bør hver ideelt sett få R/K.</p>
 
-    <p class="lead">Rettferdighet er ikke bare et akademisk spÃ¸rsmÃ¥l â€” det handler om internettets grunnleggende funksjon. Hvis Ã©n forbindelse kunne ta alt, ville alle andre sulte. AIMD har en elegant egenskap: under idealiserte forhold konvergerer parallelle TCP-forbindelser mot lik fordeling.</p>
+    <p class="lead">Rettferdighet er ikke bare et akademisk spørsmål — det handler om internettets grunnleggende funksjon. Hvis én forbindelse kunne ta alt, ville alle andre sulte. AIMD har en elegant egenskap: under idealiserte forhold konvergerer parallelle TCP-forbindelser mot lik fordeling.</p>
 
     <h3>AIMD-konvergens</h3>
-    <p>Betrakt to TCP-sesjoner som deler en bottleneck med kapasitet R. Plott gjennomstrÃ¸mningen til sesjon 1 pÃ¥ x-aksen og sesjon 2 pÃ¥ y-aksen:</p>
+    <p>Betrakt to TCP-sesjoner som deler en bottleneck med kapasitet R. Plott gjennomstrømningen til sesjon 1 på x-aksen og sesjon 2 på y-aksen:</p>
 
     <figure>
       <div class="svg-wrap">
@@ -726,47 +726,47 @@
           <text x="265" y="225" font-family="IBM Plex Mono" font-size="10" fill="#b04428">D</text>
         </svg>
       </div>
-      <figcaption>AIMD-konvergens: Additive increase gir helning 1 (45Â°). Multiplicative decrease trekker mot origo. Over tid konvergerer de mot lik fordeling.</figcaption>
+      <figcaption>AIMD-konvergens: Additive increase gir helning 1 (45°). Multiplicative decrease trekker mot origo. Over tid konvergerer de mot lik fordeling.</figcaption>
     </figure>
 
-    <p><strong>A &rarr; B:</strong> begge sesjoner Ã¸ker additivt (helning 45Â°) til de treffer kapasitetsgrensen.<br>
-    <strong>B &rarr; C:</strong> begge halverer cwnd (trekker mot origo), men dette flytter punktet nÃ¦rmere den grÃ¸nne linjen.<br>
-    Gjenta â€” punktet konvergerer mot lik fordeling.</p>
+    <p><strong>A &rarr; B:</strong> begge sesjoner øker additivt (helning 45°) til de treffer kapasitetsgrensen.<br>
+    <strong>B &rarr; C:</strong> begge halverer cwnd (trekker mot origo), men dette flytter punktet nærmere den grønne linjen.<br>
+    Gjenta — punktet konvergerer mot lik fordeling.</p>
 
     <h3>Forutsetningene</h3>
     <div class="box insight">
       <div class="label">Rettferdighet gjelder under idealiserte antakelser</div>
-      <p><strong>Samme RTT</strong> â€” forbindelser med lavere RTT Ã¸ker raskere og fÃ¥r mer bÃ¥ndbredde i praksis.<br>
-      <strong>Fast antall sesjoner</strong> â€” i virkeligheten kommer og gÃ¥r forbindelser.<br>
-      <strong>Bare congestion avoidance</strong> â€” beviset antar lineÃ¦r vekst, ikke slow start.</p>
+      <p><strong>Samme RTT</strong> — forbindelser med lavere RTT øker raskere og får mer båndbredde i praksis.<br>
+      <strong>Fast antall sesjoner</strong> — i virkeligheten kommer og går forbindelser.<br>
+      <strong>Bare congestion avoidance</strong> — beviset antar lineær vekst, ikke slow start.</p>
     </div>
 
     <h3>Rettferdighet og UDP</h3>
-    <p>UDP-applikasjoner (f.eks. videostrÃ¸mming) deltar ikke i metningskontroll. De kan sende sÃ¥ fort de vil og tar dermed mer enn sin Â«rettferdigeÂ» andel. Det finnes ingen Â«internettpolitiÂ» som hÃ¥ndhever rettferdighet.</p>
+    <p>UDP-applikasjoner (f.eks. videostrømming) deltar ikke i metningskontroll. De kan sende så fort de vil og tar dermed mer enn sin «rettferdige» andel. Det finnes ingen «internettpoliti» som håndhever rettferdighet.</p>
 
     <h3>Parallelle TCP-forbindelser</h3>
-    <p>En nettleser som Ã¥pner 10 parallelle TCP-forbindelser til en server, fÃ¥r i praksis 10 &times; sin rettferdige andel sammenlignet med en applikasjon som bruker Ã©n forbindelse. Dette er en Â«lovligÂ» mÃ¥te Ã¥ jukse pÃ¥ â€” og det er utbredt.</p>
+    <p>En nettleser som åpner 10 parallelle TCP-forbindelser til en server, får i praksis 10 &times; sin rettferdige andel sammenlignet med en applikasjon som bruker én forbindelse. Dette er en «lovlig» måte å jukse på — og det er utbredt.</p>
   </div>
 </section>
 
 <!-- ============ QUIC ============ -->
 <section id="quic">
   <div class="container">
-    <div class="badge">06 Â· Evolusjon</div>
+    <div class="badge">06 · Evolusjon</div>
     <h2>Fra Tahoe til <em>QUIC</em></h2>
-    <p class="section-intro">TCP har utviklet seg i 40 Ã¥r. Den nyeste evolusjonen flytter transportfunksjonaliteten opp til applikasjonslaget.</p>
+    <p class="section-intro">TCP har utviklet seg i 40 år. Den nyeste evolusjonen flytter transportfunksjonaliteten opp til applikasjonslaget.</p>
 
-    <p class="lead">TCP og UDP har vÃ¦rt de to transportprotokollene i over fire tiÃ¥r. I lÃ¸pet av den tiden har TCP blitt forbedret gjentatte ganger â€” fra Tahoe via Reno til CUBIC. Men den mest radikale endringen er en helt ny tilnÃ¦rming: QUIC, som bygger transportfunksjonalitet oppÃ¥ UDP.</p>
+    <p class="lead">TCP og UDP har vært de to transportprotokollene i over fire tiår. I løpet av den tiden har TCP blitt forbedret gjentatte ganger — fra Tahoe via Reno til CUBIC. Men den mest radikale endringen er en helt ny tilnærming: QUIC, som bygger transportfunksjonalitet oppå UDP.</p>
 
     <h3>TCPs utvikling</h3>
     <table class="compare">
-      <thead><tr><th>Ã…r</th><th>MilepÃ¦l</th></tr></thead>
+      <thead><tr><th>År</th><th>Milepæl</th></tr></thead>
       <tbody>
-        <tr><td>1981</td><td>RFC 793 â€” original TCP-spesifikasjon</td></tr>
-        <tr><td>1988</td><td>TCP Tahoe â€” slow start og congestion avoidance (Jacobson)</td></tr>
-        <tr><td>1990</td><td>TCP Reno â€” fast retransmit og fast recovery</td></tr>
+        <tr><td>1981</td><td>RFC 793 — original TCP-spesifikasjon</td></tr>
+        <tr><td>1988</td><td>TCP Tahoe — slow start og congestion avoidance (Jacobson)</td></tr>
+        <tr><td>1990</td><td>TCP Reno — fast retransmit og fast recovery</td></tr>
         <tr><td>2005</td><td>BIC TCP</td></tr>
-        <tr><td>2008</td><td>TCP CUBIC â€” kubisk vekstfunksjon, standard i Linux siden 2006 (RFC 8312 publisert 2018)</td></tr>
+        <tr><td>2008</td><td>TCP CUBIC — kubisk vekstfunksjon, standard i Linux siden 2006 (RFC 8312 publisert 2018)</td></tr>
       </tbody>
     </table>
 
@@ -774,15 +774,15 @@
     <table class="compare">
       <thead><tr><th>Scenario</th><th>Utfordring</th></tr></thead>
       <tbody>
-        <tr><td>Store overfÃ¸ringer</td><td>Mange pakker Â«in flightÂ»; ett tap stenger hele pipelinen</td></tr>
-        <tr><td>TrÃ¥dlÃ¸st</td><td>Tap pga. stÃ¸y forveksles med metning â€” TCP reduserer unÃ¸dvendig</td></tr>
-        <tr><td>Lange forsinkelser</td><td>Ekstremt lang RTT gjÃ¸r AIMD-oppramping smertefull</td></tr>
-        <tr><td>Datasentre</td><td>Latenskritiske tjenester der selv millisekunders kÃ¸-forsinkelse teller</td></tr>
+        <tr><td>Store overføringer</td><td>Mange pakker «in flight»; ett tap stenger hele pipelinen</td></tr>
+        <tr><td>Trådløst</td><td>Tap pga. støy forveksles med metning — TCP reduserer unødvendig</td></tr>
+        <tr><td>Lange forsinkelser</td><td>Ekstremt lang RTT gjør AIMD-oppramping smertefull</td></tr>
+        <tr><td>Datasentre</td><td>Latenskritiske tjenester der selv millisekunders kø-forsinkelse teller</td></tr>
       </tbody>
     </table>
 
     <h3>QUIC: Quick UDP Internet Connections</h3>
-    <p>QUIC er en applikasjonslagsprotokoll bygd over UDP. Den implementerer pÃ¥litelighet, metningskontroll, kryptering og multipleksing â€” alt i brukerrommet, uten Ã¥ vente pÃ¥ OS-oppdateringer. QUIC er grunnlaget for HTTP/3 og er standardisert i RFC 9000 (2021).</p>
+    <p>QUIC er en applikasjonslagsprotokoll bygd over UDP. Den implementerer pålitelighet, metningskontroll, kryptering og multipleksing — alt i brukerrommet, uten å vente på OS-oppdateringer. QUIC er grunnlaget for HTTP/3 og er standardisert i RFC 9000 (2021).</p>
 
     <figure>
       <div class="svg-wrap">
@@ -813,19 +813,19 @@
           <text x="540" y="60" font-family="IBM Plex Mono" font-size="12" fill="#2d4a7a" text-anchor="middle">HTTP/3</text>
           <rect x="430" y="80" width="220" height="85" rx="3" fill="rgba(176,68,40,0.12)" stroke="#b04428" stroke-width="2"/>
           <text x="540" y="110" font-family="IBM Plex Mono" font-size="13" fill="#b04428" text-anchor="middle" font-weight="600">QUIC</text>
-          <text x="540" y="130" font-family="IBM Plex Sans" font-size="10" fill="#b04428" text-anchor="middle">pÃ¥litelighet + kryptering + metningskontroll</text>
-          <text x="540" y="150" font-family="IBM Plex Sans" font-size="10" fill="#b04428" text-anchor="middle">per strÃ¸m</text>
+          <text x="540" y="130" font-family="IBM Plex Sans" font-size="10" fill="#b04428" text-anchor="middle">pålitelighet + kryptering + metningskontroll</text>
+          <text x="540" y="150" font-family="IBM Plex Sans" font-size="10" fill="#b04428" text-anchor="middle">per strøm</text>
           <rect x="430" y="170" width="220" height="35" rx="3" fill="rgba(201,192,174,0.3)" stroke="#a39886" stroke-width="1"/>
           <text x="540" y="187" font-family="IBM Plex Mono" font-size="11" fill="#6b6257" text-anchor="middle">UDP / IP</text>
         </svg>
       </div>
-      <figcaption>HTTP/2 over TCP krever separate hÃ¥ndtrykk for TCP og TLS. QUIC kombinerer alt i ett hÃ¥ndtrykk over UDP.</figcaption>
+      <figcaption>HTTP/2 over TCP krever separate håndtrykk for TCP og TLS. QUIC kombinerer alt i ett håndtrykk over UDP.</figcaption>
     </figure>
 
     <h3>Forbindelsesetablering: 1-RTT og 0-RTT</h3>
-    <p>Med TCP + TLS kreves det minst <strong>to serielle hÃ¥ndtrykk</strong>: fÃ¸rst TCPs tre-veis hÃ¥ndtrykk (1 RTT), deretter TLS-hÃ¥ndtrykket (1 RTT til). FÃ¸rst etter 2 RTT kan applikasjonsdata sendes.</p>
-    <p>QUIC kombinerer transport- og krypterings-hÃ¥ndtrykket til <strong>Ã©n enkelt prosess</strong>. Klienten sender sin kryptografiske Â«helloÂ» sammen med forbindelsesparametrene i fÃ¸rste pakke, og serveren svarer med sin del â€” alt i <strong>1 RTT</strong>.</p>
-    <p>Enda bedre: hvis klienten har koblet til serveren tidligere, kan den gjenbruke lagrede kryptografiske nÃ¸kler og sende applikasjonsdata allerede i <strong>fÃ¸rste pakke</strong> â€” sÃ¥kalt <strong>0-RTT</strong>. Serveren kan begynne Ã¥ behandle forespÃ¸rselen uten Ã¥ vente pÃ¥ et komplett hÃ¥ndtrykk.</p>
+    <p>Med TCP + TLS kreves det minst <strong>to serielle håndtrykk</strong>: først TCPs tre-veis håndtrykk (1 RTT), deretter TLS-håndtrykket (1 RTT til). Først etter 2 RTT kan applikasjonsdata sendes.</p>
+    <p>QUIC kombinerer transport- og krypterings-håndtrykket til <strong>én enkelt prosess</strong>. Klienten sender sin kryptografiske «hello» sammen med forbindelsesparametrene i første pakke, og serveren svarer med sin del — alt i <strong>1 RTT</strong>.</p>
+    <p>Enda bedre: hvis klienten har koblet til serveren tidligere, kan den gjenbruke lagrede kryptografiske nøkler og sende applikasjonsdata allerede i <strong>første pakke</strong> — såkalt <strong>0-RTT</strong>. Serveren kan begynne å behandle forespørselen uten å vente på et komplett håndtrykk.</p>
 
     <figure>
       <div class="svg-wrap">
@@ -879,20 +879,20 @@
           <text x="632" y="85" font-family="IBM Plex Sans" font-size="10" fill="#3d6b3a" text-anchor="middle">0 RTT ventetid!</text>
         </svg>
       </div>
-      <figcaption>TCP+TLS bruker 2 RTT fÃ¸r data kan sendes. QUIC klarer det pÃ¥ 1 RTT â€” og ved gjentilkobling kan data sendes umiddelbart (0-RTT).</figcaption>
+      <figcaption>TCP+TLS bruker 2 RTT før data kan sendes. QUIC klarer det på 1 RTT — og ved gjentilkobling kan data sendes umiddelbart (0-RTT).</figcaption>
     </figure>
 
-    <h3>StrÃ¸mmer: fÃ¸rsteklasses multipleksing</h3>
-    <p>En sentral innovasjon i QUIC er at <strong>strÃ¸mmer</strong> (streams) er et innebygd konsept i selve transportprotokollen. Innenfor Ã©n enkelt QUIC-forbindelse kan det opprettes mange parallelle strÃ¸mmer â€” uten nye hÃ¥ndtrykk. Hver strÃ¸m har:</p>
+    <h3>Strømmer: førsteklasses multipleksing</h3>
+    <p>En sentral innovasjon i QUIC er at <strong>strømmer</strong> (streams) er et innebygd konsept i selve transportprotokollen. Innenfor én enkelt QUIC-forbindelse kan det opprettes mange parallelle strømmer — uten nye håndtrykk. Hver strøm har:</p>
     <ul style="margin:1.2em 0;padding-left:1.5em">
-      <li style="padding:6px 0">Egne <strong>sekvensnumre</strong> â€” uavhengig av de andre strÃ¸mmene</li>
-      <li style="padding:6px 0">Egen <strong>pÃ¥litelig levering</strong> â€” tap og retransmisjon i Ã©n strÃ¸m pÃ¥virker ikke andre</li>
-      <li style="padding:6px 0">Egen <strong>flytkontroll</strong> â€” bÃ¥de per strÃ¸m og per forbindelse</li>
+      <li style="padding:6px 0">Egne <strong>sekvensnumre</strong> — uavhengig av de andre strømmene</li>
+      <li style="padding:6px 0">Egen <strong>pålitelig levering</strong> — tap og retransmisjon i én strøm påvirker ikke andre</li>
+      <li style="padding:6px 0">Egen <strong>flytkontroll</strong> — både per strøm og per forbindelse</li>
     </ul>
-    <p>I HTTP/3 tilsvarer hver strÃ¸m typisk Ã©n HTTP-forespÃ¸rsel/respons. Nye strÃ¸mmer kan opprettes med minimal overhead, noe som gjÃ¸r multipleksing langt mer effektivt enn HTTP/2 over TCP.</p>
+    <p>I HTTP/3 tilsvarer hver strøm typisk én HTTP-forespørsel/respons. Nye strømmer kan opprettes med minimal overhead, noe som gjør multipleksing langt mer effektivt enn HTTP/2 over TCP.</p>
 
     <h3>QUIC og head-of-line blocking</h3>
-    <p>Med TCP og HTTP/2 deler alle forespÃ¸rsler <strong>Ã©n enkelt bytestrÃ¸m</strong>. Selv om HTTP/2 logisk multiplekser flere forespÃ¸rsler, er de alle avhengige av TCPs pÃ¥litelige, ordnede levering. Hvis et segment tilhÃ¸rende forespÃ¸rsel 1 gÃ¥r tapt, mÃ¥ <em>alle tre</em> vente pÃ¥ retransmisjonen â€” selv om data for forespÃ¸rsel 2 og 3 allerede er mottatt.</p>
+    <p>Med TCP og HTTP/2 deler alle forespørsler <strong>én enkelt bytestrøm</strong>. Selv om HTTP/2 logisk multiplekser flere forespørsler, er de alle avhengige av TCPs pålitelige, ordnede levering. Hvis et segment tilhørende forespørsel 1 går tapt, må <em>alle tre</em> vente på retransmisjonen — selv om data for forespørsel 2 og 3 allerede er mottatt.</p>
 
     <figure>
       <div class="svg-wrap">
@@ -901,7 +901,7 @@
           <text x="170" y="18" font-family="IBM Plex Sans" font-size="12" font-weight="600" fill="#1a1612" text-anchor="middle">HTTP/2 over TCP</text>
           <!-- Single TCP pipe -->
           <rect x="20" y="30" width="300" height="50" rx="4" fill="rgba(176,68,40,0.08)" stroke="#b04428" stroke-width="1.5"/>
-          <text x="170" y="50" font-family="IBM Plex Mono" font-size="10" fill="#b04428" text-anchor="middle">Ã‰n TCP-forbindelse (Ã©n bytestrÃ¸m)</text>
+          <text x="170" y="50" font-family="IBM Plex Mono" font-size="10" fill="#b04428" text-anchor="middle">Én TCP-forbindelse (én bytestrøm)</text>
           <!-- Segments -->
           <rect x="30" y="62" width="40" height="14" rx="2" fill="#2d4a7a"/><text x="50" y="73" font-family="IBM Plex Mono" font-size="8" fill="#fff" text-anchor="middle">GET 1</text>
           <rect x="75" y="62" width="40" height="14" rx="2" fill="#b04428"/><text x="95" y="73" font-family="IBM Plex Mono" font-size="8" fill="#fff" text-anchor="middle">TAPT</text>
@@ -909,69 +909,69 @@
           <rect x="165" y="62" width="40" height="14" rx="2" fill="#6b6257"/><text x="185" y="73" font-family="IBM Plex Mono" font-size="8" fill="#fff" text-anchor="middle">GET 3</text>
           <!-- Block indicator -->
           <line x1="95" y1="80" x2="95" y2="100" stroke="#b04428" stroke-width="1.5" stroke-dasharray="3,2"/>
-          <text x="170" y="98" font-family="IBM Plex Sans" font-size="10" fill="#b04428" text-anchor="middle">GET 2 og GET 3 blokkert â€” venter pÃ¥ retransmisjon</text>
+          <text x="170" y="98" font-family="IBM Plex Sans" font-size="10" fill="#b04428" text-anchor="middle">GET 2 og GET 3 blokkert — venter på retransmisjon</text>
 
           <!-- QUIC no HOL -->
           <text x="530" y="18" font-family="IBM Plex Sans" font-size="12" font-weight="600" fill="#1a1612" text-anchor="middle">HTTP/3 over QUIC</text>
           <!-- Three independent streams -->
           <rect x="380" y="30" width="300" height="16" rx="3" fill="rgba(45,74,122,0.15)" stroke="#2d4a7a" stroke-width="1"/>
-          <text x="530" y="42" font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a" text-anchor="middle">StrÃ¸m 1 (GET 1) â€” tapt segment, retransmitterer</text>
+          <text x="530" y="42" font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a" text-anchor="middle">Strøm 1 (GET 1) — tapt segment, retransmitterer</text>
           <rect x="380" y="52" width="300" height="16" rx="3" fill="rgba(61,107,58,0.15)" stroke="#3d6b3a" stroke-width="1"/>
-          <text x="530" y="64" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a" text-anchor="middle">StrÃ¸m 2 (GET 2) â€” leveres uforstyrret &#10003;</text>
+          <text x="530" y="64" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a" text-anchor="middle">Strøm 2 (GET 2) — leveres uforstyrret &#10003;</text>
           <rect x="380" y="74" width="300" height="16" rx="3" fill="rgba(107,98,87,0.15)" stroke="#6b6257" stroke-width="1"/>
-          <text x="530" y="86" font-family="IBM Plex Mono" font-size="9" fill="#6b6257" text-anchor="middle">StrÃ¸m 3 (GET 3) â€” leveres uforstyrret &#10003;</text>
-          <text x="530" y="110" font-family="IBM Plex Sans" font-size="10" fill="#3d6b3a" text-anchor="middle">Tap i strÃ¸m 1 blokkerer bare strÃ¸m 1</text>
+          <text x="530" y="86" font-family="IBM Plex Mono" font-size="9" fill="#6b6257" text-anchor="middle">Strøm 3 (GET 3) — leveres uforstyrret &#10003;</text>
+          <text x="530" y="110" font-family="IBM Plex Sans" font-size="10" fill="#3d6b3a" text-anchor="middle">Tap i strøm 1 blokkerer bare strøm 1</text>
         </svg>
       </div>
-      <figcaption>HTTP/2 over TCP: ett tapt segment blokkerer alle forespÃ¸rsler (HOL-blocking). QUIC: hver strÃ¸m er uavhengig â€” tap i Ã©n pÃ¥virker ikke de andre.</figcaption>
+      <figcaption>HTTP/2 over TCP: ett tapt segment blokkerer alle forespørsler (HOL-blocking). QUIC: hver strøm er uavhengig — tap i én påvirker ikke de andre.</figcaption>
     </figure>
 
     <h3>Connection ID og mobilitet</h3>
-    <p>TCP identifiserer en forbindelse med en 4-tuppel: <em>(kilde-IP, kilde-port, dest-IP, dest-port)</em>. Hvis en av disse endres â€” for eksempel nÃ¥r telefonen bytter fra Wi-Fi til mobilnett â€” mÃ¥ TCP-forbindelsen avsluttes og opprettes pÃ¥ nytt, inkludert nye hÃ¥ndtrykk.</p>
-    <p>QUIC bruker i stedet en <strong>connection ID</strong> i pakkene sine. Denne ID-en er uavhengig av de underliggende IP-adressene og portene. NÃ¥r en klient bytter nettverk, holder connection ID-en forbindelsen i live â€” klienten fortsetter Ã¥ sende pakker med samme ID fra sin nye adresse, og serveren gjenkjenner forbindelsen uten re-etablering.</p>
+    <p>TCP identifiserer en forbindelse med en 4-tuppel: <em>(kilde-IP, kilde-port, dest-IP, dest-port)</em>. Hvis en av disse endres — for eksempel når telefonen bytter fra Wi-Fi til mobilnett — må TCP-forbindelsen avsluttes og opprettes på nytt, inkludert nye håndtrykk.</p>
+    <p>QUIC bruker i stedet en <strong>connection ID</strong> i pakkene sine. Denne ID-en er uavhengig av de underliggende IP-adressene og portene. Når en klient bytter nettverk, holder connection ID-en forbindelsen i live — klienten fortsetter å sende pakker med samme ID fra sin nye adresse, og serveren gjenkjenner forbindelsen uten re-etablering.</p>
 
     <h3>Metningskontroll i QUIC</h3>
-    <p>QUIC implementerer sin egen metningskontroll, separat fra operativsystemets TCP-stabel. Som standard bruker QUIC algoritmer som likner pÃ¥ TCP CUBIC, men siden QUIC kjÃ¸rer i brukerrommet (user space) kan metningskontrollalgoritmen oppdateres uavhengig av OS. Google har for eksempel eksperimentert med og rullet ut BBR (Bottleneck Bandwidth and RTT) i sin QUIC-implementasjon, helt uten Ã¥ mÃ¥tte oppdatere operativsystemer.</p>
+    <p>QUIC implementerer sin egen metningskontroll, separat fra operativsystemets TCP-stabel. Som standard bruker QUIC algoritmer som likner på TCP CUBIC, men siden QUIC kjører i brukerrommet (user space) kan metningskontrollalgoritmen oppdateres uavhengig av OS. Google har for eksempel eksperimentert med og rullet ut BBR (Bottleneck Bandwidth and RTT) i sin QUIC-implementasjon, helt uten å måtte oppdatere operativsystemer.</p>
 
     <h3>Oppsummering: QUICs fordeler over TCP</h3>
     <table class="compare">
       <thead><tr><th>Egenskap</th><th>TCP</th><th>QUIC</th></tr></thead>
       <tbody>
-        <tr><td>Forbindelsesetablering</td><td>TCP-hÃ¥ndtrykk + TLS-hÃ¥ndtrykk = 2 RTT</td><td>Kombinert hÃ¥ndtrykk = 1 RTT (0-RTT ved gjentilkobling)</td></tr>
-        <tr><td>HOL-blocking</td><td>Ett tapt segment blokkerer <em>alle</em> data</td><td>Per-strÃ¸m pÃ¥litelighet â€” tap blokkerer bare den berÃ¸rte strÃ¸mmen</td></tr>
-        <tr><td>Forbindelsesidentitet</td><td>4-tuppel (IP + port) â€” brytes ved nettverksbytte</td><td>Connection ID â€” overlever nettverksbytte</td></tr>
-        <tr><td>Multipleksing</td><td>Ã‰n bytestrÃ¸m (HTTP/2 multiplekser logisk, men TCP ser bare Ã©n strÃ¸m)</td><td>Innebygde, uavhengige strÃ¸mmer med egne sekvensnumre</td></tr>
-        <tr><td>Oppdaterbarhet</td><td>I OS-kjernen â€” krever kjerneoppgradering</td><td>I brukerrommet â€” oppdateres med applikasjonen</td></tr>
-        <tr><td>Kryptering</td><td>Valgfri (TLS er separat)</td><td>Alltid pÃ¥ â€” TLS 1.3 er innebygd i protokollen</td></tr>
+        <tr><td>Forbindelsesetablering</td><td>TCP-håndtrykk + TLS-håndtrykk = 2 RTT</td><td>Kombinert håndtrykk = 1 RTT (0-RTT ved gjentilkobling)</td></tr>
+        <tr><td>HOL-blocking</td><td>Ett tapt segment blokkerer <em>alle</em> data</td><td>Per-strøm pålitelighet — tap blokkerer bare den berørte strømmen</td></tr>
+        <tr><td>Forbindelsesidentitet</td><td>4-tuppel (IP + port) — brytes ved nettverksbytte</td><td>Connection ID — overlever nettverksbytte</td></tr>
+        <tr><td>Multipleksing</td><td>Én bytestrøm (HTTP/2 multiplekser logisk, men TCP ser bare én strøm)</td><td>Innebygde, uavhengige strømmer med egne sekvensnumre</td></tr>
+        <tr><td>Oppdaterbarhet</td><td>I OS-kjernen — krever kjerneoppgradering</td><td>I brukerrommet — oppdateres med applikasjonen</td></tr>
+        <tr><td>Kryptering</td><td>Valgfri (TLS er separat)</td><td>Alltid på — TLS 1.3 er innebygd i protokollen</td></tr>
       </tbody>
     </table>
 
     <div class="quiz" data-correct="2">
-      <div class="qlabel">Sjekk forstÃ¥elsen</div>
-      <h4>Hva er hovedfordelen med QUICs per-strÃ¸m pÃ¥litelighet?</h4>
+      <div class="qlabel">Sjekk forståelsen</div>
+      <h4>Hva er hovedfordelen med QUICs per-strøm pålitelighet?</h4>
       <div class="opts">
         <button class="opt" data-i="0">Lavere overhead fordi QUIC ikke har headere</button>
-        <button class="opt" data-i="1">QUIC bruker mindre bÃ¥ndbredde enn TCP</button>
-        <button class="opt" data-i="2">Tap i Ã©n strÃ¸m blokkerer ikke leveringen av andre strÃ¸mmer (ingen HOL-blocking)</button>
-        <button class="opt" data-i="3">QUIC stÃ¸tter bare HTTP/3 og ingen andre protokoller</button>
+        <button class="opt" data-i="1">QUIC bruker mindre båndbredde enn TCP</button>
+        <button class="opt" data-i="2">Tap i én strøm blokkerer ikke leveringen av andre strømmer (ingen HOL-blocking)</button>
+        <button class="opt" data-i="3">QUIC støtter bare HTTP/3 og ingen andre protokoller</button>
       </div>
-      <div class="feedback"><strong>Riktig.</strong> TCPs enkelt-strÃ¸m-modell betyr at ett tapt segment blokkerer alt bak det. QUIC lÃ¸ser dette med uavhengige strÃ¸mmer, som eliminerer head-of-line blocking mellom forespÃ¸rsler.</div>
+      <div class="feedback"><strong>Riktig.</strong> TCPs enkelt-strøm-modell betyr at ett tapt segment blokkerer alt bak det. QUIC løser dette med uavhengige strømmer, som eliminerer head-of-line blocking mellom forespørsler.</div>
     </div>
 
     <div class="quiz" data-correct="1">
-      <div class="qlabel">Sjekk forstÃ¥elsen</div>
+      <div class="qlabel">Sjekk forståelsen</div>
       <h4>Hvorfor kan en QUIC-forbindelse overleve at klienten bytter fra Wi-Fi til mobilnett?</h4>
       <div class="opts">
-        <button class="opt" data-i="0">Fordi QUIC bruker UDP, som er forbindelseslÃ¸st</button>
+        <button class="opt" data-i="0">Fordi QUIC bruker UDP, som er forbindelsesløst</button>
         <button class="opt" data-i="1">Fordi QUIC identifiserer forbindelsen med en connection ID, ikke med IP-adresser og porter</button>
         <button class="opt" data-i="2">Fordi QUIC automatisk kopierer all tilstand til det nye nettverket</button>
-        <button class="opt" data-i="3">Fordi QUIC bruker IP-multicast for Ã¥ sende pÃ¥ begge nettverk samtidig</button>
+        <button class="opt" data-i="3">Fordi QUIC bruker IP-multicast for å sende på begge nettverk samtidig</button>
       </div>
-      <div class="feedback"><strong>Riktig.</strong> TCP identifiserer forbindelsen med (kilde-IP, kilde-port, dest-IP, dest-port) â€” et nettverksbytte endrer IP-adressen og bryter forbindelsen. QUIC bruker en connection ID som er uavhengig av IP/port, slik at forbindelsen overlever bytte av underliggende nettverk.</div>
+      <div class="feedback"><strong>Riktig.</strong> TCP identifiserer forbindelsen med (kilde-IP, kilde-port, dest-IP, dest-port) — et nettverksbytte endrer IP-adressen og bryter forbindelsen. QUIC bruker en connection ID som er uavhengig av IP/port, slik at forbindelsen overlever bytte av underliggende nettverk.</div>
     </div>
 
     <div class="ornament">&#10038; &#10038; &#10038;</div>
-    <p>Med dette er hele kapittel 3 dekket: fra <a href="transport-udp.html">transportlagets tjenester og UDP</a>, gjennom <a href="tcp.html">TCPs pÃ¥litelige dataoverfÃ¸ring</a>, til metningskontroll, CUBIC og QUIC.</p>
+    <p>Med dette er hele kapittel 3 dekket: fra <a href="transport-udp.html">transportlagets tjenester og UDP</a>, gjennom <a href="tcp.html">TCPs pålitelige dataoverføring</a>, til metningskontroll, CUBIC og QUIC.</p>
   </div>
 </section>
 
@@ -980,7 +980,7 @@
   <div class="container">
     <div class="badge">Interaktiv</div>
     <h2>cwnd gjennom <em>fasene</em></h2>
-    <p class="section-intro">FÃ¸lg utviklingen av congestion window steg for steg â€” fra slow start, gjennom congestion avoidance, til tap og recovery.</p>
+    <p class="section-intro">Følg utviklingen av congestion window steg for steg — fra slow start, gjennom congestion avoidance, til tap og recovery.</p>
 
     <div class="stepper">
       <div class="slabel">CWND-utvikling</div>
@@ -1006,8 +1006,8 @@
 <footer>
   <div class="container">
     <div class="ornament">&#10038; &#10038; &#10038;</div>
-    <p>Basert pÃ¥ Kurose &amp; Ross, <em>Computer Networking</em>, 8. utgave â€” Kapittel 3</p>
-    <p>NTNU Â· TTM4100 Â· VÃ¥r 2026</p>
+    <p>Basert på Kurose &amp; Ross, <em>Computer Networking</em>, 8. utgave — Kapittel 3</p>
+    <p>NTNU · TTM4100 · Vår 2026</p>
   </div>
 </footer>
 
@@ -1038,53 +1038,53 @@ document.querySelectorAll('.quiz').forEach(q => {
 
   const stages = [
     {
-      title: 'RTT 0 â€” Oppstart (Slow Start)',
-      desc: 'Forbindelsen er nettopp opprettet. cwnd = 1 MSS, ssthresh = 16 MSS. Vi er i slow start-fasen â€” eksponentiell vekst.',
+      title: 'RTT 0 — Oppstart (Slow Start)',
+      desc: 'Forbindelsen er nettopp opprettet. cwnd = 1 MSS, ssthresh = 16 MSS. Vi er i slow start-fasen — eksponentiell vekst.',
       points: [[0,1]],
       ssthresh: 16,
       phase: 'slow start'
     },
     {
-      title: 'RTT 1-4 â€” Slow Start fortsetter',
-      desc: 'cwnd dobles hver RTT: 1 â†’ 2 â†’ 4 â†’ 8 â†’ 16. Vi nÃ¦rmer oss ssthresh (16 MSS).',
+      title: 'RTT 1-4 — Slow Start fortsetter',
+      desc: 'cwnd dobles hver RTT: 1 ? 2 ? 4 ? 8 ? 16. Vi nærmer oss ssthresh (16 MSS).',
       points: [[0,1],[1,2],[2,4],[3,8],[4,16]],
       ssthresh: 16,
       phase: 'slow start'
     },
     {
-      title: 'RTT 4-8 â€” Congestion Avoidance',
-      desc: 'cwnd har nÃ¥dd ssthresh. Vi skifter til lineÃ¦r vekst: +1 MSS per RTT. cwnd: 16 â†’ 17 â†’ 18 â†’ 19 â†’ 20.',
+      title: 'RTT 4-8 — Congestion Avoidance',
+      desc: 'cwnd har nådd ssthresh. Vi skifter til lineær vekst: +1 MSS per RTT. cwnd: 16 ? 17 ? 18 ? 19 ? 20.',
       points: [[0,1],[1,2],[2,4],[3,8],[4,16],[5,17],[6,18],[7,19],[8,20]],
       ssthresh: 16,
       phase: 'congestion avoidance'
     },
     {
-      title: 'RTT 8 â€” 3 dupliserte ACKs! (Reno)',
+      title: 'RTT 8 — 3 dupliserte ACKs! (Reno)',
       desc: 'Tre dupliserte ACKs mottatt ved cwnd = 20. ssthresh = 20/2 = 10. cwnd = 10 + 3 = 13 (fast recovery). Etter ny ACK: cwnd = ssthresh = 10.',
       points: [[0,1],[1,2],[2,4],[3,8],[4,16],[5,17],[6,18],[7,19],[8,20],[8.2,10]],
       ssthresh: 10,
-      phase: 'fast recovery â†’ CA'
+      phase: 'fast recovery ? CA'
     },
     {
-      title: 'RTT 9-14 â€” Ny congestion avoidance',
-      desc: 'LineÃ¦r vekst igjen fra cwnd = 10: 10 â†’ 11 â†’ 12 â†’ 13 â†’ 14 â†’ 15. ssthresh er nÃ¥ 10.',
+      title: 'RTT 9-14 — Ny congestion avoidance',
+      desc: 'Lineær vekst igjen fra cwnd = 10: 10 ? 11 ? 12 ? 13 ? 14 ? 15. ssthresh er nå 10.',
       points: [[0,1],[1,2],[2,4],[3,8],[4,16],[5,17],[6,18],[7,19],[8,20],[8.2,10],[9,11],[10,12],[11,13],[12,14],[13,15]],
       ssthresh: 10,
       phase: 'congestion avoidance'
     },
     {
-      title: 'RTT 14 â€” Timeout!',
-      desc: 'Timeout ved cwnd = 15. ssthresh = 15/2 â‰ˆ 7. cwnd = 1 MSS. Tilbake til slow start â€” dette er den dyre typen tap.',
+      title: 'RTT 14 — Timeout!',
+      desc: 'Timeout ved cwnd = 15. ssthresh = 15/2 ˜ 7. cwnd = 1 MSS. Tilbake til slow start — dette er den dyre typen tap.',
       points: [[0,1],[1,2],[2,4],[3,8],[4,16],[5,17],[6,18],[7,19],[8,20],[8.2,10],[9,11],[10,12],[11,13],[12,14],[13,15],[13.2,1]],
       ssthresh: 7,
-      phase: 'timeout â†’ slow start'
+      phase: 'timeout ? slow start'
     },
     {
-      title: 'RTT 15-17 â€” Slow start igjen',
-      desc: 'Eksponentiell vekst fra 1: 1 â†’ 2 â†’ 4 â†’ 8 (passerer ssthresh=7). Deretter congestion avoidance.',
+      title: 'RTT 15-17 — Slow start igjen',
+      desc: 'Eksponentiell vekst fra 1: 1 ? 2 ? 4 ? 8 (passerer ssthresh=7). Deretter congestion avoidance.',
       points: [[0,1],[1,2],[2,4],[3,8],[4,16],[5,17],[6,18],[7,19],[8,20],[8.2,10],[9,11],[10,12],[11,13],[12,14],[13,15],[13.2,1],[14,2],[15,4],[16,8]],
       ssthresh: 7,
-      phase: 'slow start â†’ CA'
+      phase: 'slow start ? CA'
     }
   ];
 

@@ -1,10 +1,10 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="no">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kapittel 3a â€” Transportlaget: Tjenester, mux/demux og UDP</title>
-<link rel="stylesheet" href="../style.css">
+<title>Kapittel 3a — Transportlaget: Tjenester, mux/demux og UDP</title>
+<link rel="icon" type="image/png" href="/favicon.png">`n<link rel="stylesheet" href="../style.css">
 </head>
 <body>
 
@@ -20,12 +20,12 @@
   </div>
 </nav>
 
-<main data-chapter="Kapittel 3: Transportlaget â€“ Tjenester, multipleksing og UDP">
+<main data-chapter="Kapittel 3: Transportlaget – Tjenester, multipleksing og UDP">
 <header class="hero">
   <div class="container">
-    <div class="eyebrow">Kapittel 3 Â· Transportlaget</div>
+    <div class="eyebrow">Kapittel 3 · Transportlaget</div>
     <h1>Tjenester, <em>multipleksing</em><br>og UDP</h1>
-    <p class="sub">Hva transportlaget egentlig gjÃ¸r, hvordan riktig prosess finner riktig pakke, og den enkleste protokollen som klarer seg uten garantier.</p>
+    <p class="sub">Hva transportlaget egentlig gjør, hvordan riktig prosess finner riktig pakke, og den enkleste protokollen som klarer seg uten garantier.</p>
     <nav class="toc">
       <a href="#services"><span>00</span> Transportlagets tjenester</a>
       <a href="#muxdemux"><span>01</span> Multipleksing og demux</a>
@@ -38,26 +38,26 @@
 <!-- ============ TRANSPORT-LAYER SERVICES ============ -->
 <section id="services">
   <div class="container">
-    <div class="badge">00 Â· Transportlagets tjenester</div>
-    <h2>Hva transportlaget <em>egentlig gjÃ¸r</em></h2>
-    <p class="section-intro">Nettverkslaget leverer pakker mellom maskiner. Transportlaget lÃ¸fter kommunikasjonen ett nivÃ¥ opp â€” til prosesser.</p>
+    <div class="badge">00 · Transportlagets tjenester</div>
+    <h2>Hva transportlaget <em>egentlig gjør</em></h2>
+    <p class="section-intro">Nettverkslaget leverer pakker mellom maskiner. Transportlaget løfter kommunikasjonen ett nivå opp — til prosesser.</p>
 
-    <p class="lead">Forestill deg et hus der tolv barn bor. Et annet hus, pÃ¥ andre siden av byen, huser ogsÃ¥ tolv barn. Hver dag sender barna brev til hverandre. Postsystemet leverer konvoluttene til riktig hus â€” men det er Ann og Bill, et barn i hvert hus, som tar imot posten og deler den ut til riktig sÃ¸sken. Postsystemet er nettverkslaget: det leverer til <em>husadressen</em>. Ann og Bill er transportlaget: de leverer til riktig <em>person</em> inni huset.</p>
+    <p class="lead">Forestill deg et hus der tolv barn bor. Et annet hus, på andre siden av byen, huser også tolv barn. Hver dag sender barna brev til hverandre. Postsystemet leverer konvoluttene til riktig hus — men det er Ann og Bill, et barn i hvert hus, som tar imot posten og deler den ut til riktig søsken. Postsystemet er nettverkslaget: det leverer til <em>husadressen</em>. Ann og Bill er transportlaget: de leverer til riktig <em>person</em> inni huset.</p>
 
     <p>Denne analogien fanger den helt sentrale forskjellen:</p>
 
     <table class="compare">
       <thead><tr><th>Lag</th><th>Kommunikasjon</th></tr></thead>
       <tbody>
-        <tr><td>Nettverkslaget</td><td>Logisk kommunikasjon mellom <strong>verter</strong> (hosts) â€” IP-adresser identifiserer maskiner.</td></tr>
-        <tr><td>Transportlaget</td><td>Logisk kommunikasjon mellom <strong>prosesser</strong> â€” portnumre identifiserer applikasjoner.</td></tr>
+        <tr><td>Nettverkslaget</td><td>Logisk kommunikasjon mellom <strong>verter</strong> (hosts) — IP-adresser identifiserer maskiner.</td></tr>
+        <tr><td>Transportlaget</td><td>Logisk kommunikasjon mellom <strong>prosesser</strong> — portnumre identifiserer applikasjoner.</td></tr>
       </tbody>
     </table>
 
-    <p>Transportlaget <strong>bygger videre pÃ¥</strong> nettverkslaget, men kan ikke gjÃ¸re mirakler. Nettverkslaget (IP) tilbyr en <em>best-effort</em>-tjeneste uten noen garantier. Transportlaget kan legge til pÃ¥litelighet og rekkefÃ¸lge (TCP), men det kan ikke tvinge nettverket til Ã¥ gi bedre bÃ¥ndbredde eller lavere forsinkelse.</p>
+    <p>Transportlaget <strong>bygger videre på</strong> nettverkslaget, men kan ikke gjøre mirakler. Nettverkslaget (IP) tilbyr en <em>best-effort</em>-tjeneste uten noen garantier. Transportlaget kan legge til pålitelighet og rekkefølge (TCP), men det kan ikke tvinge nettverket til å gi bedre båndbredde eller lavere forsinkelse.</p>
 
     <h3>Senderens og mottakerens handlinger</h3>
-    <p>Transportlaget gjÃ¸r konkrete ting pÃ¥ begge sider:</p>
+    <p>Transportlaget gjør konkrete ting på begge sider:</p>
 
     <div class="box solution">
       <div class="label">Sender</div>
@@ -75,26 +75,26 @@
     <table class="compare">
       <thead><tr><th>Protokoll</th><th>Egenskaper</th></tr></thead>
       <tbody>
-        <tr><td>TCP</td><td>PÃ¥litelig, ordnet levering. Flytkontroll, metningskontroll, forbindelsesetablering. Koster tid og ressurser.</td></tr>
-        <tr><td>UDP</td><td>UpÃ¥litelig, uordnet levering. Ingen hÃ¥ndtrykk, ingen tilstandsinformasjon, minimal overhead. Rask og enkel.</td></tr>
+        <tr><td>TCP</td><td>Pålitelig, ordnet levering. Flytkontroll, metningskontroll, forbindelsesetablering. Koster tid og ressurser.</td></tr>
+        <tr><td>UDP</td><td>Upålitelig, uordnet levering. Ingen håndtrykk, ingen tilstandsinformasjon, minimal overhead. Rask og enkel.</td></tr>
       </tbody>
     </table>
 
     <div class="margin-note">
       <strong>Hva transportlaget ikke kan gi</strong>
-      Verken TCP eller UDP kan garantere forsinkelse eller bÃ¥ndbredde. Disse egenskapene krever stÃ¸tte i nettverkets kjerne, og IP gir ikke slike garantier.
+      Verken TCP eller UDP kan garantere forsinkelse eller båndbredde. Disse egenskapene krever støtte i nettverkets kjerne, og IP gir ikke slike garantier.
     </div>
 
     <div class="quiz" data-correct="1">
-      <div class="qlabel">Sjekk forstÃ¥elsen</div>
+      <div class="qlabel">Sjekk forståelsen</div>
       <h4>Hva er den fundamentale forskjellen mellom nettverkslaget og transportlaget?</h4>
       <div class="opts">
         <button class="opt" data-i="0">Nettverkslaget bruker porter, transportlaget bruker IP-adresser</button>
         <button class="opt" data-i="1">Nettverkslaget gir logisk kommunikasjon mellom verter; transportlaget gir logisk kommunikasjon mellom prosesser</button>
-        <button class="opt" data-i="2">Nettverkslaget er pÃ¥litelig; transportlaget er upÃ¥litelig</button>
-        <button class="opt" data-i="3">Transportlaget finnes bare pÃ¥ serveren, ikke pÃ¥ klienten</button>
+        <button class="opt" data-i="2">Nettverkslaget er pålitelig; transportlaget er upålitelig</button>
+        <button class="opt" data-i="3">Transportlaget finnes bare på serveren, ikke på klienten</button>
       </div>
-      <div class="feedback"><strong>Riktig.</strong> Nettverkslaget (IP) leverer pakker til riktig <em>maskin</em>. Transportlaget bruker portnumre til Ã¥ levere videre til riktig <em>prosess</em> pÃ¥ den maskinen.</div>
+      <div class="feedback"><strong>Riktig.</strong> Nettverkslaget (IP) leverer pakker til riktig <em>maskin</em>. Transportlaget bruker portnumre til å levere videre til riktig <em>prosess</em> på den maskinen.</div>
     </div>
   </div>
 </section>
@@ -102,27 +102,27 @@
 <!-- ============ MUX / DEMUX ============ -->
 <section id="muxdemux">
   <div class="container">
-    <div class="badge">01 Â· Multipleksing og demultipleksing</div>
+    <div class="badge">01 · Multipleksing og demultipleksing</div>
     <h2>Riktig pakke til <em>riktig</em> prosess</h2>
-    <p class="section-intro">Kjerneoppgaven til transportlaget: samle data fra mange sockets pÃ¥ sendersiden, og levere dem til riktig socket pÃ¥ mottakersiden.</p>
+    <p class="section-intro">Kjerneoppgaven til transportlaget: samle data fra mange sockets på sendersiden, og levere dem til riktig socket på mottakersiden.</p>
 
-    <p class="lead">Multipleksing og demultipleksing er to sider av samme sak. <strong>Multipleksing</strong> skjer hos senderen: transportlaget samler data fra ulike applikasjonssockets, legger pÃ¥ transportheadere (med bl.a. portnumre), og sender segmentene nedover. <strong>Demultipleksing</strong> skjer hos mottakeren: transportlaget ser pÃ¥ headerinformasjonen i innkommende segmenter og leverer dataene opp til riktig socket.</p>
+    <p class="lead">Multipleksing og demultipleksing er to sider av samme sak. <strong>Multipleksing</strong> skjer hos senderen: transportlaget samler data fra ulike applikasjonssockets, legger på transportheadere (med bl.a. portnumre), og sender segmentene nedover. <strong>Demultipleksing</strong> skjer hos mottakeren: transportlaget ser på headerinformasjonen i innkommende segmenter og leverer dataene opp til riktig socket.</p>
 
     <h3>Hvordan demultipleksing fungerer</h3>
-    <p>NÃ¥r en vert mottar et IP-datagram, inneholder det:</p>
+    <p>Når en vert mottar et IP-datagram, inneholder det:</p>
     <ul style="list-style:none;padding:0;margin:24px 0">
       <li style="padding:14px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:13px;display:inline-block;width:200px">Kilde-IP-adresse</strong> Hvem som sendte datagrammet.</li>
       <li style="padding:14px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:13px;display:inline-block;width:200px">Destinasjons-IP</strong> Hvem som skal motta det.</li>
-      <li style="padding:14px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:13px;display:inline-block;width:200px">Kilde-portnummer</strong> Fra segmentheaderen â€” 16 bit.</li>
-      <li style="padding:14px 0"><strong style="color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:13px;display:inline-block;width:200px">Dest.-portnummer</strong> Fra segmentheaderen â€” 16 bit.</li>
+      <li style="padding:14px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:13px;display:inline-block;width:200px">Kilde-portnummer</strong> Fra segmentheaderen — 16 bit.</li>
+      <li style="padding:14px 0"><strong style="color:var(--rust);font-family:'IBM Plex Mono',monospace;font-size:13px;display:inline-block;width:200px">Dest.-portnummer</strong> Fra segmentheaderen — 16 bit.</li>
     </ul>
-    <p>Verten bruker IP-adresser og portnumre til Ã¥ dirigere segmentet til riktig socket. Men <em>hvordan</em> dette skjer, er forskjellig for UDP og TCP.</p>
+    <p>Verten bruker IP-adresser og portnumre til å dirigere segmentet til riktig socket. Men <em>hvordan</em> dette skjer, er forskjellig for UDP og TCP.</p>
 
-    <h3>ForbindelseslÃ¸s demultipleksing (UDP)</h3>
+    <h3>Forbindelsesløs demultipleksing (UDP)</h3>
     <p>En UDP-socket identifiseres av <strong>bare to ting</strong>: destinasjons-IP og destinasjonsport. Konsekvensen er enkel men viktig:</p>
 
     <div class="box insight">
-      <div class="label">NÃ¸kkelinnsikt</div>
+      <div class="label">Nøkkelinnsikt</div>
       <p>Hvis to UDP-datagrammer har <em>forskjellig</em> kilde-IP og/eller kilde-port, men <em>samme</em> destinasjons-IP og -port, havner de i <strong>samme socket</strong> hos mottakeren. UDP bryr seg bare om hvor pakken skal hen, ikke hvor den kommer fra.</p>
     </div>
 
@@ -157,7 +157,7 @@
     </figure>
 
     <h3>Forbindelsesorientert demultipleksing (TCP)</h3>
-    <p>TCP gjÃ¸r det annerledes. En TCP-socket identifiseres av et <strong>4-tuppel</strong>:</p>
+    <p>TCP gjør det annerledes. En TCP-socket identifiseres av et <strong>4-tuppel</strong>:</p>
     <ul style="list-style:none;padding:0;margin:24px 0">
       <li style="padding:10px 0;border-bottom:1px dotted var(--line)"><code>kilde-IP</code></li>
       <li style="padding:10px 0;border-bottom:1px dotted var(--line)"><code>kilde-port</code></li>
@@ -165,7 +165,7 @@
       <li style="padding:10px 0"><code>destinasjons-port</code></li>
     </ul>
 
-    <p>Konsekvensen: selv om tre segmenter ankommer samme server med <em>samme</em> destinasjons-IP og -port (f.eks. port 80), vil de bli levert til <strong>forskjellige sockets</strong> dersom de har forskjellig kilde-IP eller kilde-port. En webserver kan dermed ha hundrevis av samtidige TCP-forbindelser â€” alle pÃ¥ port 80 â€” og holde dem adskilt fordi hver forbindelse har en unik 4-tuppel.</p>
+    <p>Konsekvensen: selv om tre segmenter ankommer samme server med <em>samme</em> destinasjons-IP og -port (f.eks. port 80), vil de bli levert til <strong>forskjellige sockets</strong> dersom de har forskjellig kilde-IP eller kilde-port. En webserver kan dermed ha hundrevis av samtidige TCP-forbindelser — alle på port 80 — og holde dem adskilt fordi hver forbindelse har en unik 4-tuppel.</p>
 
     <figure>
       <div class="svg-wrap">
@@ -201,11 +201,11 @@
           <text x="475" y="280" font-family="Newsreader" font-size="12" font-style="italic" fill="#3d6b3a" text-anchor="middle">Alle tre til port 80, men tre forskjellige sockets</text>
         </svg>
       </div>
-      <figcaption>TCP-demultipleksing: tre segmenter til port 80 demultiplekses til tre ulike sockets basert pÃ¥ 4-tuppelet (kilde-IP, kilde-port, dest-IP, dest-port).</figcaption>
+      <figcaption>TCP-demultipleksing: tre segmenter til port 80 demultiplekses til tre ulike sockets basert på 4-tuppelet (kilde-IP, kilde-port, dest-IP, dest-port).</figcaption>
     </figure>
 
     <div class="quiz" data-correct="2">
-      <div class="qlabel">Sjekk forstÃ¥elsen</div>
+      <div class="qlabel">Sjekk forståelsen</div>
       <h4>To UDP-datagrammer ankommer en server. De har ulik kilde-IP, men samme destinasjons-IP og -port. Hva skjer?</h4>
       <div class="opts">
         <button class="opt" data-i="0">Det ene kastes fordi det er en konflikt</button>
@@ -213,7 +213,7 @@
         <button class="opt" data-i="2">De leveres begge til samme socket</button>
         <button class="opt" data-i="3">Serveren sender en feilmelding tilbake</button>
       </div>
-      <div class="feedback"><strong>Riktig.</strong> UDP identifiserer en socket kun med destinasjons-IP og -port. Kilde-informasjonen brukes ikke til demultipleksing, sÃ¥ begge havner i samme socket.</div>
+      <div class="feedback"><strong>Riktig.</strong> UDP identifiserer en socket kun med destinasjons-IP og -port. Kilde-informasjonen brukes ikke til demultipleksing, så begge havner i samme socket.</div>
     </div>
   </div>
 </section>
@@ -221,40 +221,40 @@
 <!-- ============ UDP ============ -->
 <section id="udp">
   <div class="container">
-    <div class="badge">02 Â· UDP</div>
-    <h2>ForbindelseslÃ¸s transport: <em>UDP</em></h2>
-    <p class="section-intro">UDP gjÃ¸r nesten ingenting â€” og nettopp det er poenget. Minimalt med overhead, maksimalt med frihet.</p>
+    <div class="badge">02 · UDP</div>
+    <h2>Forbindelsesløs transport: <em>UDP</em></h2>
+    <p class="section-intro">UDP gjør nesten ingenting — og nettopp det er poenget. Minimalt med overhead, maksimalt med frihet.</p>
 
-    <p class="lead">User Datagram Protocol er den enkleste transportprotokollen pÃ¥ internett. Den gjÃ¸r <em>nesten</em> ingenting utover det IP allerede gir. Ingen forbindelsesetablering, ingen tilstand, ingen garanti for levering, ingen rekkefÃ¸lgegaranti, ingen flytkontroll, ingen metningskontroll. Hvert UDP-segment hÃ¥ndteres uavhengig av alle andre.</p>
+    <p class="lead">User Datagram Protocol er den enkleste transportprotokollen på internett. Den gjør <em>nesten</em> ingenting utover det IP allerede gir. Ingen forbindelsesetablering, ingen tilstand, ingen garanti for levering, ingen rekkefølgegaranti, ingen flytkontroll, ingen metningskontroll. Hvert UDP-segment håndteres uavhengig av alle andre.</p>
 
-    <p>Hvorfor velge noe sÃ¥ primitivt? Fordi fravÃ¦r av garantier har konkrete fordeler:</p>
+    <p>Hvorfor velge noe så primitivt? Fordi fravær av garantier har konkrete fordeler:</p>
 
     <table class="compare">
       <thead><tr><th>Egenskap</th><th>Fordelen</th></tr></thead>
       <tbody>
-        <tr><td>Ingen hÃ¥ndtrykk</td><td>Ingen ekstra RTT for Ã¥ sette opp forbindelse â€” data kan sendes umiddelbart.</td></tr>
-        <tr><td>Ingen tilstand</td><td>Sender og mottaker holder ingen forbindelsesinformasjon. Servere kan hÃ¥ndtere mange flere klienter.</td></tr>
+        <tr><td>Ingen håndtrykk</td><td>Ingen ekstra RTT for å sette opp forbindelse — data kan sendes umiddelbart.</td></tr>
+        <tr><td>Ingen tilstand</td><td>Sender og mottaker holder ingen forbindelsesinformasjon. Servere kan håndtere mange flere klienter.</td></tr>
         <tr><td>Liten header</td><td>Bare 8 bytes overhead vs. 20+ bytes for TCP.</td></tr>
-        <tr><td>Ingen metningskontroll</td><td>Applikasjonen kan sende sÃ¥ fort den vil â€” nyttig for sanntidsapplikasjoner som tÃ¥ler litt tap.</td></tr>
+        <tr><td>Ingen metningskontroll</td><td>Applikasjonen kan sende så fort den vil — nyttig for sanntidsapplikasjoner som tåler litt tap.</td></tr>
       </tbody>
     </table>
 
     <h3>Hvem bruker UDP?</h3>
     <p>UDP er overraskende utbredt:</p>
     <ul style="list-style:none;padding:0;margin:24px 0">
-      <li style="padding:10px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">DNS</strong> â€” raskt oppslag uten Ã¥ sette opp en forbindelse</li>
-      <li style="padding:10px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">SNMP</strong> â€” nettverksovervÃ¥king der enkelhet teller</li>
-      <li style="padding:10px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">StrÃ¸mming</strong> â€” tapstolerant, hastighetssensitiv (dog bruker tjenester som Netflix ofte TCP)</li>
-      <li style="padding:10px 0"><strong style="color:var(--rust)">HTTP/3</strong> â€” bygger pÃ¥litelighet og metningskontroll <em>over</em> UDP via QUIC</li>
+      <li style="padding:10px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">DNS</strong> — raskt oppslag uten å sette opp en forbindelse</li>
+      <li style="padding:10px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">SNMP</strong> — nettverksovervåking der enkelhet teller</li>
+      <li style="padding:10px 0;border-bottom:1px dotted var(--line)"><strong style="color:var(--rust)">Strømming</strong> — tapstolerant, hastighetssensitiv (dog bruker tjenester som Netflix ofte TCP)</li>
+      <li style="padding:10px 0"><strong style="color:var(--rust)">HTTP/3</strong> — bygger pålitelighet og metningskontroll <em>over</em> UDP via QUIC</li>
     </ul>
 
     <div class="margin-note">
-      <strong>PÃ¥litelighet oppÃ¥ UDP</strong>
-      Dersom en applikasjon trenger pÃ¥litelig levering men bruker UDP (f.eks. HTTP/3), mÃ¥ den selv implementere pÃ¥litelighet og metningskontroll i applikasjonslaget.
+      <strong>Pålitelighet oppå UDP</strong>
+      Dersom en applikasjon trenger pålitelig levering men bruker UDP (f.eks. HTTP/3), må den selv implementere pålitelighet og metningskontroll i applikasjonslaget.
     </div>
 
     <h3>UDP-segmentets anatomi</h3>
-    <p>UDP-headeren er minimalistisk â€” bare 8 bytes:</p>
+    <p>UDP-headeren er minimalistisk — bare 8 bytes:</p>
   </div>
 
   <div class="container wide">
@@ -263,23 +263,23 @@
         <div class="cell c16 hl"><div><strong>Source Port</strong><small>16 bit</small></div></div>
         <div class="cell c16 hl"><div><strong>Dest Port</strong><small>16 bit</small></div></div>
 
-        <div class="cell c16"><div><strong>Length</strong><small>16 bit Â· bytes i hele segmentet</small></div></div>
+        <div class="cell c16"><div><strong>Length</strong><small>16 bit · bytes i hele segmentet</small></div></div>
         <div class="cell c16"><div><strong>Checksum</strong><small>16 bit</small></div></div>
 
         <div class="cell c32 data"><div>Application data (payload)</div></div>
       </div>
-      <figcaption>UDP-segmentet â€” bare fire felt i headeren, totalt 8 bytes. Sammenlikn med TCPs minimum 20 bytes.</figcaption>
+      <figcaption>UDP-segmentet — bare fire felt i headeren, totalt 8 bytes. Sammenlikn med TCPs minimum 20 bytes.</figcaption>
     </figure>
   </div>
 
   <div class="container">
     <table class="compare">
-      <thead><tr><th>Felt</th><th>FormÃ¥l</th></tr></thead>
+      <thead><tr><th>Felt</th><th>Formål</th></tr></thead>
       <tbody>
-        <tr><td>Source Port</td><td>Avsenderens portnummer. Mottakeren kan bruke dette til Ã¥ sende et svar tilbake.</td></tr>
+        <tr><td>Source Port</td><td>Avsenderens portnummer. Mottakeren kan bruke dette til å sende et svar tilbake.</td></tr>
         <tr><td>Dest Port</td><td>Portnummeret segmentet skal leveres til hos mottakeren.</td></tr>
-        <tr><td>Length</td><td>Lengden pÃ¥ hele UDP-segmentet (header + data) i bytes.</td></tr>
-        <tr><td>Checksum</td><td>Brukes til Ã¥ oppdage bit-feil i headeren eller dataene.</td></tr>
+        <tr><td>Length</td><td>Lengden på hele UDP-segmentet (header + data) i bytes.</td></tr>
+        <tr><td>Checksum</td><td>Brukes til å oppdage bit-feil i headeren eller dataene.</td></tr>
       </tbody>
     </table>
 
@@ -290,7 +290,7 @@
     </div>
     <div class="box solution">
       <div class="label">UDP-mottaker</div>
-      <p>Mottar et segment fra IP. Sjekker sjekksummen. Trekker ut applikasjonsdataene. Demultiplekser meldingen opp til riktig socket basert pÃ¥ destinasjonsporten.</p>
+      <p>Mottar et segment fra IP. Sjekker sjekksummen. Trekker ut applikasjonsdataene. Demultiplekser meldingen opp til riktig socket basert på destinasjonsporten.</p>
     </div>
   </div>
 </section>
@@ -298,17 +298,17 @@
 <!-- ============ CHECKSUM ============ -->
 <section id="checksum">
   <div class="container">
-    <div class="badge">03 Â· UDP-sjekksummen</div>
+    <div class="badge">03 · UDP-sjekksummen</div>
     <h2>Feildeteksjon med <em>one's complement</em></h2>
     <p class="section-intro">Sjekksummen er UDPs eneste forsvarslinje. Den er enkel, billig, og langt fra perfekt.</p>
 
-    <p class="lead">Tanken bak sjekksummen er rett frem: senderen summerer alle 16-bits ord i segmentet (header + data + deler av IP-headeren), tar one's complement av summen, og legger resultatet i checksum-feltet. Mottakeren gjÃ¸r samme beregning. Hvis svaret ikke stemmer, vet hun at noe har blitt endret underveis.</p>
+    <p class="lead">Tanken bak sjekksummen er rett frem: senderen summerer alle 16-bits ord i segmentet (header + data + deler av IP-headeren), tar one's complement av summen, og legger resultatet i checksum-feltet. Mottakeren gjør samme beregning. Hvis svaret ikke stemmer, vet hun at noe har blitt endret underveis.</p>
 
     <h3>Steg for steg</h3>
     <div class="box solution">
       <div class="label">Beregning</div>
       <p><strong>1.</strong> Behandle innholdet som en sekvens av 16-bits heltall.<br>
-      <strong>2.</strong> Summer dem med <em>one's complement</em>-addisjon (der en carry ut fra bit 15 legges tilbake til bit 0 â€” wraparound).<br>
+      <strong>2.</strong> Summer dem med <em>one's complement</em>-addisjon (der en carry ut fra bit 15 legges tilbake til bit 0 — wraparound).<br>
       <strong>3.</strong> Ta one's complement av summen (inverter alle bits). Dette er sjekksummen.</p>
     </div>
 
@@ -319,7 +319,7 @@
       <p style="font-family:'IBM Plex Mono',monospace;font-size:14px;line-height:2">
         <code>1110 0110 0110 0110</code><br>
         <code>1101 0101 0101 0101</code><br>
-        â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€<br>
+        --------------------<br>
         <code>1 1011 1011 1011 1011</code> &larr; wraparound-carry<br>
         <code>&nbsp;&nbsp;1011 1011 1011 1100</code> &larr; sum (etter wraparound)<br>
         <code>&nbsp;&nbsp;0100 0100 0100 0011</code> &larr; checksum (one's complement)
@@ -327,42 +327,42 @@
     </div>
 
     <h3>Svak, men bedre enn ingenting</h3>
-    <p>Sjekksummen fanger mange vanlige feil â€” som en enkelt bit-flip. Men den er <strong>svak</strong>: hvis to bits flipper pÃ¥ riktig mÃ¥te, kan de Â«nulle utÂ» hverandre uten Ã¥ endre summen. Sjekksummen gir <em>ingen</em> garanti for at dataene er uendret â€” den gir bare en rimelig sjanse for Ã¥ oppdage feil.</p>
+    <p>Sjekksummen fanger mange vanlige feil — som en enkelt bit-flip. Men den er <strong>svak</strong>: hvis to bits flipper på riktig måte, kan de «nulle ut» hverandre uten å endre summen. Sjekksummen gir <em>ingen</em> garanti for at dataene er uendret — den gir bare en rimelig sjanse for å oppdage feil.</p>
 
     <div class="margin-note">
       <strong>Hvorfor one's complement?</strong>
-      One's complement-addisjon har en nyttig egenskap: den er rekkefÃ¸lgeuavhengig. Du kan summere ordene i vilkÃ¥rlig rekkefÃ¸lge og fÃ¥ samme resultat. Dette forenkler implementeringen.
+      One's complement-addisjon har en nyttig egenskap: den er rekkefølgeuavhengig. Du kan summere ordene i vilkårlig rekkefølge og få samme resultat. Dette forenkler implementeringen.
     </div>
 
     <div class="quiz" data-correct="1">
-      <div class="qlabel">Sjekk forstÃ¥elsen</div>
+      <div class="qlabel">Sjekk forståelsen</div>
       <h4>Hva er en svakhet ved UDP-sjekksummen?</h4>
       <div class="opts">
         <button class="opt" data-i="0">Den kan ikke oppdage noen bit-feil</button>
-        <button class="opt" data-i="1">To bit-feil som Â«nuller utÂ» hverandre kan gÃ¥ uoppdaget</button>
+        <button class="opt" data-i="1">To bit-feil som «nuller ut» hverandre kan gå uoppdaget</button>
         <button class="opt" data-i="2">Den fungerer bare med IPv4, ikke IPv6</button>
         <button class="opt" data-i="3">Bare senderen beregner den, mottakeren ignorerer den</button>
       </div>
-      <div class="feedback"><strong>Riktig.</strong> En enkelt bit-flip oppdages nesten alltid, men to komplementÃ¦re feil kan gi uendret sum. Sjekksummen er enkel og billig, men langt fra feilsikker.</div>
+      <div class="feedback"><strong>Riktig.</strong> En enkelt bit-flip oppdages nesten alltid, men to komplementære feil kan gi uendret sum. Sjekksummen er enkel og billig, men langt fra feilsikker.</div>
     </div>
 
     <div class="ornament">&#10038; &#10038; &#10038;</div>
-    <p>Med transportlagets grunnprinsipper, multipleksing/demultipleksing og UDP pÃ¥ plass, er neste steg Ã¥ forstÃ¥ <em>hvordan</em> vi bygger pÃ¥litelighet steg for steg: <a href="palitelig-dataoverforing.html">Prinsipper for pÃ¥litelig dataoverfÃ¸ring</a>.</p>
+    <p>Med transportlagets grunnprinsipper, multipleksing/demultipleksing og UDP på plass, er neste steg å forstå <em>hvordan</em> vi bygger pålitelighet steg for steg: <a href="palitelig-dataoverforing.html">Prinsipper for pålitelig dataoverføring</a>.</p>
   </div>
 </section>
 
 <nav class="page-nav">
   <div class="container">
     <span></span>
-    <a href="palitelig-dataoverforing.html" class="next"><span class="nav-label">Neste &rarr;</span><span class="nav-title">PÃ¥litelig dataoverfÃ¸ring</span></a>
+    <a href="palitelig-dataoverforing.html" class="next"><span class="nav-label">Neste &rarr;</span><span class="nav-title">Pålitelig dataoverføring</span></a>
   </div>
 </nav>
 
 <footer>
   <div class="container">
     <div class="ornament">&#10038; &#10038; &#10038;</div>
-    <p>Basert pÃ¥ Kurose &amp; Ross, <em>Computer Networking</em>, 8. utgave â€” Kapittel 3</p>
-    <p>NTNU Â· TTM4100 Â· VÃ¥r 2026</p>
+    <p>Basert på Kurose &amp; Ross, <em>Computer Networking</em>, 8. utgave — Kapittel 3</p>
+    <p>NTNU · TTM4100 · Vår 2026</p>
   </div>
 </footer>
 

@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="no">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>8a — Kryptografi og integritet · Sikkerhet i datanettverk</title>
-<link rel="stylesheet" href="../style.css">
+<title>8a � Kryptografi og integritet � Sikkerhet i datanettverk</title>
+<link rel="icon" type="image/png" href="/favicon.png">`n<link rel="stylesheet" href="../style.css">
 </head>
 <body>
 
@@ -24,53 +24,53 @@
 
 <header class="hero">
   <div class="container">
-    <div class="eyebrow">Kapittel 8a · Sikkerhet</div>
+    <div class="eyebrow">Kapittel 8a � Sikkerhet</div>
     <h1>Kryptografi og <em>integritet</em></h1>
-    <p class="lede">De fire sikkerhetsegenskapene, symmetrisk og offentlig nøkkelkryptografi, meldingsintegritet, digitale signaturer og sertifiseringsinstanser.</p>
+    <p class="lede">De fire sikkerhetsegenskapene, symmetrisk og offentlig n�kkelkryptografi, meldingsintegritet, digitale signaturer og sertifiseringsinstanser.</p>
     <nav class="toc">
       <a href="#sikkerhet"><span>01</span>Nettverkssikkerhet</a>
       <a href="#symmetrisk"><span>02</span>Symmetrisk kryptografi</a>
-      <a href="#offentlig"><span>03</span>Offentlig nøkkel</a>
+      <a href="#offentlig"><span>03</span>Offentlig n�kkel</a>
       <a href="#integritet"><span>04</span>Integritet og signaturer</a>
     </nav>
   </div>
 </header>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     SEKSJON 1 — Hva er nettverkssikkerhet?
-     ═══════════════════════════════════════════════════════════════ -->
+<!-- ---------------------------------------------------------------
+     SEKSJON 1 � Hva er nettverkssikkerhet?
+     --------------------------------------------------------------- -->
 <section id="sikkerhet">
 <div class="container">
-  <div class="section-badge">01 · Introduksjon</div>
+  <div class="section-badge">01 � Introduksjon</div>
   <h2>Hva er <em>nettverkssikkerhet</em>?</h2>
-  <p class="section-intro">Fire egenskaper som et sikkert kommunikasjonssystem må oppfylle — og hva som skjer når det ikke gjør det.</p>
+  <p class="section-intro">Fire egenskaper som et sikkert kommunikasjonssystem m� oppfylle � og hva som skjer n�r det ikke gj�r det.</p>
 
-  <p class="dropcap">Når Alice sender en melding til Bob over Internett, passerer den gjennom titalls rutere, svitsjer og linker som ingen av dem kontrollerer. Hvem som helst langs veien — en nysgjerrig nettadministrator, en hacker på et åpent WiFi, en statlig etterretningstjeneste — kan i prinsippet lytte, endre eller blokkere meldingen. Nettverkssikkerhet handler om å gjøre det umulig, eller i det minste ugjennomførbart, for en tredjeperson å misbruke kommunikasjonen.</p>
+  <p class="dropcap">N�r Alice sender en melding til Bob over Internett, passerer den gjennom titalls rutere, svitsjer og linker som ingen av dem kontrollerer. Hvem som helst langs veien � en nysgjerrig nettadministrator, en hacker p� et �pent WiFi, en statlig etterretningstjeneste � kan i prinsippet lytte, endre eller blokkere meldingen. Nettverkssikkerhet handler om � gj�re det umulig, eller i det minste ugjennomf�rbart, for en tredjeperson � misbruke kommunikasjonen.</p>
 
-  <p>Et sikkert kommunikasjonssystem må oppfylle fire grunnleggende egenskaper:</p>
+  <p>Et sikkert kommunikasjonssystem m� oppfylle fire grunnleggende egenskaper:</p>
 
   <div class="callout">
     <span class="label">Konfidensialitet</span>
-    <p>Bare avsender og tiltenkt mottaker skal kunne forstå innholdet i meldingen. Senderen krypterer, mottakeren dekrypterer. Alle andre ser bare uforståelig støy.</p>
+    <p>Bare avsender og tiltenkt mottaker skal kunne forst� innholdet i meldingen. Senderen krypterer, mottakeren dekrypterer. Alle andre ser bare uforst�elig st�y.</p>
   </div>
 
   <div class="callout callout-blue">
     <span class="label">Autentisering</span>
-    <p>Sender og mottaker skal kunne bekrefte hverandres identitet. Når du logger inn på nettbanken din, vil banken vite at det virkelig er deg — og du vil vite at du virkelig snakker med banken, ikke en falsk kopi.</p>
+    <p>Sender og mottaker skal kunne bekrefte hverandres identitet. N�r du logger inn p� nettbanken din, vil banken vite at det virkelig er deg � og du vil vite at du virkelig snakker med banken, ikke en falsk kopi.</p>
   </div>
 
   <div class="callout callout-green">
     <span class="label">Meldingsintegritet</span>
-    <p>Innholdet i meldingen skal ikke kunne endres underveis — verken av en angriper eller ved tilfeldige feil — uten at mottakeren oppdager det.</p>
+    <p>Innholdet i meldingen skal ikke kunne endres underveis � verken av en angriper eller ved tilfeldige feil � uten at mottakeren oppdager det.</p>
   </div>
 
   <div class="callout" style="border-left-color: var(--ochre);">
     <span class="label" style="color: var(--ochre);">Tilgjengelighet</span>
-    <p>Tjenestene må faktisk være tilgjengelige for legitime brukere. Et Denial-of-Service-angrep (DoS) prøver nettopp å bryte denne egenskapen ved å oversvømme en server med så mye trafikk at den ikke klarer å betjene ekte forespørsler.</p>
+    <p>Tjenestene m� faktisk v�re tilgjengelige for legitime brukere. Et Denial-of-Service-angrep (DoS) pr�ver nettopp � bryte denne egenskapen ved � oversv�mme en server med s� mye trafikk at den ikke klarer � betjene ekte foresp�rsler.</p>
   </div>
 
   <h3>Alice, Bob og Trudy</h3>
-  <p>I sikkerhetsverdenen bruker vi tre faste karakterer: <strong>Alice</strong> og <strong>Bob</strong> vil kommunisere sikkert med hverandre. <strong>Trudy</strong> (fra «intruder») er angriperen som sitter mellom dem og prøver å sabotere. Trudy kan gjøre overraskende mye:</p>
+  <p>I sikkerhetsverdenen bruker vi tre faste karakterer: <strong>Alice</strong> og <strong>Bob</strong> vil kommunisere sikkert med hverandre. <strong>Trudy</strong> (fra �intruder�) er angriperen som sitter mellom dem og pr�ver � sabotere. Trudy kan gj�re overraskende mye:</p>
 
   <figure>
     <svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
@@ -79,41 +79,41 @@
       <circle cx="600" cy="100" r="32" fill="#f4f1ea" stroke="#1a1612" stroke-width="2"/>
       <text x="600" y="106" text-anchor="middle" font-family="Newsreader" font-size="20" font-weight="600" fill="#1a1612">Bob</text>
       <line x1="132" y1="100" x2="568" y2="100" stroke="#3d6b3a" stroke-width="2" stroke-dasharray="8 4"/>
-      <text x="350" y="90" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">sikker kanal (ønsket)</text>
+      <text x="350" y="90" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">sikker kanal (�nsket)</text>
       <circle cx="350" cy="185" r="28" fill="#e8d4cd" stroke="#b04428" stroke-width="2"/>
       <text x="350" y="191" text-anchor="middle" font-family="Newsreader" font-size="18" font-weight="600" fill="#b04428">Trudy</text>
       <path d="M 170 115 Q 260 180 322 185" stroke="#b04428" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
       <path d="M 530 115 Q 440 180 378 185" stroke="#b04428" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
       <text x="350" y="150" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">avlytting / manipulering</text>
     </svg>
-    <figcaption>Alice og Bob ønsker en sikker kanal. Trudy kan avlytte, sette inn falske meldinger, utgi seg for å være Alice eller Bob, kapre en pågående forbindelse, eller blokkere kommunikasjonen helt.</figcaption>
+    <figcaption>Alice og Bob �nsker en sikker kanal. Trudy kan avlytte, sette inn falske meldinger, utgi seg for � v�re Alice eller Bob, kapre en p�g�ende forbindelse, eller blokkere kommunikasjonen helt.</figcaption>
   </figure>
 
-  <p>Hvem er Alice og Bob i praksis? Det kan være en nettleser og en nettbank, to DNS-servere som utveksler oppslag, to BGP-rutere som deler rutingtabeller, eller rett og slett to mennesker som sender e-post. Trudy kan være hvem som helst med tilgang til nettverket mellom dem.</p>
+  <p>Hvem er Alice og Bob i praksis? Det kan v�re en nettleser og en nettbank, to DNS-servere som utveksler oppslag, to BGP-rutere som deler rutingtabeller, eller rett og slett to mennesker som sender e-post. Trudy kan v�re hvem som helst med tilgang til nettverket mellom dem.</p>
 
-  <h3>Hva kan en angriper gjøre?</h3>
+  <h3>Hva kan en angriper gj�re?</h3>
   <ul>
     <li><strong>Avlytte (eavesdrop):</strong> passivt fange opp meldinger uten at noen merker det.</li>
-    <li><strong>Sette inn meldinger:</strong> aktivt injisere falske pakker i en pågående forbindelse.</li>
+    <li><strong>Sette inn meldinger:</strong> aktivt injisere falske pakker i en p�g�ende forbindelse.</li>
     <li><strong>Utgi seg for andre (spoofing):</strong> forfalske kildeadressen i en pakke slik at den ser ut som den kommer fra noen andre.</li>
-    <li><strong>Kapre en forbindelse (hijacking):</strong> ta over en pågående TCP-forbindelse ved å fjerne den ene parten og tre inn i deres sted.</li>
-    <li><strong>Tjenestenekt (DoS):</strong> oversvømme en server med forespørsler slik at den ikke kan betjene ekte brukere.</li>
+    <li><strong>Kapre en forbindelse (hijacking):</strong> ta over en p�g�ende TCP-forbindelse ved � fjerne den ene parten og tre inn i deres sted.</li>
+    <li><strong>Tjenestenekt (DoS):</strong> oversv�mme en server med foresp�rsler slik at den ikke kan betjene ekte brukere.</li>
   </ul>
 </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     SEKSJON 2 — Symmetrisk nøkkelkryptografi
-     ═══════════════════════════════════════════════════════════════ -->
+<!-- ---------------------------------------------------------------
+     SEKSJON 2 � Symmetrisk n�kkelkryptografi
+     --------------------------------------------------------------- -->
 <section id="symmetrisk">
 <div class="container">
-  <div class="section-badge">02 · Kryptografi</div>
-  <h2>Symmetrisk <em>nøkkelkryptografi</em></h2>
-  <p class="section-intro">Når sender og mottaker deler én og samme hemmelige nøkkel.</p>
+  <div class="section-badge">02 � Kryptografi</div>
+  <h2>Symmetrisk <em>n�kkelkryptografi</em></h2>
+  <p class="section-intro">N�r sender og mottaker deler �n og samme hemmelige n�kkel.</p>
 
-  <p class="dropcap">Kryptografi er verktøykassen som gjør de fire sikkerhetsegenskapene mulige. Det grunnleggende oppsettet er alltid det samme: en <strong>klartekst</strong> (plaintext) <em>m</em> sendes gjennom en krypteringsalgoritme sammen med en <strong>nøkkel</strong> K<sub>A</sub>, og resultatet er en <strong>chiffertekst</strong> (ciphertext) som er uleselig for alle som ikke har den riktige dekrypteringsnøkkelen K<sub>B</sub>. Mottakeren bruker K<sub>B</sub> til å gjenskape klarteksten: m = K<sub>B</sub>(K<sub>A</sub>(m)).</p>
+  <p class="dropcap">Kryptografi er verkt�ykassen som gj�r de fire sikkerhetsegenskapene mulige. Det grunnleggende oppsettet er alltid det samme: en <strong>klartekst</strong> (plaintext) <em>m</em> sendes gjennom en krypteringsalgoritme sammen med en <strong>n�kkel</strong> K<sub>A</sub>, og resultatet er en <strong>chiffertekst</strong> (ciphertext) som er uleselig for alle som ikke har den riktige dekrypteringsn�kkelen K<sub>B</sub>. Mottakeren bruker K<sub>B</sub> til � gjenskape klarteksten: m = K<sub>B</sub>(K<sub>A</sub>(m)).</p>
 
-  <p>I <strong>symmetrisk nøkkelkryptografi</strong> er krypterings- og dekrypteringsnøkkelen den <em>samme</em>: K<sub>A</sub> = K<sub>B</sub> = K<sub>S</sub>. Begge parter må altså kjenne den samme hemmeligheten. Det reiser et umiddelbart spørsmål: <em>hvordan blir de enige om nøkkelen i utgangspunktet?</em> Men la oss først se på selve mekanismene.</p>
+  <p>I <strong>symmetrisk n�kkelkryptografi</strong> er krypterings- og dekrypteringsn�kkelen den <em>samme</em>: K<sub>A</sub> = K<sub>B</sub> = K<sub>S</sub>. Begge parter m� alts� kjenne den samme hemmeligheten. Det reiser et umiddelbart sp�rsm�l: <em>hvordan blir de enige om n�kkelen i utgangspunktet?</em> Men la oss f�rst se p� selve mekanismene.</p>
 
   <figure>
     <svg viewBox="0 0 700 150" xmlns="http://www.w3.org/2000/svg">
@@ -135,64 +135,64 @@
       <text x="600" y="120" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">klartekst m</text>
       <defs><marker id="arw" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L6,4 L0,8 z" fill="#1a1612"/></marker></defs>
     </svg>
-    <figcaption>Symmetrisk kryptografi: samme nøkkel K<sub>S</sub> brukes til både kryptering og dekryptering.</figcaption>
+    <figcaption>Symmetrisk kryptografi: samme n�kkel K<sub>S</sub> brukes til b�de kryptering og dekryptering.</figcaption>
   </figure>
 
   <h3>Substitusjonschiffer: det enkleste eksempelet</h3>
-  <p>Det mest grunnleggende krypteringsskjemaet er et <strong>monoalfabetisk substitusjonschiffer</strong>: erstatt hver bokstav med en annen, konsekvent gjennom hele meldingen. For eksempel: a→m, b→n, c→b, d→v, osv. Nøkkelen er hele substitueringstabellen — en permutasjon av 26 bokstaver.</p>
+  <p>Det mest grunnleggende krypteringsskjemaet er et <strong>monoalfabetisk substitusjonschiffer</strong>: erstatt hver bokstav med en annen, konsekvent gjennom hele meldingen. For eksempel: a?m, b?n, c?b, d?v, osv. N�kkelen er hele substitueringstabellen � en permutasjon av 26 bokstaver.</p>
 
-  <p>Problemet er at slike chiffer er lette å knekke med statistisk analyse. Bokstaven «e» er den vanligste i engelsk tekst, så den bokstaven som opptrer oftest i chifferteksten er sannsynligvis «e». Med noen hundre tegn chiffertekst kan man typisk knekke hele nøkkelen. Et <strong>polyalfabetisk chiffer</strong> — der man roterer mellom flere substitusjonstabeller — er bedre, men fortsatt sårbart.</p>
+  <p>Problemet er at slike chiffer er lette � knekke med statistisk analyse. Bokstaven �e� er den vanligste i engelsk tekst, s� den bokstaven som opptrer oftest i chifferteksten er sannsynligvis �e�. Med noen hundre tegn chiffertekst kan man typisk knekke hele n�kkelen. Et <strong>polyalfabetisk chiffer</strong> � der man roterer mellom flere substitusjonstabeller � er bedre, men fortsatt s�rbart.</p>
 
-  <h3>Å bryte kryptering</h3>
-  <p>En angriper kan prøve å knekke en kryptering på tre måter:</p>
+  <h3>� bryte kryptering</h3>
+  <p>En angriper kan pr�ve � knekke en kryptering p� tre m�ter:</p>
 
   <table>
     <tr><th>Angrepstype</th><th>Hva Trudy har</th><th>Strategi</th></tr>
     <tr>
       <td class="mono-cell">Ciphertext-only</td>
       <td>Bare chifferteksten</td>
-      <td>Brute force (prøv alle nøkler) eller statistisk analyse</td>
+      <td>Brute force (pr�v alle n�kler) eller statistisk analyse</td>
     </tr>
     <tr>
       <td class="mono-cell">Known-plaintext</td>
       <td>Noen klartekst-chiffertekst-par</td>
-      <td>Bruk parene til å utlede nøkkelen</td>
+      <td>Bruk parene til � utlede n�kkelen</td>
     </tr>
     <tr>
       <td class="mono-cell">Chosen-plaintext</td>
       <td>Kan velge klartekst og se resulterende chiffertekst</td>
-      <td>Velg strategisk klartekst for å avdekke nøkkelstrukturen</td>
+      <td>Velg strategisk klartekst for � avdekke n�kkelstrukturen</td>
     </tr>
   </table>
 
-  <h3>DES — Data Encryption Standard</h3>
-  <p><strong>DES</strong> var den amerikanske standarden for symmetrisk kryptering fra 1977 (FIPS PUB 46). Den bruker en <strong>56-bits nøkkel</strong> og opererer på 64-bits blokker av klartekst. DES er et <em>blokkchiffer</em>: klarteksten deles opp i blokker av fast størrelse som krypteres hver for seg, og blokkene lenkes sammen via <strong>cipher block chaining</strong> (CBC) for å unngå at identiske klartekstblokker gir identisk chiffertekst.</p>
+  <h3>DES � Data Encryption Standard</h3>
+  <p><strong>DES</strong> var den amerikanske standarden for symmetrisk kryptering fra 1977 (FIPS PUB 46). Den bruker en <strong>56-bits n�kkel</strong> og opererer p� 64-bits blokker av klartekst. DES er et <em>blokkchiffer</em>: klarteksten deles opp i blokker av fast st�rrelse som krypteres hver for seg, og blokkene lenkes sammen via <strong>cipher block chaining</strong> (CBC) for � unng� at identiske klartekstblokker gir identisk chiffertekst.</p>
 
-  <p>Hvor sikkert er DES? Ikke sikkert nok. I DES Challenge ble en 56-bits nøkkel knekt med brute force på under ett døgn. Løsningen var <strong>3DES</strong>: krypter tre ganger med tre forskjellige nøkler, som effektivt gir en 168-bits nøkkelstyrke.</p>
+  <p>Hvor sikkert er DES? Ikke sikkert nok. I DES Challenge ble en 56-bits n�kkel knekt med brute force p� under ett d�gn. L�sningen var <strong>3DES</strong>: krypter tre ganger med tre forskjellige n�kler, som effektivt gir en 168-bits n�kkelstyrke.</p>
 
-  <h3>AES — Advanced Encryption Standard</h3>
-  <p><strong>AES</strong> erstattet DES i 2001 som NIST-standard. Den opererer på <strong>128-bits blokker</strong> og støtter nøkkellengder på <strong>128, 192 eller 256 bit</strong>. For å sette det i perspektiv: hvis brute force på DES tar ett sekund, ville brute force på AES med 128-bits nøkkel ta omtrent 149 billioner år. AES er i dag den dominerende symmetriske algoritmen — den brukes i TLS, WiFi (WPA2/WPA3), IPsec og mye annet.</p>
+  <h3>AES � Advanced Encryption Standard</h3>
+  <p><strong>AES</strong> erstattet DES i 2001 som NIST-standard. Den opererer p� <strong>128-bits blokker</strong> og st�tter n�kkellengder p� <strong>128, 192 eller 256 bit</strong>. For � sette det i perspektiv: hvis brute force p� DES tar ett sekund, ville brute force p� AES med 128-bits n�kkel ta omtrent 149 billioner �r. AES er i dag den dominerende symmetriske algoritmen � den brukes i TLS, WiFi (WPA2/WPA3), IPsec og mye annet.</p>
 
-  <div class="margin-note">Symmetrisk kryptografi er <em>rask</em> — den brukes til å kryptere selve dataene. Men den har ett stort problem: hvordan utveksler Alice og Bob nøkkelen trygt? Svaret kommer i neste seksjon.</div>
+  <div class="margin-note">Symmetrisk kryptografi er <em>rask</em> � den brukes til � kryptere selve dataene. Men den har ett stort problem: hvordan utveksler Alice og Bob n�kkelen trygt? Svaret kommer i neste seksjon.</div>
 </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     SEKSJON 3 — Offentlig nøkkelkryptografi
-     ═══════════════════════════════════════════════════════════════ -->
+<!-- ---------------------------------------------------------------
+     SEKSJON 3 � Offentlig n�kkelkryptografi
+     --------------------------------------------------------------- -->
 <section id="offentlig">
 <div class="container">
-  <div class="section-badge">03 · Offentlig nøkkel</div>
-  <h2>Offentlig <em>nøkkelkryptografi</em></h2>
-  <p class="section-intro">En radikal idé: publiser den ene nøkkelen for hele verden — og hold den andre strengt privat.</p>
+  <div class="section-badge">03 � Offentlig n�kkel</div>
+  <h2>Offentlig <em>n�kkelkryptografi</em></h2>
+  <p class="section-intro">En radikal id�: publiser den ene n�kkelen for hele verden � og hold den andre strengt privat.</p>
 
-  <p class="dropcap">Symmetrisk kryptografi har et grunnleggende problem: Alice og Bob må på forhånd bli enige om en felles hemmelig nøkkel. Hvis de aldri har møttes fysisk, hvordan gjør de det uten at Trudy fanger opp nøkkelen? Offentlig nøkkelkryptografi — foreslått uavhengig av Diffie og Hellman (1976) og av RSA-gruppen (Rivest, Shamir, Adleman, 1978) — løser dette på en elegant måte.</p>
+  <p class="dropcap">Symmetrisk kryptografi har et grunnleggende problem: Alice og Bob m� p� forh�nd bli enige om en felles hemmelig n�kkel. Hvis de aldri har m�ttes fysisk, hvordan gj�r de det uten at Trudy fanger opp n�kkelen? Offentlig n�kkelkryptografi � foresl�tt uavhengig av Diffie og Hellman (1976) og av RSA-gruppen (Rivest, Shamir, Adleman, 1978) � l�ser dette p� en elegant m�te.</p>
 
-  <p>Idéen er enkel men revolusjonerende: Bob har <em>to</em> nøkler. Den ene — <strong>den offentlige nøkkelen K<sub>B</sub><sup>+</sup></strong> — publiserer han for hele verden. Den andre — <strong>den private nøkkelen K<sub>B</sub><sup>−</sup></strong> — holder han strengt for seg selv. Systemet har to avgjørende egenskaper:</p>
+  <p>Id�en er enkel men revolusjonerende: Bob har <em>to</em> n�kler. Den ene � <strong>den offentlige n�kkelen K<sub>B</sub><sup>+</sup></strong> � publiserer han for hele verden. Den andre � <strong>den private n�kkelen K<sub>B</sub><sup>-</sup></strong> � holder han strengt for seg selv. Systemet har to avgj�rende egenskaper:</p>
 
   <ol>
-    <li>Krypterer du med den offentlige nøkkelen, kan bare den private dekryptere: K<sub>B</sub><sup>−</sup>(K<sub>B</sub><sup>+</sup>(m)) = m</li>
-    <li>Gitt den offentlige nøkkelen er det <em>beregningsmessig umulig</em> å finne den private.</li>
+    <li>Krypterer du med den offentlige n�kkelen, kan bare den private dekryptere: K<sub>B</sub><sup>-</sup>(K<sub>B</sub><sup>+</sup>(m)) = m</li>
+    <li>Gitt den offentlige n�kkelen er det <em>beregningsmessig umulig</em> � finne den private.</li>
   </ol>
 
   <figure>
@@ -213,12 +213,12 @@
       <text x="600" y="70" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">K&#x1d6f;&#x207b; (privat)</text>
       <text x="600" y="120" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">klartekst m</text>
     </svg>
-    <figcaption>Offentlig nøkkelkryptografi: Alice krypterer med Bobs offentlige nøkkel. Bare Bobs private nøkkel kan dekryptere.</figcaption>
+    <figcaption>Offentlig n�kkelkryptografi: Alice krypterer med Bobs offentlige n�kkel. Bare Bobs private n�kkel kan dekryptere.</figcaption>
   </figure>
 
-  <p>I praksis kombineres de to: offentlig nøkkelkryptografi brukes til å utveksle en <strong>felles symmetrisk sesjonsnøkkel</strong>, og deretter brukes den raske symmetriske algoritmen (f.eks. AES) til å kryptere selve datastrømmen. Det er dette mønsteret vi kommer til å se igjen og igjen — i sikker e-post, i TLS, og i IPsec.</p>
+  <p>I praksis kombineres de to: offentlig n�kkelkryptografi brukes til � utveksle en <strong>felles symmetrisk sesjonsn�kkel</strong>, og deretter brukes den raske symmetriske algoritmen (f.eks. AES) til � kryptere selve datastr�mmen. Det er dette m�nsteret vi kommer til � se igjen og igjen � i sikker e-post, i TLS, og i IPsec.</p>
 
-  <div class="margin-note">Offentlig nøkkelkryptografi revolusjonerte 2000 års kryptografihistorie. Før 1976 fantes det bare symmetriske metoder, og nøkkelutveksling var alltid det vanskeligste problemet.</div>
+  <div class="margin-note">Offentlig n�kkelkryptografi revolusjonerte 2000 �rs kryptografihistorie. F�r 1976 fantes det bare symmetriske metoder, og n�kkelutveksling var alltid det vanskeligste problemet.</div>
 </div>
 </section>
 
@@ -226,87 +226,87 @@
 
 <!-- QUIZ 1 -->
 <div class="quiz" style="max-width:820px;margin:0 auto 60px;">
-  <p class="q-text">Alice vil sende en kryptert melding til Bob. Hun har aldri møtt Bob, men kjenner hans offentlige nøkkel. Hvilken nøkkel bruker hun til å kryptere meldingen?</p>
+  <p class="q-text">Alice vil sende en kryptert melding til Bob. Hun har aldri m�tt Bob, men kjenner hans offentlige n�kkel. Hvilken n�kkel bruker hun til � kryptere meldingen?</p>
   <div class="options">
-    <button class="option" data-correct="false">Alices private nøkkel</button>
-    <button class="option" data-correct="true">Bobs offentlige nøkkel</button>
-    <button class="option" data-correct="false">Bobs private nøkkel</button>
-    <button class="option" data-correct="false">En felles symmetrisk nøkkel de har delt på forhånd</button>
+    <button class="option" data-correct="false">Alices private n�kkel</button>
+    <button class="option" data-correct="true">Bobs offentlige n�kkel</button>
+    <button class="option" data-correct="false">Bobs private n�kkel</button>
+    <button class="option" data-correct="false">En felles symmetrisk n�kkel de har delt p� forh�nd</button>
   </div>
   <div class="explanation" id="qf1"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     SEKSJON 4 — Meldingsintegritet og digitale signaturer
-     ═══════════════════════════════════════════════════════════════ -->
+<!-- ---------------------------------------------------------------
+     SEKSJON 4 � Meldingsintegritet og digitale signaturer
+     --------------------------------------------------------------- -->
 <section id="integritet">
 <div class="container">
-  <div class="section-badge">04 · Integritet</div>
+  <div class="section-badge">04 � Integritet</div>
   <h2>Meldingsintegritet og <em>digitale signaturer</em></h2>
-  <p class="section-intro">Hvordan bevise at en melding ikke er endret underveis — og at det virkelig var Bob som sendte den.</p>
+  <p class="section-intro">Hvordan bevise at en melding ikke er endret underveis � og at det virkelig var Bob som sendte den.</p>
 
-  <p class="dropcap">Kryptering gir oss konfidensialitet, men det er ikke nok. Selv om Trudy ikke kan lese meldingen, kan hun kanskje endre noen bits i chifferteksten uten å vite hva hun endrer. Eller hun kan sende en helt ny melding og late som den kommer fra Bob. Vi trenger to ting til: <strong>meldingsintegritet</strong> (innholdet er uendret) og <strong>autentisering</strong> (avsenderen er den de utgir seg for å være).</p>
+  <p class="dropcap">Kryptering gir oss konfidensialitet, men det er ikke nok. Selv om Trudy ikke kan lese meldingen, kan hun kanskje endre noen bits i chifferteksten uten � vite hva hun endrer. Eller hun kan sende en helt ny melding og late som den kommer fra Bob. Vi trenger to ting til: <strong>meldingsintegritet</strong> (innholdet er uendret) og <strong>autentisering</strong> (avsenderen er den de utgir seg for � v�re).</p>
 
-  <h3>MAC — symmetrisk integritet og avsenderautentisering</h3>
-  <p>Når Alice og Bob allerede deler en <strong>hemmelig nøkkel K<sub>S</sub></strong>, kan de feste en <strong>Message Authentication Code (MAC)</strong> til meldingen: en kort verdi som bare noen som kjenner K<sub>S</sub> kan ha beregnet riktig. Mottakeren beregner samme MAC fra meldingen og nøkkelen; stemmer den ikke, er meldingen endret eller forfalsket.</p>
+  <h3>MAC � symmetrisk integritet og avsenderautentisering</h3>
+  <p>N�r Alice og Bob allerede deler en <strong>hemmelig n�kkel K<sub>S</sub></strong>, kan de feste en <strong>Message Authentication Code (MAC)</strong> til meldingen: en kort verdi som bare noen som kjenner K<sub>S</sub> kan ha beregnet riktig. Mottakeren beregner samme MAC fra meldingen og n�kkelen; stemmer den ikke, er meldingen endret eller forfalsket.</p>
 
-  <p><strong>HMAC</strong> (Hash-based Message Authentication Code) er den vanlige konstruksjonen i praksis: man kombinerer en kryptografisk hash (f.eks. SHA-256) med den hemmelige nøkkelen på en standardisert måte (RFC 2104). Det er ikke trygt å «bare» hashe nøkkel og melding sammen med enkle mønstre (f.eks. H(K<sub>S</sub> || m)) — lengdeutvidelsesangrep og andre sårbarheter gjorde at HMAC fikk en presis definisjon.</p>
+  <p><strong>HMAC</strong> (Hash-based Message Authentication Code) er den vanlige konstruksjonen i praksis: man kombinerer en kryptografisk hash (f.eks. SHA-256) med den hemmelige n�kkelen p� en standardisert m�te (RFC 2104). Det er ikke trygt � �bare� hashe n�kkel og melding sammen med enkle m�nstre (f.eks. H(K<sub>S</sub> || m)) � lengdeutvidelsesangrep og andre s�rbarheter gjorde at HMAC fikk en presis definisjon.</p>
 
   <div class="callout callout-blue">
     <span class="label">MAC mot digital signatur</span>
-    <p><strong>MAC:</strong> krever delt hemmelig nøkkel; gir integritet og at meldingen må komme fra noen som kjenner nøkkelen (ofte to kjente parter, f.eks. i TLS eller WiFi).</p>
-    <p><strong>Digital signatur:</strong> bruker privat/offentlig nøkkelpar; mottakeren trenger ikke delt hemmelighet med avsender, og man kan få <em>ikke-benekting</em> overfor tredjepart.</p>
+    <p><strong>MAC:</strong> krever delt hemmelig n�kkel; gir integritet og at meldingen m� komme fra noen som kjenner n�kkelen (ofte to kjente parter, f.eks. i TLS eller WiFi).</p>
+    <p><strong>Digital signatur:</strong> bruker privat/offentlig n�kkelpar; mottakeren trenger ikke delt hemmelighet med avsender, og man kan f� <em>ikke-benekting</em> overfor tredjepart.</p>
   </div>
 
   <h3>Digitale signaturer</h3>
-  <p>En digital signatur er den kryptografiske versjonen av en håndskrevet signatur, men mye sterkere. Bob signerer en melding <em>m</em> ved å kryptere den (eller en hash av den) med sin <strong>private nøkkel K<sub>B</sub><sup>−</sup></strong>. Resultatet er signaturen K<sub>B</sub><sup>−</sup>(m).</p>
+  <p>En digital signatur er den kryptografiske versjonen av en h�ndskrevet signatur, men mye sterkere. Bob signerer en melding <em>m</em> ved � kryptere den (eller en hash av den) med sin <strong>private n�kkel K<sub>B</sub><sup>-</sup></strong>. Resultatet er signaturen K<sub>B</sub><sup>-</sup>(m).</p>
 
-  <p>Når Alice mottar meldingen og signaturen, anvender hun Bobs <strong>offentlige nøkkel K<sub>B</sub><sup>+</sup></strong> på signaturen. Hvis K<sub>B</sub><sup>+</sup>(K<sub>B</sub><sup>−</sup>(m)) = m, vet hun to ting:</p>
+  <p>N�r Alice mottar meldingen og signaturen, anvender hun Bobs <strong>offentlige n�kkel K<sub>B</sub><sup>+</sup></strong> p� signaturen. Hvis K<sub>B</sub><sup>+</sup>(K<sub>B</sub><sup>-</sup>(m)) = m, vet hun to ting:</p>
 
   <ol>
-    <li><strong>Bob signerte meldingen</strong> — fordi bare Bob har den private nøkkelen som kunne lage den signaturen.</li>
-    <li><strong>Meldingen er uendret</strong> — fordi enhver endring i <em>m</em> ville gjort at verifiseringen feiler.</li>
+    <li><strong>Bob signerte meldingen</strong> � fordi bare Bob har den private n�kkelen som kunne lage den signaturen.</li>
+    <li><strong>Meldingen er uendret</strong> � fordi enhver endring i <em>m</em> ville gjort at verifiseringen feiler.</li>
   </ol>
 
-  <p>I tillegg får vi <strong>ikke-benekting (non-repudiation)</strong>: Alice kan vise meldingen og signaturen til en tredjepart (f.eks. en domstol), og bevise at Bob må ha signert, fordi bare Bobs private nøkkel kunne produsert den signaturen.</p>
+  <p>I tillegg f�r vi <strong>ikke-benekting (non-repudiation)</strong>: Alice kan vise meldingen og signaturen til en tredjepart (f.eks. en domstol), og bevise at Bob m� ha signert, fordi bare Bobs private n�kkel kunne produsert den signaturen.</p>
 
   <h3>Message digest og hashfunksjoner</h3>
-  <p>Å public-key-kryptere en hel lang melding er beregningsmessig dyrt. Løsningen er å bruke en <strong>hashfunksjon H</strong> som lager et kort «fingeravtrykk» av meldingen — en <strong>message digest H(m)</strong> av fast lengde. I stedet for å signere hele <em>m</em>, signerer Bob bare H(m). Alice verifiserer ved å: (1) beregne H(m) selv fra den mottatte meldingen, (2) dekryptere signaturen med Bobs offentlige nøkkel, og (3) sjekke at de to hashene er like.</p>
+  <p>� public-key-kryptere en hel lang melding er beregningsmessig dyrt. L�sningen er � bruke en <strong>hashfunksjon H</strong> som lager et kort �fingeravtrykk� av meldingen � en <strong>message digest H(m)</strong> av fast lengde. I stedet for � signere hele <em>m</em>, signerer Bob bare H(m). Alice verifiserer ved �: (1) beregne H(m) selv fra den mottatte meldingen, (2) dekryptere signaturen med Bobs offentlige n�kkel, og (3) sjekke at de to hashene er like.</p>
 
   <p>En kryptografisk hashfunksjon har tre viktige egenskaper:</p>
 
   <ul>
-    <li><strong>Mange-til-en:</strong> forskjellige meldinger kan i prinsippet gi samme hash (men det skal være ekstremt usannsynlig).</li>
-    <li><strong>Fast lengde:</strong> uansett hvor lang meldingen er, gir hashen en output av fast størrelse.</li>
-    <li><strong>Enveisfunksjon:</strong> gitt en hashverdi x er det beregningsmessig umulig å finne en melding m slik at H(m) = x.</li>
+    <li><strong>Mange-til-en:</strong> forskjellige meldinger kan i prinsippet gi samme hash (men det skal v�re ekstremt usannsynlig).</li>
+    <li><strong>Fast lengde:</strong> uansett hvor lang meldingen er, gir hashen en output av fast st�rrelse.</li>
+    <li><strong>Enveisfunksjon:</strong> gitt en hashverdi x er det beregningsmessig umulig � finne en melding m slik at H(m) = x.</li>
   </ul>
 
   <div class="callout">
     <span class="label">Hvorfor ikke Internett-checksum?</span>
-    <p>TCP bruker allerede en checksum for feildeteksjon — hvorfor kan vi ikke bruke den? Fordi Internett-checksummen er for enkel. Det er lett å finne to forskjellige meldinger som gir <em>nøyaktig samme</em> checksum. For eksempel gir «IOU 100.99 BOB» og «IOU 900.19 BOB» identisk 16-bits checksum. En kryptografisk hashfunksjon (som SHA-256) gjør dette praktisk talt umulig.</p>
+    <p>TCP bruker allerede en checksum for feildeteksjon � hvorfor kan vi ikke bruke den? Fordi Internett-checksummen er for enkel. Det er lett � finne to forskjellige meldinger som gir <em>n�yaktig samme</em> checksum. For eksempel gir �IOU 100.99 BOB� og �IOU 900.19 BOB� identisk 16-bits checksum. En kryptografisk hashfunksjon (som SHA-256) gj�r dette praktisk talt umulig.</p>
   </div>
 
   <h3>Hashalgoritmer</h3>
   <table>
     <tr><th>Algoritme</th><th>Digest-lengde</th><th>Status</th></tr>
-    <tr><td class="mono-cell">MD5</td><td>128 bit</td><td>Foreldet — kollisjoner funnet</td></tr>
-    <tr><td class="mono-cell">SHA-1</td><td>160 bit</td><td>Foreldet — kollisjoner demonstrert i 2017</td></tr>
+    <tr><td class="mono-cell">MD5</td><td>128 bit</td><td>Foreldet � kollisjoner funnet</td></tr>
+    <tr><td class="mono-cell">SHA-1</td><td>160 bit</td><td>Foreldet � kollisjoner demonstrert i 2017</td></tr>
     <tr><td class="mono-cell">SHA-256</td><td>256 bit</td><td>Anbefalt standard i dag</td></tr>
   </table>
 
   <h3>Sertifiseringsinstanser (CA)</h3>
-  <p>Hele systemet hviler på at Alice har Bobs <em>ekte</em> offentlige nøkkel. Men hva om Trudy later som hun er Bob og publiserer sin egen offentlige nøkkel med Bobs navn? Da kan Trudy signere meldinger som ser ut som de kommer fra Bob.</p>
+  <p>Hele systemet hviler p� at Alice har Bobs <em>ekte</em> offentlige n�kkel. Men hva om Trudy later som hun er Bob og publiserer sin egen offentlige n�kkel med Bobs navn? Da kan Trudy signere meldinger som ser ut som de kommer fra Bob.</p>
 
-  <p>Løsningen er en <strong>Certification Authority (CA)</strong> — en pålitelig tredjepart som binder en offentlig nøkkel til en identitet. Bob gir nøkkelen sin til en CA, beviser hvem han er, og CA-en lager et <strong>sertifikat</strong>: et dokument som inneholder Bobs identitet og offentlige nøkkel, <em>digitalt signert av CA-en</em> med CA-ens private nøkkel.</p>
+  <p>L�sningen er en <strong>Certification Authority (CA)</strong> � en p�litelig tredjepart som binder en offentlig n�kkel til en identitet. Bob gir n�kkelen sin til en CA, beviser hvem han er, og CA-en lager et <strong>sertifikat</strong>: et dokument som inneholder Bobs identitet og offentlige n�kkel, <em>digitalt signert av CA-en</em> med CA-ens private n�kkel.</p>
 
-  <p>Når Alice trenger Bobs offentlige nøkkel, henter hun sertifikatet og verifiserer CA-ens signatur med CA-ens offentlige nøkkel. Men vent — hvor kommer <em>CA-ens</em> offentlige nøkkel fra? Den kommer typisk forhåndsinstallert i nettleseren eller operativsystemet ditt. Det er derfor nettleseren kan verifisere at et SSL-sertifikat fra et nettsted er ekte — den har CA-ens rot-nøkkel innebygd fra fabrikken.</p>
+  <p>N�r Alice trenger Bobs offentlige n�kkel, henter hun sertifikatet og verifiserer CA-ens signatur med CA-ens offentlige n�kkel. Men vent � hvor kommer <em>CA-ens</em> offentlige n�kkel fra? Den kommer typisk forh�ndsinstallert i nettleseren eller operativsystemet ditt. Det er derfor nettleseren kan verifisere at et SSL-sertifikat fra et nettsted er ekte � den har CA-ens rot-n�kkel innebygd fra fabrikken.</p>
 
   <figure>
     <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
       <rect x="30" y="60" width="160" height="80" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5" rx="3"/>
       <text x="110" y="85" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">Bobs sertifikat</text>
       <text x="110" y="105" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#1a1612">Identitet: Bob</text>
-      <text x="110" y="122" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#1a1612">Offentlig nøkkel: K&#x1d6f;&#x207a;</text>
+      <text x="110" y="122" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#1a1612">Offentlig n�kkel: K&#x1d6f;&#x207a;</text>
       <path d="M 190 100 L 260 100" stroke="#1a1612" stroke-width="2" marker-end="url(#arw)"/>
       <rect x="260" y="60" width="160" height="80" fill="#e8e3d6" stroke="#b04428" stroke-width="2" rx="3"/>
       <text x="340" y="90" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">CA SIGNERING</text>
@@ -318,7 +318,7 @@
       <text x="580" y="120" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#1a1612">+ CA-signatur</text>
       <text x="580" y="140" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a">verifiserbar med K&#x1d9c;&#x1d00;&#x207a;</text>
     </svg>
-    <figcaption>CA-en signerer Bobs sertifikat med sin private nøkkel. Alice kan verifisere det med CA-ens offentlige nøkkel, som er forhåndsinstallert i nettleseren.</figcaption>
+    <figcaption>CA-en signerer Bobs sertifikat med sin private n�kkel. Alice kan verifisere det med CA-ens offentlige n�kkel, som er forh�ndsinstallert i nettleseren.</figcaption>
   </figure>
 </div>
 </section>
@@ -330,8 +330,8 @@
   <p class="q-text">Hvorfor signerer Bob en <em>hash</em> av meldingen sin (H(m)) i stedet for hele meldingen?</p>
   <div class="options">
     <button class="option" data-correct="false">Fordi hashfunksjonen gir bedre sikkerhet enn direkte kryptering</button>
-    <button class="option" data-correct="false">Fordi den private nøkkelen bare fungerer på korte meldinger</button>
-    <button class="option" data-correct="true">Fordi public-key-kryptering av en lang melding er beregningsmessig dyrt — hashen er kort og rask å signere</button>
+    <button class="option" data-correct="false">Fordi den private n�kkelen bare fungerer p� korte meldinger</button>
+    <button class="option" data-correct="true">Fordi public-key-kryptering av en lang melding er beregningsmessig dyrt � hashen er kort og rask � signere</button>
     <button class="option" data-correct="false">Fordi hashfunksjonen krypterer meldingen samtidig</button>
   </div>
   <div class="explanation" id="qf2"></div>
@@ -342,7 +342,7 @@
 <div class="container">
   <nav class="page-nav">
     <a href="protokoller-brannmur.html" class="next">
-      <span class="nav-label">Neste →</span>
+      <span class="nav-label">Neste ?</span>
       <span class="nav-title">Protokoller og brannmurer</span>
     </a>
   </nav>
@@ -351,7 +351,7 @@
 <footer>
   <div class="container">
     <div class="ornament">&#10043; &#10043; &#10043;</div>
-    <p>NTNU · TTM4100 · Vår 2026</p>
+    <p>NTNU � TTM4100 � V�r 2026</p>
   </div>
 </footer>
 
@@ -359,12 +359,12 @@
 (function(){
   var feedback = {
     'qf1': {
-      correct: 'Riktig! Alice krypterer med Bobs offentlige nøkkel. Bare Bobs private nøkkel kan dekryptere meldingen.',
-      wrong: 'Ikke helt. Husk: i offentlig nøkkelkryptografi krypterer avsenderen med mottakerens offentlige nøkkel.'
+      correct: 'Riktig! Alice krypterer med Bobs offentlige n�kkel. Bare Bobs private n�kkel kan dekryptere meldingen.',
+      wrong: 'Ikke helt. Husk: i offentlig n�kkelkryptografi krypterer avsenderen med mottakerens offentlige n�kkel.'
     },
     'qf2': {
-      correct: 'Akkurat! Public-key-operasjoner er mye tregere enn symmetriske. Ved å signere bare hashen (som er kort og av fast lengde) unngår man den beregningsmessige kostnaden.',
-      wrong: 'Tenk på hvor lang tid det tar å kryptere en stor melding med en public-key-algoritme sammenlignet med å kryptere en kort hash.'
+      correct: 'Akkurat! Public-key-operasjoner er mye tregere enn symmetriske. Ved � signere bare hashen (som er kort og av fast lengde) unng�r man den beregningsmessige kostnaden.',
+      wrong: 'Tenk p� hvor lang tid det tar � kryptere en stor melding med en public-key-algoritme sammenlignet med � kryptere en kort hash.'
     }
   };
   document.querySelectorAll('.quiz').forEach(function(quiz){

@@ -1,10 +1,10 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="no">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HTTP og web â€” Kapittel 2</title>
-<link rel="stylesheet" href="../style.css">
+<title>HTTP og web — Kapittel 2</title>
+<link rel="icon" type="image/png" href="/favicon.png">`n<link rel="stylesheet" href="../style.css">
 </head>
 <body>
 
@@ -23,12 +23,12 @@
 <main data-chapter="Kapittel 2: Applikasjonslaget">
 <header class="hero">
   <div class="container">
-    <div class="eyebrow">Kapittel 2 Â· Del 1</div>
+    <div class="eyebrow">Kapittel 2 · Del 1</div>
     <h1><span class="reg">Web og</span> <em>HTTP</em></h1>
-    <p class="lede">Fra grunnleggende prinsipper for nettverksapplikasjoner og klientâ€“server-paradigmet, via HTTP-protokollens innside, til cookies, caching og HTTP/2.</p>
+    <p class="lede">Fra grunnleggende prinsipper for nettverksapplikasjoner og klient–server-paradigmet, via HTTP-protokollens innside, til cookies, caching og HTTP/2.</p>
     <nav class="toc">
       <a href="#prinsipper"><span class="toc-num">01</span><span>Prinsipper for nettverksapplikasjoner</span></a>
-      <a href="#paradigmer"><span class="toc-num">02</span><span>Klientâ€“server vs. peer-to-peer</span></a>
+      <a href="#paradigmer"><span class="toc-num">02</span><span>Klient–server vs. peer-to-peer</span></a>
       <a href="#transport"><span class="toc-num">03</span><span>Hva trenger en app fra transportlaget?</span></a>
       <a href="#http"><span class="toc-num">04</span><span>Web og HTTP</span></a>
       <a href="#meldinger"><span class="toc-num">05</span><span>HTTP-meldinger og metoder</span></a>
@@ -42,18 +42,18 @@
 <!-- ========== 01 PRINSIPPER ========== -->
 <section id="prinsipper">
   <div class="container">
-    <div class="section-badge">01 Â· Hvor apper bor</div>
+    <div class="section-badge">01 · Hvor apper bor</div>
     <h2>Programmer i hver sin ende av nettet</h2>
-    <p class="section-intro">FÃ¸r vi snakker om HTTP eller BitTorrent, mÃ¥ vi forstÃ¥ Ã©n enkel ting: hvor kjÃ¸rer egentlig en nettverksapp?</p>
+    <p class="section-intro">Før vi snakker om HTTP eller BitTorrent, må vi forstå én enkel ting: hvor kjører egentlig en nettverksapp?</p>
 
-    <p class="lead">En nettleser kjÃ¸rer pÃ¥ din maskin. En webserver kjÃ¸rer pÃ¥ en annen. Mellom dem ligger Internett â€” millioner av rutere og lenker som flytter pakker rundt. Den helt sentrale ideen i applikasjonslaget er denne: <em>du skriver kode bare for endesystemene</em>. Ruterne i kjernen kjÃ¸rer ingen brukerapplikasjoner; de bare videresender pakker. Dette er grunnen til at en student kan finne pÃ¥ en helt ny nettjeneste i kveld og rulle den ut over hele kloden i morgen, uten Ã¥ mÃ¥tte oppdatere noe som helst i nettverkets infrastruktur.</p>
+    <p class="lead">En nettleser kjører på din maskin. En webserver kjører på en annen. Mellom dem ligger Internett — millioner av rutere og lenker som flytter pakker rundt. Den helt sentrale ideen i applikasjonslaget er denne: <em>du skriver kode bare for endesystemene</em>. Ruterne i kjernen kjører ingen brukerapplikasjoner; de bare videresender pakker. Dette er grunnen til at en student kan finne på en helt ny nettjeneste i kveld og rulle den ut over hele kloden i morgen, uten å måtte oppdatere noe som helst i nettverkets infrastruktur.</p>
 
-    <p>Ã… skrive en nettverksapp betyr altsÃ¥ Ã¥ skrive to (eller flere) programmer som kjÃ¸rer pÃ¥ <em>forskjellige</em> maskiner og som utveksler meldinger over nettet. Et webserverprogram snakker med et nettleserprogram. To Skype-klienter snakker med hverandre. En BitTorrent-klient snakker med dusinvis av andre klienter samtidig. MÃ¸nsteret er likt overalt: prosesser pÃ¥ endesystemer som sender meldinger gjennom nettverket.</p>
+    <p>Å skrive en nettverksapp betyr altså å skrive to (eller flere) programmer som kjører på <em>forskjellige</em> maskiner og som utveksler meldinger over nettet. Et webserverprogram snakker med et nettleserprogram. To Skype-klienter snakker med hverandre. En BitTorrent-klient snakker med dusinvis av andre klienter samtidig. Mønsteret er likt overalt: prosesser på endesystemer som sender meldinger gjennom nettverket.</p>
 
     <h3>Prosesser, sockets og adresser</h3>
-    <p>Inne i operativsystemet er en kjÃ¸rende app en <strong>prosess</strong>. To prosesser pÃ¥ samme maskin snakker sammen via mekanismer operativsystemet tilbyr (delt minne, pipes, etc.). To prosesser pÃ¥ forskjellige maskiner snakker sammen ved Ã¥ sende meldinger gjennom nettet â€” og porten ut av prosessen kalles en <strong>socket</strong>.</p>
+    <p>Inne i operativsystemet er en kjørende app en <strong>prosess</strong>. To prosesser på samme maskin snakker sammen via mekanismer operativsystemet tilbyr (delt minne, pipes, etc.). To prosesser på forskjellige maskiner snakker sammen ved å sende meldinger gjennom nettet — og porten ut av prosessen kalles en <strong>socket</strong>.</p>
 
-    <p>Bildet du bÃ¸r ha i hodet: socket-en er en dÃ¸r. Avsenderprosessen dytter en melding ut gjennom dÃ¸ra og stoler pÃ¥ at transport-infrastrukturen pÃ¥ andre siden leverer den til en annen socket hos mottaker-prosessen. Det er to sockets involvert i hver kommunikasjon â€” Ã©n i hver ende.</p>
+    <p>Bildet du bør ha i hodet: socket-en er en dør. Avsenderprosessen dytter en melding ut gjennom døra og stoler på at transport-infrastrukturen på andre siden leverer den til en annen socket hos mottaker-prosessen. Det er to sockets involvert i hver kommunikasjon — én i hver ende.</p>
 
     <figure class="fig-frame">
       <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
@@ -71,7 +71,7 @@
         <rect x="60" y="140" width="180" height="28" fill="#f4f1ea" stroke="#c9c0ae"/>
         <text x="150" y="158" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">transport (TCP/UDP)</text>
         <rect x="60" y="168" width="180" height="22" fill="#f4f1ea" stroke="#c9c0ae"/>
-        <text x="150" y="184" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#a39886">network Â· link Â· physical</text>
+        <text x="150" y="184" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#a39886">network · link · physical</text>
         <ellipse cx="350" cy="140" rx="60" ry="38" fill="none" stroke="#a39886" stroke-dasharray="3,3"/>
         <text x="350" y="145" text-anchor="middle" font-family="Newsreader" font-size="13" fill="#6b6257" font-style="italic">Internett</text>
         <rect x="440" y="40" width="220" height="200" fill="#fdfaf2" stroke="#c9c0ae"/>
@@ -83,7 +83,7 @@
         <rect x="460" y="140" width="180" height="28" fill="#f4f1ea" stroke="#c9c0ae"/>
         <text x="550" y="158" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">transport (TCP/UDP)</text>
         <rect x="460" y="168" width="180" height="22" fill="#f4f1ea" stroke="#c9c0ae"/>
-        <text x="550" y="184" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#a39886">network Â· link Â· physical</text>
+        <text x="550" y="184" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#a39886">network · link · physical</text>
         <path d="M 180 129 Q 350 70 520 129" fill="none" stroke="#b04428" stroke-width="1.5" marker-end="url(#arr)"/>
         <path d="M 520 130 Q 350 200 180 130" fill="none" stroke="#b04428" stroke-width="1.5" marker-end="url(#arr)" opacity="0.5"/>
         <text x="150" y="225" text-anchor="middle" font-family="IBM Plex Sans" font-size="10" fill="#6b6257">styres av app-utvikler</text>
@@ -93,47 +93,47 @@
       <figcaption>To prosesser kommuniserer gjennom hver sin socket. Alt over socket-en er apputviklerens domene; alt under er operativsystemets.</figcaption>
     </figure>
 
-    <p>For at meldingen skal komme frem, mÃ¥ mottakerprosessen ha en <em>identifikator</em>. IP-adressen til verten er ikke nok â€” Ã©n maskin kjÃ¸rer gjerne titalls prosesser samtidig. Identifikatoren bestÃ¥r derfor av to deler: <strong>IP-adresse</strong> (hvilken maskin) og <strong>portnummer</strong> (hvilken prosess pÃ¥ den maskinen). En HTTP-server lytter typisk pÃ¥ port 80, en mailserver pÃ¥ port 25.</p>
+    <p>For at meldingen skal komme frem, må mottakerprosessen ha en <em>identifikator</em>. IP-adressen til verten er ikke nok — én maskin kjører gjerne titalls prosesser samtidig. Identifikatoren består derfor av to deler: <strong>IP-adresse</strong> (hvilken maskin) og <strong>portnummer</strong> (hvilken prosess på den maskinen). En HTTP-server lytter typisk på port 80, en mailserver på port 25.</p>
 
-    <div class="margin-note">Tenk pÃ¥ IP som gateadressen til en bygÃ¥rd, og portnummeret som leilighetsnummeret. Begge mÃ¥ stÃ¥ pÃ¥ konvolutten for at brevet skal komme frem til riktig person.</div>
+    <div class="margin-note">Tenk på IP som gateadressen til en bygård, og portnummeret som leilighetsnummeret. Begge må stå på konvolutten for at brevet skal komme frem til riktig person.</div>
 
     <h3>Hva en applikasjonsprotokoll faktisk er</h3>
-    <p>NÃ¥r to programmer skal snakke sammen, mÃ¥ de bli enige om reglene. En <strong>applikasjonsprotokoll</strong> definerer fire ting:</p>
-    <p><strong>Meldingstyper</strong> â€” for eksempel forespÃ¸rsel og svar. <strong>Meldingssyntaks</strong> â€” hvilke felt finnes, og hvordan er de avgrenset? <strong>Meldingssemantikk</strong> â€” hva betyr verdiene i feltene? <strong>Regler</strong> â€” nÃ¥r og hvordan sendes meldinger, og hvordan svarer man?</p>
-    <p>Noen protokoller er <em>Ã¥pne</em>: definert i RFC-er, fritt tilgjengelig, slik at hvem som helst kan implementere dem. HTTP og SMTP er klassiske eksempler â€” det er nettopp fordi de er Ã¥pne at en hvilken som helst nettleser kan snakke med en hvilken som helst webserver. Andre protokoller er <em>proprietÃ¦re</em> â€” Skype er et eksempel â€” og fungerer bare innenfor Ã©n leverandÃ¸rs Ã¸kosystem.</p>
+    <p>Når to programmer skal snakke sammen, må de bli enige om reglene. En <strong>applikasjonsprotokoll</strong> definerer fire ting:</p>
+    <p><strong>Meldingstyper</strong> — for eksempel forespørsel og svar. <strong>Meldingssyntaks</strong> — hvilke felt finnes, og hvordan er de avgrenset? <strong>Meldingssemantikk</strong> — hva betyr verdiene i feltene? <strong>Regler</strong> — når og hvordan sendes meldinger, og hvordan svarer man?</p>
+    <p>Noen protokoller er <em>åpne</em>: definert i RFC-er, fritt tilgjengelig, slik at hvem som helst kan implementere dem. HTTP og SMTP er klassiske eksempler — det er nettopp fordi de er åpne at en hvilken som helst nettleser kan snakke med en hvilken som helst webserver. Andre protokoller er <em>proprietære</em> — Skype er et eksempel — og fungerer bare innenfor én leverandørs økosystem.</p>
   </div>
 </section>
 
 <!-- ========== 02 PARADIGMER ========== -->
 <section id="paradigmer">
   <div class="container">
-    <div class="section-badge">02 Â· To mÃ¥ter Ã¥ organisere det pÃ¥</div>
-    <h2>Klientâ€“server, eller alle mot alle</h2>
-    <p class="section-intro">NÃ¥r to maskiner skal samarbeide, hvem tar initiativet? Hvem er alltid pÃ¥? Svaret deler hele applikasjonsverdenen i to.</p>
+    <div class="section-badge">02 · To måter å organisere det på</div>
+    <h2>Klient–server, eller alle mot alle</h2>
+    <p class="section-intro">Når to maskiner skal samarbeide, hvem tar initiativet? Hvem er alltid på? Svaret deler hele applikasjonsverdenen i to.</p>
 
-    <p class="lead">Den klassiske modellen er <strong>klientâ€“server</strong>. En tjenermaskin stÃ¥r alltid pÃ¥, har en fast IP-adresse, og venter pÃ¥ at klienter skal koble seg til. Klientene â€” din nettleser, din e-postapp, din FTP-klient â€” kobler seg til nÃ¥r de har behov, sender en forespÃ¸rsel, fÃ¥r svar, og kobler ned igjen. Klientene snakker aldri direkte med hverandre; all trafikk gÃ¥r via tjeneren. Eksempler: HTTP, IMAP, FTP. Modellen er enkel Ã¥ resonnere om, og fordi tjeneren har Ã©n kjent adresse er det ingen tvil om hvem som skal kontaktes.</p>
+    <p class="lead">Den klassiske modellen er <strong>klient–server</strong>. En tjenermaskin står alltid på, har en fast IP-adresse, og venter på at klienter skal koble seg til. Klientene — din nettleser, din e-postapp, din FTP-klient — kobler seg til når de har behov, sender en forespørsel, får svar, og kobler ned igjen. Klientene snakker aldri direkte med hverandre; all trafikk går via tjeneren. Eksempler: HTTP, IMAP, FTP. Modellen er enkel å resonnere om, og fordi tjeneren har én kjent adresse er det ingen tvil om hvem som skal kontaktes.</p>
 
-    <p>Den Ã¥penbare ulempen er at tjeneren fort blir en flaskehals. Skal du distribuere en stor fil til en million klienter samtidig, mÃ¥ <em>Ã©n</em> maskin laste opp den filen en million ganger. Det skalerer dÃ¥rlig â€” og det skal vi snart se pÃ¥ matematisk.</p>
+    <p>Den åpenbare ulempen er at tjeneren fort blir en flaskehals. Skal du distribuere en stor fil til en million klienter samtidig, må <em>én</em> maskin laste opp den filen en million ganger. Det skalerer dårlig — og det skal vi snart se på matematisk.</p>
 
-    <p>Den alternative modellen er <strong>peer-to-peer</strong>. Her finnes det ingen alltid-pÃ¥-tjener. VilkÃ¥rlige endesystemer â€” <em>peers</em> â€” snakker direkte med hverandre. En peer ber om en tjeneste fra en annen peer, og leverer selv tjenester tilbake til andre. Den fascinerende egenskapen er <em>selv-skalering</em>: hver nye peer som kommer inn i systemet bringer ikke bare nye krav, men ogsÃ¥ ny kapasitet. Jo flere som vil ha filen, jo flere er det som kan dele filen videre.</p>
+    <p>Den alternative modellen er <strong>peer-to-peer</strong>. Her finnes det ingen alltid-på-tjener. Vilkårlige endesystemer — <em>peers</em> — snakker direkte med hverandre. En peer ber om en tjeneste fra en annen peer, og leverer selv tjenester tilbake til andre. Den fascinerende egenskapen er <em>selv-skalering</em>: hver nye peer som kommer inn i systemet bringer ikke bare nye krav, men også ny kapasitet. Jo flere som vil ha filen, jo flere er det som kan dele filen videre.</p>
 
-    <p>Prisen man betaler er kompleksitet. Peers er kun til og fra koblet, IP-adressene deres skifter, og det finnes ingen sentral oversikt. Klassiske eksempler er BitTorrent (fildeling), KanKan (strÃ¸mming) og Skype (VoIP).</p>
+    <p>Prisen man betaler er kompleksitet. Peers er kun til og fra koblet, IP-adressene deres skifter, og det finnes ingen sentral oversikt. Klassiske eksempler er BitTorrent (fildeling), KanKan (strømming) og Skype (VoIP).</p>
 
     <div class="callout callout-blue">
       <h4>Hybridvirkeligheten</h4>
-      <p>I praksis er nesten alle moderne systemer hybrider. Skype bruker peer-to-peer for selve samtalen, men trenger sentraliserte tjenere for Ã¥ finne ut <em>hvor</em> motparten er. BitTorrent bruker P2P for filoverfÃ¸ringen, men ofte en sentralisert Â«trackerÂ» eller distribuert hashtabell for Ã¥ oppdage andre peers. Den rene formen er sjeldne; det viktige er Ã¥ forstÃ¥ begge modellene fordi systemer lÃ¥ner trekk fra begge.</p>
+      <p>I praksis er nesten alle moderne systemer hybrider. Skype bruker peer-to-peer for selve samtalen, men trenger sentraliserte tjenere for å finne ut <em>hvor</em> motparten er. BitTorrent bruker P2P for filoverføringen, men ofte en sentralisert «tracker» eller distribuert hashtabell for å oppdage andre peers. Den rene formen er sjeldne; det viktige er å forstå begge modellene fordi systemer låner trekk fra begge.</p>
     </div>
 
     <div class="quiz" id="quiz1">
-      <div class="label">Sjekk forstÃ¥elsen</div>
-      <div class="q-text">Hvorfor skalerer P2P-fildistribusjon prinsipielt bedre enn klientâ€“server?</div>
+      <div class="label">Sjekk forståelsen</div>
+      <div class="q-text">Hvorfor skalerer P2P-fildistribusjon prinsipielt bedre enn klient–server?</div>
       <div class="options">
-        <button class="option" data-correct="false">Fordi peers ligger geografisk nÃ¦rmere brukerne enn sentrale tjenere.</button>
+        <button class="option" data-correct="false">Fordi peers ligger geografisk nærmere brukerne enn sentrale tjenere.</button>
         <button class="option" data-correct="true">Fordi hver ny peer som ber om filen, samtidig bringer egen opplastningskapasitet inn i systemet.</button>
-        <button class="option" data-correct="false">Fordi P2P-protokoller bruker UDP istedenfor TCP og dermed unngÃ¥r overhead.</button>
-        <button class="option" data-correct="false">Fordi tjeneren slipper Ã¥ vÃ¦re pÃ¥ nÃ¥r peers fÃ¸rst har koblet seg sammen.</button>
+        <button class="option" data-correct="false">Fordi P2P-protokoller bruker UDP istedenfor TCP og dermed unngår overhead.</button>
+        <button class="option" data-correct="false">Fordi tjeneren slipper å være på når peers først har koblet seg sammen.</button>
       </div>
-      <div class="explanation">Riktig â€” dette er nÃ¸kkelen til selv-skalering. I klientâ€“server er total opplastningskapasitet konstant (= u<sub>s</sub>). I P2P vokser den med antall peers, fordi hver peer bÃ¥de laster ned <em>og</em> laster opp.</div>
+      <div class="explanation">Riktig — dette er nøkkelen til selv-skalering. I klient–server er total opplastningskapasitet konstant (= u<sub>s</sub>). I P2P vokser den med antall peers, fordi hver peer både laster ned <em>og</em> laster opp.</div>
     </div>
   </div>
 </section>
@@ -141,58 +141,58 @@
 <!-- ========== 03 TRANSPORT ========== -->
 <section id="transport">
   <div class="container">
-    <div class="section-badge">03 Â· Hva trenger appen fra laget under?</div>
+    <div class="section-badge">03 · Hva trenger appen fra laget under?</div>
     <h2>Bestillingen til transportlaget</h2>
-    <p class="section-intro">En app er kresen. Den vil ha noen ting fra transportlaget â€” men ikke alle apper vil ha det samme.</p>
+    <p class="section-intro">En app er kresen. Den vil ha noen ting fra transportlaget — men ikke alle apper vil ha det samme.</p>
 
-    <p class="lead">NÃ¥r du designer en applikasjonsprotokoll, mÃ¥ du velge hvilken transporttjeneste du skal sitte pÃ¥. Det finnes to hovedvarianter pÃ¥ Internett â€” TCP og UDP â€” og de gir deg veldig forskjellige garantier. For Ã¥ velge fornuftig mÃ¥ du vite hva appen din faktisk trenger.</p>
+    <p class="lead">Når du designer en applikasjonsprotokoll, må du velge hvilken transporttjeneste du skal sitte på. Det finnes to hovedvarianter på Internett — TCP og UDP — og de gir deg veldig forskjellige garantier. For å velge fornuftig må du vite hva appen din faktisk trenger.</p>
 
-    <p>Det er fire dimensjoner som spiller inn. <strong>DatapÃ¥litelighet</strong>: tÃ¥ler appen at noen pakker forsvinner? FiloverfÃ¸ring krever 100 % pÃ¥litelighet â€” Ã©n tapt byte og hele filen er korrupt. Lyd og video kan derimot tÃ¥le litt tap; en glipp her og der gir litt knatring, ikke katastrofe. <strong>Tidskrav</strong>: mÃ¥ data komme frem innen en viss tid? Internettelefoni og spill trenger lav forsinkelse for Ã¥ fÃ¸les brukbart. En filnedlasting bryr seg ikke om ett sekund hit eller dit. <strong>GjennomstrÃ¸mning</strong>: trenger appen en minimumshastighet? Streaming-video gjÃ¸r det. E-post gjÃ¸r det ikke. <strong>Sikkerhet</strong>: skal data krypteres, integritetssjekkes, autentiseres?</p>
+    <p>Det er fire dimensjoner som spiller inn. <strong>Datapålitelighet</strong>: tåler appen at noen pakker forsvinner? Filoverføring krever 100 % pålitelighet — én tapt byte og hele filen er korrupt. Lyd og video kan derimot tåle litt tap; en glipp her og der gir litt knatring, ikke katastrofe. <strong>Tidskrav</strong>: må data komme frem innen en viss tid? Internettelefoni og spill trenger lav forsinkelse for å føles brukbart. En filnedlasting bryr seg ikke om ett sekund hit eller dit. <strong>Gjennomstrømning</strong>: trenger appen en minimumshastighet? Streaming-video gjør det. E-post gjør det ikke. <strong>Sikkerhet</strong>: skal data krypteres, integritetssjekkes, autentiseres?</p>
 
     <h3>TCP vs. UDP, kort fortalt</h3>
-    <p><strong>TCP</strong> gir deg pÃ¥litelig overfÃ¸ring (alle byter kommer frem, i riktig rekkefÃ¸lge), flytkontroll (avsender overstyrer ikke en treg mottaker) og overbelastningskontroll (avsender bremser nÃ¥r nettet er stappet). I tillegg er TCP forbindelsesorientert â€” det mÃ¥ settes opp en forbindelse mellom partene fÃ¸r data kan flyte. TCP gir <em>ikke</em> tidsgarantier eller minimum gjennomstrÃ¸mning, og det gir heller ikke sikkerhet i seg selv.</p>
+    <p><strong>TCP</strong> gir deg pålitelig overføring (alle byter kommer frem, i riktig rekkefølge), flytkontroll (avsender overstyrer ikke en treg mottaker) og overbelastningskontroll (avsender bremser når nettet er stappet). I tillegg er TCP forbindelsesorientert — det må settes opp en forbindelse mellom partene før data kan flyte. TCP gir <em>ikke</em> tidsgarantier eller minimum gjennomstrømning, og det gir heller ikke sikkerhet i seg selv.</p>
 
-    <p><strong>UDP</strong> er det motsatte: ingen pÃ¥litelighet, ingen flytkontroll, ingen overbelastningskontroll, ingen forbindelsesoppsett. Du sender en pakke, den kommer kanskje frem, kanskje ikke. Hvorfor finnes UDP da? Fordi det er enkelt og raskt, og fordi noen apper foretrekker Ã¥ ta hÃ¥nd om pÃ¥litelighet selv â€” eller faktisk ikke vil ha den. Sanntids stemmesamtaler vil heller miste noen pakker enn Ã¥ vente pÃ¥ retransmisjoner.</p>
+    <p><strong>UDP</strong> er det motsatte: ingen pålitelighet, ingen flytkontroll, ingen overbelastningskontroll, ingen forbindelsesoppsett. Du sender en pakke, den kommer kanskje frem, kanskje ikke. Hvorfor finnes UDP da? Fordi det er enkelt og raskt, og fordi noen apper foretrekker å ta hånd om pålitelighet selv — eller faktisk ikke vil ha den. Sanntids stemmesamtaler vil heller miste noen pakker enn å vente på retransmisjoner.</p>
 
     <table>
       <thead>
-        <tr><th>Applikasjon</th><th>Datatap</th><th>GjennomstrÃ¸mning</th><th>Tidssensitiv?</th><th>Transport</th></tr>
+        <tr><th>Applikasjon</th><th>Datatap</th><th>Gjennomstrømning</th><th>Tidssensitiv?</th><th>Transport</th></tr>
       </thead>
       <tbody>
-        <tr><td>FiloverfÃ¸ring / nedlasting</td><td>Ingen tap</td><td>Elastisk</td><td>Nei</td><td class="mono-cell">TCP</td></tr>
+        <tr><td>Filoverføring / nedlasting</td><td>Ingen tap</td><td>Elastisk</td><td>Nei</td><td class="mono-cell">TCP</td></tr>
         <tr><td>E-post</td><td>Ingen tap</td><td>Elastisk</td><td>Nei</td><td class="mono-cell">TCP</td></tr>
         <tr><td>Webdokumenter</td><td>Ingen tap</td><td>Elastisk</td><td>Nei</td><td class="mono-cell">TCP</td></tr>
-        <tr><td>Sanntid lyd/video</td><td>Tolererer tap</td><td>5 kbps â€“ 5 Mbps</td><td>Ja, 10-talls ms</td><td class="mono-cell">TCP eller UDP</td></tr>
-        <tr><td>StrÃ¸mmet lyd/video</td><td>Tolererer tap</td><td>10 kbps â€“ 5 Mbps</td><td>Ja, fÃ¥ sekunder</td><td class="mono-cell">TCP</td></tr>
-        <tr><td>Interaktive spill</td><td>Tolererer tap</td><td>FÃ¥ kbps og opp</td><td>Ja, 10-talls ms</td><td class="mono-cell">UDP / TCP</td></tr>
+        <tr><td>Sanntid lyd/video</td><td>Tolererer tap</td><td>5 kbps – 5 Mbps</td><td>Ja, 10-talls ms</td><td class="mono-cell">TCP eller UDP</td></tr>
+        <tr><td>Strømmet lyd/video</td><td>Tolererer tap</td><td>10 kbps – 5 Mbps</td><td>Ja, få sekunder</td><td class="mono-cell">TCP</td></tr>
+        <tr><td>Interaktive spill</td><td>Tolererer tap</td><td>Få kbps og opp</td><td>Ja, 10-talls ms</td><td class="mono-cell">UDP / TCP</td></tr>
       </tbody>
     </table>
 
     <h3>Sikre TCP med TLS</h3>
-    <p>Vanlige TCP- og UDP-sockets er ukrypterte. Sender du et passord gjennom en vanlig TCP-socket, vandrer det i klartekst over Internett â€” og hvem som helst pÃ¥ veien kan lese det. LÃ¸sningen heter <strong>Transport Layer Security</strong> (TLS), som ligger som et lag oppÃ¥ TCP og gir kryptering, dataintegritet og endepunktsautentisering. TLS er implementert som biblioteker i applikasjonslaget â€” apper kaller TLS-funksjoner, som i sin tur snakker med TCP. Klartekst sendt inn i en TLS-socket kommer ut igjen i den andre enden, men over nettet har det vandret kryptert.</p>
+    <p>Vanlige TCP- og UDP-sockets er ukrypterte. Sender du et passord gjennom en vanlig TCP-socket, vandrer det i klartekst over Internett — og hvem som helst på veien kan lese det. Løsningen heter <strong>Transport Layer Security</strong> (TLS), som ligger som et lag oppå TCP og gir kryptering, dataintegritet og endepunktsautentisering. TLS er implementert som biblioteker i applikasjonslaget — apper kaller TLS-funksjoner, som i sin tur snakker med TCP. Klartekst sendt inn i en TLS-socket kommer ut igjen i den andre enden, men over nettet har det vandret kryptert.</p>
   </div>
 </section>
 
 <!-- ========== 04 HTTP ========== -->
 <section id="http">
   <div class="container">
-    <div class="section-badge">04 Â· Web og HTTP</div>
+    <div class="section-badge">04 · Web og HTTP</div>
     <h2>Protokollen som lager en webside</h2>
-    <p class="section-intro">NÃ¥r du skriver en URL i nettleseren, hva skjer egentlig? Svaret er HTTP â€” Webens applikasjonsprotokoll, og kanskje den mest brukte protokollen i verden.</p>
+    <p class="section-intro">Når du skriver en URL i nettleseren, hva skjer egentlig? Svaret er HTTP — Webens applikasjonsprotokoll, og kanskje den mest brukte protokollen i verden.</p>
 
-    <p class="lead">En webside er sjelden Ã©n ting. Den er en <em>HTML-fil</em> som refererer til andre objekter â€” bilder, stylesheets, skript, fonter, videoer â€” og hvert av disse objektene kan hente fra forskjellige tjenere pÃ¥ Internett. NÃ¥r nettleseren skal vise en side, mÃ¥ den fÃ¸rst hente HTML-en, deretter parse den for Ã¥ finne ut hvilke andre objekter som trengs, og sÃ¥ hente alle disse ogsÃ¥. Dette er en koreografert ballett av forespÃ¸rsler og svar, og det er HTTP som dirigerer alt sammen.</p>
+    <p class="lead">En webside er sjelden én ting. Den er en <em>HTML-fil</em> som refererer til andre objekter — bilder, stylesheets, skript, fonter, videoer — og hvert av disse objektene kan hente fra forskjellige tjenere på Internett. Når nettleseren skal vise en side, må den først hente HTML-en, deretter parse den for å finne ut hvilke andre objekter som trengs, og så hente alle disse også. Dette er en koreografert ballett av forespørsler og svar, og det er HTTP som dirigerer alt sammen.</p>
 
-    <p>HTTP stÃ¥r for <em>HyperText Transfer Protocol</em>. Den fÃ¸lger en klientâ€“server-modell: nettleseren er klienten som sender forespÃ¸rsler, webserveren er tjeneren som svarer. HTTP bruker TCP under panseret â€” fordi vi trenger pÃ¥litelig overfÃ¸ring for at HTML-en ikke skal ankomme korrupt. Klienten initierer en TCP-forbindelse til tjeneren pÃ¥ port 80 (eller 443 for HTTPS), tjeneren aksepterer, sÃ¥ utveksles HTTP-meldingene, og til slutt lukkes forbindelsen.</p>
+    <p>HTTP står for <em>HyperText Transfer Protocol</em>. Den følger en klient–server-modell: nettleseren er klienten som sender forespørsler, webserveren er tjeneren som svarer. HTTP bruker TCP under panseret — fordi vi trenger pålitelig overføring for at HTML-en ikke skal ankomme korrupt. Klienten initierer en TCP-forbindelse til tjeneren på port 80 (eller 443 for HTTPS), tjeneren aksepterer, så utveksles HTTP-meldingene, og til slutt lukkes forbindelsen.</p>
 
-    <p>En kritisk egenskap: HTTP er <strong>tilstandslÃ¸st</strong>. Tjeneren husker ingenting om tidligere forespÃ¸rsler fra samme klient. Hver forespÃ¸rsel er en blank tavle. Det hÃ¸res ut som en svakhet â€” og vi skal se at det skaper utfordringer som mÃ¥ lÃ¸ses med cookies â€” men det er ogsÃ¥ en enorm styrke. TilstandslÃ¸se protokoller er enkle Ã¥ implementere, enkle Ã¥ skalere, og krasjer en tjener kan en ny ta over uten Ã¥ trenge Ã¥ rekonstruere noen Â«sesjonstilstandÂ».</p>
+    <p>En kritisk egenskap: HTTP er <strong>tilstandsløst</strong>. Tjeneren husker ingenting om tidligere forespørsler fra samme klient. Hver forespørsel er en blank tavle. Det høres ut som en svakhet — og vi skal se at det skaper utfordringer som må løses med cookies — men det er også en enorm styrke. Tilstandsløse protokoller er enkle å implementere, enkle å skalere, og krasjer en tjener kan en ny ta over uten å trenge å rekonstruere noen «sesjonstilstand».</p>
 
     <h3>To smaker av HTTP-forbindelser</h3>
-    <p>I tidlig HTTP-tid (HTTP/1.0) brukte man <strong>ikke-persistente</strong> forbindelser: Ã©n TCP-forbindelse per objekt. Du Ã¥pner forbindelsen, henter HTML-en, lukker. Ã…pner ny forbindelse, henter fÃ¸rste bilde, lukker. Ã…pner ny forbindelse, henter andre bilde, lukker. For en side med ti bilder betyr det elleve TCP-oppsett. Hvert oppsett koster Ã©n RTT bare for Ã¥ komme i gang, pluss OS-overhead.</p>
+    <p>I tidlig HTTP-tid (HTTP/1.0) brukte man <strong>ikke-persistente</strong> forbindelser: én TCP-forbindelse per objekt. Du åpner forbindelsen, henter HTML-en, lukker. Åpner ny forbindelse, henter første bilde, lukker. Åpner ny forbindelse, henter andre bilde, lukker. For en side med ti bilder betyr det elleve TCP-oppsett. Hvert oppsett koster én RTT bare for å komme i gang, pluss OS-overhead.</p>
 
-    <p>HTTP/1.1 introduserte <strong>persistente</strong> forbindelser: Ã¥pne Ã©n TCP-forbindelse, send mange forespÃ¸rsler over den, lukk nÃ¥r du er ferdig. Forskjellen kan virke liten, men den er stor â€” sÃ¦rlig over forbindelser med hÃ¸y RTT.</p>
+    <p>HTTP/1.1 introduserte <strong>persistente</strong> forbindelser: åpne én TCP-forbindelse, send mange forespørsler over den, lukk når du er ferdig. Forskjellen kan virke liten, men den er stor — særlig over forbindelser med høy RTT.</p>
 
     <h3>Responstid: hvorfor RTT betyr alt</h3>
-    <p>La oss regne. <strong>RTT</strong> (round-trip time) er tiden det tar for en liten pakke Ã¥ reise fra klient til tjener og tilbake. For en ikke-persistent HTTP-forespÃ¸rsel om ett objekt:</p>
+    <p>La oss regne. <strong>RTT</strong> (round-trip time) er tiden det tar for en liten pakke å reise fra klient til tjener og tilbake. For en ikke-persistent HTTP-forespørsel om ett objekt:</p>
 
     <figure class="fig-frame">
       <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg">
@@ -202,7 +202,7 @@
         <text x="540" y="28" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#6b6257" font-weight="600">TJENER</text>
         <line x1="180" y1="60" x2="540" y2="90" stroke="#b04428" stroke-width="1.3"/>
         <line x1="540" y1="90" x2="180" y2="120" stroke="#b04428" stroke-width="1.3"/>
-        <text x="65" y="68" font-family="Newsreader" font-size="13" font-style="italic" fill="#1a1612">Ã¥pner TCP</text>
+        <text x="65" y="68" font-family="Newsreader" font-size="13" font-style="italic" fill="#1a1612">åpner TCP</text>
         <g transform="translate(360,75) rotate(4.76364169043314)"><text x="0" y="-14" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">RTT</text></g>
         <line x1="180" y1="135" x2="540" y2="165" stroke="#2d4a7a" stroke-width="1.3"/>
         <line x1="540" y1="165" x2="180" y2="195" stroke="#2d4a7a" stroke-width="1.3"/>
@@ -210,25 +210,25 @@
         <g transform="translate(360,150) rotate(4.76364169043314)"><text x="0" y="-14" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a">RTT</text></g>
         <rect x="170" y="195" width="20" height="80" fill="#3d6b3a"/>
         <text x="65" y="240" font-family="Newsreader" font-size="13" font-style="italic" fill="#1a1612">fil mottatt</text>
-        <text x="610" y="240" text-anchor="start" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">overfÃ¸ring</text>
+        <text x="610" y="240" text-anchor="start" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">overføring</text>
         <text x="610" y="254" text-anchor="start" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">av fil</text>
-        <text x="350" y="305" text-anchor="middle" font-family="Newsreader" font-size="14" font-style="italic" fill="#8a3420">total = 2Â·RTT + overfÃ¸ringstid</text>
+        <text x="350" y="305" text-anchor="middle" font-family="Newsreader" font-size="14" font-style="italic" fill="#8a3420">total = 2·RTT + overføringstid</text>
       </svg>
-      <figcaption>Ikke-persistent HTTP: Ã©n RTT for TCP-oppsett, Ã©n RTT for forespÃ¸rsel og start av svar, pluss tiden det tar Ã¥ overfÃ¸re selve filen.</figcaption>
+      <figcaption>Ikke-persistent HTTP: én RTT for TCP-oppsett, én RTT for forespørsel og start av svar, pluss tiden det tar å overføre selve filen.</figcaption>
     </figure>
 
-    <p>Persistent HTTP fjerner den fÃ¸rste RTT-en for hvert ekstra objekt â€” du betaler bare TCP-oppsettet Ã©n gang, sÃ¥ kan du sende den ene forespÃ¸rselen etter den andre over samme forbindelse. Klienten kan til og med pipeline forespÃ¸rslene: send forespÃ¸rsel for objekt 2 fÃ¸r svaret pÃ¥ objekt 1 er kommet i havn. For en side med mange referanser kan dette halvere lastetiden.</p>
+    <p>Persistent HTTP fjerner den første RTT-en for hvert ekstra objekt — du betaler bare TCP-oppsettet én gang, så kan du sende den ene forespørselen etter den andre over samme forbindelse. Klienten kan til og med pipeline forespørslene: send forespørsel for objekt 2 før svaret på objekt 1 er kommet i havn. For en side med mange referanser kan dette halvere lastetiden.</p>
 
     <div class="quiz" id="quiz-http-conn">
-      <div class="label">Sjekk forstÃ¥elsen</div>
-      <div class="q-text">En webside inneholder en HTML-fil og 8 bilder, alle pÃ¥ samme tjener. Med ikke-persistent HTTP (ingen parallelle forbindelser) â€” hvor mange TCP-forbindelser mÃ¥ opprettes, og hva er minimum antall RTT-er for Ã¥ laste hele siden?</div>
+      <div class="label">Sjekk forståelsen</div>
+      <div class="q-text">En webside inneholder en HTML-fil og 8 bilder, alle på samme tjener. Med ikke-persistent HTTP (ingen parallelle forbindelser) — hvor mange TCP-forbindelser må opprettes, og hva er minimum antall RTT-er for å laste hele siden?</div>
       <div class="options">
         <button class="option" data-correct="false">1 forbindelse, 9 RTT-er</button>
         <button class="option" data-correct="false">9 forbindelser, 9 RTT-er</button>
-        <button class="option" data-correct="true">9 forbindelser, 18 RTT-er (pluss overfÃ¸ringstid)</button>
+        <button class="option" data-correct="true">9 forbindelser, 18 RTT-er (pluss overføringstid)</button>
         <button class="option" data-correct="false">9 forbindelser, 10 RTT-er</button>
       </div>
-      <div class="explanation">Med ikke-persistent HTTP trenger hvert objekt sin egen TCP-forbindelse, altsÃ¥ 9 stykker (1 HTML + 8 bilder). Hver forbindelse koster 2 RTT-er (1 for TCP-oppsett + 1 for forespÃ¸rsel/svar), totalt 18 RTT-er pluss selve overfÃ¸ringstiden. Med persistent HTTP ville du klart deg med 1 forbindelse og 10 RTT-er (1 for TCP-oppsett + 1 per objekt) â€” eller enda mindre med pipelining.</div>
+      <div class="explanation">Med ikke-persistent HTTP trenger hvert objekt sin egen TCP-forbindelse, altså 9 stykker (1 HTML + 8 bilder). Hver forbindelse koster 2 RTT-er (1 for TCP-oppsett + 1 for forespørsel/svar), totalt 18 RTT-er pluss selve overføringstiden. Med persistent HTTP ville du klart deg med 1 forbindelse og 10 RTT-er (1 for TCP-oppsett + 1 per objekt) — eller enda mindre med pipelining.</div>
     </div>
   </div>
 </section>
@@ -236,15 +236,15 @@
 <!-- ========== 05 MELDINGER ========== -->
 <section id="meldinger">
   <div class="container">
-    <div class="section-badge">05 Â· HTTP-meldingen, brettet ut</div>
-    <h2>Hva en forespÃ¸rsel og et svar faktisk inneholder</h2>
+    <div class="section-badge">05 · HTTP-meldingen, brettet ut</div>
+    <h2>Hva en forespørsel og et svar faktisk inneholder</h2>
     <p class="section-intro">HTTP-meldinger er bemerkelsesverdig lesbare. Du kan i praksis snakke med en webserver fra et tastatur via Telnet.</p>
 
-    <p>Det finnes to typer HTTP-meldinger: forespÃ¸rsler (sendt fra klient til tjener) og svar (tjener til klient). Begge er rent ASCII â€” ingen binÃ¦r obscuritÃ© â€” og bestÃ¥r av tre deler: en startlinje, et antall hodelinjer, og en valgfri kropp.</p>
+    <p>Det finnes to typer HTTP-meldinger: forespørsler (sendt fra klient til tjener) og svar (tjener til klient). Begge er rent ASCII — ingen binær obscurité — og består av tre deler: en startlinje, et antall hodelinjer, og en valgfri kropp.</p>
 
     <div class="http-msg">
       <div class="panel">
-        <h5>ForespÃ¸rsel</h5>
+        <h5>Forespørsel</h5>
 <pre><span class="kw">GET</span> /index.html HTTP/1.1
 Host: www.cs.umass.edu
 User-Agent: Firefox/3.6
@@ -268,26 +268,26 @@ Content-Type: text/html
       </div>
     </div>
 
-    <p>ForespÃ¸rselens fÃ¸rste linje â€” kalt <em>request line</em> â€” har formen <code>METODE  URL  VERSJON</code>. Hodelinjene fÃ¸lger som <code>navn: verdi</code>. En tom linje (CRLF) markerer slutten pÃ¥ hodet. Etter hodet kan det komme en kropp, for eksempel data fra et utfylt skjema.</p>
+    <p>Forespørselens første linje — kalt <em>request line</em> — har formen <code>METODE  URL  VERSJON</code>. Hodelinjene følger som <code>navn: verdi</code>. En tom linje (CRLF) markerer slutten på hodet. Etter hodet kan det komme en kropp, for eksempel data fra et utfylt skjema.</p>
 
     <h3>Metodene</h3>
-    <p>HTTP definerer flere metoder, og hver har sin tydelige rolle. <strong>GET</strong> ber om et objekt; eventuelle parametre legges i URL-en etter et spÃ¸rsmÃ¥lstegn. <strong>POST</strong> sender data til tjeneren â€” typisk fra et webskjema â€” i forespÃ¸rselens kropp. <strong>HEAD</strong> ber om hodet til et objekt uten selve innholdet; nyttig for debugging og for cacher som vil sjekke om noe er endret. <strong>PUT</strong> laster opp en ny fil til en angitt URL og erstatter eventuelt eksisterende innhold der.</p>
+    <p>HTTP definerer flere metoder, og hver har sin tydelige rolle. <strong>GET</strong> ber om et objekt; eventuelle parametre legges i URL-en etter et spørsmålstegn. <strong>POST</strong> sender data til tjeneren — typisk fra et webskjema — i forespørselens kropp. <strong>HEAD</strong> ber om hodet til et objekt uten selve innholdet; nyttig for debugging og for cacher som vil sjekke om noe er endret. <strong>PUT</strong> laster opp en ny fil til en angitt URL og erstatter eventuelt eksisterende innhold der.</p>
 
     <h3>Statuskoder</h3>
-    <p>Svarets fÃ¸rste linje inneholder en statuskode pÃ¥ tre sifre. Du kjenner sikkert noen av dem allerede:</p>
+    <p>Svarets første linje inneholder en statuskode på tre sifre. Du kjenner sikkert noen av dem allerede:</p>
     <table>
       <tbody>
-        <tr><td class="mono-cell">200 OK</td><td>ForespÃ¸rselen lyktes; objektet fÃ¸lger med i svaret.</td></tr>
+        <tr><td class="mono-cell">200 OK</td><td>Forespørselen lyktes; objektet følger med i svaret.</td></tr>
         <tr><td class="mono-cell">301 Moved Permanently</td><td>Objektet er flyttet; ny adresse oppgis i <code>Location</code>-hodet.</td></tr>
-        <tr><td class="mono-cell">400 Bad Request</td><td>Tjeneren forstod ikke forespÃ¸rselen.</td></tr>
-        <tr><td class="mono-cell">404 Not Found</td><td>Det forespurte dokumentet finnes ikke pÃ¥ tjeneren.</td></tr>
-        <tr><td class="mono-cell">505 HTTP Version Not Supported</td><td>Tjeneren stÃ¸tter ikke den HTTP-versjonen klienten brukte.</td></tr>
+        <tr><td class="mono-cell">400 Bad Request</td><td>Tjeneren forstod ikke forespørselen.</td></tr>
+        <tr><td class="mono-cell">404 Not Found</td><td>Det forespurte dokumentet finnes ikke på tjeneren.</td></tr>
+        <tr><td class="mono-cell">505 HTTP Version Not Supported</td><td>Tjeneren støtter ikke den HTTP-versjonen klienten brukte.</td></tr>
       </tbody>
     </table>
 
     <div class="callout">
-      <h4>PrÃ¸v det selv</h4>
-      <p>Du kan snakke direkte med en webserver fra terminalen. Skriv <code>telnet gaia.cs.umass.edu 80</code>, sÃ¥ har du en TCP-forbindelse pÃ¥ port 80. Skriv en GET-forespÃ¸rsel manuelt (avslutt med to enter), og se rÃ¥ HTTP-respons komme tilbake. Det er Ã©n av de hurtigste mÃ¥tene Ã¥ avmystifisere webens innerste virkemÃ¥te pÃ¥.</p>
+      <h4>Prøv det selv</h4>
+      <p>Du kan snakke direkte med en webserver fra terminalen. Skriv <code>telnet gaia.cs.umass.edu 80</code>, så har du en TCP-forbindelse på port 80. Skriv en GET-forespørsel manuelt (avslutt med to enter), og se rå HTTP-respons komme tilbake. Det er én av de hurtigste måtene å avmystifisere webens innerste virkemåte på.</p>
     </div>
   </div>
 </section>
@@ -295,18 +295,18 @@ Content-Type: text/html
 <!-- ========== 06 COOKIES ========== -->
 <section id="cookies">
   <div class="container">
-    <div class="section-badge">06 Â· Tilstand i en tilstandslÃ¸s verden</div>
+    <div class="section-badge">06 · Tilstand i en tilstandsløs verden</div>
     <h2>Cookies, eller hvorfor nettleseren din vet hvem du er</h2>
-    <p class="section-intro">HTTP er tilstandslÃ¸s â€” men handlekurven din i nettbutikken vet jo hva du har lagt i den. Hvordan henger det sammen?</p>
+    <p class="section-intro">HTTP er tilstandsløs — men handlekurven din i nettbutikken vet jo hva du har lagt i den. Hvordan henger det sammen?</p>
 
-    <p class="lead">TilstandslÃ¸sheten i HTTP er en velsignelse for skalerbarhet og enkelhet, men en forbannelse hvis du faktisk vil bygge en applikasjon der brukeren skal kunne logge inn, fylle en handlekurv, eller fortsette der hen slapp i gÃ¥r. Hvordan kan en tjener kjenne igjen den samme brukeren mellom uavhengige forespÃ¸rsler? Svaret er en av Webens viktigste oppfinnelser: <strong>cookies</strong>.</p>
+    <p class="lead">Tilstandsløsheten i HTTP er en velsignelse for skalerbarhet og enkelhet, men en forbannelse hvis du faktisk vil bygge en applikasjon der brukeren skal kunne logge inn, fylle en handlekurv, eller fortsette der hen slapp i går. Hvordan kan en tjener kjenne igjen den samme brukeren mellom uavhengige forespørsler? Svaret er en av Webens viktigste oppfinnelser: <strong>cookies</strong>.</p>
 
-    <p>IdÃ©en er enkel. FÃ¸rste gang en bruker besÃ¸ker et nettsted, sender tjeneren en unik identifikator tilbake i et spesielt hodefelt â€” <code>Set-Cookie: 1678</code>. Nettleseren lagrer denne i en cookie-fil, knyttet til domenet. Neste gang brukeren ber om noe fra samme nettsted, legger nettleseren automatisk ved cookien i forespÃ¸rselen â€” <code>Cookie: 1678</code>. NÃ¥ kan tjeneren slÃ¥ opp identifikatoren i sin egen database og finne ut: Â«Aha, det er den brukeren som la to bÃ¸ker i handlekurven for ti minutter siden.Â»</p>
+    <p>Idéen er enkel. Første gang en bruker besøker et nettsted, sender tjeneren en unik identifikator tilbake i et spesielt hodefelt — <code>Set-Cookie: 1678</code>. Nettleseren lagrer denne i en cookie-fil, knyttet til domenet. Neste gang brukeren ber om noe fra samme nettsted, legger nettleseren automatisk ved cookien i forespørselen — <code>Cookie: 1678</code>. Nå kan tjeneren slå opp identifikatoren i sin egen database og finne ut: «Aha, det er den brukeren som la to bøker i handlekurven for ti minutter siden.»</p>
 
-    <p>Det er fire bevegelige deler i systemet: et <em>Set-Cookie</em>-hode i et HTTP-svar, et <em>Cookie</em>-hode i pÃ¥fÃ¸lgende HTTP-forespÃ¸rsler, en cookie-fil pÃ¥ brukerens maskin (administrert av nettleseren), og en database pÃ¥ tjenersiden der cookien knyttes til faktisk informasjon.</p>
+    <p>Det er fire bevegelige deler i systemet: et <em>Set-Cookie</em>-hode i et HTTP-svar, et <em>Cookie</em>-hode i påfølgende HTTP-forespørsler, en cookie-fil på brukerens maskin (administrert av nettleseren), og en database på tjenersiden der cookien knyttes til faktisk informasjon.</p>
 
     <div class="stepper" id="cookie-stepper">
-      <div class="label">Cookie-flyt â€” steg for steg</div>
+      <div class="label">Cookie-flyt — steg for steg</div>
       <div class="stage">
         <svg viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg" id="cookie-svg">
           <rect x="40" y="40" width="120" height="160" fill="#fdfaf2" stroke="#c9c0ae"/>
@@ -322,26 +322,26 @@ Content-Type: text/html
           <g id="arrow-group"></g>
         </svg>
       </div>
-      <div class="step-desc" id="cookie-step-text">FÃ¸rste besÃ¸k: brukeren kontakter tjeneren uten cookie.</div>
+      <div class="step-desc" id="cookie-step-text">Første besøk: brukeren kontakter tjeneren uten cookie.</div>
       <div class="controls">
-        <button id="cs-prev" disabled>â€¹ Forrige</button>
+        <button id="cs-prev" disabled>‹ Forrige</button>
         <span class="progress" id="cookie-counter">Steg 1 / 5</span>
-        <button id="cs-next">Neste â€º</button>
+        <button id="cs-next">Neste ›</button>
       </div>
     </div>
 
-    <p>Cookies brukes til mye nyttig: autorisasjon (hvem er du innlogget som?), handlekurver, anbefalinger, sesjonstilstand for webmail. Men de er ogsÃ¥ en av hovedmekanismene bak sporing pÃ¥ nettet. <strong>Tredjeparts persistente cookies</strong> â€” cookies satt av domener som ikke er det du ser i adressefeltet â€” gjÃ¸r at samme identifikator kan fÃ¸lge deg pÃ¥ tvers av mange forskjellige nettsteder, og bygge en svÃ¦rt detaljert profil av aktiviteten din.</p>
+    <p>Cookies brukes til mye nyttig: autorisasjon (hvem er du innlogget som?), handlekurver, anbefalinger, sesjonstilstand for webmail. Men de er også en av hovedmekanismene bak sporing på nettet. <strong>Tredjeparts persistente cookies</strong> — cookies satt av domener som ikke er det du ser i adressefeltet — gjør at samme identifikator kan følge deg på tvers av mange forskjellige nettsteder, og bygge en svært detaljert profil av aktiviteten din.</p>
 
     <div class="callout callout-blue">
       <h4>Norske regler fra 2025</h4>
-      <p>Stortinget har vedtatt en ny ekomlov som trÃ¥dte i kraft 1. januar 2025. Den krever at samtykke til informasjonskapsler oppfyller GDPR-kravene: frivillig, spesifikt, informert, utvetydig, gitt gjennom en aktiv handling, dokumenterbart, og mulig Ã¥ trekke tilbake like lett som det ble gitt. Dette er grunnen til at nesten alle nettsteder nÃ¥ viser deg en cookie-banner ved fÃ¸rste besÃ¸k.</p>
+      <p>Stortinget har vedtatt en ny ekomlov som trådte i kraft 1. januar 2025. Den krever at samtykke til informasjonskapsler oppfyller GDPR-kravene: frivillig, spesifikt, informert, utvetydig, gitt gjennom en aktiv handling, dokumenterbart, og mulig å trekke tilbake like lett som det ble gitt. Dette er grunnen til at nesten alle nettsteder nå viser deg en cookie-banner ved første besøk.</p>
     </div>
 
     <div class="reveal" id="reveal-cookies">
-      <div class="q">HTTP er tilstandslÃ¸st, men cookies gir tilstand. Hvorfor valgte man ikke bare Ã¥ gjÃ¸re HTTP tilstandsbevart fra starten, i stedet for Ã¥ legge pÃ¥ cookies etterpÃ¥?</div>
+      <div class="q">HTTP er tilstandsløst, men cookies gir tilstand. Hvorfor valgte man ikke bare å gjøre HTTP tilstandsbevart fra starten, i stedet for å legge på cookies etterpå?</div>
       <button onclick="document.getElementById('reveal-cookies-ans').classList.add('show')">Vis svar</button>
       <div class="answer" id="reveal-cookies-ans">
-        <p>TilstandslÃ¸shet er en bevisst designbeslutning som gir store fordeler: tjenere trenger ikke huske noe mellom forespÃ¸rsler, noe som gjÃ¸r det enkelt Ã¥ skalere (legg til flere tjenere bak en lastbalanser â€” en hvilken som helst av dem kan svare pÃ¥ en hvilken som helst forespÃ¸rsel). Hvis tjeneren krasjer, trenger den ikke Ã¥ rekonstruere noen sesjonstilstand. TilstandslÃ¸se protokoller er ogsÃ¥ enklere Ã¥ implementere og enklere Ã¥ feilsÃ¸ke. Cookies lar deg legge til tilstand <em>der du trenger det</em>, uten Ã¥ pÃ¥tvinge det pÃ¥ hele protokollen. Det er et Â«opt-inÂ»-system: bare de applikasjonene som faktisk trenger tilstand, betaler kostnaden.</p>
+        <p>Tilstandsløshet er en bevisst designbeslutning som gir store fordeler: tjenere trenger ikke huske noe mellom forespørsler, noe som gjør det enkelt å skalere (legg til flere tjenere bak en lastbalanser — en hvilken som helst av dem kan svare på en hvilken som helst forespørsel). Hvis tjeneren krasjer, trenger den ikke å rekonstruere noen sesjonstilstand. Tilstandsløse protokoller er også enklere å implementere og enklere å feilsøke. Cookies lar deg legge til tilstand <em>der du trenger det</em>, uten å påtvinge det på hele protokollen. Det er et «opt-in»-system: bare de applikasjonene som faktisk trenger tilstand, betaler kostnaden.</p>
       </div>
     </div>
   </div>
@@ -350,18 +350,18 @@ Content-Type: text/html
 <!-- ========== 07 CACHE ========== -->
 <section id="cache">
   <div class="container">
-    <div class="section-badge">07 Â· Web-cache og betinget GET</div>
+    <div class="section-badge">07 · Web-cache og betinget GET</div>
     <h2>Ikke hent det du allerede har</h2>
-    <p class="section-intro">Den raskeste forespÃ¸rselen er den du aldri sender.</p>
+    <p class="section-intro">Den raskeste forespørselen er den du aldri sender.</p>
 
-    <p class="lead">En <strong>web-cache</strong> â€” eller proxy-tjener â€” er en mellommann som husker tidligere svar. Brukerens nettleser konfigureres til Ã¥ sende alle HTTP-forespÃ¸rsler gjennom cachen istedenfor direkte til opprinnelses-tjeneren. NÃ¥r en forespÃ¸rsel kommer inn, sjekker cachen fÃ¸rst om den allerede har objektet. Hvis ja, leverer den det umiddelbart. Hvis nei, henter den objektet fra opprinnelses-tjeneren, lagrer en kopi, og leverer det videre til klienten.</p>
+    <p class="lead">En <strong>web-cache</strong> — eller proxy-tjener — er en mellommann som husker tidligere svar. Brukerens nettleser konfigureres til å sende alle HTTP-forespørsler gjennom cachen istedenfor direkte til opprinnelses-tjeneren. Når en forespørsel kommer inn, sjekker cachen først om den allerede har objektet. Hvis ja, leverer den det umiddelbart. Hvis nei, henter den objektet fra opprinnelses-tjeneren, lagrer en kopi, og leverer det videre til klienten.</p>
 
-    <p>Cachen fungerer altsÃ¥ samtidig som tjener (overfor klienten) og som klient (overfor opprinnelses-tjeneren). Dette gir to viktige fordeler: <strong>kortere responstid</strong> for brukeren, fordi cachen typisk er nÃ¦rmere enn opprinnelses-tjeneren, og <strong>mindre trafikk</strong> pÃ¥ institusjonens aksesslinje, fordi populÃ¦rt innhold bare mÃ¥ lastes ned Ã©n gang. For en universitets-ISP eller et kontornettverk kan dette spare enorme mengder bÃ¥ndbredde.</p>
+    <p>Cachen fungerer altså samtidig som tjener (overfor klienten) og som klient (overfor opprinnelses-tjeneren). Dette gir to viktige fordeler: <strong>kortere responstid</strong> for brukeren, fordi cachen typisk er nærmere enn opprinnelses-tjeneren, og <strong>mindre trafikk</strong> på institusjonens aksesslinje, fordi populært innhold bare må lastes ned én gang. For en universitets-ISP eller et kontornettverk kan dette spare enorme mengder båndbredde.</p>
 
     <h3>Problemet: hvordan vet cachen at den har en gyldig kopi?</h3>
-    <p>Hva om innholdet pÃ¥ opprinnelses-tjeneren er endret siden cachen lagret kopien sin? Da serverer cachen utdatert innhold til brukeren â€” pinlig. LÃ¸sningen er <strong>betinget GET</strong>. Cachen sender en vanlig GET-forespÃ¸rsel, men legger til et hodefelt: <code>If-Modified-Since: &lt;dato&gt;</code>.</p>
+    <p>Hva om innholdet på opprinnelses-tjeneren er endret siden cachen lagret kopien sin? Da serverer cachen utdatert innhold til brukeren — pinlig. Løsningen er <strong>betinget GET</strong>. Cachen sender en vanlig GET-forespørsel, men legger til et hodefelt: <code>If-Modified-Since: &lt;dato&gt;</code>.</p>
 
-    <p>Tjeneren sjekker om objektet er endret etter den datoen. Hvis ikke, svarer den med <code>304 Not Modified</code> â€” en liten melding helt uten innhold. Cachen vet da at dens versjon fortsatt er gyldig og kan trygt levere den. Hvis objektet er endret, svarer tjeneren med <code>200 OK</code> og det nye innholdet, akkurat som en vanlig GET. Dette er en elegant optimalisering: i det vanlige tilfellet â€” der innholdet ikke har endret seg â€” slipper man Ã¥ overfÃ¸re objektet i det hele tatt, bare 304-meldingen.</p>
+    <p>Tjeneren sjekker om objektet er endret etter den datoen. Hvis ikke, svarer den med <code>304 Not Modified</code> — en liten melding helt uten innhold. Cachen vet da at dens versjon fortsatt er gyldig og kan trygt levere den. Hvis objektet er endret, svarer tjeneren med <code>200 OK</code> og det nye innholdet, akkurat som en vanlig GET. Dette er en elegant optimalisering: i det vanlige tilfellet — der innholdet ikke har endret seg — slipper man å overføre objektet i det hele tatt, bare 304-meldingen.</p>
 
     <figure class="fig-frame">
       <svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
@@ -381,19 +381,19 @@ Content-Type: text/html
         <text x="690" y="92" text-anchor="end" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">uendret</text>
         <text x="690" y="195" text-anchor="end" font-family="Newsreader" font-size="11" font-style="italic" fill="#6b6257">endret</text>
       </svg>
-      <figcaption>Betinget GET. Hvis objektet er uendret, slipper man hele overfÃ¸ringen og fÃ¥r bare en bitteliten 304-melding tilbake.</figcaption>
+      <figcaption>Betinget GET. Hvis objektet er uendret, slipper man hele overføringen og får bare en bitteliten 304-melding tilbake.</figcaption>
     </figure>
 
     <div class="quiz" id="quiz-cache">
-      <div class="label">Sjekk forstÃ¥elsen</div>
-      <div class="q-text">En web-cache har en lagret kopi av et objekt. Hva sender den til opprinnelses-tjeneren for Ã¥ sjekke om kopien fortsatt er gyldig?</div>
+      <div class="label">Sjekk forståelsen</div>
+      <div class="q-text">En web-cache har en lagret kopi av et objekt. Hva sender den til opprinnelses-tjeneren for å sjekke om kopien fortsatt er gyldig?</div>
       <div class="options">
-        <button class="option" data-correct="false">En HEAD-forespÃ¸rsel, som alltid returnerer uten innhold.</button>
+        <button class="option" data-correct="false">En HEAD-forespørsel, som alltid returnerer uten innhold.</button>
         <button class="option" data-correct="false">En vanlig GET, og sammenligner svaret med sin egen kopi.</button>
         <button class="option" data-correct="true">En GET med <code>If-Modified-Since</code>-hodet satt til datoen kopien ble lagret.</button>
-        <button class="option" data-correct="false">En DNS-forespÃ¸rsel for Ã¥ sjekke om tjeneren har endret IP-adresse.</button>
+        <button class="option" data-correct="false">En DNS-forespørsel for å sjekke om tjeneren har endret IP-adresse.</button>
       </div>
-      <div class="explanation">Betinget GET er en vanlig GET-forespÃ¸rsel med et ekstra hodefelt â€” <code>If-Modified-Since</code> â€” som inneholder datoen cachen sist hentet objektet. Tjeneren svarer med <code>304 Not Modified</code> (ingen kropp) hvis objektet er uendret, eller <code>200 OK</code> med det nye innholdet hvis det er endret. Dette sparer bÃ¥ndbredde i det vanlige tilfellet der innholdet ikke har endret seg.</div>
+      <div class="explanation">Betinget GET er en vanlig GET-forespørsel med et ekstra hodefelt — <code>If-Modified-Since</code> — som inneholder datoen cachen sist hentet objektet. Tjeneren svarer med <code>304 Not Modified</code> (ingen kropp) hvis objektet er uendret, eller <code>200 OK</code> med det nye innholdet hvis det er endret. Dette sparer båndbredde i det vanlige tilfellet der innholdet ikke har endret seg.</div>
     </div>
   </div>
 </section>
@@ -401,31 +401,31 @@ Content-Type: text/html
 <!-- ========== 08 HTTP/2 ========== -->
 <section id="http2">
   <div class="container">
-    <div class="section-badge">08 Â· HTTP/2 og hode-blokkeringen</div>
-    <h2>NÃ¥r Ã©n stor fil blokkerer alt det andre</h2>
-    <p class="section-intro">HTTP/1.1 var bra, men det hadde ett irriterende problem som HTTP/2 ble laget for Ã¥ fikse.</p>
+    <div class="section-badge">08 · HTTP/2 og hode-blokkeringen</div>
+    <h2>Når én stor fil blokkerer alt det andre</h2>
+    <p class="section-intro">HTTP/1.1 var bra, men det hadde ett irriterende problem som HTTP/2 ble laget for å fikse.</p>
 
-    <p class="lead">HTTP/1.1 lot deg pipelinje forespÃ¸rsler over Ã©n TCP-forbindelse, men tjeneren svarte i samme rekkefÃ¸lge som forespÃ¸rslene kom (FCFS â€” first-come-first-served). Forestill deg en webside som inneholder Ã©n stor video og tre smÃ¥ bilder. Klienten ber om alle fire i rekkefÃ¸lge: Oâ‚ (videoen), Oâ‚‚, Oâ‚ƒ, Oâ‚„. Tjeneren begynner Ã¥ sende Oâ‚, og fordi den er stor, mÃ¥ de tre smÃ¥ bildene vente bak i kÃ¸en. Dette kalles <strong>head-of-line-blokkering</strong> â€” det fremste objektet sperrer for alt det andre.</p>
+    <p class="lead">HTTP/1.1 lot deg pipelinje forespørsler over én TCP-forbindelse, men tjeneren svarte i samme rekkefølge som forespørslene kom (FCFS — first-come-first-served). Forestill deg en webside som inneholder én stor video og tre små bilder. Klienten ber om alle fire i rekkefølge: O1 (videoen), O2, O3, O4. Tjeneren begynner å sende O1, og fordi den er stor, må de tre små bildene vente bak i køen. Dette kalles <strong>head-of-line-blokkering</strong> — det fremste objektet sperrer for alt det andre.</p>
 
-    <p>Resultatet er at brukeren ser en blank side mens videoen overfÃ¸res, selv om de tre smÃ¥ bildene kunne vÃ¦rt overfÃ¸rt pÃ¥ et Ã¸yeblikk. Nettleserens hovedtriks for Ã¥ omgÃ¥ dette i HTTP/1.1 var Ã¥ Ã¥pne <em>flere parallelle TCP-forbindelser</em> til samme tjener, slik at de smÃ¥ objektene kunne hentes parallelt med det store. Det fungerer, men det er tungvint og svekker overbelastningskontrollen.</p>
+    <p>Resultatet er at brukeren ser en blank side mens videoen overføres, selv om de tre små bildene kunne vært overført på et øyeblikk. Nettleserens hovedtriks for å omgå dette i HTTP/1.1 var å åpne <em>flere parallelle TCP-forbindelser</em> til samme tjener, slik at de små objektene kunne hentes parallelt med det store. Det fungerer, men det er tungvint og svekker overbelastningskontrollen.</p>
 
-    <p><strong>HTTP/2</strong> (RFC 7540, 2015) lÃ¸ser dette ved Ã¥ dele objekter opp i mindre <em>frames</em> og blande sammen rammene fra forskjellige objekter pÃ¥ samme forbindelse. Tjeneren kan ogsÃ¥ prioritere rammer ut fra hva klienten har bedt om â€” ikke nÃ¸dvendigvis FCFS. Tre smÃ¥ objekter fÃ¥r da overfÃ¸rt rammene sine mellom rammer fra det store objektet, og kommer raskt frem mens det store fortsatt overfÃ¸res.</p>
+    <p><strong>HTTP/2</strong> (RFC 7540, 2015) løser dette ved å dele objekter opp i mindre <em>frames</em> og blande sammen rammene fra forskjellige objekter på samme forbindelse. Tjeneren kan også prioritere rammer ut fra hva klienten har bedt om — ikke nødvendigvis FCFS. Tre små objekter får da overført rammene sine mellom rammer fra det store objektet, og kommer raskt frem mens det store fortsatt overføres.</p>
 
-    <p>HTTP/2 introduserte ogsÃ¥ <strong>server push</strong>: tjeneren kan sende objekter til klienten <em>fÃ¸r klienten har bedt om dem</em>. NÃ¥r tjeneren mottar en forespÃ¸rsel om en HTML-side, vet den at klienten snart vil trenge CSS-filen og noen bilder â€” og kan proaktivt dytte disse ut i stedet for Ã¥ vente pÃ¥ at klienten parser HTML-en og sender nye forespÃ¸rsler. Dette eliminerer Ã©n ekstra RTT for hvert objekt som pushes.</p>
+    <p>HTTP/2 introduserte også <strong>server push</strong>: tjeneren kan sende objekter til klienten <em>før klienten har bedt om dem</em>. Når tjeneren mottar en forespørsel om en HTML-side, vet den at klienten snart vil trenge CSS-filen og noen bilder — og kan proaktivt dytte disse ut i stedet for å vente på at klienten parser HTML-en og sender nye forespørsler. Dette eliminerer én ekstra RTT for hvert objekt som pushes.</p>
 
     <figure class="fig-frame">
       <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg">
         <text x="170" y="22" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600" fill="#6b6257">HTTP/1.1</text>
         <text x="520" y="22" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600" fill="#6b6257">HTTP/2</text>
         <rect x="40" y="40" width="240" height="20" fill="#2d4a7a"/>
-        <text x="160" y="55" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#fdfaf2">Oâ‚ (stor)</text>
+        <text x="160" y="55" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#fdfaf2">O1 (stor)</text>
         <rect x="282" y="40" width="14" height="20" fill="#c68a1f"/>
-        <text x="289" y="55" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fdfaf2">Oâ‚‚</text>
+        <text x="289" y="55" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fdfaf2">O2</text>
         <rect x="298" y="40" width="14" height="20" fill="#3d6b3a"/>
-        <text x="305" y="55" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fdfaf2">Oâ‚ƒ</text>
+        <text x="305" y="55" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fdfaf2">O3</text>
         <rect x="314" y="40" width="14" height="20" fill="#b04428"/>
-        <text x="321" y="55" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fdfaf2">Oâ‚„</text>
-        <text x="170" y="90" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#8a3420">Oâ‚‚, Oâ‚ƒ, Oâ‚„ mÃ¥ vente</text>
+        <text x="321" y="55" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fdfaf2">O4</text>
+        <text x="170" y="90" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#8a3420">O2, O3, O4 må vente</text>
         <g transform="translate(390,0)">
           <rect x="0" y="40" width="20" height="20" fill="#2d4a7a"/>
           <rect x="20" y="40" width="14" height="20" fill="#c68a1f"/>
@@ -440,33 +440,33 @@ Content-Type: text/html
           <rect x="182" y="40" width="20" height="20" fill="#2d4a7a"/>
           <rect x="202" y="40" width="20" height="20" fill="#2d4a7a"/>
         </g>
-        <text x="520" y="90" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#3d6b3a">smÃ¥ objekter blandet inn â€” alle leveres raskt</text>
-        <text x="40" y="118" font-family="IBM Plex Sans" font-size="10" font-weight="600" fill="#9a9085">tid â†’</text>
+        <text x="520" y="90" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#3d6b3a">små objekter blandet inn — alle leveres raskt</text>
+        <text x="40" y="118" font-family="IBM Plex Sans" font-size="10" font-weight="600" fill="#9a9085">tid ?</text>
         <text x="40" y="136" font-family="IBM Plex Sans" font-size="11" font-weight="600" fill="#6b6257">LEVERINGSTIDSPUNKT</text>
         <line x1="40" y1="146" x2="660" y2="146" stroke="#c9c0ae"/>
         <text x="40" y="162" font-family="Newsreader" font-size="13" fill="#1a1612">HTTP/1.1:</text>
         <line x1="468" y1="146" x2="468" y2="156" stroke="#2d4a7a" stroke-width="2"/>
-        <text x="468" y="176" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a">Oâ‚</text>
+        <text x="468" y="176" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a">O1</text>
         <line x1="502" y1="146" x2="502" y2="156" stroke="#c68a1f" stroke-width="2"/>
-        <text x="502" y="176" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#c68a1f">Oâ‚‚</text>
+        <text x="502" y="176" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#c68a1f">O2</text>
         <line x1="526" y1="146" x2="526" y2="156" stroke="#3d6b3a" stroke-width="2"/>
-        <text x="526" y="176" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">Oâ‚ƒ</text>
+        <text x="526" y="176" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">O3</text>
         <line x1="550" y1="146" x2="550" y2="156" stroke="#b04428" stroke-width="2"/>
-        <text x="550" y="176" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">Oâ‚„</text>
+        <text x="550" y="176" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">O4</text>
         <text x="40" y="194" font-family="Newsreader" font-size="13" fill="#1a1612">HTTP/2:</text>
         <line x1="168" y1="146" x2="168" y2="156" stroke="#c68a1f" stroke-width="2"/>
-        <text x="168" y="208" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#c68a1f">Oâ‚‚</text>
+        <text x="168" y="208" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#c68a1f">O2</text>
         <line x1="198" y1="146" x2="198" y2="156" stroke="#3d6b3a" stroke-width="2"/>
-        <text x="198" y="208" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">Oâ‚ƒ</text>
+        <text x="198" y="208" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">O3</text>
         <line x1="228" y1="146" x2="228" y2="156" stroke="#b04428" stroke-width="2"/>
-        <text x="228" y="208" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">Oâ‚„</text>
+        <text x="228" y="208" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">O4</text>
         <line x1="318" y1="146" x2="318" y2="156" stroke="#2d4a7a" stroke-width="2"/>
-        <text x="318" y="208" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a">Oâ‚ (litt forsinket)</text>
+        <text x="318" y="208" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a">O1 (litt forsinket)</text>
       </svg>
-      <figcaption>HTTP/1.1 leverer i bestilt rekkefÃ¸lge â€” store objekter blokkerer smÃ¥. HTTP/2 fletter rammer fra forskjellige objekter, slik at smÃ¥ objekter ikke mÃ¥ vente.</figcaption>
+      <figcaption>HTTP/1.1 leverer i bestilt rekkefølge — store objekter blokkerer små. HTTP/2 fletter rammer fra forskjellige objekter, slik at små objekter ikke må vente.</figcaption>
     </figure>
 
-    <p>HTTP/2 har likevel et gjenvÃ¦rende problem: det ligger fortsatt pÃ¥ <em>Ã©n</em> TCP-forbindelse, og hvis en TCP-pakke gÃ¥r tapt, mÃ¥ alle objektene vente pÃ¥ retransmisjonen. <strong>HTTP/3</strong> lÃ¸ser dette ved Ã¥ bytte ut TCP med en ny transportprotokoll kalt <strong>QUIC</strong>, bygd pÃ¥ UDP. QUIC gir hver strÃ¸m sin egen uavhengige feilhÃ¥ndtering, slik at et pakketap i Ã©n strÃ¸m ikke blokkerer de andre. Mer om dette i kapittelet om transportlaget.</p>
+    <p>HTTP/2 har likevel et gjenværende problem: det ligger fortsatt på <em>én</em> TCP-forbindelse, og hvis en TCP-pakke går tapt, må alle objektene vente på retransmisjonen. <strong>HTTP/3</strong> løser dette ved å bytte ut TCP med en ny transportprotokoll kalt <strong>QUIC</strong>, bygd på UDP. QUIC gir hver strøm sin egen uavhengige feilhåndtering, slik at et pakketap i én strøm ikke blokkerer de andre. Mer om dette i kapittelet om transportlaget.</p>
   </div>
 </section>
 </main>
@@ -480,7 +480,7 @@ Content-Type: text/html
 <footer>
   <div class="container">
     <div class="ornament">&#10043; &#10043; &#10043;</div>
-    <p>NTNU Â· TTM4100 Â· VÃ¥r 2026</p>
+    <p>NTNU · TTM4100 · Vår 2026</p>
   </div>
 </footer>
 
@@ -513,7 +513,7 @@ setupQuiz('quiz-cache');
 (function() {
   var steps = [
     {
-      text: 'FÃ¸rste besÃ¸k: brukeren kontakter tjeneren uten cookie.',
+      text: 'Første besøk: brukeren kontakter tjeneren uten cookie.',
       cookie: '(tom)',
       db: '(tom)',
       arrows: '<line x1="160" y1="100" x2="440" y2="100" stroke="#2d4a7a" stroke-width="1.5" marker-end="url(#a1)"/><text x="300" y="92" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">HTTP request</text>'
@@ -521,25 +521,25 @@ setupQuiz('quiz-cache');
     {
       text: 'Tjeneren oppretter en unik ID for brukeren og lagrer den i sin database.',
       cookie: '(tom)',
-      db: 'bruker â†’ 1678',
+      db: 'bruker ? 1678',
       arrows: '<rect x="455" y="140" width="90" height="50" fill="#fff5d0" stroke="#c68a1f"/>'
     },
     {
       text: 'Svaret inneholder Set-Cookie: 1678. Nettleseren lagrer cookien.',
-      cookie: 'site â†’ 1678',
-      db: 'bruker â†’ 1678',
+      cookie: 'site ? 1678',
+      db: 'bruker ? 1678',
       arrows: '<line x1="440" y1="100" x2="160" y2="100" stroke="#3d6b3a" stroke-width="1.5" marker-end="url(#a2)"/><text x="300" y="92" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">Set-Cookie: 1678</text>'
     },
     {
-      text: 'Senere forespÃ¸rsler legger automatisk ved Cookie: 1678. Tjeneren kjenner igjen brukeren.',
-      cookie: 'site â†’ 1678',
-      db: 'bruker â†’ 1678',
+      text: 'Senere forespørsler legger automatisk ved Cookie: 1678. Tjeneren kjenner igjen brukeren.',
+      cookie: 'site ? 1678',
+      db: 'bruker ? 1678',
       arrows: '<line x1="160" y1="100" x2="440" y2="100" stroke="#2d4a7a" stroke-width="1.5" marker-end="url(#a1)"/><text x="300" y="92" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">Cookie: 1678</text>'
     },
     {
-      text: 'Selv en uke senere â€” sÃ¥ lenge cookien finnes â€” vet tjeneren hvem brukeren er.',
-      cookie: 'site â†’ 1678',
-      db: 'bruker â†’ 1678 (+ historikk)',
+      text: 'Selv en uke senere — så lenge cookien finnes — vet tjeneren hvem brukeren er.',
+      cookie: 'site ? 1678',
+      db: 'bruker ? 1678 (+ historikk)',
       arrows: '<line x1="160" y1="100" x2="440" y2="100" stroke="#2d4a7a" stroke-width="1.5" marker-end="url(#a1)"/><text x="300" y="92" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">Cookie: 1678  (uker senere)</text>'
     }
   ];

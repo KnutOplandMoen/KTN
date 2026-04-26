@@ -1,10 +1,10 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="no">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>6b â€” Ethernet, svitsjer og ARP Â· Lenkelaget og LAN</title>
-<link rel="stylesheet" href="../style.css">
+<title>6b — Ethernet, svitsjer og ARP · Lenkelaget og LAN</title>
+<link rel="icon" type="image/png" href="/favicon.png">`n<link rel="stylesheet" href="../style.css">
 </head>
 <body>
 
@@ -24,9 +24,9 @@
 
 <header class="hero">
   <div class="container">
-    <div class="eyebrow">Kapittel 6b Â· Lenkelaget</div>
+    <div class="eyebrow">Kapittel 6b · Lenkelaget</div>
     <h1>Ethernet, svitsjer og <em>ARP</em></h1>
-    <p class="lede">MAC-adresser, ARP-protokollen, Ethernet-rammens oppbygning, svitsjers self-learning â€” og en komplett reise gjennom protokollstabelen.</p>
+    <p class="lede">MAC-adresser, ARP-protokollen, Ethernet-rammens oppbygning, svitsjers self-learning — og en komplett reise gjennom protokollstabelen.</p>
     <nav class="toc">
       <a href="#addressing"><span>04</span>Adressering og ARP</a>
       <a href="#ethernet"><span>05</span>Ethernet</a>
@@ -37,53 +37,53 @@
 </header>
 
 <!-- ============================================ -->
-<!-- SECTION 4 â€” ADDRESSING & ARP                  -->
+<!-- SECTION 4 — ADDRESSING & ARP                  -->
 <!-- ============================================ -->
 <section id="addressing">
   <div class="container">
-    <div class="section-badge">04 Â· Adressering og ARP</div>
+    <div class="section-badge">04 · Adressering og ARP</div>
     <h2>To typer adresser, og broen mellom dem</h2>
     <p class="section-intro">
-      Hver enhet pÃ¥ internett har to adresser â€” en IP-adresse og en MAC-adresse. Hvorfor begge? Og hvordan finner en maskin MAC-adressen til en annen nÃ¥r den bare kjenner IP-adressen?
+      Hver enhet på internett har to adresser — en IP-adresse og en MAC-adresse. Hvorfor begge? Og hvordan finner en maskin MAC-adressen til en annen når den bare kjenner IP-adressen?
     </p>
 
     <p class="dropcap">
-      IP-adressen er en <em>logisk</em> adresse. Den avhenger av hvor du befinner deg i nettverket â€” flytter du laptopen fra universitetet til hjemmet, fÃ¥r du en ny IP. Routere bruker IP-adresser for Ã¥ sende pakker pÃ¥ tvers av hele internett. Men pÃ¥ selve lenken â€” det siste hoppet fra router til deg, eller mellom to verter pÃ¥ samme svitsj â€” er det ikke IP-adressen som brukes. Der trengs en fysisk, hardwired adresse: <strong>MAC-adressen</strong>.
+      IP-adressen er en <em>logisk</em> adresse. Den avhenger av hvor du befinner deg i nettverket — flytter du laptopen fra universitetet til hjemmet, får du en ny IP. Routere bruker IP-adresser for å sende pakker på tvers av hele internett. Men på selve lenken — det siste hoppet fra router til deg, eller mellom to verter på samme svitsj — er det ikke IP-adressen som brukes. Der trengs en fysisk, hardwired adresse: <strong>MAC-adressen</strong>.
     </p>
 
     <p>
-      En MAC-adresse er 48 bit lang, typisk skrevet i heksadesimal med bindestreker: <code>1A-2F-BB-76-09-AD</code>. Den er (i teorien) unik for hvert nettverkskort i verden â€” produsentene fÃ¥r tildelt adresseblokker fra IEEE, og brenner adressen inn i ROM-en pÃ¥ kortet. En god analogi: <em>IP-adressen er som en postadresse</em> (endrer seg om du flytter), <em>MAC-adressen er som et personnummer</em> (fÃ¸lger deg).
+      En MAC-adresse er 48 bit lang, typisk skrevet i heksadesimal med bindestreker: <code>1A-2F-BB-76-09-AD</code>. Den er (i teorien) unik for hvert nettverkskort i verden — produsentene får tildelt adresseblokker fra IEEE, og brenner adressen inn i ROM-en på kortet. En god analogi: <em>IP-adressen er som en postadresse</em> (endrer seg om du flytter), <em>MAC-adressen er som et personnummer</em> (følger deg).
     </p>
 
     <div class="margin-note">
-      PÃ¥ moderne WiFi er MAC-adressen ofte dynamisk â€” iPhone og Android bruker privat, tilfeldig MAC-adresse per nettverk for Ã¥ hindre sporing. Den Â«innbrenteÂ» adressen er ikke alltid det du ser.
+      På moderne WiFi er MAC-adressen ofte dynamisk — iPhone og Android bruker privat, tilfeldig MAC-adresse per nettverk for å hindre sporing. Den «innbrente» adressen er ikke alltid det du ser.
     </div>
 
     <h3>Hvorfor trenger vi begge?</h3>
     <p>
-      Kunne vi ikke bare brukt IP hele veien? I teorien, men det bryter lagdelingen. Lenkelaget mÃ¥ kunne fungere uten Ã¥ vite noe om IP â€” pÃ¥ en Ethernet-lenke kan det godt vÃ¦re at pakken inni er AppleTalk eller IPX istedenfor IP. Lenkelaget trenger sin egen adressetype. Og MAC-adressen har en praktisk egenskap IP ikke har: den er portabel. Du kan flytte et nettverkskort mellom subnet uten Ã¥ endre MAC, men IP-en mÃ¥ byttes.
+      Kunne vi ikke bare brukt IP hele veien? I teorien, men det bryter lagdelingen. Lenkelaget må kunne fungere uten å vite noe om IP — på en Ethernet-lenke kan det godt være at pakken inni er AppleTalk eller IPX istedenfor IP. Lenkelaget trenger sin egen adressetype. Og MAC-adressen har en praktisk egenskap IP ikke har: den er portabel. Du kan flytte et nettverkskort mellom subnet uten å endre MAC, men IP-en må byttes.
     </p>
 
     <h3>Problemet: IP vet ikke MAC</h3>
     <p>
-      Her er situasjonen: verten <em>A</em> vil sende et IP-datagram til verten <em>B</em> pÃ¥ samme LAN. A kjenner B sin IP-adresse (for eksempel fra en DNS-oppslag). Men for Ã¥ legge datagrammet i en Ethernet-ramme og sende den pÃ¥ kabelen, trenger A MAC-adressen til B. Hvordan finner A den?
+      Her er situasjonen: verten <em>A</em> vil sende et IP-datagram til verten <em>B</em> på samme LAN. A kjenner B sin IP-adresse (for eksempel fra en DNS-oppslag). Men for å legge datagrammet i en Ethernet-ramme og sende den på kabelen, trenger A MAC-adressen til B. Hvordan finner A den?
     </p>
 
     <div class="box">
-      <span class="label">LÃ¸sningen</span>
-      <p><strong>ARP â€” Address Resolution Protocol.</strong> En bitteliten protokoll som gjÃ¸r nÃ¸yaktig Ã©n ting: gitt en IP-adresse pÃ¥ samme LAN, finn MAC-adressen.</p>
+      <span class="label">Løsningen</span>
+      <p><strong>ARP — Address Resolution Protocol.</strong> En bitteliten protokoll som gjør nøyaktig én ting: gitt en IP-adresse på samme LAN, finn MAC-adressen.</p>
     </div>
 
     <h3>Hvordan ARP fungerer</h3>
     <p>
-      Hver node har en liten tabell (ARP-cachen) med oppfÃ¸ringer som <code>&lt;IP, MAC, TTL&gt;</code>. TTL er typisk 20 minutter. NÃ¥r A vil sende til B:
+      Hver node har en liten tabell (ARP-cachen) med oppføringer som <code>&lt;IP, MAC, TTL&gt;</code>. TTL er typisk 20 minutter. Når A vil sende til B:
     </p>
     <ol>
-      <li><strong>Er B allerede i cachen?</strong> Ja â€” bruk den lagrede MAC-en og send. Ferdig.</li>
-      <li><strong>Nei?</strong> A lager en <em>ARP-query</em> som spÃ¸r Â«Hvem har IP 137.196.7.14? Si fra til meg.Â»</li>
-      <li>Denne meldingen kapsles inn i en Ethernet-ramme med destinasjon <code>FF-FF-FF-FF-FF-FF</code> â€” broadcast-adressen. Alle pÃ¥ LAN-et mottar den.</li>
-      <li>Alle verter sjekker: Â«Er det min IP?Â» Alle sier nei, unntatt B, som svarer med en <em>ARP-reply</em> som inneholder MAC-adressen sin. Svaret er ikke broadcast â€” det er unicast direkte tilbake til A.</li>
-      <li>A mottar svaret, lagrer <code>&lt;B.IP, B.MAC, TTL=1200&gt;</code> i cachen, og kan nÃ¥ sende sitt opprinnelige datagram.</li>
+      <li><strong>Er B allerede i cachen?</strong> Ja — bruk den lagrede MAC-en og send. Ferdig.</li>
+      <li><strong>Nei?</strong> A lager en <em>ARP-query</em> som spør «Hvem har IP 137.196.7.14? Si fra til meg.»</li>
+      <li>Denne meldingen kapsles inn i en Ethernet-ramme med destinasjon <code>FF-FF-FF-FF-FF-FF</code> — broadcast-adressen. Alle på LAN-et mottar den.</li>
+      <li>Alle verter sjekker: «Er det min IP?» Alle sier nei, unntatt B, som svarer med en <em>ARP-reply</em> som inneholder MAC-adressen sin. Svaret er ikke broadcast — det er unicast direkte tilbake til A.</li>
+      <li>A mottar svaret, lagrer <code>&lt;B.IP, B.MAC, TTL=1200&gt;</code> i cachen, og kan nå sende sitt opprinnelige datagram.</li>
     </ol>
 
     <figure>
@@ -129,19 +129,19 @@
           <line x1="570" y1="135" x2="570" y2="150" stroke="#1a1612"/>
         </g>
         <path class="arr" d="M 90 200 Q 340 250 570 200"/>
-        <text x="330" y="245" class="lbl2" text-anchor="middle" fill="#b04428">â‘  ARP query: Â«Hvem har .7.14?Â» (broadcast)</text>
+        <text x="330" y="245" class="lbl2" text-anchor="middle" fill="#b04428">? ARP query: «Hvem har .7.14?» (broadcast)</text>
         <path class="arr2" d="M 570 80 Q 330 30 90 80"/>
-        <text x="330" y="25" class="lbl2" text-anchor="middle" fill="#3d6b3a">â‘¡ ARP reply: Â«Det er meg â€” MAC 58-23-D7-FA-20-B0Â» (unicast)</text>
+        <text x="330" y="25" class="lbl2" text-anchor="middle" fill="#3d6b3a">? ARP reply: «Det er meg — MAC 58-23-D7-FA-20-B0» (unicast)</text>
       </svg>
-      <figcaption><strong>Figur 3.</strong> ARP-utveksling: A spÃ¸r broadcast, B svarer unicast. Alle de andre hÃ¸rer spÃ¸rsmÃ¥let, men ignorerer det.</figcaption>
+      <figcaption><strong>Figur 3.</strong> ARP-utveksling: A spør broadcast, B svarer unicast. Alle de andre hører spørsmålet, men ignorerer det.</figcaption>
     </figure>
 
-    <h3>Hva hvis mÃ¥let ikke er pÃ¥ samme LAN?</h3>
+    <h3>Hva hvis målet ikke er på samme LAN?</h3>
     <p>
-      ARP fungerer bare innenfor ett LAN â€” du kan ikke ARP-e deg til en server pÃ¥ andre siden av internett. Hvis A vil sende til en IP som ligger i et annet subnet, sender A ikke rammen direkte til mÃ¥lverten. Istedenfor sender A rammen til <strong>fÃ¸rste-hopp-routeren</strong> (default gateway). Rammen har <em>routerens</em> MAC-adresse som destinasjon â€” men IP-datagrammet inni har fortsatt <em>sluttvertens</em> IP-adresse som mÃ¥l.
+      ARP fungerer bare innenfor ett LAN — du kan ikke ARP-e deg til en server på andre siden av internett. Hvis A vil sende til en IP som ligger i et annet subnet, sender A ikke rammen direkte til målverten. Istedenfor sender A rammen til <strong>første-hopp-routeren</strong> (default gateway). Rammen har <em>routerens</em> MAC-adresse som destinasjon — men IP-datagrammet inni har fortsatt <em>sluttvertens</em> IP-adresse som mål.
     </p>
     <p>
-      Routeren mottar rammen, trekker ut IP-datagrammet, slÃ¥r opp i sin rutetabell hvor datagrammet skal videre, pakker det inn i en <em>ny</em> ramme med ny kilde- og destinasjons-MAC (ARP pÃ¥ neste lenke), og sender det videre. IP-adressene er uendret hele veien. MAC-adressene byttes ved hvert hopp.
+      Routeren mottar rammen, trekker ut IP-datagrammet, slår opp i sin rutetabell hvor datagrammet skal videre, pakker det inn i en <em>ny</em> ramme med ny kilde- og destinasjons-MAC (ARP på neste lenke), og sender det videre. IP-adressene er uendret hele veien. MAC-adressene byttes ved hvert hopp.
     </p>
 
     <div class="stepper" id="arpStepper">
@@ -172,7 +172,7 @@
           <text x="87" y="141" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#6b6257">MAC: aa:aa:aa:aa</text>
           <text x="87" y="163" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="8" font-weight="600" fill="#3d6b3a">Kilde</text>
 
-          <!-- Link A â†’ GW -->
+          <!-- Link A ? GW -->
           <line x1="165" y1="107" x2="200" y2="107" stroke="#c9c0ae" stroke-width="1.5"/>
 
           <!-- GW / R1 -->
@@ -187,17 +187,17 @@
           <rect x="258" y="40" width="220" height="120" rx="8" fill="none" stroke="#c9c0ae" stroke-width="1.5" stroke-dasharray="6 3"/>
           <text x="368" y="57" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="600" fill="#6b6257">Internett</text>
 
-          <!-- Link GW â†’ R2 -->
+          <!-- Link GW ? R2 -->
           <line x1="246" y1="100" x2="293" y2="93" stroke="#c9c0ae" stroke-width="1.5"/>
           <!-- R2 -->
           <circle cx="314" cy="90" r="19" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/>
           <text x="314" y="95" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#2d4a7a">R2</text>
-          <!-- Link R2 â†’ R3 -->
+          <!-- Link R2 ? R3 -->
           <line x1="333" y1="97" x2="396" y2="118" stroke="#c9c0ae" stroke-width="1.5"/>
           <!-- R3 -->
           <circle cx="416" cy="124" r="19" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/>
           <text x="416" y="129" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#2d4a7a">R3</text>
-          <!-- Link R3 â†’ LAN B -->
+          <!-- Link R3 ? LAN B -->
           <line x1="435" y1="118" x2="498" y2="107" stroke="#c9c0ae" stroke-width="1.5"/>
 
           <!-- LAN B -->
@@ -210,7 +210,7 @@
           <text x="625" y="115" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" font-weight="700" fill="#1a1612">B</text>
           <text x="625" y="132" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#6b6257">142.250.74.4</text>
           <text x="625" y="143" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#6b6257">MAC: bb:bb:bb:bb</text>
-          <text x="625" y="163" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="8" font-weight="600" fill="#2d4a7a">MÃ¥l</text>
+          <text x="625" y="163" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="8" font-weight="600" fill="#2d4a7a">Mål</text>
 
           <g id="arpAnim"></g>
         </svg>
@@ -223,39 +223,39 @@
     </div>
 
     <div class="box ochre">
-      <span class="label">NÃ¸kkelinnsikt</span>
-      <p>IP-adresser er ende-til-ende. MAC-adresser er hopp-for-hopp. Datagrammets IP-hode ser de samme adressene hele veien fra A til B. Men selve rammen pakkes inn pÃ¥ nytt â€” med nye MAC-adresser â€” ved hver eneste ruter pÃ¥ veien.</p>
+      <span class="label">Nøkkelinnsikt</span>
+      <p>IP-adresser er ende-til-ende. MAC-adresser er hopp-for-hopp. Datagrammets IP-hode ser de samme adressene hele veien fra A til B. Men selve rammen pakkes inn på nytt — med nye MAC-adresser — ved hver eneste ruter på veien.</p>
     </div>
 
     <div class="reveal" data-reveal>
-      <div class="q">Hvis en angriper sender falske ARP-reply-meldinger pÃ¥ et LAN og hevder Ã¥ ha IP-adressen til default gateway-routeren, hva skjer?</div>
+      <div class="q">Hvis en angriper sender falske ARP-reply-meldinger på et LAN og hevder å ha IP-adressen til default gateway-routeren, hva skjer?</div>
       <button>Vis svar</button>
-      <div class="answer">Dette er <em>ARP-spoofing</em> (eller ARP-poisoning) â€” en klassisk Man-in-the-Middle-angrep. Ofrenes ARP-tabeller blir forgiftet med angriperens MAC-adresse, og alle pakker til Â«routerenÂ» sendes i stedet til angriperen, som kan lese dem og eventuelt videresende dem til den ekte routeren. ARP har ingen autentisering â€” det var ikke en del av designet pÃ¥ 70-tallet. Derfor blir ARP-spoofing brukt bÃ¥de av angripere og av sikkerhetsforskere.</div>
+      <div class="answer">Dette er <em>ARP-spoofing</em> (eller ARP-poisoning) — en klassisk Man-in-the-Middle-angrep. Ofrenes ARP-tabeller blir forgiftet med angriperens MAC-adresse, og alle pakker til «routeren» sendes i stedet til angriperen, som kan lese dem og eventuelt videresende dem til den ekte routeren. ARP har ingen autentisering — det var ikke en del av designet på 70-tallet. Derfor blir ARP-spoofing brukt både av angripere og av sikkerhetsforskere.</div>
     </div>
   </div>
 </section>
 
 <!-- ============================================ -->
-<!-- SECTION 5 â€” ETHERNET                          -->
+<!-- SECTION 5 — ETHERNET                          -->
 <!-- ============================================ -->
 <section id="ethernet">
   <div class="container">
-    <div class="section-badge">05 Â· Ethernet</div>
+    <div class="section-badge">05 · Ethernet</div>
     <h2>Den seirende LAN-teknologien</h2>
     <p class="section-intro">
-      Ethernet ble funnet opp av Robert Metcalfe pÃ¥ 70-tallet. Det skulle ha dÃ¸dd ut for lenge siden â€” konkurrenter var mer sofistikerte, raskere, bedre designet. Men Ethernet overlevde alle. Hvorfor?
+      Ethernet ble funnet opp av Robert Metcalfe på 70-tallet. Det skulle ha dødd ut for lenge siden — konkurrenter var mer sofistikerte, raskere, bedre designet. Men Ethernet overlevde alle. Hvorfor?
     </p>
 
     <p class="dropcap">
-      Svaret: <strong>enkelhet og billig pris</strong>. Ethernet ble aldri den teknisk fineste lÃ¸sningen, men den var Â«god nokÂ» og veldig lett Ã¥ implementere. Mens token ring og ATM slet med kompliserte protokoller, skalerte Ethernet fra 10 Mbit/s opp til 400 Gbit/s uten Ã¥ endre fundamentalt pÃ¥ rammestrukturen eller adressesystemet. I dag er Ethernet den dominerende kablede LAN-teknologien â€” og har vÃ¦rt det i flere tiÃ¥r.
+      Svaret: <strong>enkelhet og billig pris</strong>. Ethernet ble aldri den teknisk fineste løsningen, men den var «god nok» og veldig lett å implementere. Mens token ring og ATM slet med kompliserte protokoller, skalerte Ethernet fra 10 Mbit/s opp til 400 Gbit/s uten å endre fundamentalt på rammestrukturen eller adressesystemet. I dag er Ethernet den dominerende kablede LAN-teknologien — og har vært det i flere tiår.
     </p>
 
     <h3>Fra buss til stjerne</h3>
     <p>
-      Opprinnelig var Ethernet en <em>bussteknologi</em>: alle maskiner var koblet til Ã©n lang koaksialkabel, og alle hÃ¸rte alt. Kollisjoner var vanlige â€” derav CSMA/CD. Dette fungerte, men det ga ett <em>kollisjonsdomene</em> for hele nettverket, og bÃ¥ndbredden ble delt mellom alle.
+      Opprinnelig var Ethernet en <em>bussteknologi</em>: alle maskiner var koblet til én lang koaksialkabel, og alle hørte alt. Kollisjoner var vanlige — derav CSMA/CD. Dette fungerte, men det ga ett <em>kollisjonsdomene</em> for hele nettverket, og båndbredden ble delt mellom alle.
     </p>
     <p>
-      Moderne Ethernet er <em>svitsjet</em>: hver vert har sin egen dedikerte kabel til en sentral svitsj. Hver lenke er et eget kollisjonsdomene med bare to endepunkter â€” verten og svitsjen. Kollisjoner blir i praksis umulig, og full-duplex er standarden: begge sider kan sende samtidig uten Ã¥ forstyrre hverandre. CSMA/CD eksisterer fortsatt i spesifikasjonen, men den aktiveres kun i sjeldne tilfeller der en vert gÃ¥r i half-duplex-modus.
+      Moderne Ethernet er <em>svitsjet</em>: hver vert har sin egen dedikerte kabel til en sentral svitsj. Hver lenke er et eget kollisjonsdomene med bare to endepunkter — verten og svitsjen. Kollisjoner blir i praksis umulig, og full-duplex er standarden: begge sider kan sende samtidig uten å forstyrre hverandre. CSMA/CD eksisterer fortsatt i spesifikasjonen, men den aktiveres kun i sjeldne tilfeller der en vert går i half-duplex-modus.
     </p>
 
     <h3>Ethernet-rammen</h3>
@@ -282,8 +282,8 @@
           <text x="265" y="30" text-anchor="middle" class="ftt">Type</text>
           <text x="265" y="105" text-anchor="middle" class="fla">2 byte</text>
           <rect x="290" y="0" width="260" height="50" fill="#e8e3d6" stroke="#1a1612"/>
-          <text x="420" y="30" text-anchor="middle" class="fda">Data (payload â€” IP-datagrammet ligger her)</text>
-          <text x="420" y="105" text-anchor="middle" class="fla">46â€“1500 byte</text>
+          <text x="420" y="30" text-anchor="middle" class="fda">Data (payload — IP-datagrammet ligger her)</text>
+          <text x="420" y="105" text-anchor="middle" class="fla">46–1500 byte</text>
           <rect x="550" y="0" width="80" height="50" fill="#3d6b3a" stroke="#1a1612"/>
           <text x="590" y="30" text-anchor="middle" class="ftt">CRC-32</text>
           <text x="590" y="105" text-anchor="middle" class="fla">4 byte</text>
@@ -293,84 +293,84 @@
     </figure>
 
     <p>
-      La oss se pÃ¥ hvert felt:
+      La oss se på hvert felt:
     </p>
     <ul>
-      <li><strong>Preamble (8 byte).</strong> Syv byte med <code>10101010</code> etterfulgt av Ã©n byte med <code>10101011</code>. Brukes til Ã¥ synkronisere mottakerens klokke med senderens â€” de siste to bitene Â«11Â» signaliserer at ramma starter nÃ¥.</li>
+      <li><strong>Preamble (8 byte).</strong> Syv byte med <code>10101010</code> etterfulgt av én byte med <code>10101011</code>. Brukes til å synkronisere mottakerens klokke med senderens — de siste to bitene «11» signaliserer at ramma starter nå.</li>
       <li><strong>Destinasjons-MAC (6 byte).</strong> Hvem skal ha den. Hvis NIC-en ser sin egen adresse (eller broadcast <code>FF-FF-FF-FF-FF-FF</code>), leverer den innholdet opp til nettverkslaget. Ellers kastes rammen.</li>
       <li><strong>Kilde-MAC (6 byte).</strong> Hvem som sendte den.</li>
-      <li><strong>Type (2 byte).</strong> Hvilken protokoll ligger inni? <code>0x0800</code> = IP, <code>0x0806</code> = ARP, osv. Mottakerens nettverkskort bruker dette til Ã¥ demultiplekse oppover â€” riktig protokoll pÃ¥ nettverkslaget fÃ¥r pakken.</li>
-      <li><strong>Data (46â€“1500 byte).</strong> Nyttelasten. Minimum 46 byte â€” korteere pakker mÃ¥ padres â€” fordi CSMA/CD trenger en minimumslengde for Ã¥ oppdage kollisjoner. Maksimum 1500 byte er <em>MTU</em>-grensen (Maximum Transmission Unit).</li>
-      <li><strong>CRC (4 byte).</strong> CRC-32 over hele rammen. Feil â†’ rammen kastes umiddelbart.</li>
+      <li><strong>Type (2 byte).</strong> Hvilken protokoll ligger inni? <code>0x0800</code> = IP, <code>0x0806</code> = ARP, osv. Mottakerens nettverkskort bruker dette til å demultiplekse oppover — riktig protokoll på nettverkslaget får pakken.</li>
+      <li><strong>Data (46–1500 byte).</strong> Nyttelasten. Minimum 46 byte — korteere pakker må padres — fordi CSMA/CD trenger en minimumslengde for å oppdage kollisjoner. Maksimum 1500 byte er <em>MTU</em>-grensen (Maximum Transmission Unit).</li>
+      <li><strong>CRC (4 byte).</strong> CRC-32 over hele rammen. Feil ? rammen kastes umiddelbart.</li>
     </ul>
 
-    <h3>UpÃ¥litelig og connectionless</h3>
+    <h3>Upålitelig og connectionless</h3>
     <p>
-      Ethernet er <em>connectionless</em>: det er ingen handshake mellom NIC-ene fÃ¸r data sendes. Og det er <em>upÃ¥litelig</em>: mottakeren sender ikke ACK ved suksess og ingen NAK ved feil â€” den bare kaster rammer med feil. Hvis data gÃ¥r tapt, er det opp til hÃ¸yere lag (TCP) Ã¥ oppdage og retransmittere. Dette er helt bevisst. PÃ¥ moderne kablede lenker er feilraten sÃ¥ lav at ende-til-ende-pÃ¥litelighet er langt mer effektivt enn per-hopp-pÃ¥litelighet.
+      Ethernet er <em>connectionless</em>: det er ingen handshake mellom NIC-ene før data sendes. Og det er <em>upålitelig</em>: mottakeren sender ikke ACK ved suksess og ingen NAK ved feil — den bare kaster rammer med feil. Hvis data går tapt, er det opp til høyere lag (TCP) å oppdage og retransmittere. Dette er helt bevisst. På moderne kablede lenker er feilraten så lav at ende-til-ende-pålitelighet er langt mer effektivt enn per-hopp-pålitelighet.
     </p>
   </div>
 </section>
 
 <!-- ============================================ -->
-<!-- SECTION 6 â€” SWITCHES                          -->
+<!-- SECTION 6 — SWITCHES                          -->
 <!-- ============================================ -->
 <section id="switches">
   <div class="container">
-    <div class="section-badge">06 Â· Svitsjer</div>
+    <div class="section-badge">06 · Svitsjer</div>
     <h2>Den ydmyke, usynlige helten</h2>
     <p class="section-intro">
-      Hvis du har et Ethernet-LAN i dag, har du minst Ã©n svitsj. De er Â«plug-and-playÂ», lÃ¦rer opp seg selv, og verter vet ikke engang at de finnes. Magien ligger i hvordan de oppdager hvor ting er.
+      Hvis du har et Ethernet-LAN i dag, har du minst én svitsj. De er «plug-and-play», lærer opp seg selv, og verter vet ikke engang at de finnes. Magien ligger i hvordan de oppdager hvor ting er.
     </p>
 
     <p class="dropcap">
-      En <strong>svitsj</strong> er en enhet pÃ¥ lenkelaget â€” lag 2 â€” som videresender rammer basert pÃ¥ MAC-adresser. Den tar imot en ramme pÃ¥ Ã©n port, kikker pÃ¥ destinasjons-MAC, og sender rammen videre kun pÃ¥ den ene porten der den vet at mottakeren befinner seg. Alle andre porter forblir uberÃ¸rt. Det betyr at flere par med verter kan kommunisere samtidig uten Ã¥ forstyrre hverandre. En svitsj med seks porter kan ha tre uavhengige samtaler i gang pÃ¥ en gang.
+      En <strong>svitsj</strong> er en enhet på lenkelaget — lag 2 — som videresender rammer basert på MAC-adresser. Den tar imot en ramme på én port, kikker på destinasjons-MAC, og sender rammen videre kun på den ene porten der den vet at mottakeren befinner seg. Alle andre porter forblir uberørt. Det betyr at flere par med verter kan kommunisere samtidig uten å forstyrre hverandre. En svitsj med seks porter kan ha tre uavhengige samtaler i gang på en gang.
     </p>
 
     <p>
-      Svitsjer er <em>transparente</em>: vertene ser dem ikke. Du trenger ikke Ã¥ konfigurere verten for Ã¥ snakke gjennom en svitsj. Du trenger ikke konfigurere svitsjen heller â€” den lÃ¦rer opp seg selv. Plugg inn, og det virker. Denne Â«plug-and-playÂ»-egenskapen er en av hovedgrunnene til at svitsjer fortrengte hubber og gamle bussnettverk.
+      Svitsjer er <em>transparente</em>: vertene ser dem ikke. Du trenger ikke å konfigurere verten for å snakke gjennom en svitsj. Du trenger ikke konfigurere svitsjen heller — den lærer opp seg selv. Plugg inn, og det virker. Denne «plug-and-play»-egenskapen er en av hovedgrunnene til at svitsjer fortrengte hubber og gamle bussnettverk.
     </p>
 
     <h3>Svitsjtabellen</h3>
     <p>
-      Hjertet i svitsjen er <strong>forwarding-tabellen</strong>. Hver oppfÃ¸ring er en trippel <code>(MAC-adresse, port, tidsstempel)</code>. Den forteller svitsjen: Â«Verten med denne MAC-adressen nÃ¥s via denne porten, og jeg lÃ¦rte det pÃ¥ dette tidspunktet.Â» Tidsstempelet lar gamle oppfÃ¸ringer utlÃ¸pe â€” hvis en vert har vÃ¦rt taus lenge (typisk noen minutter), slettes den fra tabellen.
+      Hjertet i svitsjen er <strong>forwarding-tabellen</strong>. Hver oppføring er en trippel <code>(MAC-adresse, port, tidsstempel)</code>. Den forteller svitsjen: «Verten med denne MAC-adressen nås via denne porten, og jeg lærte det på dette tidspunktet.» Tidsstempelet lar gamle oppføringer utløpe — hvis en vert har vært taus lenge (typisk noen minutter), slettes den fra tabellen.
     </p>
 
-    <h3>Hvordan lÃ¦rer svitsjen â€” self-learning-algoritmen</h3>
+    <h3>Hvordan lærer svitsjen — self-learning-algoritmen</h3>
     <p>
-      Svitsjen starter med en helt tom tabell. NÃ¥r den mottar en ramme:
+      Svitsjen starter med en helt tom tabell. Når den mottar en ramme:
     </p>
     <ol>
-      <li><strong>LÃ¦r.</strong> Se pÃ¥ <em>kilde-MAC</em> og porten rammen kom inn pÃ¥. Lagre denne koblingen i tabellen (eller oppdater tidsstempelet hvis den finnes fra fÃ¸r).</li>
-      <li><strong>SlÃ¥ opp.</strong> Se pÃ¥ <em>destinasjons-MAC</em>. Finnes den i tabellen?</li>
-      <li><strong>Hvis ja:</strong> Hvis destinasjonen er pÃ¥ samme port som rammen kom inn fra â€” kast den (mottakeren har jo allerede hÃ¸rt den). Ellers, videresend den kun pÃ¥ den porten der mottakeren er.</li>
-      <li><strong>Hvis nei:</strong> <em>Flood.</em> Send rammen ut pÃ¥ alle porter unntatt den den kom inn pÃ¥. Mottakeren vil svare, og da lÃ¦rer svitsjen hvor mottakeren er.</li>
+      <li><strong>Lær.</strong> Se på <em>kilde-MAC</em> og porten rammen kom inn på. Lagre denne koblingen i tabellen (eller oppdater tidsstempelet hvis den finnes fra før).</li>
+      <li><strong>Slå opp.</strong> Se på <em>destinasjons-MAC</em>. Finnes den i tabellen?</li>
+      <li><strong>Hvis ja:</strong> Hvis destinasjonen er på samme port som rammen kom inn fra — kast den (mottakeren har jo allerede hørt den). Ellers, videresend den kun på den porten der mottakeren er.</li>
+      <li><strong>Hvis nei:</strong> <em>Flood.</em> Send rammen ut på alle porter unntatt den den kom inn på. Mottakeren vil svare, og da lærer svitsjen hvor mottakeren er.</li>
     </ol>
 
     <div class="margin-note">
-      Legg merke til at svitsjen lÃ¦rer kun av kildeadresser â€” aldri fra destinasjonsadresser. Det er fordi kildeadressen er verifisert (Â«den som sendte rammen, kom Ã¥penbart fra den portenÂ»), mens destinasjonen er bare et hÃ¥p om hvor rammen skal hen.
+      Legg merke til at svitsjen lærer kun av kildeadresser — aldri fra destinasjonsadresser. Det er fordi kildeadressen er verifisert («den som sendte rammen, kom åpenbart fra den porten»), mens destinasjonen er bare et håp om hvor rammen skal hen.
     </div>
 
     <div class="stepper" id="sw-stepper">
-      <div class="s-label">Interaktiv gjennomgang â€” svitsjen lÃ¦rer</div>
+      <div class="s-label">Interaktiv gjennomgang — svitsjen lærer</div>
       <div class="stage" id="sw-stage">
         <h5 id="sw-title">Trinn 1 av 5</h5>
         <p id="sw-body">Start her.</p>
       </div>
       <div class="controls">
-        <button id="sw-prev">â† Forrige</button>
+        <button id="sw-prev">? Forrige</button>
         <span class="progress" id="sw-progress">1 / 5</span>
-        <button id="sw-next">Neste â†’</button>
+        <button id="sw-next">Neste ?</button>
       </div>
     </div>
 
     <h3>Sammenkobling av svitsjer</h3>
     <p>
-      Self-learning fungerer akkurat likt nÃ¥r flere svitsjer er koblet sammen i en trehierarki. Hver svitsj lÃ¦rer pÃ¥ egen hÃ¥nd, via sine egne porter, hvilken retning en gitt MAC-adresse ligger. Hvis verten A i den venstre enden vil sende til verten G langt til hÃ¸yre, sender fÃ¸rste svitsj floode-rammen ut, og underveis lÃ¦rer samtlige svitsjer hvor A ligger (fordi de ser kilde-MAC). NÃ¥r G til slutt svarer, lÃ¦rer alle svitsjene hvor G ligger (fra G sin kilde-MAC i svaret). Etter Ã©n hver-vei-utveksling er ruten helt oppe og gÃ¥r, og fremtidige rammer sendes mÃ¥lrettet.
+      Self-learning fungerer akkurat likt når flere svitsjer er koblet sammen i en trehierarki. Hver svitsj lærer på egen hånd, via sine egne porter, hvilken retning en gitt MAC-adresse ligger. Hvis verten A i den venstre enden vil sende til verten G langt til høyre, sender første svitsj floode-rammen ut, og underveis lærer samtlige svitsjer hvor A ligger (fordi de ser kilde-MAC). Når G til slutt svarer, lærer alle svitsjene hvor G ligger (fra G sin kilde-MAC i svaret). Etter én hver-vei-utveksling er ruten helt oppe og går, og fremtidige rammer sendes målrettet.
     </p>
 
     <h3>Svitsjer vs. routere</h3>
     <p>
-      Dette forvirrer ofte. BÃ¥de svitsjer og routere er Â«store-and-forwardÂ»-enheter â€” de tar imot en pakke, tenker, og sender den videre. Men de opererer pÃ¥ ulike lag og med ulike adresser.
+      Dette forvirrer ofte. Både svitsjer og routere er «store-and-forward»-enheter — de tar imot en pakke, tenker, og sender den videre. Men de opererer på ulike lag og med ulike adresser.
     </p>
 
     <table>
@@ -378,83 +378,83 @@
         <tr><th></th><th>Svitsj</th><th>Router</th></tr>
       </thead>
       <tbody>
-        <tr><td>Opererer pÃ¥</td><td>Lag 2 (lenke)</td><td>Lag 3 (nettverk)</td></tr>
-        <tr><td>Ser pÃ¥</td><td>MAC-adresser</td><td>IP-adresser</td></tr>
-        <tr><td>Bygger tabellen med</td><td>Self-learning (passivt)</td><td>Rutealgoritmer (aktivt â€” OSPF, BGP)</td></tr>
-        <tr><td>Konfigurasjon</td><td>Plug-and-play</td><td>MÃ¥ konfigureres</td></tr>
-        <tr><td>Scope</td><td>Innenfor ett LAN</td><td>PÃ¥ tvers av subnet, over hele internett</td></tr>
+        <tr><td>Opererer på</td><td>Lag 2 (lenke)</td><td>Lag 3 (nettverk)</td></tr>
+        <tr><td>Ser på</td><td>MAC-adresser</td><td>IP-adresser</td></tr>
+        <tr><td>Bygger tabellen med</td><td>Self-learning (passivt)</td><td>Rutealgoritmer (aktivt — OSPF, BGP)</td></tr>
+        <tr><td>Konfigurasjon</td><td>Plug-and-play</td><td>Må konfigureres</td></tr>
+        <tr><td>Scope</td><td>Innenfor ett LAN</td><td>På tvers av subnet, over hele internett</td></tr>
       </tbody>
     </table>
 
     <div class="quiz" data-quiz="3">
       <div class="q-label">Kunnskapssjekk</div>
-      <div class="q-text">En svitsj mottar en ramme pÃ¥ port 3. Destinasjons-MAC finnes ikke i tabellen. Hva gjÃ¸r svitsjen?</div>
+      <div class="q-text">En svitsj mottar en ramme på port 3. Destinasjons-MAC finnes ikke i tabellen. Hva gjør svitsjen?</div>
       <div class="options">
         <button class="option" data-correct="false">Kaster rammen siden destinasjonen er ukjent.</button>
-        <button class="option" data-correct="false">Sender en ARP-forespÃ¸rsel for Ã¥ finne destinasjonen.</button>
-        <button class="option" data-correct="true">Videresender rammen ut pÃ¥ alle porter unntatt port 3 (flooding).</button>
-        <button class="option" data-correct="false">Sender rammen tilbake ut pÃ¥ port 3.</button>
+        <button class="option" data-correct="false">Sender en ARP-forespørsel for å finne destinasjonen.</button>
+        <button class="option" data-correct="true">Videresender rammen ut på alle porter unntatt port 3 (flooding).</button>
+        <button class="option" data-correct="false">Sender rammen tilbake ut på port 3.</button>
       </div>
-      <div class="explanation">Flooding er fallback-strategien nÃ¥r svitsjen ikke vet hvor noe er. Alle porter bortsett fra den rammen kom fra fÃ¥r en kopi. Ã‰n av dem leder til rette destinasjon, og den verten vil svare â€” og i det Ã¸yeblikket lÃ¦rer svitsjen hvor destinasjonen ligger. Derfor er de fÃ¸rste noen fÃ¥ rammene i en ny samtale Â«dyreÂ» (flooding), men resten mÃ¥lrettet.</div>
+      <div class="explanation">Flooding er fallback-strategien når svitsjen ikke vet hvor noe er. Alle porter bortsett fra den rammen kom fra får en kopi. Én av dem leder til rette destinasjon, og den verten vil svare — og i det øyeblikket lærer svitsjen hvor destinasjonen ligger. Derfor er de første noen få rammene i en ny samtale «dyre» (flooding), men resten målrettet.</div>
     </div>
   </div>
 </section>
 
 <!-- ============================================ -->
-<!-- SECTION 7 â€” DAY IN THE LIFE                   -->
+<!-- SECTION 7 — DAY IN THE LIFE                   -->
 <!-- ============================================ -->
 <section id="day">
   <div class="container">
-    <div class="section-badge">07 Â· Syntese</div>
-    <h2>En dag i livet til en web-forespÃ¸rsel</h2>
+    <div class="section-badge">07 · Syntese</div>
+    <h2>En dag i livet til en web-forespørsel</h2>
     <p class="section-intro">
-      NÃ¥ binder vi alt sammen. En student kobler laptopen til universitetsnettet og Ã¥pner google.com i nettleseren. Det virker enkelt. La oss se hvor mange protokoller som faktisk lÃ¸per i gang.
+      Nå binder vi alt sammen. En student kobler laptopen til universitetsnettet og åpner google.com i nettleseren. Det virker enkelt. La oss se hvor mange protokoller som faktisk løper i gang.
     </p>
 
     <p class="dropcap">
-      Scenariet er dette: en ny laptop kobler seg til et kablet Ethernet pÃ¥ campus. Brukeren skriver <code>www.google.com</code> i nettleseren og trykker Enter. Vi sporer alt som skjer â€” fra det Ã¸yeblikket kabelen plugges i, til den fÃ¸rste pikselen av Google-logoen dukker opp pÃ¥ skjermen.
+      Scenariet er dette: en ny laptop kobler seg til et kablet Ethernet på campus. Brukeren skriver <code>www.google.com</code> i nettleseren og trykker Enter. Vi sporer alt som skjer — fra det øyeblikket kabelen plugges i, til den første pikselen av Google-logoen dukker opp på skjermen.
     </p>
 
-    <h3>Steg 1 â€” FÃ¥ en IP-adresse med DHCP</h3>
+    <h3>Steg 1 — Få en IP-adresse med DHCP</h3>
     <p>
-      FÃ¸r laptopen kan sende noe som helst ut pÃ¥ internett, mÃ¥ den ha en IP-adresse. Den trenger ogsÃ¥ Ã¥ vite IP-adressen til fÃ¸rste-hopp-routeren (default gateway) og IP-adressen til en DNS-server. Alt dette lÃ¸ser <strong>DHCP</strong> (Dynamic Host Configuration Protocol).
+      Før laptopen kan sende noe som helst ut på internett, må den ha en IP-adresse. Den trenger også å vite IP-adressen til første-hopp-routeren (default gateway) og IP-adressen til en DNS-server. Alt dette løser <strong>DHCP</strong> (Dynamic Host Configuration Protocol).
     </p>
     <p>
-      Laptopen lager en DHCP-forespÃ¸rsel, pakker den inn i UDP, sÃ¥ IP, sÃ¥ en Ethernet-ramme. Destinasjons-MAC er <code>FF-FF-FF-FF-FF-FF</code> â€” broadcast â€” fordi laptopen ikke vet hvem DHCP-serveren er ennÃ¥. Rammen floodes gjennom LAN-et til router (som kjÃ¸rer DHCP-serveren). Den svarer med laptopens nye IP-adresse, nettmaske, default gateway, og DNS-server. Etter denne ene utvekslingen har laptopen alt den trenger for Ã¥ vÃ¦re pÃ¥ nettet.
-    </p>
-
-    <h3>Steg 2 â€” Finn routerens MAC med ARP</h3>
-    <p>
-      Laptopen vil til slutt nÃ¥ en server utenfor sitt eget LAN. Alle slike pakker mÃ¥ gÃ¥ via routeren. For Ã¥ sende den fÃ¸rste rammen til routeren, trenger laptopen routerens <em>MAC-adresse</em>. Den har bare IP-adressen fra DHCP-svaret.
-    </p>
-    <p>
-      ARP lÃ¸ser dette. Laptopen broadcaster: Â«Hvem har IP 68.80.2.1?Â» Routeren svarer med sin MAC. NÃ¥ er laptopen klar.
+      Laptopen lager en DHCP-forespørsel, pakker den inn i UDP, så IP, så en Ethernet-ramme. Destinasjons-MAC er <code>FF-FF-FF-FF-FF-FF</code> — broadcast — fordi laptopen ikke vet hvem DHCP-serveren er ennå. Rammen floodes gjennom LAN-et til router (som kjører DHCP-serveren). Den svarer med laptopens nye IP-adresse, nettmaske, default gateway, og DNS-server. Etter denne ene utvekslingen har laptopen alt den trenger for å være på nettet.
     </p>
 
-    <h3>Steg 3 â€” Finn Googles IP med DNS</h3>
+    <h3>Steg 2 — Finn routerens MAC med ARP</h3>
     <p>
-      Brukeren har skrevet <code>www.google.com</code>, ikke en IP-adresse. Laptopen mÃ¥ konvertere navnet til en IP. Den lager en DNS-forespÃ¸rsel, pakker den i UDP / IP / Ethernet, og sender den mot default gateway. Rammen har routerens MAC som destinasjon, men IP-datagrammet inni har <em>DNS-serverens</em> IP som mÃ¥l.
+      Laptopen vil til slutt nå en server utenfor sitt eget LAN. Alle slike pakker må gå via routeren. For å sende den første rammen til routeren, trenger laptopen routerens <em>MAC-adresse</em>. Den har bare IP-adressen fra DHCP-svaret.
     </p>
     <p>
-      Routeren mottar rammen, pakker ut IP-datagrammet, slÃ¥r opp i rutetabellen (bygget av protokoller som OSPF og BGP), og videresender det mot DNS-serveren â€” typisk gjennom ISP-ens nett. DNS-serveren svarer med Googles IP-adresse, for eksempel 64.233.169.105. Svaret tar returveien gjennom flere routere og havner til slutt tilbake pÃ¥ laptopen.
+      ARP løser dette. Laptopen broadcaster: «Hvem har IP 68.80.2.1?» Routeren svarer med sin MAC. Nå er laptopen klar.
+    </p>
+
+    <h3>Steg 3 — Finn Googles IP med DNS</h3>
+    <p>
+      Brukeren har skrevet <code>www.google.com</code>, ikke en IP-adresse. Laptopen må konvertere navnet til en IP. Den lager en DNS-forespørsel, pakker den i UDP / IP / Ethernet, og sender den mot default gateway. Rammen har routerens MAC som destinasjon, men IP-datagrammet inni har <em>DNS-serverens</em> IP som mål.
+    </p>
+    <p>
+      Routeren mottar rammen, pakker ut IP-datagrammet, slår opp i rutetabellen (bygget av protokoller som OSPF og BGP), og videresender det mot DNS-serveren — typisk gjennom ISP-ens nett. DNS-serveren svarer med Googles IP-adresse, for eksempel 64.233.169.105. Svaret tar returveien gjennom flere routere og havner til slutt tilbake på laptopen.
     </p>
 
     <div class="margin-note">
-      Merk hvordan IP-adressene i IP-hodet er stabile hele veien â€” det er kilde og mÃ¥l ende-til-ende. Men MAC-adressene byttes ved <em>hver</em> router. Hvert hopp sin egen ramme, hver med nye MAC-er.
+      Merk hvordan IP-adressene i IP-hodet er stabile hele veien — det er kilde og mål ende-til-ende. Men MAC-adressene byttes ved <em>hver</em> router. Hvert hopp sin egen ramme, hver med nye MAC-er.
     </div>
 
-    <h3>Steg 4 â€” Sett opp TCP-forbindelsen</h3>
+    <h3>Steg 4 — Sett opp TCP-forbindelsen</h3>
     <p>
-      NÃ¥ vet laptopen Googles IP. Nettleseren Ã¥pner en TCP-socket og starter three-way handshake: <em>SYN</em> â†’ <em>SYNACK</em> â†’ <em>ACK</em>. Hver av de tre meldingene gÃ¥r som et eget IP-datagram, innkapslet i Ethernet-rammer ved hvert hopp, gjennom kanskje 15 routere pÃ¥ tvers av internett. NÃ¥r handshake er ferdig, er det en pÃ¥litelig TCP-forbindelse mellom laptopen og Googles server.
+      Nå vet laptopen Googles IP. Nettleseren åpner en TCP-socket og starter three-way handshake: <em>SYN</em> ? <em>SYNACK</em> ? <em>ACK</em>. Hver av de tre meldingene går som et eget IP-datagram, innkapslet i Ethernet-rammer ved hvert hopp, gjennom kanskje 15 routere på tvers av internett. Når handshake er ferdig, er det en pålitelig TCP-forbindelse mellom laptopen og Googles server.
     </p>
 
-    <h3>Steg 5 â€” HTTP-forespÃ¸rsel og -svar</h3>
+    <h3>Steg 5 — HTTP-forespørsel og -svar</h3>
     <p>
-      Nettleseren skriver en HTTP-forespÃ¸rsel inn i TCP-socketen: <code>GET / HTTP/1.1</code>. Den deles opp i segmenter av TCP, hvert segment blir et IP-datagram, hvert datagram blir en ramme pÃ¥ hvert hopp. Googles server mottar forespÃ¸rselen, genererer HTML-svaret, og sender det tilbake gjennom den samme TCP-forbindelsen. Nettleseren parser HTML, ber om bilder og stilark (flere HTTP-forespÃ¸rsler), rendrer siden â€” og endelig ser brukeren Google-logoen.
+      Nettleseren skriver en HTTP-forespørsel inn i TCP-socketen: <code>GET / HTTP/1.1</code>. Den deles opp i segmenter av TCP, hvert segment blir et IP-datagram, hvert datagram blir en ramme på hvert hopp. Googles server mottar forespørselen, genererer HTML-svaret, og sender det tilbake gjennom den samme TCP-forbindelsen. Nettleseren parser HTML, ber om bilder og stilark (flere HTTP-forespørsler), rendrer siden — og endelig ser brukeren Google-logoen.
     </p>
 
     <figure>
-      <svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Protokollstabelen i aksjon under en web-forespÃ¸rsel">
+      <svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Protokollstabelen i aksjon under en web-forespørsel">
         <style>
           .pn { font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; font-weight: 600; fill: #1a1612; }
           .pl { font-family: 'IBM Plex Mono', monospace; font-size: 10px; fill: #6b6257; }
@@ -464,7 +464,7 @@
         <g transform="translate(60,40)">
           <rect x="0" y="0" width="100" height="30" fill="#c68a1f" stroke="#1a1612"/>
           <text x="50" y="20" text-anchor="middle" class="pn" fill="#fff">DHCP</text>
-          <text x="170" y="20" class="pl">FÃ¥ IP, gateway, DNS-server</text>
+          <text x="170" y="20" class="pl">Få IP, gateway, DNS-server</text>
         </g>
         <g transform="translate(60,80)">
           <rect x="0" y="0" width="100" height="30" fill="#b04428" stroke="#1a1612"/>
@@ -474,7 +474,7 @@
         <g transform="translate(60,120)">
           <rect x="0" y="0" width="100" height="30" fill="#3d6b3a" stroke="#1a1612"/>
           <text x="50" y="20" text-anchor="middle" class="pn" fill="#fff">DNS</text>
-          <text x="170" y="20" class="pl">SlÃ¥ opp google.com â†’ IP-adresse</text>
+          <text x="170" y="20" class="pl">Slå opp google.com ? IP-adresse</text>
         </g>
         <g transform="translate(60,160)">
           <rect x="0" y="0" width="100" height="30" fill="#2d4a7a" stroke="#1a1612"/>
@@ -494,15 +494,15 @@
         <g transform="translate(60,280)">
           <rect x="0" y="0" width="100" height="30" fill="#8a3420" stroke="#1a1612"/>
           <text x="50" y="20" text-anchor="middle" class="pn" fill="#fff">HTTP 200</text>
-          <text x="170" y="20" class="pl">Server sender HTML â†’ siden vises</text>
+          <text x="170" y="20" class="pl">Server sender HTML ? siden vises</text>
         </g>
       </svg>
-      <figcaption><strong>Figur 5.</strong> RekkefÃ¸lgen av protokoller som mÃ¥ kjÃ¸res fÃ¸r brukeren ser Ã©n eneste piksel av google.com. DHCP og ARP kjÃ¸res kun fÃ¸rste gang; DNS-oppslaget caches; TCP og HTTP er det som foregÃ¥r gjentatte ganger.</figcaption>
+      <figcaption><strong>Figur 5.</strong> Rekkefølgen av protokoller som må kjøres før brukeren ser én eneste piksel av google.com. DHCP og ARP kjøres kun første gang; DNS-oppslaget caches; TCP og HTTP er det som foregår gjentatte ganger.</figcaption>
     </figure>
 
     <div class="box green">
-      <span class="label">Den store lÃ¦rdommen</span>
-      <p>Det som ser ut som Ã©n enkelt handling â€” Â«Ã¥pne en nettsideÂ» â€” involverer faktisk <em>syv</em> forskjellige protokoller som samarbeider: DHCP, ARP, DNS, IP, TCP, Ethernet og HTTP. Hver av dem lÃ¸ser ett spesifikt problem. Ingen av dem kunne gjort jobben alene. Og takket vÃ¦re lagdelingen visste ingen av dem at de andre fantes. Det er dette internett <em>er</em>.</p>
+      <span class="label">Den store lærdommen</span>
+      <p>Det som ser ut som én enkelt handling — «åpne en nettside» — involverer faktisk <em>syv</em> forskjellige protokoller som samarbeider: DHCP, ARP, DNS, IP, TCP, Ethernet og HTTP. Hver av dem løser ett spesifikt problem. Ingen av dem kunne gjort jobben alene. Og takket være lagdelingen visste ingen av dem at de andre fantes. Det er dette internett <em>er</em>.</p>
     </div>
   </div>
 </section>
@@ -512,7 +512,7 @@
 <div class="container">
   <nav class="page-nav">
     <a href="grunnleggende-tilgang.html">
-      <span class="nav-label">â† Forrige</span>
+      <span class="nav-label">? Forrige</span>
       <span class="nav-title">Grunnleggende og medietilgang</span>
     </a>
   </nav>
@@ -521,7 +521,7 @@
 <footer>
   <div class="container">
     <div class="ornament">&#10043; &#10043; &#10043;</div>
-    <p>NTNU Â· TTM4100 Â· VÃ¥r 2026</p>
+    <p>NTNU · TTM4100 · Vår 2026</p>
   </div>
 </footer>
 
@@ -554,24 +554,24 @@ document.querySelectorAll('.reveal').forEach(r => {
 (function() {
   const steps = [
     {
-      title: 'Trinn 1 â€” Svitsjen er tom',
-      body: 'En helt ny svitsj har ingenting i tabellen sin. Ingen vet hvor noen er. Fire verter â€” A, B, C, D â€” er koblet til portene 1, 2, 3 og 4.'
+      title: 'Trinn 1 — Svitsjen er tom',
+      body: 'En helt ny svitsj har ingenting i tabellen sin. Ingen vet hvor noen er. Fire verter — A, B, C, D — er koblet til portene 1, 2, 3 og 4.'
     },
     {
-      title: 'Trinn 2 â€” A sender til D',
-      body: 'A (port 1) sender en ramme med destinasjon D. Svitsjen ser rammen komme inn pÃ¥ port 1, kilde-MAC = A. Den legger inn (A, port 1) i tabellen.'
+      title: 'Trinn 2 — A sender til D',
+      body: 'A (port 1) sender en ramme med destinasjon D. Svitsjen ser rammen komme inn på port 1, kilde-MAC = A. Den legger inn (A, port 1) i tabellen.'
     },
     {
-      title: 'Trinn 3 â€” Ukjent destinasjon â†’ flood',
-      body: 'Destinasjonen D finnes ikke i tabellen. Svitsjen har ikke noe valg: den floodes ut pÃ¥ port 2, 3 og 4. Alle vertene fÃ¥r rammen, men bare D bryr seg om den.'
+      title: 'Trinn 3 — Ukjent destinasjon ? flood',
+      body: 'Destinasjonen D finnes ikke i tabellen. Svitsjen har ikke noe valg: den floodes ut på port 2, 3 og 4. Alle vertene får rammen, men bare D bryr seg om den.'
     },
     {
-      title: 'Trinn 4 â€” D svarer',
-      body: 'D (port 4) sender et svar til A. Svitsjen ser kilde-MAC = D pÃ¥ port 4 og legger inn (D, port 4). NÃ¥ vet den begge. Destinasjonen A finnes i tabellen â†’ svaret sendes <em>kun</em> pÃ¥ port 1.'
+      title: 'Trinn 4 — D svarer',
+      body: 'D (port 4) sender et svar til A. Svitsjen ser kilde-MAC = D på port 4 og legger inn (D, port 4). Nå vet den begge. Destinasjonen A finnes i tabellen ? svaret sendes <em>kun</em> på port 1.'
     },
     {
-      title: 'Trinn 5 â€” MÃ¥lrettet kommunikasjon',
-      body: 'Alle fremtidige rammer mellom A og D gÃ¥r mÃ¥lrettet, aldri flooding. Hvis B nÃ¥ vil snakke med C, er det en helt uavhengig samtale pÃ¥ port 2 og 3 â€” samtidig og uten kollisjon.'
+      title: 'Trinn 5 — Målrettet kommunikasjon',
+      body: 'Alle fremtidige rammer mellom A og D går målrettet, aldri flooding. Hvis B nå vil snakke med C, er det en helt uavhengig samtale på port 2 og 3 — samtidig og uten kollisjon.'
     }
   ];
   let i = 0;
@@ -596,29 +596,29 @@ document.querySelectorAll('.reveal').forEach(r => {
   var N = 5;
   var steps = [
     {
-      title: 'A vil nÃ¥ B â€” mÃ¥l er pÃ¥ annet subnett',
-      text: 'A (192.168.1.10) vil sende til B (142.250.74.4). Subnettsjekk: 142.250.74.4 er ikke i 192.168.1.0/24. A kan ikke sende direkte â€” pakken mÃ¥ til standardruteren (GW/R1 pÃ¥ 192.168.1.1).',
-      anim: '<rect x="52" y="69" width="70" height="50" rx="4" fill="none" stroke="#b04428" stroke-width="2.5"/><line x1="117" y1="93" x2="197" y2="107" stroke="#b04428" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arpArr)"/><rect x="168" y="58" width="180" height="42" rx="4" fill="#f4f1ea" stroke="#b04428" stroke-width="1"/><text x="258" y="74" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#b04428">142.250.74.4 âˆ‰ 192.168.1.0/24</text><text x="258" y="88" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" font-weight="600" fill="#b04428">â†’ send til standardruter (GW)!</text>'
+      title: 'A vil nå B — mål er på annet subnett',
+      text: 'A (192.168.1.10) vil sende til B (142.250.74.4). Subnettsjekk: 142.250.74.4 er ikke i 192.168.1.0/24. A kan ikke sende direkte — pakken må til standardruteren (GW/R1 på 192.168.1.1).',
+      anim: '<rect x="52" y="69" width="70" height="50" rx="4" fill="none" stroke="#b04428" stroke-width="2.5"/><line x1="117" y1="93" x2="197" y2="107" stroke="#b04428" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arpArr)"/><rect x="168" y="58" width="180" height="42" rx="4" fill="#f4f1ea" stroke="#b04428" stroke-width="1"/><text x="258" y="74" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#b04428">142.250.74.4 ? 192.168.1.0/24</text><text x="258" y="88" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" font-weight="600" fill="#b04428">? send til standardruter (GW)!</text>'
     },
     {
       title: 'ARP: A finner GW sin MAC-adresse',
-      text: 'FÃ¸r A kan bygge Ethernet-rammen trenger den GW sin MAC. A sender ARP broadcast: Â«Hvem har 192.168.1.1?Â» â€” alle pÃ¥ LAN A hÃ¸rer den. GW svarer unicast: Â«Jeg! MAC: 11:11:11:11Â». A lagrer dette i ARP-tabellen sin.',
-      anim: '<line x1="120" y1="96" x2="200" y2="107" stroke="#b04428" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arpArr)"/><text x="152" y="82" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#b04428">ARP broadcast?</text><line x1="202" y1="113" x2="122" y2="107" stroke="#3d6b3a" stroke-width="1.8" marker-end="url(#arpArrGr)"/><text x="152" y="128" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#3d6b3a">11:11:11:11 âœ“</text><rect x="12" y="182" width="150" height="40" rx="4" fill="#f4f1ea" stroke="#3d6b3a" stroke-width="1"/><text x="87" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" font-weight="600" fill="#3d6b3a">ARP-tabell hos A:</text><text x="87" y="210" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#1a1612">192.168.1.1 â†’ 11:11:11:11</text>'
+      text: 'Før A kan bygge Ethernet-rammen trenger den GW sin MAC. A sender ARP broadcast: «Hvem har 192.168.1.1?» — alle på LAN A hører den. GW svarer unicast: «Jeg! MAC: 11:11:11:11». A lagrer dette i ARP-tabellen sin.',
+      anim: '<line x1="120" y1="96" x2="200" y2="107" stroke="#b04428" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arpArr)"/><text x="152" y="82" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#b04428">ARP broadcast?</text><line x1="202" y1="113" x2="122" y2="107" stroke="#3d6b3a" stroke-width="1.8" marker-end="url(#arpArrGr)"/><text x="152" y="128" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#3d6b3a">11:11:11:11 ?</text><rect x="12" y="182" width="150" height="40" rx="4" fill="#f4f1ea" stroke="#3d6b3a" stroke-width="1"/><text x="87" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" font-weight="600" fill="#3d6b3a">ARP-tabell hos A:</text><text x="87" y="210" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#1a1612">192.168.1.1 ? 11:11:11:11</text>'
     },
     {
-      title: 'Ethernet-ramme: A â†’ GW',
-      text: 'A bygger rammen: dst-MAC = GW (11:11:11:11), src-MAC = A (aa:aa:aa:aa). Inni ligger IP-datagrammet med src-IP = 192.168.1.10 og dst-IP = 142.250.74.4. IP-adressene endres ikke â€” de er ende-til-ende.',
-      anim: '<rect x="155" y="100" width="44" height="14" rx="3" fill="#b04428"/><text x="177" y="111" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#fff">pakke â†’</text><rect x="10" y="182" width="740" height="40" rx="4" fill="#f4f1ea" stroke="#c9c0ae" stroke-width="1"/><text x="22" y="198" font-family="IBM Plex Mono,monospace" font-size="8" font-weight="600" fill="#1a1612">Ramme:</text><rect x="72" y="185" width="170" height="30" rx="3" fill="#b04428"/><text x="157" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">dst-MAC: 11:11:11:11</text><text x="157" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#fde8d8">(GW-MAC)</text><rect x="246" y="185" width="170" height="30" rx="3" fill="#3d6b3a"/><text x="331" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">src-MAC: aa:aa:aa:aa</text><text x="331" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#c8e6c8">(A-MAC)</text><rect x="420" y="185" width="330" height="30" rx="3" fill="#2d4a7a"/><text x="585" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">IPv4: 192.168.1.10 â†’ 142.250.74.4</text><text x="585" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#c8d8f0">(IP-adresser uendret!)</text>'
+      title: 'Ethernet-ramme: A ? GW',
+      text: 'A bygger rammen: dst-MAC = GW (11:11:11:11), src-MAC = A (aa:aa:aa:aa). Inni ligger IP-datagrammet med src-IP = 192.168.1.10 og dst-IP = 142.250.74.4. IP-adressene endres ikke — de er ende-til-ende.',
+      anim: '<rect x="155" y="100" width="44" height="14" rx="3" fill="#b04428"/><text x="177" y="111" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#fff">pakke ?</text><rect x="10" y="182" width="740" height="40" rx="4" fill="#f4f1ea" stroke="#c9c0ae" stroke-width="1"/><text x="22" y="198" font-family="IBM Plex Mono,monospace" font-size="8" font-weight="600" fill="#1a1612">Ramme:</text><rect x="72" y="185" width="170" height="30" rx="3" fill="#b04428"/><text x="157" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">dst-MAC: 11:11:11:11</text><text x="157" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#fde8d8">(GW-MAC)</text><rect x="246" y="185" width="170" height="30" rx="3" fill="#3d6b3a"/><text x="331" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">src-MAC: aa:aa:aa:aa</text><text x="331" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#c8e6c8">(A-MAC)</text><rect x="420" y="185" width="330" height="30" rx="3" fill="#2d4a7a"/><text x="585" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">IPv4: 192.168.1.10 ? 142.250.74.4</text><text x="585" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#c8d8f0">(IP-adresser uendret!)</text>'
     },
     {
       title: 'GW ruter: ny ramme videre gjennom Internett',
-      text: 'GW mottar rammen, trekker ut IP-datagrammet og slÃ¥r opp rutetabellen: neste hopp er R2. GW ARP-er for R2 sin MAC, bygger en helt ny Ethernet-ramme med nye MAC-adresser â€” men IP-datagrammet inni er nÃ¸yaktig det samme.',
-      anim: '<circle cx="224" cy="107" r="27" fill="none" stroke="#b04428" stroke-width="2.5"/><circle cx="370" cy="107" r="7" fill="#b04428" opacity="0.85"/><line x1="246" y1="100" x2="293" y2="93" stroke="#b04428" stroke-width="2" marker-end="url(#arpArr)"/><line x1="333" y1="97" x2="396" y2="118" stroke="#b04428" stroke-width="1.5" stroke-dasharray="3 2" marker-end="url(#arpArr)"/><rect x="10" y="182" width="740" height="40" rx="4" fill="#f4f1ea" stroke="#c9c0ae" stroke-width="1"/><text x="22" y="198" font-family="IBM Plex Mono,monospace" font-size="8" font-weight="600" fill="#1a1612">Ny ramme:</text><rect x="82" y="185" width="170" height="30" rx="3" fill="#b04428"/><text x="167" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">dst-MAC: 22:22:22:22</text><text x="167" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#fde8d8">(R2-MAC â€” ny!)</text><rect x="256" y="185" width="160" height="30" rx="3" fill="#c68a1f"/><text x="336" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">src-MAC: 11:11:11:11</text><text x="336" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#fef3d0">(GW-MAC â€” ny!)</text><rect x="420" y="185" width="330" height="30" rx="3" fill="#2d4a7a"/><text x="585" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">IPv4: 192.168.1.10 â†’ 142.250.74.4</text><text x="585" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#c8d8f0">(uendret hele veien)</text>'
+      text: 'GW mottar rammen, trekker ut IP-datagrammet og slår opp rutetabellen: neste hopp er R2. GW ARP-er for R2 sin MAC, bygger en helt ny Ethernet-ramme med nye MAC-adresser — men IP-datagrammet inni er nøyaktig det samme.',
+      anim: '<circle cx="224" cy="107" r="27" fill="none" stroke="#b04428" stroke-width="2.5"/><circle cx="370" cy="107" r="7" fill="#b04428" opacity="0.85"/><line x1="246" y1="100" x2="293" y2="93" stroke="#b04428" stroke-width="2" marker-end="url(#arpArr)"/><line x1="333" y1="97" x2="396" y2="118" stroke="#b04428" stroke-width="1.5" stroke-dasharray="3 2" marker-end="url(#arpArr)"/><rect x="10" y="182" width="740" height="40" rx="4" fill="#f4f1ea" stroke="#c9c0ae" stroke-width="1"/><text x="22" y="198" font-family="IBM Plex Mono,monospace" font-size="8" font-weight="600" fill="#1a1612">Ny ramme:</text><rect x="82" y="185" width="170" height="30" rx="3" fill="#b04428"/><text x="167" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">dst-MAC: 22:22:22:22</text><text x="167" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#fde8d8">(R2-MAC — ny!)</text><rect x="256" y="185" width="160" height="30" rx="3" fill="#c68a1f"/><text x="336" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">src-MAC: 11:11:11:11</text><text x="336" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#fef3d0">(GW-MAC — ny!)</text><rect x="420" y="185" width="330" height="30" rx="3" fill="#2d4a7a"/><text x="585" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">IPv4: 192.168.1.10 ? 142.250.74.4</text><text x="585" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#c8d8f0">(uendret hele veien)</text>'
     },
     {
       title: 'Siste hopp: R3 leverer til B',
-      text: 'R3 er koblet direkte til LAN B. R3 ARP-er for B sin MAC (bb:bb:bb:bb) og bygger den aller siste Ethernet-rammen. B mottar den â€” og IP-adressene har vÃ¦rt de samme fra start. Konklusjon: IP-adresser er ende-til-ende. MAC-adresser byttes ved hvert eneste hopp.',
-      anim: '<rect x="590" y="67" width="70" height="58" rx="4" fill="none" stroke="#3d6b3a" stroke-width="2.5"/><circle cx="466" cy="113" r="7" fill="#b04428" opacity="0.85"/><line x1="435" y1="118" x2="498" y2="107" stroke="#b04428" stroke-width="2" marker-end="url(#arpArr)"/><rect x="10" y="182" width="740" height="40" rx="4" fill="#f4f1ea" stroke="#3d6b3a" stroke-width="1.5"/><text x="22" y="198" font-family="IBM Plex Mono,monospace" font-size="8" font-weight="600" fill="#3d6b3a">Siste ramme:</text><rect x="96" y="185" width="170" height="30" rx="3" fill="#3d6b3a"/><text x="181" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">dst-MAC: bb:bb:bb:bb</text><text x="181" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#c8e6c8">(B-MAC â€” endelig!)</text><rect x="270" y="185" width="146" height="30" rx="3" fill="#6b6257"/><text x="343" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">src-MAC: 33:33:33:33</text><text x="343" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#e8e3d6">(R3-MAC)</text><rect x="420" y="185" width="330" height="30" rx="3" fill="#2d4a7a"/><text x="585" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">IPv4: 192.168.1.10 â†’ 142.250.74.4</text><text x="585" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#c8d8f0">(uendret â€” hele veien!)</text>'
+      text: 'R3 er koblet direkte til LAN B. R3 ARP-er for B sin MAC (bb:bb:bb:bb) og bygger den aller siste Ethernet-rammen. B mottar den — og IP-adressene har vært de samme fra start. Konklusjon: IP-adresser er ende-til-ende. MAC-adresser byttes ved hvert eneste hopp.',
+      anim: '<rect x="590" y="67" width="70" height="58" rx="4" fill="none" stroke="#3d6b3a" stroke-width="2.5"/><circle cx="466" cy="113" r="7" fill="#b04428" opacity="0.85"/><line x1="435" y1="118" x2="498" y2="107" stroke="#b04428" stroke-width="2" marker-end="url(#arpArr)"/><rect x="10" y="182" width="740" height="40" rx="4" fill="#f4f1ea" stroke="#3d6b3a" stroke-width="1.5"/><text x="22" y="198" font-family="IBM Plex Mono,monospace" font-size="8" font-weight="600" fill="#3d6b3a">Siste ramme:</text><rect x="96" y="185" width="170" height="30" rx="3" fill="#3d6b3a"/><text x="181" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">dst-MAC: bb:bb:bb:bb</text><text x="181" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#c8e6c8">(B-MAC — endelig!)</text><rect x="270" y="185" width="146" height="30" rx="3" fill="#6b6257"/><text x="343" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">src-MAC: 33:33:33:33</text><text x="343" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#e8e3d6">(R3-MAC)</text><rect x="420" y="185" width="330" height="30" rx="3" fill="#2d4a7a"/><text x="585" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">IPv4: 192.168.1.10 ? 142.250.74.4</text><text x="585" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#c8d8f0">(uendret — hele veien!)</text>'
     }
   ];
   var idx = 0;
@@ -629,7 +629,7 @@ document.querySelectorAll('.reveal').forEach(r => {
   var prev = document.getElementById('arpPrev');
   var next = document.getElementById('arpNext');
   function render() {
-    title.textContent = 'Steg ' + (idx + 1) + ' av ' + N + ' â€” ' + steps[idx].title;
+    title.textContent = 'Steg ' + (idx + 1) + ' av ' + N + ' — ' + steps[idx].title;
     text.textContent = steps[idx].text;
     anim.innerHTML = steps[idx].anim;
     ind.textContent = (idx + 1) + ' / ' + N;

@@ -1,10 +1,10 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="no">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kapittel 9 â€” Multimedia Networking</title>
-<link rel="stylesheet" href="../style.css">
+<title>Kapittel 9 — Multimedia Networking</title>
+<link rel="icon" type="image/png" href="/favicon.png">`n<link rel="stylesheet" href="../style.css">
 </head>
 <body>
 
@@ -23,9 +23,9 @@
 <main data-chapter="Kapittel 9: Multimedia Networking">
 <header class="hero">
 <div class="container">
-  <div class="eyebrow">Kapittel 9 Â· Datakommunikasjon (7. utgave)</div>
+  <div class="eyebrow">Kapittel 9 · Datakommunikasjon (7. utgave)</div>
   <h1>Multimedia <em>Networking</em></h1>
-  <p class="lede">Hvordan lyd og video reiser over et nett som egentlig bare lover Â«best effortÂ» â€” og hva som skjer nÃ¥r pakkene ikke kommer frem i tide.</p>
+  <p class="lede">Hvordan lyd og video reiser over et nett som egentlig bare lover «best effort» — og hva som skjer når pakkene ikke kommer frem i tide.</p>
   <nav class="toc">
     <a href="#intro"><span>01</span> Lyd og video som bits</a>
     <a href="#apptypes"><span>02</span> Tre typer applikasjoner</a>
@@ -35,63 +35,63 @@
     <a href="#jitter"><span>06</span> Jitter og playout-forsinkelse</a>
     <a href="#fec"><span>07</span> Tapsgjenoppretting: FEC og interleaving</a>
     <a href="#skype"><span>08</span> Skype: P2P VoIP i praksis</a>
-    <a href="#rtp"><span>09</span> RTP â€” Real-Time Protocol</a>
+    <a href="#rtp"><span>09</span> RTP — Real-Time Protocol</a>
     <a href="#summary"><span>10</span> Oppsummering</a>
   </nav>
 </div>
 </header>
 
 <!-- ============================================================ -->
-<!-- SECTION 1: Intro â€” audio & video basics                      -->
+<!-- SECTION 1: Intro — audio & video basics                      -->
 <!-- ============================================================ -->
 <section id="intro">
 <div class="container">
-  <div class="section-badge">01 Â· Grunnlaget</div>
+  <div class="section-badge">01 · Grunnlaget</div>
   <h2>Lyd og video som <em>bits</em></h2>
-  <p class="section-intro">FÃ¸r vi kan sende multimedia over et nettverk, mÃ¥ vi forstÃ¥ hvordan analoge signaler blir til en strÃ¸m av bits.</p>
+  <p class="section-intro">Før vi kan sende multimedia over et nettverk, må vi forstå hvordan analoge signaler blir til en strøm av bits.</p>
 
-  <p class="dropcap">Lyd er trykkbÃ¸lger i luften. Video er en sekvens av bilder som vises raskt nok til at Ã¸yet oppfatter bevegelse. Ingen av delene er naturlig Â«digitaleÂ» â€” de er kontinuerlige, analoge stÃ¸rrelser. For Ã¥ sende dem over et pakkenett mÃ¥ vi fÃ¸rst gjÃ¸re dem om til en strÃ¸m av bits, og det er der <strong>sampling</strong> og <strong>kvantisering</strong> kommer inn.</p>
+  <p class="dropcap">Lyd er trykkbølger i luften. Video er en sekvens av bilder som vises raskt nok til at øyet oppfatter bevegelse. Ingen av delene er naturlig «digitale» — de er kontinuerlige, analoge størrelser. For å sende dem over et pakkenett må vi først gjøre dem om til en strøm av bits, og det er der <strong>sampling</strong> og <strong>kvantisering</strong> kommer inn.</p>
 
   <h3>Audio: sampling og kvantisering</h3>
-  <p>Et analogt lydsignal samples ved en fast rate â€” verdien av signalet mÃ¥les med jevne mellomrom. Hver mÃ¥ling <em>kvantiseres</em>, altsÃ¥ rundes av til nÃ¦rmeste tillatte verdi. Hvis vi bruker 8 bits per sample, har vi 2<sup>8</sup> = 256 mulige verdier. Resultatet er en strÃ¸m av tall som representerer lyden.</p>
+  <p>Et analogt lydsignal samples ved en fast rate — verdien av signalet måles med jevne mellomrom. Hver måling <em>kvantiseres</em>, altså rundes av til nærmeste tillatte verdi. Hvis vi bruker 8 bits per sample, har vi 2<sup>8</sup> = 256 mulige verdier. Resultatet er en strøm av tall som representerer lyden.</p>
 
   <div class="table-wrap">
   <table>
-    <tr><th>BruksomrÃ¥de</th><th>Sampling-rate</th><th>Bits/sample</th><th>Bitrate</th></tr>
+    <tr><th>Bruksområde</th><th>Sampling-rate</th><th>Bits/sample</th><th>Bitrate</th></tr>
     <tr><td class="mono-cell">Telefon</td><td>8 000 samples/s</td><td>8</td><td>64 kbps</td></tr>
     <tr><td class="mono-cell">CD-musikk</td><td>44 100 samples/s</td><td>16</td><td>1,411 Mbps</td></tr>
-    <tr><td class="mono-cell">MP3</td><td>44 100 samples/s</td><td>komp.</td><td>96â€“160 kbps</td></tr>
+    <tr><td class="mono-cell">MP3</td><td>44 100 samples/s</td><td>komp.</td><td>96–160 kbps</td></tr>
     <tr><td class="mono-cell">Internett-telefoni</td><td>varierer</td><td>komp.</td><td>5,3 kbps og opp</td></tr>
   </table>
   </div>
 
-  <p>Legg merke til forskjellen: en CD bruker 1,4 Mbps for Ã¥ representere musikk. MP3 komprimerer den ned til under 160 kbps ved Ã¥ fjerne lyddetaljer som de fleste ikke hÃ¸rer. Internett-telefoni trenger bare 5â€“64 kbps fordi menneskelig tale er mye enklere enn musikk.</p>
+  <p>Legg merke til forskjellen: en CD bruker 1,4 Mbps for å representere musikk. MP3 komprimerer den ned til under 160 kbps ved å fjerne lyddetaljer som de fleste ikke hører. Internett-telefoni trenger bare 5–64 kbps fordi menneskelig tale er mye enklere enn musikk.</p>
 
   <h3>Video: romlig og temporal koding</h3>
-  <p>En video er en sekvens av bilder (typisk 24â€“30 bilder per sekund), der hvert bilde er et rutenett av piksler. RÃ¥ video krever enorm bÃ¥ndbredde, men det finnes to typer redundans vi kan utnytte for Ã¥ komprimere:</p>
+  <p>En video er en sekvens av bilder (typisk 24–30 bilder per sekund), der hvert bilde er et rutenett av piksler. Rå video krever enorm båndbredde, men det finnes to typer redundans vi kan utnytte for å komprimere:</p>
 
   <div class="callout">
     <span class="label">Spatial (romlig) koding</span>
-    <p>Innenfor ett enkelt bilde er det store omrÃ¥der med samme farge. I stedet for Ã¥ sende <em>N</em> like piksler, sender vi bare fargen og antallet â€” Â«200 piksler lillaÂ». Dette er idÃ©en bak all bildekomprimering.</p>
+    <p>Innenfor ett enkelt bilde er det store områder med samme farge. I stedet for å sende <em>N</em> like piksler, sender vi bare fargen og antallet — «200 piksler lilla». Dette er idéen bak all bildekomprimering.</p>
   </div>
 
   <div class="callout callout-blue">
     <span class="label">Temporal koding</span>
-    <p>Mellom to pÃ¥fÃ¸lgende bilder er forskjellen ofte minimal â€” kanskje bare en liten bevegelse i ett hjÃ¸rne. I stedet for Ã¥ sende hele det neste bildet, sender vi bare <em>differansen</em> fra forrige bilde. Dette er grunnen til at MPEG-video er sÃ¥ mye mer effektiv enn Ã¥ sende hvert bilde individuelt.</p>
+    <p>Mellom to påfølgende bilder er forskjellen ofte minimal — kanskje bare en liten bevegelse i ett hjørne. I stedet for å sende hele det neste bildet, sender vi bare <em>differansen</em> fra forrige bilde. Dette er grunnen til at MPEG-video er så mye mer effektiv enn å sende hvert bilde individuelt.</p>
   </div>
 
   <h3>CBR vs. VBR</h3>
-  <p>NÃ¥r vi koder video, kan vi velge mellom to strategier:</p>
+  <p>Når vi koder video, kan vi velge mellom to strategier:</p>
   <ul style="margin:0 0 24px 24px;color:var(--ink-soft)">
-    <li style="margin-bottom:8px"><strong>CBR (Constant Bit Rate):</strong> Videoen kodes med en fast bitrate hele veien. Enkelt for nettverket Ã¥ planlegge for, men kan gi unÃ¸dvendig lav kvalitet i stille scener eller for dÃ¥rlig kvalitet i komplekse scener.</li>
-    <li><strong>VBR (Variable Bit Rate):</strong> Bitraten varierer etter hvor komplekst innholdet er. En enkel scene med lite bevegelse bruker fÃ¥ bits, mens en actionscene bruker mange. Bedre kvalitet, men vanskeligere for nettverket Ã¥ hÃ¥ndtere.</li>
+    <li style="margin-bottom:8px"><strong>CBR (Constant Bit Rate):</strong> Videoen kodes med en fast bitrate hele veien. Enkelt for nettverket å planlegge for, men kan gi unødvendig lav kvalitet i stille scener eller for dårlig kvalitet i komplekse scener.</li>
+    <li><strong>VBR (Variable Bit Rate):</strong> Bitraten varierer etter hvor komplekst innholdet er. En enkel scene med lite bevegelse bruker få bits, mens en actionscene bruker mange. Bedre kvalitet, men vanskeligere for nettverket å håndtere.</li>
   </ul>
 
   <div class="table-wrap">
   <table>
     <tr><th>Standard</th><th>Typisk bitrate</th><th>Bruk</th></tr>
     <tr><td class="mono-cell">MPEG-1</td><td>1,5 Mbps</td><td>CD-ROM-video</td></tr>
-    <tr><td class="mono-cell">MPEG-2</td><td>3â€“6 Mbps</td><td>DVD</td></tr>
+    <tr><td class="mono-cell">MPEG-2</td><td>3–6 Mbps</td><td>DVD</td></tr>
     <tr><td class="mono-cell">MPEG-4</td><td>< 1 Mbps</td><td>Internett-video</td></tr>
   </table>
   </div>
@@ -103,19 +103,19 @@
 <!-- ============================================================ -->
 <section id="apptypes">
 <div class="container">
-  <div class="section-badge">02 Â· Applikasjonstyper</div>
+  <div class="section-badge">02 · Applikasjonstyper</div>
   <h2>Tre typer <em>multimedia-applikasjoner</em></h2>
   <p class="section-intro">Ikke all multimedia har de samme kravene til nettverket.</p>
 
-  <p>Multimedia over nettverk kan deles inn i tre kategorier med vidt forskjellige nettverkskrav. Det er viktig Ã¥ skille dem, fordi lÃ¸sningene vi trenger er forskjellige for hver.</p>
+  <p>Multimedia over nettverk kan deles inn i tre kategorier med vidt forskjellige nettverkskrav. Det er viktig å skille dem, fordi løsningene vi trenger er forskjellige for hver.</p>
 
   <div class="compare">
     <div>
       <h4>1. Streaming av lagret innhold</h4>
       <ul>
-        <li>Video/lyd er ferdig innspilt og lagret pÃ¥ en server</li>
-        <li>Klienten kan begynne avspilling <em>fÃ¸r</em> hele filen er lastet ned</li>
-        <li>Serveren kan sende raskere enn avspillingsraten â€” klienten bufrer</li>
+        <li>Video/lyd er ferdig innspilt og lagret på en server</li>
+        <li>Klienten kan begynne avspilling <em>før</em> hele filen er lastet ned</li>
+        <li>Serveren kan sende raskere enn avspillingsraten — klienten bufrer</li>
         <li>Eksempler: YouTube, Netflix, Spotify</li>
       </ul>
     </div>
@@ -123,8 +123,8 @@
       <h4>2. Samtale (voice/video)</h4>
       <ul>
         <li>Interaktiv kommunikasjon mellom mennesker</li>
-        <li>SvÃ¦rt strenge krav til <em>forsinkelse</em> â€” over 400 ms Ã¸delegger samtalen</li>
-        <li>TÃ¥ler noe pakketap, men ikke mye forsinkelse</li>
+        <li>Svært strenge krav til <em>forsinkelse</em> — over 400 ms ødelegger samtalen</li>
+        <li>Tåler noe pakketap, men ikke mye forsinkelse</li>
         <li>Eksempler: Skype, Zoom, Teams, VoIP-telefoni</li>
       </ul>
     </div>
@@ -132,10 +132,10 @@
 
   <div class="callout" style="margin-top:0">
     <span class="label">3. Live streaming</span>
-    <p>En mellomting: innholdet strÃ¸mmes i sanntid (fotballkamp, konsert), men er ikke interaktivt. Man tÃ¥ler noen sekunders forsinkelse (det er derfor du av og til hÃ¸rer naboen juble fÃ¸r du ser mÃ¥let). Kravene er omtrent som for lagret streaming, men man kan ikke spole fremover.</p>
+    <p>En mellomting: innholdet strømmes i sanntid (fotballkamp, konsert), men er ikke interaktivt. Man tåler noen sekunders forsinkelse (det er derfor du av og til hører naboen juble før du ser målet). Kravene er omtrent som for lagret streaming, men man kan ikke spole fremover.</p>
   </div>
 
-  <p>Den rÃ¸de trÃ¥den er at alle tre typene har til felles at de er <strong>tidssensitive</strong> â€” bits som kommer for sent er verdilÃ¸se. En e-post som bruker 2 sekunder ekstra spiller ingen rolle, men 2 sekunder ekstra forsinkelse i en telefonsamtale gjÃ¸r den ubrukelig. Hele resten av dette kapittelet handler om Ã¥ takle denne tidsfÃ¸lsomheten over et nettverk som bare lover Â«best effortÂ».</p>
+  <p>Den røde tråden er at alle tre typene har til felles at de er <strong>tidssensitive</strong> — bits som kommer for sent er verdiløse. En e-post som bruker 2 sekunder ekstra spiller ingen rolle, men 2 sekunder ekstra forsinkelse i en telefonsamtale gjør den ubrukelig. Hele resten av dette kapittelet handler om å takle denne tidsfølsomheten over et nettverk som bare lover «best effort».</p>
 </div>
 </section>
 
@@ -144,17 +144,17 @@
 <!-- ============================================================ -->
 <section id="streaming">
 <div class="container">
-  <div class="section-badge">03 Â· Lagret video</div>
+  <div class="section-badge">03 · Lagret video</div>
   <h2>Streaming av <em>lagret</em> video</h2>
-  <p class="section-intro">Klienten spiller av den ene enden mens serveren fremdeles sender den andre â€” og bufferen i midten gjÃ¸r det hele mulig.</p>
+  <p class="section-intro">Klienten spiller av den ene enden mens serveren fremdeles sender den andre — og bufferen i midten gjør det hele mulig.</p>
 
-  <p class="dropcap">Hovedutfordringen med streaming er enkel Ã¥ forklare: videoen ble spilt inn med en fast rate (f.eks. 30 bilder per sekund), og den <em>mÃ¥</em> spilles av med nÃ¸yaktig samme rate for at den skal se riktig ut. Men nettverket leverer pakker med variabel forsinkelse â€” noen ganger litt fortere, noen ganger litt tregere. Denne variabiliteten kalles <strong>jitter</strong>, og det er den klienten mÃ¥ kompensere for.</p>
+  <p class="dropcap">Hovedutfordringen med streaming er enkel å forklare: videoen ble spilt inn med en fast rate (f.eks. 30 bilder per sekund), og den <em>må</em> spilles av med nøyaktig samme rate for at den skal se riktig ut. Men nettverket leverer pakker med variabel forsinkelse — noen ganger litt fortere, noen ganger litt tregere. Denne variabiliteten kalles <strong>jitter</strong>, og det er den klienten må kompensere for.</p>
 
   <h3>Continuous playout constraint</h3>
-  <p>NÃ¥r avspillingen fÃ¸rst har begynt, mÃ¥ den fortsette med jevn rate. Hvis pakker som trengs for neste bilde ikke har kommet frem ennÃ¥, fryser videoen â€” den klassiske Â«bufferingÂ»-animasjonen vi alle hater. Vi kan ikke sende pakkene tilbake i tid, sÃ¥ den eneste strategien er Ã¥ <em>vente litt med Ã¥ starte avspillingen</em>, slik at vi bygger opp en buffer fÃ¸rst.</p>
+  <p>Når avspillingen først har begynt, må den fortsette med jevn rate. Hvis pakker som trengs for neste bilde ikke har kommet frem ennå, fryser videoen — den klassiske «buffering»-animasjonen vi alle hater. Vi kan ikke sende pakkene tilbake i tid, så den eneste strategien er å <em>vente litt med å starte avspillingen</em>, slik at vi bygger opp en buffer først.</p>
 
   <h3>Klient-side buffering</h3>
-  <p>IdÃ©en er elegant: klienten har en buffer med plass til en viss mengde video. Serveren fyller bufferen med variabel rate x(t) (pÃ¥virket av nettverksforhold), mens klienten tÃ¸mmer bufferen med konstant avspillingsrate r.</p>
+  <p>Idéen er elegant: klienten har en buffer med plass til en viss mengde video. Serveren fyller bufferen med variabel rate x(t) (påvirket av nettverksforhold), mens klienten tømmer bufferen med konstant avspillingsrate r.</p>
 
   <figure>
     <svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
@@ -176,23 +176,23 @@
       <rect x="538" y="70" width="130" height="60" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="3"/>
       <text x="603" y="105" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">Avspilling</text>
       <!-- labels -->
-      <text x="348" y="170" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">x(t) > r i snitt â†’ bufferen tÃ¸mmes aldri</text>
-      <text x="348" y="190" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">x(t) &lt; r â†’ bufferen tÃ¸mmes til slutt â†’ frysing</text>
+      <text x="348" y="170" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">x(t) > r i snitt ? bufferen tømmes aldri</text>
+      <text x="348" y="190" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">x(t) &lt; r ? bufferen tømmes til slutt ? frysing</text>
     </svg>
-    <figcaption>Klient-side buffering: variabel fylling fra nettet, konstant tÃ¸mming ved avspilling. SÃ¥ lenge gjennomsnittlig x(t) > r og initiell forsinkelse er stor nok, unngÃ¥r vi frysing.</figcaption>
+    <figcaption>Klient-side buffering: variabel fylling fra nettet, konstant tømming ved avspilling. Så lenge gjennomsnittlig x(t) > r og initiell forsinkelse er stor nok, unngår vi frysing.</figcaption>
   </figure>
 
   <h3>Avveiningen: playout-forsinkelse</h3>
-  <p>Jo lengre vi venter med Ã¥ starte avspillingen, jo mer buffer bygger vi opp â€” og jo tryggere er vi mot korte perioder der nettverket er tregt. Men brukeren vil ikke vente. Denne avveiningen er fundamental:</p>
+  <p>Jo lengre vi venter med å starte avspillingen, jo mer buffer bygger vi opp — og jo tryggere er vi mot korte perioder der nettverket er tregt. Men brukeren vil ikke vente. Denne avveiningen er fundamental:</p>
 
   <div class="slider-box">
     <label>Initial playout-forsinkelse: <span class="val" id="delayVal">2,0 s</span></label>
     <input type="range" id="delaySlider" min="1" max="100" value="20">
     <div class="out" id="delayOut"></div>
   </div>
-  <p style="font-size:14px;color:var(--ink-faded);font-style:italic;margin-top:-20px">Dra slideren for Ã¥ se hvordan initial playout-forsinkelse pÃ¥virker bufferrobusthet og brukeropplevelse. Modellen er forenklet, men illustrerer kjernen av trade-off-en.</p>
+  <p style="font-size:14px;color:var(--ink-faded);font-style:italic;margin-top:-20px">Dra slideren for å se hvordan initial playout-forsinkelse påvirker bufferrobusthet og brukeropplevelse. Modellen er forenklet, men illustrerer kjernen av trade-off-en.</p>
 
-  <div class="margin-note">Moderne tjenester som YouTube bruker <a href="../kap2/p2p-video-cdn.html#streaming">DASH (Dynamic Adaptive Streaming over HTTP)</a>, der klienten dynamisk ber om videosegmenter i den kvaliteten som passer til nettverksforholdene akkurat nÃ¥ â€” men det grunnleggende prinsippet med buffering er det samme.</div>
+  <div class="margin-note">Moderne tjenester som YouTube bruker <a href="../kap2/p2p-video-cdn.html#streaming">DASH (Dynamic Adaptive Streaming over HTTP)</a>, der klienten dynamisk ber om videosegmenter i den kvaliteten som passer til nettverksforholdene akkurat nå — men det grunnleggende prinsippet med buffering er det samme.</div>
 </div>
 </section>
 
@@ -201,20 +201,20 @@
 <!-- ============================================================ -->
 <section id="udphttp">
 <div class="container">
-  <div class="section-badge">04 Â· Transportvalg</div>
+  <div class="section-badge">04 · Transportvalg</div>
   <h2>UDP vs. <em>HTTP</em>-streaming</h2>
-  <p class="section-intro">To helt forskjellige strategier for Ã¥ fÃ¥ videobits fra server til klient.</p>
+  <p class="section-intro">To helt forskjellige strategier for å få videobits fra server til klient.</p>
 
-  <p>Historisk har det vÃ¦rt to hovedtilnÃ¦rminger for Ã¥ strÃ¸mme video. I de tidlige dagene brukte man oftest UDP; i dag har HTTP/TCP vunnet nesten fullstendig. Det er verdt Ã¥ forstÃ¥ begge og hvorfor pendelen svingte.</p>
+  <p>Historisk har det vært to hovedtilnærminger for å strømme video. I de tidlige dagene brukte man oftest UDP; i dag har HTTP/TCP vunnet nesten fullstendig. Det er verdt å forstå begge og hvorfor pendelen svingte.</p>
 
   <div class="compare">
     <div>
       <h4>Streaming over UDP</h4>
       <ul>
         <li>Serveren sender med en rate som passer klienten, ofte lik kodingsraten (CBR)</li>
-        <li>Senderen bryr seg ikke om metning i nettet â€” kan Â«oversvÃ¸mmeÂ» en flaskehals</li>
-        <li>Kort playout-forsinkelse (2â€“5 sek) for Ã¥ fjerne jitter</li>
-        <li>Feilretting pÃ¥ applikasjonslaget om det er tid</li>
+        <li>Senderen bryr seg ikke om metning i nettet — kan «oversvømme» en flaskehals</li>
+        <li>Kort playout-forsinkelse (2–5 sek) for å fjerne jitter</li>
+        <li>Feilretting på applikasjonslaget om det er tid</li>
         <li>Bruker RTP for multimediapayload</li>
         <li>Blokkeres ofte av brannmurer (UDP-trafikk filtreres)</li>
       </ul>
@@ -223,9 +223,9 @@
       <h4>Streaming over HTTP/TCP</h4>
       <ul>
         <li>Videofilen hentes med vanlig HTTP GET</li>
-        <li>TCP sÃ¸rger for pÃ¥litelig, ordnet levering (retransmisjon)</li>
+        <li>TCP sørger for pålitelig, ordnet levering (retransmisjon)</li>
         <li>Sende-raten varierer pga. TCPs metningskontroll</li>
-        <li>StÃ¸rre playout-buffer trengs for Ã¥ jevne ut variasjonen</li>
+        <li>Større playout-buffer trengs for å jevne ut variasjonen</li>
         <li>Passerer brannmurer uproblematisk (port 80/443)</li>
         <li>Brukes av YouTube, Netflix, og stort sett alt i dag</li>
       </ul>
@@ -267,10 +267,10 @@
       <!-- rate label -->
       <text x="285" y="55" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#b04428">variabel rate x(t)</text>
     </svg>
-    <figcaption>HTTP/TCP-streaming: videofilen hentes med HTTP GET, bufres i TCP-mottakerbuffer og applikasjonsbuffer fÃ¸r avspilling. TCPs metningskontroll gjÃ¸r at sende-raten varierer.</figcaption>
+    <figcaption>HTTP/TCP-streaming: videofilen hentes med HTTP GET, bufres i TCP-mottakerbuffer og applikasjonsbuffer før avspilling. TCPs metningskontroll gjør at sende-raten varierer.</figcaption>
   </figure>
 
-  <p>Grunnen til at HTTP/TCP vant er pragmatisk: det passerer brannmurer, det krever ingen spesiell serverinfrastruktur (vanlig webserver holder), og TCP gir pÃ¥litelig levering slik at man slipper Ã¥ hÃ¥ndtere tap selv. Avveiningen er hÃ¸yere playout-forsinkelse, men for streaming av lagret video er det akseptabelt.</p>
+  <p>Grunnen til at HTTP/TCP vant er pragmatisk: det passerer brannmurer, det krever ingen spesiell serverinfrastruktur (vanlig webserver holder), og TCP gir pålitelig levering slik at man slipper å håndtere tap selv. Avveiningen er høyere playout-forsinkelse, men for streaming av lagret video er det akseptabelt.</p>
 </div>
 </section>
 
@@ -281,52 +281,52 @@
 <!-- ============================================================ -->
 <section id="voip">
 <div class="container">
-  <div class="section-badge">05 Â· VoIP</div>
+  <div class="section-badge">05 · VoIP</div>
   <h2>Voice-over-IP: <em>samtale</em> over pakkenett</h2>
-  <p class="section-intro">Kravene til interaktiv tale er fundamentalt annerledes enn for lagret video â€” forsinkelse er fienden.</p>
+  <p class="section-intro">Kravene til interaktiv tale er fundamentalt annerledes enn for lagret video — forsinkelse er fienden.</p>
 
-  <p class="dropcap">NÃ¥r to mennesker snakker sammen, forventer de et svar innen brÃ¸kdelen av et sekund. Hjernen vÃ¥r er utrolig sensitiv for forsinkelser i samtaler â€” allerede ved 150 millisekunder merker vi at noe er Â«rartÂ», og ved 400 ms bryter samtalen sammen i en pinlig dans av Â«snakket du? nei, du fÃ¸rstÂ». Denne forsinkelsessensitiviteten gjÃ¸r VoIP til et mye vanskeligere problem enn streaming av video.</p>
+  <p class="dropcap">Når to mennesker snakker sammen, forventer de et svar innen brøkdelen av et sekund. Hjernen vår er utrolig sensitiv for forsinkelser i samtaler — allerede ved 150 millisekunder merker vi at noe er «rart», og ved 400 ms bryter samtalen sammen i en pinlig dans av «snakket du? nei, du først». Denne forsinkelsessensitiviteten gjør VoIP til et mye vanskeligere problem enn streaming av video.</p>
 
   <h3>VoIP-karakteristikker</h3>
-  <p>En typisk VoIP-strÃ¸m ser slik ut:</p>
+  <p>En typisk VoIP-strøm ser slik ut:</p>
   <ul style="margin:0 0 24px 24px;color:var(--ink-soft)">
     <li style="margin-bottom:8px">Taleren <strong>veksler mellom snakkefaser og stillhet</strong> (talk spurts vs. silence). Pakker genereres bare under snakkefaser.</li>
     <li style="margin-bottom:8px">Under snakking: <strong>64 kbps</strong> (= 8 Kbytes/s) med PCM-koding.</li>
-    <li style="margin-bottom:8px">Lyden deles opp i <strong>20 ms biter</strong> â€” hver bit er 160 bytes med lyddata.</li>
+    <li style="margin-bottom:8px">Lyden deles opp i <strong>20 ms biter</strong> — hver bit er 160 bytes med lyddata.</li>
     <li style="margin-bottom:8px">Til hver bit legges en applikasjonsheader, og resultatet pakkes i et UDP- eller TCP-segment.</li>
-    <li>Applikasjonen sender Ã©n pakke hvert 20. millisekund under en snakkefase.</li>
+    <li>Applikasjonen sender én pakke hvert 20. millisekund under en snakkefase.</li>
   </ul>
 
   <h3>Krav til forsinkelse</h3>
   <div class="callout callout-green">
     <span class="label">Ende-til-ende-forsinkelse</span>
-    <p><strong>< 150 ms:</strong> bra â€” samtalen fÃ¸les naturlig.<br>
-    <strong>150â€“400 ms:</strong> merkbar forsinkelse, men brukbart.<br>
-    <strong>> 400 ms:</strong> uakseptabelt â€” samtalen blir umulig.<br>
+    <p><strong>< 150 ms:</strong> bra — samtalen føles naturlig.<br>
+    <strong>150–400 ms:</strong> merkbar forsinkelse, men brukbart.<br>
+    <strong>> 400 ms:</strong> uakseptabelt — samtalen blir umulig.<br>
     Forsinkelsen inkluderer alt: pakketisering, nettverksforsinkelse, playout-forsinkelse hos mottaker.</p>
   </div>
 
   <h3>Pakketap og forsinkelsestap</h3>
-  <p>VoIP mÃ¥ takle to typer tap:</p>
+  <p>VoIP må takle to typer tap:</p>
   <div class="compare">
     <div>
       <h4>Nettverkstap</h4>
       <ul>
-        <li>IP-datagram gÃ¥r tapt pga. metning i nettet (ruterbuffer-overflyt)</li>
+        <li>IP-datagram går tapt pga. metning i nettet (ruterbuffer-overflyt)</li>
         <li>Den vanlige formen for tap vi kjenner fra TCP-verdenen</li>
       </ul>
     </div>
     <div>
       <h4>Forsinkelsestap</h4>
       <ul>
-        <li>Pakken <em>kommer frem</em>, men for sent til Ã¥ spilles av</li>
-        <li>Effektivt det samme som tap â€” biten er ubrukelig</li>
+        <li>Pakken <em>kommer frem</em>, men for sent til å spilles av</li>
+        <li>Effektivt det samme som tap — biten er ubrukelig</li>
         <li>Typisk maks tolerert forsinkelse: 400 ms</li>
       </ul>
     </div>
   </div>
 
-  <p>Et viktig poeng: VoIP <strong>tÃ¥ler noe tap</strong>. Avhengig av lydkoding og teknikker for Ã¥ skjule tap (loss concealment), kan man tolerere 1â€“20% pakketap uten at samtalen blir uforstÃ¥elig. Det er en dramatisk forskjell fra f.eks. filoverfÃ¸ring, der ethvert tapt byte er katastrofalt.</p>
+  <p>Et viktig poeng: VoIP <strong>tåler noe tap</strong>. Avhengig av lydkoding og teknikker for å skjule tap (loss concealment), kan man tolerere 1–20% pakketap uten at samtalen blir uforståelig. Det er en dramatisk forskjell fra f.eks. filoverføring, der ethvert tapt byte er katastrofalt.</p>
 </div>
 </section>
 
@@ -335,19 +335,19 @@
 <!-- ============================================================ -->
 <section id="jitter">
 <div class="container">
-  <div class="section-badge">06 Â· Jitter</div>
+  <div class="section-badge">06 · Jitter</div>
   <h2>Jitter og <em>playout-forsinkelse</em></h2>
-  <p class="section-intro">Konstant sende-rate inn i nettet, variabel forsinkelse gjennom det â€” og en buffer som retter opp igjen.</p>
+  <p class="section-intro">Konstant sende-rate inn i nettet, variabel forsinkelse gjennom det — og en buffer som retter opp igjen.</p>
 
-  <p>VoIP-senderen sender pakker med jevne mellomrom (hver 20. ms under en snakkefase). Men nettverket leverer dem med variabel forsinkelse â€” akkurat som med video-streaming. Denne variasjonen i forsinkelse er <strong>jitter</strong>, og den mÃ¥ kompenseres av mottakeren. LÃ¸sningen er, igjen, en buffer â€” men nÃ¥ handler avveiningen om <em>millisekunder</em>, ikke sekunder.</p>
+  <p>VoIP-senderen sender pakker med jevne mellomrom (hver 20. ms under en snakkefase). Men nettverket leverer dem med variabel forsinkelse — akkurat som med video-streaming. Denne variasjonen i forsinkelse er <strong>jitter</strong>, og den må kompenseres av mottakeren. Løsningen er, igjen, en buffer — men nå handler avveiningen om <em>millisekunder</em>, ikke sekunder.</p>
 
   <h3>Fast playout-forsinkelse</h3>
-  <p>Den enkleste strategien: mottakeren bestemmer seg for en fast forsinkelse <em>q</em>, og spiller av hver lydbit nÃ¸yaktig <em>q</em> millisekunder etter at den ble generert av senderen.</p>
+  <p>Den enkleste strategien: mottakeren bestemmer seg for en fast forsinkelse <em>q</em>, og spiller av hver lydbit nøyaktig <em>q</em> millisekunder etter at den ble generert av senderen.</p>
 
   <ul style="margin:0 0 24px 24px;color:var(--ink-soft)">
     <li style="margin-bottom:8px">Hvis en lydbit har tidsstempel <em>t</em>, spilles den av ved tid <em>t + q</em>.</li>
-    <li style="margin-bottom:8px">Hvis biten ankommer <em>etter</em> t + q â†’ den er tapt (for sen).</li>
-    <li style="margin-bottom:8px"><strong>Stor q:</strong> fÃ¦rre pakker Â«for seneÂ» â†’ lavere tap, men lengre forsinkelse i samtalen.</li>
+    <li style="margin-bottom:8px">Hvis biten ankommer <em>etter</em> t + q ? den er tapt (for sen).</li>
+    <li style="margin-bottom:8px"><strong>Stor q:</strong> færre pakker «for sene» ? lavere tap, men lengre forsinkelse i samtalen.</li>
     <li><strong>Liten q:</strong> bedre interaktivitet, men flere pakker rekker ikke frem i tide.</li>
   </ul>
 
@@ -381,33 +381,33 @@
       <line x1="220" y1="155" x2="220" y2="205" stroke="#c68a1f" stroke-width="1" stroke-dasharray="3 3"/>
       <text x="220" y="218" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#c68a1f">p'</text>
     </svg>
-    <figcaption>To playout-skjemaer: p (lang forsinkelse, ingen tap) og p' (kort forsinkelse, men siste pakke ble Â«for senÂ» og er tapt). Trade-off mellom forsinkelse og tap.</figcaption>
+    <figcaption>To playout-skjemaer: p (lang forsinkelse, ingen tap) og p' (kort forsinkelse, men siste pakke ble «for sen» og er tapt). Trade-off mellom forsinkelse og tap.</figcaption>
   </figure>
 
   <h3>Adaptiv playout-forsinkelse</h3>
-  <p>I stedet for Ã¥ velge en fast q kan vi gjÃ¸re den <em>adaptiv</em>: vi estimerer nettverksforsinkelsen fortlÃ¸pende og justerer playout-forsinkelsen ved starten av hver ny snakkefase. Stille perioder komprimeres eller forlenges litt for Ã¥ ta igjen endringen â€” lytteren merker ikke dette.</p>
+  <p>I stedet for å velge en fast q kan vi gjøre den <em>adaptiv</em>: vi estimerer nettverksforsinkelsen fortløpende og justerer playout-forsinkelsen ved starten av hver ny snakkefase. Stille perioder komprimeres eller forlenges litt for å ta igjen endringen — lytteren merker ikke dette.</p>
 
-  <p>Estimeringen bruker en <strong>EWMA (Exponentially Weighted Moving Average)</strong>, nÃ¸yaktig samme idÃ© som TCP bruker for Ã¥ estimere RTT:</p>
-
-  <div class="formula">
-    d<sub>i</sub> = (1 âˆ’ &alpha;) &middot; d<sub>i-1</sub> + &alpha; &middot; (r<sub>i</sub> âˆ’ t<sub>i</sub>)
-  </div>
-
-  <p>Her er d<sub>i</sub> det estimerte nettverksforsinkelsen etter den i-te pakken, &alpha; er en liten konstant (typisk 0,1), r<sub>i</sub> er tidspunktet pakken ble mottatt, og t<sub>i</sub> er tidsstempelet (nÃ¥r den ble sendt). Uttrykket (r<sub>i</sub> âˆ’ t<sub>i</sub>) er den faktisk mÃ¥lte forsinkelsen for pakke i.</p>
-
-  <p>Men gjennomsnittlig forsinkelse alene er ikke nok â€” vi trenger ogsÃ¥ et mÃ¥l pÃ¥ <em>variasjonen</em>. Vi estimerer avviket pÃ¥ samme mÃ¥te:</p>
+  <p>Estimeringen bruker en <strong>EWMA (Exponentially Weighted Moving Average)</strong>, nøyaktig samme idé som TCP bruker for å estimere RTT:</p>
 
   <div class="formula">
-    v<sub>i</sub> = (1 âˆ’ &beta;) &middot; v<sub>i-1</sub> + &beta; &middot; |r<sub>i</sub> âˆ’ t<sub>i</sub> âˆ’ d<sub>i</sub>|
+    d<sub>i</sub> = (1 - &alpha;) &middot; d<sub>i-1</sub> + &alpha; &middot; (r<sub>i</sub> - t<sub>i</sub>)
   </div>
 
-  <p>Playout-tidspunktet for den fÃ¸rste pakken <em>j</em> i en ny snakkefase settes da til:</p>
+  <p>Her er d<sub>i</sub> det estimerte nettverksforsinkelsen etter den i-te pakken, &alpha; er en liten konstant (typisk 0,1), r<sub>i</sub> er tidspunktet pakken ble mottatt, og t<sub>i</sub> er tidsstempelet (når den ble sendt). Uttrykket (r<sub>i</sub> - t<sub>i</sub>) er den faktisk målte forsinkelsen for pakke i.</p>
+
+  <p>Men gjennomsnittlig forsinkelse alene er ikke nok — vi trenger også et mål på <em>variasjonen</em>. Vi estimerer avviket på samme måte:</p>
+
+  <div class="formula">
+    v<sub>i</sub> = (1 - &beta;) &middot; v<sub>i-1</sub> + &beta; &middot; |r<sub>i</sub> - t<sub>i</sub> - d<sub>i</sub>|
+  </div>
+
+  <p>Playout-tidspunktet for den første pakken <em>j</em> i en ny snakkefase settes da til:</p>
 
   <div class="formula">
     playout<sub>j</sub> = t<sub>j</sub> + d<sub>j</sub> + K &middot; v<sub>j</sub>
   </div>
 
-  <p>Her er K en konstant (typisk 4). Legg merke til parallellen til TCP: der settes timeout til EstimatedRTT + 4 &middot; DevRTT â€” nÃ¸yaktig samme struktur. Gjennomsnittet fanger opp Â«normaltilstandenÂ», og K &middot; v legger til en sikkerhetsmargin proporsjonalt med hvor mye forsinkelsen varierer. Alle etterfÃ¸lgende pakker i samme snakkefase spilles av med faste 20 ms mellomrom fra dette utgangspunktet.</p>
+  <p>Her er K en konstant (typisk 4). Legg merke til parallellen til TCP: der settes timeout til EstimatedRTT + 4 &middot; DevRTT — nøyaktig samme struktur. Gjennomsnittet fanger opp «normaltilstanden», og K &middot; v legger til en sikkerhetsmargin proporsjonalt med hvor mye forsinkelsen varierer. Alle etterfølgende pakker i samme snakkefase spilles av med faste 20 ms mellomrom fra dette utgangspunktet.</p>
 
   <div class="stepper" id="ewmaStepper">
     <div class="step-display">
@@ -422,7 +422,7 @@
   </div>
 
   <h3>Detektere start av ny snakkefase</h3>
-  <p>Mottakeren mÃ¥ vite nÃ¥r en ny snakkefase starter, for det er da playout-forsinkelsen kan justeres. Uten pakketap er det enkelt: hvis forskjellen mellom to pÃ¥fÃ¸lgende tidsstempler er > 20 ms, har det vÃ¦rt en stillhetsperiode. Med mulig pakketap ser mottakeren pÃ¥ <em>bÃ¥de</em> tidsstempler og sekvensnummer â€” hvis tidsstempelgapet er > 20 ms <em>og</em> det ikke mangler sekvensnummer, er det en ny snakkefase.</p>
+  <p>Mottakeren må vite når en ny snakkefase starter, for det er da playout-forsinkelsen kan justeres. Uten pakketap er det enkelt: hvis forskjellen mellom to påfølgende tidsstempler er > 20 ms, har det vært en stillhetsperiode. Med mulig pakketap ser mottakeren på <em>både</em> tidsstempler og sekvensnummer — hvis tidsstempelgapet er > 20 ms <em>og</em> det ikke mangler sekvensnummer, er det en ny snakkefase.</p>
 </div>
 </section>
 
@@ -431,22 +431,22 @@
 <!-- ============================================================ -->
 <section id="fec">
 <div class="container">
-  <div class="section-badge">07 Â· TapshÃ¥ndtering</div>
+  <div class="section-badge">07 · Tapshåndtering</div>
   <h2>FEC og <em>interleaving</em></h2>
-  <p class="section-intro">Tre teknikker for Ã¥ gjenopprette tapt lyd uten Ã¥ vente pÃ¥ retransmisjon.</p>
+  <p class="section-intro">Tre teknikker for å gjenopprette tapt lyd uten å vente på retransmisjon.</p>
 
-  <p>I VoIP har vi ikke tid til den vanlige TCP-metoden med Ã¥ be om retransmisjon â€” en retransmisjon tar minst Ã©n RTT, og det kan fort overstige forsinkelsesbudsjettet vÃ¥rt. Vi trenger teknikker som lar mottakeren gjenopprette tapte pakker <em>uten</em> hjelp fra senderen.</p>
+  <p>I VoIP har vi ikke tid til den vanlige TCP-metoden med å be om retransmisjon — en retransmisjon tar minst én RTT, og det kan fort overstige forsinkelsesbudsjettet vårt. Vi trenger teknikker som lar mottakeren gjenopprette tapte pakker <em>uten</em> hjelp fra senderen.</p>
 
   <h3>1. Enkel FEC (XOR)</h3>
-  <p>For hver gruppe av <em>n</em> lydbiter lager senderen Ã©n ekstra redundant bit ved Ã¥ XOR-e alle de <em>n</em> originale sammen. Senderen sender altsÃ¥ n+1 pakker i stedet for n, noe som Ã¸ker bÃ¥ndbredden med en faktor 1/n.</p>
+  <p>For hver gruppe av <em>n</em> lydbiter lager senderen én ekstra redundant bit ved å XOR-e alle de <em>n</em> originale sammen. Senderen sender altså n+1 pakker i stedet for n, noe som øker båndbredden med en faktor 1/n.</p>
 
   <div class="callout">
     <span class="label">Eksempel</span>
-    <p>Med n = 4 sender vi 5 pakker per gruppe. Hvis <em>Ã©n</em> av de 5 pakkene gÃ¥r tapt, kan mottakeren rekonstruere den fra de 4 andre (XOR er reversibel). Hvis to eller flere gÃ¥r tapt, gir ikke denne metoden nok informasjon. Prisen: 25% ekstra bÃ¥ndbredde og Ã¸kt playout-forsinkelse (vi mÃ¥ vente pÃ¥ hele gruppen).</p>
+    <p>Med n = 4 sender vi 5 pakker per gruppe. Hvis <em>én</em> av de 5 pakkene går tapt, kan mottakeren rekonstruere den fra de 4 andre (XOR er reversibel). Hvis to eller flere går tapt, gir ikke denne metoden nok informasjon. Prisen: 25% ekstra båndbredde og økt playout-forsinkelse (vi må vente på hele gruppen).</p>
   </div>
 
-  <h3>2. Piggyback med lavkvalitetsstrÃ¸m</h3>
-  <p>En mer elegant variant: senderen legger ved en <em>lavopplÃ¸selig kopi</em> av en tidligere lydbit i hver pakke. For eksempel kan den nominelle strÃ¸mmen bruke PCM med 64 kbps, mens den redundante strÃ¸mmen bruker GSM med 13 kbps.</p>
+  <h3>2. Piggyback med lavkvalitetsstrøm</h3>
+  <p>En mer elegant variant: senderen legger ved en <em>lavoppløselig kopi</em> av en tidligere lydbit i hver pakke. For eksempel kan den nominelle strømmen bruke PCM med 64 kbps, mens den redundante strømmen bruker GSM med 13 kbps.</p>
 
   <figure>
     <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
@@ -474,28 +474,28 @@
       <line x1="360" y1="30" x2="480" y2="120" stroke="#b04428" stroke-width="2.5"/>
       <line x1="480" y1="30" x2="360" y2="120" stroke="#b04428" stroke-width="2.5"/>
 
-      <text x="350" y="155" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">Pkt 3 tapt â†’ chunk 2 gjenopprettes fra pkt 4 (lavere kvalitet, men hÃ¸rbart)</text>
+      <text x="350" y="155" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">Pkt 3 tapt ? chunk 2 gjenopprettes fra pkt 4 (lavere kvalitet, men hørbart)</text>
     </svg>
-    <figcaption>Piggyback FEC: hver pakke bÃ¦rer en lav-kvalitets kopi av forrige chunk. Ikke-sammenhengende tap kan skjules med litt lavere lydkvalitet.</figcaption>
+    <figcaption>Piggyback FEC: hver pakke bærer en lav-kvalitets kopi av forrige chunk. Ikke-sammenhengende tap kan skjules med litt lavere lydkvalitet.</figcaption>
   </figure>
 
-  <p>Hvis pakke 3 gÃ¥r tapt, mister vi chunk 3 i full kvalitet, men chunk 2 kan gjenopprettes fra den lave kopien i pakke 4. Resultatet er at bare <em>sammenhengende</em> tap gir hÃ¸rbare hull. Overhead-en er beskjeden (13 kbps ekstra i dette eksempelet).</p>
+  <p>Hvis pakke 3 går tapt, mister vi chunk 3 i full kvalitet, men chunk 2 kan gjenopprettes fra den lave kopien i pakke 4. Resultatet er at bare <em>sammenhengende</em> tap gir hørbare hull. Overhead-en er beskjeden (13 kbps ekstra i dette eksempelet).</p>
 
   <h3>3. Interleaving</h3>
-  <p>En tredje teknikk som ikke krever ekstra bÃ¥ndbredde i det hele tatt. IdÃ©en: hver 20 ms lydbit deles opp i fire 5 ms enheter. Enhetene fra <em>forskjellige</em> biter blandes sammen i pakkene. Hvis Ã©n pakke gÃ¥r tapt, mister vi bare Ã©n liten 5 ms enhet fra fire forskjellige biter â€” i stedet for en hel sammenhengende 20 ms bit. Hvert hull er sÃ¥ kort at det nesten ikke hÃ¸res.</p>
+  <p>En tredje teknikk som ikke krever ekstra båndbredde i det hele tatt. Idéen: hver 20 ms lydbit deles opp i fire 5 ms enheter. Enhetene fra <em>forskjellige</em> biter blandes sammen i pakkene. Hvis én pakke går tapt, mister vi bare én liten 5 ms enhet fra fire forskjellige biter — i stedet for en hel sammenhengende 20 ms bit. Hvert hull er så kort at det nesten ikke høres.</p>
 
   <div class="callout">
     <span class="label">Trade-off</span>
-    <p>Interleaving gir <strong>ingen redundans-overhead</strong>, men krever at mottakeren venter pÃ¥ nok pakker til Ã¥ sette sammen de originale bitene igjen. Det betyr <em>Ã¸kt playout-forsinkelse</em> â€” det koster alltid noe.</p>
+    <p>Interleaving gir <strong>ingen redundans-overhead</strong>, men krever at mottakeren venter på nok pakker til å sette sammen de originale bitene igjen. Det betyr <em>økt playout-forsinkelse</em> — det koster alltid noe.</p>
   </div>
 </div>
 </section>
 
 <div class="quiz" style="max-width:820px;margin:0 auto 60px;">
-  <p class="q-text">Hva er hovedfordelen med piggyback FEC (der man sender en lavkvalitetskopi av forrige lydbit sammen med nÃ¥vÃ¦rende) sammenlignet med enkel XOR-FEC?</p>
+  <p class="q-text">Hva er hovedfordelen med piggyback FEC (der man sender en lavkvalitetskopi av forrige lydbit sammen med nåværende) sammenlignet med enkel XOR-FEC?</p>
   <div class="options">
-    <button class="option" data-correct="false">Den krever ingen ekstra bÃ¥ndbredde</button>
-    <button class="option" data-correct="true">Den kan gjenopprette tap uten Ã¥ mÃ¥tte vente pÃ¥ en hel gruppe pakker, og gir dermed lavere ekstra playout-forsinkelse</button>
+    <button class="option" data-correct="false">Den krever ingen ekstra båndbredde</button>
+    <button class="option" data-correct="true">Den kan gjenopprette tap uten å måtte vente på en hel gruppe pakker, og gir dermed lavere ekstra playout-forsinkelse</button>
     <button class="option" data-correct="false">Den kan gjenopprette tap av flere sammenhengende pakker</button>
     <button class="option" data-correct="false">Den fungerer bare over TCP, ikke UDP</button>
   </div>
@@ -507,17 +507,17 @@
 <!-- ============================================================ -->
 <section id="skype">
 <div class="container">
-  <div class="section-badge">08 Â· Skype</div>
+  <div class="section-badge">08 · Skype</div>
   <h2>Skype: <em>P2P</em> VoIP i praksis</h2>
-  <p class="section-intro">Et tidlig eksempel pÃ¥ storskala VoIP â€” med supernoder, overlay-nettverk og NAT-traversering.</p>
+  <p class="section-intro">Et tidlig eksempel på storskala VoIP — med supernoder, overlay-nettverk og NAT-traversering.</p>
 
-  <p>Skype var i mange Ã¥r det dominerende eksempelet pÃ¥ VoIP over Internett. Det brukte en proprietÃ¦r, kryptert protokoll som ble reverseengineered av forskere. Arkitekturen er interessant fordi den kombinerer P2P-elementer med sentralisert kontroll.</p>
+  <p>Skype var i mange år det dominerende eksempelet på VoIP over Internett. Det brukte en proprietær, kryptert protokoll som ble reverseengineered av forskere. Arkitekturen er interessant fordi den kombinerer P2P-elementer med sentralisert kontroll.</p>
 
   <h3>Arkitekturen</h3>
   <ul style="margin:0 0 24px 24px;color:var(--ink-soft)">
-    <li style="margin-bottom:8px"><strong>Skype-klienter (SC):</strong> vanlige brukere som kjÃ¸rer Skype-applikasjonen. Under en samtale kobler to klienter seg direkte til hverandre for selve VoIP-datastrÃ¸mmen.</li>
-    <li style="margin-bottom:8px"><strong>Supernoder (SN):</strong> utvalgte Skype-peers med spesielle funksjoner â€” de hjelper til med Ã¥ lokalisere andre brukere og rute trafikk gjennom et overlay-nettverk.</li>
-    <li style="margin-bottom:8px"><strong>Overlay-nettverk:</strong> supernodene danner et overliggende nettverk seg imellom for Ã¥ finne brukeres IP-adresser.</li>
+    <li style="margin-bottom:8px"><strong>Skype-klienter (SC):</strong> vanlige brukere som kjører Skype-applikasjonen. Under en samtale kobler to klienter seg direkte til hverandre for selve VoIP-datastrømmen.</li>
+    <li style="margin-bottom:8px"><strong>Supernoder (SN):</strong> utvalgte Skype-peers med spesielle funksjoner — de hjelper til med å lokalisere andre brukere og rute trafikk gjennom et overlay-nettverk.</li>
+    <li style="margin-bottom:8px"><strong>Overlay-nettverk:</strong> supernodene danner et overliggende nettverk seg imellom for å finne brukeres IP-adresser.</li>
     <li><strong>Login-server:</strong> en sentralisert server for autentisering (brukernavn/passord).</li>
   </ul>
 
@@ -525,12 +525,12 @@
   <ol style="margin:20px 0 24px 24px;color:var(--ink-soft)">
     <li style="margin-bottom:8px">Klienten kobler seg til en supernode (IP-adressen er cachet lokalt) via TCP.</li>
     <li style="margin-bottom:8px">Logger inn mot den sentraliserte login-serveren.</li>
-    <li style="margin-bottom:8px">FÃ¥r IP-adressen til den man vil ringe fra supernodenes overlay (eller fra kontaktlisten).</li>
+    <li style="margin-bottom:8px">Får IP-adressen til den man vil ringe fra supernodenes overlay (eller fra kontaktlisten).</li>
     <li>Initierer samtale direkte til den andre klienten.</li>
   </ol>
 
-  <h3>NAT-problemet og relay-lÃ¸sningen</h3>
-  <p>Det interessante problemet oppstÃ¥r nÃ¥r <em>begge</em> samtalepartene sitter bak NAT. En NAT lar ikke utenforstÃ¥ende initiere en forbindelse inn til en enhet pÃ¥ innsiden â€” det er jo hele poenget med NAT. SÃ¥ hvordan kobler to Â«innelÃ¥steÂ» klienter seg til hverandre?</p>
+  <h3>NAT-problemet og relay-løsningen</h3>
+  <p>Det interessante problemet oppstår når <em>begge</em> samtalepartene sitter bak NAT. En NAT lar ikke utenforstående initiere en forbindelse inn til en enhet på innsiden — det er jo hele poenget med NAT. Så hvordan kobler to «innelåste» klienter seg til hverandre?</p>
 
   <figure>
     <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
@@ -569,10 +569,10 @@
       <path d="M 110 175 Q 370 260 630 175" stroke="#3d6b3a" stroke-width="2.5" fill="none" stroke-dasharray="8 4" marker-end="url(#arr4)"/>
       <text font-family="Newsreader" font-size="11" font-style="italic" fill="#3d6b3a"><textPath href="#skype-lbl-relay" startOffset="50%" text-anchor="middle">VoIP-data relayed via supernoder</textPath></text>
     </svg>
-    <figcaption>Begge parter bak NAT: Alice og Bob holder Ã¥pne TCP-forbindelser til sine supernoder. Supernodene relayer datatrafikken mellom dem.</figcaption>
+    <figcaption>Begge parter bak NAT: Alice og Bob holder åpne TCP-forbindelser til sine supernoder. Supernodene relayer datatrafikken mellom dem.</figcaption>
   </figure>
 
-  <p>LÃ¸sningen: Alice og Bob holder begge en <em>Ã¥pen TCP-forbindelse</em> til sin respektive supernode (forbindelsen er initiert <em>innenfra</em> NAT-en, sÃ¥ den er tillatt). NÃ¥r Alice vil ringe Bob, signalerer hun gjennom sin SN til Bobs SN, som bruker sin Ã¥pne forbindelse til Bob. Selve taledataene kan da relays gjennom supernodene. Det er ikke optimalt (dobbelt sÃ¥ mange hopp), men det fungerer selv nÃ¥r begge parter er bak NAT.</p>
+  <p>Løsningen: Alice og Bob holder begge en <em>åpen TCP-forbindelse</em> til sin respektive supernode (forbindelsen er initiert <em>innenfra</em> NAT-en, så den er tillatt). Når Alice vil ringe Bob, signalerer hun gjennom sin SN til Bobs SN, som bruker sin åpne forbindelse til Bob. Selve taledataene kan da relays gjennom supernodene. Det er ikke optimalt (dobbelt så mange hopp), men det fungerer selv når begge parter er bak NAT.</p>
 </div>
 </section>
 
@@ -583,28 +583,28 @@
 <!-- ============================================================ -->
 <section id="rtp">
 <div class="container">
-  <div class="section-badge">09 Â· RTP</div>
-  <h2>RTP â€” <em>Real-Time</em> Protocol</h2>
+  <div class="section-badge">09 · RTP</div>
+  <h2>RTP — <em>Real-Time</em> Protocol</h2>
   <p class="section-intro">En tynn protokoll som gir multimedia-pakker det de trenger: type-identifikasjon, sekvensnummer og tidsstempler.</p>
 
-  <p class="dropcap">RTP (RFC 3550) er protokollen som gir struktur til multimedia-pakker. Den er ikke en transportprotokoll i tradisjonell forstand â€” den kjÃ¸rer <em>oppÃ¥</em> UDP og gir et sett med felter som applikasjoner trenger for Ã¥ hÃ¥ndtere sanntidsdata, men som UDP ikke tilbyr: informasjon om hva slags data pakken inneholder, i hvilken rekkefÃ¸lge den hÃ¸rer hjemme, og nÃ¸yaktig nÃ¥r den ble generert.</p>
+  <p class="dropcap">RTP (RFC 3550) er protokollen som gir struktur til multimedia-pakker. Den er ikke en transportprotokoll i tradisjonell forstand — den kjører <em>oppå</em> UDP og gir et sett med felter som applikasjoner trenger for å håndtere sanntidsdata, men som UDP ikke tilbyr: informasjon om hva slags data pakken inneholder, i hvilken rekkefølge den hører hjemme, og nøyaktig når den ble generert.</p>
 
   <h3>Hva RTP gir oss</h3>
   <div class="callout callout-green">
     <span class="label">RTP transporterer, men garanterer ikke</span>
-    <p>RTP gir <strong>payload-type-identifikasjon</strong>, <strong>sekvensnummerering</strong> og <strong>tidsstempling</strong>. Men det gir <em>ingen</em> garanti for rettidig levering, ingen garanti mot tap, og ingen garanti for rekkefÃ¸lge. Det er bare et rammeverk som <em>applikasjonen</em> kan bruke for Ã¥ gjÃ¸re sitt eget beste â€” for eksempel adaptiv playout-forsinkelse basert pÃ¥ tidsstemplene.</p>
+    <p>RTP gir <strong>payload-type-identifikasjon</strong>, <strong>sekvensnummerering</strong> og <strong>tidsstempling</strong>. Men det gir <em>ingen</em> garanti for rettidig levering, ingen garanti mot tap, og ingen garanti for rekkefølge. Det er bare et rammeverk som <em>applikasjonen</em> kan bruke for å gjøre sitt eget beste — for eksempel adaptiv playout-forsinkelse basert på tidsstemplene.</p>
   </div>
 
-  <h3>RTP oppÃ¥ UDP</h3>
-  <p>RTP-biblioteker tilbyr et transportgrensesnitt som <em>utvider</em> UDP med de feltene multimedia trenger. En RTP-pakke bestÃ¥r av en RTP-header etterfulgt av lyddata (payload), og hele denne pakken pakkes inn i et UDP-segment. Fra nettverkets synspunkt er det bare en vanlig UDP-pakke â€” rutere underveis ser aldri RTP-headeren og behandler pakken med vanlig best-effort.</p>
+  <h3>RTP oppå UDP</h3>
+  <p>RTP-biblioteker tilbyr et transportgrensesnitt som <em>utvider</em> UDP med de feltene multimedia trenger. En RTP-pakke består av en RTP-header etterfulgt av lyddata (payload), og hele denne pakken pakkes inn i et UDP-segment. Fra nettverkets synspunkt er det bare en vanlig UDP-pakke — rutere underveis ser aldri RTP-headeren og behandler pakken med vanlig best-effort.</p>
 
   <h3>Eksempel: 64 kbps PCM over RTP</h3>
-  <p>En VoIP-applikasjon som sender 64 kbps PCM-kodet tale over RTP gjÃ¸r fÃ¸lgende:</p>
+  <p>En VoIP-applikasjon som sender 64 kbps PCM-kodet tale over RTP gjør følgende:</p>
   <ol style="margin:20px 0 24px 24px;color:var(--ink-soft)">
     <li style="margin-bottom:8px">Samler inn 160 bytes lyddata hvert 20. millisekund (= 8000 bytes/s = 64 kbps).</li>
     <li style="margin-bottom:8px">Legger til en RTP-header med payload-type, sekvensnummer og tidsstempel.</li>
     <li style="margin-bottom:8px">Pakker alt inn i et UDP-segment og sender det.</li>
-    <li>Senderen kan <em>endre kodingstype midt i samtalen</em> â€” RTP-headeren forteller mottakeren om endringen via payload-type-feltet.</li>
+    <li>Senderen kan <em>endre kodingstype midt i samtalen</em> — RTP-headeren forteller mottakeren om endringen via payload-type-feltet.</li>
   </ol>
 
   <h3>RTP-headeren i detalj</h3>
@@ -636,31 +636,31 @@
       <rect x="30" y="120" width="640" height="50" fill="#e8e3d6" stroke="#a39886" stroke-width="1.5"/>
       <text x="350" y="150" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">Payload (lyddata / videodata)</text>
     </svg>
-    <figcaption>RTP-headeren: fire hovedfelter gir mottakeren alt den trenger for Ã¥ plassere pakkene riktig i tid og oppdage tap.</figcaption>
+    <figcaption>RTP-headeren: fire hovedfelter gir mottakeren alt den trenger for å plassere pakkene riktig i tid og oppdage tap.</figcaption>
   </figure>
 
   <div class="table-wrap">
   <table>
-    <tr><th>Felt</th><th>StÃ¸rrelse</th><th>Funksjon</th></tr>
+    <tr><th>Felt</th><th>Størrelse</th><th>Funksjon</th></tr>
     <tr>
       <td class="mono-cell">Payload type</td>
       <td>7 bits</td>
-      <td>Identifiserer hvilken koding som brukes. Senderen kan bytte koding midt i strÃ¸mmen (f.eks. fra PCM til GSM), og mottakeren ser endringen her.</td>
+      <td>Identifiserer hvilken koding som brukes. Senderen kan bytte koding midt i strømmen (f.eks. fra PCM til GSM), og mottakeren ser endringen her.</td>
     </tr>
     <tr>
       <td class="mono-cell">Sequence number</td>
       <td>16 bits</td>
-      <td>Ã˜ker med 1 for hver sendt RTP-pakke. Lar mottakeren oppdage pakketap og sette pakker i riktig rekkefÃ¸lge.</td>
+      <td>Øker med 1 for hver sendt RTP-pakke. Lar mottakeren oppdage pakketap og sette pakker i riktig rekkefølge.</td>
     </tr>
     <tr>
       <td class="mono-cell">Timestamp</td>
       <td>32 bits</td>
-      <td>SamplingsÃ¸yeblikket for fÃ¸rste byte i pakken. For 8 kHz audio Ã¸ker tidsstempelet med 1 per sample (125 &mu;s), altsÃ¥ med 160 per 20 ms pakke. Klokken tikker videre selv under stillhetsperioder.</td>
+      <td>Samplingsøyeblikket for første byte i pakken. For 8 kHz audio øker tidsstempelet med 1 per sample (125 &mu;s), altså med 160 per 20 ms pakke. Klokken tikker videre selv under stillhetsperioder.</td>
     </tr>
     <tr>
       <td class="mono-cell">SSRC</td>
       <td>32 bits</td>
-      <td>Synchronization Source â€” en unik identifikator for denne mediestrÃ¸mmen i RTP-sesjonen. Tilfeldig valgt, slik at flere strÃ¸mmer kan skilles fra hverandre.</td>
+      <td>Synchronization Source — en unik identifikator for denne mediestrømmen i RTP-sesjonen. Tilfeldig valgt, slik at flere strømmer kan skilles fra hverandre.</td>
     </tr>
   </table>
   </div>
@@ -678,11 +678,11 @@
   </div>
 
   <h3>RTP og QoS</h3>
-  <p>Et viktig poeng til slutt: <strong>RTP gir ingen QoS-garantier</strong>. RTP-pakker er innkapslet i vanlige UDP-segmenter, og rutere i nettet ser bare et IP-datagram med en UDP-header. De gjÃ¸r ingen spesiell innsats for Ã¥ levere RTP-pakker raskere eller mer pÃ¥litelig enn andre pakker. All smarthet â€” adaptiv playout, FEC, jitterbuffer â€” ligger i endepunktene, ikke i nettverket.</p>
+  <p>Et viktig poeng til slutt: <strong>RTP gir ingen QoS-garantier</strong>. RTP-pakker er innkapslet i vanlige UDP-segmenter, og rutere i nettet ser bare et IP-datagram med en UDP-header. De gjør ingen spesiell innsats for å levere RTP-pakker raskere eller mer pålitelig enn andre pakker. All smarthet — adaptiv playout, FEC, jitterbuffer — ligger i endepunktene, ikke i nettverket.</p>
 
   <div class="callout callout-blue">
     <span class="label">Interoperabilitet</span>
-    <p>En av de store fordelene med RTP er at to VoIP-applikasjoner fra forskjellige leverandÃ¸rer <em>kan</em> snakke sammen, sÃ¥ lenge begge bruker RTP. Payload-type-feltet og de standardiserte kodingene gjÃ¸r at mottakeren vet hvordan den skal dekode dataene, uavhengig av hvilken applikasjon som sendte dem.</p>
+    <p>En av de store fordelene med RTP er at to VoIP-applikasjoner fra forskjellige leverandører <em>kan</em> snakke sammen, så lenge begge bruker RTP. Payload-type-feltet og de standardiserte kodingene gjør at mottakeren vet hvordan den skal dekode dataene, uavhengig av hvilken applikasjon som sendte dem.</p>
   </div>
 </div>
 </section>
@@ -691,7 +691,7 @@
 <!-- QUIZZES                                                      -->
 <!-- ============================================================ -->
 <div class="quiz" style="max-width:820px;margin:0 auto 60px;">
-  <p class="q-text">Hva er den maksimale ende-til-ende-forsinkelsen for at en VoIP-samtale skal fÃ¸les naturlig?</p>
+  <p class="q-text">Hva er den maksimale ende-til-ende-forsinkelsen for at en VoIP-samtale skal føles naturlig?</p>
   <div class="options">
     <button class="option" data-correct="true">Under 150 millisekunder</button>
     <button class="option" data-correct="false">Under 400 millisekunder</button>
@@ -704,7 +704,7 @@
 <div class="quiz" style="max-width:820px;margin:0 auto 60px;">
   <p class="q-text">Hvilken informasjon gir RTP-headeren som UDP-headeren mangler?</p>
   <div class="options">
-    <button class="option" data-correct="false">PÃ¥litelig levering med retransmisjon</button>
+    <button class="option" data-correct="false">Pålitelig levering med retransmisjon</button>
     <button class="option" data-correct="false">Kryptering av payload-data</button>
     <button class="option" data-correct="true">Payload-type, sekvensnummer og tidsstempel for mediedata</button>
     <button class="option" data-correct="false">Garantert maksimal forsinkelse gjennom nettverket</button>
@@ -716,31 +716,31 @@
   <p class="q-text">Hvorfor bruker streaming i dag nesten alltid HTTP/TCP i stedet for UDP?</p>
   <div class="options">
     <button class="option" data-correct="false">Fordi TCP har lavere forsinkelse enn UDP</button>
-    <button class="option" data-correct="false">Fordi UDP ikke stÃ¸tter videoformat</button>
-    <button class="option" data-correct="true">Fordi HTTP/TCP passerer brannmurer enkelt, krever ingen spesiell server, og gir pÃ¥litelig levering</button>
+    <button class="option" data-correct="false">Fordi UDP ikke støtter videoformat</button>
+    <button class="option" data-correct="true">Fordi HTTP/TCP passerer brannmurer enkelt, krever ingen spesiell server, og gir pålitelig levering</button>
     <button class="option" data-correct="false">Fordi TCP aldri retransmitterer pakker under streaming</button>
   </div>
   <div class="explanation" id="qFeedback4"></div>
 </div>
 
 <div class="quiz" style="max-width:820px;margin:0 auto 60px;">
-  <p class="q-text">I adaptiv playout-forsinkelse, nÃ¥r justeres playout-forsinkelsen?</p>
+  <p class="q-text">I adaptiv playout-forsinkelse, når justeres playout-forsinkelsen?</p>
   <div class="options">
     <button class="option" data-correct="false">Kontinuerlig for hver enkelt pakke som mottas</button>
-    <button class="option" data-correct="true">Bare ved starten av en ny snakkefase â€” stillhetsperioder brukes til Ã¥ absorbere endringen</button>
+    <button class="option" data-correct="true">Bare ved starten av en ny snakkefase — stillhetsperioder brukes til å absorbere endringen</button>
     <button class="option" data-correct="false">Hvert 20. millisekund, synkronisert med sende-raten</button>
-    <button class="option" data-correct="false">Bare nÃ¥r pakketap oppdages via sekvensnummer-gap</button>
+    <button class="option" data-correct="false">Bare når pakketap oppdages via sekvensnummer-gap</button>
   </div>
   <div class="explanation" id="qFeedback5"></div>
 </div>
 
 <div class="quiz" style="max-width:820px;margin:0 auto 60px;">
-  <p class="q-text">Hva er Â«jitterÂ» i konteksten av multimedia-nettverk?</p>
+  <p class="q-text">Hva er «jitter» i konteksten av multimedia-nettverk?</p>
   <div class="options">
-    <button class="option" data-correct="false">Pakketap forÃ¥rsaket av metning i ruterbuffere</button>
+    <button class="option" data-correct="false">Pakketap forårsaket av metning i ruterbuffere</button>
     <button class="option" data-correct="false">Den totale ende-til-ende-forsinkelsen fra sender til mottaker</button>
-    <button class="option" data-correct="true">Variasjonen i forsinkelse mellom pakker â€” noen pakker bruker lengre tid enn andre</button>
-    <button class="option" data-correct="false">Feilraten i den digitale lydstrÃ¸mmen etter kvantisering</button>
+    <button class="option" data-correct="true">Variasjonen i forsinkelse mellom pakker — noen pakker bruker lengre tid enn andre</button>
+    <button class="option" data-correct="false">Feilraten i den digitale lydstrømmen etter kvantisering</button>
   </div>
   <div class="explanation" id="qFeedback6"></div>
 </div>
@@ -761,45 +761,45 @@
 <!-- ============================================================ -->
 <section id="summary">
 <div class="container">
-  <div class="section-badge">10 Â· Oppsummering</div>
+  <div class="section-badge">10 · Oppsummering</div>
   <h2>Det du skal sitte igjen med</h2>
 
-  <p class="dropcap">Multimedia over pakkenett handler om Ã©n fundamental spenning: innholdet krever jevn, tidssensitiv levering, mens Internett bare lover Â«best effortÂ». Resten av kapittelet er en serie teknikker for Ã¥ brÃ¸ seg mellom disse to verdenene â€” i endepunktene, ikke i nettverket.</p>
+  <p class="dropcap">Multimedia over pakkenett handler om én fundamental spenning: innholdet krever jevn, tidssensitiv levering, mens Internett bare lover «best effort». Resten av kapittelet er en serie teknikker for å brø seg mellom disse to verdenene — i endepunktene, ikke i nettverket.</p>
 
-  <p>De fem nÃ¸kkelpunktene fra kapittelet:</p>
+  <p>De fem nøkkelpunktene fra kapittelet:</p>
 
   <div class="callout">
-    <span class="label">1 â€” Tre typer applikasjoner, tre sett krav</span>
-    <p>Streaming av lagret video tÃ¥ler sekunder med innledende forsinkelse, men krever jevn playout. Live streaming er lik, men uten spole-mulighet. VoIP/videosamtale er hardest: over 400 ms ende-til-ende-forsinkelse Ã¸delegger samtalen fullstendig. LÃ¸sningene er forskjellige fordi kravene er forskjellige.</p>
+    <span class="label">1 — Tre typer applikasjoner, tre sett krav</span>
+    <p>Streaming av lagret video tåler sekunder med innledende forsinkelse, men krever jevn playout. Live streaming er lik, men uten spole-mulighet. VoIP/videosamtale er hardest: over 400 ms ende-til-ende-forsinkelse ødelegger samtalen fullstendig. Løsningene er forskjellige fordi kravene er forskjellige.</p>
   </div>
 
   <div class="callout callout-blue">
-    <span class="label">2 â€” Klient-side buffering lÃ¸ser jitter</span>
-    <p>Nettverket leverer pakker med variabel forsinkelse (jitter). Klienten kompenserer ved Ã¥ bygge opp en buffer og vente med Ã¥ starte avspillingen. Avveiningen er universal: stor buffer gir robust avspilling, liten buffer gir raskere oppstart. Bufferen tÃ¸mmes bare hvis gjennomsnittlig nettverksrate x(t) faller under avspillingsraten r over tid.</p>
+    <span class="label">2 — Klient-side buffering løser jitter</span>
+    <p>Nettverket leverer pakker med variabel forsinkelse (jitter). Klienten kompenserer ved å bygge opp en buffer og vente med å starte avspillingen. Avveiningen er universal: stor buffer gir robust avspilling, liten buffer gir raskere oppstart. Bufferen tømmes bare hvis gjennomsnittlig nettverksrate x(t) faller under avspillingsraten r over tid.</p>
   </div>
 
   <div class="callout callout-green">
-    <span class="label">3 â€” VoIP: adaptiv playout og tapsskjuling</span>
-    <p>For interaktiv tale er forsinkelsesbudsjettet knepent (mÃ¥l: under 150 ms). Adaptiv playout-forsinkelse justerer bufferstÃ¸rrelsen ved starten av hver snakkefase ved hjelp av EWMA â€” samme struktur som TCPs RTO-estimering. Tap kan skjules med FEC (XOR eller piggyback med lavkvalitetsstrÃ¸m) eller interleaving, som sprer tap utover slik at hvert hull er umerkelig kort.</p>
+    <span class="label">3 — VoIP: adaptiv playout og tapsskjuling</span>
+    <p>For interaktiv tale er forsinkelsesbudsjettet knepent (mål: under 150 ms). Adaptiv playout-forsinkelse justerer bufferstørrelsen ved starten av hver snakkefase ved hjelp av EWMA — samme struktur som TCPs RTO-estimering. Tap kan skjules med FEC (XOR eller piggyback med lavkvalitetsstrøm) eller interleaving, som sprer tap utover slik at hvert hull er umerkelig kort.</p>
   </div>
 
   <div class="callout">
-    <span class="label">4 â€” HTTP/TCP vant over UDP for streaming</span>
-    <p>UDP gir lavere forsinkelse og ingen retransmisjon, men blokkeres av brannmurer og krever egen serverinfrastruktur. HTTP/TCP passerer port 80/443 overalt, fungerer med standard webservere, og gir pÃ¥litelig levering. Den hÃ¸yere playout-bufferen som trengs for Ã¥ jevne ut TCPs variable sende-rate er akseptabel for lagret video. Moderne tjenester bruker DASH pÃ¥ toppen av HTTP for adaptiv kvalitet.</p>
+    <span class="label">4 — HTTP/TCP vant over UDP for streaming</span>
+    <p>UDP gir lavere forsinkelse og ingen retransmisjon, men blokkeres av brannmurer og krever egen serverinfrastruktur. HTTP/TCP passerer port 80/443 overalt, fungerer med standard webservere, og gir pålitelig levering. Den høyere playout-bufferen som trengs for å jevne ut TCPs variable sende-rate er akseptabel for lagret video. Moderne tjenester bruker DASH på toppen av HTTP for adaptiv kvalitet.</p>
   </div>
 
   <div class="callout callout-blue">
-    <span class="label">5 â€” RTP gir struktur, ikke garantier</span>
-    <p>RTP kjÃ¸rer oppÃ¥ UDP og legger til tre felter multimedia trenger men UDP mangler: payload-type (hvilken koding), sekvensnummer (tapsdeteksjon og rekkefÃ¸lge) og tidsstempel (playout-timing). RTP gir <em>ingen</em> QoS-garantier â€” rutere ser bare vanlige UDP-pakker. All intelligens â€” adaptiv playout, FEC, jitterbuffer â€” ligger i endepunktene. Standardiseringen gir interoperabilitet mellom leverandÃ¸rer.</p>
+    <span class="label">5 — RTP gir struktur, ikke garantier</span>
+    <p>RTP kjører oppå UDP og legger til tre felter multimedia trenger men UDP mangler: payload-type (hvilken koding), sekvensnummer (tapsdeteksjon og rekkefølge) og tidsstempel (playout-timing). RTP gir <em>ingen</em> QoS-garantier — rutere ser bare vanlige UDP-pakker. All intelligens — adaptiv playout, FEC, jitterbuffer — ligger i endepunktene. Standardiseringen gir interoperabilitet mellom leverandører.</p>
   </div>
 
-  <p>Den rÃ¸de trÃ¥den: <em>alle</em> disse teknikkene â€” buffering, adaptiv playout, FEC, interleaving, RTP â€” er svar pÃ¥ det samme grunnproblemet: et tidssensitivt medium som skal fungere over et nettverk som ikke gir noen tidsgarantier. LÃ¸sningen ligger alltid i endepunktene, aldri i nettverket.</p>
+  <p>Den røde tråden: <em>alle</em> disse teknikkene — buffering, adaptiv playout, FEC, interleaving, RTP — er svar på det samme grunnproblemet: et tidssensitivt medium som skal fungere over et nettverk som ikke gir noen tidsgarantier. Løsningen ligger alltid i endepunktene, aldri i nettverket.</p>
 </div>
 </section>
 
 <footer>
   <div class="container">
-    <p>Basert pÃ¥ <em>Computer Networking: A Top-Down Approach</em>, 7. utgave, av Kurose &amp; Ross â€” kapittel 9 (9.1â€“9.4.1). Denne siden dekker pensum for TTM4100 og forklarer mekanismene bak multimedia over pakkenett.</p>
+    <p>Basert på <em>Computer Networking: A Top-Down Approach</em>, 7. utgave, av Kurose &amp; Ross — kapittel 9 (9.1–9.4.1). Denne siden dekker pensum for TTM4100 og forklarer mekanismene bak multimedia over pakkenett.</p>
     <p style="margin-top:20px;color:var(--rust);letter-spacing:0.6em">&#10043; &#10043; &#10043;</p>
   </div>
 </footer>
@@ -815,20 +815,20 @@
     val.textContent = d.toFixed(1) + ' s';
     var starvation, experience;
     if (d < 0.5) {
-      starvation = 'svÃ¦rt hÃ¸y';
-      experience = 'nesten umiddelbar start, men hyppig frysing â€” ubrukelig for de fleste';
+      starvation = 'svært høy';
+      experience = 'nesten umiddelbar start, men hyppig frysing — ubrukelig for de fleste';
     } else if (d < 1.5) {
       starvation = 'moderat';
       experience = 'rask start, men merkbar risiko for frysing ved nettverksvariasjoner';
     } else if (d < 3.0) {
       starvation = 'lav';
-      experience = 'akseptabel ventetid, god buffer mot jitter â€” typisk valg for de fleste tjenester';
+      experience = 'akseptabel ventetid, god buffer mot jitter — typisk valg for de fleste tjenester';
     } else if (d < 6.0) {
-      starvation = 'svÃ¦rt lav';
-      experience = 'lang ventetid fÃ¸r avspilling starter, men nesten aldri frysing';
+      starvation = 'svært lav';
+      experience = 'lang ventetid før avspilling starter, men nesten aldri frysing';
     } else {
       starvation = 'neglisjerbar';
-      experience = 'frustrerende lang ventetid â€” brukeren klikker bort lenge fÃ¸r videoen starter';
+      experience = 'frustrerende lang ventetid — brukeren klikker bort lenge før videoen starter';
     }
     out.innerHTML = '<strong>Buffer-starvation-risiko:</strong> ' + starvation + '<br><strong>Brukeropplevelse:</strong> ' + experience;
   }
@@ -839,11 +839,11 @@
 // STEPPER: EWMA adaptive playout
 (function(){
   var steps = [
-    {title:'Hva er problemet?', text:'Fast playout-forsinkelse q fungerer, men er et kompromiss: for stor q gir unÃ¸dvendig forsinkelse i samtalen, for liten q gir for mange Â«for seneÂ» pakker. Kan vi gjÃ¸re q adaptiv?'},
-    {title:'EWMA-estimering', text:'Vi bruker en eksponentielt vektet glidende gjennomsnitt (EWMA) for Ã¥ estimere nettverksforsinkelsen: dáµ¢ = (1 âˆ’ Î±) Â· dáµ¢â‚‹â‚ + Î± Â· (ráµ¢ âˆ’ táµ¢), der Î± typisk er 0,1. I tillegg estimerer vi avviket: váµ¢ = (1 âˆ’ Î²) Â· váµ¢â‚‹â‚ + Î² Â· |ráµ¢ âˆ’ táµ¢ âˆ’ dáµ¢|. Playout-tidspunktet for fÃ¸rste pakke j i en ny snakkefase blir: tâ±¼ + dâ±¼ + K Â· vâ±¼ (K = 4). NÃ¸yaktig samme struktur som TCPs RTO = EstimatedRTT + 4 Â· DevRTT.'},
-    {title:'NÃ¥r justerer vi?', text:'Playout-forsinkelsen justeres bare ved starten av en ny snakkefase â€” aldri midt i en. Under en snakkefase spilles alle pakker av med fast 20 ms mellomrom. Mellom snakkefasene (stillheten) kan vi strekke eller komprimere pausen for Ã¥ ta igjen den nye forsinkelsen.'},
-    {title:'Hvordan oppdage ny snakkefase?', text:'Uten pakketap: hvis tidsstempelforskjellen mellom to pÃ¥fÃ¸lgende pakker er > 20 ms, har det vÃ¦rt en stillhetsperiode. Med mulig tap: vi sjekker ogsÃ¥ sekvensnumrene â€” gap i tidsstempler uten gap i sekvensnummer betyr ny snakkefase, ikke pakketap.'},
-    {title:'Resultatet', text:'Adaptiv playout gir oss det beste fra to verdener: nÃ¥r nettverket er stabilt, holder vi forsinkelsen lav. NÃ¥r jitteret Ã¸ker, Ã¸ker vi automatisk playout-bufferen for Ã¥ unngÃ¥ tap. Brukeren merker bare at Â«stillhetenÂ» mellom setninger er litt lengre eller kortere â€” noe som er helt umerkelig.'}
+    {title:'Hva er problemet?', text:'Fast playout-forsinkelse q fungerer, men er et kompromiss: for stor q gir unødvendig forsinkelse i samtalen, for liten q gir for mange «for sene» pakker. Kan vi gjøre q adaptiv?'},
+    {title:'EWMA-estimering', text:'Vi bruker en eksponentielt vektet glidende gjennomsnitt (EWMA) for å estimere nettverksforsinkelsen: d? = (1 - a) · d??1 + a · (r? - t?), der a typisk er 0,1. I tillegg estimerer vi avviket: v? = (1 - ß) · v??1 + ß · |r? - t? - d?|. Playout-tidspunktet for første pakke j i en ny snakkefase blir: t? + d? + K · v? (K = 4). Nøyaktig samme struktur som TCPs RTO = EstimatedRTT + 4 · DevRTT.'},
+    {title:'Når justerer vi?', text:'Playout-forsinkelsen justeres bare ved starten av en ny snakkefase — aldri midt i en. Under en snakkefase spilles alle pakker av med fast 20 ms mellomrom. Mellom snakkefasene (stillheten) kan vi strekke eller komprimere pausen for å ta igjen den nye forsinkelsen.'},
+    {title:'Hvordan oppdage ny snakkefase?', text:'Uten pakketap: hvis tidsstempelforskjellen mellom to påfølgende pakker er > 20 ms, har det vært en stillhetsperiode. Med mulig tap: vi sjekker også sekvensnumrene — gap i tidsstempler uten gap i sekvensnummer betyr ny snakkefase, ikke pakketap.'},
+    {title:'Resultatet', text:'Adaptiv playout gir oss det beste fra to verdener: når nettverket er stabilt, holder vi forsinkelsen lav. Når jitteret øker, øker vi automatisk playout-bufferen for å unngå tap. Brukeren merker bare at «stillheten» mellom setninger er litt lengre eller kortere — noe som er helt umerkelig.'}
   ];
   var i = 0;
   var title = document.getElementById('ewmaTitle');
@@ -867,32 +867,32 @@
 (function(){
   var feedback = {
     'qFeedback1': {
-      correct: 'Riktig! Piggyback FEC legger en lavkvalitetskopi av forrige chunk direkte i neste pakke, slik at gjenoppretting kan skje umiddelbart uten Ã¥ vente pÃ¥ en hel gruppe.',
-      wrong: 'Ikke helt. Tenk pÃ¥ forskjellen i forsinkelse: XOR-FEC krever at hele gruppen av n+1 pakker er mottatt fÃ¸r gjenoppretting, mens piggyback bare trenger neste pakke.'
+      correct: 'Riktig! Piggyback FEC legger en lavkvalitetskopi av forrige chunk direkte i neste pakke, slik at gjenoppretting kan skje umiddelbart uten å vente på en hel gruppe.',
+      wrong: 'Ikke helt. Tenk på forskjellen i forsinkelse: XOR-FEC krever at hele gruppen av n+1 pakker er mottatt før gjenoppretting, mens piggyback bare trenger neste pakke.'
     },
     'qFeedback2': {
-      correct: 'Riktig! Under 150 ms regnes som Â«braÂ» for interaktiv tale. Mellom 150 og 400 ms er merkbart, og over 400 ms Ã¸delegger samtalen.',
-      wrong: 'Tenk pÃ¥ hva lysbildene sier: < 150 ms er Â«goodÂ», > 400 ms er Â«badÂ». SpÃ¸rsmÃ¥let er hva som fÃ¸les naturlig.'
+      correct: 'Riktig! Under 150 ms regnes som «bra» for interaktiv tale. Mellom 150 og 400 ms er merkbart, og over 400 ms ødelegger samtalen.',
+      wrong: 'Tenk på hva lysbildene sier: < 150 ms er «good», > 400 ms er «bad». Spørsmålet er hva som føles naturlig.'
     },
     'qFeedback3': {
-      correct: 'Akkurat! RTP legger til payload-type (hvilken koding), sekvensnummer (for tapsdeteksjon) og tidsstempel (for playout-timing) â€” tre ting som UDP mangler fullstendig.',
-      wrong: 'RTP gir ingen garantier om levering eller QoS. Tenk pÃ¥ hva som trengs for Ã¥ spille av sanntidsdata riktig: nÃ¥r ble pakken generert, hva slags data er det, og i hvilken rekkefÃ¸lge?'
+      correct: 'Akkurat! RTP legger til payload-type (hvilken koding), sekvensnummer (for tapsdeteksjon) og tidsstempel (for playout-timing) — tre ting som UDP mangler fullstendig.',
+      wrong: 'RTP gir ingen garantier om levering eller QoS. Tenk på hva som trengs for å spille av sanntidsdata riktig: når ble pakken generert, hva slags data er det, og i hvilken rekkefølge?'
     },
     'qFeedback4': {
-      correct: 'Riktig! HTTP/TCP passerer brannmurer (port 80/443 er nesten alltid Ã¥pen), fungerer med standard webservere, og gir pÃ¥litelig levering. StÃ¸rre playout-buffer kompenserer for TCPs variable sende-rate.',
-      wrong: 'Tenk pragmatisk: hva er den praktiske barrieren som gjÃ¸r at UDP-streaming feiler i mange nettverk?'
+      correct: 'Riktig! HTTP/TCP passerer brannmurer (port 80/443 er nesten alltid åpen), fungerer med standard webservere, og gir pålitelig levering. Større playout-buffer kompenserer for TCPs variable sende-rate.',
+      wrong: 'Tenk pragmatisk: hva er den praktiske barrieren som gjør at UDP-streaming feiler i mange nettverk?'
     },
     'qFeedback5': {
-      correct: 'Riktig! Playout-forsinkelsen justeres bare mellom snakkefaser. Under en snakkefase spilles alle pakker av med faste 20 ms mellomrom. Stillhetsperioder strekkes eller komprimeres umerkelig for Ã¥ absorbere den nye forsinkelsen.',
-      wrong: 'Tenk pÃ¥ at Ã¥ endre forsinkelsen midt i en snakkefase ville forstyrre lyden. NÃ¥r er det naturlig Ã¥ gjÃ¸re justeringen uten at lytteren merker det?'
+      correct: 'Riktig! Playout-forsinkelsen justeres bare mellom snakkefaser. Under en snakkefase spilles alle pakker av med faste 20 ms mellomrom. Stillhetsperioder strekkes eller komprimeres umerkelig for å absorbere den nye forsinkelsen.',
+      wrong: 'Tenk på at å endre forsinkelsen midt i en snakkefase ville forstyrre lyden. Når er det naturlig å gjøre justeringen uten at lytteren merker det?'
     },
     'qFeedback6': {
-      correct: 'Akkurat! Jitter er variasjonen i pakke-forsinkelse. Selv om gjennomsnittlig forsinkelse er akseptabel, kan stor variasjon fÃ¸re til at pakker ankommer for sent til Ã¥ spilles av â€” og det er dette playout-bufferen kompenserer for.',
-      wrong: 'Jitter handler ikke om tap eller total forsinkelse, men om uforutsigbarheten i nÃ¥r pakker ankommer. Tenk: pakker sendes med jevne mellomrom, men ankommer med ujevne mellomrom.'
+      correct: 'Akkurat! Jitter er variasjonen i pakke-forsinkelse. Selv om gjennomsnittlig forsinkelse er akseptabel, kan stor variasjon føre til at pakker ankommer for sent til å spilles av — og det er dette playout-bufferen kompenserer for.',
+      wrong: 'Jitter handler ikke om tap eller total forsinkelse, men om uforutsigbarheten i når pakker ankommer. Tenk: pakker sendes med jevne mellomrom, men ankommer med ujevne mellomrom.'
     },
     'qFeedback7': {
-      correct: 'Riktig! CBR (Constant Bit Rate) holder bitraten fast â€” enkelt for nettverket, men kan gi dÃ¥rlig kvalitet i komplekse scener og slÃ¸se med bits i enkle scener. VBR (Variable Bit Rate) tilpasser seg innholdet og gir bedre kvalitet, men er vanskeligere for nettverket Ã¥ hÃ¥ndtere.',
-      wrong: 'CBR og VBR handler om hvordan videoen kodes â€” med fast eller variabel bitrate. Tenk pÃ¥ forskjellen mellom en rolig scene og en actionscene: trenger de like mange bits?'
+      correct: 'Riktig! CBR (Constant Bit Rate) holder bitraten fast — enkelt for nettverket, men kan gi dårlig kvalitet i komplekse scener og sløse med bits i enkle scener. VBR (Variable Bit Rate) tilpasser seg innholdet og gir bedre kvalitet, men er vanskeligere for nettverket å håndtere.',
+      wrong: 'CBR og VBR handler om hvordan videoen kodes — med fast eller variabel bitrate. Tenk på forskjellen mellom en rolig scene og en actionscene: trenger de like mange bits?'
     }
   };
   document.querySelectorAll('.quiz').forEach(function(quiz){

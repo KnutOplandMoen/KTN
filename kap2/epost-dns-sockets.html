@@ -1,10 +1,10 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="no">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>E-post, DNS og Socket-programmering â€” Kapittel 2</title>
-<link rel="stylesheet" href="../style.css">
+<title>E-post, DNS og Socket-programmering — Kapittel 2</title>
+<link rel="icon" type="image/png" href="/favicon.png">`n<link rel="stylesheet" href="../style.css">
 </head>
 <body>
 
@@ -23,22 +23,22 @@
 <main data-chapter="Kapittel 2: E-post, DNS og Socket-programmering">
 <header class="hero">
   <div class="container">
-    <div class="eyebrow">Kapittel 2 Â· Del 3</div>
+    <div class="eyebrow">Kapittel 2 · Del 3</div>
     <h1>Hvordan internett <em>snakker</em>: e-post, navn og sokler</h1>
-    <p class="lede">En grundig gjennomgang av tre av applikasjonslagets viktigste byggesteiner â€” protokollene som flytter e-posten din, oversetter navn til adresser, og lar prosesser snakke sammen pÃ¥ tvers av jordkloden.</p>
+    <p class="lede">En grundig gjennomgang av tre av applikasjonslagets viktigste byggesteiner — protokollene som flytter e-posten din, oversetter navn til adresser, og lar prosesser snakke sammen på tvers av jordkloden.</p>
     <nav class="toc">
       <a href="#smtp"><span class="toc-num">01</span><span>E-post og SMTP</span></a>
-      <a href="#dns"><span class="toc-num">02</span><span>DNS â€” domenenavnsystemet</span></a>
+      <a href="#dns"><span class="toc-num">02</span><span>DNS — domenenavnsystemet</span></a>
       <a href="#sockets"><span class="toc-num">03</span><span>Socket-programmering</span></a>
-      <a href="#avslutning"><span class="toc-num">04</span><span>De gjennomgÃ¥ende temaene</span></a>
+      <a href="#avslutning"><span class="toc-num">04</span><span>De gjennomgående temaene</span></a>
     </nav>
     <div class="what-youll-learn">
       <div class="label">Det du sitter igjen med</div>
       <ul>
-        <li>Hvorfor SMTP fortsatt ser ut som en samtale fra 1982 â€” og hvorfor det er en god ting</li>
-        <li>Hvordan DNS klarer Ã¥ vÃ¦re bÃ¥de desentralisert og lynraskt pÃ¥ samme tid</li>
-        <li>Forskjellen mellom Ã¥ programmere mot UDP og TCP, og nÃ¥r du bÃ¸r velge hva</li>
-        <li>De gjennomgÃ¥ende temaene: <em>push vs pull</em>, <em>tilstand vs tilstandslÃ¸s</em>, <em>kompleksitet i kanten</em></li>
+        <li>Hvorfor SMTP fortsatt ser ut som en samtale fra 1982 — og hvorfor det er en god ting</li>
+        <li>Hvordan DNS klarer å være både desentralisert og lynraskt på samme tid</li>
+        <li>Forskjellen mellom å programmere mot UDP og TCP, og når du bør velge hva</li>
+        <li>De gjennomgående temaene: <em>push vs pull</em>, <em>tilstand vs tilstandsløs</em>, <em>kompleksitet i kanten</em></li>
       </ul>
     </div>
   </div>
@@ -47,15 +47,15 @@
 <!-- ============ DEL 1: E-POST ============ -->
 <section id="smtp">
   <div class="container">
-    <div class="section-badge">01 Â· E-post og SMTP</div>
-    <h2>Den eldste meldingstjenesten pÃ¥ <em>nettet</em></h2>
-    <p class="section-intro">E-post fantes fÃ¸r weben, fÃ¸r Facebook, fÃ¸r alt egentlig. NÃ¥r du forstÃ¥r hvordan en e-post faktisk reiser fra deg til mottakeren, forstÃ¥r du ogsÃ¥ hvorfor hele applikasjonslaget er bygd rundt et lite knippe gjentakende mÃ¸nstre.</p>
+    <div class="section-badge">01 · E-post og SMTP</div>
+    <h2>Den eldste meldingstjenesten på <em>nettet</em></h2>
+    <p class="section-intro">E-post fantes før weben, før Facebook, før alt egentlig. Når du forstår hvordan en e-post faktisk reiser fra deg til mottakeren, forstår du også hvorfor hele applikasjonslaget er bygd rundt et lite knippe gjentakende mønstre.</p>
 
-    <p class="lead">La oss begynne med et spÃ¸rsmÃ¥l som hÃ¸res trivielt ut, men som ikke er det: nÃ¥r du trykker Â«SendÂ» i Gmail, hva skjer egentlig? Du vet at meldingen havner hos mottakeren â€” men mellom Â«trykkÂ» og Â«levertÂ» ligger det et helt lite Ã¸kosystem av programvare, og det er det Ã¸kosystemet vi nÃ¥ skal pakke ut.</p>
+    <p class="lead">La oss begynne med et spørsmål som høres trivielt ut, men som ikke er det: når du trykker «Send» i Gmail, hva skjer egentlig? Du vet at meldingen havner hos mottakeren — men mellom «trykk» og «levert» ligger det et helt lite økosystem av programvare, og det er det økosystemet vi nå skal pakke ut.</p>
 
-    <p>E-postsystemet bestÃ¥r av <strong>tre hovedkomponenter</strong>. Det er klientprogrammet du bruker for Ã¥ lese og skrive â€” kalt <em>user agent</em> eller Â«mail readerÂ». Det er <strong>e-postserverne</strong> som faktisk lagrer meldinger, bÃ¥de i en innboks for det som kommer inn og i en utgÃ¥ende kÃ¸ for det som skal sendes. Og sÃ¥ er det <strong>SMTP</strong>, protokollen som binder serverne sammen og flytter meldinger mellom dem.</p>
+    <p>E-postsystemet består av <strong>tre hovedkomponenter</strong>. Det er klientprogrammet du bruker for å lese og skrive — kalt <em>user agent</em> eller «mail reader». Det er <strong>e-postserverne</strong> som faktisk lagrer meldinger, både i en innboks for det som kommer inn og i en utgående kø for det som skal sendes. Og så er det <strong>SMTP</strong>, protokollen som binder serverne sammen og flytter meldinger mellom dem.</p>
 
-    <p>Det viktige Ã¥ innse er at user agent-en aldri snakker direkte med mottakerens user agent. Posten din havner fÃ¸rst hos <em>din</em> mailserver, som sÃ¥ Ã¥pner en SMTP-forbindelse mot mottakerens mailserver og leverer den. Mottakeren plukker den sÃ¥ opp fra sin egen server med en helt annen protokoll. Dette er ikke en tilfeldighet â€” det er et bevisst design som vi straks skal se hvorfor er smart.</p>
+    <p>Det viktige å innse er at user agent-en aldri snakker direkte med mottakerens user agent. Posten din havner først hos <em>din</em> mailserver, som så åpner en SMTP-forbindelse mot mottakerens mailserver og leverer den. Mottakeren plukker den så opp fra sin egen server med en helt annen protokoll. Dette er ikke en tilfeldighet — det er et bevisst design som vi straks skal se hvorfor er smart.</p>
 
     <h3>Reisen til en e-post</h3>
     <p>Tenk deg at Alice vil sende en melding til <code>bob@someschool.edu</code>. Sekvensen er alltid den samme:</p>
@@ -73,7 +73,7 @@
         <rect x="200" y="95" width="120" height="70" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
         <text x="260" y="125" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">Alice sin</text>
         <text x="260" y="143" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">mail-server</text>
-        <text x="260" y="180" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">utgÃ¥ende kÃ¸</text>
+        <text x="260" y="180" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">utgående kø</text>
         <rect x="440" y="95" width="120" height="70" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
         <text x="500" y="125" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">Bob sin</text>
         <text x="500" y="143" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" fill="#1a1612">mail-server</text>
@@ -91,44 +91,44 @@
       </svg>
     </figure>
 
-    <p>Legg merke til en fundamental asymmetri her: SMTP brukes <em>kun</em> mellom serverne (og fra Alice sin user agent inn til hennes egen server). NÃ¥r Bob skal lese posten, bruker han <em>ikke</em> SMTP. Han bruker en Â«mail access protocolÂ» â€” typisk IMAP, eller HTTPS dersom han bruker Gmail i nettleseren. Hvorfor? Fordi SMTP er en <strong>push</strong>-protokoll: avsenderen tar initiativet og dytter meldingen frem. Men nÃ¥r Bob skal hente post, vil han <em>trekke</em> meldinger ned fra sin egen server. Det er et helt annet bruksmÃ¸nster, og det krever en helt annen protokoll.</p>
+    <p>Legg merke til en fundamental asymmetri her: SMTP brukes <em>kun</em> mellom serverne (og fra Alice sin user agent inn til hennes egen server). Når Bob skal lese posten, bruker han <em>ikke</em> SMTP. Han bruker en «mail access protocol» — typisk IMAP, eller HTTPS dersom han bruker Gmail i nettleseren. Hvorfor? Fordi SMTP er en <strong>push</strong>-protokoll: avsenderen tar initiativet og dytter meldingen frem. Men når Bob skal hente post, vil han <em>trekke</em> meldinger ned fra sin egen server. Det er et helt annet bruksmønster, og det krever en helt annen protokoll.</p>
 
-    <div class="margin-note">SMTP er fra 1982 (RFC 821, oppdatert til RFC 5321). At den fortsatt er i bruk, mer eller mindre uendret, sier noe om hvor godt den lÃ¸ste problemet sitt â€” og hvor vanskelig det er Ã¥ bytte ut etablerte protokoller.</div>
+    <div class="margin-note">SMTP er fra 1982 (RFC 821, oppdatert til RFC 5321). At den fortsatt er i bruk, mer eller mindre uendret, sier noe om hvor godt den løste problemet sitt — og hvor vanskelig det er å bytte ut etablerte protokoller.</div>
 
-    <h3>SMTP â€” en samtale i klartekst</h3>
-    <p>SMTP er en TCP-basert protokoll pÃ¥ <strong>port 25</strong>. Den er bemerkelsesverdig enkel: kommandoer sendes som ASCII-tekst, og serveren svarer med en tresifret statuskode etterfulgt av en kort tekst. Hele samtalen mellom to mailservere ser slik ut:</p>
+    <h3>SMTP — en samtale i klartekst</h3>
+    <p>SMTP er en TCP-basert protokoll på <strong>port 25</strong>. Den er bemerkelsesverdig enkel: kommandoer sendes som ASCII-tekst, og serveren svarer med en tresifret statuskode etterfulgt av en kort tekst. Hele samtalen mellom to mailservere ser slik ut:</p>
 
     <div class="stepper" id="stepper-smtp">
-      <div class="label">SMTP-samtale â€” steg for steg</div>
+      <div class="label">SMTP-samtale — steg for steg</div>
       <div class="stage">
         <pre><span class="smtp-line" data-step="1"><span class="c-srv">S: 220 hamburger.edu</span></span><span class="smtp-line" data-step="2"><span class="c-cli">C: HELO crepes.fr</span></span><span class="smtp-line" data-step="3"><span class="c-srv">S: 250 Hello crepes.fr, pleased to meet you</span></span><span class="smtp-line" data-step="4"><span class="c-cli">C: MAIL FROM: &lt;alice@crepes.fr&gt;</span></span><span class="smtp-line" data-step="5"><span class="c-srv">S: 250 alice@crepes.fr... Sender ok</span></span><span class="smtp-line" data-step="6"><span class="c-cli">C: RCPT TO: &lt;bob@hamburger.edu&gt;</span></span><span class="smtp-line" data-step="7"><span class="c-srv">S: 250 bob@hamburger.edu ... Recipient ok</span></span><span class="smtp-line" data-step="8"><span class="c-cli">C: DATA</span></span><span class="smtp-line" data-step="9"><span class="c-srv">S: 354 Enter mail, end with "." on a line by itself</span></span><span class="smtp-line" data-step="10"><span class="c-cli">C: Do you like ketchup?</span></span><span class="smtp-line" data-step="11"><span class="c-cli">C: How about pickles?</span></span><span class="smtp-line" data-step="12"><span class="c-cli">C: .</span></span><span class="smtp-line" data-step="13"><span class="c-srv">S: 250 Message accepted for delivery</span></span><span class="smtp-line" data-step="14"><span class="c-cli">C: QUIT</span></span><span class="smtp-line" data-step="15"><span class="c-srv">S: 221 hamburger.edu closing connection</span></span></pre>
       </div>
-      <div class="step-desc" id="smtp-desc">Trykk Â«NesteÂ» for Ã¥ se hver linje i SMTP-samtalen mellom to mailservere.</div>
+      <div class="step-desc" id="smtp-desc">Trykk «Neste» for å se hver linje i SMTP-samtalen mellom to mailservere.</div>
       <div class="controls">
-        <button type="button" id="smtp-prev" disabled>â€¹ Forrige</button>
+        <button type="button" id="smtp-prev" disabled>‹ Forrige</button>
         <span class="progress" id="smtp-counter">Steg 0 / 15</span>
-        <button type="button" id="smtp-next">Neste â€º</button>
+        <button type="button" id="smtp-next">Neste ›</button>
       </div>
     </div>
 
-    <p>Dette er hele protokollen i et nÃ¸tteskall. Tre faser: hÃ¥ndhilsing (<code>HELO</code>), overfÃ¸ring (<code>MAIL FROM</code>, <code>RCPT TO</code>, <code>DATA</code>), og avslutning (<code>QUIT</code>). Klienten â€” det er den sendende mailserveren her â€” skriver kommandoer, serveren svarer med statuskoder. <code>250</code> betyr OK, <code>354</code> betyr Â«fortsettÂ», <code>220</code> og <code>221</code> er Ã¥pning og lukking. Akkurat som HTTP, men eldre.</p>
+    <p>Dette er hele protokollen i et nøtteskall. Tre faser: håndhilsing (<code>HELO</code>), overføring (<code>MAIL FROM</code>, <code>RCPT TO</code>, <code>DATA</code>), og avslutning (<code>QUIT</code>). Klienten — det er den sendende mailserveren her — skriver kommandoer, serveren svarer med statuskoder. <code>250</code> betyr OK, <code>354</code> betyr «fortsett», <code>220</code> og <code>221</code> er åpning og lukking. Akkurat som HTTP, men eldre.</p>
 
-    <p>En liten, men viktig detalj: legg merke til at meldingen avsluttes med en linje som bare inneholder ett enkelt punktum. Dette er SMTP sin mÃ¥te Ã¥ si Â«her slutter meldingenÂ». Eller mer presist: serveren ser etter sekvensen <code>CRLF.CRLF</code> for Ã¥ finne slutten pÃ¥ meldingsinnholdet. Og fordi alt skal vÃ¦re <strong>7-bits ASCII</strong>, mÃ¥ alt binÃ¦rt (bilder, vedlegg, Ã¦Ã¸Ã¥) fÃ¸rst kodes om til ASCII med MIME-koding.</p>
+    <p>En liten, men viktig detalj: legg merke til at meldingen avsluttes med en linje som bare inneholder ett enkelt punktum. Dette er SMTP sin måte å si «her slutter meldingen». Eller mer presist: serveren ser etter sekvensen <code>CRLF.CRLF</code> for å finne slutten på meldingsinnholdet. Og fordi alt skal være <strong>7-bits ASCII</strong>, må alt binært (bilder, vedlegg, æøå) først kodes om til ASCII med MIME-koding.</p>
 
     <div class="quiz" id="quiz1">
-      <div class="label">Sjekk forstÃ¥elsen</div>
-      <div class="q-text">Hvorfor bruker e-post to forskjellige protokoller (SMTP og IMAP) i stedet for bare Ã©n?</div>
+      <div class="label">Sjekk forståelsen</div>
+      <div class="q-text">Hvorfor bruker e-post to forskjellige protokoller (SMTP og IMAP) i stedet for bare én?</div>
       <div class="options">
-        <button class="option" data-correct="false">Fordi SMTP er for gammel til Ã¥ hÃ¥ndtere moderne e-post</button>
-        <button class="option" data-correct="true">Fordi sending (Â«pushÂ») og henting (Â«pullÂ») er fundamentalt forskjellige bruksmÃ¸nstre</button>
-        <button class="option" data-correct="false">Fordi SMTP ikke stÃ¸tter kryptering, mens IMAP gjÃ¸r det</button>
-        <button class="option" data-correct="false">Fordi de kjÃ¸rer pÃ¥ forskjellige operativsystemer</button>
+        <button class="option" data-correct="false">Fordi SMTP er for gammel til å håndtere moderne e-post</button>
+        <button class="option" data-correct="true">Fordi sending («push») og henting («pull») er fundamentalt forskjellige bruksmønstre</button>
+        <button class="option" data-correct="false">Fordi SMTP ikke støtter kryptering, mens IMAP gjør det</button>
+        <button class="option" data-correct="false">Fordi de kjører på forskjellige operativsystemer</button>
       </div>
-      <div class="explanation">SMTP er designet for at avsenderen skal kunne dytte en melding frem til mottakerens server. NÃ¥r mottakeren senere skal hente posten sin â€” kanskje fra en mobiltelefon, kanskje senere i dag, kanskje fra flere enheter â€” er det et helt annet behov. IMAP lÃ¸ser <em>det</em> problemet: tilgang til en postkasse som ligger lagret pÃ¥ en server.</div>
+      <div class="explanation">SMTP er designet for at avsenderen skal kunne dytte en melding frem til mottakerens server. Når mottakeren senere skal hente posten sin — kanskje fra en mobiltelefon, kanskje senere i dag, kanskje fra flere enheter — er det et helt annet behov. IMAP løser <em>det</em> problemet: tilgang til en postkasse som ligger lagret på en server.</div>
     </div>
 
-    <h3>SMTP vs HTTP â€” sÃ¥ like, og likevel sÃ¥ ulike</h3>
-    <p>Det er fristende Ã¥ se pÃ¥ SMTP og HTTP og tenke at de er nesten det samme. Begge bruker TCP. Begge har ASCII-kommandoer og statuskoder. Begge ble bygd i samme tidsperiode. Men forskjellene avslÃ¸rer to helt forskjellige designfilosofier:</p>
+    <h3>SMTP vs HTTP — så like, og likevel så ulike</h3>
+    <p>Det er fristende å se på SMTP og HTTP og tenke at de er nesten det samme. Begge bruker TCP. Begge har ASCII-kommandoer og statuskoder. Begge ble bygd i samme tidsperiode. Men forskjellene avslører to helt forskjellige designfilosofier:</p>
 
     <table>
       <thead>
@@ -136,22 +136,22 @@
       </thead>
       <tbody>
         <tr><td class="label-col">Initiativ</td><td>Pull (klienten ber)</td><td>Push (avsender dytter)</td></tr>
-        <tr><td class="label-col">Innhold</td><td>Hver ressurs i sin egen respons</td><td>Flere objekter i Ã©n multipart-melding</td></tr>
-        <tr><td class="label-col">Tegnsett</td><td>BinÃ¦rt tillatt</td><td>Krever 7-bits ASCII</td></tr>
+        <tr><td class="label-col">Innhold</td><td>Hver ressurs i sin egen respons</td><td>Flere objekter i én multipart-melding</td></tr>
+        <tr><td class="label-col">Tegnsett</td><td>Binært tillatt</td><td>Krever 7-bits ASCII</td></tr>
         <tr><td class="label-col">Forbindelse</td><td>Persistent (HTTP/1.1+)</td><td>Persistent</td></tr>
-        <tr><td class="label-col">BruksomrÃ¥de</td><td>Hente sider/data pÃ¥ forespÃ¸rsel</td><td>Levere meldinger asynkront</td></tr>
+        <tr><td class="label-col">Bruksområde</td><td>Hente sider/data på forespørsel</td><td>Levere meldinger asynkront</td></tr>
       </tbody>
     </table>
 
-    <p>Disse forskjellene er ikke vilkÃ¥rlige. De fÃ¸lger direkte av problemene protokollene lÃ¸ser. NÃ¥r du henter en nettside, er du der akkurat nÃ¥, og du venter pÃ¥ svaret. NÃ¥r du sender e-post, skal mottakeren kanskje lese den om to dager â€” sÃ¥ meldingen mÃ¥ kunne legges i en kÃ¸, mellomlagres, og leveres nÃ¥r det passer.</p>
+    <p>Disse forskjellene er ikke vilkårlige. De følger direkte av problemene protokollene løser. Når du henter en nettside, er du der akkurat nå, og du venter på svaret. Når du sender e-post, skal mottakeren kanskje lese den om to dager — så meldingen må kunne legges i en kø, mellomlagres, og leveres når det passer.</p>
 
-    <h3>Meldingsformatet â€” RFC 822</h3>
-    <p>SMTP er protokollen som flytter meldingen, men selve meldingen â€” det som ligger inne i <code>DATA</code>-blokken â€” har sitt eget format definert i <strong>RFC 822</strong>. Sammenligningen er omtrent som mellom HTTP og HTML: HTTP frakter, HTML er det som fraktes.</p>
+    <h3>Meldingsformatet — RFC 822</h3>
+    <p>SMTP er protokollen som flytter meldingen, men selve meldingen — det som ligger inne i <code>DATA</code>-blokken — har sitt eget format definert i <strong>RFC 822</strong>. Sammenligningen er omtrent som mellom HTTP og HTML: HTTP frakter, HTML er det som fraktes.</p>
 
-    <p>En e-postmelding bestÃ¥r av <strong>headerlinjer</strong> (<code>To:</code>, <code>From:</code>, <code>Subject:</code> og sÃ¥ videre), en <em>blank linje</em>, og en <strong>body</strong>. Det er viktig Ã¥ skille disse headerne fra SMTP-kommandoene <code>MAIL FROM</code> og <code>RCPT TO</code> â€” sistnevnte er en del av <em>forhandlingen</em> mellom serverne (omtrent som en konvolutt), mens RFC 822-headerne er en del av selve <em>brevet</em> som ligger inne i konvolutten. De inneholder ofte de samme adressene, men trenger ikke Ã¥ gjÃ¸re det. (Det er nettopp dette gapet noen typer phishing utnytter.)</p>
+    <p>En e-postmelding består av <strong>headerlinjer</strong> (<code>To:</code>, <code>From:</code>, <code>Subject:</code> og så videre), en <em>blank linje</em>, og en <strong>body</strong>. Det er viktig å skille disse headerne fra SMTP-kommandoene <code>MAIL FROM</code> og <code>RCPT TO</code> — sistnevnte er en del av <em>forhandlingen</em> mellom serverne (omtrent som en konvolutt), mens RFC 822-headerne er en del av selve <em>brevet</em> som ligger inne i konvolutten. De inneholder ofte de samme adressene, men trenger ikke å gjøre det. (Det er nettopp dette gapet noen typer phishing utnytter.)</p>
 
     <h3>Hvordan moderne webmail egentlig ser ut</h3>
-    <p>I praksis ser ikke trafikken din ut akkurat som lÃ¦reboken. NÃ¥r du bruker Gmail eller Outlook pÃ¥ web, er det ikke SMTP du snakker fra nettleseren din ut til serveren â€” det er HTTPS. FÃ¸rst nÃ¥r Gmails servere skal levere meldingen videre til mottakerens server, kommer SMTP inn i bildet. Og nÃ¥r mottakeren â€” ogsÃ¥ pÃ¥ web â€” leser den, er det igjen HTTPS hele veien til nettleseren.</p>
+    <p>I praksis ser ikke trafikken din ut akkurat som læreboken. Når du bruker Gmail eller Outlook på web, er det ikke SMTP du snakker fra nettleseren din ut til serveren — det er HTTPS. Først når Gmails servere skal levere meldingen videre til mottakerens server, kommer SMTP inn i bildet. Og når mottakeren — også på web — leser den, er det igjen HTTPS hele veien til nettleseren.</p>
 
     <div class="callout callout-blue">
       <div class="label">Oppsummert</div>
@@ -160,29 +160,29 @@
   </div>
 </section>
 
-<div class="container"><div class="divider">â‹ â‹ â‹</div></div>
+<div class="container"><div class="divider">? ? ?</div></div>
 
 <!-- ============ DEL 2: DNS ============ -->
 <section id="dns">
   <div class="container">
-    <div class="section-badge">02 Â· DNS â€” Domain Name System</div>
+    <div class="section-badge">02 · DNS — Domain Name System</div>
     <h2>Hvordan internett finner ut <em>hvor</em> ting er</h2>
-    <p class="section-intro">Mennesker husker navn. Datamaskiner ruter pakker etter tall. DNS er den enorme, distribuerte oversetter-maskinen som bygger broen mellom de to verdenene â€” og den mÃ¥ gjÃ¸re det milliarder av ganger hver dag, uten Ã¥ bryte sammen.</p>
+    <p class="section-intro">Mennesker husker navn. Datamaskiner ruter pakker etter tall. DNS er den enorme, distribuerte oversetter-maskinen som bygger broen mellom de to verdenene — og den må gjøre det milliarder av ganger hver dag, uten å bryte sammen.</p>
 
-    <p class="lead">Hver gang du skriver <code>www.ntnu.no</code> i nettleseren din, skjer det noe nesten umiddelbart som er sÃ¥ raskt at du aldri legger merke til det: et navn mÃ¥ oversettes til en IP-adresse fÃ¸r noe annet kan skje. Denne oversettelsen er tilsynelatende triviell â€” bare slÃ¥ opp i en tabell â€” men den mÃ¥ fungere for hvert eneste navn pÃ¥ hele internett, og hvert eneste navn mÃ¥ kunne endres nÃ¥r noen flytter en tjeneste til en ny server. Dette er ikke trivielt.</p>
+    <p class="lead">Hver gang du skriver <code>www.ntnu.no</code> i nettleseren din, skjer det noe nesten umiddelbart som er så raskt at du aldri legger merke til det: et navn må oversettes til en IP-adresse før noe annet kan skje. Denne oversettelsen er tilsynelatende triviell — bare slå opp i en tabell — men den må fungere for hvert eneste navn på hele internett, og hvert eneste navn må kunne endres når noen flytter en tjeneste til en ny server. Dette er ikke trivielt.</p>
 
-    <h3>Hvorfor ikke bare Ã©n stor tabell?</h3>
-    <p>La oss starte med den naive lÃ¸sningen, som er pedagogisk verdifull nettopp fordi den ikke fungerer. Hva om vi hadde Ã©n sentral server et sted i verden, med en gigantisk tabell over alle navn-til-IP-mappinger? Klienten spÃ¸r, serveren svarer, ferdig.</p>
+    <h3>Hvorfor ikke bare én stor tabell?</h3>
+    <p>La oss starte med den naive løsningen, som er pedagogisk verdifull nettopp fordi den ikke fungerer. Hva om vi hadde én sentral server et sted i verden, med en gigantisk tabell over alle navn-til-IP-mappinger? Klienten spør, serveren svarer, ferdig.</p>
 
     <div class="problem-box">
       <div class="label">Problemet med sentralisering</div>
-      Comcast sine DNS-servere alene hÃ¥ndterer rundt 600 milliarder forespÃ¸rsler hver dag. En sentral server ville (1) vÃ¦re et enkeltpunkt for feil â€” hele internett dÃ¸r om den ryker, (2) ha umulig trafikkmengde, (3) vÃ¦re langt unna for de fleste brukere, og (4) vÃ¦re et mareritt Ã¥ vedlikeholde. Det skalerer rett og slett ikke.
+      Comcast sine DNS-servere alene håndterer rundt 600 milliarder forespørsler hver dag. En sentral server ville (1) være et enkeltpunkt for feil — hele internett dør om den ryker, (2) ha umulig trafikkmengde, (3) være langt unna for de fleste brukere, og (4) være et mareritt å vedlikeholde. Det skalerer rett og slett ikke.
     </div>
 
-    <p>LÃ¸sningen â€” og dette er kanskje den vakreste designideen i hele protokollverdenen â€” er Ã¥ gjÃ¸re DNS <strong>distribuert og hierarkisk</strong>. Ingen enkelt server vet alt. I stedet vet hver server litt, og vet hvem den skal spÃ¸rre om resten.</p>
+    <p>Løsningen — og dette er kanskje den vakreste designideen i hele protokollverdenen — er å gjøre DNS <strong>distribuert og hierarkisk</strong>. Ingen enkelt server vet alt. I stedet vet hver server litt, og vet hvem den skal spørre om resten.</p>
 
     <h3>Hierarkiet</h3>
-    <p>Tenk pÃ¥ navnet <code>www.amazon.com</code>. Hierarkiet bygges fra hÃ¸yre mot venstre. Helt pÃ¥ toppen sitter <strong>root-serverne</strong>. De vet ikke noe om amazon, men de vet hvem som styrer <code>.com</code>. Under root sitter <strong>TLD-serverne</strong> (Top-Level Domain) â€” Ã©n gruppe for <code>.com</code>, Ã©n for <code>.org</code>, Ã©n for <code>.no</code>, og sÃ¥ videre. <code>.com</code>-serveren vet ikke IP-adressen til <code>www.amazon.com</code>, men den vet hvilken server som er <em>autoritativ</em> for <code>amazon.com</code>. Den autoritative serveren â€” som driftes av Amazon selv â€” vet til slutt det faktiske svaret.</p>
+    <p>Tenk på navnet <code>www.amazon.com</code>. Hierarkiet bygges fra høyre mot venstre. Helt på toppen sitter <strong>root-serverne</strong>. De vet ikke noe om amazon, men de vet hvem som styrer <code>.com</code>. Under root sitter <strong>TLD-serverne</strong> (Top-Level Domain) — én gruppe for <code>.com</code>, én for <code>.org</code>, én for <code>.no</code>, og så videre. <code>.com</code>-serveren vet ikke IP-adressen til <code>www.amazon.com</code>, men den vet hvilken server som er <em>autoritativ</em> for <code>amazon.com</code>. Den autoritative serveren — som driftes av Amazon selv — vet til slutt det faktiske svaret.</p>
 
     <figure>
       <svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg">
@@ -212,25 +212,25 @@
         <line x1="380" y1="160" x2="380" y2="220" stroke="#6b6257" stroke-width="1"/>
         <line x1="590" y1="160" x2="520" y2="220" stroke="#6b6257" stroke-width="1"/>
         <line x1="590" y1="160" x2="660" y2="220" stroke="#6b6257" stroke-width="1"/>
-        <text x="20" y="45" font-family="Newsreader" font-style="italic" font-size="12" fill="#6b6257">NivÃ¥ 1</text>
+        <text x="20" y="45" font-family="Newsreader" font-style="italic" font-size="12" fill="#6b6257">Nivå 1</text>
         <text x="20" y="145" font-family="Newsreader" font-style="italic" font-size="12" fill="#6b6257">TLD</text>
         <text x="20" y="245" font-family="Newsreader" font-style="italic" font-size="12" fill="#6b6257">Autoritativ</text>
-        <text x="380" y="300" text-anchor="middle" font-family="Newsreader" font-style="italic" font-size="13" fill="#6b6257">Hierarkiet â€” ingen enkelt server vet alt, men hver server vet hvor du skal gÃ¥ videre.</text>
+        <text x="380" y="300" text-anchor="middle" font-family="Newsreader" font-style="italic" font-size="13" fill="#6b6257">Hierarkiet — ingen enkelt server vet alt, men hver server vet hvor du skal gå videre.</text>
       </svg>
     </figure>
 
-    <p>Det er omtrent 13 logiske rot-Â«servereÂ» i verden, men hver av dem er replikert hundrevis av ganger ved hjelp av en teknikk som heter anycast â€” over 1000 fysiske maskiner totalt. <strong>ICANN</strong> (Internet Corporation for Assigned Names and Numbers) administrerer rotsonen. Disse er kontaktpunktet for <em>siste utvei</em>: en lokal navneserver kontakter root-serverne kun nÃ¥r den ikke har funnet svaret andre steder.</p>
+    <p>Det er omtrent 13 logiske rot-«servere» i verden, men hver av dem er replikert hundrevis av ganger ved hjelp av en teknikk som heter anycast — over 1000 fysiske maskiner totalt. <strong>ICANN</strong> (Internet Corporation for Assigned Names and Numbers) administrerer rotsonen. Disse er kontaktpunktet for <em>siste utvei</em>: en lokal navneserver kontakter root-serverne kun når den ikke har funnet svaret andre steder.</p>
 
-    <h3>Lokale navneservere â€” den glemte helten</h3>
-    <p>Mellom deg og hele dette hierarkiet sitter det noen som ikke teknisk sett er en del av selve DNS-hierarkiet, men som likevel er den absolutt viktigste serveren for ytelsen din: din <strong>lokale navneserver</strong>. Hver internettleverandÃ¸r driver en. NTNU har en. Bedriften din har en. NÃ¥r maskinen din skal slÃ¥ opp et navn, gÃ¥r spÃ¸rsmÃ¥let alltid fÃ¸rst hit.</p>
+    <h3>Lokale navneservere — den glemte helten</h3>
+    <p>Mellom deg og hele dette hierarkiet sitter det noen som ikke teknisk sett er en del av selve DNS-hierarkiet, men som likevel er den absolutt viktigste serveren for ytelsen din: din <strong>lokale navneserver</strong>. Hver internettleverandør driver en. NTNU har en. Bedriften din har en. Når maskinen din skal slå opp et navn, går spørsmålet alltid først hit.</p>
 
-    <p>Den lokale serveren har en lokal <em>cache</em> med navn den nylig har slÃ¥tt opp. Hvis svaret ligger i cachen, slipper du hele turen oppover hierarkiet â€” du fÃ¥r svaret tilbake pÃ¥ millisekunder. Dette er hvorfor DNS oppleves som umiddelbar selv om det egentlig kan involvere flere mellomledd. De fleste forespÃ¸rsler stopper i cachen.</p>
+    <p>Den lokale serveren har en lokal <em>cache</em> med navn den nylig har slått opp. Hvis svaret ligger i cachen, slipper du hele turen oppover hierarkiet — du får svaret tilbake på millisekunder. Dette er hvorfor DNS oppleves som umiddelbar selv om det egentlig kan involvere flere mellomledd. De fleste forespørsler stopper i cachen.</p>
 
-    <h3>To mÃ¥ter Ã¥ spÃ¸rre pÃ¥: iterativ vs rekursiv</h3>
-    <p>NÃ¥r en navneserver mÃ¥ gÃ¥ videre i hierarkiet, finnes det to fundamentale strategier. La oss fÃ¸lge et eksempel: en maskin pÃ¥ <code>engineering.nyu.edu</code> vil vite IP-adressen til <code>gaia.cs.umass.edu</code>.</p>
+    <h3>To måter å spørre på: iterativ vs rekursiv</h3>
+    <p>Når en navneserver må gå videre i hierarkiet, finnes det to fundamentale strategier. La oss følge et eksempel: en maskin på <code>engineering.nyu.edu</code> vil vite IP-adressen til <code>gaia.cs.umass.edu</code>.</p>
 
     <div class="stepper" id="stepper-dns">
-      <div class="label">Steg-for-steg â€” iterativ DNS-oppslag</div>
+      <div class="label">Steg-for-steg — iterativ DNS-oppslag</div>
       <div class="stage">
         <svg viewBox="0 0 760 280" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -263,100 +263,100 @@
           </g>
         </svg>
       </div>
-      <div class="step-desc" id="dns-desc">Trykk Â«NesteÂ» for Ã¥ se hvert steg i en iterativ DNS-oppslag.</div>
+      <div class="step-desc" id="dns-desc">Trykk «Neste» for å se hvert steg i en iterativ DNS-oppslag.</div>
       <div class="controls">
-        <button id="dns-prev" disabled>â€¹ Forrige</button>
+        <button id="dns-prev" disabled>‹ Forrige</button>
         <span class="progress" id="dns-counter">Steg 0 / 8</span>
-        <button id="dns-next">Neste â€º</button>
+        <button id="dns-next">Neste ›</button>
       </div>
     </div>
 
-    <p>Det du sÃ¥ i animasjonen ovenfor er en <strong>iterativ</strong> oppslag: hver server svarer ikke med endelig svar, men med Â«jeg vet ikke, men spÃ¸r denne i stedetÂ». Den lokale serveren gjÃ¸r alt arbeidet selv â€” den hopper fra root til TLD til autoritativ.</p>
+    <p>Det du så i animasjonen ovenfor er en <strong>iterativ</strong> oppslag: hver server svarer ikke med endelig svar, men med «jeg vet ikke, men spør denne i stedet». Den lokale serveren gjør alt arbeidet selv — den hopper fra root til TLD til autoritativ.</p>
 
-    <p>Den andre strategien er <strong>rekursiv</strong>: den lokale serveren spÃ¸r root-serveren og sier Â«finn ut av dette for megÂ», og root-serveren tar selv ansvaret for Ã¥ spÃ¸rre TLD, som spÃ¸r den autoritative, og svaret bobler tilbake gjennom hele kjeden. Dette er enklere Ã¥ implementere pÃ¥ klientsiden, men legger en mye tyngre belastning pÃ¥ de Ã¸verste lagene av hierarkiet â€” og derfor brukes det typisk bare pÃ¥ den siste delen, mellom deg og din lokale server.</p>
+    <p>Den andre strategien er <strong>rekursiv</strong>: den lokale serveren spør root-serveren og sier «finn ut av dette for meg», og root-serveren tar selv ansvaret for å spørre TLD, som spør den autoritative, og svaret bobler tilbake gjennom hele kjeden. Dette er enklere å implementere på klientsiden, men legger en mye tyngre belastning på de øverste lagene av hierarkiet — og derfor brukes det typisk bare på den siste delen, mellom deg og din lokale server.</p>
 
     <h3>DNS-poster (Resource Records)</h3>
-    <p>Hva er det egentlig som ligger lagret i alle disse navneserverne? Svaret er en distribuert database av <strong>resource records</strong>, eller RR-er. Hver post har formatet <code>(name, value, type, ttl)</code> â€” et navn, en verdi, en type, og en Â«time to liveÂ» som sier hvor lenge svaret er gyldig.</p>
+    <p>Hva er det egentlig som ligger lagret i alle disse navneserverne? Svaret er en distribuert database av <strong>resource records</strong>, eller RR-er. Hver post har formatet <code>(name, value, type, ttl)</code> — et navn, en verdi, en type, og en «time to live» som sier hvor lenge svaret er gyldig.</p>
 
     <table>
       <thead>
-        <tr><th>Type</th><th>Hva Â«nameÂ» er</th><th>Hva Â«valueÂ» er</th></tr>
+        <tr><th>Type</th><th>Hva «name» er</th><th>Hva «value» er</th></tr>
       </thead>
       <tbody>
         <tr><td class="label-col">A</td><td>Et hostname</td><td>En IPv4-adresse</td></tr>
         <tr><td class="label-col">NS</td><td>Et domene (f.eks. <code>amazon.com</code>)</td><td>Hostname til en autoritativ navneserver</td></tr>
-        <tr><td class="label-col">CNAME</td><td>Et alias-navn</td><td>Det Â«kanoniskeÂ» (egentlige) navnet</td></tr>
+        <tr><td class="label-col">CNAME</td><td>Et alias-navn</td><td>Det «kanoniske» (egentlige) navnet</td></tr>
         <tr><td class="label-col">MX</td><td>Et domene</td><td>Hostname til en mailserver for det domenet</td></tr>
       </tbody>
     </table>
 
-    <p><strong>A-posten</strong> er den klassiske: navn til IP. <strong>NS</strong> peker pÃ¥ hvilken server som er autoritativ. <strong>CNAME</strong> er et alias â€” derfor kan <code>www.ibm.com</code> egentlig vÃ¦re en peker til noe sÃ¥nt som <code>servereast.backup2.ibm.com</code>, og du som bruker trenger aldri Ã¥ vite det. <strong>MX</strong> er hvordan SMTP-serveren din finner ut hvor den skal levere e-post for et domene; uten MX-poster ville e-post ikke fungert.</p>
+    <p><strong>A-posten</strong> er den klassiske: navn til IP. <strong>NS</strong> peker på hvilken server som er autoritativ. <strong>CNAME</strong> er et alias — derfor kan <code>www.ibm.com</code> egentlig være en peker til noe sånt som <code>servereast.backup2.ibm.com</code>, og du som bruker trenger aldri å vite det. <strong>MX</strong> er hvordan SMTP-serveren din finner ut hvor den skal levere e-post for et domene; uten MX-poster ville e-post ikke fungert.</p>
 
-    <div class="margin-note">DNS muliggjÃ¸r ogsÃ¥ lastbalansering: et travelt nettsted kan ha mange servere med forskjellige IP-adresser, alle registrert som <strong>A-poster</strong> for samme hostname. Den autoritative DNS-serveren roterer rekkefÃ¸lgen pÃ¥ adressene for hvert oppslag, slik at trafikken sprer seg utover mange servere. CNAME gir derimot <em>aliasing</em> â€” muligheten til Ã¥ la ett hostname peke pÃ¥ et annet â€” noe som er nyttig, men en annen mekanisme enn lastbalansering.</div>
+    <div class="margin-note">DNS muliggjør også lastbalansering: et travelt nettsted kan ha mange servere med forskjellige IP-adresser, alle registrert som <strong>A-poster</strong> for samme hostname. Den autoritative DNS-serveren roterer rekkefølgen på adressene for hvert oppslag, slik at trafikken sprer seg utover mange servere. CNAME gir derimot <em>aliasing</em> — muligheten til å la ett hostname peke på et annet — noe som er nyttig, men en annen mekanisme enn lastbalansering.</div>
 
-    <h3>Hvordan fÃ¥r man et nytt domene inn i DNS?</h3>
-    <p>Tenk deg at du starter et nytt firma, Â«Network UtopiaÂ», og vil ha domenet <code>networkutopia.com</code>. Hvordan fÃ¥r du det inn i den globale DNS-databasen? Svaret er en <strong>registrar</strong> â€” en kommersielt autorisert organisasjon (akkreditert av ICANN) som lar deg registrere domenenavn.</p>
+    <h3>Hvordan får man et nytt domene inn i DNS?</h3>
+    <p>Tenk deg at du starter et nytt firma, «Network Utopia», og vil ha domenet <code>networkutopia.com</code>. Hvordan får du det inn i den globale DNS-databasen? Svaret er en <strong>registrar</strong> — en kommersielt autorisert organisasjon (akkreditert av ICANN) som lar deg registrere domenenavn.</p>
 
-    <p>Prosessen er omtrent slik: du gÃ¥r til en registrar (for eksempel GoDaddy eller Domeneshop), sjekker at <code>networkutopia.com</code> er ledig, betaler en avgift, og oppgir navn og IP-adresser til dine autoritative navneservere â€” la oss si <code>dns1.networkutopia.com</code> (212.44.9.129) og <code>dns2.networkutopia.com</code> (212.44.9.130). Registraren setter da inn to poster i <code>.com</code>-TLD-serverne:</p>
+    <p>Prosessen er omtrent slik: du går til en registrar (for eksempel GoDaddy eller Domeneshop), sjekker at <code>networkutopia.com</code> er ledig, betaler en avgift, og oppgir navn og IP-adresser til dine autoritative navneservere — la oss si <code>dns1.networkutopia.com</code> (212.44.9.129) og <code>dns2.networkutopia.com</code> (212.44.9.130). Registraren setter da inn to poster i <code>.com</code>-TLD-serverne:</p>
 
     <pre>(networkutopia.com, dns1.networkutopia.com, NS)
 (dns1.networkutopia.com, 212.44.9.129, A)</pre>
 
-    <p>NÃ¥ vet <code>.com</code>-TLD-serverne at spÃ¸rsmÃ¥l om <code>networkutopia.com</code> skal sendes videre til <em>dine</em> autoritative servere. PÃ¥ disse serverne legger du selv inn A-poster for webserveren din (<code>www.networkutopia.com</code> â†’ IP-adresse) og MX-poster for e-postserveren. Fra det Ã¸yeblikket er hele kjeden komplett: root â†’ TLD â†’ autoritativ â†’ endelig svar.</p>
+    <p>Nå vet <code>.com</code>-TLD-serverne at spørsmål om <code>networkutopia.com</code> skal sendes videre til <em>dine</em> autoritative servere. På disse serverne legger du selv inn A-poster for webserveren din (<code>www.networkutopia.com</code> ? IP-adresse) og MX-poster for e-postserveren. Fra det øyeblikket er hele kjeden komplett: root ? TLD ? autoritativ ? endelig svar.</p>
 
-    <h3>Caching â€” den hemmelige sausen</h3>
-    <p>Det vi egentlig ikke har sagt eksplisitt ennÃ¥ er <em>hvordan</em> DNS klarer Ã¥ vÃ¦re sÃ¥ raskt. Svaret er caching, overalt. NÃ¥r en navneserver â€” hvilken som helst â€” lÃ¦rer en mapping, lagrer den den i minnet sitt for fremtidige forespÃ¸rsler. Den lagrer den til TTL utlÃ¸per. TLD-server-adresser er typisk cachet i lokale servere stort sett alltid, sÃ¥ root-serverne blir nesten aldri kontaktet for vanlige oppslag.</p>
+    <h3>Caching — den hemmelige sausen</h3>
+    <p>Det vi egentlig ikke har sagt eksplisitt ennå er <em>hvordan</em> DNS klarer å være så raskt. Svaret er caching, overalt. Når en navneserver — hvilken som helst — lærer en mapping, lagrer den den i minnet sitt for fremtidige forespørsler. Den lagrer den til TTL utløper. TLD-server-adresser er typisk cachet i lokale servere stort sett alltid, så root-serverne blir nesten aldri kontaktet for vanlige oppslag.</p>
 
-    <p>Bakdelen er at cachede svar kan bli utdatert. Hvis du flytter en tjeneste til en ny IP-adresse, vil ikke endringen vÃ¦re synlig overalt pÃ¥ internett fÃ¸r alle relevante TTL-er har utlÃ¸pt. Dette er hvorfor DNS-endringer ofte tar timer eller dager Ã¥ Â«forplante segÂ» â€” det er ikke en feil, det er TTL-en som gjÃ¸r jobben sin.</p>
+    <p>Bakdelen er at cachede svar kan bli utdatert. Hvis du flytter en tjeneste til en ny IP-adresse, vil ikke endringen være synlig overalt på internett før alle relevante TTL-er har utløpt. Dette er hvorfor DNS-endringer ofte tar timer eller dager å «forplante seg» — det er ikke en feil, det er TTL-en som gjør jobben sin.</p>
 
     <div class="reveal" id="reveal-mx">
       <div class="q">Hva tror du skjer hvis du sender e-post til <code>noen@example.com</code>, men <code>example.com</code> ikke har noen MX-post i DNS?</div>
       <button onclick="document.getElementById('reveal-mx-ans').classList.add('show')">Vis svar</button>
       <div class="answer" id="reveal-mx-ans">
-        <p>Mailserveren din vil fÃ¸rst spÃ¸rre etter MX-posten for <code>example.com</code>. Hvis den ikke finner noen, vil den i de fleste implementasjoner falle tilbake pÃ¥ Ã¥ spÃ¸rre etter en A-post for <code>example.com</code> direkte og prÃ¸ve Ã¥ levere til den IP-adressen. Dette er en historisk fallback fra tidlig SMTP. I praksis bÃ¸r alle domener som mottar e-post ha MX-poster â€” uten dem er du avhengig av at avsendere implementerer fallbacken, og noen gjÃ¸r ikke det.</p>
+        <p>Mailserveren din vil først spørre etter MX-posten for <code>example.com</code>. Hvis den ikke finner noen, vil den i de fleste implementasjoner falle tilbake på å spørre etter en A-post for <code>example.com</code> direkte og prøve å levere til den IP-adressen. Dette er en historisk fallback fra tidlig SMTP. I praksis bør alle domener som mottar e-post ha MX-poster — uten dem er du avhengig av at avsendere implementerer fallbacken, og noen gjør ikke det.</p>
       </div>
     </div>
 
     <h3>DNS-meldinger</h3>
-    <p>DNS bruker stort sett UDP pÃ¥ port 53 â€” det er en spÃ¸rsmÃ¥l-svar-protokoll der hvert spÃ¸rsmÃ¥l er kort nok til Ã¥ passe i Ã©n UDP-pakke, og lavere overhead enn TCP gir mye bedre ytelse for noe som skjer milliarder av ganger om dagen. BÃ¥de spÃ¸rsmÃ¥l og svar har samme meldingsformat: en header med en 16-bits identifikator og noen flagg, etterfulgt av seksjoner for spÃ¸rsmÃ¥l, svar, autoritative poster, og Â«hjelpsom tilleggsinformasjonÂ».</p>
+    <p>DNS bruker stort sett UDP på port 53 — det er en spørsmål-svar-protokoll der hvert spørsmål er kort nok til å passe i én UDP-pakke, og lavere overhead enn TCP gir mye bedre ytelse for noe som skjer milliarder av ganger om dagen. Både spørsmål og svar har samme meldingsformat: en header med en 16-bits identifikator og noen flagg, etterfulgt av seksjoner for spørsmål, svar, autoritative poster, og «hjelpsom tilleggsinformasjon».</p>
 
-    <p>Identifikatoren er viktig: nÃ¥r en server fÃ¥r mange svar tilbake, mÃ¥ den vite hvilket spÃ¸rsmÃ¥l hvert svar tilhÃ¸rer, og det er det dette tallet brukes til. Flagg-feltet sier blant annet om meldingen er et spÃ¸rsmÃ¥l eller svar, om rekursjon er Ã¸nsket, og om svaret kommer fra en autoritativ kilde.</p>
+    <p>Identifikatoren er viktig: når en server får mange svar tilbake, må den vite hvilket spørsmål hvert svar tilhører, og det er det dette tallet brukes til. Flagg-feltet sier blant annet om meldingen er et spørsmål eller svar, om rekursjon er ønsket, og om svaret kommer fra en autoritativ kilde.</p>
 
     <h3>DNS-sikkerhet</h3>
     <p>DNS er kritisk infrastruktur, og det betyr at noen vil angripe det. De vanligste angrepstypene er:</p>
 
     <ul>
-      <li><strong>DDoS</strong> â€” bombardere root- eller TLD-serverne med trafikk. Har vÃ¦rt forsÃ¸kt mange ganger; har hittil aldri klart Ã¥ lamme internett, blant annet pÃ¥ grunn av caching og trafikkfiltrering.</li>
-      <li><strong>DNS-poisoning</strong> â€” sende falske svar til en navneserver slik at den cacher feil informasjon, og sender brukere til feil sted.</li>
-      <li><strong>DNS-amplifisering</strong> â€” sende DNS-spÃ¸rsmÃ¥l med forfalsket avsenderadresse, slik at svarene (som er mye stÃ¸rre enn spÃ¸rsmÃ¥lene) sendes til offeret. Brukes som DDoS-vÃ¥pen.</li>
+      <li><strong>DDoS</strong> — bombardere root- eller TLD-serverne med trafikk. Har vært forsøkt mange ganger; har hittil aldri klart å lamme internett, blant annet på grunn av caching og trafikkfiltrering.</li>
+      <li><strong>DNS-poisoning</strong> — sende falske svar til en navneserver slik at den cacher feil informasjon, og sender brukere til feil sted.</li>
+      <li><strong>DNS-amplifisering</strong> — sende DNS-spørsmål med forfalsket avsenderadresse, slik at svarene (som er mye større enn spørsmålene) sendes til offeret. Brukes som DDoS-våpen.</li>
     </ul>
 
-    <p>Forsvaret heter <strong>DNSSEC</strong> (RFC 4033), som legger digitale signaturer pÃ¥ DNS-svar slik at klienten kan verifisere at svaret faktisk kommer fra en autoritativ kilde. Det er ikke universelt utrullet ennÃ¥, men det er den langsiktige lÃ¸sningen.</p>
+    <p>Forsvaret heter <strong>DNSSEC</strong> (RFC 4033), som legger digitale signaturer på DNS-svar slik at klienten kan verifisere at svaret faktisk kommer fra en autoritativ kilde. Det er ikke universelt utrullet ennå, men det er den langsiktige løsningen.</p>
 
     <div class="quiz" id="quiz2">
-      <div class="label">Sjekk forstÃ¥elsen</div>
-      <div class="q-text">Hvorfor blir root-serverne sjelden faktisk kontaktet, selv om de teknisk sett er Ã¸verst i hierarkiet?</div>
+      <div class="label">Sjekk forståelsen</div>
+      <div class="q-text">Hvorfor blir root-serverne sjelden faktisk kontaktet, selv om de teknisk sett er øverst i hierarkiet?</div>
       <div class="options">
-        <button class="option" data-correct="false">Fordi de er for trege til Ã¥ hÃ¥ndtere normal trafikk</button>
+        <button class="option" data-correct="false">Fordi de er for trege til å håndtere normal trafikk</button>
         <button class="option" data-correct="true">Fordi lokale navneservere cacher TLD-serveradresser, og de sjelden endres</button>
         <button class="option" data-correct="false">Fordi ICANN har deaktivert dem som sikkerhetstiltak</button>
         <button class="option" data-correct="false">Fordi DNS bare bruker dem for nye domener</button>
       </div>
-      <div class="explanation">Lokale navneservere har stort sett alltid TLD-servernes adresser i cachen sin, sÃ¥ den iterative oppslagsprosessen kan hoppe rett til TLD og videre derfra. Root blir dermed Â«kontakt-av-siste-utveiÂ» â€” viktig at den finnes, men sjelden faktisk forespurt.</div>
+      <div class="explanation">Lokale navneservere har stort sett alltid TLD-servernes adresser i cachen sin, så den iterative oppslagsprosessen kan hoppe rett til TLD og videre derfra. Root blir dermed «kontakt-av-siste-utvei» — viktig at den finnes, men sjelden faktisk forespurt.</div>
     </div>
   </div>
 </section>
 
-<div class="container"><div class="divider">â‹ â‹ â‹</div></div>
+<div class="container"><div class="divider">? ? ?</div></div>
 
 <!-- ============ DEL 3: SOCKETS ============ -->
 <section id="sockets">
   <div class="container">
-    <div class="section-badge">03 Â· Socket-programmering</div>
-    <h2>NÃ¥r du selv skal skrive noe som <em>snakker</em></h2>
-    <p class="section-intro">Alle protokollene vi har sett pÃ¥ â€” SMTP, HTTP, DNS â€” er bygget oppÃ¥ noe lavere: socket-API-et. NÃ¥r du skal skrive ditt eget nettverksprogram, er det her du faktisk mÃ¸ter transportlaget ansikt til ansikt.</p>
+    <div class="section-badge">03 · Socket-programmering</div>
+    <h2>Når du selv skal skrive noe som <em>snakker</em></h2>
+    <p class="section-intro">Alle protokollene vi har sett på — SMTP, HTTP, DNS — er bygget oppå noe lavere: socket-API-et. Når du skal skrive ditt eget nettverksprogram, er det her du faktisk møter transportlaget ansikt til ansikt.</p>
 
-    <p class="lead">En sokkel er et merkelig ord for noe sÃ¥ fundamentalt. Tenk pÃ¥ den som en dÃ¸r: pÃ¥ den ene siden stÃ¥r prosessen din, pÃ¥ den andre siden stÃ¥r transportlaget i operativsystemet. Du som programmerer kontrollerer det som skjer pÃ¥ innsiden av dÃ¸ren. Operativsystemet styrer alt som skjer pÃ¥ utsiden â€” pakkene, rutingen, retransmisjon. Sokkelen er kontrakten mellom dere to.</p>
+    <p class="lead">En sokkel er et merkelig ord for noe så fundamentalt. Tenk på den som en dør: på den ene siden står prosessen din, på den andre siden står transportlaget i operativsystemet. Du som programmerer kontrollerer det som skjer på innsiden av døren. Operativsystemet styrer alt som skjer på utsiden — pakkene, rutingen, retransmisjon. Sokkelen er kontrakten mellom dere to.</p>
 
     <figure>
       <svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg">
@@ -389,25 +389,25 @@
         <text x="155" y="100" font-family="IBM Plex Mono" font-size="10" fill="#b04428">socket</text>
         <text x="595" y="100" font-family="IBM Plex Mono" font-size="10" fill="#b04428">socket</text>
       </svg>
-      <figcaption>Sokkelen er dÃ¸ren mellom prosessen din og transportlaget â€” pÃ¥ begge sider av forbindelsen.</figcaption>
+      <figcaption>Sokkelen er døren mellom prosessen din og transportlaget — på begge sider av forbindelsen.</figcaption>
     </figure>
 
-    <p>Det finnes <strong>to typer sokler</strong>, fordi det finnes to transporttjenester du kan bruke: <strong>UDP</strong> for upÃ¥litelige datagrammer, og <strong>TCP</strong> for pÃ¥litelig, ordnet bytestrÃ¸m. Forskjellen mellom dem er stor nok til at API-ene faktisk ser annerledes ut â€” du bruker forskjellige funksjoner for Ã¥ sende og motta â€” og valget mellom dem er det fÃ¸rste og kanskje viktigste designvalget du tar nÃ¥r du skriver et nettverksprogram.</p>
+    <p>Det finnes <strong>to typer sokler</strong>, fordi det finnes to transporttjenester du kan bruke: <strong>UDP</strong> for upålitelige datagrammer, og <strong>TCP</strong> for pålitelig, ordnet bytestrøm. Forskjellen mellom dem er stor nok til at API-ene faktisk ser annerledes ut — du bruker forskjellige funksjoner for å sende og motta — og valget mellom dem er det første og kanskje viktigste designvalget du tar når du skriver et nettverksprogram.</p>
 
     <h3>Et lite eksempelprogram</h3>
-    <p>Gjennom resten av denne delen skal vi bygge en helt enkel applikasjon, bÃ¥de i UDP-versjon og TCP-versjon, slik at forskjellen kommer tydelig frem. Applikasjonen er bevisst trivielt:</p>
+    <p>Gjennom resten av denne delen skal vi bygge en helt enkel applikasjon, både i UDP-versjon og TCP-versjon, slik at forskjellen kommer tydelig frem. Applikasjonen er bevisst trivielt:</p>
 
     <div class="callout">
       <div class="label">Spesifikasjon</div>
       Klienten leser en linje fra tastaturet og sender den til serveren. Serveren konverterer linjen til store bokstaver og sender den tilbake. Klienten skriver ut svaret. Det er det. Hele protokollen.
     </div>
 
-    <h3>UDP â€” datagrammer i posten</h3>
-    <p>Det fÃ¸rste du mÃ¥ forstÃ¥ om UDP er at det <em>ikke finnes noen forbindelse</em>. Det er ingen hÃ¥ndhilsing fÃ¸r data sendes. Hver pakke stÃ¥r pÃ¥ egen hÃ¥nd. Avsenderen putter eksplisitt pÃ¥ destinasjons-IP og portnummer for hver eneste pakke, og mottakeren fÃ¥r ut avsenderens IP og port fra hver pakke som kommer inn. Det er som Ã¥ sende postkort â€” hvert postkort er sin egen lille hendelse, og det finnes ingen samtale.</p>
+    <h3>UDP — datagrammer i posten</h3>
+    <p>Det første du må forstå om UDP er at det <em>ikke finnes noen forbindelse</em>. Det er ingen håndhilsing før data sendes. Hver pakke står på egen hånd. Avsenderen putter eksplisitt på destinasjons-IP og portnummer for hver eneste pakke, og mottakeren får ut avsenderens IP og port fra hver pakke som kommer inn. Det er som å sende postkort — hvert postkort er sin egen lille hendelse, og det finnes ingen samtale.</p>
 
-    <p>Konsekvensene er viktige: pakkene <em>kan</em> bli borte, og de <em>kan</em> komme i feil rekkefÃ¸lge. Operativsystemet vil ikke gjÃ¸re noe med det. Hvis applikasjonen din krever pÃ¥litelighet, mÃ¥ du bygge det selv. Til gjengjeld er UDP ekstremt lett â€” ingen oppstartstid, ingen tilstand, ingen ekstra runtripp fÃ¸r fÃ¸rste byte kan sendes.</p>
+    <p>Konsekvensene er viktige: pakkene <em>kan</em> bli borte, og de <em>kan</em> komme i feil rekkefølge. Operativsystemet vil ikke gjøre noe med det. Hvis applikasjonen din krever pålitelighet, må du bygge det selv. Til gjengjeld er UDP ekstremt lett — ingen oppstartstid, ingen tilstand, ingen ekstra runtripp før første byte kan sendes.</p>
 
-    <p>La oss se pÃ¥ koden. FÃ¸rst klienten:</p>
+    <p>La oss se på koden. Først klienten:</p>
 
     <pre><span class="c-cmt"># Python UDP-klient</span>
 from socket import *
@@ -419,17 +419,17 @@ clientSocket = socket(AF_INET, <span class="c-key">SOCK_DGRAM</span>)
 
 message = input(<span class="c-cli">'Skriv en setning: '</span>)
 
-<span class="c-cmt"># Vi mÃ¥ selv legge ved adresse og port for hver send</span>
+<span class="c-cmt"># Vi må selv legge ved adresse og port for hver send</span>
 clientSocket.sendto(message.encode(),
                     (serverName, serverPort))
 
-<span class="c-cmt"># Les svar â€” vi fÃ¥r ogsÃ¥ vite hvem som svarte</span>
+<span class="c-cmt"># Les svar — vi får også vite hvem som svarte</span>
 modifiedMessage, serverAddress = clientSocket.recvfrom(2048)
 print(modifiedMessage.decode())
 
 clientSocket.close()</pre>
 
-    <p>Legg merke til <code>SOCK_DGRAM</code> â€” det er det som sier Â«UDP, takkÂ». Og legg merke til <code>sendto</code>: det andre argumentet er en tuple med servernavn og port. Vi mÃ¥ oppgi det <em>hver eneste gang vi sender</em>, fordi sokkelen ikke har noen forestilling om hvem den Â«er forbundet medÂ». Tilsvarende returnerer <code>recvfrom</code> bÃ¥de dataene og avsenderens adresse â€” for hvert datagram kan teknisk sett komme fra en hvilken som helst avsender.</p>
+    <p>Legg merke til <code>SOCK_DGRAM</code> — det er det som sier «UDP, takk». Og legg merke til <code>sendto</code>: det andre argumentet er en tuple med servernavn og port. Vi må oppgi det <em>hver eneste gang vi sender</em>, fordi sokkelen ikke har noen forestilling om hvem den «er forbundet med». Tilsvarende returnerer <code>recvfrom</code> både dataene og avsenderens adresse — for hvert datagram kan teknisk sett komme fra en hvilken som helst avsender.</p>
 
     <p>Serveren ser slik ut:</p>
 
@@ -438,7 +438,7 @@ from socket import *
 serverPort = 12000
 
 serverSocket = socket(AF_INET, <span class="c-key">SOCK_DGRAM</span>)
-serverSocket.bind((<span class="c-cli">''</span>, serverPort))   <span class="c-cmt"># Lytt pÃ¥ port 12000</span>
+serverSocket.bind((<span class="c-cli">''</span>, serverPort))   <span class="c-cmt"># Lytt på port 12000</span>
 
 print(<span class="c-cli">"Serveren er klar."</span>)
 
@@ -448,14 +448,14 @@ while True:
     serverSocket.sendto(modifiedMessage.encode(),
                         clientAddress)</pre>
 
-    <p>Serveren er nesten enklere enn klienten. Den lager en sokkel, binder den til en spesifikk port (12000), og gÃ¥r inn i en evig lÃ¸kke. For hvert datagram som kommer inn, leser den bÃ¥de innholdet <em>og</em> klientens adresse â€” og bruker akkurat den adressen til Ã¥ sende svaret tilbake. Det finnes ingen Â«forbindelseÂ» som blir Ã¥pnet eller lukket. Hver iterasjon i lÃ¸kken er en hel transaksjon i seg selv.</p>
+    <p>Serveren er nesten enklere enn klienten. Den lager en sokkel, binder den til en spesifikk port (12000), og går inn i en evig løkke. For hvert datagram som kommer inn, leser den både innholdet <em>og</em> klientens adresse — og bruker akkurat den adressen til å sende svaret tilbake. Det finnes ingen «forbindelse» som blir åpnet eller lukket. Hver iterasjon i løkken er en hel transaksjon i seg selv.</p>
 
-    <h3>TCP â€” en samtale fra start til slutt</h3>
-    <p>TCP er en helt annen verden. FÃ¸r noen data kan flyte, mÃ¥ klienten <em>opprette en forbindelse</em> til serveren â€” det berÃ¸mte trefoldige hÃ¥ndtrykket. NÃ¥r forbindelsen er etablert, har du noe som oppfÃ¸rer seg som et rÃ¸r: bytes du sender inn pÃ¥ den ene enden kommer ut i samme rekkefÃ¸lge pÃ¥ den andre enden, garantert, selv om underliggende pakker ble mistet og mÃ¥tte sendes pÃ¥ nytt.</p>
+    <h3>TCP — en samtale fra start til slutt</h3>
+    <p>TCP er en helt annen verden. Før noen data kan flyte, må klienten <em>opprette en forbindelse</em> til serveren — det berømte trefoldige håndtrykket. Når forbindelsen er etablert, har du noe som oppfører seg som et rør: bytes du sender inn på den ene enden kommer ut i samme rekkefølge på den andre enden, garantert, selv om underliggende pakker ble mistet og måtte sendes på nytt.</p>
 
-    <p>Det fine designtrekket â€” og noe som kan vÃ¦re forvirrende fÃ¸rste gang du mÃ¸ter det â€” er at serveren faktisk har <em>to</em> typer sokler. Den ene er en <strong>Â«velkomstsokkelÂ»</strong> som sitter og venter pÃ¥ at klienter skal koble seg til. NÃ¥r en klient kobler seg til, lager operativsystemet en helt <em>ny</em> sokkel â€” en <strong>Â«forbindelsessokkelÂ»</strong> â€” som er dedikert til akkurat denne klienten. Velkomstsokkelen gÃ¥r tilbake til Ã¥ vente pÃ¥ neste klient, og forbindelsessokkelen brukes til Ã¥ snakke med klienten som nettopp koblet seg til.</p>
+    <p>Det fine designtrekket — og noe som kan være forvirrende første gang du møter det — er at serveren faktisk har <em>to</em> typer sokler. Den ene er en <strong>«velkomstsokkel»</strong> som sitter og venter på at klienter skal koble seg til. Når en klient kobler seg til, lager operativsystemet en helt <em>ny</em> sokkel — en <strong>«forbindelsessokkel»</strong> — som er dedikert til akkurat denne klienten. Velkomstsokkelen går tilbake til å vente på neste klient, og forbindelsessokkelen brukes til å snakke med klienten som nettopp koblet seg til.</p>
 
-    <div class="margin-note">Dette er hvordan en server kan snakke med mange klienter samtidig: Ã©n velkomstsokkel, mange forbindelsessokler â€” Ã©n per aktiv klient. Operativsystemet bruker portnummer pÃ¥ avsendersiden til Ã¥ holde dem fra hverandre.</div>
+    <div class="margin-note">Dette er hvordan en server kan snakke med mange klienter samtidig: én velkomstsokkel, mange forbindelsessokler — én per aktiv klient. Operativsystemet bruker portnummer på avsendersiden til å holde dem fra hverandre.</div>
 
     <p>Klientkoden:</p>
 
@@ -465,11 +465,11 @@ serverName = <span class="c-cli">'servername'</span>
 serverPort = 12000
 
 clientSocket = socket(AF_INET, <span class="c-key">SOCK_STREAM</span>)
-clientSocket.connect((serverName, serverPort))   <span class="c-cmt"># 3-veis hÃ¥ndtrykk skjer her</span>
+clientSocket.connect((serverName, serverPort))   <span class="c-cmt"># 3-veis håndtrykk skjer her</span>
 
 sentence = input(<span class="c-cli">'Skriv en setning: '</span>)
 
-<span class="c-cmt"># Ingen behov for Ã¥ oppgi adresse â€” sokkelen vet det allerede</span>
+<span class="c-cmt"># Ingen behov for å oppgi adresse — sokkelen vet det allerede</span>
 clientSocket.send(sentence.encode())
 
 modifiedSentence = clientSocket.recv(1024)
@@ -477,7 +477,7 @@ print(<span class="c-cli">'Fra serveren:'</span>, modifiedSentence.decode())
 
 clientSocket.close()</pre>
 
-    <p>Forskjellene fra UDP-versjonen er smÃ¥ men avgjÃ¸rende. <code>SOCK_STREAM</code> i stedet for <code>SOCK_DGRAM</code>. Den nye linjen <code>connect()</code> som ikke fantes i UDP â€” det er her selve TCP-forbindelsen blir opprettet. Og en gang det er gjort, bruker vi <code>send</code> og <code>recv</code> uten Ã¥ oppgi noen adresse, fordi sokkelen <em>vet</em> hvem den er koblet til.</p>
+    <p>Forskjellene fra UDP-versjonen er små men avgjørende. <code>SOCK_STREAM</code> i stedet for <code>SOCK_DGRAM</code>. Den nye linjen <code>connect()</code> som ikke fantes i UDP — det er her selve TCP-forbindelsen blir opprettet. Og en gang det er gjort, bruker vi <code>send</code> og <code>recv</code> uten å oppgi noen adresse, fordi sokkelen <em>vet</em> hvem den er koblet til.</p>
 
     <p>Serverkoden er der den interessante forskjellen virkelig blir tydelig:</p>
 
@@ -487,7 +487,7 @@ serverPort = 12000
 
 serverSocket = socket(AF_INET, <span class="c-key">SOCK_STREAM</span>)
 serverSocket.bind((<span class="c-cli">''</span>, serverPort))
-serverSocket.listen(1)            <span class="c-cmt"># Begynn Ã¥ lytte etter forbindelser</span>
+serverSocket.listen(1)            <span class="c-cmt"># Begynn å lytte etter forbindelser</span>
 
 print(<span class="c-cli">"Serveren er klar."</span>)
 
@@ -502,9 +502,9 @@ while True:
 
     connectionSocket.close()       <span class="c-cmt"># Lukk DENNE forbindelsen, ikke velkomstsokkelen</span></pre>
 
-    <p>Se pÃ¥ <code>serverSocket.accept()</code>. Det er der det magiske skjer. Funksjonen blokkerer til en klient prÃ¸ver Ã¥ koble seg til, og nÃ¥r det skjer, returnerer den et par: en <em>ny</em> sokkel (<code>connectionSocket</code>) og adressen til klienten. Vi snakker med klienten gjennom denne nye sokkelen, og nÃ¥r vi er ferdige lukker vi <em>kun den</em> â€” velkomstsokkelen lever videre og venter pÃ¥ neste klient.</p>
+    <p>Se på <code>serverSocket.accept()</code>. Det er der det magiske skjer. Funksjonen blokkerer til en klient prøver å koble seg til, og når det skjer, returnerer den et par: en <em>ny</em> sokkel (<code>connectionSocket</code>) og adressen til klienten. Vi snakker med klienten gjennom denne nye sokkelen, og når vi er ferdige lukker vi <em>kun den</em> — velkomstsokkelen lever videre og venter på neste klient.</p>
 
-    <h3>UDP og TCP â€” side om side</h3>
+    <h3>UDP og TCP — side om side</h3>
 
     <table>
       <thead>
@@ -512,28 +512,28 @@ while True:
       </thead>
       <tbody>
         <tr><td class="label-col">Sokkeltype</td><td><code>SOCK_DGRAM</code></td><td><code>SOCK_STREAM</code></td></tr>
-        <tr><td class="label-col">Forbindelse</td><td>Ingen</td><td>Etableres med hÃ¥ndtrykk</td></tr>
-        <tr><td class="label-col">PÃ¥litelighet</td><td>Ingen â€” pakker kan mistes</td><td>Garantert levering, riktig rekkefÃ¸lge</td></tr>
+        <tr><td class="label-col">Forbindelse</td><td>Ingen</td><td>Etableres med håndtrykk</td></tr>
+        <tr><td class="label-col">Pålitelighet</td><td>Ingen — pakker kan mistes</td><td>Garantert levering, riktig rekkefølge</td></tr>
         <tr><td class="label-col">Sende</td><td><code>sendto(data, adresse)</code></td><td><code>send(data)</code></td></tr>
-        <tr><td class="label-col">Motta</td><td><code>recvfrom()</code> â†’ data + adresse</td><td><code>recv()</code> â†’ data</td></tr>
-        <tr><td class="label-col">Server</td><td>Ã‰n sokkel for alt</td><td>Ã‰n velkomst + Ã©n pr. klient</td></tr>
-        <tr><td class="label-col">Egnet for</td><td>DNS, video, spill, telemetri</td><td>HTTP, SMTP, filoverfÃ¸ring</td></tr>
+        <tr><td class="label-col">Motta</td><td><code>recvfrom()</code> ? data + adresse</td><td><code>recv()</code> ? data</td></tr>
+        <tr><td class="label-col">Server</td><td>Én sokkel for alt</td><td>Én velkomst + én pr. klient</td></tr>
+        <tr><td class="label-col">Egnet for</td><td>DNS, video, spill, telemetri</td><td>HTTP, SMTP, filoverføring</td></tr>
       </tbody>
     </table>
 
-    <h3>NÃ¥r velger man hva?</h3>
-    <p>Det enkle svaret er: TCP for det meste. Det vanskelige svaret krever at du tenker pÃ¥ applikasjonens faktiske behov. Trenger du at hver eneste byte kommer frem? Bruk TCP. TÃ¥ler du tap, men trenger lav latenstid og kan ikke vente pÃ¥ retransmisjoner? Bruk UDP. Sender du noe som er sÃ¥ stort at TCP-forbindelsens overhead ikke betyr noe? TCP. Sender du smÃ¥, hyppige, uavhengige beskjeder som DNS-oppslag eller video-pakker der en pakke som kommer 200 ms for sent like gjerne kan kastes? UDP.</p>
+    <h3>Når velger man hva?</h3>
+    <p>Det enkle svaret er: TCP for det meste. Det vanskelige svaret krever at du tenker på applikasjonens faktiske behov. Trenger du at hver eneste byte kommer frem? Bruk TCP. Tåler du tap, men trenger lav latenstid og kan ikke vente på retransmisjoner? Bruk UDP. Sender du noe som er så stort at TCP-forbindelsens overhead ikke betyr noe? TCP. Sender du små, hyppige, uavhengige beskjeder som DNS-oppslag eller video-pakker der en pakke som kommer 200 ms for sent like gjerne kan kastes? UDP.</p>
 
     <div class="quiz" id="quiz3">
-      <div class="label">Sjekk forstÃ¥elsen</div>
-      <div class="q-text">Hvorfor mÃ¥ TCP-serveren ha to sokler â€” en Â«velkomstsokkelÂ» og en Â«forbindelsessokkelÂ» â€” mens UDP-serveren klarer seg med Ã©n?</div>
+      <div class="label">Sjekk forståelsen</div>
+      <div class="q-text">Hvorfor må TCP-serveren ha to sokler — en «velkomstsokkel» og en «forbindelsessokkel» — mens UDP-serveren klarer seg med én?</div>
       <div class="options">
         <button class="option" data-correct="false">Fordi TCP er nyere enn UDP og bruker derfor mer minne</button>
-        <button class="option" data-correct="true">Fordi TCP er forbindelsesorientert, og hver forbindelse trenger sin egen Â«kanalÂ» som kan eksistere parallelt med andre</button>
-        <button class="option" data-correct="false">Fordi UDP ikke kan hÃ¥ndtere flere klienter samtidig</button>
-        <button class="option" data-correct="false">For Ã¥ gjÃ¸re koden mer komplisert</button>
+        <button class="option" data-correct="true">Fordi TCP er forbindelsesorientert, og hver forbindelse trenger sin egen «kanal» som kan eksistere parallelt med andre</button>
+        <button class="option" data-correct="false">Fordi UDP ikke kan håndtere flere klienter samtidig</button>
+        <button class="option" data-correct="false">For å gjøre koden mer komplisert</button>
       </div>
-      <div class="explanation">UDP behandler hvert datagram som en isolert hendelse â€” serveren bruker den samme sokkelen til Ã¥ motta fra alle klienter. TCP, derimot, har en vedvarende forbindelse per klient, og hver av dem trenger sin egen sokkel slik at OS kan rute innkommende bytes til riktig samtale. Velkomstsokkelen sin eneste jobb er Ã¥ Â«fÃ¸deÂ» nye forbindelsessokler.</div>
+      <div class="explanation">UDP behandler hvert datagram som en isolert hendelse — serveren bruker den samme sokkelen til å motta fra alle klienter. TCP, derimot, har en vedvarende forbindelse per klient, og hver av dem trenger sin egen sokkel slik at OS kan rute innkommende bytes til riktig samtale. Velkomstsokkelen sin eneste jobb er å «føde» nye forbindelsessokler.</div>
     </div>
   </div>
 </section>
@@ -542,20 +542,20 @@ while True:
 <section id="avslutning">
   <div class="container">
     <div class="section-badge">Til slutt</div>
-    <h2>De gjennomgÃ¥ende <em>temaene</em></h2>
-    <p class="section-intro">Tre forskjellige protokoller, tre forskjellige problemer â€” men hvis du leser dem ved siden av hverandre, ser du at de samme designvalgene dukker opp om og om igjen.</p>
+    <h2>De gjennomgående <em>temaene</em></h2>
+    <p class="section-intro">Tre forskjellige protokoller, tre forskjellige problemer — men hvis du leser dem ved siden av hverandre, ser du at de samme designvalgene dukker opp om og om igjen.</p>
 
-    <p>Det fÃ¸rste temaet er <strong>sentralisert vs desentralisert</strong>. SMTP er desentralisert: hver organisasjon driver sin egen mailserver. DNS er hierarkisk, som er en form for desentralisering med koordinasjon â€” ingen vet alt, men strukturen sÃ¸rger for at du alltid kan finne den som vet. Sentralisering er enkelt Ã¥ forstÃ¥ og umulig Ã¥ skalere. Desentralisering er det motsatte: vanskelig Ã¥ designe riktig, men eneste vei til de skalaene internett opererer pÃ¥.</p>
+    <p>Det første temaet er <strong>sentralisert vs desentralisert</strong>. SMTP er desentralisert: hver organisasjon driver sin egen mailserver. DNS er hierarkisk, som er en form for desentralisering med koordinasjon — ingen vet alt, men strukturen sørger for at du alltid kan finne den som vet. Sentralisering er enkelt å forstå og umulig å skalere. Desentralisering er det motsatte: vanskelig å designe riktig, men eneste vei til de skalaene internett opererer på.</p>
 
-    <p>Det andre temaet er <strong>tilstandslÃ¸s vs tilstand</strong>. SMTP holder tilstand under en forbindelse (det er midt i en samtale). DNS er stort sett tilstandslÃ¸st â€” hvert spÃ¸rsmÃ¥l er uavhengig. UDP er fundamentalt tilstandslÃ¸st, TCP er fundamentalt tilstandsbevart. TilstandslÃ¸se protokoller skalerer lettere fordi enhver server kan svare pÃ¥ ethvert spÃ¸rsmÃ¥l; tilstandsbevarte protokoller er nÃ¸dvendige nÃ¥r noe mÃ¥ huskes pÃ¥ tvers av forespÃ¸rsler.</p>
+    <p>Det andre temaet er <strong>tilstandsløs vs tilstand</strong>. SMTP holder tilstand under en forbindelse (det er midt i en samtale). DNS er stort sett tilstandsløst — hvert spørsmål er uavhengig. UDP er fundamentalt tilstandsløst, TCP er fundamentalt tilstandsbevart. Tilstandsløse protokoller skalerer lettere fordi enhver server kan svare på ethvert spørsmål; tilstandsbevarte protokoller er nødvendige når noe må huskes på tvers av forespørsler.</p>
 
-    <p>Det tredje temaet er <strong>Â«kompleksitet i kantenÂ»</strong>. Dette er kanskje det mest karakteristiske ved internettarkitekturen i det hele tatt. Selve nettverket â€” rutere, kabler, IP â€” er bevisst dumt. All den interessante intelligensen sitter i endepunktene: i mailservere, i DNS-resolvere, i programmene du selv skriver med sokler. Dette designvalget er grunnen til at internett kunne vokse uten Ã¥ mÃ¥tte oppgraderes sentralt, og det er grunnen til at en student med en bÃ¦rbar PC i Trondheim kan finne pÃ¥ en helt ny applikasjon i morgen og rulle den ut globalt uten Ã¥ spÃ¸rre noen om lov.</p>
+    <p>Det tredje temaet er <strong>«kompleksitet i kanten»</strong>. Dette er kanskje det mest karakteristiske ved internettarkitekturen i det hele tatt. Selve nettverket — rutere, kabler, IP — er bevisst dumt. All den interessante intelligensen sitter i endepunktene: i mailservere, i DNS-resolvere, i programmene du selv skriver med sokler. Dette designvalget er grunnen til at internett kunne vokse uten å måtte oppgraderes sentralt, og det er grunnen til at en student med en bærbar PC i Trondheim kan finne på en helt ny applikasjon i morgen og rulle den ut globalt uten å spørre noen om lov.</p>
 
-    <p>Det fjerde og siste temaet er <strong>pÃ¥litelig vs upÃ¥litelig</strong> meldingsoverfÃ¸ring â€” og innsikten at det ikke finnes ett riktig valg. TCP og UDP eksisterer side om side fordi de lÃ¸ser forskjellige problemer. Det samme gjelder oppover i stakken: SMTP er bygget pÃ¥ TCP fordi e-post mÃ¥ komme frem, mens DNS er bygget pÃ¥ UDP fordi raske oppslag som kan gjentas er bedre enn pÃ¥litelige oppslag som er trege.</p>
+    <p>Det fjerde og siste temaet er <strong>pålitelig vs upålitelig</strong> meldingsoverføring — og innsikten at det ikke finnes ett riktig valg. TCP og UDP eksisterer side om side fordi de løser forskjellige problemer. Det samme gjelder oppover i stakken: SMTP er bygget på TCP fordi e-post må komme frem, mens DNS er bygget på UDP fordi raske oppslag som kan gjentas er bedre enn pålitelige oppslag som er trege.</p>
 
     <div class="callout callout-green">
-      <div class="label">Det viktigste Ã¥ ta med seg</div>
-      Protokoller er ikke magi. Hver eneste designvalg du har sett â€” push vs pull, hierarki vs sentralisering, datagram vs strÃ¸m â€” ble tatt fordi alternativet ikke ville fungert i den skalaen eller med de begrensningene som fantes. NÃ¥r du forstÃ¥r hvilket problem en protokoll lÃ¸ser, blir formen den tar nesten uunngÃ¥elig.
+      <div class="label">Det viktigste å ta med seg</div>
+      Protokoller er ikke magi. Hver eneste designvalg du har sett — push vs pull, hierarki vs sentralisering, datagram vs strøm — ble tatt fordi alternativet ikke ville fungert i den skalaen eller med de begrensningene som fantes. Når du forstår hvilket problem en protokoll løser, blir formen den tar nesten uunngåelig.
     </div>
   </div>
 </section>
@@ -570,7 +570,7 @@ while True:
 <footer>
   <div class="container">
     <div class="ornament">&#10043; &#10043; &#10043;</div>
-    <p>NTNU Â· TTM4100 Â· VÃ¥r 2026</p>
+    <p>NTNU · TTM4100 · Vår 2026</p>
   </div>
 </footer>
 
@@ -606,15 +606,15 @@ while True:
   var max = 8;
 
   var descriptions = [
-    'Trykk Â«NesteÂ» for Ã¥ se hvert steg i en iterativ DNS-oppslag.',
-    '1. Verten spÃ¸r sin lokale DNS-server om gaia.cs.umass.edu.',
-    '2. Den lokale serveren har ikke svaret. Den spÃ¸r en root-server.',
-    '3. Root-serveren svarer: Â«Jeg vet ikke, men spÃ¸r .edu TLD-serveren.Â»',
-    '4. Den lokale serveren spÃ¸r .edu TLD-serveren.',
-    '5. TLD-serveren svarer: Â«SpÃ¸r den autoritative serveren for cs.umass.edu.Â»',
-    '6. Den lokale serveren spÃ¸r den autoritative serveren.',
+    'Trykk «Neste» for å se hvert steg i en iterativ DNS-oppslag.',
+    '1. Verten spør sin lokale DNS-server om gaia.cs.umass.edu.',
+    '2. Den lokale serveren har ikke svaret. Den spør en root-server.',
+    '3. Root-serveren svarer: «Jeg vet ikke, men spør .edu TLD-serveren.»',
+    '4. Den lokale serveren spør .edu TLD-serveren.',
+    '5. TLD-serveren svarer: «Spør den autoritative serveren for cs.umass.edu.»',
+    '6. Den lokale serveren spør den autoritative serveren.',
     '7. Den autoritative serveren returnerer den faktiske IP-adressen.',
-    '8. Den lokale serveren leverer svaret til verten â€” og cacher det.'
+    '8. Den lokale serveren leverer svaret til verten — og cacher det.'
   ];
 
   function render() {
@@ -647,20 +647,20 @@ while True:
   var max = 15;
 
   var descriptions = [
-    'Trykk Â«NesteÂ» for Ã¥ se hver linje i SMTP-samtalen mellom to mailservere.',
-    'Mottakerserveren hilser med 220 â€” forbindelsen er oppe og den er klar.',
+    'Trykk «Neste» for å se hver linje i SMTP-samtalen mellom to mailservere.',
+    'Mottakerserveren hilser med 220 — forbindelsen er oppe og den er klar.',
     'Den sendende serveren presenterer seg med HELO og sitt domenenavn.',
-    '250: serveren godtar hilsenen (Â«pleased to meet youÂ»).',
-    'MAIL FROM oppgir konvolutt-avsenderen (SMTP-laget, ikke nÃ¸dvendigvis From:-headeren i brevet).',
+    '250: serveren godtar hilsenen («pleased to meet you»).',
+    'MAIL FROM oppgir konvolutt-avsenderen (SMTP-laget, ikke nødvendigvis From:-headeren i brevet).',
     '250 bekrefter at avsenderadressen er akseptert.',
-    'RCPT TO oppgir hvem meldingen skal leveres til pÃ¥ denne serveren.',
+    'RCPT TO oppgir hvem meldingen skal leveres til på denne serveren.',
     '250 bekrefter at mottakeren er ok.',
-    'DATA ber om Ã¥ fÃ¥ sende selve meldingsinnholdet.',
-    '354 betyr Â«send innholdet nÃ¥Â» â€” og minner om Ã¥ avslutte med punktum pÃ¥ egen linje.',
-    'FÃ¸rste linje i meldingskroppen (etter DATA) sendes som ren tekst.',
+    'DATA ber om å få sende selve meldingsinnholdet.',
+    '354 betyr «send innholdet nå» — og minner om å avslutte med punktum på egen linje.',
+    'Første linje i meldingskroppen (etter DATA) sendes som ren tekst.',
     'Neste linje i kroppen.',
-    'En linje som bare inneholder Â«.Â» markerer slutten pÃ¥ meldingen (CRLF.CRLF).',
-    '250: hele meldingen er mottatt og lagt i kÃ¸ for levering.',
+    'En linje som bare inneholder «.» markerer slutten på meldingen (CRLF.CRLF).',
+    '250: hele meldingen er mottatt og lagt i kø for levering.',
     'QUIT sier fra at klienten er ferdig og vil lukke.',
     '221 bekrefter at serveren lukker SMTP-forbindelsen.'
   ];
