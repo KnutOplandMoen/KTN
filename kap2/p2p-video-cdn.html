@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>P2P, video og CDN — Kapittel 2</title>
+<title>P2P, video og CDN â€” Kapittel 2</title>
 <link rel="icon" type="image/png" href="/favicon.png">`n<link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -23,12 +23,12 @@
 <main data-chapter="Kapittel 2: Applikasjonslaget">
 <header class="hero">
   <div class="container">
-    <div class="eyebrow">Kapittel 2 · Del 2</div>
+    <div class="eyebrow">Kapittel 2 Â· Del 2</div>
     <h1>P2P, video og <em>CDN</em></h1>
-    <p class="lede">Matematikken bak selv-skalering i peer-to-peer, hvordan DASH tilpasser videokvalitet i sanntid, og CDN-magien som plasserer innhold nær brukeren.</p>
+    <p class="lede">Matematikken bak selv-skalering i peer-to-peer, hvordan DASH tilpasser videokvalitet i sanntid, og CDN-magien som plasserer innhold nÃ¦r brukeren.</p>
     <nav class="toc">
       <a href="#p2p"><span class="toc-num">01</span><span>P2P-fildistribusjon</span></a>
-      <a href="#video"><span class="toc-num">02</span><span>Video over et upålitelig nett</span></a>
+      <a href="#video"><span class="toc-num">02</span><span>Video over et upÃ¥litelig nett</span></a>
       <a href="#cdn"><span class="toc-num">03</span><span>Innholdsleveransenettverk (CDN)</span></a>
     </nav>
   </div>
@@ -39,36 +39,36 @@
 <!-- ========== 09 P2P ========== -->
 <section id="p2p">
   <div class="container">
-    <div class="section-badge">09 · P2P-fildistribusjon</div>
-    <h2>Når alle hjelper til</h2>
-    <p class="section-intro">Hvor mye raskere kan en peer-to-peer-distribusjon faktisk være enn klient–server? La oss regne ut det matematisk — og se det visuelt.</p>
+    <div class="section-badge">09 Â· P2P-fildistribusjon</div>
+    <h2>NÃ¥r alle hjelper til</h2>
+    <p class="section-intro">Hvor mye raskere kan en peer-to-peer-distribusjon faktisk vÃ¦re enn klientâ€“server? La oss regne ut det matematisk â€” og se det visuelt.</p>
 
-    <p class="lead">La oss konkretisere problemet. En tjener har en fil av størrelse <em>F</em> som skal distribueres til <em>N</em> klienter. Tjeneren har opplastningskapasitet <em>u<sub>s</sub></em>. Hver klient <em>i</em> har opplastningskapasitet <em>u<sub>i</sub></em> og nedlastningskapasitet <em>d<sub>i</sub></em>. Vi antar at nettverket i kjernen har rikelig med båndbredde — flaskehalsene er ved endesystemene. Spørsmålet er: <em>hvor lang tid tar det for alle <em>N</em> klientene å motta filen?</em></p>
+    <p class="lead">La oss konkretisere problemet. En tjener har en fil av stÃ¸rrelse <em>F</em> som skal distribueres til <em>N</em> klienter. Tjeneren har opplastningskapasitet <em>u<sub>s</sub></em>. Hver klient <em>i</em> har opplastningskapasitet <em>u<sub>i</sub></em> og nedlastningskapasitet <em>d<sub>i</sub></em>. Vi antar at nettverket i kjernen har rikelig med bÃ¥ndbredde â€” flaskehalsene er ved endesystemene. SpÃ¸rsmÃ¥let er: <em>hvor lang tid tar det for alle <em>N</em> klientene Ã¥ motta filen?</em></p>
 
-    <h3>Klient–server: lineær i N</h3>
-    <p>I klient–server-modellen må tjeneren laste opp filen <em>N</em> ganger — én gang per klient. Tiden for én opplastning er <em>F/u<sub>s</sub></em>, så total opplastningstid er <em>NF/u<sub>s</sub></em>. Samtidig kan ingen klient motta raskere enn sin egen nedlastningshastighet, så den tregeste klienten trenger minst <em>F/d<sub>min</sub></em>. Den totale tiden er det største av disse to:</p>
+    <h3>Klientâ€“server: lineÃ¦r i N</h3>
+    <p>I klientâ€“server-modellen mÃ¥ tjeneren laste opp filen <em>N</em> ganger â€” Ã©n gang per klient. Tiden for Ã©n opplastning er <em>F/u<sub>s</sub></em>, sÃ¥ total opplastningstid er <em>NF/u<sub>s</sub></em>. Samtidig kan ingen klient motta raskere enn sin egen nedlastningshastighet, sÃ¥ den tregeste klienten trenger minst <em>F/d<sub>min</sub></em>. Den totale tiden er det stÃ¸rste av disse to:</p>
 
     <div class="callout callout-blue">
-      <h4>Klient–server</h4>
+      <h4>Klientâ€“server</h4>
       <p style="font-family:'IBM Plex Mono',monospace; font-size:18px; text-align:center; color:var(--ink);">D<sub>c-s</sub> = max{ NF/u<sub>s</sub> ,  F/d<sub>min</sub> }</p>
-      <p>Det første leddet vokser <em>lineært</em> med N. Dobler du antall klienter, dobles distribusjonstiden.</p>
+      <p>Det fÃ¸rste leddet vokser <em>lineÃ¦rt</em> med N. Dobler du antall klienter, dobles distribusjonstiden.</p>
     </div>
 
     <h3>P2P: bremser opp, men flatner ut</h3>
-    <p>I P2P er regnskapet annerledes. Tjeneren må fortsatt laste opp filen minst <em>én</em> gang for at den skal komme inn i systemet — det gir et minimum på <em>F/u<sub>s</sub></em>. Den tregeste klienten må fortsatt laste ned hele filen — <em>F/d<sub>min</sub></em>. Men det tredje leddet er det interessante: total mengde data som må leveres er <em>NF</em> bits, og maksimal samlet opplastningskapasitet i systemet er <em>u<sub>s</sub> + Su<sub>i</sub></em>. Dette gir:</p>
+    <p>I P2P er regnskapet annerledes. Tjeneren mÃ¥ fortsatt laste opp filen minst <em>Ã©n</em> gang for at den skal komme inn i systemet â€” det gir et minimum pÃ¥ <em>F/u<sub>s</sub></em>. Den tregeste klienten mÃ¥ fortsatt laste ned hele filen â€” <em>F/d<sub>min</sub></em>. Men det tredje leddet er det interessante: total mengde data som mÃ¥ leveres er <em>NF</em> bits, og maksimal samlet opplastningskapasitet i systemet er <em>u<sub>s</sub> + Su<sub>i</sub></em>. Dette gir:</p>
 
     <div class="callout callout-green">
       <h4>Peer-to-peer</h4>
       <p style="font-family:'IBM Plex Mono',monospace; font-size:18px; text-align:center; color:var(--ink);">D<sub>P2P</sub> = max{ F/u<sub>s</sub> ,  F/d<sub>min</sub> ,  NF/(u<sub>s</sub> + Su<sub>i</sub>) }</p>
-      <p>Det tredje leddet vokser også med N, <em>men nevneren vokser også</em> — fordi hver ny peer bidrar med sin <em>u<sub>i</sub></em>. Det er dette som gir selv-skalering.</p>
+      <p>Det tredje leddet vokser ogsÃ¥ med N, <em>men nevneren vokser ogsÃ¥</em> â€” fordi hver ny peer bidrar med sin <em>u<sub>i</sub></em>. Det er dette som gir selv-skalering.</p>
     </div>
 
-    <p>Forskjellen er enklere å se i et eksempel. Anta at hver klient har opplastningshastighet <em>u</em>, at det tar én time å laste opp filen én gang (<em>F/u = 1 t</em>), og at tjenerens hastighet er ti ganger en klients (<em>u<sub>s</sub> = 10u</em>). For klient–server blir det dominerende leddet <em>NF/u<sub>s</sub> = N/10</em> — en rett linje opp og bort (inntil nedlastingsgulvet <em>F/d<sub>min</sub></em> tar over). For P2P er det tredje leddet <em>N/(10+N)</em> — en kurve som stiger raskt mot 1, men aldri når den. Den <em>faktiske</em> P2P-tiden er likevel max av alle leddene i ulikheten; med normeringen <em>F/d<sub>min</sub> = 1 t</em> ligger dette gulvet ofte øverst, så den effektive tiden i figuren blir en <em>flat</em> strek ved 1 — ikke fordi tredje leddet er irrelevant, men fordi det ligger <em>under</em> max.</p>
+    <p>Forskjellen er enklere Ã¥ se i et eksempel. Anta at hver klient har opplastningshastighet <em>u</em>, at det tar Ã©n time Ã¥ laste opp filen Ã©n gang (<em>F/u = 1 t</em>), og at tjenerens hastighet er ti ganger en klients (<em>u<sub>s</sub> = 10u</em>). For klientâ€“server blir det dominerende leddet <em>NF/u<sub>s</sub> = N/10</em> â€” en rett linje opp og bort (inntil nedlastingsgulvet <em>F/d<sub>min</sub></em> tar over). For P2P er det tredje leddet <em>N/(10+N)</em> â€” en kurve som stiger raskt mot 1, men aldri nÃ¥r den. Den <em>faktiske</em> P2P-tiden er likevel max av alle leddene i ulikheten; med normeringen <em>F/d<sub>min</sub> = 1 t</em> ligger dette gulvet ofte Ã¸verst, sÃ¥ den effektive tiden i figuren blir en <em>flat</em> strek ved 1 â€” ikke fordi tredje leddet er irrelevant, men fordi det ligger <em>under</em> max.</p>
 
     <p>Du kan leke med tallene selv:</p>
 
     <div class="simulator" id="p2p-sim">
-      <h4>P2P vs klient–server: distribusjonstid</h4>
+      <h4>P2P vs klientâ€“server: distribusjonstid</h4>
       <div class="sim-controls">
         <div class="sim-control">
           <label>Antall klienter N: <span class="val" id="v-n">10</span></label>
@@ -81,7 +81,7 @@
       </div>
       <div class="sim-results">
         <div class="sim-result-block cs">
-          <div class="lbl">Klient–server</div>
+          <div class="lbl">Klientâ€“server</div>
           <div class="num"><span id="cs-time">1.00</span> t</div>
         </div>
         <div class="sim-result-block p2p">
@@ -102,42 +102,42 @@
         <circle id="cs-dot" cx="0" cy="0" r="4" fill="#b04428"/>
         <circle id="p2p-dot" cx="0" cy="0" r="4" fill="#3d6b3a"/>
         <line x1="430" y1="35" x2="450" y2="35" stroke="#b04428" stroke-width="2"/>
-        <text x="455" y="39" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">klient–server</text>
+        <text x="455" y="39" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">klientâ€“server</text>
         <line x1="430" y1="55" x2="450" y2="55" stroke="#3d6b3a" stroke-width="2"/>
         <text x="455" y="59" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">peer-to-peer</text>
       </svg>
     </div>
 
-    <div class="margin-note">Når <em>u<sub>s</sub></em> er veldig stor relativt til antallet klienter, blir P2P-fordelen liten — fordi tjeneren alene takler det. Når N vokser, eksploderer klient–server mens P2P flater ut. Det er nettopp på den måten BitTorrent skalerer til millioner av samtidige nedlastere.</div>
+    <div class="margin-note">NÃ¥r <em>u<sub>s</sub></em> er veldig stor relativt til antallet klienter, blir P2P-fordelen liten â€” fordi tjeneren alene takler det. NÃ¥r N vokser, eksploderer klientâ€“server mens P2P flater ut. Det er nettopp pÃ¥ den mÃ¥ten BitTorrent skalerer til millioner av samtidige nedlastere.</div>
   </div>
 </section>
 
 <!-- ========== 10 VIDEO ========== -->
 <section id="video">
   <div class="container">
-    <div class="section-badge">10 · Video over et upålitelig nett</div>
-    <h2>Strømmet video, og hvorfor det er vanskelig</h2>
-    <p class="section-intro">Netflix, YouTube og Amazon Prime stod for omtrent 80 % av den residentiale ISP-trafikken i 2020. Hvordan får man en milliard mennesker til å se HD-video samtidig?</p>
+    <div class="section-badge">10 Â· Video over et upÃ¥litelig nett</div>
+    <h2>StrÃ¸mmet video, og hvorfor det er vanskelig</h2>
+    <p class="section-intro">Netflix, YouTube og Amazon Prime stod for omtrent 80 % av den residentiale ISP-trafikken i 2020. Hvordan fÃ¥r man en milliard mennesker til Ã¥ se HD-video samtidig?</p>
 
-    <p class="lead">Først litt om hva video <em>er</em>. En video er bare en sekvens av bilder vist i konstant hastighet — typisk 24 eller 30 bilder i sekundet. Hvert bilde er en matrise av piksler, hver piksel representert som noen byte. Rå video er enormt: ukomprimert HD-video er gigabyter per minutt. Derfor komprimeres video alltid før den sendes, og komprimeringen utnytter to typer redundans. <strong>Romlig redundans</strong> innen ett bilde: hvis en stor flate er samme farge, lagre fargen og antall piksler istedenfor hver enkelt piksel. <strong>Tidsmessig redundans</strong> mellom påfølgende bilder: istedenfor å sende hele bilde <em>i+1</em>, send bare forskjellene fra bilde <em>i</em>. Det er denne dobbelte komprimeringen som gjør at MPEG-4 kan klemme HD-video ned til noen få megabit i sekundet.</p>
+    <p class="lead">FÃ¸rst litt om hva video <em>er</em>. En video er bare en sekvens av bilder vist i konstant hastighet â€” typisk 24 eller 30 bilder i sekundet. Hvert bilde er en matrise av piksler, hver piksel representert som noen byte. RÃ¥ video er enormt: ukomprimert HD-video er gigabyter per minutt. Derfor komprimeres video alltid fÃ¸r den sendes, og komprimeringen utnytter to typer redundans. <strong>Romlig redundans</strong> innen ett bilde: hvis en stor flate er samme farge, lagre fargen og antall piksler istedenfor hver enkelt piksel. <strong>Tidsmessig redundans</strong> mellom pÃ¥fÃ¸lgende bilder: istedenfor Ã¥ sende hele bilde <em>i+1</em>, send bare forskjellene fra bilde <em>i</em>. Det er denne dobbelte komprimeringen som gjÃ¸r at MPEG-4 kan klemme HD-video ned til noen fÃ¥ megabit i sekundet.</p>
 
-    <p>Resultatet av komprimeringen kan være <strong>CBR</strong> (constant bit rate) — fast bithastighet, slik som MPEG-1 (1,5 Mbps) eller MPEG-2 DVD (3–6 Mbps) — eller <strong>VBR</strong> (variable bit rate), der hastigheten varierer ut fra hvor mye bevegelse og detalj som er i scenen. MPEG-4, som dominerer på Internett, kan ligge alt fra 64 kbps til 12 Mbps avhengig av kvalitet og innhold.</p>
+    <p>Resultatet av komprimeringen kan vÃ¦re <strong>CBR</strong> (constant bit rate) â€” fast bithastighet, slik som MPEG-1 (1,5 Mbps) eller MPEG-2 DVD (3â€“6 Mbps) â€” eller <strong>VBR</strong> (variable bit rate), der hastigheten varierer ut fra hvor mye bevegelse og detalj som er i scenen. MPEG-4, som dominerer pÃ¥ Internett, kan ligge alt fra 64 kbps til 12 Mbps avhengig av kvalitet og innhold.</p>
 
     <h3>Den vanskelige delen: konstant avspilling, varierende nett</h3>
-    <p>Når video er kodet og lagret på en tjener, må vi sende den til klienten over et nett som er <em>alt annet enn forutsigbart</em>. Båndbredden mellom tjener og klient varierer med trengsel i hjemmenettet, aksessnettet, kjernenettet og selve tjeneren. Pakker mister og forsinker. Men avspillingen hos klienten er <em>strikt</em>: når én gang spillingen har startet, må bildene komme i riktig rekkefølge og til riktig tid. Dette kalles <strong>continuous playout constraint</strong> — kontinuitetskravet.</p>
+    <p>NÃ¥r video er kodet og lagret pÃ¥ en tjener, mÃ¥ vi sende den til klienten over et nett som er <em>alt annet enn forutsigbart</em>. BÃ¥ndbredden mellom tjener og klient varierer med trengsel i hjemmenettet, aksessnettet, kjernenettet og selve tjeneren. Pakker mister og forsinker. Men avspillingen hos klienten er <em>strikt</em>: nÃ¥r Ã©n gang spillingen har startet, mÃ¥ bildene komme i riktig rekkefÃ¸lge og til riktig tid. Dette kalles <strong>continuous playout constraint</strong> â€” kontinuitetskravet.</p>
 
-    <p>Hvordan løser man det? Med en <strong>buffer</strong> på klientsiden. Klienten begynner å laste ned video før hen begynner å spille av, og bygger opp et lite forsprang. Når nettet midlertidig blir tregt, tærer avspillingen på bufferet istedenfor å stoppe opp. Når nettet blir raskt igjen, fyller bufferet seg på ny. Du har sikkert sett resultatet: «buffering...» dukker opp først når bufferet er tomt og nettet samtidig ikke leverer raskt nok.</p>
+    <p>Hvordan lÃ¸ser man det? Med en <strong>buffer</strong> pÃ¥ klientsiden. Klienten begynner Ã¥ laste ned video fÃ¸r hen begynner Ã¥ spille av, og bygger opp et lite forsprang. NÃ¥r nettet midlertidig blir tregt, tÃ¦rer avspillingen pÃ¥ bufferet istedenfor Ã¥ stoppe opp. NÃ¥r nettet blir raskt igjen, fyller bufferet seg pÃ¥ ny. Du har sikkert sett resultatet: Â«buffering...Â» dukker opp fÃ¸rst nÃ¥r bufferet er tomt og nettet samtidig ikke leverer raskt nok.</p>
 
     <h3>DASH: la klienten bestemme</h3>
-    <p>Den moderne løsningen for strømming heter <strong>DASH</strong> — Dynamic, Adaptive Streaming over HTTP. Idéen er å gi all intelligensen til klienten, og holde tjeneren dum. Tjenerens jobb: del videoen opp i mange korte <em>chunks</em> (typisk noen sekunder hver), kod hver chunk i mange forskjellige bithastigheter (lav, middels, høy, ultra), og lag en <strong>manifest-fil</strong> som lister opp URL-ene for alle chunks i alle kvaliteter.</p>
+    <p>Den moderne lÃ¸sningen for strÃ¸mming heter <strong>DASH</strong> â€” Dynamic, Adaptive Streaming over HTTP. IdÃ©en er Ã¥ gi all intelligensen til klienten, og holde tjeneren dum. Tjenerens jobb: del videoen opp i mange korte <em>chunks</em> (typisk noen sekunder hver), kod hver chunk i mange forskjellige bithastigheter (lav, middels, hÃ¸y, ultra), og lag en <strong>manifest-fil</strong> som lister opp URL-ene for alle chunks i alle kvaliteter.</p>
 
-    <p>Klienten henter manifestet, måler kontinuerlig båndbredden mot tjeneren, og bestemmer selv: hvilken chunk skal jeg be om nå, og i hvilken kvalitet? Når båndbredden er god, ber den om høyoppløselige chunks. Når båndbredden faller, faller den ned til lavere oppløsning — uten å pause avspillingen. Klienten kan også bestemme <em>hvor</em> den skal hente chunken fra, hvis flere tjenere har den.</p>
+    <p>Klienten henter manifestet, mÃ¥ler kontinuerlig bÃ¥ndbredden mot tjeneren, og bestemmer selv: hvilken chunk skal jeg be om nÃ¥, og i hvilken kvalitet? NÃ¥r bÃ¥ndbredden er god, ber den om hÃ¸yopplÃ¸selige chunks. NÃ¥r bÃ¥ndbredden faller, faller den ned til lavere opplÃ¸sning â€” uten Ã¥ pause avspillingen. Klienten kan ogsÃ¥ bestemme <em>hvor</em> den skal hente chunken fra, hvis flere tjenere har den.</p>
 
-    <p>Fordi alt foregår over vanlig HTTP, drar DASH nytte av alt det eksisterende web-stacket: cacher, brannmurer, lastbalansere, CDN-er. Dette er en del av hvorfor DASH har vunnet over eldre, dedikerte strømmeprotokoller.</p>
+    <p>Fordi alt foregÃ¥r over vanlig HTTP, drar DASH nytte av alt det eksisterende web-stacket: cacher, brannmurer, lastbalansere, CDN-er. Dette er en del av hvorfor DASH har vunnet over eldre, dedikerte strÃ¸mmeprotokoller.</p>
 
     <div class="callout">
-      <h4>Strømming som oppskrift</h4>
-      <p style="text-align:center; font-style:italic; font-size:18px;">Strømmet video = koding + DASH + avspillingsbuffer</p>
+      <h4>StrÃ¸mming som oppskrift</h4>
+      <p style="text-align:center; font-style:italic; font-size:18px;">StrÃ¸mmet video = koding + DASH + avspillingsbuffer</p>
     </div>
   </div>
 </section>
@@ -145,20 +145,20 @@
 <!-- ========== 11 CDN ========== -->
 <section id="cdn">
   <div class="container">
-    <div class="section-badge">11 · Innholdsleveransenettverk</div>
-    <h2>Hvordan Netflix slipper å sende fra ett sted</h2>
-    <p class="section-intro">Selv med DASH har vi et problem: hundretusenvis av samtidige seere som krever millioner av forskjellige videoer. Én tjener — selv en mega-tjener — kan ikke gjøre det. Vi må fysisk distribuere innholdet.</p>
+    <div class="section-badge">11 Â· Innholdsleveransenettverk</div>
+    <h2>Hvordan Netflix slipper Ã¥ sende fra ett sted</h2>
+    <p class="section-intro">Selv med DASH har vi et problem: hundretusenvis av samtidige seere som krever millioner av forskjellige videoer. Ã‰n tjener â€” selv en mega-tjener â€” kan ikke gjÃ¸re det. Vi mÃ¥ fysisk distribuere innholdet.</p>
 
-    <p class="lead">Tenk deg at Netflix prøvde å betjene hele verden fra ett enkelt datasenter i California. Det ville ikke fungere. For det første ville det vært et enkelt kritisk feilpunkt — én feil og hele verden mister Netflix. For det andre ville det skapt enorm trengsel på nettverkslinkene inn til datasenteret. For det tredje ville hver bruker fått en altfor lang reise frem til innholdet, med tilhørende latens. For det fjerde ville samme video blitt sendt over de samme stamlinjene millioner av ganger. Kort sagt: én mega-tjener skalerer ikke.</p>
+    <p class="lead">Tenk deg at Netflix prÃ¸vde Ã¥ betjene hele verden fra ett enkelt datasenter i California. Det ville ikke fungere. For det fÃ¸rste ville det vÃ¦rt et enkelt kritisk feilpunkt â€” Ã©n feil og hele verden mister Netflix. For det andre ville det skapt enorm trengsel pÃ¥ nettverkslinkene inn til datasenteret. For det tredje ville hver bruker fÃ¥tt en altfor lang reise frem til innholdet, med tilhÃ¸rende latens. For det fjerde ville samme video blitt sendt over de samme stamlinjene millioner av ganger. Kort sagt: Ã©n mega-tjener skalerer ikke.</p>
 
-    <p>Løsningen er et <strong>Content Distribution Network</strong> — CDN. Idéen er enkel: lagre kopier av innholdet på mange tjenere fordelt geografisk over hele kloden, og styr hver bruker til en tjener i nærheten. Det finnes to varianter av strategien.</p>
+    <p>LÃ¸sningen er et <strong>Content Distribution Network</strong> â€” CDN. IdÃ©en er enkel: lagre kopier av innholdet pÃ¥ mange tjenere fordelt geografisk over hele kloden, og styr hver bruker til en tjener i nÃ¦rheten. Det finnes to varianter av strategien.</p>
 
-    <p>Den ene heter <em>«enter deep»</em>: dytt CDN-tjenere helt inn i mange aksessnettverk, så nær brukerne som overhodet mulig. Akamai, en pioner i bransjen, hadde rundt 240 000 tjenere i mer enn 120 land i 2015. Fordelen er at innholdet ligger nesten på samme ISP som brukeren — minimal latens, minimal trafikk over Internett-kjernen. Ulempen er kompleksitet: du må administrere et enormt antall fysiske lokasjoner.</p>
+    <p>Den ene heter <em>Â«enter deepÂ»</em>: dytt CDN-tjenere helt inn i mange aksessnettverk, sÃ¥ nÃ¦r brukerne som overhodet mulig. Akamai, en pioner i bransjen, hadde rundt 240 000 tjenere i mer enn 120 land i 2015. Fordelen er at innholdet ligger nesten pÃ¥ samme ISP som brukeren â€” minimal latens, minimal trafikk over Internett-kjernen. Ulempen er kompleksitet: du mÃ¥ administrere et enormt antall fysiske lokasjoner.</p>
 
-    <p>Den andre heter <em>«bring home»</em>: et mindre antall (titalls) større klynger plassert i POP-er nær — men ikke inni — aksessnettverkene. Limelight er et eksempel. Det er enklere å drifte, men gir litt høyere latens enn enter-deep.</p>
+    <p>Den andre heter <em>Â«bring homeÂ»</em>: et mindre antall (titalls) stÃ¸rre klynger plassert i POP-er nÃ¦r â€” men ikke inni â€” aksessnettverkene. Limelight er et eksempel. Det er enklere Ã¥ drifte, men gir litt hÃ¸yere latens enn enter-deep.</p>
 
-    <h3>Hvordan en bruker faktisk havner på riktig CDN-tjener</h3>
-    <p>Når du klikker på en Netflix-video, foregår det en koreografert dans bak kulissene. La oss følge Bob, som vil se en film som ligger lagret som <code>http://netcinema.com/6Y7B23V</code> men faktisk er kopiert ut til en CDN under domenet KingCDN.com.</p>
+    <h3>Hvordan en bruker faktisk havner pÃ¥ riktig CDN-tjener</h3>
+    <p>NÃ¥r du klikker pÃ¥ en Netflix-video, foregÃ¥r det en koreografert dans bak kulissene. La oss fÃ¸lge Bob, som vil se en film som ligger lagret som <code>http://netcinema.com/6Y7B23V</code> men faktisk er kopiert ut til en CDN under domenet KingCDN.com.</p>
 
     <figure class="fig-frame">
       <svg viewBox="0 0 820 400" xmlns="http://www.w3.org/2000/svg">
@@ -180,7 +180,7 @@
         <text x="458" y="76" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">+ video-tjener</text>
         <rect x="556" y="34" width="124" height="54" fill="#fdfaf2" stroke="#3d6b3a" stroke-width="2"/>
         <text x="618" y="52" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">KingCDN-node</text>
-        <text x="618" y="68" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">nær Bob</text>
+        <text x="618" y="68" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">nÃ¦r Bob</text>
         <text x="618" y="80" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">(har videoen)</text>
         <!-- ? henter URL -->
         <line x1="114" y1="54" x2="248" y2="48" stroke="#b04428" stroke-width="1.2"/>
@@ -194,51 +194,51 @@
         <!-- ? CNAME (horisontal, stiplet) -->
         <line x1="372" y1="58" x2="396" y2="58" stroke="#c68a1f" stroke-width="1.2" stroke-dasharray="4,3"/>
         <text x="384" y="22" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#c68a1f">? CNAME til KingCDN</text>
-        <!-- ? velger nærmeste node -->
+        <!-- ? velger nÃ¦rmeste node -->
         <line x1="520" y1="58" x2="556" y2="58" stroke="#3d6b3a" stroke-width="1.2"/>
-        <text x="538" y="96" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">? velger nærmeste node</text>
-        <!-- ? HTTP-strømming (bue under, unngår kryss) -->
+        <text x="538" y="96" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">? velger nÃ¦rmeste node</text>
+        <!-- ? HTTP-strÃ¸mming (bue under, unngÃ¥r kryss) -->
         <path d="M 96 82 C 96 300 618 300 618 88" fill="none" stroke="#3d6b3a" stroke-width="2.2"/>
-        <text x="358" y="318" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a" font-weight="600">? HTTP-strømming</text>
+        <text x="358" y="318" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a" font-weight="600">? HTTP-strÃ¸mming</text>
       </svg>
-      <figcaption>Bob ser ut som han henter videoen fra netcinema.com, men i virkeligheten leveres den fra en KingCDN-node i nærheten — og DNS er det som dirigerer ham dit.</figcaption>
+      <figcaption>Bob ser ut som han henter videoen fra netcinema.com, men i virkeligheten leveres den fra en KingCDN-node i nÃ¦rheten â€” og DNS er det som dirigerer ham dit.</figcaption>
     </figure>
 
-    <p>Bob klikker på lenken fra netcinema.com sin webside (steg ?). Nettleseren spør sin lokale DNS hvilken IP-adresse netcinema.com har (?). Den lokale DNS-en spør netcinemas autoritative DNS (?), men istedenfor å få en IP-adresse direkte, får den en <strong>CNAME</strong> tilbake — en alias-omdirigering — som peker mot et navn under KingCDN.com (?). Den lokale DNS-en må da spørre KingCDN sin autoritative DNS, og <em>denne</em> tjeneren har magien: den vet hvor i verden Bob er (basert på hvilken DNS-forespørsel som kom inn) og svarer med IP-adressen til den nærmeste KingCDN-noden som har videoen (?). Bob åpner en HTTP-forbindelse til den noden og strømmer videoen (?).</p>
+    <p>Bob klikker pÃ¥ lenken fra netcinema.com sin webside (steg ?). Nettleseren spÃ¸r sin lokale DNS hvilken IP-adresse netcinema.com har (?). Den lokale DNS-en spÃ¸r netcinemas autoritative DNS (?), men istedenfor Ã¥ fÃ¥ en IP-adresse direkte, fÃ¥r den en <strong>CNAME</strong> tilbake â€” en alias-omdirigering â€” som peker mot et navn under KingCDN.com (?). Den lokale DNS-en mÃ¥ da spÃ¸rre KingCDN sin autoritative DNS, og <em>denne</em> tjeneren har magien: den vet hvor i verden Bob er (basert pÃ¥ hvilken DNS-forespÃ¸rsel som kom inn) og svarer med IP-adressen til den nÃ¦rmeste KingCDN-noden som har videoen (?). Bob Ã¥pner en HTTP-forbindelse til den noden og strÃ¸mmer videoen (?).</p>
 
     <p>Hele DNS-akrobatikken er usynlig for Bob. Han skrev netcinema.com i nettleseren; han fikk video fra en tjener noen kilometer unna. Det er CDN-magien.</p>
 
-    <h3>OTT — over the top</h3>
-    <p>En CDN som Netflix er et <strong>OTT</strong>-system: «over the top». Det betyr at innholdsleverandøren bygger sin egen distribusjons-overbygning oppå Internett, uten å eie de underliggende linjene. Internett gir bare host-til-host-kommunikasjon som tjeneste — alt det smarte, all videolagring, all server-utvelgelse, all DASH-koreografering, foregår på applikasjonslaget på endesystemene som Netflix kontrollerer. Utfordringene er reelle: hvilken CDN-node skal en gitt seer hentes fra? Hvordan oppfører seere seg når nettet er treigt? Hvilket innhold skal lagres på hvilke noder, gitt at man ikke har plass til alt overalt?</p>
+    <h3>OTT â€” over the top</h3>
+    <p>En CDN som Netflix er et <strong>OTT</strong>-system: Â«over the topÂ». Det betyr at innholdsleverandÃ¸ren bygger sin egen distribusjons-overbygning oppÃ¥ Internett, uten Ã¥ eie de underliggende linjene. Internett gir bare host-til-host-kommunikasjon som tjeneste â€” alt det smarte, all videolagring, all server-utvelgelse, all DASH-koreografering, foregÃ¥r pÃ¥ applikasjonslaget pÃ¥ endesystemene som Netflix kontrollerer. Utfordringene er reelle: hvilken CDN-node skal en gitt seer hentes fra? Hvordan oppfÃ¸rer seere seg nÃ¥r nettet er treigt? Hvilket innhold skal lagres pÃ¥ hvilke noder, gitt at man ikke har plass til alt overalt?</p>
 
-    <h3>Netflix og YouTube — to forskjellige strategier</h3>
-    <p><strong>Netflix</strong> bruker en todelt arkitektur. Selve applikasjonslogikken — brukerkontoer, betalinger, søk, anbefalinger — kjører i <strong>Amazon Web Services</strong> (AWS), altså i skyen. Men videoen leveres fra Netflix sitt eget CDN, kalt <strong>Open Connect</strong>. Open Connect følger en «enter deep»-strategi: Netflix plasserer dedikerte servere (kalt OCA-er) direkte inne i ISP-enes nettverk over hele verden. Når du trykker «play» i Netflix-appen, bestemmer Netflix sin programvare (via AWS) hvilken OCA som er best for deg — basert på nettverksnærhet og kapasitet — og du strømmer videoen derfra med DASH over HTTP.</p>
+    <h3>Netflix og YouTube â€” to forskjellige strategier</h3>
+    <p><strong>Netflix</strong> bruker en todelt arkitektur. Selve applikasjonslogikken â€” brukerkontoer, betalinger, sÃ¸k, anbefalinger â€” kjÃ¸rer i <strong>Amazon Web Services</strong> (AWS), altsÃ¥ i skyen. Men videoen leveres fra Netflix sitt eget CDN, kalt <strong>Open Connect</strong>. Open Connect fÃ¸lger en Â«enter deepÂ»-strategi: Netflix plasserer dedikerte servere (kalt OCA-er) direkte inne i ISP-enes nettverk over hele verden. NÃ¥r du trykker Â«playÂ» i Netflix-appen, bestemmer Netflix sin programvare (via AWS) hvilken OCA som er best for deg â€” basert pÃ¥ nettverksnÃ¦rhet og kapasitet â€” og du strÃ¸mmer videoen derfra med DASH over HTTP.</p>
 
-    <p><strong>YouTube</strong> bruker Googles eget private CDN, med en kombinasjon av store datasenterklynger og mange mindre lokasjoner nærmere brukerne. En viktig forskjell fra Netflix er at YouTube i større grad bruker <strong>pull-basert caching</strong>: ikke alt innhold er forhåndsplassert overalt. Populært innhold havner naturlig på mange noder fordi det etterspørres ofte, mens sjeldent sett innhold kanskje bare finnes i et sentralt datasenter. YouTube bruker også DNS-omdirigering for å sende brukere til riktig klynge, men hele prosessen skjer innenfor Googles egen infrastruktur.</p>
+    <p><strong>YouTube</strong> bruker Googles eget private CDN, med en kombinasjon av store datasenterklynger og mange mindre lokasjoner nÃ¦rmere brukerne. En viktig forskjell fra Netflix er at YouTube i stÃ¸rre grad bruker <strong>pull-basert caching</strong>: ikke alt innhold er forhÃ¥ndsplassert overalt. PopulÃ¦rt innhold havner naturlig pÃ¥ mange noder fordi det etterspÃ¸rres ofte, mens sjeldent sett innhold kanskje bare finnes i et sentralt datasenter. YouTube bruker ogsÃ¥ DNS-omdirigering for Ã¥ sende brukere til riktig klynge, men hele prosessen skjer innenfor Googles egen infrastruktur.</p>
 
     <div class="callout callout-blue">
       <div class="label">Fellesnevneren</div>
-      Både Netflix og YouTube er OTT-tjenester som ikke eier aksessnettverkene brukerne sitter i — de bygger sin egen distribusjonsinfrastruktur <em>oppå</em> det offentlige internett. Begge bruker DASH og HTTP for selve strømmingen. Men Netflix forhåndsplasserer innhold aktivt (push), mens YouTube i større grad cacher innhold reaktivt når det blir populært (pull).
+      BÃ¥de Netflix og YouTube er OTT-tjenester som ikke eier aksessnettverkene brukerne sitter i â€” de bygger sin egen distribusjonsinfrastruktur <em>oppÃ¥</em> det offentlige internett. Begge bruker DASH og HTTP for selve strÃ¸mmingen. Men Netflix forhÃ¥ndsplasserer innhold aktivt (push), mens YouTube i stÃ¸rre grad cacher innhold reaktivt nÃ¥r det blir populÃ¦rt (pull).
     </div>
 
     <div class="reveal" id="reveal-cdn">
-      <div class="q">Hva er fordeler og ulemper med «enter deep» vs «bring home» som CDN-strategi? Når ville du valgt den ene fremfor den andre?</div>
+      <div class="q">Hva er fordeler og ulemper med Â«enter deepÂ» vs Â«bring homeÂ» som CDN-strategi? NÃ¥r ville du valgt den ene fremfor den andre?</div>
       <button onclick="document.getElementById('reveal-cdn-ans').classList.add('show')">Vis svar</button>
       <div class="answer" id="reveal-cdn-ans">
-        <p><strong>Enter deep</strong> (Akamai-modellen) plasserer servere helt inne i aksessnettverkene, nær sluttbrukeren. Fordelen er minimal latens og mindre trafikk over internett-kjernen. Ulempen er enorm driftskompleksitet — tusenvis av lokasjoner som må vedlikeholdes. <strong>Bring home</strong> (Limelight-modellen) bruker færre, men større klynger plassert i POP-er nær aksessnettverkene. Fordelen er enklere drift; ulempen er litt høyere latens. Enter deep passer best for latenskritisk innhold som live video der millisekunder teller. Bring home passer for innhold der noe høyere latens er akseptabelt, og der driftsenkelhet og kostnadskontroll er viktigere.</p>
+        <p><strong>Enter deep</strong> (Akamai-modellen) plasserer servere helt inne i aksessnettverkene, nÃ¦r sluttbrukeren. Fordelen er minimal latens og mindre trafikk over internett-kjernen. Ulempen er enorm driftskompleksitet â€” tusenvis av lokasjoner som mÃ¥ vedlikeholdes. <strong>Bring home</strong> (Limelight-modellen) bruker fÃ¦rre, men stÃ¸rre klynger plassert i POP-er nÃ¦r aksessnettverkene. Fordelen er enklere drift; ulempen er litt hÃ¸yere latens. Enter deep passer best for latenskritisk innhold som live video der millisekunder teller. Bring home passer for innhold der noe hÃ¸yere latens er akseptabelt, og der driftsenkelhet og kostnadskontroll er viktigere.</p>
       </div>
     </div>
 
     <div class="quiz" id="quiz2">
-      <div class="label">Sjekk forståelsen</div>
-      <div class="q-text">I DASH-strømming — hvor ligger «intelligensen» som bestemmer hvilken kvalitet en chunk skal hentes i?</div>
+      <div class="label">Sjekk forstÃ¥elsen</div>
+      <div class="q-text">I DASH-strÃ¸mming â€” hvor ligger Â«intelligensenÂ» som bestemmer hvilken kvalitet en chunk skal hentes i?</div>
       <div class="options">
-        <button class="option" data-correct="false">Hos tjeneren, som måler nettverkstilstanden og dytter passende chunks ut til klienten.</button>
-        <button class="option" data-correct="true">Hos klienten, som måler båndbredde og selv velger hvilken kvalitet og hvilken chunk den ber om.</button>
-        <button class="option" data-correct="false">I CDN-noden, som tilpasser kodingsraten i sanntid før den sender videre.</button>
+        <button class="option" data-correct="false">Hos tjeneren, som mÃ¥ler nettverkstilstanden og dytter passende chunks ut til klienten.</button>
+        <button class="option" data-correct="true">Hos klienten, som mÃ¥ler bÃ¥ndbredde og selv velger hvilken kvalitet og hvilken chunk den ber om.</button>
+        <button class="option" data-correct="false">I CDN-noden, som tilpasser kodingsraten i sanntid fÃ¸r den sender videre.</button>
         <button class="option" data-correct="false">Hos den lokale DNS-en, som rute klienten til riktig versjon av filen.</button>
       </div>
-      <div class="explanation">Riktig — det er en av nøkkelidéene i DASH. Tjeneren er «dum» og tilbyr bare et menukart (manifest-filen) over tilgjengelige chunks i forskjellige bithastigheter; klienten plukker ut hva den vil ha basert på sine egne målinger.</div>
+      <div class="explanation">Riktig â€” det er en av nÃ¸kkelidÃ©ene i DASH. Tjeneren er Â«dumÂ» og tilbyr bare et menukart (manifest-filen) over tilgjengelige chunks i forskjellige bithastigheter; klienten plukker ut hva den vil ha basert pÃ¥ sine egne mÃ¥linger.</div>
     </div>
   </div>
 </section>
@@ -254,7 +254,7 @@
 <footer>
   <div class="container">
     <div class="ornament">&#10043; &#10043; &#10043;</div>
-    <p>NTNU · TTM4100 · Vår 2026</p>
+    <p>NTNU Â· TTM4100 Â· VÃ¥r 2026</p>
   </div>
 </footer>
 

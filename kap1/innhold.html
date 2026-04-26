@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Datanett og Internett — Kapittel 1</title>
+<title>Datanett og Internett â€” Kapittel 1</title>
 <link rel="icon" type="image/png" href="/favicon.png">`n<link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -23,14 +23,14 @@
 <main data-chapter="Kapittel 1: Datanett og Internett">
 <header class="hero">
 <div class="container">
-  <div class="eyebrow">Kapittel 1 · Datakommunikasjon</div>
+  <div class="eyebrow">Kapittel 1 Â· Datakommunikasjon</div>
   <h1>Datanett og <em>Internett</em></h1>
-  <p class="lede">Hva er egentlig Internett? Hvordan flyttes data fra A til B, hva koster det i tid — og hvorfor er alt organisert i lag?</p>
+  <p class="lede">Hva er egentlig Internett? Hvordan flyttes data fra A til B, hva koster det i tid â€” og hvorfor er alt organisert i lag?</p>
   <nav class="toc">
     <a href="#intro"><span>01</span> Hva er Internett?</a>
     <a href="#edge"><span>02</span> Nettverkets ytterkant</a>
     <a href="#core"><span>03</span> Nettverkskjernen</a>
-    <a href="#delay"><span>04</span> Forsinkelse, tap og gjennomstrømning</a>
+    <a href="#delay"><span>04</span> Forsinkelse, tap og gjennomstrÃ¸mning</a>
     <a href="#layers"><span>05</span> Protokollag og tjenestemodeller</a>
     <a href="#security"><span>06</span> Nettverk under angrep</a>
     <a href="#history"><span>07</span> Historien bak Internett</a>
@@ -41,28 +41,28 @@
 <!-- ============ INTRO ============ -->
 <section id="intro">
 <div class="container">
-  <div class="section-badge">01 · Introduksjon</div>
+  <div class="section-badge">01 Â· Introduksjon</div>
   <h2>Hva er <em>Internett</em>?</h2>
-  <p class="section-intro">To komplementære måter å tenke på det samme nettverket.</p>
+  <p class="section-intro">To komplementÃ¦re mÃ¥ter Ã¥ tenke pÃ¥ det samme nettverket.</p>
 
-  <p class="dropcap">Internett er noe de fleste bruker i hundrevis av minutter hver dag, men svært få kan gi en presis definisjon av. Det finnes to måter å svare på spørsmålet "hva er Internett?" — og begge er like gyldige. Den første er <em>mutterne-og-boltene</em>-beskrivelsen: hva består det fysisk av? Den andre er <em>tjenestebeskrivelsen</em>: hva tilbyr det til applikasjoner som bruker det?</p>
+  <p class="dropcap">Internett er noe de fleste bruker i hundrevis av minutter hver dag, men svÃ¦rt fÃ¥ kan gi en presis definisjon av. Det finnes to mÃ¥ter Ã¥ svare pÃ¥ spÃ¸rsmÃ¥let "hva er Internett?" â€” og begge er like gyldige. Den fÃ¸rste er <em>mutterne-og-boltene</em>-beskrivelsen: hva bestÃ¥r det fysisk av? Den andre er <em>tjenestebeskrivelsen</em>: hva tilbyr det til applikasjoner som bruker det?</p>
 
   <h3>Mutterne-og-boltene-beskrivelsen</h3>
-  <p>Internett er et nettverk av milliarder av <strong>endesystemer</strong> (også kalt <em>hosts</em>) koblet sammen via <strong>kommunikasjonslinker</strong> og <strong>pakkesvitsjer</strong>. Endesystemene er alt fra laptoper og smarttelefoner til servere, IoT-sensorer og smarte kjøleskap. Linkene — fiber, kobberkabel, radio — binder dem sammen, og pakkesvitsjene (primært <strong>rutere</strong> og <strong>linklagssvitsjer</strong>) videresender data mellom dem.</p>
+  <p>Internett er et nettverk av milliarder av <strong>endesystemer</strong> (ogsÃ¥ kalt <em>hosts</em>) koblet sammen via <strong>kommunikasjonslinker</strong> og <strong>pakkesvitsjer</strong>. Endesystemene er alt fra laptoper og smarttelefoner til servere, IoT-sensorer og smarte kjÃ¸leskap. Linkene â€” fiber, kobberkabel, radio â€” binder dem sammen, og pakkesvitsjene (primÃ¦rt <strong>rutere</strong> og <strong>linklagssvitsjer</strong>) videresender data mellom dem.</p>
 
-  <p>Når et endesystem skal sende data, deles dataene opp i <strong>pakker</strong> — små biter med en header foran som forteller nettverket hvor de skal. Hver pakke reiser uavhengig gjennom nettverket, hopper fra svitsj til svitsj, og settes sammen igjen hos mottakeren. Endesystemene er koblet til Internett gjennom <strong>ISP-er</strong> (Internet Service Providers), som igjen er koblet sammen i et hierarki. Hele systemet drives av <strong>protokoller</strong> — regler for hvordan enheter kommuniserer — der <em>TCP</em> og <em>IP</em> er de to viktigste.</p>
+  <p>NÃ¥r et endesystem skal sende data, deles dataene opp i <strong>pakker</strong> â€” smÃ¥ biter med en header foran som forteller nettverket hvor de skal. Hver pakke reiser uavhengig gjennom nettverket, hopper fra svitsj til svitsj, og settes sammen igjen hos mottakeren. Endesystemene er koblet til Internett gjennom <strong>ISP-er</strong> (Internet Service Providers), som igjen er koblet sammen i et hierarki. Hele systemet drives av <strong>protokoller</strong> â€” regler for hvordan enheter kommuniserer â€” der <em>TCP</em> og <em>IP</em> er de to viktigste.</p>
 
   <div class="callout callout-blue">
     <span class="label">Hva er en protokoll?</span>
-    <p>En protokoll definerer <strong>formatet og rekkefølgen</strong> av meldinger som utveksles mellom to eller flere kommuniserende enheter, samt <strong>handlingene</strong> som utføres når en melding sendes eller mottas. Uten protokoller ville to maskiner sendt bits til hverandre uten å ha noen felles forståelse av hva de betyr.</p>
+    <p>En protokoll definerer <strong>formatet og rekkefÃ¸lgen</strong> av meldinger som utveksles mellom to eller flere kommuniserende enheter, samt <strong>handlingene</strong> som utfÃ¸res nÃ¥r en melding sendes eller mottas. Uten protokoller ville to maskiner sendt bits til hverandre uten Ã¥ ha noen felles forstÃ¥else av hva de betyr.</p>
   </div>
 
   <h3>Tjenestebeskrivelsen</h3>
-  <p>Fra et applikasjonsperspektiv er Internett en <strong>infrastruktur som tilbyr tjenester til distribuerte applikasjoner</strong>. E-post, web, videostrømming, nettspill, sosiale medier — alle kjører oppå Internett. Applikasjonene kjører på endesystemene, ikke inne i nettverket, og de kommuniserer med hverandre ved å bruke et <strong>socket-grensesnitt</strong>. Socketen er "døren" mellom applikasjonen og transportlaget — den lar applikasjonen be om at data skal leveres til en annen maskin, uten å måtte vite noe om rutere og linker underveis.</p>
+  <p>Fra et applikasjonsperspektiv er Internett en <strong>infrastruktur som tilbyr tjenester til distribuerte applikasjoner</strong>. E-post, web, videostrÃ¸mming, nettspill, sosiale medier â€” alle kjÃ¸rer oppÃ¥ Internett. Applikasjonene kjÃ¸rer pÃ¥ endesystemene, ikke inne i nettverket, og de kommuniserer med hverandre ved Ã¥ bruke et <strong>socket-grensesnitt</strong>. Socketen er "dÃ¸ren" mellom applikasjonen og transportlaget â€” den lar applikasjonen be om at data skal leveres til en annen maskin, uten Ã¥ mÃ¥tte vite noe om rutere og linker underveis.</p>
 
   <div class="callout callout-green">
     <span class="label">Analogi</span>
-    <p>Tenk på Internett som et postsystem. Du (applikasjonen) legger et brev i postkassen (socketen). Postsystemet (nettverket) tar seg av resten — sortering, transport, levering. Du trenger ikke vite hvilken rute brevet tar eller hvilke lastebiler som brukes. Du stoler på at det finnes et sett med regler (protokoller) som gjør at brevet kommer fram.</p>
+    <p>Tenk pÃ¥ Internett som et postsystem. Du (applikasjonen) legger et brev i postkassen (socketen). Postsystemet (nettverket) tar seg av resten â€” sortering, transport, levering. Du trenger ikke vite hvilken rute brevet tar eller hvilke lastebiler som brukes. Du stoler pÃ¥ at det finnes et sett med regler (protokoller) som gjÃ¸r at brevet kommer fram.</p>
   </div>
 </div>
 </section>
@@ -70,57 +70,57 @@
 <!-- ============ EDGE ============ -->
 <section id="edge">
 <div class="container">
-  <div class="section-badge">02 · Ytterkanten</div>
+  <div class="section-badge">02 Â· Ytterkanten</div>
   <h2>Nettverkets <em>ytterkant</em></h2>
-  <p class="section-intro">Endesystemer, aksessnett og fysiske medier — der du og applikasjonene bor.</p>
+  <p class="section-intro">Endesystemer, aksessnett og fysiske medier â€” der du og applikasjonene bor.</p>
 
-  <p class="dropcap">Nettverkets ytterkant er der selve handlingen skjer. Det er her laptopen din kjører en nettleser, smarttelefonen strømmer video, og en server svarer på HTTP-forespørsler. Alle disse er <strong>endesystemer</strong> — de sitter i kanten av nettet og gjør det nyttige arbeidet. Rutere og svitsjer inne i nettverket gjør ingen ting applikasjonen bryr seg om; de bare videresender pakker.</p>
+  <p class="dropcap">Nettverkets ytterkant er der selve handlingen skjer. Det er her laptopen din kjÃ¸rer en nettleser, smarttelefonen strÃ¸mmer video, og en server svarer pÃ¥ HTTP-forespÃ¸rsler. Alle disse er <strong>endesystemer</strong> â€” de sitter i kanten av nettet og gjÃ¸r det nyttige arbeidet. Rutere og svitsjer inne i nettverket gjÃ¸r ingen ting applikasjonen bryr seg om; de bare videresender pakker.</p>
 
-  <h3>Aksessnett — den siste milen</h3>
-  <p>Aksessnettet er linken mellom endesystemet ditt og den <em>første ruteren</em> (edge router) i nettet. Det er ofte den trangeste og dyreste delen av hele forbindelsen, og det finnes en håndfull teknologier som brukes:</p>
+  <h3>Aksessnett â€” den siste milen</h3>
+  <p>Aksessnettet er linken mellom endesystemet ditt og den <em>fÃ¸rste ruteren</em> (edge router) i nettet. Det er ofte den trangeste og dyreste delen av hele forbindelsen, og det finnes en hÃ¥ndfull teknologier som brukes:</p>
 
   <table>
     <tr><th>Teknologi</th><th>Medium</th><th>Typisk hastighet</th><th>Merknader</th></tr>
-    <tr><td class="mono-cell">DSL</td><td>Eksisterende telefonlinje (kobber)</td><td>5–35 Mbps ned</td><td>Hastighet faller med avstand til sentralen</td></tr>
-    <tr><td class="mono-cell">Kabel / HFC</td><td>Koaksialkabel + fiber</td><td>Opptil 1 Gbps ned</td><td>Delt medium — kapasiteten deles med naboene</td></tr>
-    <tr><td class="mono-cell">FTTH</td><td>Fiber helt hjem</td><td>1–10 Gbps</td><td>Dedikert fiber, raskest tilgjengelig</td></tr>
-    <tr><td class="mono-cell">WiFi (802.11)</td><td>Radio</td><td>Opptil 9,6 Gbps (WiFi 6)</td><td>Trådløs siste hopp, typisk til kabel/fiber bak</td></tr>
-    <tr><td class="mono-cell">4G / 5G</td><td>Radio (mobilnett)</td><td>100 Mbps – 10 Gbps</td><td>Mobilbredbånd, dekker store områder</td></tr>
-    <tr><td class="mono-cell">Satellitt</td><td>Radio (jordbane)</td><td>~100 Mbps (LEO)</td><td>Høy latens (GEO) eller lav (LEO, f.eks. Starlink)</td></tr>
+    <tr><td class="mono-cell">DSL</td><td>Eksisterende telefonlinje (kobber)</td><td>5â€“35 Mbps ned</td><td>Hastighet faller med avstand til sentralen</td></tr>
+    <tr><td class="mono-cell">Kabel / HFC</td><td>Koaksialkabel + fiber</td><td>Opptil 1 Gbps ned</td><td>Delt medium â€” kapasiteten deles med naboene</td></tr>
+    <tr><td class="mono-cell">FTTH</td><td>Fiber helt hjem</td><td>1â€“10 Gbps</td><td>Dedikert fiber, raskest tilgjengelig</td></tr>
+    <tr><td class="mono-cell">WiFi (802.11)</td><td>Radio</td><td>Opptil 9,6 Gbps (WiFi 6)</td><td>TrÃ¥dlÃ¸s siste hopp, typisk til kabel/fiber bak</td></tr>
+    <tr><td class="mono-cell">4G / 5G</td><td>Radio (mobilnett)</td><td>100 Mbps â€“ 10 Gbps</td><td>MobilbredbÃ¥nd, dekker store omrÃ¥der</td></tr>
+    <tr><td class="mono-cell">Satellitt</td><td>Radio (jordbane)</td><td>~100 Mbps (LEO)</td><td>HÃ¸y latens (GEO) eller lav (LEO, f.eks. Starlink)</td></tr>
   </table>
 
   <h3>Fysiske medier</h3>
-  <p>Uansett teknologi må bits til syvende og sist reise over et fysisk medium. Vi skiller mellom <strong>guidede medier</strong> (signalet følger en fysisk leder) og <strong>ikke-guidede medier</strong> (signalet sprer seg fritt):</p>
+  <p>Uansett teknologi mÃ¥ bits til syvende og sist reise over et fysisk medium. Vi skiller mellom <strong>guidede medier</strong> (signalet fÃ¸lger en fysisk leder) og <strong>ikke-guidede medier</strong> (signalet sprer seg fritt):</p>
 
   <div class="callout">
     <span class="label">Guidede medier</span>
-    <p><strong>Tvunnet parkabel</strong> — billig, brukt i Ethernet og DSL, opptil 10 Gbps på kort avstand. <strong>Koaksialkabel</strong> — brukt i kabel-TV-nett, delt medium, god båndbredde. <strong>Fiberkabel</strong> — lyspulser i glass, enorm båndbredde, lav demping, immun mot elektromagnetisk interferens.</p>
+    <p><strong>Tvunnet parkabel</strong> â€” billig, brukt i Ethernet og DSL, opptil 10 Gbps pÃ¥ kort avstand. <strong>Koaksialkabel</strong> â€” brukt i kabel-TV-nett, delt medium, god bÃ¥ndbredde. <strong>Fiberkabel</strong> â€” lyspulser i glass, enorm bÃ¥ndbredde, lav demping, immun mot elektromagnetisk interferens.</p>
   </div>
 
   <div class="callout callout-blue">
     <span class="label">Ikke-guidede medier</span>
-    <p><strong>Jordbølger (WiFi, Bluetooth)</strong> — kort rekkevidde, påvirkes av vegger og interferens. <strong>Mikrobølger (4G/5G)</strong> — lengre rekkevidde, mye brukt i mobilnett. <strong>Satellitt</strong> — global dekning mulig, men latens er en utfordring (GEO: ~280 ms enveis, ~560 ms RTT).</p>
+    <p><strong>JordbÃ¸lger (WiFi, Bluetooth)</strong> â€” kort rekkevidde, pÃ¥virkes av vegger og interferens. <strong>MikrobÃ¸lger (4G/5G)</strong> â€” lengre rekkevidde, mye brukt i mobilnett. <strong>Satellitt</strong> â€” global dekning mulig, men latens er en utfordring (GEO: ~280 ms enveis, ~560 ms RTT).</p>
   </div>
 
-  <div class="margin-note">Fiberkabel er det eneste mediet som ikke degraderes av elektromagnetisk støy. Derfor er det det foretrukne mediet for lange strekk og høye hastigheter — undersøiske kabler mellom kontinenter er nesten utelukkende fiber.</div>
+  <div class="margin-note">Fiberkabel er det eneste mediet som ikke degraderes av elektromagnetisk stÃ¸y. Derfor er det det foretrukne mediet for lange strekk og hÃ¸ye hastigheter â€” undersÃ¸iske kabler mellom kontinenter er nesten utelukkende fiber.</div>
 </div>
 </section>
 
 <!-- ============ CORE ============ -->
 <section id="core">
 <div class="container">
-  <div class="section-badge">03 · Nettverkskjernen</div>
+  <div class="section-badge">03 Â· Nettverkskjernen</div>
   <h2>Nettverkets <em>kjerne</em></h2>
-  <p class="section-intro">Pakkesvitsjing vs. linjesvitsjing — to fundamentalt forskjellige måter å dele et nettverk.</p>
+  <p class="section-intro">Pakkesvitsjing vs. linjesvitsjing â€” to fundamentalt forskjellige mÃ¥ter Ã¥ dele et nettverk.</p>
 
-  <p class="dropcap">Kjernen av Internett er et mesh av rutere koblet sammen med høyhastighets fiberlinker. Ingen endesystemer bor her — bare svitsjer som videresender pakker. Men <em>hvordan</em> de videresender, følger ett av to prinsipper som er verdt å forstå grundig, fordi de definerer alt som skjer oppover.</p>
+  <p class="dropcap">Kjernen av Internett er et mesh av rutere koblet sammen med hÃ¸yhastighets fiberlinker. Ingen endesystemer bor her â€” bare svitsjer som videresender pakker. Men <em>hvordan</em> de videresender, fÃ¸lger ett av to prinsipper som er verdt Ã¥ forstÃ¥ grundig, fordi de definerer alt som skjer oppover.</p>
 
   <h3>Pakkesvitsjing (packet switching)</h3>
-  <p>Internett bruker pakkesvitsjing. Data deles opp i <strong>pakker</strong> som sendes uavhengig gjennom nettverket. Hver ruter som mottar en pakke, lagrer den helt (<em>store</em>), sjekker destinasjonen, og sender den videre til neste ruter (<em>forward</em>). Dette kalles <strong>store-and-forward</strong>: hele pakken må være mottatt før den kan sendes videre.</p>
+  <p>Internett bruker pakkesvitsjing. Data deles opp i <strong>pakker</strong> som sendes uavhengig gjennom nettverket. Hver ruter som mottar en pakke, lagrer den helt (<em>store</em>), sjekker destinasjonen, og sender den videre til neste ruter (<em>forward</em>). Dette kalles <strong>store-and-forward</strong>: hele pakken mÃ¥ vÃ¦re mottatt fÃ¸r den kan sendes videre.</p>
 
   <div class="callout">
-    <span class="label">Store-and-forward — konsekvensen</span>
-    <p>Hvis en pakke er <em>L</em> bits lang og linkhastigheten er <em>R</em> bits/sekund, tar det <strong>L/R sekunder</strong> å transmittere pakken ut på linken. Og ruteren kan ikke begynne å sende den videre før den har mottatt alt — altså etter ytterligere L/R sekunder. For én pakke over N linker blir total forsinkelse <strong>N × L/R</strong>.</p>
+    <span class="label">Store-and-forward â€” konsekvensen</span>
+    <p>Hvis en pakke er <em>L</em> bits lang og linkhastigheten er <em>R</em> bits/sekund, tar det <strong>L/R sekunder</strong> Ã¥ transmittere pakken ut pÃ¥ linken. Og ruteren kan ikke begynne Ã¥ sende den videre fÃ¸r den har mottatt alt â€” altsÃ¥ etter ytterligere L/R sekunder. For Ã©n pakke over N linker blir total forsinkelse <strong>N Ã— L/R</strong>.</p>
   </div>
 
   <div class="stepper" id="sfStepper">
@@ -136,7 +136,7 @@
         <rect x="280" y="50" width="60" height="40" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="2"/>
         <text x="310" y="75" text-anchor="middle" font-family="IBM Plex Mono" font-size="10">R</text>
 
-        <text x="560" y="40" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">Mål</text>
+        <text x="560" y="40" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">MÃ¥l</text>
         <rect x="530" y="50" width="60" height="40" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="2"/>
         <text x="560" y="75" text-anchor="middle" font-family="IBM Plex Mono" font-size="10">DST</text>
 
@@ -154,30 +154,30 @@
   </div>
 
   <h3>Linjesvitsjing (circuit switching)</h3>
-  <p>Det tradisjonelle telefonnettet bruker linjesvitsjing. Før samtalen starter, settes det opp en <strong>dedikert forbindelse</strong> (krets) hele veien fra sender til mottaker. Ressursene (båndbredde, tidsluke, frekvensbånd) <em>reserveres</em> og er garantert tilgjengelige under hele samtalen — men de er også <em>blokkerte</em> for alle andre, selv om du er stille.</p>
+  <p>Det tradisjonelle telefonnettet bruker linjesvitsjing. FÃ¸r samtalen starter, settes det opp en <strong>dedikert forbindelse</strong> (krets) hele veien fra sender til mottaker. Ressursene (bÃ¥ndbredde, tidsluke, frekvensbÃ¥nd) <em>reserveres</em> og er garantert tilgjengelige under hele samtalen â€” men de er ogsÃ¥ <em>blokkerte</em> for alle andre, selv om du er stille.</p>
 
-  <p>Ressursene i en krets kan deles opp på to måter:</p>
+  <p>Ressursene i en krets kan deles opp pÃ¥ to mÃ¥ter:</p>
 
   <div class="callout">
     <span class="label">FDM (Frequency Division)</span>
-    <p>Frekvensbåndet deles i smale bånd. Hver samtale får sitt eget frekvensbånd. Alle sender samtidig, men på ulike frekvenser.</p>
+    <p>FrekvensbÃ¥ndet deles i smale bÃ¥nd. Hver samtale fÃ¥r sitt eget frekvensbÃ¥nd. Alle sender samtidig, men pÃ¥ ulike frekvenser.</p>
   </div>
 
   <div class="callout callout-blue">
     <span class="label">TDM (Time Division)</span>
-    <p>Tiden deles i rammer med faste tidsluker. Hver samtale får sin tidsluke i hver ramme. Alle deler samme frekvens, men sender i tur.</p>
+    <p>Tiden deles i rammer med faste tidsluker. Hver samtale fÃ¥r sin tidsluke i hver ramme. Alle deler samme frekvens, men sender i tur.</p>
   </div>
 
   <h3>Hvorfor vant pakkesvitsjing?</h3>
-  <p>Svaret er <strong>statistisk multipleksing</strong>. Brukere er sjelden aktive hele tiden — du veksler mellom å lese en side, klikke en link, vente. Med pakkesvitsjing deles nettverkets kapasitet dynamisk: når du er stille bruker andre kapasiteten. Med linjesvitsjing ville den reserverte kapasiteten ligge ubrukt. Resultatet er at pakkesvitsjing kan betjene <em>langt flere brukere</em> enn linjesvitsjing for samme mengde nettverksressurser.</p>
+  <p>Svaret er <strong>statistisk multipleksing</strong>. Brukere er sjelden aktive hele tiden â€” du veksler mellom Ã¥ lese en side, klikke en link, vente. Med pakkesvitsjing deles nettverkets kapasitet dynamisk: nÃ¥r du er stille bruker andre kapasiteten. Med linjesvitsjing ville den reserverte kapasiteten ligge ubrukt. Resultatet er at pakkesvitsjing kan betjene <em>langt flere brukere</em> enn linjesvitsjing for samme mengde nettverksressurser.</p>
 
   <div class="callout">
     <span class="label">Eksempel</span>
-    <p>En link med 1 Mbps kapasitet. Hver bruker trenger 100 kbps <em>når den er aktiv</em>, men er bare aktiv 10% av tiden. Med linjesvitsjing (TDM): 10 brukere maks. Med pakkesvitsjing: 35 brukere kan bruke linken, og sannsynligheten for at mer enn 10 er aktive samtidig er under 0,04%. Pakkesvitsjing vinner med 3,5× flere brukere — for et svært lite tap av garanti.</p>
+    <p>En link med 1 Mbps kapasitet. Hver bruker trenger 100 kbps <em>nÃ¥r den er aktiv</em>, men er bare aktiv 10% av tiden. Med linjesvitsjing (TDM): 10 brukere maks. Med pakkesvitsjing: 35 brukere kan bruke linken, og sannsynligheten for at mer enn 10 er aktive samtidig er under 0,04%. Pakkesvitsjing vinner med 3,5Ã— flere brukere â€” for et svÃ¦rt lite tap av garanti.</p>
   </div>
 
   <h3>Nettverk av nettverk</h3>
-  <p>Internett er ikke ett enkelt nett, men et <strong>nettverk av nettverk</strong>. Millioner av aksess-ISP-er (Telenor, Telia, din lokale fiberleverandør) kobler endesystemer til. Disse aksess-ISP-ene er igjen koblet til <strong>regionale ISP-er</strong>, som kobler seg opp til et lite antall <strong>Tier 1-ISP-er</strong> (f.eks. Lumen, NTT, Telia Carrier) som har global rekkevidde. I tillegg finnes <strong>IXP-er</strong> (Internet Exchange Points) der ISP-er møtes og utveksler trafikk direkte, og store innholdsleverandører som Google og Netflix bygger sine egne <strong>private nettverk</strong> for å nå brukerne raskere.</p>
+  <p>Internett er ikke ett enkelt nett, men et <strong>nettverk av nettverk</strong>. Millioner av aksess-ISP-er (Telenor, Telia, din lokale fiberleverandÃ¸r) kobler endesystemer til. Disse aksess-ISP-ene er igjen koblet til <strong>regionale ISP-er</strong>, som kobler seg opp til et lite antall <strong>Tier 1-ISP-er</strong> (f.eks. Lumen, NTT, Telia Carrier) som har global rekkevidde. I tillegg finnes <strong>IXP-er</strong> (Internet Exchange Points) der ISP-er mÃ¸tes og utveksler trafikk direkte, og store innholdsleverandÃ¸rer som Google og Netflix bygger sine egne <strong>private nettverk</strong> for Ã¥ nÃ¥ brukerne raskere.</p>
 </div>
 </section>
 
@@ -186,38 +186,38 @@
 <!-- ============ DELAY ============ -->
 <section id="delay">
 <div class="container">
-  <div class="section-badge">04 · Forsinkelse</div>
-  <h2>Forsinkelse, <em>tap</em> og gjennomstrømning</h2>
-  <p class="section-intro">De fire komponentene som til sammen utgjør forsinkelsen — og hvorfor pakker noen ganger forsvinner.</p>
+  <div class="section-badge">04 Â· Forsinkelse</div>
+  <h2>Forsinkelse, <em>tap</em> og gjennomstrÃ¸mning</h2>
+  <p class="section-intro">De fire komponentene som til sammen utgjÃ¸r forsinkelsen â€” og hvorfor pakker noen ganger forsvinner.</p>
 
-  <p class="dropcap">Når en pakke reiser fra A til B, bruker den tid. Denne forsinkelsen er ikke én ting — den er summen av fire forskjellige komponenter, hver med sin egen årsak og oppførsel. Å forstå disse fire er nøkkelen til å forstå hvorfor nettverket noen ganger føles tregt.</p>
+  <p class="dropcap">NÃ¥r en pakke reiser fra A til B, bruker den tid. Denne forsinkelsen er ikke Ã©n ting â€” den er summen av fire forskjellige komponenter, hver med sin egen Ã¥rsak og oppfÃ¸rsel. Ã… forstÃ¥ disse fire er nÃ¸kkelen til Ã¥ forstÃ¥ hvorfor nettverket noen ganger fÃ¸les tregt.</p>
 
   <h3>De fire forsinkelseskomponentene</h3>
 
   <div class="callout">
     <span class="label">1. Prosesseringsforsinkelse (d_proc)</span>
-    <p>Tiden ruteren bruker på å undersøke pakkens header, sjekke for bitfeil, og bestemme hvilken utgangslink pakken skal til. Typisk <strong>mikrosekunder</strong> — neglisjerbar i de fleste sammenhenger.</p>
+    <p>Tiden ruteren bruker pÃ¥ Ã¥ undersÃ¸ke pakkens header, sjekke for bitfeil, og bestemme hvilken utgangslink pakken skal til. Typisk <strong>mikrosekunder</strong> â€” neglisjerbar i de fleste sammenhenger.</p>
   </div>
 
   <div class="callout callout-blue">
-    <span class="label">2. Køforsinkelse (d_queue)</span>
-    <p>Tiden pakken venter i ruterkøen før den får slippe ut på linken. Avhenger av <em>hvor mange andre pakker</em> som allerede venter. Kan variere fra <strong>null</strong> (ingen kø) til <strong>millisekunder</strong> (lang kø), og er den eneste av de fire som er fundamentalt uforutsigbar.</p>
+    <span class="label">2. KÃ¸forsinkelse (d_queue)</span>
+    <p>Tiden pakken venter i ruterkÃ¸en fÃ¸r den fÃ¥r slippe ut pÃ¥ linken. Avhenger av <em>hvor mange andre pakker</em> som allerede venter. Kan variere fra <strong>null</strong> (ingen kÃ¸) til <strong>millisekunder</strong> (lang kÃ¸), og er den eneste av de fire som er fundamentalt uforutsigbar.</p>
   </div>
 
   <div class="callout callout-green">
     <span class="label">3. Transmisjonsforsinkelse (d_trans)</span>
-    <p>Tiden det tar å <em>presse alle bits ut på linken</em>. Avhenger av pakkens lengde <em>L</em> og linkens hastighet <em>R</em>: <strong>d_trans = L / R</strong>. En 1500 byte-pakke på en 1 Gbps-link: 12 µs. Samme pakke på en 1 Mbps-link: 12 ms — tusen ganger mer.</p>
+    <p>Tiden det tar Ã¥ <em>presse alle bits ut pÃ¥ linken</em>. Avhenger av pakkens lengde <em>L</em> og linkens hastighet <em>R</em>: <strong>d_trans = L / R</strong>. En 1500 byte-pakke pÃ¥ en 1 Gbps-link: 12 Âµs. Samme pakke pÃ¥ en 1 Mbps-link: 12 ms â€” tusen ganger mer.</p>
   </div>
 
   <div class="callout">
     <span class="label">4. Propageringsforsinkelse (d_prop)</span>
-    <p>Tiden signalet bruker på å reise fysisk gjennom mediet — i kobber eller fiber med omtrent 2 × 108 m/s. <strong>d_prop = avstand / hastighet</strong>. Norge til USA (~6000 km): ~30 ms. Samme rom: neglisjerbar. Denne forsinkelsen kan du ikke redusere uten å flytte maskinene nærmere.</p>
+    <p>Tiden signalet bruker pÃ¥ Ã¥ reise fysisk gjennom mediet â€” i kobber eller fiber med omtrent 2 Ã— 108 m/s. <strong>d_prop = avstand / hastighet</strong>. Norge til USA (~6000 km): ~30 ms. Samme rom: neglisjerbar. Denne forsinkelsen kan du ikke redusere uten Ã¥ flytte maskinene nÃ¦rmere.</p>
   </div>
 
-  <p>Total nodeforsinkelse for én ruter blir altså:</p>
+  <p>Total nodeforsinkelse for Ã©n ruter blir altsÃ¥:</p>
   <pre><code>d_nodal = d_proc + d_queue + d_trans + d_prop</code></pre>
 
-  <div class="margin-note">Transmisjonsforsinkelse og propageringsforsinkelse er de to som oftest blandes sammen. Transmisjonen handler om <em>hvor raskt du skyver bits ut på linken</em> (avhengig av linkhastighet). Propageringen handler om <em>hvor lang tid bitsene bruker på å reise gjennom mediet</em> (avhengig av fysisk avstand). Det er to helt forskjellige ting.</div>
+  <div class="margin-note">Transmisjonsforsinkelse og propageringsforsinkelse er de to som oftest blandes sammen. Transmisjonen handler om <em>hvor raskt du skyver bits ut pÃ¥ linken</em> (avhengig av linkhastighet). Propageringen handler om <em>hvor lang tid bitsene bruker pÃ¥ Ã¥ reise gjennom mediet</em> (avhengig av fysisk avstand). Det er to helt forskjellige ting.</div>
 
   <h3>Interaktiv kalkulator</h3>
 
@@ -232,43 +232,43 @@
     <div class="readout" id="delayOut"></div>
   </div>
 
-  <h3>Køforsinkelse og trafikk-intensitet</h3>
-  <p>Køforsinkelsen er den mest interessante av de fire, fordi den er den eneste som <em>eksploderer</em> under belastning. Vi måler belastningen med <strong>trafikk-intensiteten</strong>:</p>
-  <pre><code>Trafikk-intensitet = (L × a) / R</code></pre>
-  <p>Der <em>a</em> er gjennomsnittlig antall pakker som ankommer per sekund. Når trafikk-intensiteten nærmer seg 1, vokser køforsinkelsen mot uendelig. Over 1 vokser køen raskere enn den tømmes — pakker <em>droppes</em> fordi bufferet er fullt. Dette er <strong>pakketap</strong>.</p>
+  <h3>KÃ¸forsinkelse og trafikk-intensitet</h3>
+  <p>KÃ¸forsinkelsen er den mest interessante av de fire, fordi den er den eneste som <em>eksploderer</em> under belastning. Vi mÃ¥ler belastningen med <strong>trafikk-intensiteten</strong>:</p>
+  <pre><code>Trafikk-intensitet = (L Ã— a) / R</code></pre>
+  <p>Der <em>a</em> er gjennomsnittlig antall pakker som ankommer per sekund. NÃ¥r trafikk-intensiteten nÃ¦rmer seg 1, vokser kÃ¸forsinkelsen mot uendelig. Over 1 vokser kÃ¸en raskere enn den tÃ¸mmes â€” pakker <em>droppes</em> fordi bufferet er fullt. Dette er <strong>pakketap</strong>.</p>
 
   <h3>Ende-til-ende-forsinkelse</h3>
   <p>Over en hel rute med N linker (og N-1 rutere) summeres forsinkelsene. Hvis alle linker er like:</p>
-  <pre><code>d_end-to-end = N × (d_proc + d_queue + d_trans + d_prop)</code></pre>
+  <pre><code>d_end-to-end = N Ã— (d_proc + d_queue + d_trans + d_prop)</code></pre>
 
-  <h3>Gjennomstrømning (throughput)</h3>
-  <p>Gjennomstrømning er den effektive raten data leveres fra sender til mottaker, målt i bits per sekund. For en rute med flere linker er gjennomstrømningen begrenset av den <em>trangeste</em> linken — <strong>flaskehalsen</strong> (bottleneck link). Hvis du har en 1 Gbps-fiber hjemme men serveren sender over en 10 Mbps-link, er gjennomstrømningen din 10 Mbps.</p>
+  <h3>GjennomstrÃ¸mning (throughput)</h3>
+  <p>GjennomstrÃ¸mning er den effektive raten data leveres fra sender til mottaker, mÃ¥lt i bits per sekund. For en rute med flere linker er gjennomstrÃ¸mningen begrenset av den <em>trangeste</em> linken â€” <strong>flaskehalsen</strong> (bottleneck link). Hvis du har en 1 Gbps-fiber hjemme men serveren sender over en 10 Mbps-link, er gjennomstrÃ¸mningen din 10 Mbps.</p>
 
-  <p>I praksis er flaskehalsen oftest i <em>aksessnettet</em> (siste mil) eller på selve serveren, ikke i nettverkskjernen der linkene er enormt raske.</p>
+  <p>I praksis er flaskehalsen oftest i <em>aksessnettet</em> (siste mil) eller pÃ¥ selve serveren, ikke i nettverkskjernen der linkene er enormt raske.</p>
 
-  <h3>Måle forsinkelse i praksis: <code>traceroute</code> og <code>ping</code></h3>
-  <p>Hvordan vet du egentlig hva forsinkelsen er på en gitt rute? To klassiske verktøy lar deg finne ut av det:</p>
+  <h3>MÃ¥le forsinkelse i praksis: <code>traceroute</code> og <code>ping</code></h3>
+  <p>Hvordan vet du egentlig hva forsinkelsen er pÃ¥ en gitt rute? To klassiske verktÃ¸y lar deg finne ut av det:</p>
 
   <div class="callout callout-blue">
-    <span class="label">traceroute (tracert på Windows)</span>
-    <p>Sender serier med spesielle pakker som «utløper» ved hver ruter langs ruten til en destinasjon. Hver ruter som pakken passerer sender en feilmelding tilbake, og <code>traceroute</code> måler rundturstiden (RTT) til hver enkelt ruter. Resultatet er en liste over alle rutere på veien og forsinkelsen til hver av dem — slik at du kan se <em>hvor</em> forsinkelsen oppstår.</p>
+    <span class="label">traceroute (tracert pÃ¥ Windows)</span>
+    <p>Sender serier med spesielle pakker som Â«utlÃ¸perÂ» ved hver ruter langs ruten til en destinasjon. Hver ruter som pakken passerer sender en feilmelding tilbake, og <code>traceroute</code> mÃ¥ler rundturstiden (RTT) til hver enkelt ruter. Resultatet er en liste over alle rutere pÃ¥ veien og forsinkelsen til hver av dem â€” slik at du kan se <em>hvor</em> forsinkelsen oppstÃ¥r.</p>
   </div>
 
   <div class="callout callout-green">
     <span class="label">ping</span>
-    <p>Sender en enkel ICMP Echo Request-pakke til en destinasjon og måler tiden det tar å få svar (RTT). Det er den raskeste måten å sjekke om en host er tilgjengelig og hvor lang forsinkelsen er. <code>ping</code> viser også om pakker går tapt, noe som indikerer nettverksproblemer.</p>
+    <p>Sender en enkel ICMP Echo Request-pakke til en destinasjon og mÃ¥ler tiden det tar Ã¥ fÃ¥ svar (RTT). Det er den raskeste mÃ¥ten Ã¥ sjekke om en host er tilgjengelig og hvor lang forsinkelsen er. <code>ping</code> viser ogsÃ¥ om pakker gÃ¥r tapt, noe som indikerer nettverksproblemer.</p>
   </div>
 
-  <div class="margin-note">Begge verktøyene bruker ICMP-protokollen (Internet Control Message Protocol) på nettverkslaget. Noen rutere og brannmurer blokkerer ICMP, slik at <code>traceroute</code> noen ganger viser «* * *» for enkelte hopp.</div>
+  <div class="margin-note">Begge verktÃ¸yene bruker ICMP-protokollen (Internet Control Message Protocol) pÃ¥ nettverkslaget. Noen rutere og brannmurer blokkerer ICMP, slik at <code>traceroute</code> noen ganger viser Â«* * *Â» for enkelte hopp.</div>
 </div>
 </section>
 
 <div class="quiz" style="max-width:820px;margin:0 auto 60px;">
-  <p class="q-text">En pakke på 1000 bytes sendes over en link med kapasitet 10 Mbps. Hva er transmisjonsforsinkelsen?</p>
+  <p class="q-text">En pakke pÃ¥ 1000 bytes sendes over en link med kapasitet 10 Mbps. Hva er transmisjonsforsinkelsen?</p>
   <div class="options">
     <button class="option" data-correct="false">1 ms</button>
-    <button class="option" data-correct="true">0,8 ms (800 µs)</button>
-    <button class="option" data-correct="false">100 µs</button>
+    <button class="option" data-correct="true">0,8 ms (800 Âµs)</button>
+    <button class="option" data-correct="false">100 Âµs</button>
     <button class="option" data-correct="false">8 ms</button>
   </div>
   <div class="explanation" id="qFeedback1"></div>
@@ -277,11 +277,11 @@
 <!-- ============ LAYERS ============ -->
 <section id="layers">
 <div class="container">
-  <div class="section-badge">05 · Protokollag</div>
+  <div class="section-badge">05 Â· Protokollag</div>
   <h2>Protokoll-lag og <em>tjenestemodeller</em></h2>
-  <p class="section-intro">Hvorfor all nettverkskommunikasjon er organisert i en stabel av lag — og hva hvert lag gjør.</p>
+  <p class="section-intro">Hvorfor all nettverkskommunikasjon er organisert i en stabel av lag â€” og hva hvert lag gjÃ¸r.</p>
 
-  <p class="dropcap">Et datanett er enormt komplekst: det må håndtere alt fra elektromagnetiske signaler i en kabel til videostrømming i en nettleser. For å temme denne kompleksiteten deler vi funksjonaliteten i <strong>lag</strong>, der hvert lag tilbyr en tjeneste til laget over, og bruker tjenestene til laget under. Det er som et postsystem der du aldri snakker med sjåføren — du legger brevet i postkassen, og hvert mellomledd tar seg av sin del.</p>
+  <p class="dropcap">Et datanett er enormt komplekst: det mÃ¥ hÃ¥ndtere alt fra elektromagnetiske signaler i en kabel til videostrÃ¸mming i en nettleser. For Ã¥ temme denne kompleksiteten deler vi funksjonaliteten i <strong>lag</strong>, der hvert lag tilbyr en tjeneste til laget over, og bruker tjenestene til laget under. Det er som et postsystem der du aldri snakker med sjÃ¥fÃ¸ren â€” du legger brevet i postkassen, og hvert mellomledd tar seg av sin del.</p>
 
   <h3>Internettets fem lag</h3>
 
@@ -289,16 +289,16 @@
     <tr><th>#</th><th>Lag</th><th>Protokoller (eksempler)</th><th>Ansvar</th></tr>
     <tr><td class="mono-cell">5</td><td><strong>Applikasjonslaget</strong></td><td>HTTP, SMTP, DNS, FTP</td><td>Meldinger mellom applikasjoner</td></tr>
     <tr><td class="mono-cell">4</td><td><strong>Transportlaget</strong></td><td>TCP, UDP</td><td>Ende-til-ende-datalevering mellom prosesser</td></tr>
-    <tr><td class="mono-cell">3</td><td><strong>Nettverkslaget</strong></td><td>IP, ICMP</td><td>Ruting av pakker (datagrammer) fra kilde til mål</td></tr>
-    <tr><td class="mono-cell">2</td><td><strong>Lenkelaget</strong></td><td>Ethernet, WiFi (802.11)</td><td>Overføring av rammer mellom nabonoder</td></tr>
-    <tr><td class="mono-cell">1</td><td><strong>Fysisk lag</strong></td><td>—</td><td>Bits over et fysisk medium (spenninger, lyspulser, radiobølger)</td></tr>
+    <tr><td class="mono-cell">3</td><td><strong>Nettverkslaget</strong></td><td>IP, ICMP</td><td>Ruting av pakker (datagrammer) fra kilde til mÃ¥l</td></tr>
+    <tr><td class="mono-cell">2</td><td><strong>Lenkelaget</strong></td><td>Ethernet, WiFi (802.11)</td><td>OverfÃ¸ring av rammer mellom nabonoder</td></tr>
+    <tr><td class="mono-cell">1</td><td><strong>Fysisk lag</strong></td><td>â€”</td><td>Bits over et fysisk medium (spenninger, lyspulser, radiobÃ¸lger)</td></tr>
   </table>
 
-  <h3>OSI-modellen — syv lag</h3>
-  <p>Den alternative <strong>OSI-referansemodellen</strong> (Open Systems Interconnection) har syv lag i stedet for fem. De to ekstra lagene — <em>presentasjonslaget</em> og <em>sesjonslaget</em> — ligger mellom applikasjons- og transportlaget. I Internett er disse funksjonene (datakompresjon, kryptering, sesjonsadministrasjon) overlatt til applikasjonen selv, og lagene eksisterer ikke som separate enheter. OSI er viktig som historisk referanse og i akademisk sammenheng, men i praksis er det femlagsmodellen som beskriver det virkelige Internett.</p>
+  <h3>OSI-modellen â€” syv lag</h3>
+  <p>Den alternative <strong>OSI-referansemodellen</strong> (Open Systems Interconnection) har syv lag i stedet for fem. De to ekstra lagene â€” <em>presentasjonslaget</em> og <em>sesjonslaget</em> â€” ligger mellom applikasjons- og transportlaget. I Internett er disse funksjonene (datakompresjon, kryptering, sesjonsadministrasjon) overlatt til applikasjonen selv, og lagene eksisterer ikke som separate enheter. OSI er viktig som historisk referanse og i akademisk sammenheng, men i praksis er det femlagsmodellen som beskriver det virkelige Internett.</p>
 
-  <h3>Enkapsulering — lag pakker inn i lag</h3>
-  <p>Den mest elegante konsekvensen av lagdelingen er <strong>enkapsulering</strong>. Når applikasjonen sender en melding, pakker transportlaget den inn i et <em>segment</em> ved å legge til sin egen header. Nettverkslaget pakker segmentet inn i et <em>datagram</em> med IP-header. Lenkelaget pakker datagrammet inn i en <em>ramme</em> med sin header (og trailer). Hvert lag ser bare sin egen header — det som er inni er "bare data" fra lagets perspektiv.</p>
+  <h3>Enkapsulering â€” lag pakker inn i lag</h3>
+  <p>Den mest elegante konsekvensen av lagdelingen er <strong>enkapsulering</strong>. NÃ¥r applikasjonen sender en melding, pakker transportlaget den inn i et <em>segment</em> ved Ã¥ legge til sin egen header. Nettverkslaget pakker segmentet inn i et <em>datagram</em> med IP-header. Lenkelaget pakker datagrammet inn i en <em>ramme</em> med sin header (og trailer). Hvert lag ser bare sin egen header â€” det som er inni er "bare data" fra lagets perspektiv.</p>
 
   <figure>
     <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
@@ -334,18 +334,18 @@
 
       <text x="350" y="260" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">Hvert lag legger til sin header (og evt. trailer) rundt dataene fra laget over</text>
     </svg>
-    <figcaption>Enkapsulering: applikasjonsdata pakkes lag for lag med headers. Mottakeren pakker ut i motsatt rekkefølge — hvert lag fjerner sin header og leverer resten oppover.</figcaption>
+    <figcaption>Enkapsulering: applikasjonsdata pakkes lag for lag med headers. Mottakeren pakker ut i motsatt rekkefÃ¸lge â€” hvert lag fjerner sin header og leverer resten oppover.</figcaption>
   </figure>
 
   <div class="callout callout-green">
-    <span class="label">Hvorfor er dette så kraftig?</span>
-    <p>Enkapsulering betyr at hvert lag er <strong>uavhengig</strong>. Du kan bytte ut Ethernet med WiFi på lenkelaget uten at TCP bryr seg. Du kan legge til kryptering i applikasjonen uten at IP vet om det. Lagene er som legoklossen — de kan kombineres fritt, så lenge grensesnittet mellom dem respekteres.</p>
+    <span class="label">Hvorfor er dette sÃ¥ kraftig?</span>
+    <p>Enkapsulering betyr at hvert lag er <strong>uavhengig</strong>. Du kan bytte ut Ethernet med WiFi pÃ¥ lenkelaget uten at TCP bryr seg. Du kan legge til kryptering i applikasjonen uten at IP vet om det. Lagene er som legoklossen â€” de kan kombineres fritt, sÃ¥ lenge grensesnittet mellom dem respekteres.</p>
   </div>
 </div>
 </section>
 
 <div class="quiz" style="max-width:820px;margin:0 auto 60px;">
-  <p class="q-text">I Internettets femlagsmodell — hvilket lag er ansvarlig for å rute pakker fra kilde til destinasjon gjennom nettverket?</p>
+  <p class="q-text">I Internettets femlagsmodell â€” hvilket lag er ansvarlig for Ã¥ rute pakker fra kilde til destinasjon gjennom nettverket?</p>
   <div class="options">
     <button class="option" data-correct="false">Transportlaget</button>
     <button class="option" data-correct="true">Nettverkslaget</button>
@@ -358,54 +358,54 @@
 <!-- ============ SECURITY ============ -->
 <section id="security">
 <div class="container">
-  <div class="section-badge">06 · Sikkerhetstrusler</div>
+  <div class="section-badge">06 Â· Sikkerhetstrusler</div>
   <h2>Nettverk under <em>angrep</em></h2>
-  <p class="section-intro">Internett ble ikke designet med sikkerhet i tankene — og angriperne har utnyttet det fra starten.</p>
+  <p class="section-intro">Internett ble ikke designet med sikkerhet i tankene â€” og angriperne har utnyttet det fra starten.</p>
 
-  <p class="dropcap">De tidlige designerne av Internett tenkte på robusthet og åpenhet, ikke sikkerhet. Resultatet er at angrepsflatene er mange og alvorlige. Her er de viktigste kategoriene du bør kjenne til allerede nå — vi går dypere i kapittel 8.</p>
+  <p class="dropcap">De tidlige designerne av Internett tenkte pÃ¥ robusthet og Ã¥penhet, ikke sikkerhet. Resultatet er at angrepsflatene er mange og alvorlige. Her er de viktigste kategoriene du bÃ¸r kjenne til allerede nÃ¥ â€” vi gÃ¥r dypere i kapittel 8.</p>
 
   <h3>Malware</h3>
-  <p>Ondsinnet programvare som infiserer endesystemer. <strong>Virus</strong> sprer seg ved å legge seg inn i filer brukeren aktivt åpner. <strong>Ormer</strong> sprer seg selv uten brukerinteraksjon — de utnytter sårbarheter i nettverkstjenester og kan infisere tusenvis av maskiner på minutter. Når en maskin er infisert, kan den bli en del av et <strong>botnett</strong> — et nettverk av kompromitterte maskiner som fjernkontrolleres.</p>
+  <p>Ondsinnet programvare som infiserer endesystemer. <strong>Virus</strong> sprer seg ved Ã¥ legge seg inn i filer brukeren aktivt Ã¥pner. <strong>Ormer</strong> sprer seg selv uten brukerinteraksjon â€” de utnytter sÃ¥rbarheter i nettverkstjenester og kan infisere tusenvis av maskiner pÃ¥ minutter. NÃ¥r en maskin er infisert, kan den bli en del av et <strong>botnett</strong> â€” et nettverk av kompromitterte maskiner som fjernkontrolleres.</p>
 
   <h3>Tjenestenektangrep (DoS / DDoS)</h3>
-  <p>Målet er å gjøre en tjeneste utilgjengelig for legitime brukere. I et <strong>DoS-angrep</strong> oversvømmer angriperen målet med trafikk, slik at serveren eller nettverket er for opptatt til å betjene ekte forespørsler. I et <strong>DDoS-angrep</strong> (Distributed DoS) kommer trafikken fra tusenvis av maskiner i et botnett — mye vanskeligere å stoppe fordi angrepstrafikken ser ut som vanlig trafikk fra mange ulike kilder.</p>
+  <p>MÃ¥let er Ã¥ gjÃ¸re en tjeneste utilgjengelig for legitime brukere. I et <strong>DoS-angrep</strong> oversvÃ¸mmer angriperen mÃ¥let med trafikk, slik at serveren eller nettverket er for opptatt til Ã¥ betjene ekte forespÃ¸rsler. I et <strong>DDoS-angrep</strong> (Distributed DoS) kommer trafikken fra tusenvis av maskiner i et botnett â€” mye vanskeligere Ã¥ stoppe fordi angrepstrafikken ser ut som vanlig trafikk fra mange ulike kilder.</p>
 
   <div class="callout">
-    <span class="label">Tre angrepsmønstre for DoS</span>
-    <p><strong>Sårbarhetsutnyttelse:</strong> Send spesielt utformede meldinger som krasjer tjenesten. <strong>Båndbreddeflom:</strong> Send en massiv mengde pakker som fyller opp linkens kapasitet. <strong>Tilkoblingsflom:</strong> Opprett et enormt antall halvåpne TCP-forbindelser som bruker opp serverens ressurser (SYN flooding).</p>
+    <span class="label">Tre angrepsmÃ¸nstre for DoS</span>
+    <p><strong>SÃ¥rbarhetsutnyttelse:</strong> Send spesielt utformede meldinger som krasjer tjenesten. <strong>BÃ¥ndbreddeflom:</strong> Send en massiv mengde pakker som fyller opp linkens kapasitet. <strong>Tilkoblingsflom:</strong> Opprett et enormt antall halvÃ¥pne TCP-forbindelser som bruker opp serverens ressurser (SYN flooding).</p>
   </div>
 
   <h3>Pakkesniffing</h3>
-  <p>En passiv mottaker som lytter på trafikk som går forbi — spesielt farlig på delte medier som WiFi. En sniffer kan fange opp passord, e-poster og alt annet som sendes ukryptert. Løsningen er kryptering (TLS/HTTPS), men mange protokoller sender fortsatt data i klartekst.</p>
+  <p>En passiv mottaker som lytter pÃ¥ trafikk som gÃ¥r forbi â€” spesielt farlig pÃ¥ delte medier som WiFi. En sniffer kan fange opp passord, e-poster og alt annet som sendes ukryptert. LÃ¸sningen er kryptering (TLS/HTTPS), men mange protokoller sender fortsatt data i klartekst.</p>
 
   <h3>IP-spoofing</h3>
-  <p>Angriperen lager pakker med en <em>falsk avsender-IP-adresse</em>. Mottakeren tror pakken kom fra noen andre. Dette brukes i refleksjonsangrep (DDoS), phishing, og for å omgå tilgangskontroller som er basert på IP-adresser.</p>
+  <p>Angriperen lager pakker med en <em>falsk avsender-IP-adresse</em>. Mottakeren tror pakken kom fra noen andre. Dette brukes i refleksjonsangrep (DDoS), phishing, og for Ã¥ omgÃ¥ tilgangskontroller som er basert pÃ¥ IP-adresser.</p>
 </div>
 </section>
 
 <!-- ============ HISTORY ============ -->
 <section id="history">
 <div class="container">
-  <div class="section-badge">07 · Historien</div>
+  <div class="section-badge">07 Â· Historien</div>
   <h2>Internettets <em>historie</em></h2>
-  <p class="section-intro">Fra ARPANET med fire noder til et nettverk med milliarder av enheter — på femti år.</p>
+  <p class="section-intro">Fra ARPANET med fire noder til et nettverk med milliarder av enheter â€” pÃ¥ femti Ã¥r.</p>
 
-  <p class="dropcap">Historien om Internett er historien om en idé som viste seg å være uovervinnelig: at man kunne bygge et pålitelig kommunikasjonssystem ut av upålitelige deler, ved å dele informasjonen i pakker og la dem finne sin egen vei. Idéen vokste fra militærforskning til verdens mest gjennomgripende infrastruktur.</p>
+  <p class="dropcap">Historien om Internett er historien om en idÃ© som viste seg Ã¥ vÃ¦re uovervinnelig: at man kunne bygge et pÃ¥litelig kommunikasjonssystem ut av upÃ¥litelige deler, ved Ã¥ dele informasjonen i pakker og la dem finne sin egen vei. IdÃ©en vokste fra militÃ¦rforskning til verdens mest gjennomgripende infrastruktur.</p>
 
-  <h3>1960-tallet: pakkesvitsjingens fødsel</h3>
-  <p>Tre forskningsgrupper — MIT/DARPA i USA, NPL i England, og RAND i USA — kom uavhengig fram til idéen om pakkesvitsjing. I 1969 ble <strong>ARPANET</strong> satt i drift med fire noder (UCLA, SRI, UCSB, Utah). Det var verdens første pakkesvitsjede nettverk, og det fungerte.</p>
+  <h3>1960-tallet: pakkesvitsjingens fÃ¸dsel</h3>
+  <p>Tre forskningsgrupper â€” MIT/DARPA i USA, NPL i England, og RAND i USA â€” kom uavhengig fram til idÃ©en om pakkesvitsjing. I 1969 ble <strong>ARPANET</strong> satt i drift med fire noder (UCLA, SRI, UCSB, Utah). Det var verdens fÃ¸rste pakkesvitsjede nettverk, og det fungerte.</p>
 
   <h3>1970-tallet: flere nett, behov for inter-netting</h3>
-  <p>Det dukket opp flere pakkesvitsjede nettverk: ALOHAnet (Hawaii, trådløst), Telenet (kommersielt), Cyclades (Frankrike). Problemet var at de ikke kunne snakke med hverandre. <strong>Vinton Cerf</strong> og <strong>Bob Kahn</strong> designet TCP/IP for å koble ulike nettverk sammen — <em>inter-networking</em> — og publiserte arkitekturen i 1974.</p>
+  <p>Det dukket opp flere pakkesvitsjede nettverk: ALOHAnet (Hawaii, trÃ¥dlÃ¸st), Telenet (kommersielt), Cyclades (Frankrike). Problemet var at de ikke kunne snakke med hverandre. <strong>Vinton Cerf</strong> og <strong>Bob Kahn</strong> designet TCP/IP for Ã¥ koble ulike nettverk sammen â€” <em>inter-networking</em> â€” og publiserte arkitekturen i 1974.</p>
 
   <h3>1980-tallet: TCP/IP og DNS</h3>
-  <p>1. januar 1983 — <em>"flag day"</em> — byttet ARPANET offisielt til TCP/IP. <strong>DNS</strong> ble innført for å oversette navn til IP-adresser. Universitetsnettverkene (NSFNET) vokste eksplosivt, og e-post ble den første "killer app".</p>
+  <p>1. januar 1983 â€” <em>"flag day"</em> â€” byttet ARPANET offisielt til TCP/IP. <strong>DNS</strong> ble innfÃ¸rt for Ã¥ oversette navn til IP-adresser. Universitetsnettverkene (NSFNET) vokste eksplosivt, og e-post ble den fÃ¸rste "killer app".</p>
 
   <h3>1990-tallet: World Wide Web og kommersialisering</h3>
-  <p><strong>Tim Berners-Lee</strong> ved CERN oppfant World Wide Web i 1989–91: HTTP, HTML, og den første nettleseren. Mosaic-nettleseren (1993) og Netscape (1994) brakte webben til massene. NSFNET ble dekommisjonert i 1995, og Internett ble fullstendig kommersialisert. Dot-com-boomen brakte enorme investeringer i nettverksinfrastruktur.</p>
+  <p><strong>Tim Berners-Lee</strong> ved CERN oppfant World Wide Web i 1989â€“91: HTTP, HTML, og den fÃ¸rste nettleseren. Mosaic-nettleseren (1993) og Netscape (1994) brakte webben til massene. NSFNET ble dekommisjonert i 1995, og Internett ble fullstendig kommersialisert. Dot-com-boomen brakte enorme investeringer i nettverksinfrastruktur.</p>
 
   <h3>2000-tallet og fremover</h3>
-  <p>Bredbånd erstattet oppringt tilkobling. WiFi og smarttelefoner gjorde Internett mobilt. Sosiale medier, skybaserte tjenester, strømmetjenester og IoT eksploderte. I dag er over 5 milliarder mennesker koblet til Internett, og mengden trafikk dobles omtrent hvert tredje år. De underliggende protokollene — TCP, IP, DNS, HTTP — er bemerkelsesverdig uforandret fra da de ble designet.</p>
+  <p>BredbÃ¥nd erstattet oppringt tilkobling. WiFi og smarttelefoner gjorde Internett mobilt. Sosiale medier, skybaserte tjenester, strÃ¸mmetjenester og IoT eksploderte. I dag er over 5 milliarder mennesker koblet til Internett, og mengden trafikk dobles omtrent hvert tredje Ã¥r. De underliggende protokollene â€” TCP, IP, DNS, HTTP â€” er bemerkelsesverdig uforandret fra da de ble designet.</p>
 </div>
 </section>
 
@@ -414,7 +414,7 @@
   <div class="options">
     <button class="option" data-correct="false">Pakkesvitsjing gir lavere latens i alle tilfeller</button>
     <button class="option" data-correct="false">Pakkesvitsjing garanterer ingen pakketap</button>
-    <button class="option" data-correct="true">Pakkesvitsjing utnytter nettverksressursene bedre gjennom statistisk multipleksing — flere brukere kan dele kapasiteten</button>
+    <button class="option" data-correct="true">Pakkesvitsjing utnytter nettverksressursene bedre gjennom statistisk multipleksing â€” flere brukere kan dele kapasiteten</button>
     <button class="option" data-correct="false">Pakkesvitsjing trenger ikke rutere</button>
   </div>
   <div class="explanation" id="qFeedback3"></div>
@@ -424,44 +424,44 @@
   <p class="q-text">Hva er enkapsulering i konteksten av nettverksprotokoller?</p>
   <div class="options">
     <button class="option" data-correct="false">En krypteringsteknikk som skjuler datainnholdet</button>
-    <button class="option" data-correct="false">En metode for å komprimere pakker til mindre størrelse</button>
-    <button class="option" data-correct="true">At hvert protokollag pakker inn data fra laget over ved å legge til sin egen header (og evt. trailer)</button>
-    <button class="option" data-correct="false">At alle lag bruker samme headerformat for å sikre kompatibilitet</button>
+    <button class="option" data-correct="false">En metode for Ã¥ komprimere pakker til mindre stÃ¸rrelse</button>
+    <button class="option" data-correct="true">At hvert protokollag pakker inn data fra laget over ved Ã¥ legge til sin egen header (og evt. trailer)</button>
+    <button class="option" data-correct="false">At alle lag bruker samme headerformat for Ã¥ sikre kompatibilitet</button>
   </div>
   <div class="explanation" id="qFeedback4"></div>
 </div>
 
 <div style="max-width:820px;margin:0 auto 60px;">
-  <div style="font-family:var(--mono,'IBM Plex Mono',monospace);font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted,#6b6257);margin-bottom:18px;">Refleksjonsspørsmål</div>
+  <div style="font-family:var(--mono,'IBM Plex Mono',monospace);font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted,#6b6257);margin-bottom:18px;">RefleksjonsspÃ¸rsmÃ¥l</div>
 
   <div class="quiz" style="margin-bottom:24px;">
     <p class="q-text">Forklar forskjellen mellom transmisjonsforsinkelse og propageringsforsinkelse med en analogi.</p>
     <details style="margin-top:14px;">
-      <summary style="cursor:pointer;font-family:var(--mono,'IBM Plex Mono',monospace);font-size:13px;color:var(--rust,#b04428);padding:8px 0;">Vis foreslått svar</summary>
+      <summary style="cursor:pointer;font-family:var(--mono,'IBM Plex Mono',monospace);font-size:13px;color:var(--rust,#b04428);padding:8px 0;">Vis foreslÃ¥tt svar</summary>
       <div style="margin-top:10px;padding:14px 18px;background:var(--paper-dark,#f4f1ea);border-radius:6px;font-family:var(--serif,'Newsreader',serif);font-size:16px;line-height:1.65;color:var(--ink,#1a1612);">
-        <p>Tenk på en karavane med 10 biler som skal gjennom en bomstasjon og deretter kjøre 100 km til neste bomstasjon. <strong>Transmisjonsforsinkelsen</strong> tilsvarer tiden det tar for alle bilene å passere gjennom bommen (avhenger av hvor raskt bommen behandler biler — dvs. linkhastigheten R og antall bits L). <strong>Propageringsforsinkelsen</strong> tilsvarer tiden det tar for én bil å kjøre de 100 km (avhenger av avstanden og hastigheten til signalet i mediet). De to er helt uavhengige: du kan gjøre bommen raskere uten å forkorte veien, og du kan forkorte veien uten å gjøre bommen raskere.</p>
+        <p>Tenk pÃ¥ en karavane med 10 biler som skal gjennom en bomstasjon og deretter kjÃ¸re 100 km til neste bomstasjon. <strong>Transmisjonsforsinkelsen</strong> tilsvarer tiden det tar for alle bilene Ã¥ passere gjennom bommen (avhenger av hvor raskt bommen behandler biler â€” dvs. linkhastigheten R og antall bits L). <strong>Propageringsforsinkelsen</strong> tilsvarer tiden det tar for Ã©n bil Ã¥ kjÃ¸re de 100 km (avhenger av avstanden og hastigheten til signalet i mediet). De to er helt uavhengige: du kan gjÃ¸re bommen raskere uten Ã¥ forkorte veien, og du kan forkorte veien uten Ã¥ gjÃ¸re bommen raskere.</p>
       </div>
     </details>
   </div>
 
   <div class="quiz" style="margin-bottom:24px;">
-    <p class="q-text">Hvorfor bruker Internett pakkesvitsjing i stedet for linjesvitsjing? Nevn minst én ulempe med pakkesvitsjing.</p>
+    <p class="q-text">Hvorfor bruker Internett pakkesvitsjing i stedet for linjesvitsjing? Nevn minst Ã©n ulempe med pakkesvitsjing.</p>
     <details style="margin-top:14px;">
-      <summary style="cursor:pointer;font-family:var(--mono,'IBM Plex Mono',monospace);font-size:13px;color:var(--rust,#b04428);padding:8px 0;">Vis foreslått svar</summary>
+      <summary style="cursor:pointer;font-family:var(--mono,'IBM Plex Mono',monospace);font-size:13px;color:var(--rust,#b04428);padding:8px 0;">Vis foreslÃ¥tt svar</summary>
       <div style="margin-top:10px;padding:14px 18px;background:var(--paper-dark,#f4f1ea);border-radius:6px;font-family:var(--serif,'Newsreader',serif);font-size:16px;line-height:1.65;color:var(--ink,#1a1612);">
-        <p>Pakkesvitsjing brukes fordi den utnytter nettverksressursene langt bedre gjennom <strong>statistisk multipleksing</strong>: siden brukere sjelden er aktive samtidig, kan kapasiteten deles dynamisk. Samme link kan betjene mange flere brukere enn med linjesvitsjing, der ressursene reserveres og ligger ubrukt når en bruker er inaktiv.</p>
-        <p><strong>Ulemper:</strong> Pakkesvitsjing gir ingen garantier for forsinkelse eller båndbredde — køforsinkelsen er uforutsigbar, og pakker kan gå tapt (droppes) når ruterkøene er fulle. Dette gjør det vanskeligere å tilby tjenester som krever sanntidsgarantier (f.eks. tradisjonell telefoni).</p>
+        <p>Pakkesvitsjing brukes fordi den utnytter nettverksressursene langt bedre gjennom <strong>statistisk multipleksing</strong>: siden brukere sjelden er aktive samtidig, kan kapasiteten deles dynamisk. Samme link kan betjene mange flere brukere enn med linjesvitsjing, der ressursene reserveres og ligger ubrukt nÃ¥r en bruker er inaktiv.</p>
+        <p><strong>Ulemper:</strong> Pakkesvitsjing gir ingen garantier for forsinkelse eller bÃ¥ndbredde â€” kÃ¸forsinkelsen er uforutsigbar, og pakker kan gÃ¥ tapt (droppes) nÃ¥r ruterkÃ¸ene er fulle. Dette gjÃ¸r det vanskeligere Ã¥ tilby tjenester som krever sanntidsgarantier (f.eks. tradisjonell telefoni).</p>
       </div>
     </details>
   </div>
 
   <div class="quiz" style="margin-bottom:24px;">
-    <p class="q-text">Hva skjer med køforsinkelsen når trafikk-intensiteten (La/R) nærmer seg 1? Og hva skjer når den overstiger 1?</p>
+    <p class="q-text">Hva skjer med kÃ¸forsinkelsen nÃ¥r trafikk-intensiteten (La/R) nÃ¦rmer seg 1? Og hva skjer nÃ¥r den overstiger 1?</p>
     <details style="margin-top:14px;">
-      <summary style="cursor:pointer;font-family:var(--mono,'IBM Plex Mono',monospace);font-size:13px;color:var(--rust,#b04428);padding:8px 0;">Vis foreslått svar</summary>
+      <summary style="cursor:pointer;font-family:var(--mono,'IBM Plex Mono',monospace);font-size:13px;color:var(--rust,#b04428);padding:8px 0;">Vis foreslÃ¥tt svar</summary>
       <div style="margin-top:10px;padding:14px 18px;background:var(--paper-dark,#f4f1ea);border-radius:6px;font-family:var(--serif,'Newsreader',serif);font-size:16px;line-height:1.65;color:var(--ink,#1a1612);">
-        <p>Når trafikk-intensiteten nærmer seg 1 (dvs. pakker ankommer nesten like raskt som de sendes ut), vokser den gjennomsnittlige køforsinkelsen dramatisk — den går mot <strong>uendelig</strong>. Små tilfeldige variasjoner i ankomsttidene fører til at køen vokser raskere enn den rekker å tømmes.</p>
-        <p>Når trafikk-intensiteten overstiger 1, ankommer pakker raskere enn linken klarer å sende dem ut. Køen vokser ubegrenset — men siden bufferet har en endelig størrelse, vil pakker som ikke får plass bli <strong>droppet</strong> (pakketap). Å designe nettverk slik at trafikk-intensiteten holdes godt under 1 er derfor essensielt.</p>
+        <p>NÃ¥r trafikk-intensiteten nÃ¦rmer seg 1 (dvs. pakker ankommer nesten like raskt som de sendes ut), vokser den gjennomsnittlige kÃ¸forsinkelsen dramatisk â€” den gÃ¥r mot <strong>uendelig</strong>. SmÃ¥ tilfeldige variasjoner i ankomsttidene fÃ¸rer til at kÃ¸en vokser raskere enn den rekker Ã¥ tÃ¸mmes.</p>
+        <p>NÃ¥r trafikk-intensiteten overstiger 1, ankommer pakker raskere enn linken klarer Ã¥ sende dem ut. KÃ¸en vokser ubegrenset â€” men siden bufferet har en endelig stÃ¸rrelse, vil pakker som ikke fÃ¥r plass bli <strong>droppet</strong> (pakketap). Ã… designe nettverk slik at trafikk-intensiteten holdes godt under 1 er derfor essensielt.</p>
       </div>
     </details>
   </div>
@@ -471,13 +471,13 @@
 
 <nav class="page-nav">
   <div class="container">
-    <a href="./" class="prev"><span class="nav-label">&larr; Tilbake</span><span class="nav-title">Kapittel 1 — oversikt</span></a>
+    <a href="./" class="prev"><span class="nav-label">&larr; Tilbake</span><span class="nav-title">Kapittel 1 â€” oversikt</span></a>
   </div>
 </nav>
 
 <footer>
   <div class="container">
-    <p>Basert på <em>Computer Networking: A Top-Down Approach</em>, 8. utgave, av Kurose &amp; Ross — kapittel 1.</p>
+    <p>Basert pÃ¥ <em>Computer Networking: A Top-Down Approach</em>, 8. utgave, av Kurose &amp; Ross â€” kapittel 1.</p>
     <div class="ornament">&#10043; &#10043; &#10043;</div>
   </div>
 </footer>
@@ -485,10 +485,10 @@
 <script>
 (function(){
   var steps = [
-    {title:'Steg 1: Kilden sender pakken', text:'Kilden begynner å transmittere en pakke med L bits ut på den første linken med hastighet R. Det tar L/R sekunder å skyve alle bitsene ut.', anim:'<rect x="95" y="58" width="90" height="24" fill="#b04428" opacity="0.7" rx="2"/><text x="140" y="74" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fff">L bits ? R bps</text>'},
-    {title:'Steg 2: Pakken ankommer ruteren', text:'Etter L/R sekunder har hele pakken ankommet ruteren. Ruteren kan ikke begynne å sende videre før den har mottatt alle bits — dette er store-and-forward-prinsippet.', anim:'<rect x="285" y="58" width="50" height="24" fill="#2d4a7a" opacity="0.7" rx="2"/><text x="310" y="74" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fff">LAGRET</text><text x="310" y="120" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#6b6257">Hele pakken må være mottatt</text><text x="310" y="136" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#6b6257">før videresending kan starte</text>'},
-    {title:'Steg 3: Ruteren sender videre', text:'Nå sender ruteren pakken ut på den andre linken. Det tar ytterligere L/R sekunder. Totalt er det gått 2 × L/R sekunder siden kilden begynte å sende.', anim:'<rect x="345" y="58" width="90" height="24" fill="#3d6b3a" opacity="0.7" rx="2"/><text x="390" y="74" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fff">L bits ? R bps</text>'},
-    {title:'Steg 4: Pakken er fremme', text:'Etter 2 × L/R sekunder (for én ruter) har hele pakken nådd målet. Generelt, for N linker (N-1 rutere) blir total forsinkelse N × L/R — uten å telle kø og propagering.', anim:'<rect x="535" y="58" width="50" height="24" fill="#3d6b3a" opacity="0.7" rx="2"/><text x="560" y="74" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fff">MOTTATT</text><text x="320" y="130" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="#b04428" font-weight="600">Total: N × L/R</text>'}
+    {title:'Steg 1: Kilden sender pakken', text:'Kilden begynner Ã¥ transmittere en pakke med L bits ut pÃ¥ den fÃ¸rste linken med hastighet R. Det tar L/R sekunder Ã¥ skyve alle bitsene ut.', anim:'<rect x="95" y="58" width="90" height="24" fill="#b04428" opacity="0.7" rx="2"/><text x="140" y="74" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fff">L bits ? R bps</text>'},
+    {title:'Steg 2: Pakken ankommer ruteren', text:'Etter L/R sekunder har hele pakken ankommet ruteren. Ruteren kan ikke begynne Ã¥ sende videre fÃ¸r den har mottatt alle bits â€” dette er store-and-forward-prinsippet.', anim:'<rect x="285" y="58" width="50" height="24" fill="#2d4a7a" opacity="0.7" rx="2"/><text x="310" y="74" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fff">LAGRET</text><text x="310" y="120" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#6b6257">Hele pakken mÃ¥ vÃ¦re mottatt</text><text x="310" y="136" text-anchor="middle" font-family="Newsreader" font-size="12" font-style="italic" fill="#6b6257">fÃ¸r videresending kan starte</text>'},
+    {title:'Steg 3: Ruteren sender videre', text:'NÃ¥ sender ruteren pakken ut pÃ¥ den andre linken. Det tar ytterligere L/R sekunder. Totalt er det gÃ¥tt 2 Ã— L/R sekunder siden kilden begynte Ã¥ sende.', anim:'<rect x="345" y="58" width="90" height="24" fill="#3d6b3a" opacity="0.7" rx="2"/><text x="390" y="74" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fff">L bits ? R bps</text>'},
+    {title:'Steg 4: Pakken er fremme', text:'Etter 2 Ã— L/R sekunder (for Ã©n ruter) har hele pakken nÃ¥dd mÃ¥let. Generelt, for N linker (N-1 rutere) blir total forsinkelse N Ã— L/R â€” uten Ã¥ telle kÃ¸ og propagering.', anim:'<rect x="535" y="58" width="50" height="24" fill="#3d6b3a" opacity="0.7" rx="2"/><text x="560" y="74" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fff">MOTTATT</text><text x="320" y="130" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" fill="#b04428" font-weight="600">Total: N Ã— L/R</text>'}
   ];
   var i = 0;
   var title = document.getElementById('sfTitle');
@@ -498,7 +498,7 @@
   var prev = document.getElementById('sfPrev');
   var next = document.getElementById('sfNext');
   function render(){
-    title.textContent = 'Steg ' + (i+1) + ' av 4 — ' + steps[i].title.replace(/^Steg \d+: /,'');
+    title.textContent = 'Steg ' + (i+1) + ' av 4 â€” ' + steps[i].title.replace(/^Steg \d+: /,'');
     text.textContent = steps[i].text;
     anim.innerHTML = steps[i].anim;
     ind.textContent = (i+1) + ' / 4';
@@ -541,7 +541,7 @@
     out.innerHTML =
       '<strong>Transmisjonsforsinkelse</strong> (L/R): ' + fmt(dTrans, 's') +
       '<br><strong>Propageringsforsinkelse</strong> (d/v): ' + fmt(dProp, 's') +
-      '<br><strong>Sum (uten kø/prosessering):</strong> ' + fmt(total, 's');
+      '<br><strong>Sum (uten kÃ¸/prosessering):</strong> ' + fmt(total, 's');
   }
   pktSlider.addEventListener('input', update);
   rateSlider.addEventListener('input', update);

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kapittel 7 — Trådløse og mobile nettverk</title>
+<title>Kapittel 7 â€” TrÃ¥dlÃ¸se og mobile nettverk</title>
 <link rel="icon" type="image/png" href="/favicon.png">`n<link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -20,20 +20,20 @@
   </div>
 </nav>
 
-<main data-chapter="Kapittel 7: Trådløse og mobile nettverk">
+<main data-chapter="Kapittel 7: TrÃ¥dlÃ¸se og mobile nettverk">
 <header class="hero">
 <div class="container">
-  <div class="eyebrow">Kapittel 7 · Datakommunikasjon</div>
-  <h1>Trådløse og <em>mobile</em> nettverk</h1>
-  <p class="lede">Hvordan en radiosignalstump som hopper mellom WiFi-rutere, mobilmaster og fjellsider blir til en TCP-forbindelse som ikke knekker når du går rundt et hjørne.</p>
+  <div class="eyebrow">Kapittel 7 Â· Datakommunikasjon</div>
+  <h1>TrÃ¥dlÃ¸se og <em>mobile</em> nettverk</h1>
+  <p class="lede">Hvordan en radiosignalstump som hopper mellom WiFi-rutere, mobilmaster og fjellsider blir til en TCP-forbindelse som ikke knekker nÃ¥r du gÃ¥r rundt et hjÃ¸rne.</p>
   <nav class="toc">
-    <a href="#intro"><span>01</span> Hvorfor trådløst er vanskelig</a>
-    <a href="#elements"><span>02</span> Byggesteinene i et trådløst nett</a>
+    <a href="#intro"><span>01</span> Hvorfor trÃ¥dlÃ¸st er vanskelig</a>
+    <a href="#elements"><span>02</span> Byggesteinene i et trÃ¥dlÃ¸st nett</a>
     <a href="#taxonomy"><span>03</span> Taksonomi: med eller uten infrastruktur</a>
-    <a href="#links"><span>04</span> Egenskaper ved trådløse linker</a>
+    <a href="#links"><span>04</span> Egenskaper ved trÃ¥dlÃ¸se linker</a>
     <a href="#hidden"><span>05</span> Skjulte terminaler og signalfading</a>
     <a href="#wifi"><span>06</span> WiFi: 802.11 i detalj</a>
-    <a href="#csmaca"><span>07</span> CSMA/CA: kollisjonsunngåelse</a>
+    <a href="#csmaca"><span>07</span> CSMA/CA: kollisjonsunngÃ¥else</a>
     <a href="#frame"><span>08</span> 802.11-rammen og fire adresser</a>
     <a href="#mobility-wifi"><span>09</span> Mobilitet innen samme subnett</a>
     <a href="#cellular"><span>10</span> Mobilnett: 4G LTE-arkitektur</a>
@@ -46,78 +46,78 @@
 
 <section id="intro">
 <div class="container">
-  <div class="section-badge">01 · Introduksjon</div>
-  <h2>Hvorfor er <em>trådløst</em> så vanskelig?</h2>
+  <div class="section-badge">01 Â· Introduksjon</div>
+  <h2>Hvorfor er <em>trÃ¥dlÃ¸st</em> sÃ¥ vanskelig?</h2>
   <p class="section-intro">To problemer som ofte blandes sammen, men som egentlig er forskjellige.</p>
 
-  <p class="dropcap">Det er lett å glemme hvor radikalt verden har endret seg. I 2019 var det <strong>ti ganger flere mobilabonnement enn fasttelefoner</strong>, og fem ganger flere mobilbredbåndsforbindelser enn fastlinjebredbånd. For de fleste mennesker i verden i dag <em>er</em> internett trådløst. Likevel, når vi lærer om datakommunikasjon, starter vi nesten alltid med kabler. Det er fordi kabler er enkle: en ledning fra A til B, et signal som ikke endrer seg særlig på veien, ingen som plutselig flytter på seg.</p>
+  <p class="dropcap">Det er lett Ã¥ glemme hvor radikalt verden har endret seg. I 2019 var det <strong>ti ganger flere mobilabonnement enn fasttelefoner</strong>, og fem ganger flere mobilbredbÃ¥ndsforbindelser enn fastlinjebredbÃ¥nd. For de fleste mennesker i verden i dag <em>er</em> internett trÃ¥dlÃ¸st. Likevel, nÃ¥r vi lÃ¦rer om datakommunikasjon, starter vi nesten alltid med kabler. Det er fordi kabler er enkle: en ledning fra A til B, et signal som ikke endrer seg sÃ¦rlig pÃ¥ veien, ingen som plutselig flytter pÃ¥ seg.</p>
 
-  <p>Trådløst gir oss to nye, distinkte utfordringer som er verdt å skille fra hverandre med en gang:</p>
+  <p>TrÃ¥dlÃ¸st gir oss to nye, distinkte utfordringer som er verdt Ã¥ skille fra hverandre med en gang:</p>
 
   <div class="callout">
-    <span class="label">Utfordring 1 — Trådløs kommunikasjon</span>
-    <p>Hvordan får vi i det hele tatt bits over en radiolink? Signalet blir svakere med avstanden, det forstyrres av andre kilder på samme frekvens, det reflekteres av vegger og bakken og kommer fram flere ganger med litt forskjellig forsinkelse. Dette er fysikk og signalbehandling.</p>
+    <span class="label">Utfordring 1 â€” TrÃ¥dlÃ¸s kommunikasjon</span>
+    <p>Hvordan fÃ¥r vi i det hele tatt bits over en radiolink? Signalet blir svakere med avstanden, det forstyrres av andre kilder pÃ¥ samme frekvens, det reflekteres av vegger og bakken og kommer fram flere ganger med litt forskjellig forsinkelse. Dette er fysikk og signalbehandling.</p>
   </div>
 
   <div class="callout callout-blue">
-    <span class="label">Utfordring 2 — Mobilitet</span>
-    <p>Hva skjer når noden som snakker faktisk flytter seg? Den må kunne bytte basestasjon midt i en strømming, og kanskje til og med bytte til et helt annet operatørnettverk i et annet land — uten at TCP-forbindelsen knekker. Dette er et nettverksproblem.</p>
+    <span class="label">Utfordring 2 â€” Mobilitet</span>
+    <p>Hva skjer nÃ¥r noden som snakker faktisk flytter seg? Den mÃ¥ kunne bytte basestasjon midt i en strÃ¸mming, og kanskje til og med bytte til et helt annet operatÃ¸rnettverk i et annet land â€” uten at TCP-forbindelsen knekker. Dette er et nettverksproblem.</p>
   </div>
 
-  <p>Et viktig poeng: <strong>trådløst betyr ikke automatisk mobilt</strong>. En smart-TV som henger på WiFi i stua di er trådløs, men aldri mobil. Et stykke industri-IoT-utstyr på en oljeplattform er trådløst, men spikret fast. Omvendt er et nettbrett mobilt selv når det er koblet til via en USB-kabel — du kan bære rundt på det. Vi trenger derfor å løse de to problemene <em>uavhengig</em>, selv om de oftest opptrer sammen.</p>
+  <p>Et viktig poeng: <strong>trÃ¥dlÃ¸st betyr ikke automatisk mobilt</strong>. En smart-TV som henger pÃ¥ WiFi i stua di er trÃ¥dlÃ¸s, men aldri mobil. Et stykke industri-IoT-utstyr pÃ¥ en oljeplattform er trÃ¥dlÃ¸st, men spikret fast. Omvendt er et nettbrett mobilt selv nÃ¥r det er koblet til via en USB-kabel â€” du kan bÃ¦re rundt pÃ¥ det. Vi trenger derfor Ã¥ lÃ¸se de to problemene <em>uavhengig</em>, selv om de oftest opptrer sammen.</p>
 
-  <p>I dette kapittelet handler det først og fremst om utfordring 1 — hvordan trådløse linker fungerer, hvordan WiFi koordinerer mange enheter på samme frekvens, og hvordan mobilnett (4G/5G) bygger en arkitektur rundt det at brukerne hele tiden flytter på seg.</p>
+  <p>I dette kapittelet handler det fÃ¸rst og fremst om utfordring 1 â€” hvordan trÃ¥dlÃ¸se linker fungerer, hvordan WiFi koordinerer mange enheter pÃ¥ samme frekvens, og hvordan mobilnett (4G/5G) bygger en arkitektur rundt det at brukerne hele tiden flytter pÃ¥ seg.</p>
 </div>
 </section>
 
 <section id="elements">
 <div class="container">
-  <div class="section-badge">02 · Komponenter</div>
+  <div class="section-badge">02 Â· Komponenter</div>
   <h2>Byggesteinene</h2>
-  <p class="section-intro">Fire deler som dukker opp i nesten ethvert trådløst system, fra hjemme-WiFi til 5G.</p>
+  <p class="section-intro">Fire deler som dukker opp i nesten ethvert trÃ¥dlÃ¸st system, fra hjemme-WiFi til 5G.</p>
 
-  <p>Før vi går inn i protokollene må vi være enige om navnene på tingene. Det finnes fire ord som dukker opp om og om igjen:</p>
+  <p>FÃ¸r vi gÃ¥r inn i protokollene mÃ¥ vi vÃ¦re enige om navnene pÃ¥ tingene. Det finnes fire ord som dukker opp om og om igjen:</p>
 
-  <h3>Trådløs vert (wireless host)</h3>
-  <p>En enhet som kjører applikasjoner — laptop, smarttelefon, IoT-sensor, smart-kjøleskap. Det er <em>klienten</em> i tradisjonell forstand. Den kan stå stille eller bevege seg; ordet "host" sier ingenting om mobilitet.</p>
+  <h3>TrÃ¥dlÃ¸s vert (wireless host)</h3>
+  <p>En enhet som kjÃ¸rer applikasjoner â€” laptop, smarttelefon, IoT-sensor, smart-kjÃ¸leskap. Det er <em>klienten</em> i tradisjonell forstand. Den kan stÃ¥ stille eller bevege seg; ordet "host" sier ingenting om mobilitet.</p>
 
   <h3>Basestasjon</h3>
-  <p>En basestasjon er <strong>broen mellom det trådløse og det kablede</strong>. Den er typisk koblet til et kablet nettverk på den ene siden, og snakker radio med vertene innenfor sitt dekningsområde på den andre. Den fungerer som en relé: tar pakker fra det kablede nettet og sender dem ut på radio, og motsatt vei. WiFi-aksesspunktet i taket hjemme er en basestasjon. Det samme er mobilmasten på toppen av blokka. Begge gjør samme jobb, bare på forskjellig skala.</p>
+  <p>En basestasjon er <strong>broen mellom det trÃ¥dlÃ¸se og det kablede</strong>. Den er typisk koblet til et kablet nettverk pÃ¥ den ene siden, og snakker radio med vertene innenfor sitt dekningsomrÃ¥de pÃ¥ den andre. Den fungerer som en relÃ©: tar pakker fra det kablede nettet og sender dem ut pÃ¥ radio, og motsatt vei. WiFi-aksesspunktet i taket hjemme er en basestasjon. Det samme er mobilmasten pÃ¥ toppen av blokka. Begge gjÃ¸r samme jobb, bare pÃ¥ forskjellig skala.</p>
 
-  <h3>Trådløs link</h3>
-  <p>Selve radioforbindelsen mellom verten og basestasjonen. Linkene varierer enormt i hastighet, rekkevidde og frekvensbånd — fra Bluetooth som rekker noen meter med 2 Mbps, til 5G som teoretisk kan nå 10 Gbps på korte avstander. En viktig fellesnevner: alle trådløse linker er <em>delt medium</em>, så vi trenger en multippeltilgangsprotokoll for å koordinere hvem som får sende når.</p>
+  <h3>TrÃ¥dlÃ¸s link</h3>
+  <p>Selve radioforbindelsen mellom verten og basestasjonen. Linkene varierer enormt i hastighet, rekkevidde og frekvensbÃ¥nd â€” fra Bluetooth som rekker noen meter med 2 Mbps, til 5G som teoretisk kan nÃ¥ 10 Gbps pÃ¥ korte avstander. En viktig fellesnevner: alle trÃ¥dlÃ¸se linker er <em>delt medium</em>, sÃ¥ vi trenger en multippeltilgangsprotokoll for Ã¥ koordinere hvem som fÃ¥r sende nÃ¥r.</p>
 
   <h3>Infrastrukturen bakom</h3>
-  <p>Det "kablede nettverket bak" som basestasjonene er koblet til. For et hjemme-WiFi er det bredbåndsruteren og fiberkabelen. For 4G er det et helt eget nettverk av rutere, gateways og databaser som vi straks kommer tilbake til.</p>
+  <p>Det "kablede nettverket bak" som basestasjonene er koblet til. For et hjemme-WiFi er det bredbÃ¥ndsruteren og fiberkabelen. For 4G er det et helt eget nettverk av rutere, gateways og databaser som vi straks kommer tilbake til.</p>
 
-  <h3>Et utvalg av trådløse linker</h3>
-  <p>Det er nyttig å ha en mental modell av hvor de forskjellige standardene plasserer seg i landskapet av rekkevidde og hastighet. Tabellen under er en veldig grov sortering:</p>
+  <h3>Et utvalg av trÃ¥dlÃ¸se linker</h3>
+  <p>Det er nyttig Ã¥ ha en mental modell av hvor de forskjellige standardene plasserer seg i landskapet av rekkevidde og hastighet. Tabellen under er en veldig grov sortering:</p>
 
   <div class="table-wrap">
   <table>
-    <tr><th>Standard</th><th>Maks rate</th><th>Rekkevidde</th><th>Bruksområde</th></tr>
-    <tr><td class="mono-cell">Bluetooth</td><td>2 Mbps</td><td>~10 m</td><td>Innendørs, peer-to-peer</td></tr>
+    <tr><th>Standard</th><th>Maks rate</th><th>Rekkevidde</th><th>BruksomrÃ¥de</th></tr>
+    <tr><td class="mono-cell">Bluetooth</td><td>2 Mbps</td><td>~10 m</td><td>InnendÃ¸rs, peer-to-peer</td></tr>
     <tr><td class="mono-cell">802.11b</td><td>11 Mbps</td><td>~30 m</td><td>WiFi (legacy)</td></tr>
     <tr><td class="mono-cell">802.11g</td><td>54 Mbps</td><td>~30 m</td><td>WiFi</td></tr>
     <tr><td class="mono-cell">802.11n (WiFi 4)</td><td>600 Mbps</td><td>~70 m</td><td>WiFi</td></tr>
     <tr><td class="mono-cell">802.11ac (WiFi 5)</td><td>3,5 Gbps</td><td>~70 m</td><td>WiFi</td></tr>
-    <tr><td class="mono-cell">802.11ax (WiFi 6)</td><td>14 Gbps</td><td>~70 m</td><td>WiFi, høy tetthet</td></tr>
-    <tr><td class="mono-cell">4G LTE</td><td>~100 Mbps</td><td>flere km</td><td>Mobilbredbånd</td></tr>
-    <tr><td class="mono-cell">5G</td><td>~10 Gbps</td><td>10–100 m (mmWave)</td><td>Mobilbredbånd, lav latens</td></tr>
+    <tr><td class="mono-cell">802.11ax (WiFi 6)</td><td>14 Gbps</td><td>~70 m</td><td>WiFi, hÃ¸y tetthet</td></tr>
+    <tr><td class="mono-cell">4G LTE</td><td>~100 Mbps</td><td>flere km</td><td>MobilbredbÃ¥nd</td></tr>
+    <tr><td class="mono-cell">5G</td><td>~10 Gbps</td><td>10â€“100 m (mmWave)</td><td>MobilbredbÃ¥nd, lav latens</td></tr>
   </table>
   </div>
 
-  <div class="margin-note">Legg merke til kompromisset: jo høyere hastighet, jo kortere rekkevidde. 5G på millimeterbølger gir ekstrem hastighet, men signalet stoppes bokstavelig talt av en regndråpe. Derfor trengs det <em>mange flere</em> basestasjoner for å dekke et område med 5G enn med 4G.</div>
+  <div class="margin-note">Legg merke til kompromisset: jo hÃ¸yere hastighet, jo kortere rekkevidde. 5G pÃ¥ millimeterbÃ¸lger gir ekstrem hastighet, men signalet stoppes bokstavelig talt av en regndrÃ¥pe. Derfor trengs det <em>mange flere</em> basestasjoner for Ã¥ dekke et omrÃ¥de med 5G enn med 4G.</div>
 </div>
 </section>
 
 <section id="taxonomy">
 <div class="container">
-  <div class="section-badge">03 · Taksonomi</div>
+  <div class="section-badge">03 Â· Taksonomi</div>
   <h2>Med eller uten <em>infrastruktur</em></h2>
-  <p class="section-intro">To dimensjoner deler trådløse nett inn i fire familier.</p>
+  <p class="section-intro">To dimensjoner deler trÃ¥dlÃ¸se nett inn i fire familier.</p>
 
-  <p>Når vi prøver å rydde opp i jungelen av trådløse teknologier, hjelper det å spørre om to ting: <strong>(1) finnes det en basestasjon</strong>, og <strong>(2) trenger pakkene å hoppe gjennom flere noder for å nå målet?</strong> Disse to ja/nei-spørsmålene gir oss fire ruter:</p>
+  <p>NÃ¥r vi prÃ¸ver Ã¥ rydde opp i jungelen av trÃ¥dlÃ¸se teknologier, hjelper det Ã¥ spÃ¸rre om to ting: <strong>(1) finnes det en basestasjon</strong>, og <strong>(2) trenger pakkene Ã¥ hoppe gjennom flere noder for Ã¥ nÃ¥ mÃ¥let?</strong> Disse to ja/nei-spÃ¸rsmÃ¥lene gir oss fire ruter:</p>
 
   <div class="table-wrap">
   <table>
@@ -129,59 +129,59 @@
     </tr>
     <tr>
       <td class="mono-cell"><strong>Uten infrastruktur</strong></td>
-      <td>Bluetooth, ad hoc WiFi-modus. Direkte mellom to noder, ingen forbindelse til større Internett.</td>
-      <td>MANET, VANET (kjøretøy-til-kjøretøy). Pakkene må rutes gjennom flere ad hoc-noder.</td>
+      <td>Bluetooth, ad hoc WiFi-modus. Direkte mellom to noder, ingen forbindelse til stÃ¸rre Internett.</td>
+      <td>MANET, VANET (kjÃ¸retÃ¸y-til-kjÃ¸retÃ¸y). Pakkene mÃ¥ rutes gjennom flere ad hoc-noder.</td>
     </tr>
   </table>
   </div>
 
-  <p>Det aller meste vi møter i dagliglivet ligger i det øverste venstre hjørnet — ett hopp, med infrastruktur. Det er den enkleste varianten, og det er den hele resten av kapittelet handler om.</p>
+  <p>Det aller meste vi mÃ¸ter i dagliglivet ligger i det Ã¸verste venstre hjÃ¸rnet â€” ett hopp, med infrastruktur. Det er den enkleste varianten, og det er den hele resten av kapittelet handler om.</p>
 </div>
 </section>
 
 <section id="links">
 <div class="container">
-  <div class="section-badge">04 · Linkegenskaper</div>
-  <h2>Hva gjør en trådløs link <em>fundamentalt</em> annerledes?</h2>
-  <p class="section-intro">Tre fysiske fenomener som ikke finnes på en kabel.</p>
+  <div class="section-badge">04 Â· Linkegenskaper</div>
+  <h2>Hva gjÃ¸r en trÃ¥dlÃ¸s link <em>fundamentalt</em> annerledes?</h2>
+  <p class="section-intro">Tre fysiske fenomener som ikke finnes pÃ¥ en kabel.</p>
 
-  <p class="dropcap">Hvis en kabel er en stille gang der du roper til naboen og hører et tydelig svar tilbake, så er en trådløs link mer som et trangt rom på en bråkete restaurant. Stemmen din blir svakere jo lengre unna mottakeren sitter. Andre snakker samtidig på samme frekvens. Og lyden kan komme ekko-aktig tilbake fra veggene. Tre fenomener — <strong>signaltap, interferens og flerveispropagering</strong> — gjør at selv en enkel punkt-til-punkt-radiokobling er vanskeligere enn en tilsvarende kabel.</p>
+  <p class="dropcap">Hvis en kabel er en stille gang der du roper til naboen og hÃ¸rer et tydelig svar tilbake, sÃ¥ er en trÃ¥dlÃ¸s link mer som et trangt rom pÃ¥ en brÃ¥kete restaurant. Stemmen din blir svakere jo lengre unna mottakeren sitter. Andre snakker samtidig pÃ¥ samme frekvens. Og lyden kan komme ekko-aktig tilbake fra veggene. Tre fenomener â€” <strong>signaltap, interferens og flerveispropagering</strong> â€” gjÃ¸r at selv en enkel punkt-til-punkt-radiokobling er vanskeligere enn en tilsvarende kabel.</p>
 
   <h3>1. Signaltap (path loss)</h3>
-  <p>Et radiosignal blir svakere når det reiser gjennom luft, vegger, kropper og møbler. I åpent rom dempes signaleffekten omtrent med kvadratet av avstanden — dobler du avstanden, blir signalet en fjerdedel så sterkt. Inne i et hus med betongvegger er dempingen mye verre. Det er derfor WiFi-signalet ofte er dødt to rom unna ruteren.</p>
+  <p>Et radiosignal blir svakere nÃ¥r det reiser gjennom luft, vegger, kropper og mÃ¸bler. I Ã¥pent rom dempes signaleffekten omtrent med kvadratet av avstanden â€” dobler du avstanden, blir signalet en fjerdedel sÃ¥ sterkt. Inne i et hus med betongvegger er dempingen mye verre. Det er derfor WiFi-signalet ofte er dÃ¸dt to rom unna ruteren.</p>
 
   <h3>2. Interferens fra andre kilder</h3>
-  <p>Mange enheter deler de samme frekvensbåndene. 2,4 GHz-båndet brukes ikke bare av WiFi, men også av Bluetooth, mikrobølgeovner, babymonitorer og enkelte trådløse mus. Naboens WiFi på samme kanal blir også interferens for ditt nettverk. Hver av disse kildene legger til "støy" som mottakeren må prøve å gjette riktig signal gjennom.</p>
+  <p>Mange enheter deler de samme frekvensbÃ¥ndene. 2,4 GHz-bÃ¥ndet brukes ikke bare av WiFi, men ogsÃ¥ av Bluetooth, mikrobÃ¸lgeovner, babymonitorer og enkelte trÃ¥dlÃ¸se mus. Naboens WiFi pÃ¥ samme kanal blir ogsÃ¥ interferens for ditt nettverk. Hver av disse kildene legger til "stÃ¸y" som mottakeren mÃ¥ prÃ¸ve Ã¥ gjette riktig signal gjennom.</p>
 
   <h3>3. Flerveispropagering (multipath)</h3>
-  <p>Et radiosignal går ikke bare i rett linje. Det reflekteres av vegger, gulv, biler og bygninger, og kommer derfor fram til mottakeren <em>flere ganger</em> via forskjellige veier — alle med litt forskjellig forsinkelse. Resultatet er at signalbølgene legger seg oppå hverandre og kan både forsterke og dempe hverandre, avhengig av om de er i fase eller ikke. Dette gir uforutsigbare "døde flekker" som kan flytte seg når noen åpner en dør.</p>
+  <p>Et radiosignal gÃ¥r ikke bare i rett linje. Det reflekteres av vegger, gulv, biler og bygninger, og kommer derfor fram til mottakeren <em>flere ganger</em> via forskjellige veier â€” alle med litt forskjellig forsinkelse. Resultatet er at signalbÃ¸lgene legger seg oppÃ¥ hverandre og kan bÃ¥de forsterke og dempe hverandre, avhengig av om de er i fase eller ikke. Dette gir uforutsigbare "dÃ¸de flekker" som kan flytte seg nÃ¥r noen Ã¥pner en dÃ¸r.</p>
 
   <h3>SNR, BER og rate-tilpasning</h3>
-  <p>Resultatet av alt dette er at vi må snakke om signal i forhold til støy: <strong>SNR (Signal-to-Noise Ratio)</strong>, vanligvis i desibel. Jo høyere SNR, jo lettere er det for mottakeren å hente ut riktig bit-strøm fra signalet. Lav SNR betyr høyere <strong>BER (Bit Error Rate)</strong> — flere bits blir feiltolket.</p>
+  <p>Resultatet av alt dette er at vi mÃ¥ snakke om signal i forhold til stÃ¸y: <strong>SNR (Signal-to-Noise Ratio)</strong>, vanligvis i desibel. Jo hÃ¸yere SNR, jo lettere er det for mottakeren Ã¥ hente ut riktig bit-strÃ¸m fra signalet. Lav SNR betyr hÃ¸yere <strong>BER (Bit Error Rate)</strong> â€” flere bits blir feiltolket.</p>
 
-  <p>Her er det viktige innsiktet: <em>vi kan velge hvor robust vi vil gjøre signalet</em>. Senderen kan velge en moduleringsmetode som pakker mange bits inn i hvert symbol (f.eks. QAM256, som gir 8 Mbps), eller en mer konservativ metode (BPSK, som bare gir 1 Mbps men tåler mye lavere SNR uten å feile). Dette kompromisset — <strong>høy hastighet vs. robusthet</strong> — er hjertet av <em>rate-tilpasning</em>: når SNR faller fordi du går lengre fra ruteren, bytter senderen automatisk til en lavere men mer robust modulasjon. Det er derfor WiFi-hastigheten din ikke bare "kobler fra" når du går vekk, men gradvis blir tregere først.</p>
+  <p>Her er det viktige innsiktet: <em>vi kan velge hvor robust vi vil gjÃ¸re signalet</em>. Senderen kan velge en moduleringsmetode som pakker mange bits inn i hvert symbol (f.eks. QAM256, som gir 8 Mbps), eller en mer konservativ metode (BPSK, som bare gir 1 Mbps men tÃ¥ler mye lavere SNR uten Ã¥ feile). Dette kompromisset â€” <strong>hÃ¸y hastighet vs. robusthet</strong> â€” er hjertet av <em>rate-tilpasning</em>: nÃ¥r SNR faller fordi du gÃ¥r lengre fra ruteren, bytter senderen automatisk til en lavere men mer robust modulasjon. Det er derfor WiFi-hastigheten din ikke bare "kobler fra" nÃ¥r du gÃ¥r vekk, men gradvis blir tregere fÃ¸rst.</p>
 
   <div class="slider-box">
     <label>Avstand fra basestasjon: <span class="val" id="distVal">15 m</span></label>
     <input type="range" id="distSlider" min="1" max="60" value="15">
     <div class="out" id="distOut"></div>
   </div>
-  <p style="font-size:14px;color:var(--ink-faded);font-style:italic;margin-top:-20px">Dra slideren over for å se hvordan SNR, valgt modulasjon og effektiv hastighet endres med avstanden. Verdiene er en forenklet modell — virkelige systemer har mange flere trinn — men idéen er den samme.</p>
+  <p style="font-size:14px;color:var(--ink-faded);font-style:italic;margin-top:-20px">Dra slideren over for Ã¥ se hvordan SNR, valgt modulasjon og effektiv hastighet endres med avstanden. Verdiene er en forenklet modell â€” virkelige systemer har mange flere trinn â€” men idÃ©en er den samme.</p>
 </div>
 </section>
 
 <section id="hidden">
 <div class="container">
-  <div class="section-badge">05 · Multi-bruker-problemer</div>
+  <div class="section-badge">05 Â· Multi-bruker-problemer</div>
   <h2>Skjulte terminaler og <em>fading</em></h2>
-  <p class="section-intro">To problemer som bare oppstår når flere noder snakker samtidig — og som "lytt før du sender" ikke kan løse alene.</p>
+  <p class="section-intro">To problemer som bare oppstÃ¥r nÃ¥r flere noder snakker samtidig â€” og som "lytt fÃ¸r du sender" ikke kan lÃ¸se alene.</p>
 
-  <p>Når vi har bare én sender og én mottaker, er trådløst egentlig håndterbart. Det er når <em>flere</em> noder skal dele samme medium at det blir interessant. Vi har allerede sett dette problemet for kablede nettverk (Ethernet, kapittel 6), men trådløst har et par ekstra varianter som er verdt å skjønne grundig.</p>
+  <p>NÃ¥r vi har bare Ã©n sender og Ã©n mottaker, er trÃ¥dlÃ¸st egentlig hÃ¥ndterbart. Det er nÃ¥r <em>flere</em> noder skal dele samme medium at det blir interessant. Vi har allerede sett dette problemet for kablede nettverk (Ethernet, kapittel 6), men trÃ¥dlÃ¸st har et par ekstra varianter som er verdt Ã¥ skjÃ¸nne grundig.</p>
 
   <h3>Skjult terminal-problemet</h3>
-  <p>Tenk deg tre noder: A, B og C. B sitter i midten. A og B kan høre hverandre fint. B og C kan også høre hverandre. Men mellom A og C er det et fjell, en betongvegg, eller bare for stor avstand — så <em>A og C kan ikke høre hverandre i det hele tatt</em>.</p>
+  <p>Tenk deg tre noder: A, B og C. B sitter i midten. A og B kan hÃ¸re hverandre fint. B og C kan ogsÃ¥ hÃ¸re hverandre. Men mellom A og C er det et fjell, en betongvegg, eller bare for stor avstand â€” sÃ¥ <em>A og C kan ikke hÃ¸re hverandre i det hele tatt</em>.</p>
 
-  <p>Hvis A og C nå begge bestemmer seg for å sende til B samtidig, vil de ikke oppdage at de gjør det. Begge "lytter på linja", begge hører at det er stille (fordi den andre er usynlig for dem), og begge sender. Resultatet er en <strong>kollisjon ved B</strong> — men hverken A eller C vet at det har skjedd, fordi de ikke kan høre hverandres signaler. Dette er det klassiske skjult terminal-problemet, og det betyr at "lytt før du sender" (CSMA) ikke er nok i en trådløs verden.</p>
+  <p>Hvis A og C nÃ¥ begge bestemmer seg for Ã¥ sende til B samtidig, vil de ikke oppdage at de gjÃ¸r det. Begge "lytter pÃ¥ linja", begge hÃ¸rer at det er stille (fordi den andre er usynlig for dem), og begge sender. Resultatet er en <strong>kollisjon ved B</strong> â€” men hverken A eller C vet at det har skjedd, fordi de ikke kan hÃ¸re hverandres signaler. Dette er det klassiske skjult terminal-problemet, og det betyr at "lytt fÃ¸r du sender" (CSMA) ikke er nok i en trÃ¥dlÃ¸s verden.</p>
 
   <figure>
     <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
@@ -212,18 +212,18 @@
       <path d="M 148 195 Q 360 50 572 195" stroke="#a39886" stroke-width="2" fill="none" stroke-dasharray="6 4"/>
       <text x="360" y="40" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">A og C ser ikke hverandre</text>
     </svg>
-    <figcaption>A og C er "skjult" for hverandre. Begge kan sende samtidig uten å vite det, og kollisjonen skjer hos B.</figcaption>
+    <figcaption>A og C er "skjult" for hverandre. Begge kan sende samtidig uten Ã¥ vite det, og kollisjonen skjer hos B.</figcaption>
   </figure>
 
   <h3>Signalfading</h3>
-  <p>Den andre varianten ligner litt, men har en annen årsak. Tenk deg tre noder på rad — A, B, C — uten noe fjell mellom. Avstanden er bare så stor at A's signal er sterkt nok til å nå B men har dempet seg til ingenting før det når C, og motsatt for C. Resultatet er det samme: A og C "ser" ikke hverandre, og kan sende samtidig uten å vite det. Begge signalene kolliderer ved B i midten.</p>
+  <p>Den andre varianten ligner litt, men har en annen Ã¥rsak. Tenk deg tre noder pÃ¥ rad â€” A, B, C â€” uten noe fjell mellom. Avstanden er bare sÃ¥ stor at A's signal er sterkt nok til Ã¥ nÃ¥ B men har dempet seg til ingenting fÃ¸r det nÃ¥r C, og motsatt for C. Resultatet er det samme: A og C "ser" ikke hverandre, og kan sende samtidig uten Ã¥ vite det. Begge signalene kolliderer ved B i midten.</p>
 
-  <p>Begge problemene har samme konsekvens: <em>vi kan ikke stole på "lytt før du sender"-strategien alene</em>. Vi trenger noe annet, og det er der CSMA/CA og RTS/CTS-mekanismen i WiFi kommer inn.</p>
+  <p>Begge problemene har samme konsekvens: <em>vi kan ikke stole pÃ¥ "lytt fÃ¸r du sender"-strategien alene</em>. Vi trenger noe annet, og det er der CSMA/CA og RTS/CTS-mekanismen i WiFi kommer inn.</p>
 
   <div class="reveal" data-reveal>
-    <div class="q">Tenk deg at vi på magisk vis kunne lytte mens vi sender på en trådløs link (altså at CSMA/CD var teknisk mulig). Ville det løst skjult terminal-problemet?</div>
+    <div class="q">Tenk deg at vi pÃ¥ magisk vis kunne lytte mens vi sender pÃ¥ en trÃ¥dlÃ¸s link (altsÃ¥ at CSMA/CD var teknisk mulig). Ville det lÃ¸st skjult terminal-problemet?</div>
     <button>Vis svar</button>
-    <div class="answer">Nei. Selv om A kunne lytte mens den sender, ville den fortsatt ikke høre C — fordi C er utenfor rekkevidde. Kollisjonsdeteksjon krever at senderen hører <em>alle</em> andre potensielle sendere, men i et trådløst nett er det nettopp det som ikke er tilfelle. Skjult terminal-problemet handler ikke om at vi ikke kan lytte og sende samtidig, men om at to sendere kan være usynlige for hverandre. Derfor trengs en eksplisitt reservasjonsmekanisme som RTS/CTS, der <em>basestasjonen</em> — som kan høre begge — formidler beskjeden.</div>
+    <div class="answer">Nei. Selv om A kunne lytte mens den sender, ville den fortsatt ikke hÃ¸re C â€” fordi C er utenfor rekkevidde. Kollisjonsdeteksjon krever at senderen hÃ¸rer <em>alle</em> andre potensielle sendere, men i et trÃ¥dlÃ¸st nett er det nettopp det som ikke er tilfelle. Skjult terminal-problemet handler ikke om at vi ikke kan lytte og sende samtidig, men om at to sendere kan vÃ¦re usynlige for hverandre. Derfor trengs en eksplisitt reservasjonsmekanisme som RTS/CTS, der <em>basestasjonen</em> â€” som kan hÃ¸re begge â€” formidler beskjeden.</div>
   </div>
 </div>
 </section>
@@ -232,30 +232,30 @@
 
 <section id="wifi">
 <div class="container">
-  <div class="section-badge">06 · 802.11</div>
+  <div class="section-badge">06 Â· 802.11</div>
   <h2>WiFi: <em>802.11</em> i detalj</h2>
-  <p class="section-intro">Den dominerende standarden for trådløse lokalnett — én familie, mange generasjoner.</p>
+  <p class="section-intro">Den dominerende standarden for trÃ¥dlÃ¸se lokalnett â€” Ã©n familie, mange generasjoner.</p>
 
-  <p class="dropcap">IEEE 802.11 har vært den åpenbare vinneren blant standarder for trådløse lokalnett siden årtusenskiftet. Det er ikke fordi den er teknisk perfekt — den har en del rare hjørner, som vi snart skal se — men fordi den er <em>åpen, billig og god nok</em>. Hver ny generasjon (b, g, n, ac, ax) har holdt seg bakoverkompatibel og hevet hastigheten med en størrelsesorden eller to, og bygd videre på samme grunnleggende arkitektur.</p>
+  <p class="dropcap">IEEE 802.11 har vÃ¦rt den Ã¥penbare vinneren blant standarder for trÃ¥dlÃ¸se lokalnett siden Ã¥rtusenskiftet. Det er ikke fordi den er teknisk perfekt â€” den har en del rare hjÃ¸rner, som vi snart skal se â€” men fordi den er <em>Ã¥pen, billig og god nok</em>. Hver ny generasjon (b, g, n, ac, ax) har holdt seg bakoverkompatibel og hevet hastigheten med en stÃ¸rrelsesorden eller to, og bygd videre pÃ¥ samme grunnleggende arkitektur.</p>
 
   <h3>Arkitekturen: BSS, AP og infrastrukturmodus</h3>
-  <p>Den grunnleggende byggesteinen i et WiFi-nett heter <strong>Basic Service Set (BSS)</strong>, eller bare "celle" på vanlig norsk. En BSS består av et <strong>aksesspunkt (AP)</strong> — basestasjonen — og de trådløse vertene som har <em>assosiert seg</em> med dette aksesspunktet. AP-en er igjen koblet til en svitsj eller ruter som leder ut til Internett. Et hjemme-WiFi har som regel én BSS. Et større kontorlandskap har mange BSS-er — én per AP — som tilsammen dekker bygget.</p>
+  <p>Den grunnleggende byggesteinen i et WiFi-nett heter <strong>Basic Service Set (BSS)</strong>, eller bare "celle" pÃ¥ vanlig norsk. En BSS bestÃ¥r av et <strong>aksesspunkt (AP)</strong> â€” basestasjonen â€” og de trÃ¥dlÃ¸se vertene som har <em>assosiert seg</em> med dette aksesspunktet. AP-en er igjen koblet til en svitsj eller ruter som leder ut til Internett. Et hjemme-WiFi har som regel Ã©n BSS. Et stÃ¸rre kontorlandskap har mange BSS-er â€” Ã©n per AP â€” som tilsammen dekker bygget.</p>
 
-  <p>I tillegg til denne <em>infrastruktur-modusen</em> finnes det en <strong>ad hoc-modus</strong> der vertene snakker direkte med hverandre uten noe AP. Det er sjelden brukt i praksis, så vi fokuserer på infrastruktur-modus.</p>
+  <p>I tillegg til denne <em>infrastruktur-modusen</em> finnes det en <strong>ad hoc-modus</strong> der vertene snakker direkte med hverandre uten noe AP. Det er sjelden brukt i praksis, sÃ¥ vi fokuserer pÃ¥ infrastruktur-modus.</p>
 
   <h3>Kanaler og frekvenser</h3>
-  <p>WiFi-spekteret er delt opp i <em>kanaler</em> på forskjellige frekvenser. I 2,4 GHz-båndet finnes det 11–14 kanaler (avhengig av land), i 5 GHz-båndet en god del flere. Når du setter opp et aksesspunkt, velger administratoren (eller AP-en automatisk) hvilken kanal det skal sende på. Problemet er at naboens AP kan ha valgt samme kanal — og da må de to nettverkene dele luftrommet, med interferens som resultat.</p>
+  <p>WiFi-spekteret er delt opp i <em>kanaler</em> pÃ¥ forskjellige frekvenser. I 2,4 GHz-bÃ¥ndet finnes det 11â€“14 kanaler (avhengig av land), i 5 GHz-bÃ¥ndet en god del flere. NÃ¥r du setter opp et aksesspunkt, velger administratoren (eller AP-en automatisk) hvilken kanal det skal sende pÃ¥. Problemet er at naboens AP kan ha valgt samme kanal â€” og da mÃ¥ de to nettverkene dele luftrommet, med interferens som resultat.</p>
 
   <h3>Assosiering: hvordan blir en enhet med i et nett?</h3>
-  <p>Når du tar med deg laptopen din inn i et bygg med WiFi, må den finne et AP og knytte seg til det. Dette skjer i tre eller fire steg, og det finnes to varianter:</p>
+  <p>NÃ¥r du tar med deg laptopen din inn i et bygg med WiFi, mÃ¥ den finne et AP og knytte seg til det. Dette skjer i tre eller fire steg, og det finnes to varianter:</p>
 
   <div class="compare">
     <div>
       <h4>Passiv skanning</h4>
       <ul>
         <li>AP sender ut <em>beacon-rammer</em> ca. 10 ganger per sekund med navnet sitt (SSID) og MAC-adressen</li>
-        <li>Verten lytter på alle kanaler etter slike beacons</li>
-        <li>Velger ett AP og sender en assosieringsforespørsel</li>
+        <li>Verten lytter pÃ¥ alle kanaler etter slike beacons</li>
+        <li>Velger ett AP og sender en assosieringsforespÃ¸rsel</li>
         <li>AP svarer med assosieringsbekreftelse</li>
       </ul>
     </div>
@@ -264,53 +264,53 @@
       <ul>
         <li>Verten kringkaster en <em>probe request</em> selv</li>
         <li>Alle AP innen rekkevidde svarer med <em>probe response</em></li>
-        <li>Verten velger ett og sender assosieringsforespørsel</li>
+        <li>Verten velger ett og sender assosieringsforespÃ¸rsel</li>
         <li>AP svarer med assosieringsbekreftelse</li>
       </ul>
     </div>
   </div>
 
-  <p>Etter assosieringen kommer som regel autentisering (passordet ditt verifiseres) og deretter DHCP for å få en IP-adresse i AP-ens subnett. Først nå er du faktisk på Internett.</p>
+  <p>Etter assosieringen kommer som regel autentisering (passordet ditt verifiseres) og deretter DHCP for Ã¥ fÃ¥ en IP-adresse i AP-ens subnett. FÃ¸rst nÃ¥ er du faktisk pÃ¥ Internett.</p>
 
   <h3>Rate-tilpasning</h3>
-  <p>En viktig avansert funksjon i 802.11 er <strong>rate adaptation</strong> — WiFi-senderen bytter automatisk mellom forskjellige modulasjonsmetoder avhengig av signalforholdene. Når du sitter rett ved ruteren, bruker den en aggressiv modulasjon (f.eks. QAM256) som gir høy hastighet. Når du går lengre unna og SNR faller, skifter den ned til en mer robust men tregere modulasjon. Dette er grunnen til at WiFi-hastigheten gradvis synker jo lengre du er fra AP-en, i stedet for å bare kutte ut brått. Vi beskrev fysikken bak dette i <a href="#links">seksjon 04</a> — slideren der illustrerer sammenhengen mellom avstand, SNR og valgt modulasjon.</p>
+  <p>En viktig avansert funksjon i 802.11 er <strong>rate adaptation</strong> â€” WiFi-senderen bytter automatisk mellom forskjellige modulasjonsmetoder avhengig av signalforholdene. NÃ¥r du sitter rett ved ruteren, bruker den en aggressiv modulasjon (f.eks. QAM256) som gir hÃ¸y hastighet. NÃ¥r du gÃ¥r lengre unna og SNR faller, skifter den ned til en mer robust men tregere modulasjon. Dette er grunnen til at WiFi-hastigheten gradvis synker jo lengre du er fra AP-en, i stedet for Ã¥ bare kutte ut brÃ¥tt. Vi beskrev fysikken bak dette i <a href="#links">seksjon 04</a> â€” slideren der illustrerer sammenhengen mellom avstand, SNR og valgt modulasjon.</p>
 
-  <div class="margin-note">Når mobilen din "finner" alle WiFi-nettverk i nærheten i innstillingsmenyen, er det aktiv skanning som skjer — den kringkaster probes og samler opp alle svarene.</div>
+  <div class="margin-note">NÃ¥r mobilen din "finner" alle WiFi-nettverk i nÃ¦rheten i innstillingsmenyen, er det aktiv skanning som skjer â€” den kringkaster probes og samler opp alle svarene.</div>
 </div>
 </section>
 
 <section id="csmaca">
 <div class="container">
-  <div class="section-badge">07 · Multippeltilgang</div>
-  <h2>CSMA/CA: <em>kollisjons­unngåelse</em></h2>
-  <p class="section-intro">Hvorfor 802.11 ikke kan oppdage kollisjoner, og hva det gjør i stedet.</p>
+  <div class="section-badge">07 Â· Multippeltilgang</div>
+  <h2>CSMA/CA: <em>kollisjonsÂ­unngÃ¥else</em></h2>
+  <p class="section-intro">Hvorfor 802.11 ikke kan oppdage kollisjoner, og hva det gjÃ¸r i stedet.</p>
 
-  <p>I Ethernet (kabel) bruker vi CSMA/CD: lytt før du sender, og hvis du oppdager en kollisjon mens du sender, slutt umiddelbart og prøv igjen senere. Dette fungerer fordi en Ethernet-NIC kan lytte og sende samtidig på samme ledning, og dermed sammenligne det den sender med det som faktisk er på linja.</p>
+  <p>I Ethernet (kabel) bruker vi CSMA/CD: lytt fÃ¸r du sender, og hvis du oppdager en kollisjon mens du sender, slutt umiddelbart og prÃ¸v igjen senere. Dette fungerer fordi en Ethernet-NIC kan lytte og sende samtidig pÃ¥ samme ledning, og dermed sammenligne det den sender med det som faktisk er pÃ¥ linja.</p>
 
-  <p>I trådløst er dette praktisk talt umulig av to grunner:</p>
+  <p>I trÃ¥dlÃ¸st er dette praktisk talt umulig av to grunner:</p>
 
   <ol style="margin:20px 0 24px 24px;color:var(--ink-soft)">
-    <li style="margin-bottom:10px"><strong>Ditt eget signal er enormt sterkt</strong> sammenlignet med signaler du mottar fra andre. Når du sender, "døver" du din egen mottaker fullstendig. Det er som å rope i et rom og samtidig prøve å høre om noen andre roper — du hører bare deg selv.</li>
+    <li style="margin-bottom:10px"><strong>Ditt eget signal er enormt sterkt</strong> sammenlignet med signaler du mottar fra andre. NÃ¥r du sender, "dÃ¸ver" du din egen mottaker fullstendig. Det er som Ã¥ rope i et rom og samtidig prÃ¸ve Ã¥ hÃ¸re om noen andre roper â€” du hÃ¸rer bare deg selv.</li>
     <li><strong>Selv om du kunne lytte mens du sendte</strong>, ville du fortsatt ikke fange opp alle kollisjoner. Skjult terminal-problemet betyr at to noder kan kollidere ved en tredje uten at noen av dem merker noe.</li>
   </ol>
 
-  <p>Konklusjonen er enkel: 802.11 kan ikke detektere kollisjoner, så det må <em>unngå</em> dem i utgangspunktet. Derfor heter det <strong>CSMA/CA</strong> — Collision Avoidance, ikke Collision Detection.</p>
+  <p>Konklusjonen er enkel: 802.11 kan ikke detektere kollisjoner, sÃ¥ det mÃ¥ <em>unngÃ¥</em> dem i utgangspunktet. Derfor heter det <strong>CSMA/CA</strong> â€” Collision Avoidance, ikke Collision Detection.</p>
 
   <h3>Hvordan CSMA/CA fungerer</h3>
-  <p>Algoritmen følger noen få regler. Når en node vil sende:</p>
+  <p>Algoritmen fÃ¸lger noen fÃ¥ regler. NÃ¥r en node vil sende:</p>
 
   <div class="callout callout-green">
     <span class="label">CSMA/CA-protokollen</span>
-    <p><strong>1.</strong> Lytt på kanalen. Hvis den er ledig i et tidsrom kalt <em>DIFS</em> (Distributed Inter-Frame Space), send hele rammen.</p>
-    <p><strong>2.</strong> Hvis kanalen er opptatt, velg en tilfeldig <em>backoff-tid</em> og start en nedteller. Telleren går nedover når kanalen er stille, og fryses når noen andre sender. Når telleren når null, send.</p>
-    <p><strong>3.</strong> Mottakeren venter en kort tid (<em>SIFS</em>, kortere enn DIFS) og sender en ACK. SIFS er kortere enn DIFS slik at ACK alltid får sende først, før noen ny node prøver å starte en transmisjon.</p>
-    <p><strong>4.</strong> Hvis senderen ikke får ACK, dobler den backoff-vinduet og prøver igjen. Dette er <em>eksponentiell backoff</em>, samme idé som i Ethernet.</p>
+    <p><strong>1.</strong> Lytt pÃ¥ kanalen. Hvis den er ledig i et tidsrom kalt <em>DIFS</em> (Distributed Inter-Frame Space), send hele rammen.</p>
+    <p><strong>2.</strong> Hvis kanalen er opptatt, velg en tilfeldig <em>backoff-tid</em> og start en nedteller. Telleren gÃ¥r nedover nÃ¥r kanalen er stille, og fryses nÃ¥r noen andre sender. NÃ¥r telleren nÃ¥r null, send.</p>
+    <p><strong>3.</strong> Mottakeren venter en kort tid (<em>SIFS</em>, kortere enn DIFS) og sender en ACK. SIFS er kortere enn DIFS slik at ACK alltid fÃ¥r sende fÃ¸rst, fÃ¸r noen ny node prÃ¸ver Ã¥ starte en transmisjon.</p>
+    <p><strong>4.</strong> Hvis senderen ikke fÃ¥r ACK, dobler den backoff-vinduet og prÃ¸ver igjen. Dette er <em>eksponentiell backoff</em>, samme idÃ© som i Ethernet.</p>
   </div>
 
-  <p>Legg merke til at ACK-en er viktig her. På kabel kan vi vanligvis stole på at en sendt ramme også blir mottatt korrekt — Ethernet har ingen link-lags-ACK. På trådløst er det altfor mange ting som kan gå galt (signalfading, skjulte terminaler, interferens), så hver ramme må bekreftes eksplisitt.</p>
+  <p>Legg merke til at ACK-en er viktig her. PÃ¥ kabel kan vi vanligvis stole pÃ¥ at en sendt ramme ogsÃ¥ blir mottatt korrekt â€” Ethernet har ingen link-lags-ACK. PÃ¥ trÃ¥dlÃ¸st er det altfor mange ting som kan gÃ¥ galt (signalfading, skjulte terminaler, interferens), sÃ¥ hver ramme mÃ¥ bekreftes eksplisitt.</p>
 
-  <h3>RTS/CTS — den valgfrie reservasjonsmekanismen</h3>
-  <p>For å løse skjult terminal-problemet enda bedre, har 802.11 en valgfri mekanisme der senderen først reserverer kanalen med små kontrollrammer:</p>
+  <h3>RTS/CTS â€” den valgfrie reservasjonsmekanismen</h3>
+  <p>For Ã¥ lÃ¸se skjult terminal-problemet enda bedre, har 802.11 en valgfri mekanisme der senderen fÃ¸rst reserverer kanalen med smÃ¥ kontrollrammer:</p>
 
   <div class="stepper" id="rtsStepper">
     <div class="step-display">
@@ -340,37 +340,37 @@
     </div>
   </div>
 
-  <p>Hovedidéen er at <strong>RTS- og CTS-rammene er korte</strong>, så sjansen for kollisjon mellom dem er liten. Når en CTS sendes ut fra AP-en, hører <em>alle</em> nodene innen rekkevidde det — også de skjulte. Alle noder som mottar en CTS adressert til noen andre vet at de må holde seg stille i en bestemt periode, og dermed unngås kollisjonen som ellers ville oppstått fra en skjult terminal. Mekanismen brukes typisk bare for store rammer der det er verdt overhead-en.</p>
+  <p>HovedidÃ©en er at <strong>RTS- og CTS-rammene er korte</strong>, sÃ¥ sjansen for kollisjon mellom dem er liten. NÃ¥r en CTS sendes ut fra AP-en, hÃ¸rer <em>alle</em> nodene innen rekkevidde det â€” ogsÃ¥ de skjulte. Alle noder som mottar en CTS adressert til noen andre vet at de mÃ¥ holde seg stille i en bestemt periode, og dermed unngÃ¥s kollisjonen som ellers ville oppstÃ¥tt fra en skjult terminal. Mekanismen brukes typisk bare for store rammer der det er verdt overhead-en.</p>
 </div>
 </section>
 
 <section id="frame">
 <div class="container">
-  <div class="section-badge">08 · 802.11-rammen</div>
+  <div class="section-badge">08 Â· 802.11-rammen</div>
   <h2>Rammeformatet og <em>de fire adressene</em></h2>
-  <p class="section-intro">Hvorfor en WiFi-ramme har plass til fire MAC-adresser når Ethernet bare trenger to.</p>
+  <p class="section-intro">Hvorfor en WiFi-ramme har plass til fire MAC-adresser nÃ¥r Ethernet bare trenger to.</p>
 
-  <p>Når du ser på et Ethernet-rammeformat har det to MAC-adresser: kilde og destinasjon. Slutt. En 802.11-ramme har derimot <strong>fire</strong> adressefelter, og det er forvirrende ved første øyekast. Det er verdt å forstå hvorfor.</p>
+  <p>NÃ¥r du ser pÃ¥ et Ethernet-rammeformat har det to MAC-adresser: kilde og destinasjon. Slutt. En 802.11-ramme har derimot <strong>fire</strong> adressefelter, og det er forvirrende ved fÃ¸rste Ã¸yekast. Det er verdt Ã¥ forstÃ¥ hvorfor.</p>
 
   <h3>Hvorfor fire adresser?</h3>
-  <p>Tenk på det enkleste tilfellet: vert H1 (på WiFi) skal sende en pakke ut på Internett. Pakken må gå H1 ? AP ? ruter R1 ? Internett. På selve den trådløse hoppen er det tre relevante MAC-adresser:</p>
+  <p>Tenk pÃ¥ det enkleste tilfellet: vert H1 (pÃ¥ WiFi) skal sende en pakke ut pÃ¥ Internett. Pakken mÃ¥ gÃ¥ H1 ? AP ? ruter R1 ? Internett. PÃ¥ selve den trÃ¥dlÃ¸se hoppen er det tre relevante MAC-adresser:</p>
 
   <ul style="margin:0 0 24px 24px;color:var(--ink-soft);font-size:16px">
-    <li style="margin-bottom:6px"><strong>Adresse 1 — Mottaker av denne rammen:</strong> AP-ens MAC. Det er hvem som skal plukke opp rammen fra lufta.</li>
-    <li style="margin-bottom:6px"><strong>Adresse 2 — Sender av denne rammen:</strong> H1 sin MAC. Det er hvem som faktisk transmitterte den.</li>
-    <li style="margin-bottom:6px"><strong>Adresse 3 — Endelig destinasjon på det kablede nettet:</strong> R1 sin MAC. AP-en trenger denne for å vite hvem den skal videresende til etter at rammen kommer inn.</li>
-    <li><strong>Adresse 4:</strong> Brukes i ad hoc-modus og når to AP-er videresender til hverandre trådløst (WDS — Wireless Distribution System). I vanlig infrastrukturmodus er den tom.</li>
+    <li style="margin-bottom:6px"><strong>Adresse 1 â€” Mottaker av denne rammen:</strong> AP-ens MAC. Det er hvem som skal plukke opp rammen fra lufta.</li>
+    <li style="margin-bottom:6px"><strong>Adresse 2 â€” Sender av denne rammen:</strong> H1 sin MAC. Det er hvem som faktisk transmitterte den.</li>
+    <li style="margin-bottom:6px"><strong>Adresse 3 â€” Endelig destinasjon pÃ¥ det kablede nettet:</strong> R1 sin MAC. AP-en trenger denne for Ã¥ vite hvem den skal videresende til etter at rammen kommer inn.</li>
+    <li><strong>Adresse 4:</strong> Brukes i ad hoc-modus og nÃ¥r to AP-er videresender til hverandre trÃ¥dlÃ¸st (WDS â€” Wireless Distribution System). I vanlig infrastrukturmodus er den tom.</li>
   </ul>
 
-  <h3>Sekvensnummeret — viktigere enn du tror</h3>
-  <p>I tillegg til de fire adressene har 802.11-rammen et <strong>sekvensnummer</strong>-felt. Hvorfor? Fordi ACK-mekanismen i CSMA/CA skaper et spesielt problem: hva skjer hvis senderen sender en ramme, mottakeren tar imot den og sender ACK, men <em>ACK-en går tapt</em>? Senderen får ingen bekreftelse og sender rammen på nytt — men mottakeren har allerede levert den opp til nettverkslaget. Uten sekvensnummer ville mottakeren ikke kunne skille en retransmisjon fra en helt ny ramme, og ville levert duplikat-data oppover i stakken. Sekvensnummeret lar mottakeren gjenkjenne og forkaste slike duplikater.</p>
+  <h3>Sekvensnummeret â€” viktigere enn du tror</h3>
+  <p>I tillegg til de fire adressene har 802.11-rammen et <strong>sekvensnummer</strong>-felt. Hvorfor? Fordi ACK-mekanismen i CSMA/CA skaper et spesielt problem: hva skjer hvis senderen sender en ramme, mottakeren tar imot den og sender ACK, men <em>ACK-en gÃ¥r tapt</em>? Senderen fÃ¥r ingen bekreftelse og sender rammen pÃ¥ nytt â€” men mottakeren har allerede levert den opp til nettverkslaget. Uten sekvensnummer ville mottakeren ikke kunne skille en retransmisjon fra en helt ny ramme, og ville levert duplikat-data oppover i stakken. Sekvensnummeret lar mottakeren gjenkjenne og forkaste slike duplikater.</p>
 
-  <p>Når AP-en mottar 802.11-rammen, "pakker den ut" innholdet (IP-pakken) og lager en ny <em>Ethernet</em>-ramme. I Ethernet-rammen er kilden H1 sin MAC og destinasjonen R1 sin MAC — fordi når man sender på det kablede nettet trenger man ikke noen mellomliggende AP-adresse. AP-en fungerer altså som en bro mellom de to lenkeprotokollene.</p>
+  <p>NÃ¥r AP-en mottar 802.11-rammen, "pakker den ut" innholdet (IP-pakken) og lager en ny <em>Ethernet</em>-ramme. I Ethernet-rammen er kilden H1 sin MAC og destinasjonen R1 sin MAC â€” fordi nÃ¥r man sender pÃ¥ det kablede nettet trenger man ikke noen mellomliggende AP-adresse. AP-en fungerer altsÃ¥ som en bro mellom de to lenkeprotokollene.</p>
 
   <figure>
     <svg viewBox="0 0 700 290" xmlns="http://www.w3.org/2000/svg">
       <!-- WiFi frame -->
-      <text x="20" y="30" font-family="IBM Plex Mono" font-size="12" fill="#b04428" font-weight="600">802.11 WiFi-ramme (på lufta H1 ? AP)</text>
+      <text x="20" y="30" font-family="IBM Plex Mono" font-size="12" fill="#b04428" font-weight="600">802.11 WiFi-ramme (pÃ¥ lufta H1 ? AP)</text>
       <rect x="20" y="40" width="120" height="44" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/>
       <text x="80" y="58" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">addr 1</text>
       <text x="80" y="74" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612" font-weight="600">AP MAC</text>
@@ -403,37 +403,37 @@
   </figure>
 
   <div class="reveal" data-reveal>
-    <div class="q">Vi så adressene for retningen H1 ? AP ? R1. Hva skjer med de fire adressefeltene når en pakke går <em>motsatt</em> vei — fra Internett, gjennom R1, via AP-en og ut til H1 over WiFi?</div>
+    <div class="q">Vi sÃ¥ adressene for retningen H1 ? AP ? R1. Hva skjer med de fire adressefeltene nÃ¥r en pakke gÃ¥r <em>motsatt</em> vei â€” fra Internett, gjennom R1, via AP-en og ut til H1 over WiFi?</div>
     <button>Vis svar</button>
-    <div class="answer">I den trådløse rammen fra AP til H1 er rollene speilvendt: <strong>adresse 1</strong> (mottaker av rammen) er nå <em>H1 sin MAC</em>, <strong>adresse 2</strong> (sender av rammen) er <em>AP-ens MAC</em>, og <strong>adresse 3</strong> (opprinnelig avsender på det kablede nettet) er <em>R1 sin MAC</em>. AP-en gjør altså den omvendte oversettelsen: den tar Ethernet-rammen fra R1, pakker ut IP-pakken, og lager en ny 802.11-ramme med riktige adresser for det trådløse hoppet.</div>
+    <div class="answer">I den trÃ¥dlÃ¸se rammen fra AP til H1 er rollene speilvendt: <strong>adresse 1</strong> (mottaker av rammen) er nÃ¥ <em>H1 sin MAC</em>, <strong>adresse 2</strong> (sender av rammen) er <em>AP-ens MAC</em>, og <strong>adresse 3</strong> (opprinnelig avsender pÃ¥ det kablede nettet) er <em>R1 sin MAC</em>. AP-en gjÃ¸r altsÃ¥ den omvendte oversettelsen: den tar Ethernet-rammen fra R1, pakker ut IP-pakken, og lager en ny 802.11-ramme med riktige adresser for det trÃ¥dlÃ¸se hoppet.</div>
   </div>
 </div>
 </section>
 
 <section id="mobility-wifi">
 <div class="container">
-  <div class="section-badge">09 · Mobilitet</div>
-  <h2>Når verten <em>flytter seg</em> mellom AP-er</h2>
-  <p class="section-intro">Hva skjer egentlig i bakgrunnen når du går fra ett WiFi-rom til et annet?</p>
+  <div class="section-badge">09 Â· Mobilitet</div>
+  <h2>NÃ¥r verten <em>flytter seg</em> mellom AP-er</h2>
+  <p class="section-intro">Hva skjer egentlig i bakgrunnen nÃ¥r du gÃ¥r fra ett WiFi-rom til et annet?</p>
 
-  <p>Tenk deg at H1 — laptopen din — er assosiert med AP-1 i ett rom. Du går inn i et annet rom hvor AP-2 har bedre dekning. Hva må skje for at TCP-forbindelsen din skal overleve byttet?</p>
+  <p>Tenk deg at H1 â€” laptopen din â€” er assosiert med AP-1 i ett rom. Du gÃ¥r inn i et annet rom hvor AP-2 har bedre dekning. Hva mÃ¥ skje for at TCP-forbindelsen din skal overleve byttet?</p>
 
-  <p>Det enkle scenariet er <strong>mobilitet innenfor samme IP-subnett</strong>. Hvis begge AP-ene henger på samme svitsj og dermed er på samme subnett, kan H1 beholde IP-adressen sin. Den eneste endringen som må skje er at <em>svitsjen må lære</em> at H1 nå er nådd via en annen port. Heldigvis gjør svitsjen dette helt automatisk — det er den samme self-learning-mekanismen vi så i kapittel 6: når svitsjen ser en ramme komme fra H1 via den nye porten, oppdaterer den tabellen sin og videresender heretter trafikk til H1 dit.</p>
+  <p>Det enkle scenariet er <strong>mobilitet innenfor samme IP-subnett</strong>. Hvis begge AP-ene henger pÃ¥ samme svitsj og dermed er pÃ¥ samme subnett, kan H1 beholde IP-adressen sin. Den eneste endringen som mÃ¥ skje er at <em>svitsjen mÃ¥ lÃ¦re</em> at H1 nÃ¥ er nÃ¥dd via en annen port. Heldigvis gjÃ¸r svitsjen dette helt automatisk â€” det er den samme self-learning-mekanismen vi sÃ¥ i kapittel 6: nÃ¥r svitsjen ser en ramme komme fra H1 via den nye porten, oppdaterer den tabellen sin og videresender heretter trafikk til H1 dit.</p>
 
-  <p>Selve roamingen — det at H1 deassosierer fra AP-1 og assosierer med AP-2 — håndteres på 802.11-laget, og er usynlig for IP-stakken over. TCP-forbindelsen merker ingenting.</p>
+  <p>Selve roamingen â€” det at H1 deassosierer fra AP-1 og assosierer med AP-2 â€” hÃ¥ndteres pÃ¥ 802.11-laget, og er usynlig for IP-stakken over. TCP-forbindelsen merker ingenting.</p>
 
-  <p>Det <em>vanskelige</em> tilfellet er når du skal flytte deg mellom forskjellige IP-subnett, eller verre, mellom forskjellige operatørnett. Her trengs det ekte mobilitetshåndtering — og det er nettopp det som ligger som en kjernetjeneste i mobilnett (4G/5G), som vi skal se på nå.</p>
+  <p>Det <em>vanskelige</em> tilfellet er nÃ¥r du skal flytte deg mellom forskjellige IP-subnett, eller verre, mellom forskjellige operatÃ¸rnett. Her trengs det ekte mobilitetshÃ¥ndtering â€” og det er nettopp det som ligger som en kjernetjeneste i mobilnett (4G/5G), som vi skal se pÃ¥ nÃ¥.</p>
 
-  <h3>Strømsparing: en liten, men viktig detalj</h3>
-  <p>WiFi-noder bruker mye strøm på radioen. For batteridrevne enheter (telefoner, IoT) er det viktig å kunne sove. Mekanismen er enkel: noden sier til AP-en at den skal sove til neste beacon-ramme. AP-en bufrer eventuelle pakker som kommer i mellomtiden. Beacon-rammene fra AP-en inneholder en liste over hvilke sovende noder som har ventende trafikk — så når en node våkner og sjekker beacon, vet den umiddelbart om den må holde seg våken eller kan sove videre.</p>
+  <h3>StrÃ¸msparing: en liten, men viktig detalj</h3>
+  <p>WiFi-noder bruker mye strÃ¸m pÃ¥ radioen. For batteridrevne enheter (telefoner, IoT) er det viktig Ã¥ kunne sove. Mekanismen er enkel: noden sier til AP-en at den skal sove til neste beacon-ramme. AP-en bufrer eventuelle pakker som kommer i mellomtiden. Beacon-rammene fra AP-en inneholder en liste over hvilke sovende noder som har ventende trafikk â€” sÃ¥ nÃ¥r en node vÃ¥kner og sjekker beacon, vet den umiddelbart om den mÃ¥ holde seg vÃ¥ken eller kan sove videre.</p>
 </div>
 </section>
 
 <div class="quiz" style="max-width:820px;margin:0 auto 60px;">
-  <p class="q-text">Hvorfor bruker 802.11 CSMA/CA i stedet for CSMA/CD slik Ethernet gjør?</p>
+  <p class="q-text">Hvorfor bruker 802.11 CSMA/CA i stedet for CSMA/CD slik Ethernet gjÃ¸r?</p>
   <div class="options">
-    <button class="option" data-correct="false">Fordi trådløse rammer er for korte til at kollisjoner kan oppstå</button>
-    <button class="option" data-correct="true">Fordi senderens eget signal overdøver mottakeren, så kollisjoner kan ikke detekteres mens man sender</button>
+    <button class="option" data-correct="false">Fordi trÃ¥dlÃ¸se rammer er for korte til at kollisjoner kan oppstÃ¥</button>
+    <button class="option" data-correct="true">Fordi senderens eget signal overdÃ¸ver mottakeren, sÃ¥ kollisjoner kan ikke detekteres mens man sender</button>
     <button class="option" data-correct="false">Fordi 802.11-standarden ikke tillater retransmisjon</button>
     <button class="option" data-correct="false">Fordi CSMA/CD krever flere antenner enn vanlige WiFi-kort har</button>
   </div>
@@ -442,18 +442,18 @@
 
 <section id="cellular">
 <div class="container">
-  <div class="section-badge">10 · Mobilnett</div>
+  <div class="section-badge">10 Â· Mobilnett</div>
   <h2>4G LTE: en helt egen <em>arkitektur</em></h2>
-  <p class="section-intro">Hvordan et globalt mobilnett ser ut innenfra — og hvorfor det er så annerledes enn WiFi.</p>
+  <p class="section-intro">Hvordan et globalt mobilnett ser ut innenfra â€” og hvorfor det er sÃ¥ annerledes enn WiFi.</p>
 
-  <p class="dropcap">WiFi er enkelt fordi det stort sett bare bryr seg om ett aksesspunkt om gangen og overlater alt det vanskelige til Internett bak. Mobilnett kan ikke gjøre det. De må håndtere milliarder av brukere som hele tiden flytter seg mellom celler, mellom nettverk, mellom land — og samtidig ta betalt riktig, sørge for at samtaler ikke knekker, og garantere at en samtale i Norge faktisk når en mottaker i Brasil. Resultatet er en arkitektur som er mye mer ambisiøs enn WiFi.</p>
+  <p class="dropcap">WiFi er enkelt fordi det stort sett bare bryr seg om ett aksesspunkt om gangen og overlater alt det vanskelige til Internett bak. Mobilnett kan ikke gjÃ¸re det. De mÃ¥ hÃ¥ndtere milliarder av brukere som hele tiden flytter seg mellom celler, mellom nettverk, mellom land â€” og samtidig ta betalt riktig, sÃ¸rge for at samtaler ikke knekker, og garantere at en samtale i Norge faktisk nÃ¥r en mottaker i Brasil. Resultatet er en arkitektur som er mye mer ambisiÃ¸s enn WiFi.</p>
 
   <h3>Likheter og forskjeller fra det kablede Internett</h3>
   <div class="compare">
     <div>
       <h4>Likt som Internett</h4>
       <ul>
-        <li>Kant/kjerne-skille, alt eies av samme operatør</li>
+        <li>Kant/kjerne-skille, alt eies av samme operatÃ¸r</li>
         <li>Et globalt "nettverk av nettverk"</li>
         <li>Bruker mange av de samme protokollene: HTTP, DNS, TCP, UDP, IP, NAT</li>
         <li>Skille mellom data- og kontrollplan, SDN-konsepter</li>
@@ -464,70 +464,70 @@
       <h4>Annerledes</h4>
       <ul>
         <li>Helt annet linklag (radio i stedet for Ethernet)</li>
-        <li>Mobilitet er en <em>førsteklasses</em> tjeneste, ikke et tilleggslapp</li>
+        <li>Mobilitet er en <em>fÃ¸rsteklasses</em> tjeneste, ikke et tilleggslapp</li>
         <li>Brukerens identitet ligger i SIM-kortet, ikke i en MAC-adresse</li>
         <li>Forretningsmodell: sterk skille mellom "hjemmenett" og "roaming"</li>
-        <li>Inter-operatør-oppgjør og global autentisering</li>
+        <li>Inter-operatÃ¸r-oppgjÃ¸r og global autentisering</li>
       </ul>
     </div>
   </div>
 
   <h3>Hovedkomponentene i 4G LTE</h3>
-  <p>4G LTE består av to hoveddeler: <strong>radio access network</strong> (alt mellom telefonen og basestasjonen) og <strong>Evolved Packet Core (EPC)</strong> — selve mobiloperatørens kjernenett, som er <em>helt IP-basert</em>. Inni EPC finnes en håndfull spesialiserte komponenter du må kunne navnene på:</p>
+  <p>4G LTE bestÃ¥r av to hoveddeler: <strong>radio access network</strong> (alt mellom telefonen og basestasjonen) og <strong>Evolved Packet Core (EPC)</strong> â€” selve mobiloperatÃ¸rens kjernenett, som er <em>helt IP-basert</em>. Inni EPC finnes en hÃ¥ndfull spesialiserte komponenter du mÃ¥ kunne navnene pÃ¥:</p>
 
   <div class="callout">
-    <span class="label">UE — User Equipment</span>
-    <p>Selve mobilenheten. Telefon, nettbrett, IoT-modul. Identifiseres globalt med en 64-bits IMSI (International Mobile Subscriber Identity) lagret på SIM-kortet. Det er IMSI-en, ikke telefonnummeret, som er den "ekte" identiteten i mobilnettet.</p>
+    <span class="label">UE â€” User Equipment</span>
+    <p>Selve mobilenheten. Telefon, nettbrett, IoT-modul. Identifiseres globalt med en 64-bits IMSI (International Mobile Subscriber Identity) lagret pÃ¥ SIM-kortet. Det er IMSI-en, ikke telefonnummeret, som er den "ekte" identiteten i mobilnettet.</p>
   </div>
 
   <div class="callout callout-blue">
-    <span class="label">eNode-B — Basestasjonen</span>
-    <p>LTEs versjon av en WiFi-AP, men mye mer aktiv. Den styrer ikke bare radioressursene i sin egen celle, men koordinerer også med naboceller for å optimalisere bruken av spektrum, og spiller en aktiv rolle i mobilitet (handover mellom celler). En hjemme-WiFi-AP gjør egentlig ingenting av dette — den er bare en passiv bro.</p>
+    <span class="label">eNode-B â€” Basestasjonen</span>
+    <p>LTEs versjon av en WiFi-AP, men mye mer aktiv. Den styrer ikke bare radioressursene i sin egen celle, men koordinerer ogsÃ¥ med naboceller for Ã¥ optimalisere bruken av spektrum, og spiller en aktiv rolle i mobilitet (handover mellom celler). En hjemme-WiFi-AP gjÃ¸r egentlig ingenting av dette â€” den er bare en passiv bro.</p>
   </div>
 
   <div class="callout callout-green">
-    <span class="label">MME — Mobility Management Entity</span>
-    <p>Hjernen i kontrollplanet. Den autentiserer enheten, styrer hvilken celle den er i akkurat nå, håndterer handover mellom celler, og sporer enheten selv når den er inaktiv (slik at man kan ringe deg opp, "page" deg, når noen ringer). Den setter også opp tunnelen mellom telefonen og P-GW.</p>
+    <span class="label">MME â€” Mobility Management Entity</span>
+    <p>Hjernen i kontrollplanet. Den autentiserer enheten, styrer hvilken celle den er i akkurat nÃ¥, hÃ¥ndterer handover mellom celler, og sporer enheten selv nÃ¥r den er inaktiv (slik at man kan ringe deg opp, "page" deg, nÃ¥r noen ringer). Den setter ogsÃ¥ opp tunnelen mellom telefonen og P-GW.</p>
   </div>
 
   <div class="callout">
-    <span class="label">HSS — Home Subscriber Server</span>
-    <p>En sentral database som inneholder informasjon om alle abonnenter som har <em>denne</em> operatøren som hjemmenettverk: hvilke tjenester du har, hvilke nøkler som hører til SIM-kortet ditt, hvilke regler som gjelder. Når MME skal autentisere telefonen din, snakker den med HSS for å verifisere SIM-kortet. Når du roamer i utlandet, snakker det besøkte nettverket med HSS-en hjemme hos operatøren din.</p>
+    <span class="label">HSS â€” Home Subscriber Server</span>
+    <p>En sentral database som inneholder informasjon om alle abonnenter som har <em>denne</em> operatÃ¸ren som hjemmenettverk: hvilke tjenester du har, hvilke nÃ¸kler som hÃ¸rer til SIM-kortet ditt, hvilke regler som gjelder. NÃ¥r MME skal autentisere telefonen din, snakker den med HSS for Ã¥ verifisere SIM-kortet. NÃ¥r du roamer i utlandet, snakker det besÃ¸kte nettverket med HSS-en hjemme hos operatÃ¸ren din.</p>
   </div>
 
   <div class="callout">
-    <span class="label">S-GW og P-GW — Gateways</span>
-    <p>De to gatewayene ligger på dataplanet, altså på selve dataveien fra telefonen til Internett. <strong>S-GW (Serving Gateway)</strong> er det lokale endepunktet for datatrafikken — der hvor pakkene fra basestasjonene samles. <strong>P-GW (PDN Gateway)</strong> er ut-porten mot vanlig Internett, og fungerer som en slags ruter med NAT, dynamisk IP-tildeling og pakkefiltrering. Sett utenfra ser P-GW ut som hvilken som helst annen Internett-gateway. IP-adressen din på Internett er P-GW-ens.</p>
+    <span class="label">S-GW og P-GW â€” Gateways</span>
+    <p>De to gatewayene ligger pÃ¥ dataplanet, altsÃ¥ pÃ¥ selve dataveien fra telefonen til Internett. <strong>S-GW (Serving Gateway)</strong> er det lokale endepunktet for datatrafikken â€” der hvor pakkene fra basestasjonene samles. <strong>P-GW (PDN Gateway)</strong> er ut-porten mot vanlig Internett, og fungerer som en slags ruter med NAT, dynamisk IP-tildeling og pakkefiltrering. Sett utenfra ser P-GW ut som hvilken som helst annen Internett-gateway. IP-adressen din pÃ¥ Internett er P-GW-ens.</p>
   </div>
 
   <h3>Skille mellom data- og kontrollplan</h3>
-  <p>Et viktig arkitektonisk grep i LTE er at <em>data og kontroll går forskjellige veier</em>. Kontrollplanet (autentisering, mobilitetshåndtering, oppsett av forbindelser) bruker MME og HSS. Dataplanet (selve nettleser-trafikken, video-streaming, etc.) går aldri innom MME — det går rett gjennom basestasjon ? S-GW ? P-GW ? Internett. Dette er den samme idéen som SDN: en sentralisert kontroller som forteller bryterne hva de skal gjøre, mens selve pakkene flyter forbi i full hastighet.</p>
+  <p>Et viktig arkitektonisk grep i LTE er at <em>data og kontroll gÃ¥r forskjellige veier</em>. Kontrollplanet (autentisering, mobilitetshÃ¥ndtering, oppsett av forbindelser) bruker MME og HSS. Dataplanet (selve nettleser-trafikken, video-streaming, etc.) gÃ¥r aldri innom MME â€” det gÃ¥r rett gjennom basestasjon ? S-GW ? P-GW ? Internett. Dette er den samme idÃ©en som SDN: en sentralisert kontroller som forteller bryterne hva de skal gjÃ¸re, mens selve pakkene flyter forbi i full hastighet.</p>
 </div>
 </section>
 
 <section id="lte-data">
 <div class="container">
-  <div class="section-badge">11 · LTE dataplan</div>
+  <div class="section-badge">11 Â· LTE dataplan</div>
   <h2>Tunneler hele veien <em>ned</em></h2>
-  <p class="section-intro">Hvorfor LTE pakker IP-pakker inni andre IP-pakker, og hva det har med mobilitet å gjøre.</p>
+  <p class="section-intro">Hvorfor LTE pakker IP-pakker inni andre IP-pakker, og hva det har med mobilitet Ã¥ gjÃ¸re.</p>
 
-  <p>Det første hoppet — fra telefonen til basestasjonen — er trådløst, og bruker LTE sin egen protokollstabel. Det viktige er hva som skjer derifra og videre inn i operatørens kjernenett. Dette er den mest interessante (og forvirrende) delen av LTE.</p>
+  <p>Det fÃ¸rste hoppet â€” fra telefonen til basestasjonen â€” er trÃ¥dlÃ¸st, og bruker LTE sin egen protokollstabel. Det viktige er hva som skjer derifra og videre inn i operatÃ¸rens kjernenett. Dette er den mest interessante (og forvirrende) delen av LTE.</p>
 
-  <h3>Linklags-protokollene på første hopp</h3>
-  <p>Mellom telefonen og basestasjonen er det et helt sett med protokollag som ikke finnes på vanlig Internett. Fra topp og nedover:</p>
+  <h3>Linklags-protokollene pÃ¥ fÃ¸rste hopp</h3>
+  <p>Mellom telefonen og basestasjonen er det et helt sett med protokollag som ikke finnes pÃ¥ vanlig Internett. Fra topp og nedover:</p>
 
   <ul style="margin:0 0 24px 24px;color:var(--ink-soft)">
-    <li style="margin-bottom:8px"><strong>Packet Data Convergence Protocol (PDCP):</strong> komprimerer IP-headere og krypterer brukerdataene. Headerkomprimering er viktig fordi en TCP/IP-header ofte er 40 bytes — like stor som en kort talepakke, så uten komprimering ville mye av kapasiteten gått til overhead.</li>
-    <li style="margin-bottom:8px"><strong>Radio Link Control (RLC):</strong> deler opp pakkene i mindre fragmenter som passer til radiotidslukene, og håndterer pålitelig overføring (retransmisjoner) på linklaget.</li>
-    <li><strong>Medium Access Control (MAC):</strong> avgjør hvilken radiotidsluke som skal brukes når. I motsetning til WiFi er det her ikke noe "lytt før du sender" — basestasjonen <em>tildeler</em> tidsluker til hver enhet etter en planleggingsalgoritme (som ikke er standardisert, hver operatør kan bruke sin egen).</li>
+    <li style="margin-bottom:8px"><strong>Packet Data Convergence Protocol (PDCP):</strong> komprimerer IP-headere og krypterer brukerdataene. Headerkomprimering er viktig fordi en TCP/IP-header ofte er 40 bytes â€” like stor som en kort talepakke, sÃ¥ uten komprimering ville mye av kapasiteten gÃ¥tt til overhead.</li>
+    <li style="margin-bottom:8px"><strong>Radio Link Control (RLC):</strong> deler opp pakkene i mindre fragmenter som passer til radiotidslukene, og hÃ¥ndterer pÃ¥litelig overfÃ¸ring (retransmisjoner) pÃ¥ linklaget.</li>
+    <li><strong>Medium Access Control (MAC):</strong> avgjÃ¸r hvilken radiotidsluke som skal brukes nÃ¥r. I motsetning til WiFi er det her ikke noe "lytt fÃ¸r du sender" â€” basestasjonen <em>tildeler</em> tidsluker til hver enhet etter en planleggingsalgoritme (som ikke er standardisert, hver operatÃ¸r kan bruke sin egen).</li>
   </ul>
 
-  <p>Selve fysikkmodulasjonen heter <strong>OFDM</strong> (Orthogonal Frequency Division Multiplexing). Idéen er å dele opp et stort frekvensbånd i mange smalere, "ortogonale" delkanaler som ikke interfererer med hverandre. Hver aktiv enhet får tildelt to eller flere 0,5 ms tidsluker over 12 frekvenser. Kombinasjonen av FDM og TDM gjør at mange enheter kan dele samme celle uten å trampe på hverandre.</p>
+  <p>Selve fysikkmodulasjonen heter <strong>OFDM</strong> (Orthogonal Frequency Division Multiplexing). IdÃ©en er Ã¥ dele opp et stort frekvensbÃ¥nd i mange smalere, "ortogonale" delkanaler som ikke interfererer med hverandre. Hver aktiv enhet fÃ¥r tildelt to eller flere 0,5 ms tidsluker over 12 frekvenser. Kombinasjonen av FDM og TDM gjÃ¸r at mange enheter kan dele samme celle uten Ã¥ trampe pÃ¥ hverandre.</p>
 
   <h3>Tunneling: hvorfor pakker ligger inni pakker</h3>
-  <p>Her kommer den virkelig elegante delen. Når en datapakke fra telefonen din kommer inn til basestasjonen, blir den ikke bare videresendt rett til S-GW. I stedet pakkes den <em>inn i en ny IP-pakke</em>, ved hjelp av en protokoll som heter <strong>GTP (GPRS Tunneling Protocol)</strong>, og denne nye pakken sendes inn i en UDP-datagram til S-GW. S-GW pakker ut GTP-en, lager en ny GTP-tunnel videre til P-GW, og der pakkes pakken endelig ut og sendes ut på vanlig Internett.</p>
+  <p>Her kommer den virkelig elegante delen. NÃ¥r en datapakke fra telefonen din kommer inn til basestasjonen, blir den ikke bare videresendt rett til S-GW. I stedet pakkes den <em>inn i en ny IP-pakke</em>, ved hjelp av en protokoll som heter <strong>GTP (GPRS Tunneling Protocol)</strong>, og denne nye pakken sendes inn i en UDP-datagram til S-GW. S-GW pakker ut GTP-en, lager en ny GTP-tunnel videre til P-GW, og der pakkes pakken endelig ut og sendes ut pÃ¥ vanlig Internett.</p>
 
-  <p>Hvorfor all denne pakkingen? Svaret er <em>mobilitet</em>. Hvis telefonen din hopper fra én basestasjon til en annen, så trenger ikke S-GW eller P-GW å vite eller bry seg — bare endepunktene på GTP-tunnelen oppdateres. Telefonens IP-adresse forblir den samme hele tiden (den er gitt ut av P-GW), og alle pakker fortsetter å flyte gjennom samme P-GW. Det eneste som endrer seg er <em>hvilken basestasjon</em> som er den nedre enden av tunnelen. Dette er hele grunnen til at du kan se en YouTube-video uten avbrudd mens du sitter på et tog som farer forbi titalls celler.</p>
+  <p>Hvorfor all denne pakkingen? Svaret er <em>mobilitet</em>. Hvis telefonen din hopper fra Ã©n basestasjon til en annen, sÃ¥ trenger ikke S-GW eller P-GW Ã¥ vite eller bry seg â€” bare endepunktene pÃ¥ GTP-tunnelen oppdateres. Telefonens IP-adresse forblir den samme hele tiden (den er gitt ut av P-GW), og alle pakker fortsetter Ã¥ flyte gjennom samme P-GW. Det eneste som endrer seg er <em>hvilken basestasjon</em> som er den nedre enden av tunnelen. Dette er hele grunnen til at du kan se en YouTube-video uten avbrudd mens du sitter pÃ¥ et tog som farer forbi titalls celler.</p>
 
   <figure>
     <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
@@ -560,61 +560,61 @@
       <!-- exit -->
       <path d="M 580 110 L 615 110" stroke="#1a1612" stroke-width="2"/>
     </svg>
-    <figcaption>To GTP-tunneler over UDP/IP holder dataplanet på plass. Når telefonen flytter seg, oppdateres bare endepunktet hos eNode-B — alt det andre er uendret.</figcaption>
+    <figcaption>To GTP-tunneler over UDP/IP holder dataplanet pÃ¥ plass. NÃ¥r telefonen flytter seg, oppdateres bare endepunktet hos eNode-B â€” alt det andre er uendret.</figcaption>
   </figure>
 
   <h3>Hvordan telefonen finner et nett</h3>
-  <p>Når telefonen slår seg på, må den finne en basestasjon å assosiere med. Det skjer omtrent slik:</p>
+  <p>NÃ¥r telefonen slÃ¥r seg pÃ¥, mÃ¥ den finne en basestasjon Ã¥ assosiere med. Det skjer omtrent slik:</p>
 
   <ol style="margin:20px 0 24px 24px;color:var(--ink-soft)">
-    <li style="margin-bottom:8px">Hver basestasjon kringkaster et <em>primært synkroniseringssignal</em> hvert 5. millisekund på alle frekvenser den støtter. Dette er som en fyrlykt — telefonen vet ikke ennå hva den finner, men den kan oppdage signalet.</li>
-    <li style="margin-bottom:8px">Når telefonen finner et primært synkroniseringssignal, leter den etter et <em>sekundært synkroniseringssignal</em> på samme frekvens. Det forteller mer om basestasjonen — kanalbredde, konfigurasjon og hvilken operatør den tilhører.</li>
-    <li style="margin-bottom:8px">Telefonen kan oppdage signaler fra flere basestasjoner — også fra forskjellige operatører — og velger den som passer best (typisk den fra hjemoperatøren, eller den med sterkest signal).</li>
-    <li>Etter valget kommer flere steg: autentisering med MME/HSS, oppsett av tilstand, etablering av tunneler. Først nå er telefonen klar til å sende ekte data.</li>
+    <li style="margin-bottom:8px">Hver basestasjon kringkaster et <em>primÃ¦rt synkroniseringssignal</em> hvert 5. millisekund pÃ¥ alle frekvenser den stÃ¸tter. Dette er som en fyrlykt â€” telefonen vet ikke ennÃ¥ hva den finner, men den kan oppdage signalet.</li>
+    <li style="margin-bottom:8px">NÃ¥r telefonen finner et primÃ¦rt synkroniseringssignal, leter den etter et <em>sekundÃ¦rt synkroniseringssignal</em> pÃ¥ samme frekvens. Det forteller mer om basestasjonen â€” kanalbredde, konfigurasjon og hvilken operatÃ¸r den tilhÃ¸rer.</li>
+    <li style="margin-bottom:8px">Telefonen kan oppdage signaler fra flere basestasjoner â€” ogsÃ¥ fra forskjellige operatÃ¸rer â€” og velger den som passer best (typisk den fra hjemoperatÃ¸ren, eller den med sterkest signal).</li>
+    <li>Etter valget kommer flere steg: autentisering med MME/HSS, oppsett av tilstand, etablering av tunneler. FÃ¸rst nÃ¥ er telefonen klar til Ã¥ sende ekte data.</li>
   </ol>
 
-  <h3>Strømsparing: lett og dyp søvn</h3>
-  <p>Akkurat som WiFi har LTE strømsparemekanismer. Etter noen hundre millisekunder uten trafikk går radioen i <strong>lett søvn</strong> og våkner periodisk for å sjekke om det er noe innkommende. Etter 5–10 sekunder med inaktivitet går den i <strong>dyp søvn</strong>, og kan til og med flytte seg mellom celler mens den sover. Når den våkner etter dyp søvn, må hele assosieringen reetableres — derfor merker du av og til en liten forsinkelse første gang du gjør noe på telefonen etter at den har ligget urørt en stund.</p>
+  <h3>StrÃ¸msparing: lett og dyp sÃ¸vn</h3>
+  <p>Akkurat som WiFi har LTE strÃ¸msparemekanismer. Etter noen hundre millisekunder uten trafikk gÃ¥r radioen i <strong>lett sÃ¸vn</strong> og vÃ¥kner periodisk for Ã¥ sjekke om det er noe innkommende. Etter 5â€“10 sekunder med inaktivitet gÃ¥r den i <strong>dyp sÃ¸vn</strong>, og kan til og med flytte seg mellom celler mens den sover. NÃ¥r den vÃ¥kner etter dyp sÃ¸vn, mÃ¥ hele assosieringen reetableres â€” derfor merker du av og til en liten forsinkelse fÃ¸rste gang du gjÃ¸r noe pÃ¥ telefonen etter at den har ligget urÃ¸rt en stund.</p>
 
   <h3>Roaming: hvordan gateway-er takler at du er i utlandet</h3>
-  <p>Når du tar med telefonen til et annet land, er du ikke lenger i hjemmenettverket ditt. Du er fortsatt identifisert av SIM-kortet, og det forteller fortsatt hvilket nettverk som er hjemme. Det <em>besøkte</em> nettverket setter deg på sin egen P-GW (eller noen ganger ruter trafikken hjem først), og snakker med <em>din hjemoperatørs</em> HSS for å verifisere identiteten din og finne ut hvilke tjenester du har rett på. Det er denne mekanismen — sammen med interoperatør-avregning — som gjør at telefonen din "bare fungerer" når du går av flyet i Tokyo.</p>
+  <p>NÃ¥r du tar med telefonen til et annet land, er du ikke lenger i hjemmenettverket ditt. Du er fortsatt identifisert av SIM-kortet, og det forteller fortsatt hvilket nettverk som er hjemme. Det <em>besÃ¸kte</em> nettverket setter deg pÃ¥ sin egen P-GW (eller noen ganger ruter trafikken hjem fÃ¸rst), og snakker med <em>din hjemoperatÃ¸rs</em> HSS for Ã¥ verifisere identiteten din og finne ut hvilke tjenester du har rett pÃ¥. Det er denne mekanismen â€” sammen med interoperatÃ¸r-avregning â€” som gjÃ¸r at telefonen din "bare fungerer" nÃ¥r du gÃ¥r av flyet i Tokyo.</p>
 
   <div class="reveal" data-reveal>
-    <div class="q">Hvorfor bruker mobiloperatørene GTP-tunneling i stedet for å bare rute IP-pakkene direkte gjennom kjernenettet, slik vanlig Internett gjør?</div>
+    <div class="q">Hvorfor bruker mobiloperatÃ¸rene GTP-tunneling i stedet for Ã¥ bare rute IP-pakkene direkte gjennom kjernenettet, slik vanlig Internett gjÃ¸r?</div>
     <button>Vis svar</button>
-    <div class="answer">Vanlig IP-ruting binder en IP-adresse til et bestemt subnett. Hvis telefonen bytter basestasjon (og dermed subnett), ville den normalt trengt en ny IP-adresse — og da knekker alle pågående TCP-forbindelser. GTP-tunneling løser dette ved å skille telefonens IP-adresse fra den fysiske plasseringen. P-GW eier IP-adressen og er alltid endepunktet sett fra Internett. Pakker tunneleres ned til riktig basestasjon uansett hvor telefonen befinner seg. Ved handover oppdateres bare tunnel-endepunktet — IP-adressen og TCP-forbindelsene forblir urørt. Det er i bunn og grunn en form for indireksjon: «ring alltid P-GW, og P-GW vet hvor telefonen er akkurat nå.»</div>
+    <div class="answer">Vanlig IP-ruting binder en IP-adresse til et bestemt subnett. Hvis telefonen bytter basestasjon (og dermed subnett), ville den normalt trengt en ny IP-adresse â€” og da knekker alle pÃ¥gÃ¥ende TCP-forbindelser. GTP-tunneling lÃ¸ser dette ved Ã¥ skille telefonens IP-adresse fra den fysiske plasseringen. P-GW eier IP-adressen og er alltid endepunktet sett fra Internett. Pakker tunneleres ned til riktig basestasjon uansett hvor telefonen befinner seg. Ved handover oppdateres bare tunnel-endepunktet â€” IP-adressen og TCP-forbindelsene forblir urÃ¸rt. Det er i bunn og grunn en form for indireksjon: Â«ring alltid P-GW, og P-GW vet hvor telefonen er akkurat nÃ¥.Â»</div>
   </div>
 </div>
 </section>
 
 <section id="5g">
 <div class="container">
-  <div class="section-badge">12 · 5G</div>
+  <div class="section-badge">12 Â· 5G</div>
   <h2>Hva er nytt med <em>5G</em>?</h2>
-  <p class="section-intro">Tre løfter, og det fysiske kompromisset bak dem.</p>
+  <p class="section-intro">Tre lÃ¸fter, og det fysiske kompromisset bak dem.</p>
 
-  <p>5G ble markedsført som en revolusjon, og selv om mye av markedsføringen var støy, finnes det reelle forbedringer. De tre offisielle målene var: <strong>10x høyere maks-bitrate</strong> enn 4G, <strong>10x lavere latens</strong>, og <strong>100x mer kapasitet</strong> per kvadratkilometer. Hvordan får man det til?</p>
+  <p>5G ble markedsfÃ¸rt som en revolusjon, og selv om mye av markedsfÃ¸ringen var stÃ¸y, finnes det reelle forbedringer. De tre offisielle mÃ¥lene var: <strong>10x hÃ¸yere maks-bitrate</strong> enn 4G, <strong>10x lavere latens</strong>, og <strong>100x mer kapasitet</strong> per kvadratkilometer. Hvordan fÃ¥r man det til?</p>
 
-  <h3>Nye frekvensbånd: FR1 og FR2</h3>
-  <p>5G NR (New Radio) bruker to forskjellige typer frekvensbånd:</p>
+  <h3>Nye frekvensbÃ¥nd: FR1 og FR2</h3>
+  <p>5G NR (New Radio) bruker to forskjellige typer frekvensbÃ¥nd:</p>
 
   <ul style="margin:0 0 24px 24px;color:var(--ink-soft)">
-    <li style="margin-bottom:8px"><strong>FR1 (450 MHz – 6 GHz):</strong> et utvidet versjon av tradisjonelle mobilfrekvenser. Disse går langt og trenger gjennom vegger, men gir ikke noen dramatisk høyere hastighet enn 4G. Mesteparten av det vi kaller "5G" i Norge i dag bruker FR1.</li>
-    <li><strong>FR2 (24–52 GHz, "millimeter-bølger"):</strong> her er det den virkelig store båndbredden ligger, og det er disse frekvensene som gir opptil 10 Gbps. Men de har et stort problem: signalet tåler omtrent ingenting. En vegg, en regndråpe, en menneskekropp — alt blokkerer mmWave. Rekkevidden er typisk 10–100 meter.</li>
+    <li style="margin-bottom:8px"><strong>FR1 (450 MHz â€“ 6 GHz):</strong> et utvidet versjon av tradisjonelle mobilfrekvenser. Disse gÃ¥r langt og trenger gjennom vegger, men gir ikke noen dramatisk hÃ¸yere hastighet enn 4G. Mesteparten av det vi kaller "5G" i Norge i dag bruker FR1.</li>
+    <li><strong>FR2 (24â€“52 GHz, "millimeter-bÃ¸lger"):</strong> her er det den virkelig store bÃ¥ndbredden ligger, og det er disse frekvensene som gir opptil 10 Gbps. Men de har et stort problem: signalet tÃ¥ler omtrent ingenting. En vegg, en regndrÃ¥pe, en menneskekropp â€” alt blokkerer mmWave. Rekkevidden er typisk 10â€“100 meter.</li>
   </ul>
 
   <h3>MIMO og retningsstyrte antenner</h3>
-  <p>For å få mer ut av et gitt frekvensspekter bruker 5G <strong>MIMO</strong> (Multiple-Input Multiple-Output) i stor skala — flere antenner på både sender- og mottakersiden, som kan rette stråler i bestemte retninger og sende parallelle datastrømmer til forskjellige brukere samtidig. Dette krever sofistikert signalbehandling, men gir både høyere hastighet og mer kapasitet i samme celle.</p>
+  <p>For Ã¥ fÃ¥ mer ut av et gitt frekvensspekter bruker 5G <strong>MIMO</strong> (Multiple-Input Multiple-Output) i stor skala â€” flere antenner pÃ¥ bÃ¥de sender- og mottakersiden, som kan rette strÃ¥ler i bestemte retninger og sende parallelle datastrÃ¸mmer til forskjellige brukere samtidig. Dette krever sofistikert signalbehandling, men gir bÃ¥de hÃ¸yere hastighet og mer kapasitet i samme celle.</p>
 
   <h3>Pico-celler og massiv utbygging</h3>
-  <p>På grunn av at mmWave-signalet praktisk talt ikke når noen vei, krever ekte 5G-dekning <strong>massiv utbygging av små basestasjoner</strong> — såkalte "pico-celler" med dekningsradius på 10–100 meter. Det er nødvendig å plassere en på hvert gatehjørne, hver lyktestolpe, hvert bygg. Det er hovedgrunnen til at "ekte 5G" har vært tregt å rulle ut og er begrenset til tett bebygde områder med høyt brukspress.</p>
+  <p>PÃ¥ grunn av at mmWave-signalet praktisk talt ikke nÃ¥r noen vei, krever ekte 5G-dekning <strong>massiv utbygging av smÃ¥ basestasjoner</strong> â€” sÃ¥kalte "pico-celler" med dekningsradius pÃ¥ 10â€“100 meter. Det er nÃ¸dvendig Ã¥ plassere en pÃ¥ hvert gatehjÃ¸rne, hver lyktestolpe, hvert bygg. Det er hovedgrunnen til at "ekte 5G" har vÃ¦rt tregt Ã¥ rulle ut og er begrenset til tett bebygde omrÃ¥der med hÃ¸yt brukspress.</p>
 
   <h3>Ikke bakoverkompatibel</h3>
-  <p>5G NR er <em>ikke</em> bakoverkompatibel med 4G LTE på radiolaget. Operatørene driver derfor begge nettverkene parallelt, og telefonen velger automatisk hvilket den skal bruke avhengig av hvilke signaler den oppfatter og hva den skal gjøre. Innenfor kjernen finnes det også en ny arkitektur (5G Core, eller 5GC) som tar konseptet med data/kontroll-skille og microservices enda lenger enn EPC gjorde, men de samme grunnidéene gjelder fortsatt.</p>
+  <p>5G NR er <em>ikke</em> bakoverkompatibel med 4G LTE pÃ¥ radiolaget. OperatÃ¸rene driver derfor begge nettverkene parallelt, og telefonen velger automatisk hvilket den skal bruke avhengig av hvilke signaler den oppfatter og hva den skal gjÃ¸re. Innenfor kjernen finnes det ogsÃ¥ en ny arkitektur (5G Core, eller 5GC) som tar konseptet med data/kontroll-skille og microservices enda lenger enn EPC gjorde, men de samme grunnidÃ©ene gjelder fortsatt.</p>
 
   <div class="callout">
     <span class="label">Oppsummert</span>
-    <p>5G er ikke én teknologi men en familie av forbedringer: mer spektrum (særlig på mmWave), smartere antenner (MIMO/beamforming), tettere celleutplassering, og et kjernenett som er enda mer programmerbart enn 4G sitt. Det fysiske kompromisset er at de mest spektakulære hastighetene krever en helt ny utbygging i en skala vi aldri har sett før.</p>
+    <p>5G er ikke Ã©n teknologi men en familie av forbedringer: mer spektrum (sÃ¦rlig pÃ¥ mmWave), smartere antenner (MIMO/beamforming), tettere celleutplassering, og et kjernenett som er enda mer programmerbart enn 4G sitt. Det fysiske kompromisset er at de mest spektakulÃ¦re hastighetene krever en helt ny utbygging i en skala vi aldri har sett fÃ¸r.</p>
   </div>
 </div>
 </section>
@@ -622,31 +622,31 @@
 <div class="quiz" style="max-width:820px;margin:0 auto 60px;">
   <p class="q-text">Hva er hovedgrunnen til at LTE bruker GTP-tunneling mellom basestasjon, S-GW og P-GW?</p>
   <div class="options">
-    <button class="option" data-correct="false">For å kryptere innholdet i pakkene som går over kjernenettet</button>
-    <button class="option" data-correct="false">Fordi IP-protokollen ikke fungerer på radiolinker</button>
-    <button class="option" data-correct="true">Slik at telefonens IP-adresse kan forbli den samme selv når den hopper mellom basestasjoner</button>
-    <button class="option" data-correct="false">For å redusere størrelsen på datapakkene før de sendes over Internett</button>
+    <button class="option" data-correct="false">For Ã¥ kryptere innholdet i pakkene som gÃ¥r over kjernenettet</button>
+    <button class="option" data-correct="false">Fordi IP-protokollen ikke fungerer pÃ¥ radiolinker</button>
+    <button class="option" data-correct="true">Slik at telefonens IP-adresse kan forbli den samme selv nÃ¥r den hopper mellom basestasjoner</button>
+    <button class="option" data-correct="false">For Ã¥ redusere stÃ¸rrelsen pÃ¥ datapakkene fÃ¸r de sendes over Internett</button>
   </div>
   <div class="explanation" id="qFeedback2"></div>
 </div>
 
 <div class="quiz" style="max-width:820px;margin:0 auto 80px;">
-  <p class="q-text">En 802.11-ramme har fire MAC-adressefelter. Hva inneholder adresse 3 i en ramme som sendes fra en vert til et AP, hvor pakken til slutt skal videresendes til ruteren R1 på det kablede nettet?</p>
+  <p class="q-text">En 802.11-ramme har fire MAC-adressefelter. Hva inneholder adresse 3 i en ramme som sendes fra en vert til et AP, hvor pakken til slutt skal videresendes til ruteren R1 pÃ¥ det kablede nettet?</p>
   <div class="options">
     <button class="option" data-correct="false">AP-ens MAC-adresse</button>
     <button class="option" data-correct="false">Vertens egen MAC-adresse</button>
-    <button class="option" data-correct="true">R1 sin MAC-adresse — den endelige destinasjonen på det kablede nettet</button>
+    <button class="option" data-correct="true">R1 sin MAC-adresse â€” den endelige destinasjonen pÃ¥ det kablede nettet</button>
     <button class="option" data-correct="false">En broadcast-adresse (FF:FF:FF:FF:FF:FF)</button>
   </div>
   <div class="explanation" id="qFeedback3"></div>
 </div>
 
 <div class="quiz" style="max-width:820px;margin:0 auto 80px;">
-  <p class="q-text">5G NR bruker to frekvensbånd: FR1 (under 6 GHz) og FR2 (millimeterbølger, 24–52 GHz). Hva er den viktigste praktiske forskjellen mellom dem?</p>
+  <p class="q-text">5G NR bruker to frekvensbÃ¥nd: FR1 (under 6 GHz) og FR2 (millimeterbÃ¸lger, 24â€“52 GHz). Hva er den viktigste praktiske forskjellen mellom dem?</p>
   <div class="options">
     <button class="option" data-correct="false">FR2 har lengre rekkevidde enn FR1, men lavere hastighet</button>
-    <button class="option" data-correct="false">FR1 og FR2 gir omtrent lik hastighet, men FR2 er billigere å drifte</button>
-    <button class="option" data-correct="true">FR2 gir mye høyere hastighet, men har svært kort rekkevidde og blokkeres lett av vegger og hindringer</button>
+    <button class="option" data-correct="false">FR1 og FR2 gir omtrent lik hastighet, men FR2 er billigere Ã¥ drifte</button>
+    <button class="option" data-correct="true">FR2 gir mye hÃ¸yere hastighet, men har svÃ¦rt kort rekkevidde og blokkeres lett av vegger og hindringer</button>
     <button class="option" data-correct="false">FR1 krever flere basestasjoner enn FR2 fordi signalet er svakere</button>
   </div>
   <div class="explanation" id="qFeedback4"></div>
@@ -654,45 +654,45 @@
 
 <section id="summary">
 <div class="container">
-  <div class="section-badge">13 · Oppsummering</div>
+  <div class="section-badge">13 Â· Oppsummering</div>
   <h2>Det du skal sitte igjen med</h2>
 
-  <p class="dropcap">Trådløst er ikke bare "Ethernet uten ledning". Tre fysiske fenomener — signaltap, interferens og flerveispropagering — gjør at radiolinker er fundamentalt annerledes enn kabel. Den viktigste konsekvensen: du kan ikke oppdage kollisjoner mens du sender, fordi ditt eget signal overdøver alt annet. Derfor bruker 802.11 <strong>CSMA/CA</strong> (unngåelse) i stedet for Ethernetets CSMA/CD (deteksjon).</p>
+  <p class="dropcap">TrÃ¥dlÃ¸st er ikke bare "Ethernet uten ledning". Tre fysiske fenomener â€” signaltap, interferens og flerveispropagering â€” gjÃ¸r at radiolinker er fundamentalt annerledes enn kabel. Den viktigste konsekvensen: du kan ikke oppdage kollisjoner mens du sender, fordi ditt eget signal overdÃ¸ver alt annet. Derfor bruker 802.11 <strong>CSMA/CA</strong> (unngÃ¥else) i stedet for Ethernetets CSMA/CD (deteksjon).</p>
 
-  <p>De fem nøkkelpunktene fra kapittelet:</p>
+  <p>De fem nÃ¸kkelpunktene fra kapittelet:</p>
 
   <div class="callout">
-    <span class="label">1 — Skjult terminal-problemet</span>
-    <p>To noder kan kollidere hos en tredje uten at noen av dem merker det, fordi de er utenfor rekkevidde for hverandre. "Lytt før du sender" hjelper ikke. RTS/CTS-mekanismen løser det ved å la basestasjonen — som kan høre alle — formidle en kanaireservasjon.</p>
+    <span class="label">1 â€” Skjult terminal-problemet</span>
+    <p>To noder kan kollidere hos en tredje uten at noen av dem merker det, fordi de er utenfor rekkevidde for hverandre. "Lytt fÃ¸r du sender" hjelper ikke. RTS/CTS-mekanismen lÃ¸ser det ved Ã¥ la basestasjonen â€” som kan hÃ¸re alle â€” formidle en kanaireservasjon.</p>
   </div>
 
   <div class="callout callout-blue">
-    <span class="label">2 — 802.11-rammens fire adresser</span>
-    <p>Ethernet trenger to MAC-adresser (kilde og destinasjon). WiFi trenger tre i infrastrukturmodus: hvem som mottar rammen fra lufta (AP), hvem som sendte den (verten), og hvem AP-en skal videresende til på Ethernet-siden (ruteren). Fjerde adresse er reservert for ad hoc og WDS.</p>
+    <span class="label">2 â€” 802.11-rammens fire adresser</span>
+    <p>Ethernet trenger to MAC-adresser (kilde og destinasjon). WiFi trenger tre i infrastrukturmodus: hvem som mottar rammen fra lufta (AP), hvem som sendte den (verten), og hvem AP-en skal videresende til pÃ¥ Ethernet-siden (ruteren). Fjerde adresse er reservert for ad hoc og WDS.</p>
   </div>
 
   <div class="callout callout-green">
-    <span class="label">3 — Mobilitet innen subnett</span>
-    <p>Når du går fra ett rom til et annet og bytter AP, beholder du IP-adressen — forutsatt at begge AP-ene henger på samme svitsj og subnett. Svitsjen oppdaterer tabellen sin automatisk (self-learning) første gang en ramme ankommer fra den nye porten. TCP-laget merker ingenting.</p>
+    <span class="label">3 â€” Mobilitet innen subnett</span>
+    <p>NÃ¥r du gÃ¥r fra ett rom til et annet og bytter AP, beholder du IP-adressen â€” forutsatt at begge AP-ene henger pÃ¥ samme svitsj og subnett. Svitsjen oppdaterer tabellen sin automatisk (self-learning) fÃ¸rste gang en ramme ankommer fra den nye porten. TCP-laget merker ingenting.</p>
   </div>
 
   <div class="callout">
-    <span class="label">4 — LTE-arkitekturen: EPC og tunneling</span>
-    <p>4G er ikke bare en stor WiFi. EPC har spesialiserte komponenter: eNode-B (basestasjon), MME (kontrollplan, mobilitet), HSS (abonnentdatabase), S-GW og P-GW (dataplan). Telefonens IP-adresse ligger hos P-GW og forblir fast. GTP-tunneling over UDP gjør at pakker alltid finner veien, uansett hvilken basestasjon telefonen er koblet til akkurat nå.</p>
+    <span class="label">4 â€” LTE-arkitekturen: EPC og tunneling</span>
+    <p>4G er ikke bare en stor WiFi. EPC har spesialiserte komponenter: eNode-B (basestasjon), MME (kontrollplan, mobilitet), HSS (abonnentdatabase), S-GW og P-GW (dataplan). Telefonens IP-adresse ligger hos P-GW og forblir fast. GTP-tunneling over UDP gjÃ¸r at pakker alltid finner veien, uansett hvilken basestasjon telefonen er koblet til akkurat nÃ¥.</p>
   </div>
 
   <div class="callout callout-blue">
-    <span class="label">5 — 5G: mer spektrum, kortere rekkevidde</span>
-    <p>FR1 (under 6 GHz) gir grei rekkevidde og penetrasjon, men begrenset hastighetsgevinst. FR2 (mmWave, 24–52 GHz) gir opp til 10 Gbps, men signalet stoppes av en vegg — eller en menneskekropp. Ekte mmWave-dekning krever en pico-celle på hvert gatehjørne. MIMO og beamforming skviser mer kapasitet ut av hvert frekvensbånd, mens 5G Core viderefører SDN-idéen med programmerbar nettverksarkitektur.</p>
+    <span class="label">5 â€” 5G: mer spektrum, kortere rekkevidde</span>
+    <p>FR1 (under 6 GHz) gir grei rekkevidde og penetrasjon, men begrenset hastighetsgevinst. FR2 (mmWave, 24â€“52 GHz) gir opp til 10 Gbps, men signalet stoppes av en vegg â€” eller en menneskekropp. Ekte mmWave-dekning krever en pico-celle pÃ¥ hvert gatehjÃ¸rne. MIMO og beamforming skviser mer kapasitet ut av hvert frekvensbÃ¥nd, mens 5G Core viderefÃ¸rer SDN-idÃ©en med programmerbar nettverksarkitektur.</p>
   </div>
 
-  <p>Den røde tråden: <em>alle</em> disse designvalgene — fra CSMA/CA til GTP-tunneling til mmWave pico-celler — er svar på det samme grunnproblemet: hvordan håndterer vi et delt, upålitelig radiomedium der brukerne hele tiden kan flytte på seg?</p>
+  <p>Den rÃ¸de trÃ¥den: <em>alle</em> disse designvalgene â€” fra CSMA/CA til GTP-tunneling til mmWave pico-celler â€” er svar pÃ¥ det samme grunnproblemet: hvordan hÃ¥ndterer vi et delt, upÃ¥litelig radiomedium der brukerne hele tiden kan flytte pÃ¥ seg?</p>
 </div>
 </section>
 
 <footer>
   <div class="container">
-    <p>Basert på <em>Computer Networking: A Top-Down Approach</em>, 8. utgave, av Kurose &amp; Ross — kapittel 7. Denne siden går dypere enn lysbildene, fyller inn motivasjonen og forklarer mekanismene fra grunnen av.</p>
+    <p>Basert pÃ¥ <em>Computer Networking: A Top-Down Approach</em>, 8. utgave, av Kurose &amp; Ross â€” kapittel 7. Denne siden gÃ¥r dypere enn lysbildene, fyller inn motivasjonen og forklarer mekanismene fra grunnen av.</p>
     <p style="margin-top:20px;color:var(--rust);letter-spacing:0.6em">? ? ?</p>
   </div>
 </footer>
@@ -712,8 +712,8 @@
     if (snr > 28) { mod = 'QAM256'; rate = '8 Mbps'; ber = '~10?6'; }
     else if (snr > 18) { mod = 'QAM16'; rate = '4 Mbps'; ber = '~10?5'; }
     else if (snr > 8) { mod = 'BPSK'; rate = '1 Mbps'; ber = '~10?4'; }
-    else { mod = '— ingen forbindelse —'; rate = '0'; ber = 'for høy'; }
-    out.innerHTML = `<strong>SNR ˜ ${snr.toFixed(1)} dB</strong> &nbsp;?&nbsp; modulasjon: <strong>${mod}</strong>, effektiv rate: <strong>${rate}</strong>, BER: ${ber}`;
+    else { mod = 'â€” ingen forbindelse â€”'; rate = '0'; ber = 'for hÃ¸y'; }
+    out.innerHTML = `<strong>SNR Ëœ ${snr.toFixed(1)} dB</strong> &nbsp;?&nbsp; modulasjon: <strong>${mod}</strong>, effektiv rate: <strong>${rate}</strong>, BER: ${ber}`;
   }
   slider.addEventListener('input', update);
   update();
@@ -722,12 +722,12 @@
 // STEPPER: RTS/CTS
 (function(){
   const steps = [
-    {title:'Steg 1: A vil sende', text:'Vert A har data å sende til AP, men er bekymret for skjulte terminaler. Den sender først en liten RTS-ramme (Request to Send).', anim:'<line x1="80" y1="100" x2="302" y2="115" stroke="#b04428" stroke-width="2.5" marker-end="url(#arrR)"/><text x="191.67" y="97.52" transform="rotate(3.865 191.67 97.52)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">RTS</text>'},
-    {title:'Steg 2: AP svarer med CTS', text:'AP-en mottar RTS, og sender en CTS-ramme (Clear to Send) ut. CTS-en kringkastes — alle noder innen rekkevidde av AP-en hører den, inkludert B.', anim:'<line x1="302" y1="115" x2="80" y2="135" stroke="#3d6b3a" stroke-width="2.5" marker-end="url(#arrG)"/><line x1="302" y1="115" x2="520" y2="135" stroke="#3d6b3a" stroke-width="2.5" marker-end="url(#arrG)"/><text x="191.90" y="134.96" transform="rotate(-5.148 191.90 134.96)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">CTS</text><text x="411.91" y="115.04" transform="rotate(5.242 411.91 115.04)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">CTS</text>'},
-    {title:'Steg 3: B holder seg unna', text:'B mottar CTS-en og ser at den er adressert til en annen. B vet nå at kanalen er reservert i et bestemt tidsrom, og holder seg stille. Skjulte terminaler er nøytralisert.', anim:'<rect x="495" y="155" width="50" height="22" fill="#e8d4cd" stroke="#b04428" stroke-width="1.5"/><text x="520" y="170" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">VENT</text>'},
-    {title:'Steg 4: A sender datarammen', text:'A sender nå hele datarammen til AP-en. Ingen andre noder vil prøve å sende, fordi de venter ut den reserverte tiden.', anim:'<line x1="80" y1="160" x2="302" y2="175" stroke="#1a1612" stroke-width="4" marker-end="url(#arrK)"/><text x="191.67" y="157.52" transform="rotate(3.865 191.67 157.52)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">DATA</text>'},
-    {title:'Steg 5: AP bekrefter med ACK', text:'AP-en mottar dataene og sender tilbake en ACK. Det er den vanlige bekreftelsesmekanismen i CSMA/CA — uten ACK ville A trodd at noe gikk galt.', anim:'<line x1="302" y1="175" x2="80" y2="195" stroke="#2d4a7a" stroke-width="2.5" marker-end="url(#arrB)"/><text x="191.90" y="194.96" transform="rotate(-5.148 191.90 194.96)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a">ACK</text>'},
-    {title:'Steg 6: Klar igjen', text:'Den reserverte tiden er over. Alle noder kan nå konkurrere om kanalen igjen. RTS/CTS har lagt til litt overhead, men har sikret oss mot kollisjoner fra skjulte terminaler.', anim:'<text x="300" y="200" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#3d6b3a">Kanalen er fri ?</text>'}
+    {title:'Steg 1: A vil sende', text:'Vert A har data Ã¥ sende til AP, men er bekymret for skjulte terminaler. Den sender fÃ¸rst en liten RTS-ramme (Request to Send).', anim:'<line x1="80" y1="100" x2="302" y2="115" stroke="#b04428" stroke-width="2.5" marker-end="url(#arrR)"/><text x="191.67" y="97.52" transform="rotate(3.865 191.67 97.52)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="11" fill="#b04428">RTS</text>'},
+    {title:'Steg 2: AP svarer med CTS', text:'AP-en mottar RTS, og sender en CTS-ramme (Clear to Send) ut. CTS-en kringkastes â€” alle noder innen rekkevidde av AP-en hÃ¸rer den, inkludert B.', anim:'<line x1="302" y1="115" x2="80" y2="135" stroke="#3d6b3a" stroke-width="2.5" marker-end="url(#arrG)"/><line x1="302" y1="115" x2="520" y2="135" stroke="#3d6b3a" stroke-width="2.5" marker-end="url(#arrG)"/><text x="191.90" y="134.96" transform="rotate(-5.148 191.90 134.96)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">CTS</text><text x="411.91" y="115.04" transform="rotate(5.242 411.91 115.04)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="11" fill="#3d6b3a">CTS</text>'},
+    {title:'Steg 3: B holder seg unna', text:'B mottar CTS-en og ser at den er adressert til en annen. B vet nÃ¥ at kanalen er reservert i et bestemt tidsrom, og holder seg stille. Skjulte terminaler er nÃ¸ytralisert.', anim:'<rect x="495" y="155" width="50" height="22" fill="#e8d4cd" stroke="#b04428" stroke-width="1.5"/><text x="520" y="170" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">VENT</text>'},
+    {title:'Steg 4: A sender datarammen', text:'A sender nÃ¥ hele datarammen til AP-en. Ingen andre noder vil prÃ¸ve Ã¥ sende, fordi de venter ut den reserverte tiden.', anim:'<line x1="80" y1="160" x2="302" y2="175" stroke="#1a1612" stroke-width="4" marker-end="url(#arrK)"/><text x="191.67" y="157.52" transform="rotate(3.865 191.67 157.52)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">DATA</text>'},
+    {title:'Steg 5: AP bekrefter med ACK', text:'AP-en mottar dataene og sender tilbake en ACK. Det er den vanlige bekreftelsesmekanismen i CSMA/CA â€” uten ACK ville A trodd at noe gikk galt.', anim:'<line x1="302" y1="175" x2="80" y2="195" stroke="#2d4a7a" stroke-width="2.5" marker-end="url(#arrB)"/><text x="191.90" y="194.96" transform="rotate(-5.148 191.90 194.96)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a">ACK</text>'},
+    {title:'Steg 6: Klar igjen', text:'Den reserverte tiden er over. Alle noder kan nÃ¥ konkurrere om kanalen igjen. RTS/CTS har lagt til litt overhead, men har sikret oss mot kollisjoner fra skjulte terminaler.', anim:'<text x="300" y="200" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#3d6b3a">Kanalen er fri ?</text>'}
   ];
   let i = 0;
   const title = document.getElementById('rtsTitle');
@@ -739,7 +739,7 @@
   const next = document.getElementById('rtsNext');
   const defs = '<defs><marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L6,4 L0,8 z" fill="#b04428"/></marker><marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L6,4 L0,8 z" fill="#3d6b3a"/></marker><marker id="arrK" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L6,4 L0,8 z" fill="#1a1612"/></marker><marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L6,4 L0,8 z" fill="#2d4a7a"/></marker></defs>';
   function render(){
-    title.textContent = `Steg ${i+1} av 6 — ${steps[i].title.replace(/^Steg \d+: /,'')}`;
+    title.textContent = `Steg ${i+1} av 6 â€” ${steps[i].title.replace(/^Steg \d+: /,'')}`;
     text.textContent = steps[i].text;
     anim.innerHTML = defs + steps[i].anim;
     ind.textContent = `${i+1} / 6`;
@@ -755,20 +755,20 @@
 (function(){
   const feedback = {
     'qFeedback1': {
-      correct: 'Riktig! Mottakeren blir overdøvd av sin egen sender, så collision detection er praktisk umulig på en radiolink.',
-      wrong: 'Ikke helt. Tenk på hva som skjer med mottakerens elektronikk når senderen samtidig sender ut et mye sterkere signal.'
+      correct: 'Riktig! Mottakeren blir overdÃ¸vd av sin egen sender, sÃ¥ collision detection er praktisk umulig pÃ¥ en radiolink.',
+      wrong: 'Ikke helt. Tenk pÃ¥ hva som skjer med mottakerens elektronikk nÃ¥r senderen samtidig sender ut et mye sterkere signal.'
     },
     'qFeedback2': {
-      correct: 'Akkurat! Tunneling gjør at telefonens IP-adresse kan ligge fast hos P-GW, mens kun tunnel-endepunktene oppdateres når telefonen flytter mellom celler.',
-      wrong: 'Tenk på hva som må forbli stabilt for at en pågående TCP-forbindelse skal overleve at telefonen bytter celle.'
+      correct: 'Akkurat! Tunneling gjÃ¸r at telefonens IP-adresse kan ligge fast hos P-GW, mens kun tunnel-endepunktene oppdateres nÃ¥r telefonen flytter mellom celler.',
+      wrong: 'Tenk pÃ¥ hva som mÃ¥ forbli stabilt for at en pÃ¥gÃ¥ende TCP-forbindelse skal overleve at telefonen bytter celle.'
     },
     'qFeedback3': {
-      correct: 'Riktig! Adresse 1 er hvem som mottar denne rammen (AP), adresse 2 er hvem som sendte den (verten), og adresse 3 er den endelige destinasjonen på det kablede nettet (R1).',
-      wrong: 'Tenk på hva AP-en trenger å vite for å videresende pakken videre på Ethernet-nettet etter å ha mottatt den fra lufta.'
+      correct: 'Riktig! Adresse 1 er hvem som mottar denne rammen (AP), adresse 2 er hvem som sendte den (verten), og adresse 3 er den endelige destinasjonen pÃ¥ det kablede nettet (R1).',
+      wrong: 'Tenk pÃ¥ hva AP-en trenger Ã¥ vite for Ã¥ videresende pakken videre pÃ¥ Ethernet-nettet etter Ã¥ ha mottatt den fra lufta.'
     },
     'qFeedback4': {
-      correct: 'Riktig! FR2 (mmWave) gir enorm båndbredde, men signalet blokkeres av vegger, regn og til og med menneskekropper — og rekkevidden er typisk bare 10–100 meter. Derfor krever FR2 massiv utbygging av pico-celler.',
-      wrong: 'Tenk på det fysiske kompromisset: høyere frekvenser gir mer båndbredde, men hva skjer med rekkevidden og gjennomtrengningen?'
+      correct: 'Riktig! FR2 (mmWave) gir enorm bÃ¥ndbredde, men signalet blokkeres av vegger, regn og til og med menneskekropper â€” og rekkevidden er typisk bare 10â€“100 meter. Derfor krever FR2 massiv utbygging av pico-celler.',
+      wrong: 'Tenk pÃ¥ det fysiske kompromisset: hÃ¸yere frekvenser gir mer bÃ¥ndbredde, men hva skjer med rekkevidden og gjennomtrengningen?'
     }
   };
   document.querySelectorAll('.quiz').forEach(quiz=>{

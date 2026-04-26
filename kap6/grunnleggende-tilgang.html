@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>6a — Grunnleggende og medietilgang · Lenkelaget og LAN</title>
+<title>6a â€” Grunnleggende og medietilgang Â· Lenkelaget og LAN</title>
 <link rel="icon" type="image/png" href="/favicon.png">`n<link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -24,9 +24,9 @@
 
 <header class="hero">
   <div class="container">
-    <div class="eyebrow">Kapittel 6a · Lenkelaget</div>
+    <div class="eyebrow">Kapittel 6a Â· Lenkelaget</div>
     <h1>Grunnleggende og <em>medietilgang</em></h1>
-    <p class="lede">Lenkelagets rolle, feildeteksjon med CRC, og aksessprotokoller for delte medier — fra ALOHA til CSMA/CD.</p>
+    <p class="lede">Lenkelagets rolle, feildeteksjon med CRC, og aksessprotokoller for delte medier â€” fra ALOHA til CSMA/CD.</p>
     <nav class="toc">
       <a href="#intro"><span>01</span>Introduksjon</a>
       <a href="#errors"><span>02</span>Feildeteksjon og korrigering</a>
@@ -36,31 +36,31 @@
 </header>
 
 <!-- ============================================ -->
-<!-- SECTION 1 — INTRODUCTION                      -->
+<!-- SECTION 1 â€” INTRODUCTION                      -->
 <!-- ============================================ -->
 <section id="intro">
   <div class="container">
-    <div class="section-badge">01 · Introduksjon</div>
-    <h2>Hva lenkelaget egentlig gjør</h2>
+    <div class="section-badge">01 Â· Introduksjon</div>
+    <h2>Hva lenkelaget egentlig gjÃ¸r</h2>
     <p class="section-intro">
-      Før vi snakker om Ethernet, svitsjer eller ARP — la oss forstå hvorfor vi i det hele tatt trenger et eget lag under nettverkslaget.
+      FÃ¸r vi snakker om Ethernet, svitsjer eller ARP â€” la oss forstÃ¥ hvorfor vi i det hele tatt trenger et eget lag under nettverkslaget.
     </p>
 
     <p class="dropcap">
-      Tenk deg at du sender en pakke fra laptopen din i Trondheim til en webserver i California. Nettverkslaget (IP) er flink til <em>én</em> ting: det finner veien på tvers av internett. Det bestemmer at pakken skal gjennom router A, så router B, så router C, og så videre. Men IP bryr seg ikke om <em>hvordan</em> pakken fysisk kommer fra A til B. Er det en fiberkabel? En WiFi-link? En satellitt? IP vet ikke, og IP bryr seg ikke.
+      Tenk deg at du sender en pakke fra laptopen din i Trondheim til en webserver i California. Nettverkslaget (IP) er flink til <em>Ã©n</em> ting: det finner veien pÃ¥ tvers av internett. Det bestemmer at pakken skal gjennom router A, sÃ¥ router B, sÃ¥ router C, og sÃ¥ videre. Men IP bryr seg ikke om <em>hvordan</em> pakken fysisk kommer fra A til B. Er det en fiberkabel? En WiFi-link? En satellitt? IP vet ikke, og IP bryr seg ikke.
     </p>
 
     <p>
-      Det er jobben til <strong>lenkelaget</strong>. For hver enkelt «hopp» på veien — altså hver lenke mellom to naboer i nettverket — er det lenkelaget som sørger for at dataene faktisk overføres som signaler på et medium og kommer frem i andre enden. Hver lenke kan være forskjellig teknologi, og hver teknologi har sine egne regler.
+      Det er jobben til <strong>lenkelaget</strong>. For hver enkelt Â«hoppÂ» pÃ¥ veien â€” altsÃ¥ hver lenke mellom to naboer i nettverket â€” er det lenkelaget som sÃ¸rger for at dataene faktisk overfÃ¸res som signaler pÃ¥ et medium og kommer frem i andre enden. Hver lenke kan vÃ¦re forskjellig teknologi, og hver teknologi har sine egne regler.
     </p>
 
     <div class="margin-note">
       Et <em>hopp</em> er en enkelt lenke mellom to fysisk naboforbundne noder. Hele stien fra deg til Google kan ha 15 hopp. IP tar seg av stien; lenkelaget tar seg av hvert enkelt hopp.
     </div>
 
-    <h3>Noen ord du må vite</h3>
+    <h3>Noen ord du mÃ¥ vite</h3>
     <p>
-      <strong>Noder</strong> er alle enheter som kjører protokollstabelen — verter (PC-er, servere, telefoner) og routere. <strong>Lenker</strong> er kommunikasjonskanalene som forbinder naboliggende noder. En lenke kan være trådbundet (twisted pair, koaks, fiber) eller trådløs (WiFi, 4G/5G, satellitt). Den innpakkede enheten på lag 2 kalles en <strong>ramme</strong> (frame) — den kapsler inn et IP-datagram akkurat som et datagram kapsler inn et TCP-segment.
+      <strong>Noder</strong> er alle enheter som kjÃ¸rer protokollstabelen â€” verter (PC-er, servere, telefoner) og routere. <strong>Lenker</strong> er kommunikasjonskanalene som forbinder naboliggende noder. En lenke kan vÃ¦re trÃ¥dbundet (twisted pair, koaks, fiber) eller trÃ¥dlÃ¸s (WiFi, 4G/5G, satellitt). Den innpakkede enheten pÃ¥ lag 2 kalles en <strong>ramme</strong> (frame) â€” den kapsler inn et IP-datagram akkurat som et datagram kapsler inn et TCP-segment.
     </p>
 
     <figure>
@@ -105,78 +105,78 @@
         <rect x="440" y="150" width="40" height="30" fill="#b04428" stroke="#8a3420"/>
         <text x="460" y="170" text-anchor="middle" class="ttl" style="fill:#fff">CRC</text>
 
-        <text x="280" y="200" class="lbl" text-anchor="middle">Ethernet-rammen inneholder alt over den — pluss en CRC til feildeteksjon.</text>
+        <text x="280" y="200" class="lbl" text-anchor="middle">Ethernet-rammen inneholder alt over den â€” pluss en CRC til feildeteksjon.</text>
       </svg>
-      <figcaption><strong>Figur 1.</strong> Hvert lag legger til sitt eget hode. Når rammen sendes ut på kabelen, ligger HTTP-data dypt inne i flere lag med innpakning.</figcaption>
+      <figcaption><strong>Figur 1.</strong> Hvert lag legger til sitt eget hode. NÃ¥r rammen sendes ut pÃ¥ kabelen, ligger HTTP-data dypt inne i flere lag med innpakning.</figcaption>
     </figure>
 
     <h3>Hvilke tjenester tilbyr lenkelaget?</h3>
     <p>
-      Ikke alle lenkelagsteknologier gjør alt, men her er tjenestekatalogen de kan tilby:
+      Ikke alle lenkelagsteknologier gjÃ¸r alt, men her er tjenestekatalogen de kan tilby:
     </p>
     <ul>
-      <li><strong>Framing og lenketilgang.</strong> Pakker datagrammet inn i en ramme med hode og hale. Hvis mediet deles med andre (som på WiFi), må det også styre hvem som får sende når.</li>
-      <li><strong>Pålitelig levering.</strong> Enkelte lenker, særlig trådløse med mye feil, kjører retransmisjon på lenkenivå. Dette er sjeldent på pålitelige kabler — der lar man TCP gjøre jobben ende-til-ende.</li>
+      <li><strong>Framing og lenketilgang.</strong> Pakker datagrammet inn i en ramme med hode og hale. Hvis mediet deles med andre (som pÃ¥ WiFi), mÃ¥ det ogsÃ¥ styre hvem som fÃ¥r sende nÃ¥r.</li>
+      <li><strong>PÃ¥litelig levering.</strong> Enkelte lenker, sÃ¦rlig trÃ¥dlÃ¸se med mye feil, kjÃ¸rer retransmisjon pÃ¥ lenkenivÃ¥. Dette er sjeldent pÃ¥ pÃ¥litelige kabler â€” der lar man TCP gjÃ¸re jobben ende-til-ende.</li>
       <li><strong>Flytkontroll.</strong> Pacing mellom nabonoder slik at mottakeren ikke drukner.</li>
-      <li><strong>Feildeteksjon og feilretting.</strong> Signaldemping og støy kan snu bits. Mottakeren må merke det.</li>
-      <li><strong>Half- eller full-duplex.</strong> Kan begge sidene sende samtidig, eller må de bytte på?</li>
+      <li><strong>Feildeteksjon og feilretting.</strong> Signaldemping og stÃ¸y kan snu bits. Mottakeren mÃ¥ merke det.</li>
+      <li><strong>Half- eller full-duplex.</strong> Kan begge sidene sende samtidig, eller mÃ¥ de bytte pÃ¥?</li>
     </ul>
 
     <div class="callout callout-blue">
       <span class="label">Hvor implementeres lenkelaget?</span>
-      <p>I <strong>nettverkskortet</strong> (NIC) — en egen brikke eller et eget kort. Det er en blanding av maskinvare, firmware og litt programvare. Ethernet-brikken i laptopen din er en lenkelagsimplementasjon. WiFi-brikken er også en. Operativsystemet snakker med dem over systembussen.</p>
+      <p>I <strong>nettverkskortet</strong> (NIC) â€” en egen brikke eller et eget kort. Det er en blanding av maskinvare, firmware og litt programvare. Ethernet-brikken i laptopen din er en lenkelagsimplementasjon. WiFi-brikken er ogsÃ¥ en. Operativsystemet snakker med dem over systembussen.</p>
     </div>
 
     <div class="quiz" data-quiz="1">
       <div class="q-label">Kunnskapssjekk</div>
-      <div class="q-text">Hvorfor kjører mange Ethernet-lenker <em>ikke</em> pålitelig levering på lenkenivå, selv om lenkelaget <em>kan</em> tilby det?</div>
+      <div class="q-text">Hvorfor kjÃ¸rer mange Ethernet-lenker <em>ikke</em> pÃ¥litelig levering pÃ¥ lenkenivÃ¥, selv om lenkelaget <em>kan</em> tilby det?</div>
       <div class="options">
-        <button class="option" data-correct="false">Fordi IP allerede garanterer pålitelig levering.</button>
-        <button class="option" data-correct="true">Fordi kablede lenker har svært lav feilrate, så retransmisjon hører bedre hjemme ende-til-ende i TCP.</button>
-        <button class="option" data-correct="false">Fordi pålitelig levering ville gjort rammene for store.</button>
+        <button class="option" data-correct="false">Fordi IP allerede garanterer pÃ¥litelig levering.</button>
+        <button class="option" data-correct="true">Fordi kablede lenker har svÃ¦rt lav feilrate, sÃ¥ retransmisjon hÃ¸rer bedre hjemme ende-til-ende i TCP.</button>
+        <button class="option" data-correct="false">Fordi pÃ¥litelig levering ville gjort rammene for store.</button>
         <button class="option" data-correct="false">Fordi Ethernet ikke har plass til ACK-meldinger i rammestrukturen.</button>
       </div>
-      <div class="explanation">På ren, moderne kabel er bitfeil så sjeldne at det å bygge pålitelighet inn i hvert hopp er bortkastet arbeid. TCP fanger opp den lille mengden feil som slipper gjennom. På trådløse lenker, der feilraten er mye høyere, er bildet annerledes — 802.11 WiFi kjører faktisk ACK på lenkenivå.</div>
+      <div class="explanation">PÃ¥ ren, moderne kabel er bitfeil sÃ¥ sjeldne at det Ã¥ bygge pÃ¥litelighet inn i hvert hopp er bortkastet arbeid. TCP fanger opp den lille mengden feil som slipper gjennom. PÃ¥ trÃ¥dlÃ¸se lenker, der feilraten er mye hÃ¸yere, er bildet annerledes â€” 802.11 WiFi kjÃ¸rer faktisk ACK pÃ¥ lenkenivÃ¥.</div>
     </div>
   </div>
 </section>
 
 <!-- ============================================ -->
-<!-- SECTION 2 — ERRORS                            -->
+<!-- SECTION 2 â€” ERRORS                            -->
 <!-- ============================================ -->
 <section id="errors">
   <div class="container">
-    <div class="section-badge">02 · Feildeteksjon</div>
-    <h2>Når bits snur på veien</h2>
+    <div class="section-badge">02 Â· Feildeteksjon</div>
+    <h2>NÃ¥r bits snur pÃ¥ veien</h2>
     <p class="section-intro">
-      Støy, demping og elektromagnetisk interferens kan flippe en bit fra 0 til 1 eller omvendt. Mottakeren må kunne merke det. Løsningen: send med litt ekstra informasjon som røper feilen.
+      StÃ¸y, demping og elektromagnetisk interferens kan flippe en bit fra 0 til 1 eller omvendt. Mottakeren mÃ¥ kunne merke det. LÃ¸sningen: send med litt ekstra informasjon som rÃ¸per feilen.
     </p>
 
     <p class="dropcap">
-      Grunnideen er enkel. Du har <em>d</em> databits du vil sende. Før du sender, regner du ut noen ekstra <em>redundans</em>-bits (EDC — Error Detection and Correction) basert på innholdet. Du sender begge deler. Mottakeren regner ut redundansen på nytt fra dataene den faktisk mottok, og sammenligner med den som lå ved. Stemmer ikke de to — er det noe galt underveis.
+      Grunnideen er enkel. Du har <em>d</em> databits du vil sende. FÃ¸r du sender, regner du ut noen ekstra <em>redundans</em>-bits (EDC â€” Error Detection and Correction) basert pÃ¥ innholdet. Du sender begge deler. Mottakeren regner ut redundansen pÃ¥ nytt fra dataene den faktisk mottok, og sammenligner med den som lÃ¥ ved. Stemmer ikke de to â€” er det noe galt underveis.
     </p>
 
     <p>
-      Feildeteksjon er <em>aldri</em> hundre prosent. Det finnes alltid feilmønstre som tilfeldigvis gir samme redundansverdi som den opprinnelige. Men med riktig valg av algoritme blir sannsynligheten for å gå glipp av en feil forsvinnende liten. Jo flere redundansbits, jo bedre deteksjon.
+      Feildeteksjon er <em>aldri</em> hundre prosent. Det finnes alltid feilmÃ¸nstre som tilfeldigvis gir samme redundansverdi som den opprinnelige. Men med riktig valg av algoritme blir sannsynligheten for Ã¥ gÃ¥ glipp av en feil forsvinnende liten. Jo flere redundansbits, jo bedre deteksjon.
     </p>
 
-    <h3>Paritetsbit — den aller enkleste ideen</h3>
+    <h3>Paritetsbit â€” den aller enkleste ideen</h3>
     <p>
-      Legg til én bit som gjør at det totale antallet 1-ere blir et partall. Slik ser det ut for 16 databits:
+      Legg til Ã©n bit som gjÃ¸r at det totale antallet 1-ere blir et partall. Slik ser det ut for 16 databits:
     </p>
     <pre><span class="comment">  data (16 bit)       paritet</span>
-  0111000110101011    1    <span class="comment">? ni 1-ere i data, pariteten gjør det til ti (partall)</span></pre>
+  0111000110101011    1    <span class="comment">? ni 1-ere i data, pariteten gjÃ¸r det til ti (partall)</span></pre>
     <p>
-      Om én bit snur under overføring, blir antall 1-ere odde, og mottakeren oppdager det umiddelbart. Problemet: om <em>to</em> bits snur, blir antallet partall igjen, og feilen går under radaren. Enkelpariteten fanger bare et odde antall feilbits.
+      Om Ã©n bit snur under overfÃ¸ring, blir antall 1-ere odde, og mottakeren oppdager det umiddelbart. Problemet: om <em>to</em> bits snur, blir antallet partall igjen, og feilen gÃ¥r under radaren. Enkelpariteten fanger bare et odde antall feilbits.
     </p>
 
-    <h3>Todimensjonal paritet — en pekepinn mot noe smartere</h3>
+    <h3>Todimensjonal paritet â€” en pekepinn mot noe smartere</h3>
     <p>
-      Hvis man arrangerer dataene i et rutenett og setter paritet både på hver rad og hver kolonne, kan man ikke bare <em>oppdage</em> en enkelt bitfeil — man kan <em>rette</em> den. Feilen ligger der den markerte raden og den markerte kolonnen krysser hverandre.
+      Hvis man arrangerer dataene i et rutenett og setter paritet bÃ¥de pÃ¥ hver rad og hver kolonne, kan man ikke bare <em>oppdage</em> en enkelt bitfeil â€” man kan <em>rette</em> den. Feilen ligger der den markerte raden og den markerte kolonnen krysser hverandre.
     </p>
 
     <figure>
-      <svg id="fig-parity2d" viewBox="0 0 430 264" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Rutenett med databiter, radparitet og kolonneparitet. Én mottatt bit er feil; rad- og kolonneparitet peker på krysset der feilen kan rettes." style="max-width:450px;width:100%;display:block;margin:0 auto;">
+      <svg id="fig-parity2d" viewBox="0 0 430 264" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Rutenett med databiter, radparitet og kolonneparitet. Ã‰n mottatt bit er feil; rad- og kolonneparitet peker pÃ¥ krysset der feilen kan rettes." style="max-width:450px;width:100%;display:block;margin:0 auto;">
         <defs>
           <style>
             #fig-parity2d .p2d-lbl { font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; fill: #6b6257; }
@@ -295,34 +295,34 @@
             <text x="152" y="158" text-anchor="middle" class="p2d-bit">0</text>
           </g>
         </g>
-        <text x="215" y="243" text-anchor="middle" class="p2d-lbl">Mottaker: rad 2 og kolonne 2 stemmer ikke —</text>
-        <text x="215" y="256" text-anchor="middle" class="p2d-lbl">feilen er i krysset (midtbiten skulle vært 1).</text>
+        <text x="215" y="243" text-anchor="middle" class="p2d-lbl">Mottaker: rad 2 og kolonne 2 stemmer ikke â€”</text>
+        <text x="215" y="256" text-anchor="middle" class="p2d-lbl">feilen er i krysset (midtbiten skulle vÃ¦rt 1).</text>
       </svg>
-      <figcaption><strong>Figur 2.</strong> Eksempel der én databit er mottatt feil. Radparitet og kolonneparitet avslører hver sin «feil linje»; i krysset flippes biten tilbake.</figcaption>
+      <figcaption><strong>Figur 2.</strong> Eksempel der Ã©n databit er mottatt feil. Radparitet og kolonneparitet avslÃ¸rer hver sin Â«feil linjeÂ»; i krysset flippes biten tilbake.</figcaption>
     </figure>
 
-    <h3>CRC — det som faktisk brukes</h3>
+    <h3>CRC â€” det som faktisk brukes</h3>
     <p>
-      Ethernet, WiFi og nesten alle moderne lenkelagsteknologier bruker <strong>Cyclic Redundancy Check (CRC)</strong>. Det er en smart konstruksjon basert på polynomdivisjon i modulo-2-aritmetikk (som i praksis er XOR-operasjoner), og den er både billig å implementere i maskinvare og veldig god på å fange <em>burst</em>-feil — der flere nabobits snur samtidig, noe som er typisk for elektrisk støy.
+      Ethernet, WiFi og nesten alle moderne lenkelagsteknologier bruker <strong>Cyclic Redundancy Check (CRC)</strong>. Det er en smart konstruksjon basert pÃ¥ polynomdivisjon i modulo-2-aritmetikk (som i praksis er XOR-operasjoner), og den er bÃ¥de billig Ã¥ implementere i maskinvare og veldig god pÃ¥ Ã¥ fange <em>burst</em>-feil â€” der flere nabobits snur samtidig, noe som er typisk for elektrisk stÃ¸y.
     </p>
 
     <div class="margin-note">
-      Modulo-2-aritmetikk er bare XOR. Ingen mente, ingen lån. Det gjør CRC-kretser ekstremt enkle i maskinvare — bare et skiftregister og noen XOR-porter.
+      Modulo-2-aritmetikk er bare XOR. Ingen mente, ingen lÃ¥n. Det gjÃ¸r CRC-kretser ekstremt enkle i maskinvare â€” bare et skiftregister og noen XOR-porter.
     </div>
 
     <h4>Grunnideen</h4>
     <p>
-      Senderen og mottakeren er enige om en <em>generator</em> <code>G</code> — en bitsekvens på <code>r+1</code> bits (hvor første og siste bit er 1). Senderen finner en redundans <code>R</code> på <code>r</code> bits slik at den kombinerte sekvensen <code>&lt;D,R&gt;</code> er nøyaktig delelig med <code>G</code> i modulo-2. Så sender senderen <code>&lt;D,R&gt;</code>. Mottakeren deler det mottatte på <code>G</code>. Blir resten null — alt bra. Blir resten noe annet — en feil har skjedd.
+      Senderen og mottakeren er enige om en <em>generator</em> <code>G</code> â€” en bitsekvens pÃ¥ <code>r+1</code> bits (hvor fÃ¸rste og siste bit er 1). Senderen finner en redundans <code>R</code> pÃ¥ <code>r</code> bits slik at den kombinerte sekvensen <code>&lt;D,R&gt;</code> er nÃ¸yaktig delelig med <code>G</code> i modulo-2. SÃ¥ sender senderen <code>&lt;D,R&gt;</code>. Mottakeren deler det mottatte pÃ¥ <code>G</code>. Blir resten null â€” alt bra. Blir resten noe annet â€” en feil har skjedd.
     </p>
 
     <h4>Formelen</h4>
     <p>
-      Senderen regner ut <code>R</code> som resten av <code>(D · 2?) / G</code> (modulo 2). Å gange med <code>2?</code> er det samme som å legge til <code>r</code> nuller til høyre — vi skyver dataene til venstre og lager plass for CRC-bitene. Deretter XOR-divideres dette skift-tallet med <code>G</code>, og resten som blir igjen er <code>R</code>.
+      Senderen regner ut <code>R</code> som resten av <code>(D Â· 2?) / G</code> (modulo 2). Ã… gange med <code>2?</code> er det samme som Ã¥ legge til <code>r</code> nuller til hÃ¸yre â€” vi skyver dataene til venstre og lager plass for CRC-bitene. Deretter XOR-divideres dette skift-tallet med <code>G</code>, og resten som blir igjen er <code>R</code>.
     </p>
 
     <h4>Et konkret eksempel</h4>
     <p>
-      La oss gå gjennom det trinn for trinn med data <code>100100</code> og generator <code>G = 1101</code> (som tilsvarer polynomet <code>x³ + x² + 1</code>). Siden <code>G</code> er 4 bit, blir <code>r = 3</code>, så vi legger til tre nuller og XOR-deler:
+      La oss gÃ¥ gjennom det trinn for trinn med data <code>100100</code> og generator <code>G = 1101</code> (som tilsvarer polynomet <code>xÂ³ + xÂ² + 1</code>). Siden <code>G</code> er 4 bit, blir <code>r = 3</code>, sÃ¥ vi legger til tre nuller og XOR-deler:
     </p>
 
 <pre>  1 0 0 1 0 0 0 0 0   <span class="comment">? D skiftet tre posisjoner</span>
@@ -343,11 +343,11 @@
                   <span class="keyword">0 0 1</span>    <span class="comment">? R = 001 (resten, tre bit)</span></pre>
 
     <p>
-      Så det som går på kabelen er <code>&lt;D,R&gt; = 100100<strong>001</strong></code>. Mottakeren tar disse ni bitene, XOR-deler dem med den samme <code>G = 1101</code>, og skal få rest null. Hvis én eller flere bits har snudd underveis, blir resten forskjellig fra null, og mottakeren vet at rammen er korrupt — og kaster den.
+      SÃ¥ det som gÃ¥r pÃ¥ kabelen er <code>&lt;D,R&gt; = 100100<strong>001</strong></code>. Mottakeren tar disse ni bitene, XOR-deler dem med den samme <code>G = 1101</code>, og skal fÃ¥ rest null. Hvis Ã©n eller flere bits har snudd underveis, blir resten forskjellig fra null, og mottakeren vet at rammen er korrupt â€” og kaster den.
     </p>
 
     <div class="stepper" id="crc-stepper">
-      <div class="s-label">Interaktiv gjennomgang — CRC steg for steg</div>
+      <div class="s-label">Interaktiv gjennomgang â€” CRC steg for steg</div>
       <div class="stage" id="crc-stage">
         <h5 id="crc-title">Trinn 1 av 5</h5>
         <p id="crc-body">Start her.</p>
@@ -361,7 +361,7 @@
 
     <h4>Hvor bra er CRC?</h4>
     <p>
-      En CRC med <code>r</code> bits fanger <strong>alle burst-feil kortere enn <code>r+1</code> bits</strong>, alle feil med et odde antall bitflipp, og lengre burst-feil med sannsynlighet <code>1 - (½)?</code>. Ethernet bruker CRC-32 — en 32-bits CRC — så selv for en kjempelang burst er sjansen for å gå glipp av feilen omtrent én på fire milliarder.
+      En CRC med <code>r</code> bits fanger <strong>alle burst-feil kortere enn <code>r+1</code> bits</strong>, alle feil med et odde antall bitflipp, og lengre burst-feil med sannsynlighet <code>1 - (Â½)?</code>. Ethernet bruker CRC-32 â€” en 32-bits CRC â€” sÃ¥ selv for en kjempelang burst er sjansen for Ã¥ gÃ¥ glipp av feilen omtrent Ã©n pÃ¥ fire milliarder.
     </p>
 
     <table>
@@ -375,43 +375,43 @@
     </table>
 
     <div class="reveal" data-reveal>
-      <div class="q">Hvorfor sender vi ikke bare dataene to ganger og sammenligner? Det ville jo også oppdaget feil.</div>
+      <div class="q">Hvorfor sender vi ikke bare dataene to ganger og sammenligner? Det ville jo ogsÃ¥ oppdaget feil.</div>
       <button>Vis svar</button>
-      <div class="answer">Det ville doblet båndbredden — du må sende like mye redundans som nyttedata. CRC gir deg nesten like god deteksjon med bare 32 ekstra bits per ramme, uansett hvor stor rammen er. For en ethernet-ramme på 1500 byte er det 32 bits mot 12&nbsp;000 bits — en besparelse på en faktor 375.</div>
+      <div class="answer">Det ville doblet bÃ¥ndbredden â€” du mÃ¥ sende like mye redundans som nyttedata. CRC gir deg nesten like god deteksjon med bare 32 ekstra bits per ramme, uansett hvor stor rammen er. For en ethernet-ramme pÃ¥ 1500 byte er det 32 bits mot 12&nbsp;000 bits â€” en besparelse pÃ¥ en faktor 375.</div>
     </div>
   </div>
 </section>
 
 <!-- ============================================ -->
-<!-- SECTION 3 — MULTIPLE ACCESS                   -->
+<!-- SECTION 3 â€” MULTIPLE ACCESS                   -->
 <!-- ============================================ -->
 <section id="mac">
   <div class="container">
-    <div class="section-badge">03 · Multiple access</div>
-    <h2>Når mange deler samme kabel</h2>
+    <div class="section-badge">03 Â· Multiple access</div>
+    <h2>NÃ¥r mange deler samme kabel</h2>
     <p class="section-intro">
-      Hvis bare to noder er koblet sammen av en kabel, er det ingen tvil om hvem som får sende. Men hvis ti eller hundre deler samme medium — hvem får ordet, og når?
+      Hvis bare to noder er koblet sammen av en kabel, er det ingen tvil om hvem som fÃ¥r sende. Men hvis ti eller hundre deler samme medium â€” hvem fÃ¥r ordet, og nÃ¥r?
     </p>
 
     <p class="dropcap">
-      To typer lenker finnes: <strong>punkt-til-punkt</strong> og <strong>broadcast</strong>. En punkt-til-punkt-lenke har akkurat to ender — som en fiberlenke mellom en svitsj og en server. Her trengs det ingen koordinering. Men i en broadcast-lenke — som gammelt Ethernet med koaks, WiFi i luften, eller kablene i et sjakkbrett-oppsett — deler alle det samme fysiske mediet. Sender to samtidig, overlapper signalene og blir uleselige. Det kalles en <strong>kollisjon</strong>.
+      To typer lenker finnes: <strong>punkt-til-punkt</strong> og <strong>broadcast</strong>. En punkt-til-punkt-lenke har akkurat to ender â€” som en fiberlenke mellom en svitsj og en server. Her trengs det ingen koordinering. Men i en broadcast-lenke â€” som gammelt Ethernet med koaks, WiFi i luften, eller kablene i et sjakkbrett-oppsett â€” deler alle det samme fysiske mediet. Sender to samtidig, overlapper signalene og blir uleselige. Det kalles en <strong>kollisjon</strong>.
     </p>
 
     <div class="margin-note">
-      En god analogi: en cocktailparty. Alle kan snakke, men hvis to snakker samtidig, hører ingen noe særlig. Hvordan lærer man å ta ordet uten å avbryte?
+      En god analogi: en cocktailparty. Alle kan snakke, men hvis to snakker samtidig, hÃ¸rer ingen noe sÃ¦rlig. Hvordan lÃ¦rer man Ã¥ ta ordet uten Ã¥ avbryte?
     </div>
 
-    <h3>Hva vi egentlig ønsker oss</h3>
+    <h3>Hva vi egentlig Ã¸nsker oss</h3>
     <p>
-      Den ideelle multiple-access-protokollen ville ha fire egenskaper: når én node vil sende, kan den bruke hele kanalen <code>R</code>. Når <code>M</code> noder vil sende, deler de rettferdig med <code>R/M</code> til hver. Ingen sentralisert master. Og den må være enkel å implementere. Dessverre er det ingen protokoll som oppnår alle fire samtidig — alt er kompromisser. Det finnes tre brede klasser med tilnærminger.
+      Den ideelle multiple-access-protokollen ville ha fire egenskaper: nÃ¥r Ã©n node vil sende, kan den bruke hele kanalen <code>R</code>. NÃ¥r <code>M</code> noder vil sende, deler de rettferdig med <code>R/M</code> til hver. Ingen sentralisert master. Og den mÃ¥ vÃ¦re enkel Ã¥ implementere. Dessverre er det ingen protokoll som oppnÃ¥r alle fire samtidig â€” alt er kompromisser. Det finnes tre brede klasser med tilnÃ¦rminger.
     </p>
 
-    <h3>Klasse 1 — Kanalpartisjonering</h3>
+    <h3>Klasse 1 â€” Kanalpartisjonering</h3>
     <p>
-      Del kanalen i faste biter og gi hver node sin egen bit. I <strong>TDMA</strong> (Time Division Multiple Access) deles tiden i runder, og hver node får ett tidsluke i hver runde. I <strong>FDMA</strong> (Frequency Division) deles frekvensspekteret i bånd, og hver node får sitt eget bånd.
+      Del kanalen i faste biter og gi hver node sin egen bit. I <strong>TDMA</strong> (Time Division Multiple Access) deles tiden i runder, og hver node fÃ¥r ett tidsluke i hver runde. I <strong>FDMA</strong> (Frequency Division) deles frekvensspekteret i bÃ¥nd, og hver node fÃ¥r sitt eget bÃ¥nd.
     </p>
     <p>
-      Dette er rettferdig ved høy last — ingen kollisjoner, garantert båndbredde. Men ved lav last er det sløsende. Hvis kun én av seks noder har noe å sende, må den vente på sitt tidsluke hver sjette gang, selv om de andre fem er tause. Den får bare <code>R/6</code> selv om <code>5R/6</code> ligger ubrukt.
+      Dette er rettferdig ved hÃ¸y last â€” ingen kollisjoner, garantert bÃ¥ndbredde. Men ved lav last er det slÃ¸sende. Hvis kun Ã©n av seks noder har noe Ã¥ sende, mÃ¥ den vente pÃ¥ sitt tidsluke hver sjette gang, selv om de andre fem er tause. Den fÃ¥r bare <code>R/6</code> selv om <code>5R/6</code> ligger ubrukt.
     </p>
 
     <figure>
@@ -436,30 +436,30 @@
           <rect x="480" y="0" width="80" height="40" fill="#b04428" stroke="#1a1612"/>
           <text x="520" y="25" text-anchor="middle" class="tl" fill="#fff">1</text>
           <rect x="560" y="0" width="40" height="40" fill="#e8e3d6" stroke="#1a1612"/>
-          <text x="580" y="25" text-anchor="middle" class="tl" fill="#a39886">…</text>
+          <text x="580" y="25" text-anchor="middle" class="tl" fill="#a39886">â€¦</text>
           <text x="240" y="70" class="cap" text-anchor="middle">? 6-sluks-runde ?</text>
-          <text x="240" y="90" class="cap" text-anchor="middle" font-style="italic">node 1, 3 og 4 har data; slots 2, 5, 6 står tomme</text>
+          <text x="240" y="90" class="cap" text-anchor="middle" font-style="italic">node 1, 3 og 4 har data; slots 2, 5, 6 stÃ¥r tomme</text>
         </g>
       </svg>
-      <figcaption><strong>Figur 3.</strong> TDMA med 6 slots. Bare node 1, 3 og 4 har data. De tre tomme slotsene bruker ingen, men de blir likevel stående. Det er prisen vi betaler for forutsigbarhet.</figcaption>
+      <figcaption><strong>Figur 3.</strong> TDMA med 6 slots. Bare node 1, 3 og 4 har data. De tre tomme slotsene bruker ingen, men de blir likevel stÃ¥ende. Det er prisen vi betaler for forutsigbarhet.</figcaption>
     </figure>
 
-    <h3>Klasse 2 — Random access</h3>
+    <h3>Klasse 2 â€” Random access</h3>
     <p>
-      Motsatt filosofi: ikke del noe i det hele tatt. Når du har noe å sende, bare send det i full fart. Kolliderer det med noe annet — håndter det. Dette fungerer utmerket ved lav last, der en ensom node kan bruke hele kanalen. Men ved høy last øker kollisjonssannsynligheten, og stadig mer tid går til spille.
+      Motsatt filosofi: ikke del noe i det hele tatt. NÃ¥r du har noe Ã¥ sende, bare send det i full fart. Kolliderer det med noe annet â€” hÃ¥ndter det. Dette fungerer utmerket ved lav last, der en ensom node kan bruke hele kanalen. Men ved hÃ¸y last Ã¸ker kollisjonssannsynligheten, og stadig mer tid gÃ¥r til spille.
     </p>
 
-    <h4>Slotted ALOHA — den enkleste random-access-ideen</h4>
+    <h4>Slotted ALOHA â€” den enkleste random-access-ideen</h4>
     <p>
-      Del tiden i like store slots, akkurat like lange som en ramme. Alle nodene er synkroniserte. Når en node har en ny ramme, sender den <em>ved neste slot-start</em>. Hvis bare den sender, er slot-et vellykket. Hvis to sender i samme slot, kolliderer de — og begge retransmitterer i en framtidig slot med sannsynlighet <code>p</code> til de lykkes.
+      Del tiden i like store slots, akkurat like lange som en ramme. Alle nodene er synkroniserte. NÃ¥r en node har en ny ramme, sender den <em>ved neste slot-start</em>. Hvis bare den sender, er slot-et vellykket. Hvis to sender i samme slot, kolliderer de â€” og begge retransmitterer i en framtidig slot med sannsynlighet <code>p</code> til de lykkes.
     </p>
     <p>
-      Den maksimale effektiviteten til slotted ALOHA er <code>1/e ˜ 37%</code>. Det betyr at selv i beste fall er 63 prosent av tiden enten kollisjoner eller tomme slots. Unslotted (ren) ALOHA er enda verre — bare 18 prosent.
+      Den maksimale effektiviteten til slotted ALOHA er <code>1/e Ëœ 37%</code>. Det betyr at selv i beste fall er 63 prosent av tiden enten kollisjoner eller tomme slots. Unslotted (ren) ALOHA er enda verre â€” bare 18 prosent.
     </p>
 
     <figure>
       <svg id="fig-aloha" viewBox="0 0 500 218" xmlns="http://www.w3.org/2000/svg" role="img"
-           aria-label="Slotted ALOHA tidslinje: tre noder (A, B, C) og fem tidsslots. Slot 1: kun A sender, vellykket (grønn). Slot 2: B og C sender samtidig, kollisjon (rød). Slot 3: tomt. Slot 4: B retransmitterer, vellykket (grønn). Slot 5: C retransmitterer, vellykket (grønn)."
+           aria-label="Slotted ALOHA tidslinje: tre noder (A, B, C) og fem tidsslots. Slot 1: kun A sender, vellykket (grÃ¸nn). Slot 2: B og C sender samtidig, kollisjon (rÃ¸d). Slot 3: tomt. Slot 4: B retransmitterer, vellykket (grÃ¸nn). Slot 5: C retransmitterer, vellykket (grÃ¸nn)."
            style="max-width:540px;width:100%;display:block;margin:0 auto;">
         <defs>
           <style>
@@ -504,19 +504,19 @@
         <text x="30" y="61"  text-anchor="middle" class="fa-nod">Node A</text>
         <text x="30" y="111" text-anchor="middle" class="fa-nod">Node B</text>
         <text x="30" y="161" text-anchor="middle" class="fa-nod">Node C</text>
-        <!-- Base grid cells — Node A -->
+        <!-- Base grid cells â€” Node A -->
         <rect x="60"  y="30" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
         <rect x="148" y="30" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
         <rect x="236" y="30" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
         <rect x="324" y="30" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
         <rect x="412" y="30" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
-        <!-- Base grid cells — Node B -->
+        <!-- Base grid cells â€” Node B -->
         <rect x="60"  y="80" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
         <rect x="148" y="80" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
         <rect x="236" y="80" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
         <rect x="324" y="80" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
         <rect x="412" y="80" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
-        <!-- Base grid cells — Node C -->
+        <!-- Base grid cells â€” Node C -->
         <rect x="60"  y="130" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
         <rect x="148" y="130" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
         <rect x="236" y="130" width="88" height="50" fill="#eee8db" stroke="#c9c0ae" stroke-width="1"/>
@@ -556,27 +556,27 @@
           <text x="456" y="163" text-anchor="middle" class="fa-ico" fill="white">&#10003;</text>
         </g>
         <!-- Summary -->
-        <text x="250" y="198" text-anchor="middle" class="fa-cap">Effektivitet: 3 av 5 slots nyttige = 60 % (lav last). Teoretisk maks ved høy last: 1/e &#8776; 37 %.</text>
+        <text x="250" y="198" text-anchor="middle" class="fa-cap">Effektivitet: 3 av 5 slots nyttige = 60 % (lav last). Teoretisk maks ved hÃ¸y last: 1/e &#8776; 37 %.</text>
       </svg>
-      <figcaption><strong>Figur 4.</strong> Slotted ALOHA med tre noder og fem tidsslots. Animasjonen fremhever én slot av gangen: grønn = vellykket transmisjon, rød = kollisjon, grå = tomt. Med lav trafikk brukes kanalen godt; ved høy last øker kollisjonsraten og effektiviteten nærmer seg det teoretiske taket på 1/e ˜ 37 %.</figcaption>
+      <figcaption><strong>Figur 4.</strong> Slotted ALOHA med tre noder og fem tidsslots. Animasjonen fremhever Ã©n slot av gangen: grÃ¸nn = vellykket transmisjon, rÃ¸d = kollisjon, grÃ¥ = tomt. Med lav trafikk brukes kanalen godt; ved hÃ¸y last Ã¸ker kollisjonsraten og effektiviteten nÃ¦rmer seg det teoretiske taket pÃ¥ 1/e Ëœ 37 %.</figcaption>
     </figure>
 
-    <h4>CSMA — hør etter før du snakker</h4>
+    <h4>CSMA â€” hÃ¸r etter fÃ¸r du snakker</h4>
     <p>
-      Den mest opplagte forbedringen: lytt på kanalen først. Hvis ingen snakker, send. Hvis noen snakker, vent. <strong>Carrier Sense Multiple Access</strong>. Den polite samtalemetoden.
+      Den mest opplagte forbedringen: lytt pÃ¥ kanalen fÃ¸rst. Hvis ingen snakker, send. Hvis noen snakker, vent. <strong>Carrier Sense Multiple Access</strong>. Den polite samtalemetoden.
     </p>
     <p>
-      Men selv med carrier sensing kan kollisjoner skje. Hvorfor? <em>Propageringsforsinkelse</em>. Signaler beveger seg raskt, men ikke uendelig raskt. Hvis node A begynner å sende, tar det en liten brøkdel av et sekund før signalet når node B i den andre enden av kabelen. I den tiden tror B at kanalen er ledig. B starter også å sende. Når signalene til slutt møtes — kollisjon. Jo lengre kabel, jo større vindu for denne typen feil.
+      Men selv med carrier sensing kan kollisjoner skje. Hvorfor? <em>Propageringsforsinkelse</em>. Signaler beveger seg raskt, men ikke uendelig raskt. Hvis node A begynner Ã¥ sende, tar det en liten brÃ¸kdel av et sekund fÃ¸r signalet nÃ¥r node B i den andre enden av kabelen. I den tiden tror B at kanalen er ledig. B starter ogsÃ¥ Ã¥ sende. NÃ¥r signalene til slutt mÃ¸tes â€” kollisjon. Jo lengre kabel, jo stÃ¸rre vindu for denne typen feil.
     </p>
 
     <figure>
       <!--
         Geometri: kabel A(x=85)?B(x=405), bredde=320px. Tidsakse: t=0 ? y=62, t=t_prop ? y=242 (?y=180).
-        B starter ved t=0.4·t_prop ? y=134. Kollisjon ved t=0.7·t_prop ? (x=309, y=188).
-        A's signalfront ved t=0.4: x=213 — tydelig gap til B.
+        B starter ved t=0.4Â·t_prop ? y=134. Kollisjon ved t=0.7Â·t_prop ? (x=309, y=188).
+        A's signalfront ved t=0.4: x=213 â€” tydelig gap til B.
       -->
       <svg id="fig-csma-prop" viewBox="0 0 520 265" xmlns="http://www.w3.org/2000/svg" role="img"
-           aria-label="Tidrom-diagram: Node A starter å sende ved t=0 (venstre). Signalet propagerer mot høyre. Ved t tilnærmet 0,4 ganger propageringstiden har signalet nådd 40 prosent av kabelen. Node B hører ingenting og begynner å sende. Signalene møtes og kolliderer omtrent midt på kabelen ved t tilnærmet 0,7 ganger propageringstiden."
+           aria-label="Tidrom-diagram: Node A starter Ã¥ sende ved t=0 (venstre). Signalet propagerer mot hÃ¸yre. Ved t tilnÃ¦rmet 0,4 ganger propageringstiden har signalet nÃ¥dd 40 prosent av kabelen. Node B hÃ¸rer ingenting og begynner Ã¥ sende. Signalene mÃ¸tes og kolliderer omtrent midt pÃ¥ kabelen ved t tilnÃ¦rmet 0,7 ganger propageringstiden."
            style="max-width:540px;width:100%;display:block;margin:0 auto;">
         <defs>
           <style>
@@ -615,48 +615,48 @@
         <!-- A sends at t=0 -->
         <circle cx="85" cy="62" r="3.5" fill="#2d4a7a"/>
         <text x="91" y="60" class="cp-ann" fill="#2d4a7a">A sender (t = 0)</text>
-        <!-- A's signal front at t=0.4·t_prop: x=213, y=134 -->
+        <!-- A's signal front at t=0.4Â·t_prop: x=213, y=134 -->
         <circle cx="213" cy="134" r="4" fill="#2d4a7a" opacity="0.65"/>
         <!-- Gap indicator: dashed line from signal front to B's guide -->
         <line x1="217" y1="134" x2="401" y2="134" stroke="#9b8e7e" stroke-width="1" stroke-dasharray="3,3"/>
-        <text x="307" y="128" text-anchor="middle" class="cp-ax">&#8212; signal ikke fremme ennå &#8212;</text>
+        <text x="307" y="128" text-anchor="middle" class="cp-ax">&#8212; signal ikke fremme ennÃ¥ &#8212;</text>
         <!-- Signal from B (red solid): (405,134)?(309,188) -->
         <line x1="405" y1="134" x2="309" y2="188" stroke="#b04428" stroke-width="2.5" stroke-linecap="round"/>
         <!-- B signal faded past collision: (309,188)?(85,242) -->
         <line x1="309" y1="188" x2="85"  y2="242" stroke="#b04428" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.3"/>
-        <!-- B sends — annotation to the right of B's start point -->
+        <!-- B sends â€” annotation to the right of B's start point -->
         <circle cx="405" cy="134" r="3.5" fill="#b04428"/>
-        <text x="410" y="130" class="cp-ann" fill="#b04428">B hører ingenting</text>
+        <text x="410" y="130" class="cp-ann" fill="#b04428">B hÃ¸rer ingenting</text>
         <text x="410" y="142" class="cp-ann" fill="#b04428">&#8212; sender</text>
-        <!-- Collision burst at (309,188) — near middle of cable -->
+        <!-- Collision burst at (309,188) â€” near middle of cable -->
         <circle cx="309" cy="188" r="14" fill="#b04428" opacity="0.88"/>
         <text x="309" y="193" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="15" font-weight="700" fill="white">!</text>
         <text x="309" y="216" text-anchor="middle" class="cp-lbl" fill="#b04428">Kollisjon!</text>
       </svg>
-      <figcaption><strong>Figur 5.</strong> Tidrom-diagram for CSMA-kollisjon. Node A starter å sende ved t = 0. Signalet beveger seg mot høyre med endelig hastighet. Når signalet har nådd ca. 40 % av kabelen (t ˜ 0,4·t<sub>prop</sub>), hører B ingenting og tror kanalen er ledig — og starter å sende. Signalene møtes og kolliderer omtrent midt på kabelen. Jo lengre kabelen er, jo lenger tid har B til å starte sendingen uten å vite om A.</figcaption>
+      <figcaption><strong>Figur 5.</strong> Tidrom-diagram for CSMA-kollisjon. Node A starter Ã¥ sende ved t = 0. Signalet beveger seg mot hÃ¸yre med endelig hastighet. NÃ¥r signalet har nÃ¥dd ca. 40 % av kabelen (t Ëœ 0,4Â·t<sub>prop</sub>), hÃ¸rer B ingenting og tror kanalen er ledig â€” og starter Ã¥ sende. Signalene mÃ¸tes og kolliderer omtrent midt pÃ¥ kabelen. Jo lengre kabelen er, jo lenger tid har B til Ã¥ starte sendingen uten Ã¥ vite om A.</figcaption>
     </figure>
 
-    <h4>CSMA/CD — og hør etter mens du snakker</h4>
+    <h4>CSMA/CD â€” og hÃ¸r etter mens du snakker</h4>
     <p>
-      Neste forbedring: oppdag kollisjonen mens den skjer, og avbryt sendingen. <strong>Collision Detection</strong>. Isteden for å fullføre en ramme som allerede er ødelagt, stopper du med en gang, sender et kort «jam-signal» slik at alle skjønner hva som skjedde, og prøver igjen senere. Det sparer masse tid, særlig på korte kabler.
+      Neste forbedring: oppdag kollisjonen mens den skjer, og avbryt sendingen. <strong>Collision Detection</strong>. Isteden for Ã¥ fullfÃ¸re en ramme som allerede er Ã¸delagt, stopper du med en gang, sender et kort Â«jam-signalÂ» slik at alle skjÃ¸nner hva som skjedde, og prÃ¸ver igjen senere. Det sparer masse tid, sÃ¦rlig pÃ¥ korte kabler.
     </p>
     <p>
       Ethernet bruker CSMA/CD. Her er algoritmen i grove trekk:
     </p>
     <ol>
-      <li>NIC får et datagram fra nettverkslaget og lager en ramme.</li>
-      <li>Lytter på kanalen. Hvis ledig, begynner å sende. Hvis opptatt, venter til den blir ledig.</li>
-      <li>Om hele rammen går gjennom uten kollisjon — ferdig.</li>
+      <li>NIC fÃ¥r et datagram fra nettverkslaget og lager en ramme.</li>
+      <li>Lytter pÃ¥ kanalen. Hvis ledig, begynner Ã¥ sende. Hvis opptatt, venter til den blir ledig.</li>
+      <li>Om hele rammen gÃ¥r gjennom uten kollisjon â€” ferdig.</li>
       <li>Om en kollisjon oppdages underveis, avbrytes sendingen og et jam-signal sendes.</li>
-      <li>NIC går inn i <em>binær eksponentiell backoff</em>: etter den <em>m</em>-te kollisjonen velges et tilfeldig tall <code>K</code> fra <code>{0, 1, …, 2?-1}</code>, og noden venter <code>K · 512</code> bit-tider før den prøver på nytt. Flere kollisjoner ? lengre forventet ventetid.</li>
+      <li>NIC gÃ¥r inn i <em>binÃ¦r eksponentiell backoff</em>: etter den <em>m</em>-te kollisjonen velges et tilfeldig tall <code>K</code> fra <code>{0, 1, â€¦, 2?-1}</code>, og noden venter <code>K Â· 512</code> bit-tider fÃ¸r den prÃ¸ver pÃ¥ nytt. Flere kollisjoner ? lengre forventet ventetid.</li>
     </ol>
 
     <div class="margin-note">
-      Binær eksponentiell backoff er genialt: når kollisjoner er sjeldne, er ventetiden kort. Når de blir hyppige (mange noder kjemper), øker ventetiden automatisk, og systemet roer seg ned av seg selv.
+      BinÃ¦r eksponentiell backoff er genialt: nÃ¥r kollisjoner er sjeldne, er ventetiden kort. NÃ¥r de blir hyppige (mange noder kjemper), Ã¸ker ventetiden automatisk, og systemet roer seg ned av seg selv.
     </div>
 
     <div class="stepper" id="csmacd-stepper">
-      <div class="s-label">Interaktiv gjennomgang — CSMA/CD steg for steg</div>
+      <div class="s-label">Interaktiv gjennomgang â€” CSMA/CD steg for steg</div>
       <div class="stage" id="csmacd-stage">
         <h5 id="csmacd-title">Trinn 1 av 6</h5>
         <div id="csmacd-body"></div>
@@ -668,21 +668,21 @@
       </div>
     </div>
 
-    <h3>Klasse 3 — «Ta tur»</h3>
+    <h3>Klasse 3 â€” Â«Ta turÂ»</h3>
     <p>
-      Prøv å få det beste fra begge verdener. I <strong>polling</strong> sender en master-node en invitasjon til hver slavenode etter tur: «Har du noe å sende? Vær så god.» I <strong>token passing</strong> sendes en spesiell liten melding (token) i ring mellom nodene, og du får bare sende når du har tokenet.
+      PrÃ¸v Ã¥ fÃ¥ det beste fra begge verdener. I <strong>polling</strong> sender en master-node en invitasjon til hver slavenode etter tur: Â«Har du noe Ã¥ sende? VÃ¦r sÃ¥ god.Â» I <strong>token passing</strong> sendes en spesiell liten melding (token) i ring mellom nodene, og du fÃ¥r bare sende nÃ¥r du har tokenet.
     </p>
     <p>
-      Disse metodene unngår både kollisjoner og sløsing ved lav last. Ulempene er polling-overhead, forsinkelse, og — mest kritisk — et single point of failure: mister du master-noden eller mister du tokenet, så stopper alt opp. Bluetooth og gammel Token Ring bruker varianter av dette.
+      Disse metodene unngÃ¥r bÃ¥de kollisjoner og slÃ¸sing ved lav last. Ulempene er polling-overhead, forsinkelse, og â€” mest kritisk â€” et single point of failure: mister du master-noden eller mister du tokenet, sÃ¥ stopper alt opp. Bluetooth og gammel Token Ring bruker varianter av dette.
     </p>
 
     <table>
       <thead>
-        <tr><th>Protokoll</th><th>Lav last</th><th>Høy last</th><th>Eksempel</th></tr>
+        <tr><th>Protokoll</th><th>Lav last</th><th>HÃ¸y last</th><th>Eksempel</th></tr>
       </thead>
       <tbody>
-        <tr><td>TDMA / FDMA</td><td>Dårlig (sløser slots)</td><td>God (forutsigbar)</td><td>Mobilnett, satellitt</td></tr>
-        <tr><td>Slotted ALOHA</td><td>Bra</td><td>Dårlig (37 % max)</td><td>Historisk; cable-oppstrøms-forespørsler</td></tr>
+        <tr><td>TDMA / FDMA</td><td>DÃ¥rlig (slÃ¸ser slots)</td><td>God (forutsigbar)</td><td>Mobilnett, satellitt</td></tr>
+        <tr><td>Slotted ALOHA</td><td>Bra</td><td>DÃ¥rlig (37 % max)</td><td>Historisk; cable-oppstrÃ¸ms-forespÃ¸rsler</td></tr>
         <tr><td>CSMA/CD</td><td>Meget god</td><td>OK</td><td>Klassisk Ethernet (802.3)</td></tr>
         <tr><td>CSMA/CA</td><td>God</td><td>OK</td><td>WiFi (802.11)</td></tr>
         <tr><td>Token passing</td><td>OK</td><td>God</td><td>Token Ring, FDDI</td></tr>
@@ -691,14 +691,14 @@
 
     <div class="quiz" data-quiz="2">
       <div class="q-label">Kunnskapssjekk</div>
-      <div class="q-text">Hvorfor kan kollisjoner skje i CSMA, selv om hver node lytter før den sender?</div>
+      <div class="q-text">Hvorfor kan kollisjoner skje i CSMA, selv om hver node lytter fÃ¸r den sender?</div>
       <div class="options">
-        <button class="option" data-correct="false">Fordi carrier sensing ikke virker på metalliske kabler.</button>
-        <button class="option" data-correct="true">Fordi propageringsforsinkelse betyr at en node kan ha begynt å sende uten at en annen node har hørt det ennå.</button>
+        <button class="option" data-correct="false">Fordi carrier sensing ikke virker pÃ¥ metalliske kabler.</button>
+        <button class="option" data-correct="true">Fordi propageringsforsinkelse betyr at en node kan ha begynt Ã¥ sende uten at en annen node har hÃ¸rt det ennÃ¥.</button>
         <button class="option" data-correct="false">Fordi nodene ikke har synkroniserte klokker.</button>
-        <button class="option" data-correct="false">Fordi CSMA bare lytter på egne sendinger, ikke andres.</button>
+        <button class="option" data-correct="false">Fordi CSMA bare lytter pÃ¥ egne sendinger, ikke andres.</button>
       </div>
-      <div class="explanation">Dette er grunnen til at Ethernet opprinnelig hadde en øvre grense på kabellengde: jo lengre kabel, jo større vindu for at to noder begge tror kanalen er ledig og begge begynner å sende. CSMA/CD-algoritmen er designet slik at kollisjoner må kunne oppdages før en minimums-ramme er ferdig sendt — derfor har Ethernet en minimumsrammestørrelse på 64 byte.</div>
+      <div class="explanation">Dette er grunnen til at Ethernet opprinnelig hadde en Ã¸vre grense pÃ¥ kabellengde: jo lengre kabel, jo stÃ¸rre vindu for at to noder begge tror kanalen er ledig og begge begynner Ã¥ sende. CSMA/CD-algoritmen er designet slik at kollisjoner mÃ¥ kunne oppdages fÃ¸r en minimums-ramme er ferdig sendt â€” derfor har Ethernet en minimumsrammestÃ¸rrelse pÃ¥ 64 byte.</div>
     </div>
   </div>
 </section>
@@ -717,7 +717,7 @@
 <footer>
   <div class="container">
     <div class="ornament">&#10043; &#10043; &#10043;</div>
-    <p>NTNU · TTM4100 · Vår 2026</p>
+    <p>NTNU Â· TTM4100 Â· VÃ¥r 2026</p>
   </div>
 </footer>
 
@@ -750,24 +750,24 @@ document.querySelectorAll('.reveal').forEach(r => {
 (function() {
   const steps = [
     {
-      title: 'Trinn 1 — Utgangspunktet',
-      body: 'Vi har data D = 100100 (seks bit) og en generator G = 1101 (fire bit, altså r = 3). Målet er å finne tre CRC-bits R slik at &lt;D,R&gt; går opp i G.'
+      title: 'Trinn 1 â€” Utgangspunktet',
+      body: 'Vi har data D = 100100 (seks bit) og en generator G = 1101 (fire bit, altsÃ¥ r = 3). MÃ¥let er Ã¥ finne tre CRC-bits R slik at &lt;D,R&gt; gÃ¥r opp i G.'
     },
     {
-      title: 'Trinn 2 — Skift dataene',
-      body: 'Legg til r = 3 nuller bak dataene: 100100 ? 100100000. Dette er det samme som å multiplisere med 2³. Nå har vi plass til å «trekke fra» G ved hjelp av XOR flere ganger.'
+      title: 'Trinn 2 â€” Skift dataene',
+      body: 'Legg til r = 3 nuller bak dataene: 100100 ? 100100000. Dette er det samme som Ã¥ multiplisere med 2Â³. NÃ¥ har vi plass til Ã¥ Â«trekke fraÂ» G ved hjelp av XOR flere ganger.'
     },
     {
-      title: 'Trinn 3 — Første XOR',
-      body: 'Plasser G = 1101 slik at den er på linje med den første 1-eren i 100100000. XOR: 1001 ? 1101 = 0100. Resten: 0100 00000. Skyv G ett hakk til høyre og fortsett.'
+      title: 'Trinn 3 â€” FÃ¸rste XOR',
+      body: 'Plasser G = 1101 slik at den er pÃ¥ linje med den fÃ¸rste 1-eren i 100100000. XOR: 1001 ? 1101 = 0100. Resten: 0100 00000. Skyv G ett hakk til hÃ¸yre og fortsett.'
     },
     {
-      title: 'Trinn 4 — Iterer til slutten',
-      body: 'Etter flere XOR-steg står vi igjen med 001 som rest. Dette er R — de tre CRC-bitene.'
+      title: 'Trinn 4 â€” Iterer til slutten',
+      body: 'Etter flere XOR-steg stÃ¥r vi igjen med 001 som rest. Dette er R â€” de tre CRC-bitene.'
     },
     {
-      title: 'Trinn 5 — Send rammen',
-      body: 'Rammen som går på kabelen er &lt;D,R&gt; = 100100001. Mottakeren deler dette på samme G. Går det opp med rest 0, er alt bra. Noe annet enn 0 betyr at bits har snudd underveis.'
+      title: 'Trinn 5 â€” Send rammen',
+      body: 'Rammen som gÃ¥r pÃ¥ kabelen er &lt;D,R&gt; = 100100001. Mottakeren deler dette pÃ¥ samme G. GÃ¥r det opp med rest 0, er alt bra. Noe annet enn 0 betyr at bits har snudd underveis.'
     }
   ];
   let i = 0;
@@ -791,7 +791,7 @@ document.querySelectorAll('.reveal').forEach(r => {
 (function() {
   const steps = [
     {
-      title: 'Trinn 1 — NIC mottar datagram',
+      title: 'Trinn 1 â€” NIC mottar datagram',
       body: `<div style="text-align:center;margin-bottom:10px">
         <svg viewBox="0 0 240 100" width="220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <rect x="70" y="5"  width="100" height="32" rx="4" fill="#ddd5c3" stroke="#c9c0ae" stroke-width="1.5"/>
@@ -806,7 +806,7 @@ document.querySelectorAll('.reveal').forEach(r => {
       <p>NIC mottar en IP-pakke fra nettverkslaget og pakker den inn i en Ethernet-ramme med kilde- og destinasjons-MAC-adresse, lengde/type-felt og CRC-kontrollsum.</p>`
     },
     {
-      title: 'Trinn 2 — Lytter på kanalen',
+      title: 'Trinn 2 â€” Lytter pÃ¥ kanalen',
       body: `<div style="text-align:center;margin-bottom:10px">
         <svg viewBox="0 0 260 80" width="220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <rect x="10" y="24" width="60" height="32" rx="4" fill="#2d4a7a" stroke="#1e3355" stroke-width="1.5"/>
@@ -816,10 +816,10 @@ document.querySelectorAll('.reveal').forEach(r => {
           <line x1="110" y1="34" x2="200" y2="34" stroke="#3d6b3a" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
         </svg>
       </div>
-      <p>Carrier Sense: NIC lytter på kabelen. Ingen aktivitet detektert — kanalen er ledig. NIC er klar til å sende rammen ved neste anledning.</p>`
+      <p>Carrier Sense: NIC lytter pÃ¥ kabelen. Ingen aktivitet detektert â€” kanalen er ledig. NIC er klar til Ã¥ sende rammen ved neste anledning.</p>`
     },
     {
-      title: 'Trinn 3 — Sender rammen',
+      title: 'Trinn 3 â€” Sender rammen',
       body: `<div style="text-align:center;margin-bottom:10px">
         <svg viewBox="0 0 260 80" width="220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <rect x="10" y="24" width="60" height="32" rx="4" fill="#2d4a7a" stroke="#1e3355" stroke-width="1.5"/>
@@ -830,10 +830,10 @@ document.querySelectorAll('.reveal').forEach(r => {
           <polygon points="133,37 143,40 133,43" fill="#c68a1f"/>
         </svg>
       </div>
-      <p>Rammen sendes ut på kabelen i full fart. Samtidig lytter NIC på sin egen sending (<em>Collision Detection</em>) — hvis signalet den mottar avviker fra det den sender, er det en kollisjon.</p>`
+      <p>Rammen sendes ut pÃ¥ kabelen i full fart. Samtidig lytter NIC pÃ¥ sin egen sending (<em>Collision Detection</em>) â€” hvis signalet den mottar avviker fra det den sender, er det en kollisjon.</p>`
     },
     {
-      title: 'Trinn 4 — Kollisjon oppdaget!',
+      title: 'Trinn 4 â€” Kollisjon oppdaget!',
       body: `<div style="text-align:center;margin-bottom:10px">
         <svg viewBox="0 0 260 80" width="220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <rect x="5"   y="24" width="55" height="32" rx="4" fill="#2d4a7a" stroke="#1e3355" stroke-width="1.5"/>
@@ -846,10 +846,10 @@ document.querySelectorAll('.reveal').forEach(r => {
           <text x="130" y="66" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="9" fill="#b04428" font-weight="600">JAM-signal</text>
         </svg>
       </div>
-      <p>Kollisjon oppdaget! NIC avbryter sendingen umiddelbart og sender et 48-bits <strong>jam-signal</strong> slik at alle noder på segmentet registrerer at en kollisjon har skjedd. Rammefragmentet som ble sendt er ubrukelig og forkastes.</p>`
+      <p>Kollisjon oppdaget! NIC avbryter sendingen umiddelbart og sender et 48-bits <strong>jam-signal</strong> slik at alle noder pÃ¥ segmentet registrerer at en kollisjon har skjedd. Rammefragmentet som ble sendt er ubrukelig og forkastes.</p>`
     },
     {
-      title: 'Trinn 5 — Binær eksponentiell backoff',
+      title: 'Trinn 5 â€” BinÃ¦r eksponentiell backoff',
       body: `<div style="text-align:center;margin-bottom:10px">
         <svg viewBox="0 0 260 85" width="220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <rect x="20" y="5" width="220" height="40" rx="5" fill="#eee8db" stroke="#c9c0ae" stroke-width="1.5"/>
@@ -861,10 +861,10 @@ document.querySelectorAll('.reveal').forEach(r => {
           <text x="130" y="78" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="9" fill="#6b6257" font-style="italic">Flere kollisjoner &#8594; lengre forventet ventetid</text>
         </svg>
       </div>
-      <p>Etter den <em>m</em>-te kollisjonen velges et tilfeldig heltall K fra {0, 1, …, 2<sup>m</sup>-1}. NIC venter K · 512 bit-tider før neste forsøk. Dette sprer nodenes forsøk i tid og reduserer sannsynligheten for at de kolliderer igjen.</p>`
+      <p>Etter den <em>m</em>-te kollisjonen velges et tilfeldig heltall K fra {0, 1, â€¦, 2<sup>m</sup>-1}. NIC venter K Â· 512 bit-tider fÃ¸r neste forsÃ¸k. Dette sprer nodenes forsÃ¸k i tid og reduserer sannsynligheten for at de kolliderer igjen.</p>`
     },
     {
-      title: 'Trinn 6 — Prøver igjen',
+      title: 'Trinn 6 â€” PrÃ¸ver igjen',
       body: `<div style="text-align:center;margin-bottom:10px">
         <svg viewBox="0 0 260 80" width="220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <rect x="10" y="24" width="60" height="32" rx="4" fill="#2d4a7a" stroke="#1e3355" stroke-width="1.5"/>
@@ -877,7 +877,7 @@ document.querySelectorAll('.reveal').forEach(r => {
           <text x="220" y="44" text-anchor="middle" font-family="'IBM Plex Sans',sans-serif" font-size="12" font-weight="700" fill="white">&#10003;</text>
         </svg>
       </div>
-      <p>NIC lytter på nytt (tilbake til trinn 2). Kanalen er ledig — rammen sendes vellykket uten kollisjon. <strong>Ferdig!</strong> Hvis en ny kollisjon oppstår, økes kollisjonstelleren og backoff-prosessen gjentas — inntil maksimalt 10 forsøk, hvorpå NIC gir opp og rapporterer feil.</p>`
+      <p>NIC lytter pÃ¥ nytt (tilbake til trinn 2). Kanalen er ledig â€” rammen sendes vellykket uten kollisjon. <strong>Ferdig!</strong> Hvis en ny kollisjon oppstÃ¥r, Ã¸kes kollisjonstelleren og backoff-prosessen gjentas â€” inntil maksimalt 10 forsÃ¸k, hvorpÃ¥ NIC gir opp og rapporterer feil.</p>`
     }
   ];
   let j = 0;
