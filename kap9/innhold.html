@@ -191,8 +191,8 @@
       <rect x="538" y="70" width="130" height="60" fill="#f4f1ea" stroke="#1a1612" stroke-width="2" rx="3"/>
       <text x="603" y="105" text-anchor="middle" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">Avspilling</text>
       <!-- labels -->
-      <text x="348" y="170" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">x(t) > r i snitt ? bufferen tømmes aldri</text>
-      <text x="348" y="190" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">x(t) &lt; r ? bufferen tømmes til slutt ? frysing</text>
+      <text x="348" y="170" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">x(t) &gt; r i snitt &rarr; bufferen tømmes aldri</text>
+      <text x="348" y="190" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">x(t) &lt; r &rarr; bufferen tømmes til slutt &rarr; frysing</text>
     </svg>
     <figcaption>Klient-side buffering: variabel fylling fra nettet, konstant tømming ved avspilling. Så lenge gjennomsnittlig x(t) > r og initiell forsinkelse er stor nok, unngår vi frysing.</figcaption>
   </figure>
@@ -431,8 +431,8 @@
 
   <ul style="margin:0 0 24px 24px;color:var(--ink-soft)">
     <li style="margin-bottom:8px">Hvis en lydbit har tidsstempel <em>t</em>, spilles den av ved tid <em>t + q</em>.</li>
-    <li style="margin-bottom:8px">Hvis biten ankommer <em>etter</em> t + q ? den er tapt (for sen).</li>
-    <li style="margin-bottom:8px"><strong>Stor q:</strong> færre pakker «for sene» ? lavere tap, men lengre forsinkelse i samtalen.</li>
+    <li style="margin-bottom:8px">Hvis biten ankommer <em>etter</em> t + q &rarr; den er tapt (for sen).</li>
+    <li style="margin-bottom:8px"><strong>Stor q:</strong> færre pakker «for sene» &rarr; lavere tap, men lengre forsinkelse i samtalen.</li>
     <li><strong>Liten q:</strong> bedre interaktivitet, men flere pakker rekker ikke frem i tide.</li>
   </ul>
 
@@ -443,16 +443,16 @@
       <line x1="60" y1="200" x2="660" y2="200" stroke="#1a1612" stroke-width="1.5" marker-end="url(#arr3)"/>
       <text x="670" y="204" font-family="IBM Plex Mono" font-size="11" fill="#1a1612">tid</text>
       <!-- generated -->
-      <text x="50" y="45" text-anchor="end" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">Generert</text>
+      <text x="5" y="45" text-anchor="start" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">Generert</text>
       <rect x="100" y="30" width="14" height="20" fill="#b04428" rx="1"/><rect x="120" y="30" width="14" height="20" fill="#b04428" rx="1"/><rect x="140" y="30" width="14" height="20" fill="#b04428" rx="1"/><rect x="160" y="30" width="14" height="20" fill="#b04428" rx="1"/><rect x="180" y="30" width="14" height="20" fill="#b04428" rx="1"/>
       <!-- received (jittered) -->
-      <text x="50" y="95" text-anchor="end" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">Mottatt</text>
+      <text x="5" y="95" text-anchor="start" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">Mottatt</text>
       <rect x="200" y="80" width="14" height="20" fill="#2d4a7a" rx="1"/><rect x="230" y="80" width="14" height="20" fill="#2d4a7a" rx="1"/><rect x="240" y="80" width="14" height="20" fill="#2d4a7a" rx="1"/><rect x="280" y="80" width="14" height="20" fill="#2d4a7a" rx="1"/><rect x="320" y="80" width="14" height="20" fill="#2d4a7a" rx="1"/>
       <!-- playout p -->
-      <text x="50" y="145" text-anchor="end" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">Playout p</text>
+      <text x="5" y="145" text-anchor="start" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">Playout p</text>
       <rect x="260" y="130" width="14" height="20" fill="#3d6b3a" rx="1"/><rect x="280" y="130" width="14" height="20" fill="#3d6b3a" rx="1"/><rect x="300" y="130" width="14" height="20" fill="#3d6b3a" rx="1"/><rect x="320" y="130" width="14" height="20" fill="#3d6b3a" rx="1"/><rect x="340" y="130" width="14" height="20" fill="#3d6b3a" rx="1"/>
       <!-- playout p' (shorter delay) -->
-      <text x="50" y="180" text-anchor="end" font-family="IBM Plex Mono" font-size="10" fill="#c68a1f">Playout p'</text>
+      <text x="5" y="180" text-anchor="start" font-family="IBM Plex Mono" font-size="10" fill="#c68a1f">Playout p'</text>
       <rect x="220" y="165" width="14" height="20" fill="#c68a1f" rx="1"/><rect x="240" y="165" width="14" height="20" fill="#c68a1f" rx="1"/><rect x="260" y="165" width="14" height="20" fill="#c68a1f" rx="1"/><rect x="280" y="165" width="14" height="20" fill="#c68a1f" rx="1"/>
       <rect x="310" y="165" width="14" height="20" fill="none" stroke="#b04428" stroke-width="1.5" stroke-dasharray="3 2" rx="1"/>
       <text x="338" y="178" font-family="IBM Plex Mono" font-size="9" fill="#b04428">tapt!</text>
@@ -561,7 +561,7 @@
       <line x1="360" y1="30" x2="480" y2="120" stroke="#b04428" stroke-width="2.5"/>
       <line x1="480" y1="30" x2="360" y2="120" stroke="#b04428" stroke-width="2.5"/>
 
-      <text x="350" y="155" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">Pkt 3 tapt ? chunk 2 gjenopprettes fra pkt 4 (lavere kvalitet, men hørbart)</text>
+      <text x="350" y="155" text-anchor="middle" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">Pkt 3 tapt &rarr; chunk 2 gjenopprettes fra pkt 4 (lavere kvalitet, men hørbart)</text>
     </svg>
     <figcaption>Piggyback FEC: hver pakke bærer en lav-kvalitets kopi av forrige chunk. Ikke-sammenhengende tap kan skjules med litt lavere lydkvalitet.</figcaption>
   </figure>
