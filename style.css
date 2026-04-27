@@ -801,6 +801,26 @@ td.label-col {
   width: 28%;
 }
 
+/* Compare div variant — side-by-side cards */
+div.compare {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  background: transparent;
+  border: none;
+  margin: 28px 0;
+}
+div.compare > div {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 20px 24px;
+}
+div.compare > div > h4:first-child { margin-top: 0; }
+div.compare > div > ul:last-child,
+div.compare > div > p:last-child { margin-bottom: 0; }
+div.compare > div > ul { margin-left: 20px; padding-left: 0; }
+
 /* ---------- CODE BLOCKS ---------- */
 pre {
   font-family: var(--mono);
