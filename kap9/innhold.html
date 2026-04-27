@@ -93,9 +93,23 @@
     <tr><th>Standard</th><th>Typisk bitrate</th><th>Bruk</th></tr>
     <tr><td class="mono-cell">MPEG-1</td><td>1,5 Mbps</td><td>CD-ROM-video</td></tr>
     <tr><td class="mono-cell">MPEG-2</td><td>3–6 Mbps</td><td>DVD</td></tr>
-    <tr><td class="mono-cell">MPEG-4</td><td>< 1 Mbps</td><td>Internett-video</td></tr>
+    <tr><td class="mono-cell">MPEG-4</td><td>&lt; 1 Mbps</td><td>Internett-video</td></tr>
   </table>
   </div>
+
+  <h3>Hvor båndbredde-tung er video, egentlig?</h3>
+  <p>For å sette tallene i kontekst, sammenlign tre brukere som er aktive i 67 minutter:</p>
+
+  <div class="table-wrap">
+  <table>
+    <tr><th>Bruker</th><th>Aktivitet</th><th>Bitrate</th><th>Bytes overført</th></tr>
+    <tr><td class="mono-cell">Facebook-Frank</td><td>Bildetung surfing</td><td>160 kbps</td><td>80 MB</td></tr>
+    <tr><td class="mono-cell">Martha-Music</td><td>Spotify-strømming</td><td>128 kbps</td><td>64 MB</td></tr>
+    <tr><td class="mono-cell">Victor-Video</td><td>HD-film via streaming</td><td>2 Mbps</td><td>1 GB</td></tr>
+  </table>
+  </div>
+
+  <p>Video bruker altså <em>en hel størrelsesorden</em> mer båndbredde enn musikk eller bildetunge nettsteder. Cisco anslo at video ville utgjøre rundt 80 % av all forbruker-Internett-trafikk i 2019 — og det er denne dominansen som gjør designvalg for video-streaming så viktige for hele Internett-økosystemet.</p>
 </div>
 </section>
 
@@ -194,6 +208,38 @@
   <p style="font-size:14px;color:var(--ink-faded);font-style:italic;margin-top:-20px">Dra slideren for å se hvordan initial playout-forsinkelse påvirker bufferrobusthet og brukeropplevelse. Modellen er forenklet, men illustrerer kjernen av trade-off-en.</p>
 
   <div class="margin-note">Moderne tjenester som YouTube bruker <a href="../kap2/p2p-video-cdn.html#streaming">DASH (Dynamic Adaptive Streaming over HTTP)</a>, der klienten dynamisk ber om videosegmenter i den kvaliteten som passer til nettverksforholdene akkurat nå — men det grunnleggende prinsippet med buffering er det samme.</div>
+
+  <h3>Matematisk analyse av buffring</h3>
+  <p>La oss formalisere intuisjonen. La <em>B</em> være bufferstørrelsen (i bits), <em>Q</em> antall bits som må bufres før avspilling starter (Q &lt; B), <em>r</em> avspillingsraten (bits/s) og <em>x</em> fyllraten fra serveren (bits/s). Initial playout-forsinkelse t<sub>p</sub> er da tiden det tar å bygge opp Q bits:</p>
+
+  <div class="formula">
+    t<sub>p</sub> = Q / x
+  </div>
+
+  <p>Hva som skjer etter t<sub>p</sub> avhenger av forholdet mellom x og r:</p>
+
+  <div class="compare">
+    <div>
+      <h4>x &lt; r (treg fyllrate)</h4>
+      <ul>
+        <li>Bufferen tømmes raskere enn den fylles og kommer aldri opp i full B</li>
+        <li>Etter t<sub>p</sub> begynner playout, men reserven synker fra Q mot 0 med rate (r − x)</li>
+        <li>Når den når 0 fryser videoen til Q bits er bygget opp på nytt</li>
+        <li>Avspilling alternerer mellom <em>continuous playout</em> og <em>freezing</em></li>
+      </ul>
+    </div>
+    <div>
+      <h4>x &gt; r (rask fyllrate)</h4>
+      <ul>
+        <li>Bufferen fylles raskere enn den tømmes</li>
+        <li>Etter t<sub>p</sub> vokser den fra Q til B med rate (x − r)</li>
+        <li>Tid til full buffer: t<sub>f</sub> = (B − Q) / (x − r)</li>
+        <li>Når B er nådd bremser TCPs flytkontroll serveren ned til r — kontinuerlig playout resten av videoen</li>
+      </ul>
+    </div>
+  </div>
+
+  <p>Hovedinnsikten: <strong>kontinuerlig avspilling krever bare at <em>gjennomsnittlig</em> x(t) holder seg over r</strong>. Korte perioder der x &lt; r tåles fint, så lenge bufferen ikke tømmes helt. Wang et al. (2008) viste at hvis gjennomsnittlig TCP-throughput er rundt det dobbelte av mediabitraten, gir HTTP-streaming minimal frysing og lav playout-forsinkelse — det er denne tommelfingerregelen mange streamingtjenester planlegger etter.</p>
 </div>
 </section>
 
@@ -272,6 +318,19 @@
   </figure>
 
   <p>Grunnen til at HTTP/TCP vant er pragmatisk: det passerer brannmurer, det krever ingen spesiell serverinfrastruktur (vanlig webserver holder), og TCP gir pålitelig levering slik at man slipper å håndtere tap selv. Avveiningen er høyere playout-forsinkelse, men for streaming av lagret video er det akseptabelt.</p>
+
+  <h3>Prefetching: laste ned raskere enn man spiller av</h3>
+  <p>Når video strømmes over HTTP/TCP, prøver klienten å laste ned <em>raskere</em> enn forbruksraten r. Hvis nettverket leverer 1,5 Mbps og videoen krever 1 Mbps, går overskuddet på 500 kbps til å bygge opp en reserve i applikasjonsbufferen. Denne <strong>prefetching</strong>-en skjer naturlig — ikke fordi applikasjonen ber om det, men fordi TCPs metningskontroll prøver å bruke all tilgjengelig båndbredde. Reserven gjør at hvis nettverket senere droppes til under r i en kort periode, kan klienten fortsatt spille av kontinuerlig fra det som er bufret.</p>
+
+  <p>Et fullt applikasjonsbuffer setter også en indirekte øvre grense på sende-raten: når klientbufferen er full, slutter den å lese fra TCP-mottakerbufferen, som blir full, som «back-pressurer» tilbake til serveren via TCPs flytkontroll. Slik unngår man at en uendelig hurtig server fyller klientens minne unødig.</p>
+
+  <h3>HTTP byte-range header: seek og repositionering</h3>
+  <p>Når brukeren spoler i videoen (klikker et nytt punkt på tidslinjen), sender klienten en ny HTTP GET-forespørsel med en <strong>byte-range header</strong> som spesifiserer fra hvilken byte i filen serveren skal sende. Serveren glemmer da forrige forespørsel og starter på nytt fra det angitte punktet. Det er den samme mekanismen som lar HTTP fungere som streaming i utgangspunktet — klienten «late-binder» til filen i stedet for å laste ned alt i én blokk.</p>
+
+  <div class="callout">
+    <span class="label">Wasted bandwidth ved early termination</span>
+    <p>Anta at klienten har prefetcha B bits ved tid t<sub>0</sub>. Hvis brukeren så spoler videre eller forlater siden, kastes alt det prefetcha innholdet — båndbredden og serverressursene som ble brukt på det er bortkastet. Av denne grunn bruker mange streamingsystemer en <em>moderat</em> bufferstørrelse, eller styrer hvor langt klienten prefetcher med byte-range. På mobilnett, der båndbredde er en begrenset ressurs, er dette spesielt viktig.</p>
+  </div>
 </div>
 </section>
 
@@ -297,6 +356,20 @@
     <li style="margin-bottom:8px">Til hver bit legges en applikasjonsheader, og resultatet pakkes i et UDP- eller TCP-segment.</li>
     <li>Applikasjonen sender én pakke hvert 20. millisekund under en snakkefase.</li>
   </ul>
+
+  <h3>Hva ende-til-ende-forsinkelse består av</h3>
+  <p>Før vi snakker om <em>hvor mye</em> forsinkelse VoIP tåler, er det nyttig å bryte ned <em>hva</em> ende-til-ende-forsinkelsen faktisk består av. En VoIP-pakkes reise fra mikrofon til høyttaler er en sum av flere komponenter:</p>
+
+  <ul style="margin:0 0 24px 24px;color:var(--ink-soft)">
+    <li style="margin-bottom:8px"><strong>Pakketiseringsforsinkelse:</strong> tiden senderen bruker på å samle nok lyddata til en pakke (typisk 20 ms i VoIP — det er en hard nedre grense satt av kodingen).</li>
+    <li style="margin-bottom:8px"><strong>Transmisjonsforsinkelse:</strong> tiden å klokke pakken ut på senderens link (pakke-størrelse / link-rate).</li>
+    <li style="margin-bottom:8px"><strong>Propageringsforsinkelse:</strong> tiden signalet bruker over fysiske medier — dominert av geografisk avstand. Norge til USA er ~70 ms én vei i lyset alene; lengre om det går via undersjøkabler.</li>
+    <li style="margin-bottom:8px"><strong>Køforsinkelse i rutere:</strong> hovedkilden til <em>jitter</em>. Varierer per pakke avhengig av trafikken på hvert hopp.</li>
+    <li style="margin-bottom:8px"><strong>Prosesseringsforsinkelse:</strong> tid brukt på pakkebehandling i rutere og endenoder (typisk lite, men ikke null).</li>
+    <li><strong>Playout-forsinkelse hos mottaker:</strong> tiden mottakeren venter med å spille av pakken — typisk 50–200 ms for å absorbere jitter.</li>
+  </ul>
+
+  <p>De første fem styres av nettverket og er stort sett utenfor applikasjonens kontroll. Den siste — playout-forsinkelsen — er den eneste applikasjonen kan justere. Hele hemmeligheten ved VoIP-design ligger i å sette den så lavt som mulig uten å miste for mange pakker.</p>
 
   <h3>Krav til forsinkelse</h3>
   <div class="callout callout-green">
@@ -328,6 +401,17 @@
   </div>
 
   <p>Et viktig poeng: VoIP <strong>tåler noe tap</strong>. Avhengig av lydkoding og teknikker for å skjule tap (loss concealment), kan man tolerere 1–20% pakketap uten at samtalen blir uforståelig. Det er en dramatisk forskjell fra f.eks. filoverføring, der ethvert tapt byte er katastrofalt.</p>
+
+  <h3>Loss concealment: skjule tap ved mottaker</h3>
+  <p>Når en pakke er tapt eller ankommer for sent, må mottakeren produsere <em>noe</em> lyd for de 20 ms som mangler — bare å la det bli stille gir en hørbar klikkelyd. Dette kalles <strong>loss concealment</strong> og er den enkleste forsvarslinjen mot tap. Tre vanlige teknikker:</p>
+
+  <ul style="margin:0 0 24px 24px;color:var(--ink-soft)">
+    <li style="margin-bottom:8px"><strong>Pakkeduplisering:</strong> spill av forrige mottatte chunk på nytt. Enkelt og rimelig effektivt for korte tap (1 pakke ≈ 20 ms — øret er svært tilgivende).</li>
+    <li style="margin-bottom:8px"><strong>Signalinterpolering:</strong> rekonstruer den manglende lyden ut fra nabopakkenes signalegenskaper (frekvensspektrum, amplitudemønster). Bedre kvalitet enn duplisering, men mer regnetungt.</li>
+    <li><strong>Stille innsetting:</strong> spill av stillhet i hullet — fungerer hvis tapet er svært kort, men gir hakkete lyd ved hyppige tap.</li>
+  </ul>
+
+  <p>Loss concealment er <em>komplementært</em> til FEC og interleaving (neste seksjon): det forsvarer den siste skansen når andre teknikker ikke har en kopi av pakken å rekonstruere fra. Kombinasjonen av loss concealment, FEC og adaptiv playout er grunnen til at VoIP kan fungere brukbart selv ved 5–10 % pakketap.</p>
 </div>
 </section>
 
@@ -424,6 +508,8 @@
 
   <h3>Detektere start av ny snakkefase</h3>
   <p>Mottakeren må vite når en ny snakkefase starter, for det er da playout-forsinkelsen kan justeres. Uten pakketap er det enkelt: hvis forskjellen mellom to påfølgende tidsstempler er > 20 ms, har det vært en stillhetsperiode. Med mulig pakketap ser mottakeren på <em>både</em> tidsstempler og sekvensnummer — hvis tidsstempelgapet er > 20 ms <em>og</em> det ikke mangler sekvensnummer, er det en ny snakkefase.</p>
+
+  <p>En alternativ teknikk er å se på <strong>signalenergien</strong> i pakken direkte: stillhetsperioder har lav energi, mens snakkefaser har høy. Senderen kan også markere snakkefasens start eksplisitt med en flagg-bit i RTP-headeren (M-biten — «marker bit»). I praksis brukes ofte en kombinasjon: tidsstempel/sekvensnummer for grov deteksjon, signalenergi for å bekrefte at det faktisk er stemme og ikke bare kort pause i støy.</p>
 </div>
 </section>
 
@@ -590,6 +676,10 @@
 
   <p class="dropcap">RTP (RFC 3550) er protokollen som gir struktur til multimedia-pakker. Den er ikke en transportprotokoll i tradisjonell forstand — den kjører <em>oppå</em> UDP og gir et sett med felter som applikasjoner trenger for å håndtere sanntidsdata, men som UDP ikke tilbyr: informasjon om hva slags data pakken inneholder, i hvilken rekkefølge den hører hjemme, og nøyaktig når den ble generert.</p>
 
+  <h3>Hvor passer RTP inn?</h3>
+  <p>I lærebokens kapittel 9.4 «Protocols for Real-Time Conversational Applications» introduseres to standardprotokoller fra IETF: <strong>RTP</strong> (Real-Time Transport Protocol) for selve mediadataene, og <strong>SIP</strong> (Session Initiation Protocol) for samtale-oppsett (signaling). Vi fokuserer her bare på RTP, som er det pensum krever — SIP utelates.</p>
+  <p>RTP er det rammeverket nesten all moderne VoIP- og videosamtale-trafikk bygger på: Zoom, WhatsApp, Teams, Google Meet og WebRTC bruker alle RTP eller varianter under panseret. Når vi snakker om «protokoller for sanntidskommunikasjon» i 2026, snakker vi i praksis om RTP pluss et knippe relaterte standarder (RTCP, SRTP for kryptering, SDP for sesjonsbeskrivelser).</p>
+
   <h3>Hva RTP gir oss</h3>
   <div class="callout callout-green">
     <span class="label">RTP transporterer, men garanterer ikke</span>
@@ -678,8 +768,23 @@
   </table>
   </div>
 
+  <h3>RTCP: Real-Time Control Protocol</h3>
+  <p>RTP kommer alltid sammen med en søsterprotokoll — <strong>RTCP</strong> (RTP Control Protocol). Mens RTP frakter selve mediepakkene, brukes RTCP til <em>tilbakemelding</em> om kvaliteten på strømmen. Hver deltaker i en RTP-sesjon sender periodiske RTCP-rapporter til alle andre deltakere på en separat UDP-port (typisk RTP-port + 1).</p>
+
+  <div class="callout">
+    <span class="label">Hva RTCP-rapporter inneholder</span>
+    <p><strong>Receiver Reports</strong> sendes fra mottakere og inkluderer: brøkdel av pakker tapt siden forrige rapport, totalt antall tapte pakker, høyeste sekvensnummer mottatt, og <em>interarrival jitter</em> (et glidende mål på variasjonen i pakkeforsinkelse). <strong>Sender Reports</strong> sendes fra senderen og inkluderer en avbildning mellom RTP-tidsstempel og «wall-clock»-tid (NTP-format), samt antall sendte pakker og bytes.</p>
+  </div>
+
+  <p>Hvorfor er dette nyttig? Senderen kan bruke RTCP-feedback til å <em>tilpasse seg</em> nettverket dynamisk — bytte til lavere bitrate-koding hvis tapraten øker, justere FEC-redundansen, eller redusere sende-raten. RTCP gir også verktøy for synkronisering på tvers av strømmer: NTP-tidsstemplene i Sender Reports lar mottakeren synkronisere lyd og bilde fra samme kilde nøyaktig (<em>lip-sync</em>) selv om de sendes som to separate RTP-strømmer med uavhengige RTP-klokker.</p>
+
+  <div class="callout callout-blue">
+    <span class="label">Båndbreddebegrensning på RTCP</span>
+    <p>For at RTCP-trafikken ikke skal stjele båndbredde fra selve medieinnholdet, begrenser standarden RTCP til typisk <strong>5 % av total sesjonsbåndbredde</strong>. Når antallet deltakere øker, sendes RTCP-rapporter sjeldnere fra hver enkelt — så totalsummen forblir konstant uansett gruppestørrelse. Det er en elegant måte å skalere tilbakemelding til mange-til-mange-sesjoner uten å overbelaste nettet.</p>
+  </div>
+
   <h3>RTP og QoS</h3>
-  <p>Et viktig poeng til slutt: <strong>RTP gir ingen QoS-garantier</strong>. RTP-pakker er innkapslet i vanlige UDP-segmenter, og rutere i nettet ser bare et IP-datagram med en UDP-header. De gjør ingen spesiell innsats for å levere RTP-pakker raskere eller mer pålitelig enn andre pakker. All smarthet — adaptiv playout, FEC, jitterbuffer — ligger i endepunktene, ikke i nettverket.</p>
+  <p>Et viktig poeng til slutt: <strong>RTP gir ingen QoS-garantier</strong>. RTP-pakker er innkapslet i vanlige UDP-segmenter, og rutere i nettet ser bare et IP-datagram med en UDP-header. De gjør ingen spesiell innsats for å levere RTP-pakker raskere eller mer pålitelig enn andre pakker. All smarthet — adaptiv playout, FEC, jitterbuffer, RTCP-feedback — ligger i endepunktene, ikke i nettverket.</p>
 
   <div class="callout callout-blue">
     <span class="label">Interoperabilitet</span>

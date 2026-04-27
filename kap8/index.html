@@ -163,7 +163,7 @@
     <div class="q-text">Hva er symmetrisk kryptering, og når brukes den?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Symmetrisk kryptering er rask og egnet for store datamengder med delt hemmelig nøkkel.</div>
+      <div class="answer">I symmetrisk kryptografi bruker sender og mottaker den <em>samme</em> hemmelige nøkkelen K<sub>S</sub> til både kryptering og dekryptering: m = K<sub>S</sub>(K<sub>S</sub>(m)). Den er rask — ofte tusen ganger raskere enn offentlig-nøkkel — og brukes derfor til å kryptere selve dataene i TLS, IPsec, WiFi og sikker e-post. AES er den dominerende algoritmen i dag. Ulempen: begge parter må bli enige om nøkkelen på forhånd, noe som er vanskelig hvis de aldri har møttes — derfor kombineres symmetrisk med offentlig-nøkkel-kryptografi i hybridoppsett.</div>
     </div>
   </div>
 
@@ -181,34 +181,34 @@
     <div class="q-text">Hva er hybrid kryptering?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Hybridoppsett bruker asymmetri til nøkkelutveksling og symmetri til selve datakrypteringen.</div>
+      <div class="answer">Hybrid kryptering kombinerer offentlig-nøkkel og symmetrisk kryptografi for å få det beste fra begge. Avsender (1) genererer en tilfeldig symmetrisk sesjonsnøkkel K<sub>S</sub>, (2) krypterer selve meldingen raskt med K<sub>S</sub> (f.eks. AES), og (3) krypterer K<sub>S</sub> med mottakerens offentlige nøkkel. Mottakeren dekrypterer K<sub>S</sub> med sin private nøkkel og bruker deretter K<sub>S</sub> til å dekryptere meldingen. Slik unngår man den dyre offentlig-nøkkel-operasjonen for store data, samtidig som man slipper å forhåndsdele en nøkkel. Mønsteret brukes i sikker e-post, TLS og IPsec.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 5 · Lett</div>
-    <div class="q-text">Hva er AES?</div>
+    <div class="q-text">Hva er AES, og hvorfor erstattet den DES?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">AES er en symmetrisk blokk-krypteringsalgoritme som brukes bredt i moderne protokoller.</div>
+      <div class="answer">AES (Advanced Encryption Standard) er en symmetrisk blokkchiffer-algoritme som ble NIST-standard i 2001. Den opererer på 128-bits blokker og støtter nøkkellengder på 128, 192 eller 256 bit. AES erstattet DES fordi DES' 56-bits nøkkel var for kort: i DES Challenge ble en DES-nøkkel knekt med brute force på under ett døgn. Til sammenligning ville brute force på AES-128 ta omtrent 149 billioner år. AES er i dag den dominerende symmetriske algoritmen i TLS, WiFi (WPA2/WPA3), IPsec og 4G/5G.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 6 · Vanskelig</div>
-    <div class="q-text">Hva er forskjellen mellom offentlig og privat nøkkel i RSA/ECC?</div>
+    <div class="q-text">Hva er forskjellen mellom offentlig og privat nøkkel i offentlig nøkkelkryptografi?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Private nøkkel holdes hemmelig, mens offentlig nøkkel kan deles for verifisering og nøkkelavtale.</div>
+      <div class="answer">Bob har et nøkkelpar: <strong>offentlig nøkkel K<sub>B</sub><sup>+</sup></strong> som han publiserer åpent, og <strong>privat nøkkel K<sub>B</sub><sup>-</sup></strong> som han holder strengt hemmelig. Det Alice krypterer med K<sub>B</sub><sup>+</sup> kan bare K<sub>B</sub><sup>-</sup> dekryptere — og omvendt. Dette løser to problemer: (1) <em>nøkkelutveksling</em> uten forhåndsdelt hemmelighet, og (2) <em>digitale signaturer</em> der Bob signerer med K<sub>B</sub><sup>-</sup> og hvem som helst kan verifisere med K<sub>B</sub><sup>+</sup>. Avgjørende egenskap: gitt K<sub>B</sub><sup>+</sup> er det beregningsmessig umulig å finne K<sub>B</sub><sup>-</sup>.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 7 · Middels</div>
-    <div class="q-text">Hva er en kryptografisk hashfunksjon?</div>
+    <div class="q-text">Hva er en kryptografisk hashfunksjon, og hvilke egenskaper må den ha?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">En kryptografisk hash gir et kort fingeravtrykk som endres dramatisk ved små inputendringer.</div>
+      <div class="answer">En kryptografisk hashfunksjon H tar input av vilkårlig lengde og produserer et «fingeravtrykk» H(m) av <strong>fast lengde</strong>. Den må ha tre egenskaper: (1) <strong>enveis</strong> — gitt H(m) er det beregningsmessig umulig å finne m, (2) <strong>kollisjonsresistent</strong> — det skal være praktisk umulig å finne to forskjellige meldinger m₁, m₂ med H(m₁) = H(m₂), og (3) små endringer i input gir helt forskjellig output. SHA-256 er dagens anbefaling. MD5 og SHA-1 regnes som foreldet — kollisjoner er demonstrert. Hashfunksjoner brukes i digitale signaturer (signer hashen, ikke meldingen), MAC/HMAC og passordlagring.</div>
     </div>
   </div>
 
@@ -253,124 +253,124 @@
     <div class="q-text">Hva er sesjonsnøkler, og hvorfor brukes de?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Sesjonsnøkler er kortlivede nøkler brukt for effektiv kryptering av en enkelt forbindelse.</div>
+      <div class="answer">En sesjonsnøkkel er en kortvarig symmetrisk nøkkel som genereres for én enkelt forbindelse (f.eks. én TLS-økt eller én e-post). Den brukes til å kryptere selve dataene raskt med AES, mens den dyre offentlig-nøkkel-operasjonen bare brukes <em>én gang</em> for å utveksle sesjonsnøkkelen trygt. Dette hybrid-mønsteret går igjen i sikker e-post, TLS og IPsec. Fordelen er ytelse, og at en kompromittert sesjonsnøkkel bare avslører én økts data.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 13 · Lett</div>
-    <div class="q-text">Hva er Perfect Forward Secrecy (PFS)?</div>
+    <div class="q-label">Spørsmål 13 · Middels</div>
+    <div class="q-text">Hva er en initialization vector (IV), og hvorfor trengs den i CBC?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">PFS gjør at kompromittering av langsiktig nøkkel ikke avslører gamle sesjoner.</div>
+      <div class="answer">Uten CBC ville to like klartekstblokker gitt to like chiffertekstblokker — angriperen ser dermed at de er like uten å kjenne innholdet. CBC løser dette ved å XOR-e hver blokk med <em>forrige chiffertekstblokk</em> før kryptering. Den første blokken har ingen «forrige» — derfor genererer avsender en tilfeldig <strong>IV (initialization vector)</strong> som XOR-es med blokk 1. IV-en sendes med meldingen i klartekst, men må være ny for hver melding slik at samme klartekst kryptert to ganger gir helt forskjellig chiffertekst.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 14 · Middels</div>
-    <div class="q-text">Hva er salt i passordhasher, og hvorfor er det viktig?</div>
+    <div class="q-label">Spørsmål 14 · Vanskelig</div>
+    <div class="q-text">Hvorfor inkluderes et sekvensnummer i MAC-beregningen i hver TLS-record?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Salt hindrer at like passord får lik hash og svekker effekt av precomputed tabeller.</div>
+      <div class="answer">Uten sekvensnummer kunne Trudy (a) fange opp en gyldig record og spille den av igjen senere (replay-angrep), eller (b) bytte rekkefølge på records uten at mottakeren oppdaget det. Sekvensnummeret sendes ikke eksplisitt i recorden, men begge parter holder en intern teller og inkluderer den i MAC-beregningen. Enhver replay eller omrokering vil derfor få MAC-verifiseringen til å feile, fordi forventet sekvensnummer hos mottakeren ikke matcher det som ble brukt da MAC-en ble laget.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 15 · Vanskelig</div>
-    <div class="q-text">Hva er stateless pakkefiltrering?</div>
+    <div class="q-text">Hva er stateless pakkefiltrering, og hvilken svakhet har den?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Stateless filtrering matcher pakker mot regler uten kontekst om tidligere pakker i flyten.</div>
+      <div class="answer">En tilstandsløs (stateless) brannmur ser på hver pakke <em>isolert</em> og bestemmer ut fra headerfelt (kilde-/dest-IP, port, protokoll, TCP-flagg) om den slippes gjennom. Reglene uttrykkes i en ACL som sjekkes ovenfra og ned. Svakheten: den vet ikke om en innkommende pakke faktisk hører til en aktiv forbindelse. En angriper kan f.eks. sende en TCP-pakke med ACK-flagg satt — den ser ut som et svar på en eksisterende forbindelse, og slipper gjennom selv om ingen forbindelse ble opprettet.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 16 · Middels</div>
-    <div class="q-text">Hva er en stateful brannmur?</div>
+    <div class="q-text">Hva er en stateful brannmur, og hvordan løser den svakheten i stateless filtrering?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Stateful brannmur holder tilstand på forbindelser og kan tillate returtrafikk dynamisk.</div>
+      <div class="answer">En tilstandsfull (stateful) brannmur holder en <strong>forbindelsestabell</strong> over alle aktive TCP-forbindelser. Den sporer SYN-oppsett, FIN-nedrigging og timeout for inaktive forbindelser. En innkommende pakke slippes bare gjennom hvis den hører til en forbindelse som allerede er registrert — eller hvis ACL eksplisitt tillater nye innkommende forbindelser. Dermed avvises en «fabrikkert» ACK-pakke som ikke matcher noen kjent forbindelse, noe en stateless brannmur ville sluppet inn.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 17 · Lett</div>
-    <div class="q-text">Hva er forskjellen mellom IDS og IPS?</div>
+    <div class="q-label">Spørsmål 17 · Middels</div>
+    <div class="q-text">Hva er forskjellen mellom IPsec transport-modus og tunnel-modus?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">IDS detekterer og varsler, mens IPS kan gripe inn og blokkere mistenkelig trafikk.</div>
+      <div class="answer"><strong>Transport-modus</strong> krypterer bare <em>payloaden</em> i IP-datagrammet — den opprinnelige IP-headeren er fortsatt synlig. Brukes mellom to endepunkter (host-to-host). <strong>Tunnel-modus</strong> krypterer hele det opprinnelige IP-datagrammet (inkludert headeren) og pakker det inn i et nytt IP-datagram med ny ytre header. Brukes typisk mellom to gateways og er fundamentet for VPN: trafikken mellom Oslo- og Trondheim-kontoret pakkes inn i krypterte datagrammer som tunneleres over det offentlige Internett.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 18 · Vanskelig</div>
-    <div class="q-text">Hva er et DDoS-angrep, og hva gjør det effektivt?</div>
+    <div class="q-text">Hvorfor sender Alice sesjonsnøkkelen K<sub>S</sub> kryptert med Bobs offentlige nøkkel i sikker e-post — i stedet for å kryptere hele meldingen med den?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">DDoS bruker mange distribuerte kilder for å overbelaste mål og vanskeliggjøre filtrering.</div>
+      <div class="answer">Offentlig-nøkkel-kryptering er <em>mye</em> tregere enn symmetrisk kryptering — for en lang e-post ville det vært upraktisk. Hybridløsningen utnytter det beste fra begge: Alice (1) genererer en tilfeldig symmetrisk K<sub>S</sub>, (2) krypterer meldingen raskt med K<sub>S</sub> (AES), og (3) krypterer bare den korte K<sub>S</sub> med Bobs offentlige nøkkel. Bob dekrypterer K<sub>S</sub> med sin private nøkkel og bruker den til å dekryptere selve meldingen. Dette mønsteret går igjen i TLS, sikker e-post og IPsec.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 19 · Middels</div>
-    <div class="q-text">Hva er phishing?</div>
+    <div class="q-text">Hvordan oppnår WPA3 at passordet aldri sendes over lufta?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Phishing manipulerer brukere til å avsløre hemmeligheter via troverdige, men falske meldinger/sider.</div>
+      <div class="answer">I WPA3-håndtrykket (SAE) utveksler mobilenheten og AS bare <strong>nonce-verdier</strong> (engangsbrukstall) og en <strong>HMAC-verifiseringsverdi</strong>. Begge parter utleder lokalt den samme symmetriske sesjonsnøkkelen K<sub>M-AP</sub> fra det forhåndsdelte passordet, begge nonce-ene og MAC-adressene. Hver part beregner og verifiserer en HMAC over disse ingrediensene. Hvis HMAC-en stemmer på begge sider, vet de at den andre kjenner passordet — uten at passordet selv noensinne ble sendt.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 20 · Vanskelig</div>
-    <div class="q-text">Hva er et man-in-the-middle-angrep?</div>
+    <div class="q-text">Hva er et man-in-the-middle-angrep, og hvordan motvirker sertifikater det?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">MITM plasserer angriper i trafikkbanen for avlytting, endring eller injeksjon av data.</div>
+      <div class="answer">I et MITM-angrep plasserer Trudy seg mellom Alice og Bob, og kan avlytte, endre eller injisere meldinger — særlig farlig under nøkkelutveksling, der hun kan utgi seg for å være Bob overfor Alice og motsatt. Sertifikater motvirker dette: Bobs offentlige nøkkel er signert av en betrodd CA, og Alice har CA-ens rotnøkkel forhåndsinstallert. Når Alice mottar Bobs sertifikat, verifiserer hun CA-signaturen og vet dermed at den offentlige nøkkelen virkelig tilhører Bob — Trudy kan ikke forfalske dette uten CA-ens private nøkkel.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 21 · Middels</div>
-    <div class="q-text">Hva er et replay-angrep?</div>
+    <div class="q-text">Hva er et replay-angrep, og hvilke mekanismer beskytter mot det?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">I replay gjenbrukes gyldige meldinger senere for å lure systemet til å akseptere gammel handling.</div>
+      <div class="answer">I et replay-angrep fanger Trudy opp en gyldig melding (f.eks. en autentisert «overfør 1000 kr»-kommando) og spiller den av på nytt senere — meldingen er ekte og verifiseres som autentisk, men handlingen utføres flere ganger. Beskyttelse: <strong>nonces</strong> (engangsbrukstall som mottakeren krever er nye), <strong>tidsstempler</strong> (avviser meldinger som er for gamle), eller <strong>sekvensnummer</strong> i MAC-beregningen (som i TLS-records). Felles for alle: hver melding gjøres «fersk» slik at en gammel kopi avvises.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 22 · Vanskelig</div>
-    <div class="q-text">Hva er nonces og tidsstempler, og hva beskytter de mot?</div>
+    <div class="q-text">Hva er den viktigste sikkerhetsforbedringen fra 4G til 5G?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Unike nonces/tidsstempler gjør meldinger ferske og reduserer replay-risiko.</div>
+      <div class="answer">I 4G LTE sendes IMSI (mobilenhetens unike identifikator på SIM-kortet) i <em>klartekst</em> ved nettverkstilkobling — det muliggjør <strong>IMSI-catchers</strong> (falske basestasjoner som fanger opp og sporer mobil-identiteter). I 5G krypteres IMSI med public-key-kryptografi før den sendes, slik at bare hjemmenettverket kan dekryptere den. I tillegg flyttes selve autentiseringsbeslutningen fra besøkt nett (MME i 4G) til hjemmenettverket i 5G, noe som gir bedre tillit og mindre sårbarhet for kompromitterte besøkte operatører.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 23 · Lett</div>
-    <div class="q-text">Hva er DNS-spoofing?</div>
+    <div class="q-label">Spørsmål 23 · Middels</div>
+    <div class="q-text">Hvorfor utleder TLS fire separate nøkler fra master secret i stedet for å bruke én?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">DNS-spoofing forsøker å få klienter til å slå opp feil IP og dermed kontakte angriperstyrte mål.</div>
+      <div class="answer">God kryptografisk praksis er å aldri bruke samme nøkkel til to ulike formål. TLS utleder derfor: <strong>E<sub>A</sub></strong> (kryptering A→B), <strong>E<sub>B</sub></strong> (kryptering B→A), <strong>M<sub>A</sub></strong> (MAC A→B) og <strong>M<sub>B</sub></strong> (MAC B→A). Forskjellige nøkler per retning gjør det vanskeligere for en angriper å «reflektere» en melding tilbake; forskjellige nøkler for kryptering vs MAC isolerer skadeomfanget hvis én algoritme skulle bli svekket.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 24 · Middels</div>
-    <div class="q-text">Hva er prinsippet om minste privilegium?</div>
+    <div class="q-label">Spørsmål 24 · Lett</div>
+    <div class="q-text">Hva er et DDoS-angrep, og hvilken sikkerhetsegenskap angriper det?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Minste privilegium begrenser tilgang til det som er nødvendig og reduserer skadeomfang ved kompromiss.</div>
+      <div class="answer">Distributed Denial-of-Service (DDoS) bruker mange distribuerte kilder (f.eks. et botnet med kompromitterte enheter) til å oversvømme et mål med trafikk slik at legitime brukere ikke får svar. DDoS angriper <strong>tilgjengeligheten</strong> (A i CIA-triaden) — ikke konfidensialitet eller integritet. Det er vanskelig å filtrere fordi trafikken kommer fra mange ekte IP-adresser samtidig. SYN-flooding er et klassisk eksempel: angriperen åpner halvveis-TCP-forbindelser raskere enn serveren rekker å rydde dem.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 25 · Vanskelig</div>
-    <div class="q-text">Hva er defense in depth?</div>
+    <div class="q-text">Hvorfor er Internett-checksum (TCP-checksum) ikke god nok som integritetsbeskyttelse?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Flere uavhengige sikkerhetslag gjør systemet robust selv om ett kontrollpunkt svikter.</div>
+      <div class="answer">TCP-checksum er designet for å oppdage <em>tilfeldige</em> bitfeil — ikke ondsinnet manipulasjon. Det er trivielt å konstruere to forskjellige meldinger med samme 16-bits checksum: f.eks. har «IOU 100.99 BOB» og «IOU 900.19 BOB» identisk checksum. En angriper kan dermed endre meldingens innhold uten at checksum avslører det. En kryptografisk hashfunksjon (SHA-256) er <em>kollisjonsresistent</em> — det er beregningsmessig umulig å finne to meldinger med samme hash, og enhver liten endring gir helt forskjellig hash.</div>
     </div>
   </div>
 </div>

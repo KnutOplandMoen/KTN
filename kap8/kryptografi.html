@@ -166,13 +166,70 @@
     </tr>
   </table>
 
-  <h3>DES — Data Encryption Standard</h3>
-  <p><strong>DES</strong> var den amerikanske standarden for symmetrisk kryptering fra 1977 (FIPS PUB 46). Den bruker en <strong>56-bits nøkkel</strong> og opererer på 64-bits blokker av klartekst. DES er et <em>blokkchiffer</em>: klarteksten deles opp i blokker av fast størrelse som krypteres hver for seg, og blokkene lenkes sammen via <strong>cipher block chaining</strong> (CBC) for å unngå at identiske klartekstblokker gir identisk chiffertekst.</p>
+  <h3>Blokkchiffer og strømchiffer</h3>
+  <p>Symmetriske algoritmer kommer i to hovedformer. Et <strong>strømchiffer</strong> krypterer én bit eller ett byte om gangen ved å XOR-e klarteksten med en pseudo-tilfeldig nøkkelstrøm. Et <strong>blokkchiffer</strong> deler i stedet meldingen i blokker av fast størrelse (typisk 64 eller 128 bit) og krypterer hver blokk for seg. DES og AES er begge blokkchiffer, og dominerer i moderne nettverksprotokoller (TLS, IPsec, WPA2/WPA3).</p>
 
-  <p>Hvor sikkert er DES? Ikke sikkert nok. I DES Challenge ble en 56-bits nøkkel knekt med brute force på under ett døgn. Løsningen var <strong>3DES</strong>: krypter tre ganger med tre forskjellige nøkler, som effektivt gir en 168-bits nøkkelstyrke.</p>
+  <h3>DES — Data Encryption Standard</h3>
+  <p><strong>DES</strong> var den amerikanske standarden for symmetrisk kryptering fra 1977 (FIPS PUB 46). Den bruker en <strong>56-bits nøkkel</strong> og opererer på 64-bits blokker av klartekst. Hvor sikkert er DES? Ikke sikkert nok. I DES Challenge ble en 56-bits nøkkel knekt med brute force på under ett døgn. Løsningen var <strong>3DES</strong>: krypter tre ganger med tre forskjellige nøkler, som effektivt gir en 168-bits nøkkelstyrke.</p>
 
   <h3>AES — Advanced Encryption Standard</h3>
   <p><strong>AES</strong> erstattet DES i 2001 som NIST-standard. Den opererer på <strong>128-bits blokker</strong> og støtter nøkkellengder på <strong>128, 192 eller 256 bit</strong>. For å sette det i perspektiv: hvis brute force på DES tar ett sekund, ville brute force på AES med 128-bits nøkkel ta omtrent 149 billioner år. AES er i dag den dominerende symmetriske algoritmen — den brukes i TLS, WiFi (WPA2/WPA3), IPsec og mye annet.</p>
+
+  <h3>Cipher Block Chaining (CBC) og IV</h3>
+  <p>Et blokkchiffer alene har et subtilt, men alvorlig problem: hvis Alice krypterer hver blokk uavhengig med samme nøkkel, vil <em>to like klartekstblokker gi to like chiffertekstblokker</em>. En angriper som ser «AB12 ... AB12» i chifferteksten vet umiddelbart at de to klartekstblokkene er like — selv uten å kjenne innholdet. For strukturerte data (e-post-headere, faste passordfelt, bilder med ensfargede områder) lekker dette mye informasjon. Det er også et problem at samme melding kryptert to ganger blir helt identisk på linja, slik at Trudy kan kjenne igjen «meldingen jeg så i går».</p>
+
+  <p>Løsningen er <strong>Cipher Block Chaining (CBC)</strong>: før hver klartekstblokk krypteres, XOR-er man den med <em>forrige chiffertekstblokk</em>. Slik blir hver blokk avhengig av alle de foregående. Den aller første blokken har ingen «forrige» — derfor genererer Alice en tilfeldig <strong>Initialization Vector (IV)</strong> som hun XOR-er med blokk 1. IV-en sendes med meldingen i <em>klartekst</em> (den trenger ikke være hemmelig, bare uforutsigbar og ny for hver melding). Resultatet: samme melding kryptert to ganger med samme nøkkel produserer helt forskjellige chiffertekster, fordi IV-en er forskjellig.</p>
+
+  <figure>
+    <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arwCBC" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L6,4 L0,8 z" fill="#1a1612"/></marker>
+      </defs>
+      <!-- Row 1: M1 -->
+      <text x="20" y="35" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">m₁</text>
+      <rect x="20" y="42" width="60" height="34" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/>
+      <text x="50" y="63" text-anchor="middle" font-family="Newsreader" font-size="13" fill="#1a1612">M₁</text>
+      <text x="105" y="63" text-anchor="middle" font-family="IBM Plex Mono" font-size="14" fill="#b04428">⊕</text>
+      <text x="105" y="35" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">IV</text>
+      <rect x="135" y="42" width="90" height="34" fill="#e8e3d6" stroke="#b04428" stroke-width="1.5" rx="3"/>
+      <text x="180" y="63" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">Krypter Kₛ</text>
+      <path d="M 225 59 L 270 59" stroke="#1a1612" stroke-width="1.5" marker-end="url(#arwCBC)"/>
+      <rect x="270" y="42" width="60" height="34" fill="#e8d4cd" stroke="#b04428" stroke-width="1.5"/>
+      <text x="300" y="63" text-anchor="middle" font-family="Newsreader" font-size="13" fill="#b04428">C₁</text>
+
+      <!-- Row 2: M2 -->
+      <text x="20" y="100" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">m₂</text>
+      <rect x="20" y="107" width="60" height="34" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/>
+      <text x="50" y="128" text-anchor="middle" font-family="Newsreader" font-size="13" fill="#1a1612">M₂</text>
+      <text x="105" y="128" text-anchor="middle" font-family="IBM Plex Mono" font-size="14" fill="#b04428">⊕</text>
+      <path d="M 300 76 L 300 95 L 105 95 L 105 115" stroke="#3d6b3a" stroke-width="1.5" fill="none" stroke-dasharray="3 2"/>
+      <text x="200" y="92" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a">forrige chiffertekst</text>
+      <rect x="135" y="107" width="90" height="34" fill="#e8e3d6" stroke="#b04428" stroke-width="1.5" rx="3"/>
+      <text x="180" y="128" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">Krypter Kₛ</text>
+      <path d="M 225 124 L 270 124" stroke="#1a1612" stroke-width="1.5" marker-end="url(#arwCBC)"/>
+      <rect x="270" y="107" width="60" height="34" fill="#e8d4cd" stroke="#b04428" stroke-width="1.5"/>
+      <text x="300" y="128" text-anchor="middle" font-family="Newsreader" font-size="13" fill="#b04428">C₂</text>
+
+      <!-- Row 3: M3 -->
+      <text x="20" y="165" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">m₃</text>
+      <rect x="20" y="172" width="60" height="34" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/>
+      <text x="50" y="193" text-anchor="middle" font-family="Newsreader" font-size="13" fill="#1a1612">M₃</text>
+      <text x="105" y="193" text-anchor="middle" font-family="IBM Plex Mono" font-size="14" fill="#b04428">⊕</text>
+      <path d="M 300 141 L 300 160 L 105 160 L 105 180" stroke="#3d6b3a" stroke-width="1.5" fill="none" stroke-dasharray="3 2"/>
+      <rect x="135" y="172" width="90" height="34" fill="#e8e3d6" stroke="#b04428" stroke-width="1.5" rx="3"/>
+      <text x="180" y="193" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">Krypter Kₛ</text>
+      <path d="M 225 189 L 270 189" stroke="#1a1612" stroke-width="1.5" marker-end="url(#arwCBC)"/>
+      <rect x="270" y="172" width="60" height="34" fill="#e8d4cd" stroke="#b04428" stroke-width="1.5"/>
+      <text x="300" y="193" text-anchor="middle" font-family="Newsreader" font-size="13" fill="#b04428">C₃</text>
+
+      <!-- Output label -->
+      <text x="450" y="35" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">Sendes på linja:</text>
+      <text x="450" y="58" font-family="IBM Plex Mono" font-size="12" fill="#1a1612">IV, C₁, C₂, C₃, ...</text>
+      <text x="450" y="90" font-family="IBM Plex Sans" font-size="10" fill="#6b6257" font-style="italic">IV sendes i klartekst</text>
+      <text x="450" y="106" font-family="IBM Plex Sans" font-size="10" fill="#6b6257" font-style="italic">— men er ny for hver melding</text>
+    </svg>
+    <figcaption>CBC: hver klartekstblokk XOR-es med forrige chiffertekstblokk før den krypteres. Den første blokken bruker en tilfeldig IV. Slik blir identiske klartekstblokker krypterte ulikt — og hele meldingen er forskjellig hver gang IV-en endres.</figcaption>
+  </figure>
 
   <div class="margin-note">Symmetrisk kryptografi er <em>rask</em> — den brukes til å kryptere selve dataene. Men den har ett stort problem: hvordan utveksler Alice og Bob nøkkelen trygt? Svaret kommer i neste seksjon.</div>
 </div>
