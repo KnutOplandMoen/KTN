@@ -139,10 +139,65 @@
     <figcaption>Symmetrisk kryptografi: samme nøkkel K<sub>S</sub> brukes til både kryptering og dekryptering.</figcaption>
   </figure>
 
-  <h3>Substitusjonschiffer: det enkleste eksempelet</h3>
-  <p>Det mest grunnleggende krypteringsskjemaet er et <strong>monoalfabetisk substitusjonschiffer</strong>: erstatt hver bokstav med en annen, konsekvent gjennom hele meldingen. For eksempel: a?m, b?n, c?b, d?v, osv. Nøkkelen er hele substitueringstabellen — en permutasjon av 26 bokstaver.</p>
+  <h3>Klassiske chiffer — byggesteinene i historien</h3>
+  <p>Før vi går til DES og AES er det lærerikt å se på hvordan klassiske chiffer fungerte. De er alle pensum (kap. 8.2.1), og de illustrerer prinsippene som moderne algoritmer bygger på — og hvorfor moderne algoritmer trenger å være så mye mer kompliserte.</p>
 
-  <p>Problemet er at slike chiffer er lette å knekke med statistisk analyse. Bokstaven «e» er den vanligste i engelsk tekst, så den bokstaven som opptrer oftest i chifferteksten er sannsynligvis «e». Med noen hundre tegn chiffertekst kan man typisk knekke hele nøkkelen. Et <strong>polyalfabetisk chiffer</strong> — der man roterer mellom flere substitusjonstabeller — er bedre, men fortsatt sårbart.</p>
+  <h4>Caesar-chiffer</h4>
+  <p>Det enkleste substitusjonschifferet, oppkalt etter Julius Caesar som angivelig brukte det i militære meldinger. Hver bokstav skiftes <em>k</em> posisjoner i alfabetet. Med skift k = 3:</p>
+
+  <figure>
+    <svg viewBox="0 0 700 110" xmlns="http://www.w3.org/2000/svg">
+      <text x="20" y="35" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">Klartekst:</text>
+      <text x="120" y="35" font-family="IBM Plex Mono" font-size="13" fill="#1a1612" letter-spacing="3">a b c d e f g h i j k l m n o p q r s t u v w x y z</text>
+      <text x="20" y="65" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">Chiffer (k=3):</text>
+      <text x="120" y="65" font-family="IBM Plex Mono" font-size="13" fill="#b04428" letter-spacing="3">d e f g h i j k l m n o p q r s t u v w x y z a b c</text>
+      <text x="20" y="95" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">Eksempel:</text>
+      <text x="120" y="95" font-family="IBM Plex Mono" font-size="13" fill="#1a1612">HELLO</text>
+      <text x="200" y="95" font-family="IBM Plex Mono" font-size="13" fill="#3d6b3a">→</text>
+      <text x="220" y="95" font-family="IBM Plex Mono" font-size="13" fill="#b04428">KHOOR</text>
+    </svg>
+    <figcaption>Caesar-chifferet skifter alfabetet et fast antall plasser. Nøkkelen er bare ett tall (1–25), så det finnes bare 25 mulige nøkler — en angriper kan prøve alle på sekunder.</figcaption>
+  </figure>
+
+  <h4>Monoalfabetisk substitusjonschiffer</h4>
+  <p>Generaliseringen av Caesar: i stedet for et fast skift bruker man en <em>vilkårlig</em> permutasjon av alfabetet som nøkkel. Hver bokstav får sin egen, konsekvente erstatning gjennom hele meldingen.</p>
+
+  <figure>
+    <svg viewBox="0 0 700 130" xmlns="http://www.w3.org/2000/svg">
+      <text x="20" y="35" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">Klartekst:</text>
+      <text x="120" y="35" font-family="IBM Plex Mono" font-size="13" fill="#1a1612" letter-spacing="3">a b c d e f g h i j k l m n o p q r s t u v w x y z</text>
+      <text x="20" y="65" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">Chiffer:</text>
+      <text x="120" y="65" font-family="IBM Plex Mono" font-size="13" fill="#b04428" letter-spacing="3">m n b v c x z a s d f g h j k l p o i u y t r e w q</text>
+      <text x="20" y="100" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">Eksempel:</text>
+      <text x="120" y="100" font-family="IBM Plex Mono" font-size="13" fill="#1a1612">bob, i love you. alice</text>
+      <text x="120" y="120" font-family="IBM Plex Mono" font-size="13" fill="#b04428">nkn, s gktc wky. mgsbc</text>
+    </svg>
+    <figcaption>Monoalfabetisk substitusjon: en vilkårlig permutasjon av alfabetet er nøkkelen. (Eksempelet er hentet fra Kurose & Ross.)</figcaption>
+  </figure>
+
+  <p>Antall mulige nøkler er nå 26! ≈ 4 × 10²⁶ — alt for stort for brute force selv med moderne datamaskiner. Likevel er det <em>trivielt</em> å knekke ved <strong>frekvensanalyse</strong>: i engelsk tekst utgjør bokstaven «e» ca. 12,7 % av alle tegn, «t» ca. 9 %, «a» ca. 8 %. Tell hvilken bokstav som er hyppigst i chifferteksten — det er sannsynligvis «e». Gjenta med nest hyppigste, sjekk vanlige bigrammer som «th», «he», «in», og du har hele substitusjonstabellen på 100–200 tegn chiffertekst. Stort nøkkelrom hjelper ikke når strukturen i klarteksten lekker rett gjennom.</p>
+
+  <h4>Polyalfabetisk chiffer (Vigenère)</h4>
+  <p>For å beskytte mot frekvensanalyse roterer man mellom <em>flere</em> substitusjoner. <strong>Vigenère-chifferet</strong> bruker et nøkkelord, der hver bokstav i nøkkelordet velger ett av 26 mulige Caesar-skift. Slik krypteres samme klartekstbokstav ulikt avhengig av sin posisjon.</p>
+
+  <figure>
+    <svg viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg">
+      <text x="20" y="35" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">Klartekst:</text>
+      <text x="160" y="35" font-family="IBM Plex Mono" font-size="13" fill="#1a1612" letter-spacing="4">H E L L O   W O R L D</text>
+      <text x="20" y="60" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">Nøkkel «KEY»:</text>
+      <text x="160" y="60" font-family="IBM Plex Mono" font-size="13" fill="#3d6b3a" letter-spacing="4">K E Y K E   Y K E Y K</text>
+      <text x="20" y="85" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">Skift (0–25):</text>
+      <text x="160" y="85" font-family="IBM Plex Mono" font-size="13" fill="#3d6b3a" letter-spacing="4">10 4 24 10 4   24 10 4 24 10</text>
+      <text x="20" y="115" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">Chiffer:</text>
+      <text x="160" y="115" font-family="IBM Plex Mono" font-size="13" fill="#b04428" letter-spacing="4">R I J V S   U Y V J N</text>
+    </svg>
+    <figcaption>Vigenère: nøkkelordet «KEY» gir skiftene K=10, E=4, Y=24 som rulleres gjennom meldingen. Legg merke til at de to L-ene i «HELLO» blir til J og V — samme klartekstbokstav, men forskjellige chiffertegn.</figcaption>
+  </figure>
+
+  <p>Polyalfabetisk kryptering var i bruk fra 1500-tallet helt frem til andre verdenskrig (tyske <em>Enigma</em> var en mekanisk variant). Det er fortsatt sårbart hvis nøkkelordet er kort: når du først har gjettet nøkkellengden, kan du gjøre frekvensanalyse på hver «posisjon mod nøkkellengde» separat — og hvert delproblem er bare et Caesar-chiffer.</p>
+
+  <h4>Hvorfor klassiske chiffer ikke holder i moderne nett</h4>
+  <p>Felles for alle klassiske chiffer er at de behandler én bokstav om gangen og lar statistisk struktur lekke gjennom. Moderne <strong>blokkchiffer</strong> som DES og AES opererer i stedet på blokker av <em>bits</em> (64 eller 128) og bruker mange runder med substitusjon, permutasjon og XOR med rundenøkler. Resultatet er at hver enkelt bit av chifferteksten avhenger av <em>hver</em> bit i klarteksten og nøkkelen — to egenskaper Claude Shannon kalte <strong>confusion</strong> (skjul nøkkelen) og <strong>diffusion</strong> (spred klarteksten utover hele blokken). Frekvensanalyse fungerer ikke lenger.</p>
 
   <h3>Å bryte kryptering</h3>
   <p>En angriper kan prøve å knekke en kryptering på tre måter:</p>
