@@ -33,7 +33,8 @@
   <ol class="chapter-toc-list">
     <li><span class="toc-num">01</span><a href="#overblikk">Helhetsbilde</a></li>
     <li><span class="toc-num">02</span><a href="#deler">Deler</a></li>
-    <li><span class="toc-num">03</span><a href="#quiz">Test deg selv</a></li>
+    <li><span class="toc-num">03</span><a href="#flashcards">Flashcards</a></li>
+    <li><span class="toc-num">04</span><a href="#quiz">Test deg selv</a></li>
   </ol>
 </div>
 </nav>
@@ -147,6 +148,178 @@
       </div>
       <span class="sp-arrow">&rarr;</span>
     </a>
+  </div>
+</div>
+</section>
+
+<!-- ============ FLASHCARDS ============ -->
+<section id="flashcards" class="flashcards-section">
+<div class="container">
+  <div class="section-badge">Flashcards</div>
+  <h2>Rask <em>repetisjon</em></h2>
+  <p class="section-intro">Åpne spørsmål i tilfeldig rekkefølge. Klikk kortet for å snu — bruk <strong>&larr; / &rarr;</strong> for å bla, <strong>mellomrom</strong> for å snu, <strong>R</strong> for å shuffle.</p>
+
+  <div class="flashcards" data-flashcards>
+    <div class="fc-stage">
+      <article class="fc-card" tabindex="0" role="button" aria-label="Flashcard — klikk for å snu">
+        <div class="fc-face fc-front">
+          <div class="fc-label">Spørsmål</div>
+          <p class="fc-text" data-fc-front-display aria-live="polite">&nbsp;</p>
+          <div class="fc-hint">Klikk eller mellomrom for å vise svar</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-label">Svar</div>
+          <div class="fc-text" data-fc-back-display aria-live="polite">&nbsp;</div>
+        </div>
+      </article>
+    </div>
+
+    <div class="fc-controls">
+      <button class="fc-btn fc-prev" type="button" aria-label="Forrige kort" title="Forrige (←)">&larr;</button>
+      <div class="fc-progress">
+        <span class="fc-counter">1 / 1</span>
+        <div class="fc-bar"><div class="fc-bar-fill"></div></div>
+      </div>
+      <button class="fc-btn fc-next" type="button" aria-label="Neste kort" title="Neste (→)">&rarr;</button>
+      <button class="fc-btn fc-shuffle" type="button" aria-label="Shuffle bunken" title="Shuffle (R)">&#8635;</button>
+    </div>
+
+    <ol class="fc-deck" hidden>
+      <li data-card>
+        <div data-fc-front>Hva er en nettverksprotokoll, og hvilke tre ting definerer den?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En protokoll er et felles regelverk som definerer (1) <em>formatet</em> på meldinger som utveksles, (2) <em>rekkefølgen</em> de sendes/mottas i, og (3) <em>handlingene</em> som utløses ved sending eller mottak.</p>
+          <p><strong>Hvorfor:</strong> Uten en avtalt protokoll er bits bare spenninger eller lyspulser uten mening. To enheter som ikke deler protokoll kan utveksle data fysisk, men ingen av dem klarer å tolke hva den andre sier. Protokollen er det som gjør kommunikasjon mulig — alt fra HTTP til IP til Ethernet er i bunn og grunn slike avtaler.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Sammenlign pakkesvitsjing og linjesvitsjing. Hvorfor vant pakkesvitsjing?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Pakkesvitsjing deler nettverkskapasiteten dynamisk mellom brukere ved at data sendes som uavhengige pakker. Linjesvitsjing reserverer en dedikert krets (frekvensbånd eller tidsluke) hele veien før kommunikasjonen starter.</p>
+          <p><strong>Hvorfor pakkesvitsjing vant:</strong> <em>Statistisk multipleksing</em>. Brukere er sjelden aktive samtidig — du veksler mellom å lese, klikke, vente. Pakkesvitsjing utnytter de stille periodene; linjesvitsjing lar reserverte ressurser ligge ubrukt. Konkret: en 1 Mbps-link med brukere som er aktive 10 % av tida betjener ~10 brukere med TDM, men ~35 med pakkesvitsjing — med under 0,04 % sannsynlighet for overbelastning. Prisen er at pakkesvitsjing ikke gir garantier for forsinkelse eller tap.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar store-and-forward-prinsippet. Hva er den totale forsinkelsen for én pakke over N linker (bare transmisjon)?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En ruter må motta hele pakken før den kan begynne å sende den videre. For én pakke med L bits over en link med kapasitet R bits/s, er transmisjonstiden L/R. Over N linker (N−1 rutere) blir total transmisjonsforsinkelse <code>N × L/R</code>.</p>
+          <p><strong>Hvorfor:</strong> Ruteren trenger hele headeren for å vite hvor pakken skal videre, og hele payloaden for å verifisere at det ikke er bitfeil. Den kan altså ikke "rote videre" bit for bit — derfor multipliseres L/R med antall hop. Dette er grunnen til at små pakker kommer fortere fram enn store, alt annet likt: hver hop er en repetert L/R-kostnad.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom <em>transmisjonsforsinkelse</em> og <em>propageringsforsinkelse</em>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Transmisjonsforsinkelsen (<code>L/R</code>) er tida det tar å skyve alle bits ut på linken — avhenger av pakkestørrelse og linkhastighet. Propageringsforsinkelsen (<code>d/v</code>) er tida bitsene bruker på å reise gjennom mediet — avhenger bare av fysisk avstand og signalhastighet (~2·10⁸ m/s i fiber/kobber).</p>
+          <p><strong>Hvorfor de blandes:</strong> Begge måles i tid og virker like, men de styres av helt ulike fysiske størrelser. <em>Karavane-analogien</em>: 10 biler skal forbi en bom og kjøre 100 km videre. Tida ved bommen tilsvarer transmisjon (avhenger av <em>hvor raskt bommen behandler biler</em>), tida på veien tilsvarer propagering (avhenger av <em>avstanden</em>). Du kan gjøre bommen raskere uten å forkorte veien, og omvendt.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Beregn transmisjonsforsinkelsen for en pakke på 1500 bytes over en 100 Mbps-link. Hva blir den på en 1 Gbps-link?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> 1500 bytes = 12 000 bits.<br>
+            På 100 Mbps: <code>d_trans = 12 000 / 100·10⁶ = 1,2·10⁻⁴ s = 120 µs</code>.<br>
+            På 1 Gbps: <code>d_trans = 12 000 / 1·10⁹ = 1,2·10⁻⁵ s = 12 µs</code>.</p>
+          <p><strong>Hvorfor:</strong> Transmisjonsforsinkelsen skalerer lineært med 1/R. Når R øker tigangefoldet, faller d_trans tilsvarende. Husk at L må være i bits (bytes × 8), og R i bits per sekund — den vanligste regnefeilen er å glemme byte→bit-konverteringen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva forteller trafikk-intensiteten <code>La/R</code> deg, og hva skjer når den nærmer seg 1?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <code>La/R</code> = (gjennomsnittlig pakkelengde × ankomstrate) / linkhastighet — altså hvor stor andel av linkens kapasitet som forbrukes i snitt. Når den nærmer seg 1, vokser den gjennomsnittlige køforsinkelsen mot uendelig. Over 1 ankommer pakker raskere enn linken klarer å sende dem ut, og pakker droppes fordi køen renner over.</p>
+          <p><strong>Hvorfor det "eksploderer" akkurat ved 1:</strong> Selv om gjennomsnittlig ankomstrate er lik servicerate, er ankomstene ujevne (burst-y). Tilfeldige opphopninger fyller køen raskere enn den tømmes, og det er ingen mekanisme som drar køen ned igjen. Derfor designes nettverk slik at trafikk-intensiteten holdes <em>godt</em> under 1 — ikke bare litt under.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er en flaskehalslenke (bottleneck), og hvor finnes den typisk?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Flaskehalsen er den lenken med lavest kapasitet på en ende-til-ende-rute. Den begrenser hele gjennomstrømningen — uansett hvor raske de andre lenkene er.</p>
+          <p><strong>Hvorfor og hvor:</strong> En kjede er ikke sterkere enn det svakeste leddet; en pakkestrøm kan ikke flyte raskere enn den tregeste linken den må passere. I praksis ligger flaskehalsen oftest i <em>aksessnettet</em> (siste mil — DSL, mobilnett, hjemme-WiFi) eller hos selve serveren. Kjernen av Internett bruker høyhastighets fiber med enorm kapasitet, så det er sjelden der det stopper opp. Det er derfor 1 Gbps-fiber hjemme ikke alltid føles 10× raskere enn 100 Mbps — flaskehalsen kan være helt et annet sted.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar de fem lagene i Internett-protokollstabelen og hva hvert lag har ansvar for.</div>
+        <div data-fc-back>
+          <p><strong>Svar (top-down):</strong></p>
+          <p>5 — <strong>Applikasjonslaget</strong>: meldinger mellom prosesser (HTTP, SMTP, DNS).<br>
+             4 — <strong>Transportlaget</strong>: ende-til-ende-levering mellom prosesser, multipleksing/demultipleksing (TCP, UDP).<br>
+             3 — <strong>Nettverkslaget</strong>: ruting av datagrammer fra kilde til mål (IP, ICMP).<br>
+             2 — <strong>Lenkelaget</strong>: overføring av rammer mellom nabonoder (Ethernet, WiFi).<br>
+             1 — <strong>Fysisk lag</strong>: bits over et fysisk medium (spenninger, lyspulser, radiobølger).</p>
+          <p><strong>Hvorfor lagdeling:</strong> Kompleksiteten i nettverk er gigantisk. Ved å la hvert lag <em>bare</em> bruke tjenester fra laget under og <em>bare</em> tilby tjenester til laget over, blir hvert lag erstattbart uavhengig av de andre. Du kan bytte WiFi mot Ethernet (lag 2) uten at TCP (lag 4) merker noe. Dette er hele grunnen til at Internett har overlevd 50 år: protokollene er løst koblet sammen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er enkapsulering, og hvorfor er det viktig?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Enkapsulering er prosessen der hvert protokollag pakker inn dataene fra laget over ved å legge til sin egen header (og noen ganger trailer). Applikasjonsmeldingen blir et transportlag-segment (med TCP/UDP-header), som blir et nettverkslag-datagram (med IP-header), som blir en lenkelagsramme (med MAC-header og FCS-trailer).</p>
+          <p><strong>Hvorfor det er viktig:</strong> Enkapsulering er den tekniske mekanismen som gjør lagdelingen mulig. Hvert lag ser bare sin egen header — det som er inni er "bare data". På mottakersiden pakkes laggene ut i motsatt rekkefølge. Det betyr at lagene er <em>uavhengige</em>: de kan kombineres som legoklosser. Du kan kjøre HTTP over TCP over IP over WiFi, eller HTTP over TCP over IP over Ethernet, og applikasjonen vet ingenting om forskjellen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom Internetts fem-lagsmodell og OSI-modellens syv lag?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> OSI har syv lag — to ekstra mellom applikasjons- og transportlaget: <em>presentasjonslaget</em> (datakompresjon, kryptering, formatkonvertering) og <em>sesjonslaget</em> (sesjonsadministrasjon, synkronisering). I Internett finnes ikke disse som separate lag; funksjonene er overlatt til applikasjonen selv.</p>
+          <p><strong>Hvorfor det betyr noe:</strong> OSI er en akademisk referansemodell og brukes som vokabular ("lag 7" = applikasjon). Men i praksis kjører ekte Internett på fem lag, og presentasjons-/sesjonsfunksjoner som TLS-kryptering implementeres som biblioteker brukt direkte fra applikasjonen. Når noen sier "lag 7-brannmur" mener de altså en brannmur som inspiserer applikasjonsdata.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er rollen til socket-grensesnittet?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Socketen er API-et mellom en applikasjon og transportlaget — "døren" applikasjonen sender og mottar data gjennom. Den lar applikasjonen be om at en bytestrøm eller datagram skal sendes til en gitt destinasjon, uten å vite noe om rutere, IP-adressering eller lenkeoppførsel.</p>
+          <p><strong>Hvorfor abstraksjonen er kraftig:</strong> Den isolerer applikasjonsutvikleren fra all kompleksitet i nettverkslagene. Postsystem-analogien: du legger brevet i postkassen og stoler på at det leveres — du trenger ikke vite hvilken lastebil eller hvilke sorteringsanlegg det passerer. På samme måte trenger en webserver bare skrive til en TCP-socket; alt under det er noen andres problem.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan er ISP-hierarkiet i Internett organisert? Hva er en IXP?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Tre nivåer:<br>
+            <em>Aksess-ISP-er</em> kobler endesystemer til (Telenor, Altibox, lokal fiberleverandør).<br>
+            <em>Regionale ISP-er</em> binder aksess-ISP-ene sammen innenfor et land/region.<br>
+            <em>Tier 1-ISP-er</em> (f.eks. Lumen, NTT, Telia Carrier) har global rekkevidde og er sammenkoblet seg imellom uten å betale hverandre.</p>
+          <p>En <strong>IXP</strong> (Internet Exchange Point) er et fysisk sted der mange ISP-er møtes og utveksler trafikk direkte med hverandre via <em>peering</em>.</p>
+          <p><strong>Hvorfor IXP-er finnes:</strong> Uten dem måtte trafikk mellom to ISP-er gå gjennom en tier 1-leverandør og betale transittavgift hele veien. Direkte peering på en IXP er både billigere og raskere (færre hop, lavere RTT).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar tre vanlige angrepsmønstre for tjenestenektangrep (DoS).</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>1. <strong>Sårbarhetsutnyttelse</strong> — angriperen sender spesielt utformede meldinger som krasjer eller henger tjenesten (utnytter en bug i selve programvaren).<br>
+             2. <strong>Båndbreddeflom</strong> — angriperen oversvømmer mål-linken med så mye trafikk at legitim trafikk ikke kommer fram. Krever ofte et botnett (DDoS) for å produsere nok volum.<br>
+             3. <strong>Tilkoblingsflom</strong> — angriperen åpner enormt mange halvferdige TCP-forbindelser (f.eks. SYN flooding) til serverens forbindelsestabell er full og ingen nye tilkoblinger kan opprettes.</p>
+          <p><strong>Hvorfor de er forskjellige:</strong> Hver utnytter en ulik begrensning — programvarens robusthet, linkens kapasitet, eller serverens tilstandsbuffer. Tilsvarende krever de ulike forsvar: patching, oppstrøms-filtrering, og SYN cookies/connection rate-limits.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er IP-spoofing, og hvorfor er det farlig?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> IP-spoofing er å sende pakker med en forfalsket avsender-IP-adresse, slik at mottakeren tror pakken kommer fra noen andre.</p>
+          <p><strong>Hvorfor det er farlig:</strong> IP-laget verifiserer ikke avsenderen — protokollen ble designet for et tillitsfullt nett. Konsekvensene er flere: (1) <em>refleksjonsangrep</em> brukes i DDoS — angriperen sender forespørsler med offerets IP som "avsender", og svar-trafikken treffer offeret. (2) <em>Omgåelse av tilgangskontroll</em> — systemer som stoler på IP-adresse alene kan lures. (3) Forsvarsmekanismer som <em>ingress filtering</em> (BCP 38) finnes, men er ikke universelt utrullet.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva måler <code>ping</code>, og hva avdekker <code>traceroute</code> som ping ikke gjør?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <code>ping</code> sender en ICMP Echo Request og måler rundturstida (RTT) til en host. Det forteller deg om verten lever, og hvor lang forsinkelsen er totalt.</p>
+          <p><code>traceroute</code> sender pakker med stigende TTL-verdier (1, 2, 3, …). Hver ruter dekrementerer TTL og forkaster pakken når TTL=0, og sender en ICMP "Time Exceeded" tilbake. Slik får du en hopp-for-hopp-liste over rutere langs ruten med RTT til hver enkelt.</p>
+          <p><strong>Hvorfor det er nyttig:</strong> Ping forteller bare totalen; traceroute viser <em>hvor</em> langs ruten forsinkelsen oppstår. Hvis pakkene henger på en bestemt ruter, peker traceroute rett på flaskehalsen. Begge bruker ICMP, så noen brannmurer blokkerer dem — derav "* * *"-linjene noen ganger.</p>
+        </div>
+      </li>
+    </ol>
   </div>
 </div>
 </section>
@@ -394,6 +567,7 @@
 <script src="../chat-widget.js"></script>
 <script src="../nav-search.js"></script>
 <script src="../quiz.js"></script>
+<script src="../flashcards.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 <script defer src="/_vercel/speed-insights/script.js"></script>
 </body>

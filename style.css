@@ -972,6 +972,170 @@ pre .c-cli { color: #e8b560; }
 }
 .quiz .explanation.show { display: block; }
 
+/* ---------- FLASHCARDS ---------- */
+.flashcards-section { padding: 60px 0 30px; }
+
+.flashcards {
+  margin: 24px 0 8px;
+}
+
+.fc-stage {
+  position: relative;
+  perspective: 1400px;
+  height: 320px;
+  margin-bottom: 22px;
+}
+
+.fc-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.45s cubic-bezier(.2,.7,.2,1);
+  outline: none;
+}
+.fc-card:focus-visible { box-shadow: 0 0 0 3px rgba(176, 68, 40, 0.25); border-radius: 3px; }
+.fc-card.flipped { transform: rotateY(180deg); }
+
+.fc-face {
+  position: absolute;
+  inset: 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 36px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow-y: auto;
+}
+.fc-front {
+  background: var(--paper);
+  border-top: 3px solid var(--rust);
+}
+.fc-back {
+  background: var(--paper-dark);
+  border-left: 3px solid var(--green);
+  transform: rotateY(180deg);
+}
+
+.fc-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 14px;
+}
+.fc-back .fc-label { color: var(--green); }
+
+.fc-text {
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--ink);
+  font-weight: 500;
+}
+.fc-back .fc-text {
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+.fc-back .fc-text p { margin-bottom: 10px; }
+.fc-back .fc-text p:last-child { margin-bottom: 0; }
+.fc-back .fc-text strong { color: var(--rust); font-weight: 600; }
+
+.fc-hint {
+  position: absolute;
+  bottom: 14px;
+  left: 0; right: 0;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-ghost);
+}
+
+/* Controls */
+.fc-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+.fc-btn {
+  font-family: var(--mono);
+  font-size: 16px;
+  background: transparent;
+  border: 1px solid var(--rust);
+  color: var(--rust);
+  width: 44px;
+  height: 36px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.fc-btn:hover { background: #fff9ee; }
+.fc-btn:active { transform: translateY(1px); }
+.fc-btn.fc-shuffle { font-size: 18px; }
+
+.fc-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 160px;
+}
+.fc-counter {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--ink-faded);
+}
+.fc-bar {
+  width: 140px;
+  height: 2px;
+  background: var(--line);
+  border-radius: 1px;
+  overflow: hidden;
+}
+.fc-bar-fill {
+  height: 100%;
+  background: var(--rust);
+  width: 0%;
+  transition: width 0.25s ease;
+}
+
+/* The data list — hidden by default, but visible if JS fails so that
+   the content is still readable as a definition list. */
+.fc-deck { display: none; }
+.no-js .fc-deck {
+  display: block;
+  list-style: none;
+  margin-top: 24px;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .fc-stage { height: 360px; }
+  .fc-face { padding: 28px 24px; }
+  .fc-text { font-size: 17px; }
+  .fc-back .fc-text { font-size: 15.5px; }
+  .fc-progress { min-width: 110px; }
+  .fc-bar { width: 100px; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .fc-card { transition: none; }
+}
+
 /* ---------- STEPPER ---------- */
 .stepper {
   background: var(--paper-dark);
