@@ -52,7 +52,7 @@
   <div class="callout callout-blue">
     <span class="label">To utfordringer — én om fysikk, én om nettverk</span>
     <p><strong>Utfordring 1 — Trådløs kommunikasjon:</strong> Hvordan får vi bits over en radiolink der signalet dempes, interfereres og reflekteres? Løsningene er CSMA/CA (unngå kollisjoner i stedet for å oppdage dem), rate-tilpasning (senk hastigheten når signalet svekkes), og RTS/CTS (reserver kanalen når skjulte terminaler kan ødelegge).</p>
-    <p><strong>Utfordring 2 — Mobilitet:</strong> Hva skjer når enheten som snakker flytter seg mellom basestasjoner, nettverk, eller land? Løsningen er tunneling (GTP) — pakker pakkes inn i pakker, slik at endepunktet kan flyttes uten at IP-adressen endres og TCP-forbindelsen knekker.</p>
+    <p><strong>Utfordring 2 — Mobilitet (kort introduksjon):</strong> Når en enhet flytter seg innenfor samme IP-subnett (f.eks. mellom to AP-er på samme svitsj), beholder den IP-adressen og TCP-forbindelser fortsetter uavbrutt. Mer omfattende mobilitet på tvers av subnett/operatør (handover, IP-bevaring, paging) er detaljert i 7.5–7.7 og er <em>ikke</em> pensum i dette emnet.</p>
   </div>
 
   <figure>
@@ -254,7 +254,7 @@
         <div data-fc-front>Forklar forskjellen mellom <em>passiv skanning</em> og <em>aktiv skanning</em> ved assosiering, og hva som skjer etter selve assosieringen.</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> Ved <em>passiv skanning</em> sender AP-en ut <strong>beacon-rammer</strong> ca. 10 ganger per sekund med SSID og MAC; verten lytter på alle kanaler og velger ett AP. Ved <em>aktiv skanning</em> kringkaster verten en <strong>probe request</strong> selv, og alle AP-er innen rekkevidde svarer med <strong>probe response</strong>. Begge varianter ender med at verten sender en assosieringsforespørsel og AP-en svarer med en bekreftelse.</p>
-          <p><strong>Hvorfor og hva som følger:</strong> Aktiv skanning er det som skjer når mobilen din lister opp WiFi-nettverk i nærheten — det er probes som kringkastes og svar som samles inn. Etter assosieringen kommer <em>autentisering</em> (passordet ditt verifiseres) og deretter <em>DHCP</em> for å få en IP-adresse i AP-ens subnett. Først nå er du faktisk på Internett — assosiering alene er ikke nok.</p>
+          <p><strong>Hvorfor og hva som følger:</strong> Aktiv skanning er det som skjer når mobilen din lister opp WiFi-nettverk i nærheten — det er probes som kringkastes og svar som samles inn. I et sikret nett (WPA2/WPA3) kommer <em>autentisering</em> først (passordet verifiseres), <em>deretter</em> assosiering, og til slutt <em>DHCP</em> for å få en IP-adresse i AP-ens subnett. Først nå er du faktisk på Internett — assosiering alene er ikke nok.</p>
         </div>
       </li>
 
@@ -308,15 +308,7 @@
         </div>
       </li>
 
-      <li data-card>
-        <div data-fc-front>Hvorfor pakker LTE inn IP-pakker i nye IP-pakker via GTP-tunneling i stedet for å bare rute dem direkte?</div>
-        <div data-fc-back>
-          <p><strong>Svar:</strong> For at telefonens IP-adresse skal kunne forbli den samme uansett hvilken basestasjon den snakker med akkurat nå. P-GW eier IP-adressen og er alltid endepunktet sett fra Internett. Når telefonen flytter seg mellom celler, oppdateres bare endepunktet på GTP-tunnelen hos eNode-B — IP-adressen og TCP-forbindelsene forblir urørt.</p>
-          <p><strong>Hvorfor det er nødvendig:</strong> Vanlig IP-ruting binder en IP-adresse til et bestemt subnett. Hvis telefonen byttet subnett ved hver basestasjon, ville den trengt ny IP — og alle pågående TCP-forbindelser ville knekt. GTP er i bunn og grunn en form for <em>indireksjon</em>: "ring alltid P-GW, og P-GW vet hvor telefonen er akkurat nå." Det er denne mekanismen som gjør at YouTube-videoen din ikke avbrytes mens toget farer forbi titalls celler.</p>
-        </div>
-      </li>
-
-      <li data-card>
+<li data-card>
         <div data-fc-front>Hva er PDCP, RLC og MAC, og hvorfor har LTE-radiogrensesnittet et helt eget sett med linklags-protokoller som ikke finnes på vanlig Internett?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong></p>
@@ -399,15 +391,7 @@
         </div>
       </li>
 
-      <li data-card>
-        <div data-fc-front>Hva skjer egentlig når du tar med telefonen til utlandet og den "bare fungerer"? Hvordan håndterer mobilnettet roaming?</div>
-        <div data-fc-back>
-          <p><strong>Svar:</strong> SIM-kortet identifiserer deg globalt med IMSI og forteller hvilket nettverk som er hjemme. Det <em>besøkte</em> nettverket (f.eks. en operatør i Tokyo) setter deg på sin egen P-GW (eller ruter trafikken hjem først), og snakker med <em>din hjemoperatørs</em> HSS for å verifisere identiteten din og finne ut hvilke tjenester du har rett på. Trafikken din går ut på Internett via det besøkte nettets P-GW, mens autentisering, regler og avregning forhandles mellom operatørene i bakkanal.</p>
-          <p><strong>Hvorfor det er viktig:</strong> Roaming krever at to operatører som aldri har sett hverandre stoler nok på hverandre til å la deg bruke nettet — og avregne for det i ettertid. Mekanismen bygger på at HSS-en din alltid er <em>autoritativ kilde</em> for hvem du er og hva du har lov til. Det er nettopp dette skille mellom "hjem" og "besøkt" — kombinert med globale interoperatør-avtaler — som gjør at telefonen din får SMS, ringer ut og bruker data umiddelbart når du går av flyet.</p>
-        </div>
-      </li>
-
-      <li data-card>
+<li data-card>
         <div data-fc-front>Hva er en <em>basestasjon</em> i et trådløst nettverk, og hvorfor kalles den ofte en "bro"?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> En basestasjon er broen mellom det trådløse og det kablede. Den er typisk koblet til et kablet nettverk på den ene siden, og snakker radio med trådløse verter innenfor sitt dekningsområde på den andre. Den fungerer som en relé: tar pakker fra det kablede nettet og sender dem ut på radio, og motsatt vei. WiFi-aksesspunktet i taket hjemme er en basestasjon. Det samme er mobilmasten på toppen av blokka.</p>
@@ -484,15 +468,7 @@
         </div>
       </li>
 
-      <li data-card>
-        <div data-fc-front>Hva er <em>paging</em> i mobilnettet, og hvilken EPC-komponent har ansvaret?</div>
-        <div data-fc-back>
-          <p><strong>Svar:</strong> Paging er prosessen der mobilnettet "ringer opp" en inaktiv telefon for å varsle den om at det kommer noe — en tekstmelding, en innkommende samtale, en push-notifikasjon. <strong>MME</strong> har ansvaret: den sporer omtrent hvor en inaktiv telefon befinner seg (innenfor en gruppe celler, ikke nødvendigvis nøyaktig hvilken), og når noe kommer inn for telefonen, ber MME alle celler i sporings-området om å sende ut paging-meldinger. Telefonen våkner, hører pagingen og melder seg.</p>
-          <p><strong>Hvorfor det er nødvendig:</strong> Hvis telefonen var konstant aktiv på radioen, ville batteriet vært tomt på timer. Hvis nettet ikke visste hvor den var, ville det ikke vært mulig å kontakte den. Paging er kompromisset: telefonen sover for å spare strøm, men sjekker periodisk for paging-meldinger. Dette er hele grunnen til at noen kan ringe deg selv om du har telefonen i lommen og ikke har brukt den på en time.</p>
-        </div>
-      </li>
-
-      <li data-card>
+<li data-card>
         <div data-fc-front>Hva er forskjellen mellom S-GW og P-GW i LTE-dataplanet?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> Begge ligger på selve dataveien fra telefonen til Internett. <strong>S-GW (Serving Gateway)</strong> er det <em>lokale</em> endepunktet — et samlepunkt der pakkene fra basestasjonene i et område kommer inn. Den er endepunktet for den første GTP-tunnelen (eNode-B → S-GW). <strong>P-GW (PDN Gateway)</strong> er <em>ut-porten</em> mot vanlig Internett, og fungerer som ruter med NAT, dynamisk IP-tildeling og pakkefiltrering. Sett utenfra ser P-GW ut som en hvilken som helst Internett-gateway, og det er P-GW-ens IP-adresse Internett ser som "din".</p>
@@ -516,13 +492,6 @@
         </div>
       </li>
 
-      <li data-card>
-        <div data-fc-front>Hva er <em>5G Core (5GC)</em>, og hvordan viderefører den arkitektoniske idéer fra 4Gs EPC?</div>
-        <div data-fc-back>
-          <p><strong>Svar:</strong> 5GC er kjernenettet i 5G — etterfølgeren til EPC. Den viderefører de samme grunnidéene: skille mellom data- og kontrollplan, sentralisert kontrolllogikk, GTP-tunneling for å holde IP-adressen stabil under mobilitet. Men den tar SDN-/microservice-prinsippene enda lenger: kontrollplanet er splittet opp i mange spesialiserte funksjoner som snakker sammen via veldefinerte API-er, slik at hver komponent kan skaleres og oppgraderes uavhengig.</p>
-          <p><strong>Hvorfor det betyr noe:</strong> Mer programmerbar arkitektur gjør det enklere for operatørene å rulle ut nye tjenester og slice-typer (f.eks. "lav-latens-skive" for industri, "høy-båndbredde-skive" for stadioner) uten å måtte bygge nye fysiske nettverk. Mens EPC var monolittisk i designet, er 5GC bygget for at funksjonene skal kjøre som mikrotjenester på vanlig serverhardware — i tråd med generelle trender i nettverksindustrien (NFV — Network Function Virtualization).</p>
-        </div>
-      </li>
     </ol>
   </div>
 </div>
@@ -563,10 +532,10 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 4 · Middels</div>
-    <div class="q-text">Hva er det eksponerte terminal-problemet?</div>
+    <div class="q-text">Hvorfor må hver 802.11-ramme bekreftes med en ACK på linklaget, mens Ethernet klarer seg uten?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">En node kan unødvendig tie fordi den hører en sender som ikke faktisk forstyrrer dens egen mottaker.</div>
+      <div class="answer">Trådløse linker har høy bitfeilrate på grunn av fading, støy og interferens. Linklags-ACK lar avsender retransmittere raskt over én lenke i stedet for å vente på TCP-retransmisjon ende-til-ende.</div>
     </div>
   </div>
 
@@ -616,11 +585,11 @@
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 10 · Vanskelig</div>
-    <div class="q-text">Hva skjer under en WiFi-handover?</div>
+    <div class="q-label">Spørsmål 10 · Middels</div>
+    <div class="q-text">Hva skjer når en laptop bytter fra ett AP til et annet innenfor samme IP-subnett, og hvorfor merker TCP-forbindelsen ingenting?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Handover innebærer skanning, valg av nytt AP og re-assosiering med minst mulig avbrudd.</div>
+      <div class="answer">Verten beholder samme IP-adresse, så TCP-fire-tuppelen er uendret. Svitsjen lærer at MAC-en nå nås via en annen port via self-learning. Hele byttet skjer på 802.11-laget og er usynlig for IP og TCP.</div>
     </div>
   </div>
 
@@ -680,28 +649,28 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 17 · Lett</div>
-    <div class="q-text">Hva er mobilitetshåndtering i mobilnett?</div>
+    <div class="q-text">Hvilken rolle har SIM-kortet (IMSI) i 4G-autentisering?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Mobilitetshåndtering flytter tilkobling mellom basestasjoner uten å bryte aktive sesjoner unødig.</div>
+      <div class="answer">SIM-kortet inneholder en globalt unik IMSI og en hemmelig nøkkel som deles med hjemmenettets HSS. IMSI identifiserer abonnenten og brukes til å hente riktig autentiseringsmateriale fra HSS når enheten kobler seg til nettet.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 18 · Vanskelig</div>
-    <div class="q-text">Hva er GTP-tunneler, og hvorfor brukes de?</div>
+    <div class="q-label">Spørsmål 18 · Middels</div>
+    <div class="q-text">Hva gjør S-GW og P-GW i LTE-dataplanet?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">GTP (GPRS Tunnelling Protocol) kapsler brukertrafikk mellom basestasjonen og kjernenettets brukerplan-funksjon (UPF i 5G). Tunnelen identifiseres med en TEID (Tunnel Endpoint ID). Fordi trafikken sendes gjennom GTP-tunnelen, kan terminalens IP-adresse holdes stabil selv under handover til ny basestasjon.</div>
+      <div class="answer">S-GW (Serving Gateway) er det lokale endepunktet som samler trafikk fra basestasjonene i et område. P-GW (PDN Gateway) er ut-porten mot Internett — den eier brukerens IP-adresse og fungerer som ruter med NAT.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 19 · Middels</div>
-    <div class="q-text">Hva innebærer roaming mellom operatører?</div>
+    <div class="q-text">Hva er hovedrollen til MME i 4G LTE-kontrollplanet?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Roaming krever autentisering, policy og avregning mellom besøkt og hjemmenett.</div>
+      <div class="answer">MME (Mobility Management Entity) er hjernen i kontrollplanet: den autentiserer enheten (i samarbeid med HSS), setter opp tunneler og styrer kontroll-signalering — men er ikke i selve dataveien.</div>
     </div>
   </div>
 
@@ -734,10 +703,10 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 23 · Lett</div>
-    <div class="q-text">Hvorfor er lav latens viktig ved handover?</div>
+    <div class="q-text">Hvorfor brukes OFDM på radiogrensesnittet i LTE/5G?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Lav handover-latens er kritisk for tale, gaming og andre sanntidsapplikasjoner.</div>
+      <div class="answer">OFDM deler kanalen i mange smale parallelle delbærere. Det gjør det mulig å tildele ulike enheter forskjellige tids-/frekvensblokker (planlagt tilgang) og er robust mot frekvensselektiv fading.</div>
     </div>
   </div>
 

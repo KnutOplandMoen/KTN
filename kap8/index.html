@@ -418,7 +418,7 @@
         <div data-fc-front>Hva er IP-spoofing, og hvordan brukes det i refleksjonsangrep?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> IP-spoofing er å sende pakker med en forfalsket avsender-IP-adresse, slik at mottakeren tror pakken kommer fra noen andre. IP-laget verifiserer ikke avsenderen — protokollen ble designet for et tillitsfullt nett.</p>
-          <p><strong>Hvorfor refleksjonsangrep er farlig:</strong> Trudy sender en kort forespørsel til en tjener (f.eks. en åpen DNS-resolver) med <em>offerets IP</em> som «avsender». Tjeneren sender et stort svar tilbake til offeret, som verken sendte forespørselen eller har bedt om svaret. Med <em>forsterkning</em> (DNS-svar er mye større enn forespørsel, ofte 50–100×) kan Trudy bruke 10 kbit/s av sin egen båndbredde til å sende 1 Mbit/s mot offeret. Forsvar: <strong>ingress filtering (BCP 38)</strong> — ISP-er sjekker at utgående pakker har en kilde-IP som hører til kundens tildelte adresseblokk. Ikke universelt utrullet, derfor lever spoofing fortsatt.</p>
+          <p><strong>Hvorfor refleksjonsangrep er farlig:</strong> Trudy sender en kort forespørsel til en tjener (f.eks. en åpen DNS-resolver) med <em>offerets IP</em> som «avsender». Tjeneren sender et stort svar tilbake til offeret, som verken sendte forespørselen eller har bedt om svaret. IP-spoofing er fundamentet for slike angrep, og er en del av den generelle trussel-taksonomien i 8.1.</p>
         </div>
       </li>
 
@@ -464,8 +464,8 @@
       <li data-card>
         <div data-fc-front>Hvorfor er en MAC konstruert som <code>H(K<sub>S</sub> || m)</code> ikke trygt, og hvordan løser HMAC det?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> Den naive konstruksjonen <code>H(K<sub>S</sub> || m)</code> er sårbar for et <strong>lengdeutvidelsesangrep</strong>: gitt meldingen <em>m</em> og MAC-en, kan Trudy beregne en gyldig MAC for <em>m + extra</em> uten å kjenne K<sub>S</sub>. Det fungerer fordi de fleste hashfunksjoner (SHA-256, SHA-1, MD5) jobber blokk-for-blokk og lar interntilstand utvides — MAC-verdien <em>er</em> denne interntilstanden, og angriperen kan «fortsette» hashingen.</p>
-          <p><strong>Hvorfor HMAC løser det:</strong> HMAC (RFC 2104) bruker to forskjellige nøkler (utledet ved XOR med konstantene <code>ipad</code> og <code>opad</code>) og <em>to</em> runder hashing: <code>HMAC(K, m) = H(K ⊕ opad || H(K ⊕ ipad || m))</code>. Den ytre hashen «klipper» den indre tilstanden, så lengdeutvidelse på den ytre fungerer ikke. HMAC er derfor standardisert konstruksjon — i bruk i TLS, IPsec og WPA3.</p>
+          <p><strong>Svar:</strong> Den naive konstruksjonen <code>H(K<sub>S</sub> || m)</code> har subtile sårbarheter knyttet til hvordan hashfunksjoner internt prosesserer data blokk-for-blokk — i visse tilfeller kan en angriper utnytte hashens interne tilstand uten å kjenne K<sub>S</sub>. Derfor trengs en standardisert, presis MAC-konstruksjon.</p>
+          <p><strong>Hvorfor HMAC løser det:</strong> HMAC (RFC 2104) bruker den hemmelige nøkkelen kombinert med to konstanter (<code>ipad</code> og <code>opad</code>) i <em>to</em> runder hashing: <code>HMAC(K, m) = H(K ⊕ opad || H(K ⊕ ipad || m))</code>. Den ytre hashen beskytter mot angrep mot den indre tilstanden. HMAC er standard MAC-konstruksjon i TLS, IPsec og WPA3.</p>
         </div>
       </li>
 
@@ -526,10 +526,10 @@
       </li>
 
       <li data-card>
-        <div data-fc-front>Hva er SYN flooding, og hvordan motvirkes det med SYN cookies?</div>
+        <div data-fc-front>Hva er SYN flooding som DoS-angrep, og hvilken sikkerhetsegenskap angripes?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> Når en TCP-forbindelse opprettes, mottar serveren en SYN, allokerer ressurser i en <em>halvåpen forbindelsestabell</em> og sender SYN-ACK. I et SYN flood sender Trudy enorme mengder SYN-er (gjerne med spoofet kilde-IP) men aldri den avsluttende ACK. Tabellen fylles opp, og legitime klienter kan ikke opprette nye forbindelser.</p>
-          <p><strong>Hvorfor SYN cookies fungerer:</strong> I stedet for å allokere tilstand ved hver SYN, koder serveren all forbindelsestilstand inn i selve sekvensnummeret den sender tilbake i SYN-ACK (ved å hashe IP-er, porter og en hemmelighet til en «cookie»). Når den endelige ACK kommer tilbake, kan serveren rekonstruere tilstanden fra cookien — og <em>først da</em> opprette en reell oppføring. Trudy kan fortsatt sende mange SYN-er, men siden serveren ikke har allokert noe, fyller hun ikke noen tabell. Klassisk eksempel på «do not store state for unauthenticated requests».</p>
+          <p><strong>Hvilken sikkerhetsegenskap:</strong> SYN flooding angriper <em>tilgjengelighet</em> — den fjerde av de fire grunnleggende sikkerhetsegenskapene. Konkrete mottiltak hører hjemme i transportlaget (kap. 3) og er ikke detalj-pensum i kap. 8.</p>
         </div>
       </li>
 

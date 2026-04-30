@@ -271,7 +271,7 @@
     </div>
   </div>
 
-  <p>Etter assosieringen kommer som regel autentisering (passordet ditt verifiseres) og deretter DHCP for å få en IP-adresse i AP-ens subnett. Først nå er du faktisk på Internett.</p>
+  <p>I et sikret nett (WPA2/WPA3) går rekkefølgen slik: enheten <strong>autentiserer</strong> seg først overfor AP-et (passordet verifiseres), deretter <strong>assosieres</strong> den med AP-et, og til slutt får den en IP-adresse via <strong>DHCP</strong> i AP-ens subnett. Først nå er du faktisk på Internett.</p>
 
   <h3>Rate-tilpasning</h3>
   <p>En viktig avansert funksjon i 802.11 er <strong>rate adaptation</strong> — WiFi-senderen bytter automatisk mellom forskjellige modulasjonsmetoder avhengig av signalforholdene. Når du sitter rett ved ruteren, bruker den en aggressiv modulasjon (f.eks. QAM256) som gir høy hastighet. Når du går lengre unna og SNR faller, skifter den ned til en mer robust men tregere modulasjon. Dette er grunnen til at WiFi-hastigheten gradvis synker jo lengre du er fra AP-en, i stedet for å bare kutte ut brått. Vi beskrev fysikken bak dette i <a href="#links">seksjon 04</a> — slideren der illustrerer sammenhengen mellom avstand, SNR og valgt modulasjon.</p>
