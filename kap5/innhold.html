@@ -177,8 +177,11 @@
 <div class="divider">❋ &nbsp;❋ &nbsp;❋</div>
 
 <!-- ============ SECTION 3: ICMP ============ -->
-<section id="icmp">
+<section id="icmp" class="anchor-section">
   <div class="container">
+    <div class="callout callout-blue icmp-banner">
+      <p><strong>Seksjon 03 — ICMP (pensum 5.6):</strong> Her forklares protokollen bak <code>ping</code>, feilmeldinger og tabellen over meldingstyper. <strong>Seksjon 04 — Traceroute</strong> rett under viser hvordan samme protokoll brukes til å kartlegge ruten.</p>
+    </div>
     <div class="section-badge">03 · Internet Control Message Protocol</div>
     <h2>ICMP: når nettverket må snakke med seg selv</h2>
     <p class="section-intro">Rutingprotokoller bestemmer hvor pakker skal. Men hva skjer når noe går galt underveis? Det er her ICMP kommer inn.</p>
@@ -326,7 +329,7 @@
           </g>
 
           <!-- ICMP reply (animated) -->
-          <g id="icmp" style="display:none;">
+          <g id="icmp-reply-g" style="display:none;">
             <rect x="0" y="0" width="60" height="20" fill="#b04428" stroke="#1a1612" stroke-width="1.5" rx="2"/>
             <text x="30" y="14" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#f4f1ea">TTL exp</text>
           </g>
@@ -431,7 +434,7 @@ document.querySelectorAll('.quiz').forEach(quiz => {
   const svg = document.getElementById('step-svg');
   const packet = document.getElementById('packet');
   const packetLabel = document.getElementById('packet-label');
-  const icmp = document.getElementById('icmp');
+  const icmpReply = document.getElementById('icmp-reply-g');
   const routers = ['r1', 'r2', 'r3', 'r4'];
 
   function render() {
@@ -478,9 +481,9 @@ document.querySelectorAll('.quiz').forEach(quiz => {
       packet.style.display = 'none';
     }
 
-    // ICMP
+    // ICMP reply animation (SVG group — must not reuse id="icmp"; that is the section anchor)
     if (step.icmp) {
-      icmp.style.display = 'block';
+      icmpReply.style.display = 'block';
       const x = step.icmp.from - 30;
       const targetX = step.icmp.to - 30;
       let start = null;
@@ -489,12 +492,12 @@ document.querySelectorAll('.quiz').forEach(quiz => {
         if (!start) start = ts;
         const p = Math.min((ts - start) / duration, 1);
         const cx = x + (targetX - x) * p;
-        icmp.setAttribute('transform', `translate(${cx}, 140)`);
+        icmpReply.setAttribute('transform', `translate(${cx}, 140)`);
         if (p < 1) requestAnimationFrame(anim);
       }
       requestAnimationFrame(anim);
     } else {
-      icmp.style.display = 'none';
+      icmpReply.style.display = 'none';
     }
 
     prevBtn.disabled = current === 0;

@@ -110,6 +110,14 @@ body::before {
 }
 .site-nav .nav-back:hover { color: var(--rust); }
 
+/* In-page section anchors: offset for sticky top nav */
+section[id] {
+  scroll-margin-top: 88px;
+}
+.icmp-banner {
+  margin-bottom: 24px;
+}
+
 /* ---------- NAV SEARCH ---------- */
 .nav-search-wrapper {
   position: relative;
