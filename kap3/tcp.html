@@ -312,9 +312,9 @@
       <div class="stage-svg" id="stagesvg"></div>
       <div class="desc" id="desc"></div>
       <div class="ctrls">
-        <button id="prev">? Forrige</button>
+        <button id="prev">&larr; Forrige</button>
         <span class="progress" id="prog">1 / 6</span>
-        <button id="next">Neste ?</button>
+        <button id="next">Neste &rarr;</button>
       </div>
     </div>
 
@@ -385,7 +385,7 @@
           <text x="280" y="330" font-family="IBM Plex Mono" font-size="11" fill="#2d4a7a">ACK=100 (dup 2)</text>
 
           <line x1="615" y1="260" x2="125" y2="390" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#ar2)"/>
-          <text x="280" y="370" font-family="IBM Plex Mono" font-size="11" fill="#b04428" font-weight="600">ACK=100 (dup 3) ? fast retransmit!</text>
+          <text x="280" y="370" font-family="IBM Plex Mono" font-size="11" fill="#b04428" font-weight="600">ACK=100 (dup 3) → fast retransmit!</text>
 
           <line x1="120" y1="410" x2="615" y2="430" stroke="#b04428" stroke-width="2" marker-end="url(#ar2)"/>
           <text x="180" y="425" font-family="IBM Plex Mono" font-size="11" fill="#b04428" font-weight="600">Seq=100 (resendt)</text>
@@ -561,7 +561,7 @@
       <figcaption>Fire meldinger fordi begge retninger må stenges hver for seg. TIME_WAIT-tilstanden gir oss en sjanse til å redde tapte ACK-er.</figcaption>
     </figure>
 
-    <div class="ornament">? ? ?</div>
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
 
     <h3>Det store bildet</h3>
     <p>Vi har gått gjennom segmentstruktur, sekvensnummer, RTT-estimering, retransmisjonslogikk, fast retransmit, flow control, og forbindelsesetablering og -avslutning. Alt henger sammen: hver mekanisme finnes fordi en tidligere mekanisme ville feilet uten den. Sekvensnumre gjør ACK-er meningsfulle. Kumulative ACK-er gjør tapte ACK-er overlevelige. RTT-estimering gjør timeouts robuste. En enkelt timer per forbindelse gjør protokollen skalerbar. Tre-veis håndtrykk gjør forbindelser sikre mot gjengangere fra fortiden.</p>

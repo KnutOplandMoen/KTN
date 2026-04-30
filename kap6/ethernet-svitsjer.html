@@ -130,9 +130,9 @@
           <line x1="570" y1="135" x2="570" y2="150" stroke="#1a1612"/>
         </g>
         <path class="arr" d="M 90 200 Q 340 250 570 200"/>
-        <text x="330" y="245" class="lbl2" text-anchor="middle" fill="#b04428">? ARP query: «Hvem har .7.14?» (broadcast)</text>
+        <text x="330" y="245" class="lbl2" text-anchor="middle" fill="#b04428">① ARP query: «Hvem har .7.14?» (broadcast)</text>
         <path class="arr2" d="M 570 80 Q 330 30 90 80"/>
-        <text x="330" y="25" class="lbl2" text-anchor="middle" fill="#3d6b3a">? ARP reply: «Det er meg — MAC 58-23-D7-FA-20-B0» (unicast)</text>
+        <text x="330" y="25" class="lbl2" text-anchor="middle" fill="#3d6b3a">② ARP reply: «Det er meg — MAC 58-23-D7-FA-20-B0» (unicast)</text>
       </svg>
       <figcaption><strong>Figur 3.</strong> ARP-utveksling: A spør broadcast, B svarer unicast. Alle de andre hører spørsmålet, men ignorerer det.</figcaption>
     </figure>
@@ -173,7 +173,7 @@
           <text x="87" y="141" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#6b6257">MAC: aa:aa:aa:aa</text>
           <text x="87" y="163" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="8" font-weight="600" fill="#3d6b3a">Kilde</text>
 
-          <!-- Link A ? GW -->
+          <!-- Link A → GW -->
           <line x1="165" y1="107" x2="200" y2="107" stroke="#c9c0ae" stroke-width="1.5"/>
 
           <!-- GW / R1 -->
@@ -188,17 +188,17 @@
           <rect x="258" y="40" width="220" height="120" rx="8" fill="none" stroke="#c9c0ae" stroke-width="1.5" stroke-dasharray="6 3"/>
           <text x="368" y="57" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10" font-weight="600" fill="#6b6257">Internett</text>
 
-          <!-- Link GW ? R2 -->
+          <!-- Link GW → R2 -->
           <line x1="246" y1="100" x2="293" y2="93" stroke="#c9c0ae" stroke-width="1.5"/>
           <!-- R2 -->
           <circle cx="314" cy="90" r="19" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/>
           <text x="314" y="95" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#2d4a7a">R2</text>
-          <!-- Link R2 ? R3 -->
+          <!-- Link R2 → R3 -->
           <line x1="333" y1="97" x2="396" y2="118" stroke="#c9c0ae" stroke-width="1.5"/>
           <!-- R3 -->
           <circle cx="416" cy="124" r="19" fill="#f4f1ea" stroke="#2d4a7a" stroke-width="1.5"/>
           <text x="416" y="129" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#2d4a7a">R3</text>
-          <!-- Link R3 ? LAN B -->
+          <!-- Link R3 → LAN B -->
           <line x1="435" y1="118" x2="498" y2="107" stroke="#c9c0ae" stroke-width="1.5"/>
 
           <!-- LAN B -->
@@ -302,7 +302,7 @@
       <li><strong>Kilde-MAC (6 byte).</strong> Hvem som sendte den.</li>
       <li><strong>Type (2 byte).</strong> Hvilken protokoll ligger inni? <code>0x0800</code> = IP, <code>0x0806</code> = ARP, osv. Mottakerens nettverkskort bruker dette til å demultiplekse oppover — riktig protokoll på nettverkslaget får pakken.</li>
       <li><strong>Data (46–1500 byte).</strong> Nyttelasten. Minimum 46 byte — korteere pakker må padres — fordi CSMA/CD trenger en minimumslengde for å oppdage kollisjoner. Maksimum 1500 byte er <em>MTU</em>-grensen (Maximum Transmission Unit).</li>
-      <li><strong>CRC (4 byte).</strong> CRC-32 over hele rammen. Feil ? rammen kastes umiddelbart.</li>
+      <li><strong>CRC (4 byte).</strong> CRC-32 over hele rammen. Feil → rammen kastes umiddelbart.</li>
     </ul>
 
     <h3>Upålitelig og connectionless</h3>
@@ -358,9 +358,9 @@
         <p id="sw-body">Start her.</p>
       </div>
       <div class="controls">
-        <button id="sw-prev">? Forrige</button>
+        <button id="sw-prev">&larr; Forrige</button>
         <span class="progress" id="sw-progress">1 / 5</span>
-        <button id="sw-next">Neste ?</button>
+        <button id="sw-next">Neste &rarr;</button>
       </div>
     </div>
 
@@ -446,7 +446,7 @@
 
     <h3>Steg 4 — Sett opp TCP-forbindelsen</h3>
     <p>
-      Nå vet laptopen Googles IP. Nettleseren åpner en TCP-socket og starter three-way handshake: <em>SYN</em> ? <em>SYNACK</em> ? <em>ACK</em>. Hver av de tre meldingene går som et eget IP-datagram, innkapslet i Ethernet-rammer ved hvert hopp, gjennom kanskje 15 routere på tvers av internett. Når handshake er ferdig, er det en pålitelig TCP-forbindelse mellom laptopen og Googles server.
+      Nå vet laptopen Googles IP. Nettleseren åpner en TCP-socket og starter three-way handshake: <em>SYN</em> → <em>SYNACK</em> → <em>ACK</em>. Hver av de tre meldingene går som et eget IP-datagram, innkapslet i Ethernet-rammer ved hvert hopp, gjennom kanskje 15 routere på tvers av internett. Når handshake er ferdig, er det en pålitelig TCP-forbindelse mellom laptopen og Googles server.
     </p>
 
     <h3>Steg 5 — HTTP-forespørsel og -svar</h3>
@@ -475,7 +475,7 @@
         <g transform="translate(60,120)">
           <rect x="0" y="0" width="100" height="30" fill="#3d6b3a" stroke="#1a1612"/>
           <text x="50" y="20" text-anchor="middle" class="pn" fill="#fff">DNS</text>
-          <text x="170" y="20" class="pl">Slå opp google.com ? IP-adresse</text>
+          <text x="170" y="20" class="pl">Slå opp google.com → IP-adresse</text>
         </g>
         <g transform="translate(60,160)">
           <rect x="0" y="0" width="100" height="30" fill="#2d4a7a" stroke="#1a1612"/>
@@ -495,7 +495,7 @@
         <g transform="translate(60,280)">
           <rect x="0" y="0" width="100" height="30" fill="#8a3420" stroke="#1a1612"/>
           <text x="50" y="20" text-anchor="middle" class="pn" fill="#fff">HTTP 200</text>
-          <text x="170" y="20" class="pl">Server sender HTML ? siden vises</text>
+          <text x="170" y="20" class="pl">Server sender HTML → siden vises</text>
         </g>
       </svg>
       <figcaption><strong>Figur 5.</strong> Rekkefølgen av protokoller som må kjøres før brukeren ser én eneste piksel av google.com. DHCP og ARP kjøres kun første gang; DNS-oppslaget caches; TCP og HTTP er det som foregår gjentatte ganger.</figcaption>
@@ -513,7 +513,7 @@
 <div class="container">
   <nav class="page-nav">
     <a href="grunnleggende-tilgang.html">
-      <span class="nav-label">? Forrige</span>
+      <span class="nav-label">&larr; Forrige</span>
       <span class="nav-title">Grunnleggende og medietilgang</span>
     </a>
   </nav>
@@ -563,12 +563,12 @@ document.querySelectorAll('.reveal').forEach(r => {
       body: 'A (port 1) sender en ramme med destinasjon D. Svitsjen ser rammen komme inn på port 1, kilde-MAC = A. Den legger inn (A, port 1) i tabellen.'
     },
     {
-      title: 'Trinn 3 — Ukjent destinasjon ? flood',
+      title: 'Trinn 3 — Ukjent destinasjon → flood',
       body: 'Destinasjonen D finnes ikke i tabellen. Svitsjen har ikke noe valg: den floodes ut på port 2, 3 og 4. Alle vertene får rammen, men bare D bryr seg om den.'
     },
     {
       title: 'Trinn 4 — D svarer',
-      body: 'D (port 4) sender et svar til A. Svitsjen ser kilde-MAC = D på port 4 og legger inn (D, port 4). Nå vet den begge. Destinasjonen A finnes i tabellen ? svaret sendes <em>kun</em> på port 1.'
+      body: 'D (port 4) sender et svar til A. Svitsjen ser kilde-MAC = D på port 4 og legger inn (D, port 4). Nå vet den begge. Destinasjonen A finnes i tabellen → svaret sendes <em>kun</em> på port 1.'
     },
     {
       title: 'Trinn 5 — Målrettet kommunikasjon',
@@ -599,27 +599,27 @@ document.querySelectorAll('.reveal').forEach(r => {
     {
       title: 'A vil nå B — mål er på annet subnett',
       text: 'A (192.168.1.10) vil sende til B (142.250.74.4). Subnettsjekk: 142.250.74.4 er ikke i 192.168.1.0/24. A kan ikke sende direkte — pakken må til standardruteren (GW/R1 på 192.168.1.1).',
-      anim: '<rect x="52" y="69" width="70" height="50" rx="4" fill="none" stroke="#b04428" stroke-width="2.5"/><line x1="117" y1="93" x2="197" y2="107" stroke="#b04428" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arpArr)"/><rect x="168" y="58" width="180" height="42" rx="4" fill="#f4f1ea" stroke="#b04428" stroke-width="1"/><text x="258" y="74" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#b04428">142.250.74.4 ? 192.168.1.0/24</text><text x="258" y="88" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" font-weight="600" fill="#b04428">? send til standardruter (GW)!</text>'
+      anim: '<rect x="52" y="69" width="70" height="50" rx="4" fill="none" stroke="#b04428" stroke-width="2.5"/><line x1="117" y1="93" x2="197" y2="107" stroke="#b04428" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arpArr)"/><rect x="168" y="58" width="180" height="42" rx="4" fill="#f4f1ea" stroke="#b04428" stroke-width="1"/><text x="258" y="74" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#b04428">142.250.74.4 ∉ 192.168.1.0/24</text><text x="258" y="88" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="9" font-weight="600" fill="#b04428">→ send til standardruter (GW)!</text>'
     },
     {
       title: 'ARP: A finner GW sin MAC-adresse',
       text: 'Før A kan bygge Ethernet-rammen trenger den GW sin MAC. A sender ARP broadcast: «Hvem har 192.168.1.1?» — alle på LAN A hører den. GW svarer unicast: «Jeg! MAC: 11:11:11:11». A lagrer dette i ARP-tabellen sin.',
-      anim: '<line x1="120" y1="96" x2="200" y2="107" stroke="#b04428" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arpArr)"/><text x="152" y="82" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#b04428">ARP broadcast?</text><line x1="202" y1="113" x2="122" y2="107" stroke="#3d6b3a" stroke-width="1.8" marker-end="url(#arpArrGr)"/><text x="152" y="128" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#3d6b3a">11:11:11:11 ?</text><rect x="12" y="182" width="150" height="40" rx="4" fill="#f4f1ea" stroke="#3d6b3a" stroke-width="1"/><text x="87" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" font-weight="600" fill="#3d6b3a">ARP-tabell hos A:</text><text x="87" y="210" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#1a1612">192.168.1.1 ? 11:11:11:11</text>'
+      anim: '<line x1="120" y1="96" x2="200" y2="107" stroke="#b04428" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arpArr)"/><text x="152" y="82" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#b04428">ARP broadcast →</text><line x1="202" y1="113" x2="122" y2="107" stroke="#3d6b3a" stroke-width="1.8" marker-end="url(#arpArrGr)"/><text x="152" y="128" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="8" fill="#3d6b3a">← 11:11:11:11</text><rect x="12" y="182" width="150" height="40" rx="4" fill="#f4f1ea" stroke="#3d6b3a" stroke-width="1"/><text x="87" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" font-weight="600" fill="#3d6b3a">ARP-tabell hos A:</text><text x="87" y="210" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#1a1612">192.168.1.1 → 11:11:11:11</text>'
     },
     {
-      title: 'Ethernet-ramme: A ? GW',
+      title: 'Ethernet-ramme: A → GW',
       text: 'A bygger rammen: dst-MAC = GW (11:11:11:11), src-MAC = A (aa:aa:aa:aa). Inni ligger IP-datagrammet med src-IP = 192.168.1.10 og dst-IP = 142.250.74.4. IP-adressene endres ikke — de er ende-til-ende.',
-      anim: '<rect x="155" y="100" width="44" height="14" rx="3" fill="#b04428"/><text x="177" y="111" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#fff">pakke ?</text><rect x="10" y="182" width="740" height="40" rx="4" fill="#f4f1ea" stroke="#c9c0ae" stroke-width="1"/><text x="22" y="198" font-family="IBM Plex Mono,monospace" font-size="8" font-weight="600" fill="#1a1612">Ramme:</text><rect x="72" y="185" width="170" height="30" rx="3" fill="#b04428"/><text x="157" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">dst-MAC: 11:11:11:11</text><text x="157" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#fde8d8">(GW-MAC)</text><rect x="246" y="185" width="170" height="30" rx="3" fill="#3d6b3a"/><text x="331" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">src-MAC: aa:aa:aa:aa</text><text x="331" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#c8e6c8">(A-MAC)</text><rect x="420" y="185" width="330" height="30" rx="3" fill="#2d4a7a"/><text x="585" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">IPv4: 192.168.1.10 ? 142.250.74.4</text><text x="585" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#c8d8f0">(IP-adresser uendret!)</text>'
+      anim: '<rect x="155" y="100" width="44" height="14" rx="3" fill="#b04428"/><text x="177" y="111" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#fff">pakke →</text><rect x="10" y="182" width="740" height="40" rx="4" fill="#f4f1ea" stroke="#c9c0ae" stroke-width="1"/><text x="22" y="198" font-family="IBM Plex Mono,monospace" font-size="8" font-weight="600" fill="#1a1612">Ramme:</text><rect x="72" y="185" width="170" height="30" rx="3" fill="#b04428"/><text x="157" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">dst-MAC: 11:11:11:11</text><text x="157" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#fde8d8">(GW-MAC)</text><rect x="246" y="185" width="170" height="30" rx="3" fill="#3d6b3a"/><text x="331" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">src-MAC: aa:aa:aa:aa</text><text x="331" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#c8e6c8">(A-MAC)</text><rect x="420" y="185" width="330" height="30" rx="3" fill="#2d4a7a"/><text x="585" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">IPv4: 192.168.1.10 → 142.250.74.4</text><text x="585" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#c8d8f0">(IP-adresser uendret!)</text>'
     },
     {
       title: 'GW ruter: ny ramme videre gjennom Internett',
       text: 'GW mottar rammen, trekker ut IP-datagrammet og slår opp rutetabellen: neste hopp er R2. GW ARP-er for R2 sin MAC, bygger en helt ny Ethernet-ramme med nye MAC-adresser — men IP-datagrammet inni er nøyaktig det samme.',
-      anim: '<circle cx="224" cy="107" r="27" fill="none" stroke="#b04428" stroke-width="2.5"/><circle cx="370" cy="107" r="7" fill="#b04428" opacity="0.85"/><line x1="246" y1="100" x2="293" y2="93" stroke="#b04428" stroke-width="2" marker-end="url(#arpArr)"/><line x1="333" y1="97" x2="396" y2="118" stroke="#b04428" stroke-width="1.5" stroke-dasharray="3 2" marker-end="url(#arpArr)"/><rect x="10" y="182" width="740" height="40" rx="4" fill="#f4f1ea" stroke="#c9c0ae" stroke-width="1"/><text x="22" y="198" font-family="IBM Plex Mono,monospace" font-size="8" font-weight="600" fill="#1a1612">Ny ramme:</text><rect x="82" y="185" width="170" height="30" rx="3" fill="#b04428"/><text x="167" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">dst-MAC: 22:22:22:22</text><text x="167" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#fde8d8">(R2-MAC — ny!)</text><rect x="256" y="185" width="160" height="30" rx="3" fill="#c68a1f"/><text x="336" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">src-MAC: 11:11:11:11</text><text x="336" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#fef3d0">(GW-MAC — ny!)</text><rect x="420" y="185" width="330" height="30" rx="3" fill="#2d4a7a"/><text x="585" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">IPv4: 192.168.1.10 ? 142.250.74.4</text><text x="585" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#c8d8f0">(uendret hele veien)</text>'
+      anim: '<circle cx="224" cy="107" r="27" fill="none" stroke="#b04428" stroke-width="2.5"/><circle cx="370" cy="107" r="7" fill="#b04428" opacity="0.85"/><line x1="246" y1="100" x2="293" y2="93" stroke="#b04428" stroke-width="2" marker-end="url(#arpArr)"/><line x1="333" y1="97" x2="396" y2="118" stroke="#b04428" stroke-width="1.5" stroke-dasharray="3 2" marker-end="url(#arpArr)"/><rect x="10" y="182" width="740" height="40" rx="4" fill="#f4f1ea" stroke="#c9c0ae" stroke-width="1"/><text x="22" y="198" font-family="IBM Plex Mono,monospace" font-size="8" font-weight="600" fill="#1a1612">Ny ramme:</text><rect x="82" y="185" width="170" height="30" rx="3" fill="#b04428"/><text x="167" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">dst-MAC: 22:22:22:22</text><text x="167" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#fde8d8">(R2-MAC — ny!)</text><rect x="256" y="185" width="160" height="30" rx="3" fill="#c68a1f"/><text x="336" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">src-MAC: 11:11:11:11</text><text x="336" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#fef3d0">(GW-MAC — ny!)</text><rect x="420" y="185" width="330" height="30" rx="3" fill="#2d4a7a"/><text x="585" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">IPv4: 192.168.1.10 → 142.250.74.4</text><text x="585" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#c8d8f0">(uendret hele veien)</text>'
     },
     {
       title: 'Siste hopp: R3 leverer til B',
       text: 'R3 er koblet direkte til LAN B. R3 ARP-er for B sin MAC (bb:bb:bb:bb) og bygger den aller siste Ethernet-rammen. B mottar den — og IP-adressene har vært de samme fra start. Konklusjon: IP-adresser er ende-til-ende. MAC-adresser byttes ved hvert eneste hopp.',
-      anim: '<rect x="590" y="67" width="70" height="58" rx="4" fill="none" stroke="#3d6b3a" stroke-width="2.5"/><circle cx="466" cy="113" r="7" fill="#b04428" opacity="0.85"/><line x1="435" y1="118" x2="498" y2="107" stroke="#b04428" stroke-width="2" marker-end="url(#arpArr)"/><rect x="10" y="182" width="740" height="40" rx="4" fill="#f4f1ea" stroke="#3d6b3a" stroke-width="1.5"/><text x="22" y="198" font-family="IBM Plex Mono,monospace" font-size="8" font-weight="600" fill="#3d6b3a">Siste ramme:</text><rect x="96" y="185" width="170" height="30" rx="3" fill="#3d6b3a"/><text x="181" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">dst-MAC: bb:bb:bb:bb</text><text x="181" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#c8e6c8">(B-MAC — endelig!)</text><rect x="270" y="185" width="146" height="30" rx="3" fill="#6b6257"/><text x="343" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">src-MAC: 33:33:33:33</text><text x="343" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#e8e3d6">(R3-MAC)</text><rect x="420" y="185" width="330" height="30" rx="3" fill="#2d4a7a"/><text x="585" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">IPv4: 192.168.1.10 ? 142.250.74.4</text><text x="585" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#c8d8f0">(uendret — hele veien!)</text>'
+      anim: '<rect x="590" y="67" width="70" height="58" rx="4" fill="none" stroke="#3d6b3a" stroke-width="2.5"/><circle cx="466" cy="113" r="7" fill="#b04428" opacity="0.85"/><line x1="435" y1="118" x2="498" y2="107" stroke="#b04428" stroke-width="2" marker-end="url(#arpArr)"/><rect x="10" y="182" width="740" height="40" rx="4" fill="#f4f1ea" stroke="#3d6b3a" stroke-width="1.5"/><text x="22" y="198" font-family="IBM Plex Mono,monospace" font-size="8" font-weight="600" fill="#3d6b3a">Siste ramme:</text><rect x="96" y="185" width="170" height="30" rx="3" fill="#3d6b3a"/><text x="181" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">dst-MAC: bb:bb:bb:bb</text><text x="181" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#c8e6c8">(B-MAC — endelig!)</text><rect x="270" y="185" width="146" height="30" rx="3" fill="#6b6257"/><text x="343" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">src-MAC: 33:33:33:33</text><text x="343" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#e8e3d6">(R3-MAC)</text><rect x="420" y="185" width="330" height="30" rx="3" fill="#2d4a7a"/><text x="585" y="197" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7.5" fill="#fff" font-weight="600">IPv4: 192.168.1.10 → 142.250.74.4</text><text x="585" y="208" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" fill="#c8d8f0">(uendret — hele veien!)</text>'
     }
   ];
   var idx = 0;

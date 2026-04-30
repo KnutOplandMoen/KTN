@@ -192,10 +192,10 @@
           <text x="325" y="90" font-family="IBM Plex Mono" font-size="9" fill="#6b6257" text-anchor="middle">rdt_send(data) / make_pkt, udt_send</text>
 
           <line x1="413" y1="125" x2="237" y2="125" stroke="#3d6b3a" stroke-width="1.5" marker-end="url(#ar0)"/>
-          <text x="325" y="148" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a" text-anchor="middle">rcv ACK ? ?</text>
+          <text x="325" y="148" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a" text-anchor="middle">rcv ACK → Λ</text>
 
           <path d="M 500 78 C 530 40 570 50 585 78" fill="none" stroke="#b04428" stroke-width="1.5" marker-end="url(#ar0)"/>
-          <text x="560" y="42" font-family="IBM Plex Mono" font-size="9" fill="#b04428">rcv NAK ? udt_send(pkt)</text>
+          <text x="560" y="42" font-family="IBM Plex Mono" font-size="9" fill="#b04428">rcv NAK → udt_send(pkt)</text>
         </svg>
       </div>
       <figcaption>Senderen venter på ACK/NAK. Ved NAK retransmitteres pakken. Ved ACK fortsetter senderen med neste.</figcaption>
@@ -267,12 +267,12 @@
           <text x="445" y="85" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a">rcv ACK</text>
 
           <path d="M 340 70 C 360 30 400 30 420 70" fill="none" stroke="#b04428" stroke-width="1.5" marker-end="url(#ar0)"/>
-          <text x="370" y="40" font-family="IBM Plex Mono" font-size="9" fill="#b04428">corrupt/NAK ? resend</text>
+          <text x="370" y="40" font-family="IBM Plex Mono" font-size="9" fill="#b04428">corrupt/NAK → resend</text>
 
           <text x="360" y="180" font-family="Newsreader" font-size="14" font-style="italic" fill="#6b6257" text-anchor="middle">... og speilbilde for seq# 1 (vist forenklet)</text>
 
           <path d="M 560 130 C 560 190 120 190 120 132" fill="none" stroke="#a39886" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#ar0)"/>
-          <text x="340" y="210" font-family="IBM Plex Mono" font-size="9" fill="#a39886" text-anchor="middle">etter ACK for seq 1 ? tilbake til seq 0</text>
+          <text x="340" y="210" font-family="IBM Plex Mono" font-size="9" fill="#a39886" text-anchor="middle">etter ACK for seq 1 → tilbake til seq 0</text>
         </svg>
       </div>
       <figcaption>rdt 2.1 har dobbelt så mange tilstander fordi senderen må huske om neste pakke skal ha seq# 0 eller 1. Mottakeren veksler tilsvarende.</figcaption>
@@ -390,7 +390,7 @@
           <text x="395" y="162" font-family="IBM Plex Mono" font-size="8" fill="#c68a1f">timeout</text>
           <line x1="425" y1="167" x2="545" y2="192" stroke="#b04428" stroke-width="1.2" marker-end="url(#ar5r)"/>
           <text x="486.39" y="172.84" transform="rotate(11.768 486.39 172.84)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="8" fill="#b04428">pkt0</text>
-          <text x="553" y="200" font-family="IBM Plex Mono" font-size="7" fill="#3d6b3a">dup ? kast</text>
+          <text x="553" y="200" font-family="IBM Plex Mono" font-size="7" fill="#3d6b3a">dup → kast</text>
           <line x1="550" y1="207" x2="430" y2="232" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#ar5b)"/>
           <text x="491.39" y="226.16" transform="rotate(-11.768 491.39 226.16)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="8" fill="#2d4a7a">ack0</text>
 
@@ -407,7 +407,7 @@
           <line x1="615" y1="138" x2="695" y2="168" stroke="#b04428" stroke-width="1.2" marker-end="url(#ar5r)"/>
           <text x="657.09" y="147.43" transform="rotate(20.556 657.09 147.43)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="7" fill="#b04428">pkt0</text>
           <text x="664.21" y="142.21" transform="rotate(-45.000 664.21 142.21)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="7" fill="#2d4a7a">ack0</text>
-          <text x="703" y="176" font-family="IBM Plex Mono" font-size="6" fill="#3d6b3a">dup?kast</text>
+          <text x="703" y="176" font-family="IBM Plex Mono" font-size="6" fill="#3d6b3a">dup→kast</text>
           <line x1="700" y1="182" x2="620" y2="225" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#ar5b)"/>
           <text x="662.82" y="208.74" transform="rotate(-28.258 662.82 208.74)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="7" fill="#2d4a7a">ack0</text>
         </svg>
@@ -604,7 +604,7 @@
           <text x="361.29" y="152.40" transform="rotate(-8.710 361.29 152.40)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">ack1</text>
 
           <text x="605" y="148" font-family="IBM Plex Mono" font-size="9" fill="#b04428">pkt3 out-of-order</text>
-          <text x="605" y="160" font-family="IBM Plex Mono" font-size="9" fill="#b04428">? kast, send ack1</text>
+          <text x="605" y="160" font-family="IBM Plex Mono" font-size="9" fill="#b04428">→ kast, send ack1</text>
           <line x1="595" y1="165" x2="125" y2="240" stroke="#2d4a7a" stroke-width="1.2" marker-end="url(#ar7)"/>
           <text x="361.34" y="210.89" transform="rotate(-9.067 361.34 210.89)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">ack1 (dup)</text>
 
@@ -721,7 +721,7 @@
           <line x1="120" y1="295" x2="595" y2="325" stroke="#b04428" stroke-width="1.5" marker-end="url(#ar8)"/>
           <text x="358.04" y="301.52" transform="rotate(3.614 358.04 301.52)" text-anchor="middle" dominant-baseline="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">pkt2 (resendt)</text>
 
-          <text x="605" y="338" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a">pkt2 mottatt ?</text>
+          <text x="605" y="338" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a">pkt2 mottatt →</text>
           <text x="605" y="352" font-family="IBM Plex Mono" font-size="9" fill="#3d6b3a">lever 2,3 opp</text>
 
           <line x1="595" y1="360" x2="125" y2="410" stroke="#3d6b3a" stroke-width="1.2" marker-end="url(#ar8)"/>
@@ -794,7 +794,7 @@
       <div class="proto-step">
         <div class="proto-name">Pipelining</div>
         <div class="proto-channel">Realistisk nettverk</div>
-        <p>+ Flere pakker i flukt. Krever større seq#-rom og buffring. ? GBN eller SR.</p>
+        <p>+ Flere pakker i flukt. Krever større seq#-rom og buffring. → GBN eller SR.</p>
       </div>
     </div>
 

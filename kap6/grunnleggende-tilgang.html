@@ -166,7 +166,7 @@
       Legg til én bit som gjør at det totale antallet 1-ere blir et partall. Slik ser det ut for 16 databits:
     </p>
     <pre><span class="comment">  data (16 bit)       paritet</span>
-  0111000110101011    1    <span class="comment">? ni 1-ere i data, pariteten gjør det til ti (partall)</span></pre>
+  0111000110101011    1    <span class="comment">→ ni 1-ere i data, pariteten gjør det til ti (partall)</span></pre>
     <p>
       Om én bit snur under overføring, blir antall 1-ere odde, og mottakeren oppdager det umiddelbart. Problemet: om <em>to</em> bits snur, blir antallet partall igjen, og feilen går under radaren. Enkelpariteten fanger bare et odde antall feilbits.
     </p>
@@ -318,7 +318,7 @@
 
     <h4>Formelen</h4>
     <p>
-      Senderen regner ut <code>R</code> som resten av <code>(D · 2?) / G</code> (modulo 2). Å gange med <code>2?</code> er det samme som å legge til <code>r</code> nuller til høyre — vi skyver dataene til venstre og lager plass for CRC-bitene. Deretter XOR-divideres dette skift-tallet med <code>G</code>, og resten som blir igjen er <code>R</code>.
+      Senderen regner ut <code>R</code> som resten av <code>(D · 2ʳ) / G</code> (modulo 2). Å gange med <code>2ʳ</code> er det samme som å legge til <code>r</code> nuller til høyre — vi skyver dataene til venstre og lager plass for CRC-bitene. Deretter XOR-divideres dette skift-tallet med <code>G</code>, og resten som blir igjen er <code>R</code>.
     </p>
 
     <h4>Et konkret eksempel</h4>
@@ -326,22 +326,22 @@
       La oss gå gjennom det trinn for trinn med data <code>100100</code> og generator <code>G = 1101</code> (som tilsvarer polynomet <code>x³ + x² + 1</code>). Siden <code>G</code> er 4 bit, blir <code>r = 3</code>, så vi legger til tre nuller og XOR-deler:
     </p>
 
-<pre>  1 0 0 1 0 0 0 0 0   <span class="comment">? D skiftet tre posisjoner</span>
-? 1 1 0 1             <span class="comment">? G</span>
-  ---------
+<pre>  1 0 0 1 0 0 0 0 0   <span class="comment">← D skiftet tre posisjoner</span>
+⊕ 1 1 0 1             <span class="comment">← G</span>
+  ─────────
     1 0 0 0 0 0 0 0
-  ? 1 1 0 1
-    ---------
+  ⊕ 1 1 0 1
+    ─────────
       1 0 1 0 0 0 0
-    ? 1 1 0 1
-      ---------
+    ⊕ 1 1 0 1
+      ─────────
         1 1 1 0 0 0
-      ? 1 1 0 1
-        ---------
+      ⊕ 1 1 0 1
+        ─────────
             1 1 0 0
-          ? 1 1 0 1
-            -----
-                  <span class="keyword">0 0 1</span>    <span class="comment">? R = 001 (resten, tre bit)</span></pre>
+          ⊕ 1 1 0 1
+            ─────
+                  <span class="keyword">0 0 1</span>    <span class="comment">← R = 001 (resten, tre bit)</span></pre>
 
     <p>
       Så det som går på kabelen er <code>&lt;D,R&gt; = 100100<strong>001</strong></code>. Mottakeren tar disse ni bitene, XOR-deler dem med den samme <code>G = 1101</code>, og skal få rest null. Hvis én eller flere bits har snudd underveis, blir resten forskjellig fra null, og mottakeren vet at rammen er korrupt — og kaster den.
@@ -354,15 +354,15 @@
         <p id="crc-body">Start her.</p>
       </div>
       <div class="controls">
-        <button id="crc-prev">? Forrige</button>
+        <button id="crc-prev">&larr; Forrige</button>
         <span class="progress" id="crc-progress">1 / 5</span>
-        <button id="crc-next">Neste ?</button>
+        <button id="crc-next">Neste &rarr;</button>
       </div>
     </div>
 
     <h4>Hvor bra er CRC?</h4>
     <p>
-      En CRC med <code>r</code> bits fanger <strong>alle burst-feil kortere enn <code>r+1</code> bits</strong>, alle feil med et odde antall bitflipp, og lengre burst-feil med sannsynlighet <code>1 - (½)?</code>. Ethernet bruker CRC-32 — en 32-bits CRC — så selv for en kjempelang burst er sjansen for å gå glipp av feilen omtrent én på fire milliarder.
+      En CRC med <code>r</code> bits fanger <strong>alle burst-feil kortere enn <code>r+1</code> bits</strong>, alle feil med et odde antall bitflipp, og lengre burst-feil med sannsynlighet <code>1 − (½)ʳ</code>. Ethernet bruker CRC-32 — en 32-bits CRC — så selv for en kjempelang burst er sjansen for å gå glipp av feilen omtrent én på fire milliarder.
     </p>
 
     <table>
@@ -438,7 +438,7 @@
           <text x="520" y="25" text-anchor="middle" class="tl" fill="#fff">1</text>
           <rect x="560" y="0" width="40" height="40" fill="#e8e3d6" stroke="#1a1612"/>
           <text x="580" y="25" text-anchor="middle" class="tl" fill="#a39886">…</text>
-          <text x="240" y="70" class="cap" text-anchor="middle">? 6-sluks-runde ?</text>
+          <text x="240" y="70" class="cap" text-anchor="middle">← 6-sluks-runde →</text>
           <text x="240" y="90" class="cap" text-anchor="middle" font-style="italic">node 1, 3 og 4 har data; slots 2, 5, 6 står tomme</text>
         </g>
       </svg>
@@ -572,8 +572,8 @@
 
     <figure>
       <!--
-        Geometri: kabel A(x=85)?B(x=405), bredde=320px. Tidsakse: t=0 ? y=62, t=t_prop ? y=242 (?y=180).
-        B starter ved t=0.4·t_prop ? y=134. Kollisjon ved t=0.7·t_prop ? (x=309, y=188).
+        Geometri: kabel A(x=85)→B(x=405), bredde=320px. Tidsakse: t=0 → y=62, t=t_prop → y=242 (Δy=180).
+        B starter ved t=0.4·t_prop → y=134. Kollisjon ved t=0.7·t_prop → (x=309, y=188).
         A's signalfront ved t=0.4: x=213 — tydelig gap til B.
       -->
       <svg id="fig-csma-prop" viewBox="0 0 520 265" xmlns="http://www.w3.org/2000/svg" role="img"
@@ -609,9 +609,9 @@
         <!-- Vertical dashed guides -->
         <line x1="85"  y1="53" x2="85"  y2="248" stroke="#2d4a7a" stroke-width="1" stroke-dasharray="3,4" opacity="0.25"/>
         <line x1="405" y1="53" x2="405" y2="248" stroke="#2d4a7a" stroke-width="1" stroke-dasharray="3,4" opacity="0.25"/>
-        <!-- Signal from A (blue solid): (85,62)?(309,188) -->
+        <!-- Signal from A (blue solid): (85,62)→(309,188) -->
         <line x1="85"  y1="62"  x2="309" y2="188" stroke="#2d4a7a" stroke-width="2.5" stroke-linecap="round"/>
-        <!-- A signal faded past collision: (309,188)?(405,242) -->
+        <!-- A signal faded past collision: (309,188)→(405,242) -->
         <line x1="309" y1="188" x2="405" y2="242" stroke="#2d4a7a" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.3"/>
         <!-- A sends at t=0 -->
         <circle cx="85" cy="62" r="3.5" fill="#2d4a7a"/>
@@ -621,9 +621,9 @@
         <!-- Gap indicator: dashed line from signal front to B's guide -->
         <line x1="217" y1="134" x2="401" y2="134" stroke="#9b8e7e" stroke-width="1" stroke-dasharray="3,3"/>
         <text x="307" y="128" text-anchor="middle" class="cp-ax">&#8212; signal ikke fremme ennå &#8212;</text>
-        <!-- Signal from B (red solid): (405,134)?(309,188) -->
+        <!-- Signal from B (red solid): (405,134)→(309,188) -->
         <line x1="405" y1="134" x2="309" y2="188" stroke="#b04428" stroke-width="2.5" stroke-linecap="round"/>
-        <!-- B signal faded past collision: (309,188)?(85,242) -->
+        <!-- B signal faded past collision: (309,188)→(85,242) -->
         <line x1="309" y1="188" x2="85"  y2="242" stroke="#b04428" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.3"/>
         <!-- B sends — annotation to the right of B's start point -->
         <circle cx="405" cy="134" r="3.5" fill="#b04428"/>
@@ -649,7 +649,7 @@
       <li>Lytter på kanalen. Hvis ledig, begynner å sende. Hvis opptatt, venter til den blir ledig.</li>
       <li>Om hele rammen går gjennom uten kollisjon — ferdig.</li>
       <li>Om en kollisjon oppdages underveis, avbrytes sendingen og et jam-signal sendes.</li>
-      <li>NIC går inn i <em>binær eksponentiell backoff</em>: etter den <em>m</em>-te kollisjonen velges et tilfeldig tall <code>K</code> fra <code>{0, 1, …, 2?-1}</code>, og noden venter <code>K · 512</code> bit-tider før den prøver på nytt. Flere kollisjoner ? lengre forventet ventetid.</li>
+      <li>NIC går inn i <em>binær eksponentiell backoff</em>: etter den <em>m</em>-te kollisjonen velges et tilfeldig tall <code>K</code> fra <code>{0, 1, …, 2ᵐ-1}</code>, og noden venter <code>K · 512</code> bit-tider før den prøver på nytt. Flere kollisjoner → lengre forventet ventetid.</li>
     </ol>
 
     <div class="margin-note">
@@ -709,7 +709,7 @@
 <div class="container">
   <nav class="page-nav">
     <a href="ethernet-svitsjer.html" class="next">
-      <span class="nav-label">Neste ?</span>
+      <span class="nav-label">Neste &rarr;</span>
       <span class="nav-title">Ethernet, svitsjer og ARP</span>
     </a>
   </nav>
@@ -756,11 +756,11 @@ document.querySelectorAll('.reveal').forEach(r => {
     },
     {
       title: 'Trinn 2 — Skift dataene',
-      body: 'Legg til r = 3 nuller bak dataene: 100100 ? 100100000. Dette er det samme som å multiplisere med 2³. Nå har vi plass til å «trekke fra» G ved hjelp av XOR flere ganger.'
+      body: 'Legg til r = 3 nuller bak dataene: 100100 → 100100000. Dette er det samme som å multiplisere med 2³. Nå har vi plass til å «trekke fra» G ved hjelp av XOR flere ganger.'
     },
     {
       title: 'Trinn 3 — Første XOR',
-      body: 'Plasser G = 1101 slik at den er på linje med den første 1-eren i 100100000. XOR: 1001 ? 1101 = 0100. Resten: 0100 00000. Skyv G ett hakk til høyre og fortsett.'
+      body: 'Plasser G = 1101 slik at den er på linje med den første 1-eren i 100100000. XOR: 1001 ⊕ 1101 = 0100. Resten: 0100 00000. Skyv G ett hakk til høyre og fortsett.'
     },
     {
       title: 'Trinn 4 — Iterer til slutten',

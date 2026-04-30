@@ -318,11 +318,11 @@
         </div>
         <div class="rtw-stat rtw-stat-reno">
           <div class="rtw-stat-label">&#9644; TCP Reno (cwnd)</div>
-          <div id="rtw-stat-reno" class="rtw-stat-val">1 ? 10 MSS</div>
+          <div id="rtw-stat-reno" class="rtw-stat-val">1 &rarr; 10 MSS</div>
         </div>
         <div class="rtw-stat rtw-stat-tahoe">
           <div class="rtw-stat-label">&#9548; TCP Tahoe (cwnd)</div>
-          <div id="rtw-stat-tahoe" class="rtw-stat-val">1 ? 10 MSS</div>
+          <div id="rtw-stat-tahoe" class="rtw-stat-val">1 &rarr; 10 MSS</div>
         </div>
       </div>
 
@@ -335,7 +335,7 @@
           <text x="10" y="14" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">cwnd (MSS)</text>
           <text x="655" y="265" font-family="IBM Plex Sans" font-size="11" fill="#6b6257">tid (RTT)</text>
 
-          <!-- Y-axis ticks: log scale. cwnd=1?y=250, cwnd=10?y˜112, cwnd=20?y=70 -->
+          <!-- Y-axis ticks: log scale. cwnd=1→y=250, cwnd=10→y˜112, cwnd=20→y=70 -->
           <line x1="55" y1="250" x2="60" y2="250" stroke="#c9c0ae" stroke-width="1"/>
           <text x="50" y="254" font-family="IBM Plex Mono" font-size="10" fill="#6b6257" text-anchor="end">1</text>
           <line x1="55" y1="112" x2="60" y2="112" stroke="#c9c0ae" stroke-width="1"/>
@@ -343,11 +343,11 @@
           <line x1="55" y1="70" x2="60" y2="70" stroke="#c9c0ae" stroke-width="1"/>
           <text x="50" y="74" font-family="IBM Plex Mono" font-size="10" fill="#6b6257" text-anchor="end">20</text>
 
-          <!-- ssthresh reference line at cwnd=10 ? y˜112 -->
+          <!-- ssthresh reference line at cwnd=10 → y˜112 -->
           <line id="rtw-ssthresh" x1="60" y1="112" x2="690" y2="112" stroke="#c9c0ae" stroke-width="1" stroke-dasharray="4,3"/>
           <text x="63" y="108" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">ssthresh=10</text>
 
-          <!-- 3 dup-ACKs event marker at t=9 ? x=375 (hidden until step 3) -->
+          <!-- 3 dup-ACKs event marker at t=9 → x=375 (hidden until step 3) -->
           <line id="rtw-event" x1="375" y1="20" x2="375" y2="250" stroke="#2d4a7a" stroke-width="1.5" stroke-dasharray="4,3" opacity="0"/>
           <text id="rtw-event-label" x="379" y="32" font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a" opacity="0">3 dup-ACKs</text>
 
@@ -383,11 +383,11 @@
     <script>
     (function() {
       // Coordinate mapping (log scale)
-      // cwnd=1 ? y=250, cwnd=10 ? y=160, cwnd=20 ? y=70
-      // Time: x = 60 + t*35  (RTT 0?x=60, RTT 1?x=95, ..., RTT 9?x=375, RTT 17?x=655)
+      // cwnd=1 → y=250, cwnd=10 → y=160, cwnd=20 → y=70
+      // Time: x = 60 + t*35  (RTT 0→x=60, RTT 1→x=95, ..., RTT 9→x=375, RTT 17→x=655)
       function xOf(t) { return 60 + t * 35; }
       function yOf(cwnd) {
-        // Log scale anchored: cwnd=1?y=250, cwnd=20?y=70
+        // Log scale anchored: cwnd=1→y=250, cwnd=20→y=70
         // y = 250 - (log(cwnd)/log(20)) * 180
         if (cwnd <= 1) return 250;
         if (cwnd >= 20) return 70;
@@ -395,27 +395,27 @@
       }
       function pt(t, cwnd) { return xOf(t) + ',' + yOf(cwnd); }
 
-      // Shared slow start + CA path: t0?cwnd1 up through t9?cwnd20
-      // Slow start: 0?1, 1?2, 2?4, 3?8, 4?10 (hits ssthresh)
-      // CA: 5?11, 6?12, 7?13 (skip; just linear), actually:
+      // Shared slow start + CA path: t0→cwnd1 up through t9→cwnd20
+      // Slow start: 0→1, 1→2, 2→4, 3→8, 4→10 (hits ssthresh)
+      // CA: 5→11, 6→12, 7→13 (skip; just linear), actually:
       // Slow start doubles: cwnd 1,2,4,8 then hits ssthresh=10 at t=4
-      // CA +1/RTT: t4?10, t5?11, t6?12, t7?13, t8?14... wait spec says t9?20
+      // CA +1/RTT: t4→10, t5→11, t6→12, t7→13, t8→14... wait spec says t9→20
       // Let me re-read: "CA linearly up to (9, 20)" so +2/RTT? cwnd 10,12,14,16,18,20 over t4..t9
-      // Actually spec says "Congestion avoidance: tid 5-9, cwnd 10?20" so +2/RTT
+      // Actually spec says "Congestion avoidance: tid 5-9, cwnd 10→20" so +2/RTT
       // That's a simplification for visual clarity. Let's go with that.
       const sharedPts = [
         [0,1],[1,2],[2,4],[3,8],[4,10],[5,12],[6,14],[7,16],[8,18],[9,20]
       ];
 
       // Tahoe after event: falls to (9,1) then slow start: (9,1),(10,2),(11,4),(12,8),(13,10),(14,12)...
-      // Actually per spec step 6: (9,1)?(10,2)?(11,4), step 7 continues to ssthresh=10 then CA
+      // Actually per spec step 6: (9,1)→(10,2)→(11,4), step 7 continues to ssthresh=10 then CA
       const tahoePts = [
         [9,1],[10,2],[11,4],[12,8],[13,10],[14,12],[15,14],[16,16],[17,18]
       ];
 
       // Reno after event:
-      // Step 5: (9,20)?(9,13) then plateau (9,13)?(10,13)
-      // Step 6: (10,13)?(10,10)
+      // Step 5: (9,20)→(9,13) then plateau (9,13)→(10,13)
+      // Step 6: (10,13)→(10,10)
       // Step 7: (10,10) CA linearly: (11,11),(12,12),...(17,17)
       const renoPts = [
         [9,20],[9,13],[10,13],[10,10],[11,11],[12,12],[13,13],[14,14],[15,15],[16,16],[17,17]
@@ -428,9 +428,9 @@
 
       const steps = [
         {
-          // Step 1: Slow start, shared curve 0?4
-          time: '0–4', reno: '1 ? 10 MSS', tahoe: '1 ? 10 MSS',
-          shared: sharedPts.slice(0, 5), // t0?t4
+          // Step 1: Slow start, shared curve 0→4
+          time: '0–4', reno: '1 → 10 MSS', tahoe: '1 → 10 MSS',
+          shared: sharedPts.slice(0, 5), // t0→t4
           tahoeExtra: [], renoExtra: [],
           event: false,
           fastRecovery: false,
@@ -439,9 +439,9 @@
           body: 'Begge protokoller starter med cwnd = 1 MSS og dobler for hver RTT. Eksponentiell vekst er effektiv for raskt å finne nettverkets kapasitet. Når cwnd når ssthresh = 10, bytter begge til congestion avoidance. Her er Reno og Tahoe helt identiske — det er ingen grunn til å skille dem ennå.'
         },
         {
-          // Step 2: CA, shared curve 4?9
-          time: '5–9', reno: '10 ? 20 MSS', tahoe: '10 ? 20 MSS',
-          shared: sharedPts, // t0?t9
+          // Step 2: CA, shared curve 4→9
+          time: '5–9', reno: '10 → 20 MSS', tahoe: '10 → 20 MSS',
+          shared: sharedPts, // t0→t9
           tahoeExtra: [], renoExtra: [],
           event: false,
           fastRecovery: false,
@@ -495,7 +495,7 @@
         },
         {
           // Step 7: Full picture — Reno wins
-          time: '10–17', reno: '10 ? 17 MSS', tahoe: '2 ? 14 MSS',
+          time: '10–17', reno: '10 → 17 MSS', tahoe: '2 → 14 MSS',
           shared: sharedPts,
           tahoeExtra: [[9,20],[9,1],[10,2],[11,4],[12,8],[13,10],[14,12],[15,14],[16,16],[17,18]],
           renoExtra: [[9,20],[9,13],[10,13],[10,10],[11,11],[12,12],[13,13],[14,14],[15,15],[16,16],[17,17]],
@@ -1047,14 +1047,14 @@ document.querySelectorAll('.quiz').forEach(q => {
     },
     {
       title: 'RTT 1-4 — Slow Start fortsetter',
-      desc: 'cwnd dobles hver RTT: 1 ? 2 ? 4 ? 8 ? 16. Vi nærmer oss ssthresh (16 MSS).',
+      desc: 'cwnd dobles hver RTT: 1 → 2 → 4 → 8 → 16. Vi nærmer oss ssthresh (16 MSS).',
       points: [[0,1],[1,2],[2,4],[3,8],[4,16]],
       ssthresh: 16,
       phase: 'slow start'
     },
     {
       title: 'RTT 4-8 — Congestion Avoidance',
-      desc: 'cwnd har nådd ssthresh. Vi skifter til lineær vekst: +1 MSS per RTT. cwnd: 16 ? 17 ? 18 ? 19 ? 20.',
+      desc: 'cwnd har nådd ssthresh. Vi skifter til lineær vekst: +1 MSS per RTT. cwnd: 16 → 17 → 18 → 19 → 20.',
       points: [[0,1],[1,2],[2,4],[3,8],[4,16],[5,17],[6,18],[7,19],[8,20]],
       ssthresh: 16,
       phase: 'congestion avoidance'
@@ -1064,11 +1064,11 @@ document.querySelectorAll('.quiz').forEach(q => {
       desc: 'Tre dupliserte ACKs mottatt ved cwnd = 20. ssthresh = 20/2 = 10. cwnd = 10 + 3 = 13 (fast recovery). Etter ny ACK: cwnd = ssthresh = 10.',
       points: [[0,1],[1,2],[2,4],[3,8],[4,16],[5,17],[6,18],[7,19],[8,20],[8.2,10]],
       ssthresh: 10,
-      phase: 'fast recovery ? CA'
+      phase: 'fast recovery → CA'
     },
     {
       title: 'RTT 9-14 — Ny congestion avoidance',
-      desc: 'Lineær vekst igjen fra cwnd = 10: 10 ? 11 ? 12 ? 13 ? 14 ? 15. ssthresh er nå 10.',
+      desc: 'Lineær vekst igjen fra cwnd = 10: 10 → 11 → 12 → 13 → 14 → 15. ssthresh er nå 10.',
       points: [[0,1],[1,2],[2,4],[3,8],[4,16],[5,17],[6,18],[7,19],[8,20],[8.2,10],[9,11],[10,12],[11,13],[12,14],[13,15]],
       ssthresh: 10,
       phase: 'congestion avoidance'
@@ -1078,14 +1078,14 @@ document.querySelectorAll('.quiz').forEach(q => {
       desc: 'Timeout ved cwnd = 15. ssthresh = 15/2 ˜ 7. cwnd = 1 MSS. Tilbake til slow start — dette er den dyre typen tap.',
       points: [[0,1],[1,2],[2,4],[3,8],[4,16],[5,17],[6,18],[7,19],[8,20],[8.2,10],[9,11],[10,12],[11,13],[12,14],[13,15],[13.2,1]],
       ssthresh: 7,
-      phase: 'timeout ? slow start'
+      phase: 'timeout → slow start'
     },
     {
       title: 'RTT 15-17 — Slow start igjen',
-      desc: 'Eksponentiell vekst fra 1: 1 ? 2 ? 4 ? 8 (passerer ssthresh=7). Deretter congestion avoidance.',
+      desc: 'Eksponentiell vekst fra 1: 1 → 2 → 4 → 8 (passerer ssthresh=7). Deretter congestion avoidance.',
       points: [[0,1],[1,2],[2,4],[3,8],[4,16],[5,17],[6,18],[7,19],[8,20],[8.2,10],[9,11],[10,12],[11,13],[12,14],[13,15],[13.2,1],[14,2],[15,4],[16,8]],
       ssthresh: 7,
-      phase: 'slow start ? CA'
+      phase: 'slow start → CA'
     }
   ];
 

@@ -161,7 +161,7 @@
   </div>
 </section>
 
-<div class="container"><div class="divider">? ? ?</div></div>
+<div class="container"><div class="divider">&#10043; &#10043; &#10043;</div></div>
 
 <!-- ============ DEL 2: DNS ============ -->
 <section id="dns">
@@ -303,7 +303,7 @@
     <pre>(networkutopia.com, dns1.networkutopia.com, NS)
 (dns1.networkutopia.com, 212.44.9.129, A)</pre>
 
-    <p>Nå vet <code>.com</code>-TLD-serverne at spørsmål om <code>networkutopia.com</code> skal sendes videre til <em>dine</em> autoritative servere. På disse serverne legger du selv inn A-poster for webserveren din (<code>www.networkutopia.com</code> ? IP-adresse) og MX-poster for e-postserveren. Fra det øyeblikket er hele kjeden komplett: root ? TLD ? autoritativ ? endelig svar.</p>
+    <p>Nå vet <code>.com</code>-TLD-serverne at spørsmål om <code>networkutopia.com</code> skal sendes videre til <em>dine</em> autoritative servere. På disse serverne legger du selv inn A-poster for webserveren din (<code>www.networkutopia.com</code> → IP-adresse) og MX-poster for e-postserveren. Fra det øyeblikket er hele kjeden komplett: root → TLD → autoritativ → endelig svar.</p>
 
     <h3>Caching — den hemmelige sausen</h3>
     <p>Det vi egentlig ikke har sagt eksplisitt ennå er <em>hvordan</em> DNS klarer å være så raskt. Svaret er caching, overalt. Når en navneserver — hvilken som helst — lærer en mapping, lagrer den den i minnet sitt for fremtidige forespørsler. Den lagrer den til TTL utløper. TLD-server-adresser er typisk cachet i lokale servere stort sett alltid, så root-serverne blir nesten aldri kontaktet for vanlige oppslag.</p>
@@ -348,7 +348,7 @@
   </div>
 </section>
 
-<div class="container"><div class="divider">? ? ?</div></div>
+<div class="container"><div class="divider">&#10043; &#10043; &#10043;</div></div>
 
 <!-- ============ DEL 3: SOCKETS ============ -->
 <section id="sockets">
@@ -516,7 +516,7 @@ while True:
         <tr><td class="label-col">Forbindelse</td><td>Ingen</td><td>Etableres med håndtrykk</td></tr>
         <tr><td class="label-col">Pålitelighet</td><td>Ingen — pakker kan mistes</td><td>Garantert levering, riktig rekkefølge</td></tr>
         <tr><td class="label-col">Sende</td><td><code>sendto(data, adresse)</code></td><td><code>send(data)</code></td></tr>
-        <tr><td class="label-col">Motta</td><td><code>recvfrom()</code> ? data + adresse</td><td><code>recv()</code> ? data</td></tr>
+        <tr><td class="label-col">Motta</td><td><code>recvfrom()</code> → data + adresse</td><td><code>recv()</code> → data</td></tr>
         <tr><td class="label-col">Server</td><td>Én sokkel for alt</td><td>Én velkomst + én pr. klient</td></tr>
         <tr><td class="label-col">Egnet for</td><td>DNS, video, spill, telemetri</td><td>HTTP, SMTP, filoverføring</td></tr>
       </tbody>

@@ -205,10 +205,10 @@
       <text x="600" y="206" text-anchor="middle" font-family="Newsreader" font-size="20" font-weight="600" fill="#1a1612">C</text>
       <!-- A-B -->
       <path d="M 148 215 Q 250 250 332 240" stroke="#b04428" stroke-width="2" fill="none" stroke-dasharray="0"/>
-      <text x="225" y="260" font-family="IBM Plex Mono" font-size="11" fill="#b04428">A?B ?</text>
+      <text x="225" y="260" font-family="IBM Plex Mono" font-size="11" fill="#b04428">A↔B ✓</text>
       <!-- B-C -->
       <path d="M 388 240 Q 490 250 572 215" stroke="#b04428" stroke-width="2" fill="none"/>
-      <text x="490" y="260" font-family="IBM Plex Mono" font-size="11" fill="#b04428">B?C ?</text>
+      <text x="490" y="260" font-family="IBM Plex Mono" font-size="11" fill="#b04428">B↔C ✓</text>
       <!-- A-C blocked -->
       <path d="M 148 195 Q 360 50 572 195" stroke="#a39886" stroke-width="2" fill="none" stroke-dasharray="6 4"/>
       <text x="360" y="40" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">A og C ser ikke hverandre</text>
@@ -229,7 +229,7 @@
 </div>
 </section>
 
-<div class="divider">? ? ?</div>
+<div class="divider">&#10043; &#10043; &#10043;</div>
 
 <section id="wifi">
 <div class="container">
@@ -335,9 +335,9 @@
       </svg>
     </div>
     <div class="controls">
-      <button id="rtsPrev">? Forrige</button>
+      <button id="rtsPrev">&larr; Forrige</button>
       <span class="indicator" id="rtsInd">1 / 6</span>
-      <button id="rtsNext">Neste ?</button>
+      <button id="rtsNext">Neste &rarr;</button>
     </div>
   </div>
 
@@ -354,7 +354,7 @@
   <p>Når du ser på et Ethernet-rammeformat har det to MAC-adresser: kilde og destinasjon. Slutt. En 802.11-ramme har derimot <strong>fire</strong> adressefelter, og det er forvirrende ved første øyekast. Det er verdt å forstå hvorfor.</p>
 
   <h3>Hvorfor fire adresser?</h3>
-  <p>Tenk på det enkleste tilfellet: vert H1 (på WiFi) skal sende en pakke ut på Internett. Pakken må gå H1 ? AP ? ruter R1 ? Internett. På selve den trådløse hoppen er det tre relevante MAC-adresser:</p>
+  <p>Tenk på det enkleste tilfellet: vert H1 (på WiFi) skal sende en pakke ut på Internett. Pakken må gå H1 → AP → ruter R1 → Internett. På selve den trådløse hoppen er det tre relevante MAC-adresser:</p>
 
   <ul style="margin:0 0 24px 24px;color:var(--ink-soft);font-size:16px">
     <li style="margin-bottom:6px"><strong>Adresse 1 — Mottaker av denne rammen:</strong> AP-ens MAC. Det er hvem som skal plukke opp rammen fra lufta.</li>
@@ -371,7 +371,7 @@
   <figure>
     <svg viewBox="0 0 700 290" xmlns="http://www.w3.org/2000/svg">
       <!-- WiFi frame -->
-      <text x="20" y="30" font-family="IBM Plex Mono" font-size="12" fill="#b04428" font-weight="600">802.11 WiFi-ramme (på lufta H1 ? AP)</text>
+      <text x="20" y="30" font-family="IBM Plex Mono" font-size="12" fill="#b04428" font-weight="600">802.11 WiFi-ramme (på lufta H1 → AP)</text>
       <rect x="20" y="40" width="120" height="44" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/>
       <text x="80" y="58" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">addr 1</text>
       <text x="80" y="74" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612" font-weight="600">AP MAC</text>
@@ -390,7 +390,7 @@
       <text x="365" y="132" font-family="Newsreader" font-size="13" font-style="italic" fill="#6b6257">AP "oversetter" til Ethernet</text>
 
       <!-- Ethernet frame -->
-      <text x="20" y="180" font-family="IBM Plex Mono" font-size="12" fill="#2d4a7a" font-weight="600">802.3 Ethernet-ramme (kabel AP ? R1)</text>
+      <text x="20" y="180" font-family="IBM Plex Mono" font-size="12" fill="#2d4a7a" font-weight="600">802.3 Ethernet-ramme (kabel AP → R1)</text>
       <rect x="20" y="190" width="160" height="44" fill="#f4f1ea" stroke="#1a1612" stroke-width="1.5"/>
       <text x="100" y="208" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">dest</text>
       <text x="100" y="224" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#1a1612" font-weight="600">R1 MAC</text>
@@ -404,7 +404,7 @@
   </figure>
 
   <div class="reveal" data-reveal>
-    <div class="q">Vi så adressene for retningen H1 ? AP ? R1. Hva skjer med de fire adressefeltene når en pakke går <em>motsatt</em> vei — fra Internett, gjennom R1, via AP-en og ut til H1 over WiFi?</div>
+    <div class="q">Vi så adressene for retningen H1 → AP → R1. Hva skjer med de fire adressefeltene når en pakke går <em>motsatt</em> vei — fra Internett, gjennom R1, via AP-en og ut til H1 over WiFi?</div>
     <button>Vis svar</button>
     <div class="answer">I den trådløse rammen fra AP til H1 er rollene speilvendt: <strong>adresse 1</strong> (mottaker av rammen) er nå <em>H1 sin MAC</em>, <strong>adresse 2</strong> (sender av rammen) er <em>AP-ens MAC</em>, og <strong>adresse 3</strong> (opprinnelig avsender på det kablede nettet) er <em>R1 sin MAC</em>. AP-en gjør altså den omvendte oversettelsen: den tar Ethernet-rammen fra R1, pakker ut IP-pakken, og lager en ny 802.11-ramme med riktige adresser for det trådløse hoppet.</div>
   </div>
@@ -502,7 +502,7 @@
   </div>
 
   <h3>Skille mellom data- og kontrollplan</h3>
-  <p>Et viktig arkitektonisk grep i LTE er at <em>data og kontroll går forskjellige veier</em>. Kontrollplanet (autentisering, mobilitetshåndtering, oppsett av forbindelser) bruker MME og HSS. Dataplanet (selve nettleser-trafikken, video-streaming, etc.) går aldri innom MME — det går rett gjennom basestasjon ? S-GW ? P-GW ? Internett. Dette er den samme idéen som SDN: en sentralisert kontroller som forteller bryterne hva de skal gjøre, mens selve pakkene flyter forbi i full hastighet.</p>
+  <p>Et viktig arkitektonisk grep i LTE er at <em>data og kontroll går forskjellige veier</em>. Kontrollplanet (autentisering, mobilitetshåndtering, oppsett av forbindelser) bruker MME og HSS. Dataplanet (selve nettleser-trafikken, video-streaming, etc.) går aldri innom MME — det går rett gjennom basestasjon → S-GW → P-GW → Internett. Dette er den samme idéen som SDN: en sentralisert kontroller som forteller bryterne hva de skal gjøre, mens selve pakkene flyter forbi i full hastighet.</p>
 </div>
 </section>
 
@@ -694,7 +694,7 @@
 <footer>
   <div class="container">
     <p>Basert på <em>Computer Networking: A Top-Down Approach</em>, 8. utgave, av Kurose &amp; Ross — kapittel 7. Denne siden går dypere enn lysbildene, fyller inn motivasjonen og forklarer mekanismene fra grunnen av.</p>
-    <p style="margin-top:20px;color:var(--rust);letter-spacing:0.6em">? ? ?</p>
+    <p style="margin-top:20px;color:var(--rust);letter-spacing:0.6em">&#10043; &#10043; &#10043;</p>
   </div>
 </footer>
 
@@ -710,11 +710,11 @@
     // Simplified path loss: SNR drops with distance
     const snr = Math.max(2, 42 - 18 * Math.log10(d));
     let mod, rate, ber;
-    if (snr > 28) { mod = 'QAM256'; rate = '8 Mbps'; ber = '~10?6'; }
-    else if (snr > 18) { mod = 'QAM16'; rate = '4 Mbps'; ber = '~10?5'; }
-    else if (snr > 8) { mod = 'BPSK'; rate = '1 Mbps'; ber = '~10?4'; }
+    if (snr > 28) { mod = 'QAM256'; rate = '8 Mbps'; ber = '~10⁻⁶'; }
+    else if (snr > 18) { mod = 'QAM16'; rate = '4 Mbps'; ber = '~10⁻⁵'; }
+    else if (snr > 8) { mod = 'BPSK'; rate = '1 Mbps'; ber = '~10⁻⁴'; }
     else { mod = '— ingen forbindelse —'; rate = '0'; ber = 'for høy'; }
-    out.innerHTML = `<strong>SNR ˜ ${snr.toFixed(1)} dB</strong> &nbsp;?&nbsp; modulasjon: <strong>${mod}</strong>, effektiv rate: <strong>${rate}</strong>, BER: ${ber}`;
+    out.innerHTML = `<strong>SNR ≈ ${snr.toFixed(1)} dB</strong> &nbsp;→&nbsp; modulasjon: <strong>${mod}</strong>, effektiv rate: <strong>${rate}</strong>, BER: ${ber}`;
   }
   slider.addEventListener('input', update);
   update();

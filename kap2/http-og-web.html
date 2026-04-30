@@ -522,25 +522,25 @@ setupQuiz('quiz-cache');
     {
       text: 'Tjeneren oppretter en unik ID for brukeren og lagrer den i sin database.',
       cookie: '(tom)',
-      db: 'bruker ? 1678',
+      db: 'bruker → 1678',
       arrows: '<rect x="455" y="140" width="90" height="50" fill="#fff5d0" stroke="#c68a1f"/>'
     },
     {
       text: 'Svaret inneholder Set-Cookie: 1678. Nettleseren lagrer cookien.',
-      cookie: 'site ? 1678',
-      db: 'bruker ? 1678',
+      cookie: 'site → 1678',
+      db: 'bruker → 1678',
       arrows: '<line x1="440" y1="100" x2="160" y2="100" stroke="#3d6b3a" stroke-width="1.5" marker-end="url(#a2)"/><text x="300" y="92" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">Set-Cookie: 1678</text>'
     },
     {
       text: 'Senere forespørsler legger automatisk ved Cookie: 1678. Tjeneren kjenner igjen brukeren.',
-      cookie: 'site ? 1678',
-      db: 'bruker ? 1678',
+      cookie: 'site → 1678',
+      db: 'bruker → 1678',
       arrows: '<line x1="160" y1="100" x2="440" y2="100" stroke="#2d4a7a" stroke-width="1.5" marker-end="url(#a1)"/><text x="300" y="92" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">Cookie: 1678</text>'
     },
     {
       text: 'Selv en uke senere — så lenge cookien finnes — vet tjeneren hvem brukeren er.',
-      cookie: 'site ? 1678',
-      db: 'bruker ? 1678 (+ historikk)',
+      cookie: 'site → 1678',
+      db: 'bruker → 1678 (+ historikk)',
       arrows: '<line x1="160" y1="100" x2="440" y2="100" stroke="#2d4a7a" stroke-width="1.5" marker-end="url(#a1)"/><text x="300" y="92" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#2d4a7a">Cookie: 1678  (uker senere)</text>'
     }
   ];
