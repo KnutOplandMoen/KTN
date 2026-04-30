@@ -328,6 +328,114 @@
           <p><strong>Hvorfor det trengs:</strong> RTP gir ingen QoS — rutere ser bare UDP. Senderen trenger likevel å vite hvordan det går for å kunne tilpasse seg: bytte til lavere bitrate-koding, justere FEC, redusere sende-rate. RTCP gir denne tilbakemeldingsløkken. 5 %-grensen og at rapporter sendes sjeldnere når deltakerantallet vokser, gjør at totalsummen forblir konstant uavhengig av gruppestørrelse — elegant skalering for mange-til-mange-konferanser.</p>
         </div>
       </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor utgjør video en så enorm andel av Internett-trafikken sammenlignet med musikk og bildetunge nettsteder?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Video bruker en hel <em>størrelsesorden</em> mer båndbredde enn musikk og betydelig mer enn bildetung surfing — typisk 2 Mbps for HD-streaming mot ~128 kbps for Spotify og ~160 kbps for bildetung surfing. Cisco anslo at video ville utgjøre rundt 80 % av all forbruker-Internett-trafikk i 2019.</p>
+          <p><strong>Hvorfor:</strong> Video kombinerer høy oppløsning med 24–30 bilder per sekund, hver med millioner av piksler. Selv med spatial og temporal koding er datamengden enorm. Musikk er én-dimensjonal lyd, bilder er statiske — video er begge deler i bevegelse. Det er denne dominansen som gjør designvalg for video-streaming så kritiske for hele Internett-økosystemet, og hvorfor CDN-er har vokst frem som arkitekturisk svar.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <strong>DASH</strong> (Dynamic Adaptive Streaming over HTTP), og hvordan velger klienten kvaliteten på videosegmentene?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Serveren tilbyr videoen i flere kvalitetsnivåer (oppløsninger/bitrater), og deler hver versjon i korte segmenter (typisk 2–10 sekunder). Klienten henter ett segment om gangen via vanlig HTTP GET, og velger hvilken kvalitet den vil be om basert på <em>målte</em> nedlastingstider for tidligere segmenter og hvor full playout-bufferen er.</p>
+          <p><strong>Hvorfor:</strong> All adaptiv logikk ligger i klienten — serveren er en helt vanlig webserver som leverer statiske filer. Når kapasiteten faller, henter klienten neste segment i lavere oppløsning ("plutselig pikselete Netflix"); når kapasiteten kommer tilbake, hopper den opp igjen. Bygger på vanlig HTTP/TCP, så det fungerer over alle webservere, CDN-er og brannmurer. Brukes i dag av YouTube, Netflix, NRK TV og de fleste streamingtjenester.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Beskriv de tre vanligste teknikkene for <em>loss concealment</em> i VoIP, og hvor i tapshåndteringen passer de inn?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> (1) <strong>Pakkeduplisering</strong> — spill av forrige mottatte chunk på nytt. Enkel og rimelig effektiv for korte tap (1 pakke ≈ 20 ms — øret er svært tilgivende). (2) <strong>Signalinterpolering</strong> — rekonstruer den manglende lyden ut fra nabopakkenes signalegenskaper (frekvensspektrum, amplitudemønster). Bedre kvalitet, men mer regnetungt. (3) <strong>Stille innsetting</strong> — spill av stillhet i hullet. Fungerer bare ved svært korte tap; gir hakkete lyd ved hyppige tap.</p>
+          <p><strong>Hvorfor:</strong> Mottakeren <em>må</em> produsere noe lyd for de 20 ms som mangler — ren stillhet uten konsealering gir hørbare klikk. Loss concealment er den siste forsvarslinjen <em>etter</em> at FEC, interleaving og adaptiv playout ikke har klart å skaffe en kopi å spille av. De tre teknikkene er komplementære: FEC/interleaving prøver å hindre at tap merkes; loss concealment skjuler det som likevel slipper igjennom.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar <em>fast playout-forsinkelse</em> som strategi for VoIP, og hvilken trade-off ligger i valget av q?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Mottakeren bestemmer en fast forsinkelse q og spiller hver lydbit nøyaktig q ms etter at den ble generert av senderen — altså ved tid t + q hvis pakken har tidsstempel t. Hvis pakken ankommer etter t + q, regnes den som tapt (for sen).</p>
+          <p><strong>Trade-offen:</strong> Stor q → færre pakker er "for sene" → lavere tap, men lengre samtaleforsinkelse. Liten q → bedre interaktivitet, men flere pakker rekker ikke frem i tide og må skjules som tap. Trade-offen er fundamental — derfor finnes adaptiv playout, som justerer q automatisk basert på nettverksforholdene i stedet for å låse en konstant verdi for hele samtalen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan klarer <em>adaptiv playout-forsinkelse</em> å justere bufferstørrelsen <em>under</em> en samtale uten at lytteren merker det?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Justeringen skjer bare ved starten av en <em>ny snakkefase</em>. Stillhetsperiodene mellom setninger blir litt komprimert eller forlenget for å absorbere endringen. Selve snakkefasen spilles av med faste 20 ms-mellomrom — der må man ikke endre noe.</p>
+          <p><strong>Hvorfor det fungerer:</strong> Hvis vi endret playout-forsinkelsen midt i en setning, ville lyden hakke eller bli unaturlig dratt. Men korte stillhetsperioder (selv små pauser mellom ord) kan strekkes eller komprimeres med titalls millisekunder uten at hjernen registrerer det. Det er denne "skjulte slakken" som lar bufferen vokse når jitter øker, og krympe når nettet roer seg, helt uten at samtalen forstyrres.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke komponenter består <em>Skype-arkitekturen</em> av, og hvilken rolle spiller hver?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>(1) <strong>Skype-klienter (SC)</strong> — vanlige brukere som kjører Skype-applikasjonen; under en samtale kobler to klienter seg helst direkte til hverandre.<br>
+          (2) <strong>Supernoder (SN)</strong> — utvalgte Skype-peers med spesielle funksjoner; hjelper med å lokalisere brukere og rute trafikk gjennom et overlay.<br>
+          (3) <strong>Overlay-nettverk</strong> — supernodene danner et overliggende P2P-nett seg imellom for brukerlokalisering.<br>
+          (4) <strong>Login-server</strong> — én sentralisert server for autentisering (brukernavn/passord).</p>
+          <p><strong>Hvorfor hybridarkitektur:</strong> P2P (supernoder) skalerer for "telefonkatalog" og NAT-relay som er kontinuerlig belastning, mens sentralisert kontroll passer for autentisering som er sjelden men må være pålitelig. Login-serveren ville ikke skalere som relay. Supernodene er ofte vanlige brukere med god uplink — Skype velger dem automatisk og brukeren merker det ikke.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor sier vi at <em>"RTP gir ingen QoS-garantier"</em>, når RTP nettopp er designet for sanntidsmedia?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> RTP-pakker er innkapslet i vanlige UDP-segmenter. Rutere underveis ser bare et IP-datagram med en UDP-header og behandler det med vanlig best-effort — de "vet" ikke at det er RTP og gjør ingen spesiell innsats for å levere det raskere eller mer pålitelig.</p>
+          <p><strong>Hvorfor:</strong> RTP er bare en konvensjon for <em>applikasjonsdata</em> — felter som hjelper mottakeren tolke pakken (payload type, sekvens, tidsstempel). Det er ingen "RTP-laget" i nettverket. All smarthet for forsinkelse og tap — adaptiv playout, FEC, jitterbuffer, RTCP-feedback — ligger i endepunktene. Dette er konsistent med Internetts grunnfilosofi: <em>smartness in the edges, dumb routers in the middle</em>. Reelle QoS-garantier krever andre mekanismer (DiffServ, MPLS) helt uavhengig av RTP.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva uttrykker <em>RTP-tidsstempelet</em>, og hvor mye øker det per pakke for 8 kHz audio?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Tidsstempelet er <em>samplingsøyeblikket</em> for første byte i pakken — målt i en applikasjonsspesifikk klokke (ikke wall-clock-tid). For 8 kHz audio øker tidsstempelet med 1 per sample (125 µs), altså +160 per 20 ms-pakke. Klokken tikker videre <em>også gjennom stillhet</em>, selv om ingen pakker sendes da.</p>
+          <p><strong>Hvorfor:</strong> Sekvensnummeret forteller bare <em>rekkefølge</em> (øker monotont per pakke), tidsstempelet forteller <em>når i mediet</em> pakken hører hjemme. To stillhetsperioder kan være ulike lange — uten en klokke som tikker gjennom stillhet, ville mottakeren ikke kunne plassere neste snakkefase riktig på tidslinjen. Tidsstempelet er også det som lar mottakeren beregne nettverksforsinkelsen (r<sub>i</sub> − t<sub>i</sub>) for adaptiv playout.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan synkroniseres to separate RTP-strømmer (én for lyd, én for video) til <em>lip-sync</em> hos mottakeren?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> RTP-tidsstemplene i de to strømmene tikker på <em>uavhengige</em> klokker (ulik klokkerate) og kan ikke direkte sammenlignes. Synkroniseringen skjer via <strong>RTCP Sender Reports</strong>: senderen inkluderer en avbildning mellom RTP-tidsstempel og NTP-wall-clock-tid. Mottakeren bruker disse avbildningene til å oversette hver strøms RTP-tidsstempel til en felles wall-clock-tidsskala — og kan da spille av lyd og bilde på rett tidspunkt sammen.</p>
+          <p><strong>Hvorfor:</strong> Audio-RTP bruker typisk 8 kHz-klokke, video-RTP 90 kHz — RTP-tidsstempler er ikke direkte sammenlignbare på tvers. NTP-tiden i Sender Report er "broen" som binder dem sammen. Lip-sync er strengere enn intuisjonen tilsier — feiljustering på 80–100 ms er klart merkbar — og det er derfor RTCP-mekanismen er en del av kjernen, ikke en valgfri ekstrafunksjon.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan unngår <em>RTCP</em> at tilbakemeldingstrafikken oversvømmer nettet i store mange-til-mange-sesjoner?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Standarden begrenser total RTCP-trafikk til typisk <strong>5 % av sesjonsbåndbredden</strong>. Når antall deltakere øker, sender hver enkelt RTCP-rapporter <em>sjeldnere</em> — slik at totalsummen forblir konstant uavhengig av gruppestørrelse.</p>
+          <p><strong>Hvorfor:</strong> Hadde alle deltakere sendt rapporter med fast frekvens, ville en sesjon med 1000 deltakere generert tusenfold mer kontrolltrafikk enn én med to — feedback-trafikken ville stjålet all båndbredden fra mediet selv. Den dynamiske skaleringen av rapportintervall holder prosentandelen konstant. Resultat: RTCP forblir nyttig som tilbakemeldingsmekanisme selv i store videokonferanser med hundrevis av deltakere.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor egner ikke TCPs <em>retransmisjonsmodell</em> seg for VoIP, selv om den er gull verdt for filoverføring?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En retransmisjon krever minst én ekstra rundtur (RTT) — pakken må først detekteres som tapt, så bes om på nytt, og kommer tilbake. Selv på et raskt nett er én RTT typisk 30–100 ms; over Atlanteren 100+ ms.</p>
+          <p><strong>Hvorfor det dreper VoIP:</strong> VoIPs hele forsinkelsesbudsjett er 400 ms. En retransmisjon spiser fort opp 100+ ms av det, og pakken blir uansett "for sen" hvis playout-tiden allerede er passert. For filoverføring er ekstra forsinkelse irrelevant — det viktige er at hver byte til slutt kommer korrekt frem. For samtale er bytene <em>verdiløse</em> hvis de kommer for sent. Derfor bruker VoIP UDP (ingen retransmisjon) og takler tap proaktivt med FEC, interleaving og loss concealment — ikke reaktivt.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor kan ikke playout-bufferen "fikse" høy total ende-til-ende-forsinkelse — den absorberer jo nettverksvariasjon?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Bufferen <em>absorberer</em> jitter ved å vente med avspilling, men det å vente <em>legger til</em> forsinkelse — den introduserer altså mer av det vi prøver å minimere. Den løser jitter ved å konvertere variasjon til økt deterministisk forsinkelse.</p>
+          <p><strong>Hvorfor — fundamentet:</strong> Hvis nettverket har 200 ms gjennomsnittsforsinkelse, kan ingen mottakerbuffer redusere det til mindre. Bufferen kan bare sørge for at avspillingen er <em>jevn</em> — ved å vente til alle pakker er ankommet med stor sannsynlighet. Vi kan ikke sende pakker tilbake i tid. Det er derfor man for VoIP fokuserer så hardt på å holde <em>nettverksforsinkelsen</em> lav (geografi, ruting, lite kø) i stedet for å forsøke å håndtere det med større buffer i etterkant.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor er det en så stor sak at RTPs <em>payload type</em>-felt kan endres midt i en strøm?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Senderen kan bytte koding under samtalen — f.eks. fra PCM (64 kbps) til GSM (13 kbps) hvis nettverket blir tregt — og mottakeren ser endringen umiddelbart i payload-type-feltet og bytter dekoder uten å måtte forhandle på nytt.</p>
+          <p><strong>Hvorfor:</strong> Adaptiv koding er en kraftfull respons på endrede nettverksforhold: når RTCP-rapporter viser økende tap eller jitter, kan senderen droppe til lavere bitrate uten å avbryte samtalen. Dette gjør VoIP robust mot dårlige nettverksforhold (mobil som beveger seg ut av dekning, kongestion på en link). En statisk koding ville tvunget senderen til enten å droppe samtalen eller fortsette på en bitrate nettet ikke takler — begge dårlige alternativer.</p>
+        </div>
+      </li>
     </ol>
   </div>
 </div>

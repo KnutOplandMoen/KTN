@@ -360,6 +360,106 @@
           <p><strong>Hvorfor stateful løser et reelt problem:</strong> En tilstandsløs brannmur slipper igjennom en TCP-pakke med ACK-flagg satt fordi den «ser ut som» et svar — selv om Trudy fabrikkerte pakken og ingen forbindelse finnes. En tilstandsfull brannmur sjekker forbindelsestabellen og avviser den. Applikasjonsgateways går enda lengre, men har høyere overhead og krever én gateway per applikasjonsprotokoll. Felles begrensninger: brannmurer er fortsatt sårbare for IP-spoofing, og kryptert trafikk (TLS) skjuler innholdet for inspeksjon.</p>
         </div>
       </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar tre vanlige DoS-angrepsmønstre. Hvilken sikkerhetsegenskap angripes?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Tre mønstre:</p>
+          <p>1. <strong>Sårbarhetsutnyttelse:</strong> spesialformede meldinger som krasjer eller henger tjenesten (utnytter en bug i selve programvaren).<br>
+          2. <strong>Båndbreddeflom:</strong> oversvømmer mål-linken med så mye trafikk at legitim trafikk ikke kommer fram. Krever ofte et botnett (DDoS) for å produsere nok volum.<br>
+          3. <strong>Tilkoblingsflom:</strong> åpner enormt mange halvferdige TCP-forbindelser (<em>SYN flooding</em>) til serverens forbindelsestabell er full og ingen nye tilkoblinger kan opprettes.</p>
+          <p><strong>Hvorfor:</strong> Alle tre angriper <em>tilgjengeligheten</em> (A-delen i CIA-triaden) — ikke konfidensialitet eller integritet. Hver utnytter en ulik begrensning (programvarens robusthet, linkens kapasitet, serverens tilstandsbuffer) og krever ulike forsvar: patching, oppstrøms-filtrering, og SYN cookies/connection rate-limits. DDoS er særlig vanskelig å filtrere fordi trafikken kommer fra mange ekte IP-adresser samtidig.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er et replay-angrep, og hvilke tre mekanismer beskytter mot det?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> I et replay-angrep fanger Trudy opp en gyldig melding (f.eks. en autentisert «overfør 1000 kr»-kommando) og spiller den av på nytt senere — meldingen er ekte og verifiseres som autentisk, men handlingen utføres flere ganger. Tre standardforsvar:</p>
+          <p>• <strong>Nonces</strong> (engangsbrukstall) — mottakeren krever at hver melding inneholder et nytt, ikke gjenbrukt tall.<br>
+          • <strong>Tidsstempler</strong> — meldinger med stempel utenfor et lite vindu avvises.<br>
+          • <strong>Sekvensnummer i MAC-beregningen</strong> — brukes f.eks. i TLS-records.</p>
+          <p><strong>Hvorfor:</strong> Felles for alle: hver melding gjøres «fersk» slik at en gammel kopi avvises. Replay-angrep er spesielt farlig der autentisering bare bekrefter at meldingen kom fra rett avsender — den sier ingenting om <em>når</em>. WPA3-håndtrykket beskytter med nonces, TLS-records med sekvensnummer, Kerberos med tidsstempler.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke fire aktører er involvert i 4G LTE-autentisering, og hvordan oppnås gjensidig autentisering?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Fire aktører:</p>
+          <p>• <strong>UE (User Equipment):</strong> mobilenheten med <em>SIM-kort</em> som inneholder IMSI og forhåndsdelt nøkkel K<sub>HSS-M</sub>.<br>
+          • <strong>eNode-B:</strong> basestasjonen — videreformidler autentiseringsmeldinger.<br>
+          • <strong>MME:</strong> tar autentiseringsbeslutningen i besøkt nett.<br>
+          • <strong>HSS:</strong> endelig autoritet i hjemmenettverket — kjenner alle abonnenter og deres nøkler.</p>
+          <p><strong>Hvorfor det er gjensidig:</strong> HSS bruker K<sub>HSS-M</sub> til å beregne et <em>auth_token</em> og forventet respons <em>xres</em>, og sender begge til MME. MME videresender auth_token til mobilen, som verifiserer det med sin egen nøkkel — og vet dermed at <em>nettverket er ekte</em> (motvirker falske basestasjoner). Mobilen beregner sin egen respons <em>res</em> og sender til MME. MME sammenligner res med xres — stemmer de, er <em>mobilen autentisert</em>. Til slutt utleder UE og basestasjonen krypteringsnøkkel K<sub>BS-M</sub> som krypterer all videre 4G-trafikk (typisk AES).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar evolusjonen WEP → WPA2 → WPA3. Hvilken hovedsvakhet løser hver generasjon?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>• <strong>WEP:</strong> Tidlig 802.11-kryptering med svake nøkler (40/104 bit) og dårlig IV-bruk — knekkes på minutter. Regnes som brutt.<br>
+          • <strong>WPA2 (802.11i):</strong> CCMP basert på AES, lenge industristandard. Sårbarhet: hvis du fanger 4-veis-håndtrykket, kan du gjøre <em>offline ordbokangrep</em> mot et svakt PSK-passord uten at AP-et merker det.<br>
+          • <strong>WPA3:</strong> Bytter ut PSK-håndtrykket med <strong>SAE</strong>. Passordet kan ikke gjettes offline lenger; hver gjettings-runde krever en ny aktiv handshake mot AP-et.</p>
+          <p><strong>Hvorfor:</strong> Hver generasjon retter en konkret feil. WEP feilet på selve kryptografien (svake nøkler, IV-gjenbruk). WPA2 fikset krypteringen (AES) men beholdt et håndtrykk som lekket nok til offline-angrep. WPA3 fikset håndtrykket. Lærdom: en kjede er ikke sterkere enn det svakeste leddet — sterk kryptering hjelper lite hvis nøkkelutvekslingen lekker.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er en TLS-«cipher suite», og hva er nytt med AEAD i TLS 1.3?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En <strong>cipher suite</strong> er et sett av algoritmer som brukes sammen i én TLS-forbindelse: én for nøkkelutveksling, én for symmetrisk kryptering, én for MAC, og én for digital signatur. I TLS 1.2 valgte partene en cipher suite under håndtrykket. I <strong>TLS 1.3</strong> (RFC 8446, 2018) er listen drastisk strammet inn — bare moderne, trygge kombinasjoner gjenstår.</p>
+          <p><strong>Hvorfor AEAD:</strong> TLS 1.3 bruker <strong>AEAD</strong> (Authenticated Encryption with Associated Data) — kryptering og integritet i <em>én</em> operasjon, ikke separat MAC over payload som tidligere. Eksempler: AES-GCM, ChaCha20-Poly1305. Fordelene er færre angrepsflater (eldre TLS hadde sårbarheter som POODLE og BEAST på grunn av rekkefølgen MAC-then-encrypt eller encrypt-then-MAC), bedre ytelse, og enklere å implementere riktig. Record-strukturen og behovet for sekvensnummer mot replay består.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er IP-spoofing, og hvordan brukes det i refleksjonsangrep?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> IP-spoofing er å sende pakker med en forfalsket avsender-IP-adresse, slik at mottakeren tror pakken kommer fra noen andre. IP-laget verifiserer ikke avsenderen — protokollen ble designet for et tillitsfullt nett.</p>
+          <p><strong>Hvorfor refleksjonsangrep er farlig:</strong> Trudy sender en kort forespørsel til en tjener (f.eks. en åpen DNS-resolver) med <em>offerets IP</em> som «avsender». Tjeneren sender et stort svar tilbake til offeret, som verken sendte forespørselen eller har bedt om svaret. Med <em>forsterkning</em> (DNS-svar er mye større enn forespørsel, ofte 50–100×) kan Trudy bruke 10 kbit/s av sin egen båndbredde til å sende 1 Mbit/s mot offeret. Forsvar: <strong>ingress filtering (BCP 38)</strong> — ISP-er sjekker at utgående pakker har en kilde-IP som hører til kundens tildelte adresseblokk. Ikke universelt utrullet, derfor lever spoofing fortsatt.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva betyr Shannons begreper <em>confusion</em> og <em>diffusion</em>, og hvorfor er de viktigere enn et stort nøkkelrom alene?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>• <strong>Confusion (skjul nøkkelen):</strong> Forholdet mellom nøkkel og chiffertekst skal være så komplisert at en angriper ikke kan utlede nøkkelen ved statistisk analyse av chifferteksten.<br>
+          • <strong>Diffusion (spred klarteksten):</strong> Hver bit av klarteksten skal påvirke <em>mange</em> bits av chifferteksten — endring av én klartekst-bit endrer i snitt halvparten av chiffertekst-bitene.</p>
+          <p><strong>Hvorfor det er viktigere enn nøkkelrom:</strong> Monoalfabetisk substitusjon har 26! ≈ 4·10²⁶ mulige nøkler — for stort for brute force — men knekkes likevel trivielt av frekvensanalyse, fordi statistisk struktur i klarteksten lekker rett gjennom. Stort nøkkelrom hjelper ikke når strukturen er bevart. Moderne blokkchiffer (DES, AES) bruker mange runder med substitusjon, permutasjon og XOR med rundenøkler nettopp for å oppnå begge egenskapene. Resultat: hver bit av chifferteksten avhenger av <em>hver</em> bit i klarteksten og nøkkelen — frekvensanalyse fungerer ikke.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er en ACL i en brannmur, og hvordan bestemmes hvilken regel som gjelder for en gitt pakke?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En <strong>Access Control List</strong> er en tabell av regler brannmuren konsulterer for hver pakke. Hver regel består av en <em>handling</em> (<code>allow</code>/<code>deny</code>) og et sett av match-kriterier: kilde- og destinasjons-IP, kilde- og dest-port, protokoll (TCP/UDP/ICMP), og evt. TCP-flagg (SYN, ACK).</p>
+          <p><strong>Hvorfor «første treff vinner»:</strong> Reglene sjekkes <em>ovenfra og ned</em>, og første regel som matcher avgjør — alle senere regler ignoreres for den pakken. Derfor må mer spesifikke regler ligge øverst, og en fallback-regel <code>deny all</code> nederst slik at alt som ikke eksplisitt er tillatt blokkeres. Et typisk eksempel: tillat utgående HTTP fra interne klienter til eksterne port 80, og tillat returtrafikk med ACK-flagg satt — alt annet droppes. Begrensningen er at en tilstandsløs ACL ikke vet om en innkommende ACK-pakke faktisk hører til en aktiv forbindelse, og kan slippe inn fabrikkerte pakker (derav behovet for <em>stateful</em> filtrering).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor signerer Bob hashen H(m) i stedet for hele meldingen, og hvilke to ting verifiserer signaturen samtidig?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Bob beregner H(m) (f.eks. SHA-256 → 256 bit), krypterer hashen med sin private nøkkel K<sub>B</sub><sup>-</sup> og sender meldingen + signaturen til Alice. Alice (1) beregner H(m) selv fra mottatt melding, (2) dekrypterer signaturen med K<sub>B</sub><sup>+</sup>, (3) sammenligner.</p>
+          <p><strong>Hvorfor signere bare hashen:</strong> Public-key-operasjoner er ~1000× tregere enn symmetrisk kryptering — å signere en hel lang melding ville vært upraktisk. Hashen er kort og av <em>fast</em> lengde uavhengig av meldingen.</p>
+          <p><strong>Hva signaturen verifiserer i én operasjon:</strong> (a) <em>Bob signerte</em> — bare Bob har K<sub>B</sub><sup>-</sup> som kunne lage en signatur som dekrypteres til riktig hash. (b) <em>Meldingen er uendret</em> — enhver bit-endring i m gir helt annen H(m), så sammenligningen feiler. I tillegg: <strong>non-repudiation</strong> — Alice kan vise meldingen og signaturen til en domstol som bevis på at Bob faktisk signerte.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er en sesjonsnøkkel, og hvorfor er det god praksis å bruke en kortvarig sesjonsnøkkel i stedet for én langlivet?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En sesjonsnøkkel er en <em>kortvarig symmetrisk nøkkel</em> som genereres for én enkelt forbindelse (f.eks. én TLS-økt, én e-post). Den brukes til å kryptere selve dataene raskt med AES, mens den dyre offentlig-nøkkel-operasjonen bare brukes <em>én gang</em> for å utveksle den trygt.</p>
+          <p><strong>Hvorfor:</strong> Tre fordeler.</p>
+          <p>(1) <em>Ytelse</em> — symmetrisk er ~1000× raskere enn public-key, så public-key brukes så lite som mulig.<br>
+          (2) <em>Skadebegrensning</em> — hvis én sesjonsnøkkel kompromitteres, lekker bare den ene øktens data; ikke historikk eller framtid.<br>
+          (3) <em>Forward secrecy</em> — i moderne TLS 1.3 utveksles sesjonsnøkkelen med ephemeral Diffie-Hellman, slik at selv om serverens private langtidsnøkkel kompromitteres senere, kan ikke gamle økter dekrypteres.</p>
+          <p>Mønsteret går igjen i sikker e-post, TLS, IPsec og WPA3.</p>
+        </div>
+      </li>
     </ol>
   </div>
 </div>
