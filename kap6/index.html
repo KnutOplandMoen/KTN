@@ -403,6 +403,87 @@
           <p><strong>Hvorfor:</strong> Det som ser ut som én handling involverer faktisk syv samarbeidende protokoller (også IP og Ethernet under). Hver løser ett spesifikt problem. På grunn av lagdelingen vet ingen av dem at de andre finnes — det er det som gjør internett mulig.</p>
         </div>
       </li>
+
+      <li data-card>
+        <div data-fc-front>Beregn CRC for data <code>D = 100100</code> med generator <code>G = 1101</code>. Hva blir <code>R</code>, og hva sendes på kabelen?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <code>G</code> har 4 bit, så <code>r = 3</code>. Skift D tre posisjoner (legg til tre nuller): <code>100100<u>000</u></code>. XOR-divider med G:</p>
+          <pre>  100100000
+⊕ 1101
+  ─────────
+   01000000
+  ⊕  1101
+  ─────────
+    1010000
+  ⊕  1101
+  ─────────
+     111000
+  ⊕  1101
+  ─────────
+       1100
+  ⊕  1101
+  ─────────
+        001  ← R</pre>
+          <p>Det som sendes på kabelen er <code>&lt;D,R&gt; = 100100<strong>001</strong></code>.</p>
+          <p><strong>Hvorfor:</strong> Mottakeren XOR-deler hele 9-bits-sekvensen på samme G og forventer rest 0. Hvis bit har snudd underveis, blir resten ulik 0, og rammen kastes. Trikset er at <code>&lt;D,R&gt;</code> er konstruert til å være eksakt delelig med G — derfor bærer R akkurat den informasjonen som trengs for å avdekke bitfeil.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan er en MAC-adresse strukturert, og hva er broadcast-adressen?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En MAC-adresse er <strong>48 bit</strong> (6 byte), typisk skrevet i heksadesimal med bindestreker eller koloner, f.eks. <code>1A-2F-BB-76-09-AD</code>. De første 24 bitene er en <em>OUI</em> (Organizationally Unique Identifier) tildelt av IEEE til produsenten; de siste 24 bitene er produsentens egen sekvensnummer. Adressen <code>FF-FF-FF-FF-FF-FF</code> er <strong>broadcast</strong> — leveres til alle noder på lokal lenke.</p>
+          <p><strong>Hvorfor:</strong> OUI-systemet sikrer at MAC-adresser er <em>globalt unike</em> uten et sentralt register — produsenten bare teller seg oppover i sitt tildelte rom. Adressen er innbrent i ROM på NIC-en (selv om moderne WiFi-OS-er bruker tilfeldig MAC per nettverk for å hindre sporing). Broadcast-adressen brukes blant annet av ARP-queries og DHCP-discover.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er Ethernet MTU, hvorfor er den 1500 byte, og hva skjer hvis et IP-datagram er større?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> MTU (Maximum Transmission Unit) er <strong>1500 byte</strong> for standard Ethernet — den største payload én ramme kan bære. Et IP-datagram som er større, må <em>fragmenteres</em> av IP-laget før det legges i flere rammer.</p>
+          <p><strong>Hvorfor 1500:</strong> Et historisk kompromiss. Større rammer betyr mindre header-overhead per byte data (bra), men også lengre tid hvor en feil-ramme må retransmitteres og lengre køforsinkelser bak en stor ramme (dårlig). 1500 byte var balansen Metcalfe og medforfattere valgte. Jumbo frames (≈9000 byte) støttes av noen LAN-er, men er ikke standard. Minimum er 46 byte payload (=64 byte ramme totalt) av CSMA/CD-grunner.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar overgangen fra delt buss-Ethernet til svitsjet stjerne-Ethernet — og hvorfor CSMA/CD nesten er overflødig i dag.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Opprinnelig var Ethernet en <em>bussteknologi</em> der alle maskiner delte én lang koaks-kabel — ett stort kollisjonsdomene, og CSMA/CD var nødvendig. Moderne Ethernet er <strong>svitsjet</strong>: hver vert har en dedikert lenke til en sentral svitsj. Hver lenke er sitt eget kollisjonsdomene med bare to endepunkter, og <strong>full-dupleks</strong> er standard — begge sider sender samtidig uten å forstyrre.</p>
+          <p><strong>Hvorfor det betyr noe:</strong> Med full-dupleks punkt-til-punkt-lenker oppstår ikke kollisjoner i det hele tatt. CSMA/CD eksisterer fortsatt i Ethernet-spesifikasjonen, men aktiveres kun i sjeldne half-dupleks-tilfeller (gamle hubs, etc.). Det er denne segmenteringen, ikke en raskere variant av CSMA/CD, som ga oss skalering fra 10 Mbit/s til 400 Gbit/s.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan fungerer self-learning når flere svitsjer er koblet sammen i et trehierarki?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Hver svitsj lærer på egen hånd, via sine egne porter, hvilken <em>retning</em> en gitt MAC-adresse ligger. Hvis A skal sende til G langt unna, floodes første ramme gjennom hele treet, og underveis lærer alle svitsjene hvor A er (de ser kilde-MAC). Når G svarer, lærer alle svitsjene hvor G er. Etter én utveksling i hver retning er ruten oppe og går.</p>
+          <p><strong>Hvorfor det fungerer:</strong> Hver svitsj behøver bare vite hvilken <em>port</em> som peker mot en adresse, ikke hele stien. Det skalerer fordi tabellene forblir små (kun MAC-er svitsjen faktisk har sett rammer fra/til). Aging sletter gamle oppføringer slik at flyttede maskiner ikke feilsendes til. Hele systemet er fortsatt plug-and-play — ingen konfigurasjon trengs.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er Spanning Tree Protocol (STP), og hvilket problem løser det?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> STP hindrer lag-2-løkker i Ethernet-nett med <em>redundante</em> lenker. Uten STP ville broadcast-rammer (f.eks. ARP-queries) sirkulere i en evig sløyfe — en <strong>broadcast storm</strong>. STP velger en rot-svitsj, beregner korteste sti fra alle svitsjer til roten, og <em>blokkerer logisk</em> alle lenker som ikke ligger på dette treet.</p>
+          <p><strong>Hvorfor:</strong> Redundans er ønsket for feiltoleranse — men en svitsjet topologi uten løkker er ikke alltid mulig fysisk. STP løser dilemmaet ved å aktivere en sløyfe-fri delgraf logisk, mens fysiske backup-lenker står klare til å overta hvis primærlenken faller. Uten STP ville ett feilkoblet kabel ta ned hele LAN-et på sekunder.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er ARP-spoofing, og hvorfor er ARP sårbar for det?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> ARP-spoofing (eller ARP-poisoning) er et Man-in-the-Middle-angrep der en angriper sender falske ARP-replies på LAN-et og hevder å ha en annens IP-adresse — typisk default gatewayens IP. Ofrenes ARP-cacher blir forgiftet med angriperens MAC, og all trafikk til «routeren» sendes i stedet til angriperen.</p>
+          <p><strong>Hvorfor det er mulig:</strong> ARP har <em>ingen autentisering</em>. Det var ikke en del av designet på 70-tallet, og enhver node kan sende et ARP-svar uten at noen verifiserer det. Forsvar handler om monitorering (statiske ARP-oppføringer på kritiske gatewayer, dynamic ARP inspection på svitsjer) — ikke om å fikse selve protokollen, som forblir uendret.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva får en nykoblet vert fra en DHCP-server, og hvorfor er det nødvendig?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> DHCP gir verten fire ting: (1) en <em>IP-adresse</em>, (2) <em>nettmasken</em> (subnett-prefiks), (3) IP-en til <em>default gateway</em> (første-hopp-router), og (4) IP-en til en <em>DNS-server</em>.</p>
+          <p><strong>Hvorfor:</strong> Uten en IP-adresse kan ikke verten engang lage IP-pakker. Uten nettmasken vet ikke verten om en gitt destinasjon er på samme LAN (send direkte) eller på et annet (send til gateway). Uten gateway-IP-en kan ingenting forlate LAN-et. Uten DNS-IP-en kan ingen domenenavn slås opp. DHCP-utvekslingen skjer som broadcast (verten kjenner ingen MAC-adresser ennå) og er det aller første som skjer når laptopen plugges i.</p>
+        </div>
+      </li>
     </ol>
   </div>
 </div>

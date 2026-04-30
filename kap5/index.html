@@ -366,6 +366,126 @@
           <p><strong>Hvorfor:</strong> Trikset trenger to forskjellige slutt-signaler. Underveis brukes type 11 til å si "ikke fremme enda — her er hvilken ruter som droppet meg". Ved målet brukes type 3 code 3 til å si "denne pakken kom faktisk fram, men det var ingen tjeneste som ventet". En usannsynlig høy port garanterer at ingen ekte applikasjon lytter, slik at man får port-unreachable-svaret som er det entydige "fremme"-signalet. To helt vanlige ICMP-mekanismer kombineres for å tvinge fram et resultat ingen hadde tenkt seg.</p>
         </div>
       </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er en "rute" eller "path" konkret, i nettverkssammenheng?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En rute er sekvensen av rutere en pakke passerer gjennom fra startverten til destinasjonen. Hvis pakken går R1 → R4 → R7 → R9 før den når målet, er det ruten.</p>
+          <p><strong>Hvorfor:</strong> Begrepet er fundamentalt for hele kapittelet — en rutingprotokoll har som hovedjobb å velge nettopp slike ruter. Merk at ruten består av en kjede av <em>rutere</em>, ikke bare lenker. Det er denne kjeden som rutingalgoritmen evaluerer kost mot, og det er antall rutere ("hopp") som ofte er en av kostnadsmetrikkene.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva betyr det at SDN-kontrollen er <em>logisk</em> sentralisert, og ikke fysisk sentralisert?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Logisk sentralisert betyr at det <em>ser ut som</em> én kontroller fra ruterens perspektiv, men implementasjonen kan være distribuert over flere fysiske maskiner for redundans og skala.</p>
+          <p><strong>Hvorfor:</strong> En enkelt fysisk kontroller ville vært en farlig single point of failure — hvis den krasjer, lammes hele nettverket. Logisk sentralisering bevarer fordelen ved sentral kontroll (én kilde til sannhet, full oversikt) uten den fysiske sårbarheten. Implementasjonsdetaljen er gjemt for ruterne, som bare snakker med "kontrolleren" via et standardisert grensesnitt.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva skjer hvis to nabo-rutere har inkonsistente forwarding-tabeller?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Pakker kan havne i en rutingløkke (loop) der de bare bytter mellom de to ruterne, eller bli droppet fordi en ruter ikke vet hvor de skal videre.</p>
+          <p><strong>Hvorfor:</strong> Dette er det verste utfallet av dårlig konvergens. En løkke gjør at pakken brenner båndbredde og levetid (TTL) frem til den til slutt kastes — den kommer aldri fram. Det er nettopp for å hindre slike inkonsistenser at rutingprotokoller har konvergens-egenskaper, og det er derfor TTL-feltet finnes som en "siste utvei" som garanterer at pakker ikke lever evig i en feilløkke.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva betyr <em>konvergens</em> i en rutingprotokoll, og hvorfor er det viktig?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Konvergens er prosessen der alle rutere blir enige om en konsistent forwarding-tabell etter en endring i nettverket. Et system har konvergert når ingen flere oppdateringer flyter, og alle tabeller stemmer overens med den nåværende topologien.</p>
+          <p><strong>Hvorfor:</strong> Det er <em>under</em> konvergensperioden at pakker kan havne i løkker eller bli droppet — fordi forskjellige rutere har midlertidig motstridende oppfatninger av nettverket. Rask og stabil konvergens er ett av hovedkriteriene en god rutingalgoritme måles på. Link-state-algoritmer konvergerer typisk raskt fordi LSA-er flooder ut til alle samtidig; distance-vector kan ta lengre tid fordi informasjonen må "bølge" gjennom nettverket.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er ICMP type 12, og når brukes den?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Type 12 er "parameter problem" — sendes når en ruter eller mottaker oppdager en feil i IP-headeren til en pakke (f.eks. ulovlige felt-verdier).</p>
+          <p><strong>Hvorfor:</strong> IP-headeren har strenge formatkrav, og hvis en ruter mottar en pakke med en ugyldig header, kan den ikke trygt prosessere den. Type 12 lar avsenderen vite at pakken hadde et formatproblem, slik at den kan rettes — fremfor at avsenderen sitter og gjetter på hvorfor pakken aldri kom fram.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er ICMP type 9 og type 10, og hva brukes de til?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Type 9 er "router advertisement" og type 10 er "router solicitation" (router discovery). Rutere bruker dem til å annonsere sin tilstedeværelse, og verter kan be om informasjon om rutere på lokalnettet.</p>
+          <p><strong>Hvorfor:</strong> For at en ny vert i et nett skal kunne sende pakker utenfor sitt eget subnett, trenger den å vite om en standard-gateway-ruter. Router discovery via ICMP er én måte å oppdage dette automatisk på. I moderne nett brukes oftere DHCP, men ICMP-mekanismen er fortsatt en del av standarden — særlig viktig i IPv6-verden der den spiller en større rolle.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er ICMP type 4 (source quench), og hvorfor regnes den som "ikke i bruk"?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Source quench var ment som et signal fra en overbelastet ruter for å be avsenderen redusere sendetempoet. I praksis ble det aldri godt nok støttet, og moderne overbelastnings-håndtering gjøres i transportlaget (TCP).</p>
+          <p><strong>Hvorfor:</strong> ICMP source quench var en tidlig idé om at nettverkslaget skulle hjelpe avsendere med å unngå overbelastning. Men det viste seg å være både ineffektivt (forbedret ikke vesentlig fairness) og potensielt misbrukbart (en angriper kunne forfalske source quench for å sabotere en forbindelse). I dag overlater man congestion control fullstendig til TCP, og source quench er deprekert.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom code 0, 1 og 2 under ICMP type 3?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Code 0 = destinasjons<em>nett</em> utilgjengelig (hele nettet er ikke nåbart). Code 1 = destinasjons<em>vert</em> utilgjengelig (nettet finnes, men maskinen er nede eller svarer ikke). Code 2 = destinasjons<em>protokoll</em> utilgjengelig (verten finnes, men kjører ikke den protokollen pakken bruker).</p>
+          <p><strong>Hvorfor:</strong> Granulariteten gir presis feedback. "Nett utilgjengelig" peker på et større strukturelt problem (kanskje en lenke ned i kjernen eller en ruter som mangler en rute). "Vert utilgjengelig" tyder på et lokalt problem (f.eks. at maskinen er av). "Protokoll utilgjengelig" er en konfigurasjonsfeil. En applikasjon kan reagere ulikt på de tre, og en feilsøker kan trekke ulike konklusjoner.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor sender <code>traceroute</code> typisk tre pakker per TTL-verdi?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Tre pakker per TTL gjør at man kan måle variasjon i rundtripstida (RTT) til samme ruter — det gir et bedre bilde av typisk forsinkelse og stabilitet enn én enkelt måling.</p>
+          <p><strong>Hvorfor:</strong> RTT i et reelt nettverk varierer på grunn av kø-forsinkelse og litt jitter i prosesseringen. En enkelt måling kan være misvisende — kanskje pakken havnet bak en stor pakke i en kø den ene gangen. Ved å sende tre, får brukeren en typisk verdi pluss et inntrykk av spredningen. Det er grunnen til at traceroute-output viser tre RTT-verdier per linje.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva betyr det hvis <code>traceroute</code>-output viser <code>* * *</code> på en linje?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Stjernene betyr at ingen ICMP-svar kom tilbake innen timeout for den TTL-verdien — typisk fordi en mellomliggende ruter er konfigurert til å ikke svare med ICMP. Traceroute fortsetter likevel til neste TTL-verdi.</p>
+          <p><strong>Hvorfor:</strong> Mange brannmurer og rutere blokkerer ICMP for å redusere overflate for angrep eller for å unngå støy. Det betyr at traceroute kan ha "huller" i ruten, men det er ikke nødvendigvis et tegn på at pakken faktisk ikke når fram — bare at den ruteren er stille. En traceroute med stjerner gir derfor ikke et fullstendig bilde, men metoden er fortsatt nyttig for å lokalisere hvor i ruten flaskehalsen eller bruddet ligger.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er den fysiske grunnen til at IP <em>må</em> ha et TTL-felt?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> For å hindre at pakker som havner i en rutingløkke lever evig i nettverket og spiser ressurser. Ved å dekrementere TTL ved hvert hopp og forkaste pakken når den treffer 0, garanteres en endelig levetid uansett hva som skjer i kontrollplanet.</p>
+          <p><strong>Hvorfor:</strong> Rutingsystemer er distribuerte og kan midlertidig være inkonsistente — under konvergens etter en endring, eller ved konfigurasjonsfeil. Uten TTL kunne en feilrutet pakke gå rundt og rundt og legge beslag på båndbredde i lenkene den passerer. TTL er en "vergesnor" som garanterer fremdrift selv når kontrollplanet er midlertidig forvirret. ICMP type 11 ("TTL expired") er bare et hyggelig biprodukt — hovedformålet er beskyttelse, ikke beskjed.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor dekrementeres TTL alltid med nøyaktig 1 per hopp, uansett lenke-type?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Fordi TTL teller <em>hopp</em> (passering gjennom en ruter), ikke tid eller distanse. En pakke som hopper gjennom en treg satellittlenke dekrementerer TTL like mye som en som hopper gjennom en rask fiber.</p>
+          <p><strong>Hvorfor:</strong> Designvalget gjør TTL-mekanismen enkel og deterministisk. Hver ruter trenger bare å trekke fra 1 — ingen klokker, ingen avstandsmåling, ingen avhengighet av lenketype. Resultatet er at TTL kan brukes både for å hindre evige løkker (hovedformålet) og som teller for traceroute (sidegevinsten). Standardverdien er typisk 64 eller 128 — godt mer enn det reelle antallet hopp på selv lange internett-ruter.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva betyr det at IP er en "best-effort"-protokoll, og hvordan kompenserer ICMP for det?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Best-effort betyr at IP prøver å levere pakker, men gir ingen garantier — pakker kan tapes, dupliseres, omstokkes, eller komme aldri. ICMP fyller hullet ved å gi nettverket et språk for feilrapportering, slik at en avsender ikke sitter blindt og venter når noe går galt.</p>
+          <p><strong>Hvorfor:</strong> Best-effort-modellen gjør IP enkel og skalerbar — ingen ruter trenger å holde tilstand for hver pakke, og det er det som gjør at internett kan håndtere milliarder av flows. Men minimalisme har en pris: noen må fortelle avsenderen om feil. ICMP er den protokollen, og TCP er det som håndterer pålitelighet på transportlaget. Sammen kompenserer de for IPs bevisst minimale design.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor er det viktig at rutingalgoritmer reagerer dynamisk på endringer i nettverket?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Lenker går ned, kommer opp igjen, blir overbelastet, eller får ny kapasitet. Hvis rutere fortsetter å sende trafikk via en lenke som er nede, vil pakker droppes — selv om det finnes en alternativ vei.</p>
+          <p><strong>Hvorfor:</strong> Et statisk system som ikke reagerer på endringer er sårbart. Internett ble designet med eksplisitt mål om å overleve nodebortfall. Dynamiske rutingprotokoller realiserer dette målet ved å reagere automatisk: når en lenke faller ut, sprer informasjonen seg, og alle rutere finner alternative veier — uten menneskelig inngripen. Det er denne automatikken som gjør at en feil hos én ISP ikke tar ned hele internett.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan skiller <code>ping</code> og <code>traceroute</code> seg som diagnostiske verktøy?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <code>ping</code> måler om en host er nåbar og hva total RTT er — det forteller "ja, lever / nei, lever ikke". <code>traceroute</code> kartlegger ruten — alle mellomliggende rutere og RTT til hver enkelt — det forteller "her er stien, og her henger trafikken".</p>
+          <p><strong>Hvorfor:</strong> De svarer på ulike spørsmål. Hvis ping fungerer men er treigt, kan traceroute peke på <em>hvor</em> i ruten forsinkelsen oppstår. Hvis ping ikke fungerer, kan traceroute vise hvor langt pakker faktisk kommer før de stopper. Begge bygger på ICMP, men på forskjellige meldingstyper: ping bruker echo (type 0/8), mens traceroute kombinerer TTL-expired (type 11) og port-unreachable (type 3 code 3).</p>
+        </div>
+      </li>
     </ol>
   </div>
 </div>

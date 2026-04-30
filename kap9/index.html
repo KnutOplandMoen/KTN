@@ -436,6 +436,112 @@
           <p><strong>Hvorfor:</strong> Adaptiv koding er en kraftfull respons på endrede nettverksforhold: når RTCP-rapporter viser økende tap eller jitter, kan senderen droppe til lavere bitrate uten å avbryte samtalen. Dette gjør VoIP robust mot dårlige nettverksforhold (mobil som beveger seg ut av dekning, kongestion på en link). En statisk koding ville tvunget senderen til enten å droppe samtalen eller fortsette på en bitrate nettet ikke takler — begge dårlige alternativer.</p>
         </div>
       </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke typiske bitrater bruker (a) telefon, (b) CD-musikk, (c) MP3 og (d) Internett-telefoni?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Telefon: <strong>64 kbps</strong> (8 kHz × 8 bit). CD: <strong>1,411 Mbps</strong> (44,1 kHz × 16 bit, stereo). MP3: <strong>96–160 kbps</strong>. Internett-telefoni: helt ned til <strong>5,3 kbps</strong> med god koding.</p>
+          <p><strong>Hvorfor så stor spennvidde:</strong> De to faktorene er samplingsrate og bits per sample. Telefon bruker lav sampling (8 kHz) fordi tale dominerer i frekvenser under 4 kHz; CD bruker høy sampling for å fange hele hørselsspekteret. MP3 oppnår dramatisk reduksjon ved <em>psykoakustisk komprimering</em> — fjerner detaljer øret ikke oppfatter likevel. Disse tallene er fundamentet for å forstå hvorfor tale-strømming er trivielt mens HD-musikk-streaming krever mer båndbredde.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke typiske bitrater bruker <em>MPEG-1</em>, <em>MPEG-2</em> og <em>MPEG-4</em>, og hvor brukes hver?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> MPEG-1: ~1,5 Mbps (CD-ROM-video). MPEG-2: 3–6 Mbps (DVD). MPEG-4: under 1 Mbps (Internett-video).</p>
+          <p><strong>Hvorfor:</strong> Forbedringer i koding-effektivitet — bedre temporal/spatial komprimering, smartere prediksjon, finere kvantisering — har gjort hver generasjon dramatisk mer effektiv. MPEG-4s lave bitrate er det som gjorde Internett-video praktisk i utgangspunktet — uten den ville HD-streaming krevd dedikert infrastruktur. Mer moderne kodeker (H.264, H.265, AV1) skyver tallene videre nedover, men prinsippet er det samme: hver ny standard sikter på samme kvalitet ved lavere bitrate.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Når x > r etter at avspillingen har startet, hvilken formel beskriver tiden t<sub>f</sub> til klientbufferen er full?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <code>t<sub>f</sub> = (B − Q) / (x − r)</code>, der B er bufferstørrelsen, Q er det som var bygget opp før avspillingen startet, og (x − r) er overskuddsraten klienten henter inn med.</p>
+          <p><strong>Hvorfor:</strong> Fra det øyeblikket avspillingen starter med Q bits i bufferen, vokser bufferen med rate (x − r) — forskjellen mellom innfyllingsrate og avspillingsrate. Den når full kapasitet B etter (B − Q)/(x − r) sekunder. Når B er nådd, bremser TCPs flytkontroll serveren ned til r — kontinuerlig avspilling resten av videoen er da garantert. Hvis klienten <em>kan</em> prefetche fortere enn forbruksraten, slipper den varig frysing-risiko helt.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor kan aggressiv prefetching i HTTP-streaming være sløsing av båndbredde?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Hvis klienten har lastet ned B bits og brukeren spoler videre eller forlater siden, er alt det prefetcha innholdet kastet — båndbredden og serverressursene som ble brukt på det er bortkastet.</p>
+          <p><strong>Hvorfor det er kritisk:</strong> Særlig på mobilnett, der båndbredde er en begrenset ressurs (og brukeren betaler for data). Streamingsystemer balanserer derfor mellom buffer-trygghet og prefetching-overshoot. Vanlige strategier: moderat bufferstørrelse, segment-basert prefetching (DASH: ikke prefetch flere segmenter enn nødvendig), eller adaptiv prefetching som vokser i en stabil sesjon men begrenses tidlig i avspillingen før brukeren har vist intensjon om å bli værende.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke tre buffre passerer en videopakke gjennom i et HTTP/TCP-streaming-oppsett, og hva er rollen til hver?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>(1) <strong>Server-side TCP-sendebuffer</strong> — TCP-stack hos serveren skriver til denne, klokker pakker ut på linken.<br>
+          (2) <strong>TCP-mottakerbuffer hos klienten</strong> — TCP-stack hos klienten samler innkommende segmenter og leverer dem ordnet til applikasjonen.<br>
+          (3) <strong>Applikasjonsbuffer (playout-buffer)</strong> — videospilleren leser fra denne med fast rate r.</p>
+          <p><strong>Hvorfor pipeline-en virker:</strong> Et fullt applikasjonsbuffer setter en indirekte øvre grense på sende-raten. Når videospilleren slutter å lese fra TCP-recv-bufferen, blir den full → TCP-flytkontroll bremser senderen via vindusstørrelsen → server-bufferen back-pressurer applikasjonen. Hele systemet selvjusterer så ingen av de tre buffrene flyter over. Det er denne egenskapen som lar variabel TCP-rate produsere jevn avspilling uten ekstra koordinering.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvor mye <em>propageringsforsinkelse</em> legger en transatlantisk forbindelse til VoIP-budsjettet, og hvorfor er det et problem?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Norge til USA er ~70 ms én vei i lyset alene; over en faktisk fiberforbindelse (med svinger og repeatere) typisk 80–120 ms. Tur-retur blir 160–240 ms før man har lagt til pakketisering, ruting og playout-buffer.</p>
+          <p><strong>Hvorfor det betyr noe:</strong> VoIPs forsinkelsesbudsjett er 400 ms. Å bruke nesten halvparten på ren propagering er ille. Det er derfor interaktiv kommunikasjon mellom kontinenter føles "tregere" enn lokal — det er ingen teknologisk feil, det er fysikk: lyset bruker tid på avstanden. Dette er også grunnen til at CDN-er og regionale møtepunkter er så viktige: de holder geografisk avstand kort der det betyr noe for forsinkelse.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva brukes <em>marker bit (M-bit)</em> i RTP-headeren til?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> M-biten lar senderen markere viktige hendelser i mediestrømmen — typisk starten på en ny snakkefase i VoIP, eller siste pakke i en videoramme.</p>
+          <p><strong>Hvorfor det er nyttig:</strong> Mottakeren kan oppdage hendelsen direkte uten å gjette ut fra tidsstempler og sekvensnumre. For VoIP gjør M-biten det enklere å vite presis hvor en snakkefase starter — adaptiv playout kan justere bufferen umiddelbart, uten å falle tilbake på heuristikker som signalenergi-deteksjon. For video kan M-biten markere "siste pakke i denne rammen", slik at mottakeren vet når den kan sende rammen til dekoder. Det er en liten men kostnadsfri kanal for sender-til-mottaker-signalering.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Beskriv stegene i en <em>Skype-samtale</em> fra brukeren trykker "ring" til dataene flyter.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>(1) Klienten kobler seg til en supernode (SN) via TCP — IP-en er cachet lokalt fra forrige sesjon.<br>
+          (2) Klienten logger inn mot den sentraliserte login-serveren.<br>
+          (3) SN-overlayet brukes til å finne IP-en til den man vil ringe (eller IP hentes fra kontaktlisten).<br>
+          (4) Klienten initierer samtalen direkte mot den andre klienten — eller via SN-relay hvis NAT blokkerer direkte forbindelse.</p>
+          <p><strong>Hvorfor:</strong> Hvert steg løser et delproblem — autentisering hos en pålitelig sentral, lokalisering distribuert via P2P, og direkte forbindelse for selve dataene. Resultatet skalerer godt: bare login-serveren har sentralisert belastning, mens den kontinuerlige kommunikasjonsbelastningen er fordelt på P2P-supernoder.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke kodingsformater identifiserer RTP-payload-type 0, 3, 26 og 33?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> 0 = PCM µ-law (64 kbps audio). 3 = GSM (13 kbps audio). 26 = Motion JPEG (variabel video). 33 = MPEG-2 video (variabel).</p>
+          <p><strong>Hvorfor det er standardisert:</strong> Hver verdi peker på en standardisert koding som mottakeren vet hvordan dekode. Tabellen er en del av RTP-standarden, så to applikasjoner fra forskjellige leverandører kan kommunisere så lenge begge støtter samme payload-type. Det er denne standardiseringen som gir RTP-baserte systemer (Zoom, Teams, WebRTC) interoperabilitet — uten et felles vokabular for "hva slags data er dette" ville mottakeren bare se en strøm av bytes uten mening. Husk: man trenger ikke pugge alle verdier, bare forstå at feltet eksisterer og hvorfor det er nyttig.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor sier vi at <em>RTP ikke er en transportprotokoll</em> i tradisjonell forstand?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> RTP kjører <em>oppå</em> UDP og leverer ikke selv pakker over nettverket — det er bare et felt-rammeverk lagt rundt mediedata. UDP gjør all transporten; RTP legger bare til informasjon mottakeren trenger for å tolke pakken (payload-type, sekvens, tidsstempel).</p>
+          <p><strong>Hvorfor skillet er viktig:</strong> Mange forveksler RTP med en alternativ til UDP/TCP, men det er feil. RTP <em>bytter ikke ut</em> UDP — det utvider UDPs payload med strukturerte felter. Fra ruteres og IP-lagets synspunkt er en RTP-pakke bare en vanlig UDP-pakke. Den semantiske forskjellen er at RTP gir applikasjonen et standardisert vokabular for "hva er dette" — uten å introdusere noen ny transport-mekanisme. Dette er hvorfor RTP ikke kan gi QoS, levering eller pålitelighet — det er ikke svikt, det er design.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva kan en sender konkret gjøre når <em>RTCP-rapporter</em> viser dårlig nettverksstatus?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Tre vanlige tilpasninger:<br>
+          (1) <strong>Bytte til lavere bitrate-koding</strong> (f.eks. PCM 64 kbps → GSM 13 kbps) via payload-type-feltet.<br>
+          (2) <strong>Justere FEC-redundansen</strong> — øke ved høy taprate, redusere igjen ved stabilt nett.<br>
+          (3) <strong>Senke send-raten direkte</strong> (færre frames/sekund eller lavere oppløsning).</p>
+          <p><strong>Hvorfor:</strong> RTCP er ikke nyttig hvis senderen ikke gjør noe med informasjonen. Sammen utgjør RTP og RTCP en lukket sløyfe der senderen tilpasser seg det mottakeren faktisk opplever — analogt med adaptiv kvalitet i DASH, men for sanntidssamtaler. Uten RTCP ville senderen vært "blind" og fortsatt sende på en bitrate nettet ikke håndterer, noe som gir kaskaderende tap og en ubrukelig samtale.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke moderne videosamtale-tjenester bygger på <em>RTP</em> eller varianter, og hvilke relaterte standarder hører med?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Zoom, WhatsApp, Teams, Google Meet og WebRTC bruker alle RTP eller varianter under panseret. Kjernepakken er RTP + et knippe relaterte standarder: <strong>RTCP</strong> (tilbakemelding), <strong>SRTP</strong> (kryptering), <strong>SDP</strong> (sesjonsbeskrivelser), <strong>SIP</strong> (samtale-oppsett — utelatt fra pensum).</p>
+          <p><strong>Hvorfor RTP vant:</strong> Standarden er "tynn" og overlater alt det interessante til endepunktene — det er enkelt å bygge nye tjenester oppå. Moderne tjenester bygger sin egen logikk for koding, kvalitetstilpasning og synkronisering oppå disse byggeklossene. WebRTC standardiserer også API-et i nettleseren slik at videosamtaler kan bygges direkte i webapper uten plugin — alt under panseret er fortsatt RTP. Når vi snakker om "protokoller for sanntidskommunikasjon" i 2026, er dette stacken.</p>
+        </div>
+      </li>
     </ol>
   </div>
 </div>

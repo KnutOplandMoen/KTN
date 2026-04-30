@@ -406,6 +406,123 @@
           <p><strong>Hvorfor det er viktig:</strong> Roaming krever at to operatører som aldri har sett hverandre stoler nok på hverandre til å la deg bruke nettet — og avregne for det i ettertid. Mekanismen bygger på at HSS-en din alltid er <em>autoritativ kilde</em> for hvem du er og hva du har lov til. Det er nettopp dette skille mellom "hjem" og "besøkt" — kombinert med globale interoperatør-avtaler — som gjør at telefonen din får SMS, ringer ut og bruker data umiddelbart når du går av flyet.</p>
         </div>
       </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er en <em>basestasjon</em> i et trådløst nettverk, og hvorfor kalles den ofte en "bro"?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En basestasjon er broen mellom det trådløse og det kablede. Den er typisk koblet til et kablet nettverk på den ene siden, og snakker radio med trådløse verter innenfor sitt dekningsområde på den andre. Den fungerer som en relé: tar pakker fra det kablede nettet og sender dem ut på radio, og motsatt vei. WiFi-aksesspunktet i taket hjemme er en basestasjon. Det samme er mobilmasten på toppen av blokka.</p>
+          <p><strong>Hvorfor begrepet er viktig:</strong> Selv om "AP" og "eNode-B" høres ut som vidt forskjellige ting, gjør de samme grunnjobben — bare på forskjellig skala og med forskjellig sentralisering. Begge er <em>siste-mil-noden</em> som tar bits fra luft til kabel. Forskjellen ligger i hvor mye intelligens som er lagt inn i basestasjonen: WiFi-AP er nesten passiv, eNode-B koordinerer aktivt med naboceller og kjernenett.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom et <em>mesh-nett</em> og et <em>MANET</em>, og hvor passer ad hoc-WiFi inn?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Et <strong>mesh-nett</strong> har infrastruktur (en eller flere basestasjoner) men flere hopp — noen noder relayer trafikk gjennom andre for å nå basestasjonen. Et <strong>MANET</strong> (Mobile Ad hoc Network) har ingen infrastruktur og flere hopp — pakker rutes gjennom flere ad hoc-noder. <strong>Ad hoc-WiFi</strong> har ingen infrastruktur og bare ett hopp — to enheter snakker direkte uten AP, men kan ikke nå Internett.</p>
+          <p><strong>Hvorfor disse skiller seg:</strong> Den avgjørende dimensjonen er <em>hvem som ruter</em>. I mesh-nett gjør basestasjonen rutebeslutningene; i MANET gjør hver node det selv (med spesielle ad hoc-ruteprotokoller). MANET er typisk i militære feltnett og kjøretøy-til-kjøretøy-kommunikasjon (VANET) der det ikke finnes fast infrastruktur. Mesh er typisk i utendørs sensornett der noen noder er for langt fra basestasjonen til å nå direkte.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor blir naboens WiFi til interferens for ditt nett, og hva er forskjellen på 2,4 GHz og 5 GHz når det gjelder kanaltilgjengelighet?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> WiFi-spekteret er delt opp i <em>kanaler</em> på forskjellige frekvenser. I 2,4 GHz-båndet finnes det 11–14 kanaler (avhengig av land), i 5 GHz-båndet en god del flere. Når naboens AP og ditt AP velger samme kanal, må de to nettverkene dele luftrommet — pakker fra det ene blir ren støy for det andre, og begge må vente når den andre sender.</p>
+          <p><strong>Hvorfor 5 GHz ofte er bedre:</strong> 2,4 GHz har bare et par ikke-overlappende kanaler (typisk 1, 6 og 11), så i en blokkleilighet kan det fort være 10+ AP-er som krangler om de samme. 5 GHz har mange flere kanaler, så sannsynligheten for at naboen valgte samme er mindre. Til gjengjeld har 5 GHz dårligere rekkevidde og penetrasjon gjennom vegger — derfor finnes begge frekvensene parallelt i moderne WiFi (dual-band).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan virker eksponentiell backoff i CSMA/CA, og hvorfor <em>dobles</em> vinduet etter hver mislykkede forsøk?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Når en sender ikke får ACK på en ramme, dobler den størrelsen på backoff-vinduet og prøver på nytt. Hvis vinduet f.eks. var 0–15 slot-tider første gang, blir det 0–31 etter første feil, 0–63 etter andre, og så videre opp til et makstak. Senderen velger en tilfeldig verdi i det nye vinduet og venter i så mange slots før neste forsøk.</p>
+          <p><strong>Hvorfor doble:</strong> Hvis den første kollisjonen skjedde fordi mange noder konkurrerte om kanalen, vil et kort backoff-vindu bare gi en ny kollisjon — alle de samme nodene velger igjen blant få tilfeldige tall og kolliderer. Ved å doble vinduet sprer vi forsøkene ut over et lengre tidsintervall, og sannsynligheten for at to noder velger samme slot synker. Dette er nøyaktig samme eksponentiell-backoff-mekanisme som Ethernets CSMA/CD bruker — en universell teknikk for distribuert kollisjonshåndtering.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <em>Network Allocation Vector (NAV)</em>, og hvilken rolle spiller den i RTS/CTS?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> NAV er en intern teller hver 802.11-node holder for "hvor lenge er kanalen reservert av noen andre". Når en node hører en RTS, CTS eller datapakke som er adressert til en annen, leser den ut <em>varighetsfeltet</em> i rammen og setter NAV-en sin til den verdien. Så lenge NAV > 0, behandler noden kanalen som virtuelt opptatt og sender ikke — selv om radioen ellers ville hørt at kanalen er fysisk stille.</p>
+          <p><strong>Hvorfor det er sentralt:</strong> NAV er det som gjør at RTS/CTS faktisk fungerer som reservasjon. CTS-en fra AP-en inneholder hvor lenge den kommende datautvekslingen vil ta; alle som hører den setter sin NAV. Den skjulte terminalen, som ikke hørte RTS-en, hører CTS-en og blir <em>tvunget</em> til å holde seg stille. Mekanismen kalles "virtuell carrier sensing" — i tillegg til den fysiske lyttingen, lytter noden også på et logisk plan til <em>annonseringer</em> om kommende trafikk.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er adresseinnholdet i 802.11-rammen når en pakke går <em>motsatt</em> vei — fra Internett gjennom ruter R1, via AP-en og ut til vert H1 over WiFi?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Rollene er speilvendt:</p>
+          <p><strong>Adresse 1</strong> (mottaker av denne rammen): H1 sin MAC — verten skal plukke rammen opp fra lufta.<br>
+             <strong>Adresse 2</strong> (sender av denne rammen): AP-ens MAC — AP-en transmitterer den.<br>
+             <strong>Adresse 3</strong> (opprinnelig avsender på det kablede nettet): R1 sin MAC — der pakken kom fra på Ethernet-siden.<br>
+             <strong>Adresse 4</strong>: tom i infrastrukturmodus.</p>
+          <p><strong>Hvorfor:</strong> Adresse 1 er alltid "hvem plukker dette opp fra lufta", og adresse 2 er alltid "hvem sender dette på lufta nå" — uavhengig av retning. Adresse 3 representerer alltid "den andre kabel-noden" i den ende-til-ende-konteksten — i denne retningen er det avsender-ruteren, i den andre retningen var det destinasjons-ruteren. AP-en har gjort den omvendte oversettelsen: den tok Ethernet-rammen fra R1, pakket ut IP-pakken og lagde en ny 802.11-ramme med riktige adresser for det trådløse hoppet.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva gjør AP-en konkret når den mottar en 802.11-ramme fra en vert og skal sende den videre på Ethernet-siden?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> AP-en "pakker ut" innholdet (IP-pakken) av 802.11-rammen og lager en helt ny <em>Ethernet</em>-ramme rundt den. I Ethernet-rammen er kilden vertens MAC og destinasjonen den endelige kabel-destinasjonens MAC (f.eks. R1) — som er nettopp det som lå i adresse 2 og adresse 3 i 802.11-rammen.</p>
+          <p><strong>Hvorfor det er en oversettelse, ikke bare videresending:</strong> 802.11- og 802.3-rammeformatene er forskjellige — 802.11 har fire MAC-adresser, varighetsfelt, sekvensnummer og link-lags-ACK; Ethernet har bare to MAC-adresser og en FCS-trailer. AP-en fungerer derfor som en <em>linklags-bro</em> mellom to ulike linklag-protokoller, ikke en ruter. IP-pakken inni er den samme; bare innpakningen byttes ut. Dette er nøkkelen til at WiFi og Ethernet kan dele samme IP-subnett.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>På hvilke vis ligner et mobilnett (4G LTE) på det kablede Internett, og på hvilke vis er det fundamentalt annerledes?</div>
+        <div data-fc-back>
+          <p><strong>Likt:</strong> Skille mellom kant og kjerne, eid av samme operatør. Globalt "nettverk av nettverk". Bruker mange av de samme protokollene (HTTP, DNS, TCP, UDP, IP, NAT). Skille mellom data- og kontrollplan med SDN-konsepter. Kobler seg til vanlig Internett.</p>
+          <p><strong>Annerledes:</strong> Helt annet linklag (radio i stedet for Ethernet). Mobilitet er en <em>førsteklasses tjeneste</em> bygget inn i arkitekturen, ikke et tilleggslapp. Brukerens identitet ligger i SIM-kortet (IMSI), ikke i en MAC-adresse. Sterk forretningsmodell-distinksjon mellom hjemmenett og roaming. Inter-operatør-oppgjør og global autentisering.</p>
+          <p><strong>Hvorfor det betyr noe:</strong> Likhetene betyr at en mobiloperatør kan bruke kjent verktøy og kompetanse til å bygge kjernenettet. Forskjellene betyr at man ikke kan "bare bruke Internett-protokoller" hele veien — IP alene kan ikke håndtere at noden bytter subnett midt i en TCP-forbindelse, og Ethernet egner seg ikke til radio. Det er disse forskjellene som krever GTP, MME, HSS og hele den utvidede arkitekturen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor er eNode-B i 4G LTE mye mer aktiv enn et vanlig WiFi-AP?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Et hjemme-WiFi-AP er nesten passivt — det sender beacons, mottar assosieringer og videresender pakker. eNode-B styrer i tillegg <em>radioressursene</em> i sin egen celle aktivt (tildeler tidsluker via OFDM-skjemalegging i stedet for å la brukerne konkurrere), <em>koordinerer med naboceller</em> for å optimalisere bruken av spektrum, og spiller en aktiv rolle i <em>handover</em> når en telefon skal flyttes til en annen celle.</p>
+          <p><strong>Hvorfor:</strong> Mobilnett må håndtere mye flere brukere per celle og garantere lav latens for samtaler/streaming, så distribuerte konkurransebaserte protokoller à la CSMA/CA klarer seg ikke. Sentralisert tildeling gir bedre forutsigbarhet og høyere utnyttelse. I tillegg er rekkevidden større (km i stedet for titalls meter), så naboceller overlapper systematisk og må samordnes for å ikke ødelegge for hverandre — koordinering som et passivt WiFi-AP aldri trenger å gjøre.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <em>paging</em> i mobilnettet, og hvilken EPC-komponent har ansvaret?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Paging er prosessen der mobilnettet "ringer opp" en inaktiv telefon for å varsle den om at det kommer noe — en tekstmelding, en innkommende samtale, en push-notifikasjon. <strong>MME</strong> har ansvaret: den sporer omtrent hvor en inaktiv telefon befinner seg (innenfor en gruppe celler, ikke nødvendigvis nøyaktig hvilken), og når noe kommer inn for telefonen, ber MME alle celler i sporings-området om å sende ut paging-meldinger. Telefonen våkner, hører pagingen og melder seg.</p>
+          <p><strong>Hvorfor det er nødvendig:</strong> Hvis telefonen var konstant aktiv på radioen, ville batteriet vært tomt på timer. Hvis nettet ikke visste hvor den var, ville det ikke vært mulig å kontakte den. Paging er kompromisset: telefonen sover for å spare strøm, men sjekker periodisk for paging-meldinger. Dette er hele grunnen til at noen kan ringe deg selv om du har telefonen i lommen og ikke har brukt den på en time.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom S-GW og P-GW i LTE-dataplanet?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Begge ligger på selve dataveien fra telefonen til Internett. <strong>S-GW (Serving Gateway)</strong> er det <em>lokale</em> endepunktet — et samlepunkt der pakkene fra basestasjonene i et område kommer inn. Den er endepunktet for den første GTP-tunnelen (eNode-B → S-GW). <strong>P-GW (PDN Gateway)</strong> er <em>ut-porten</em> mot vanlig Internett, og fungerer som ruter med NAT, dynamisk IP-tildeling og pakkefiltrering. Sett utenfra ser P-GW ut som en hvilken som helst Internett-gateway, og det er P-GW-ens IP-adresse Internett ser som "din".</p>
+          <p><strong>Hvorfor to gatewayer:</strong> Skille mellom S-GW og P-GW gir fleksibilitet ved mobilitet og roaming. S-GW kan flyttes når telefonen flytter seg langt nok til å havne i et annet område, uten at P-GW endres — slik at IP-adressen forblir den samme. Ved roaming kan en utenlandsk operatør sette deg på sin S-GW men rute trafikken til din hjemoperatørs P-GW (såkalt "home routing"), slik at f.eks. interne tjenester du har hjemme fortsatt fungerer.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor er IMSI viktigere enn telefonnummeret som identifikator i mobilnettet?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> IMSI (International Mobile Subscriber Identity) er et 64-bits tall lagret på SIM-kortet, og er den <em>ekte</em> globale identiteten til en abonnent i mobilnettet. Telefonnummeret er bare en "MSISDN" — i praksis en peker som operatørene oversetter til IMSI for å finne riktig abonnent. Du kan bytte telefonnummer uten å bytte SIM, og du kan flytte SIM-kortet ditt til en ny telefon — IMSI følger SIM-en, og det er IMSI som autentiseres mot HSS.</p>
+          <p><strong>Hvorfor designet ble slik:</strong> IMSI er bygget for å være globalt unik og maskinlesbar, mens telefonnummer er bygget for å være menneskelesbar og portbar mellom operatører. Skillet gjør at infrastrukturen kan være stabil under nummerbytte, og at autentisering og rutevalg ikke avhenger av en menneskevennlig streng. Det er også grunnen til at SIM-kortet ditt fungerer i utlandet selv om telefonnummeret ditt er et helt annet enn det lokale formatet — IMSI-en sier hvilket hjemmenett som skal kontaktes.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor er 5G NR <em>ikke</em> bakoverkompatibel med 4G LTE på radiolaget, og hva betyr det i praksis?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> 5G NR (New Radio) bruker nye modulasjonsskjemaer, nye frekvensbånd (særlig FR2/mmWave) og en helt ny radio-protokollstabel som ikke deler bits-format med LTE. En 4G-telefon kan ikke snakke med en 5G-basestasjon, og en 5G-telefon må ha både gammel og ny radio for å kunne falle tilbake på 4G. Operatørene driver derfor begge nettverkene parallelt.</p>
+          <p><strong>Hvorfor og hva det betyr:</strong> Bakoverkompatibilitet ville krevd at 5G arvet 4Gs begrensninger — særlig den faste tids-/frekvensstrukturen som ikke skalerer godt til mmWave med dynamisk beamforming. Ved å bryte med arven kunne 5G NR designes mer fleksibelt fra grunnen av. I praksis velger telefonen automatisk mellom 4G og 5G avhengig av signalforhold og hva den skal gjøre — du merker ofte byttet bare som en endring i signal-ikonet. Innenfor kjernen finnes også en ny arkitektur (5G Core, 5GC) som tar SDN-/microservice-tankegangen lenger enn EPC.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <em>5G Core (5GC)</em>, og hvordan viderefører den arkitektoniske idéer fra 4Gs EPC?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> 5GC er kjernenettet i 5G — etterfølgeren til EPC. Den viderefører de samme grunnidéene: skille mellom data- og kontrollplan, sentralisert kontrolllogikk, GTP-tunneling for å holde IP-adressen stabil under mobilitet. Men den tar SDN-/microservice-prinsippene enda lenger: kontrollplanet er splittet opp i mange spesialiserte funksjoner som snakker sammen via veldefinerte API-er, slik at hver komponent kan skaleres og oppgraderes uavhengig.</p>
+          <p><strong>Hvorfor det betyr noe:</strong> Mer programmerbar arkitektur gjør det enklere for operatørene å rulle ut nye tjenester og slice-typer (f.eks. "lav-latens-skive" for industri, "høy-båndbredde-skive" for stadioner) uten å måtte bygge nye fysiske nettverk. Mens EPC var monolittisk i designet, er 5GC bygget for at funksjonene skal kjøre som mikrotjenester på vanlig serverhardware — i tråd med generelle trender i nettverksindustrien (NFV — Network Function Virtualization).</p>
+        </div>
+      </li>
     </ol>
   </div>
 </div>

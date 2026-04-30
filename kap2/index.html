@@ -268,10 +268,26 @@
       </li>
 
       <li data-card>
+        <div data-fc-front>Hva er HTTP/3, og hvilket problem ved HTTP/2 løser det?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> HTTP/3 bytter ut TCP med <strong>QUIC</strong> — en ny transportprotokoll bygd på UDP. QUIC gir hver strøm sin egen uavhengige feilhåndtering, slik at et pakketap i én strøm <em>ikke</em> blokkerer de andre.</p>
+          <p><strong>Hvorfor:</strong> HTTP/2 fjernet hode-blokkering på applikasjonsnivå ved å multipleksere mange objekter på én TCP-forbindelse. Men det gjenstod et problem: hvis én TCP-pakke gikk tapt, måtte <em>alle</em> objekter vente på retransmisjonen — fordi TCP gir én ordnet bytestrøm. Det er en lavere-lags hode-blokkering. QUIC løser det ved å la hver strøm være uavhengig på transportnivå. Bygget på UDP for å kunne deployes i applikasjonen uten å måtte oppdatere kjernens TCP-stakk.</p>
+        </div>
+      </li>
+
+      <li data-card>
         <div data-fc-front>Cookies løser tilstandsproblemet i HTTP. Hvilke fire deler består systemet av?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> (1) Et <code>Set-Cookie</code>-felt i HTTP-svaret fra tjeneren, (2) et <code>Cookie</code>-felt i påfølgende HTTP-forespørsler fra klienten, (3) en cookie-fil på brukerens maskin (administrert av nettleseren, knyttet til domenet), og (4) en database på tjenersiden der cookien knyttes til faktisk informasjon (handlekurv, innloggingsstatus, profil).</p>
           <p><strong>Hvorfor det fungerer:</strong> Første besøk: tjeneren genererer en unik ID, lagrer den i sin database, og sender den tilbake i <code>Set-Cookie</code>. Nettleseren lagrer cookien. Neste besøk: nettleseren legger automatisk ved <code>Cookie: 1678</code>, og tjeneren slår opp ID-en i databasen og «kjenner igjen» brukeren. Tilstand bygges altså ovenpå en tilstandsløs protokoll, uten å endre selve protokollen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <em>tredjeparts</em> cookies, og hvilke krav stiller den norske ekomloven (2025)?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Tredjeparts cookies er cookies satt av et annet domene enn det du ser i adressefeltet — typisk fra annonse- og analysenettverk. Fordi den samme tredjeparten er innebygd på mange nettsteder, kan en og samme cookie identifisere deg på tvers av tjenester og bygge en detaljert profil av aktiviteten din.</p>
+          <p><strong>Ekomloven 2025:</strong> Trådte i kraft 1. januar 2025 og krever at samtykke til cookies oppfyller GDPR-kravene — det skal være <em>frivillig, spesifikt, informert, utvetydig, gitt gjennom en aktiv handling, dokumenterbart, og like enkelt å trekke tilbake som å gi</em>. Det er grunnen til cookie-bannerne du ser ved første besøk på alle norske nettsteder. Sporing er ikke ulovlig, men <em>skjult</em> sporing er det.</p>
         </div>
       </li>
 
@@ -326,10 +342,26 @@
       </li>
 
       <li data-card>
+        <div data-fc-front>Hvorfor kan ikke en innholdsleverandør som Netflix bare betjene hele verden fra ett enkelt mega-datasenter?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Fire grunner: (1) Det blir et <em>enkelt kritisk feilpunkt</em> — én feil og hele verden mister tjenesten. (2) <em>Enorm trengsel</em> på linkene inn til datasenteret. (3) <em>Lang reise</em> for hver bruker, med tilhørende latens. (4) Samme video sendes over de samme stamlinjene <em>millioner av ganger</em>, sløsing med båndbredde.</p>
+          <p><strong>Hvorfor det fører til CDN:</strong> Løsningen er å lagre kopier av innholdet på mange tjenere fordelt geografisk over hele kloden, og styre hver bruker til en tjener i nærheten. Det fjerner alle fire problemene på én gang: redundans mot feil, distribuert last, kort vei til brukeren, og hver populær video lastes ned få ganger til hver region — ikke én gang per bruker fra USA.</p>
+        </div>
+      </li>
+
+      <li data-card>
         <div data-fc-front>Sammenlign CDN-strategiene «enter deep» og «bring home». Når velger man hvilken?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> <em>Enter deep</em> (Akamai-modellen): plasser CDN-tjenere helt inne i mange aksessnett, så nær brukerne som mulig — Akamai hadde rundt 240 000 tjenere i 120+ land i 2015. <em>Bring home</em> (Limelight-modellen): et mindre antall større klynger plassert i POP-er nær — men ikke inni — aksessnettverkene.</p>
           <p><strong>Når hva:</strong> Enter deep gir minimal latens og minst trafikk over Internett-kjernen, men er driftsmessig komplekst (tusenvis av lokasjoner). Velg det for latenskritisk innhold som live-video. Bring home er enklere å drifte og kostnadsstyre, men gir litt høyere latens. Velg det når noe forsinkelse er akseptabelt og driftsenkelhet teller mer. DNS-omdirigering (CNAME til CDN-domenet) er det som styrer hver bruker til riktig node uansett strategi.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan styres en bruker faktisk til riktig CDN-node? Forklar DNS-koreografien med CNAME.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Bob klikker på en lenke til <code>http://netcinema.com/6Y7B23V</code>. (1) Nettleseren spør lokal DNS om IP til <code>netcinema.com</code>. (2) Lokal DNS spør netcinemas autoritative DNS, men får tilbake en <strong>CNAME</strong>-post som peker til et navn under <code>kingcdn.com</code>. (3) Lokal DNS må nå spørre KingCDN sin autoritative server. (4) KingCDN-serveren ser hvor i verden Bob er (basert på avsenderen av DNS-spørsmålet) og svarer med IP til den nærmeste KingCDN-noden som har innholdet. (5) Bob åpner en HTTP-forbindelse til den noden og strømmer videoen.</p>
+          <p><strong>Hvorfor magien fungerer:</strong> Hele DNS-akrobatikken er usynlig for Bob — han skrev <code>netcinema.com</code> og fikk video fra en tjener noen kilometer unna. CNAME-mekanismen er det som lar netcinema delegere navneoppløsningen til CDN-en, som er den eneste som vet hvilken node som er nærmest brukeren akkurat nå.</p>
         </div>
       </li>
 
@@ -342,10 +374,26 @@
       </li>
 
       <li data-card>
+        <div data-fc-front>Hvilke tre hovedkomponenter består et e-postsystem av, og hvorfor snakker user agents <em>aldri</em> direkte med hverandre?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> (1) <strong>User agent</strong> — klientprogrammet du bruker for å lese og skrive (Outlook, Apple Mail, Gmails webgrensesnitt). (2) <strong>E-postservere</strong> — som lagrer meldinger i en innboks for det som kommer inn og en utgående kø for det som skal sendes. (3) <strong>SMTP</strong> — protokollen som binder serverne sammen og flytter meldinger mellom dem.</p>
+          <p><strong>Hvorfor ikke direkte:</strong> Mottakeren har sjelden maskinen sin på når avsenderen sender. Hadde Alice's user agent måttet kontakte Bob's user agent direkte, ville e-post bare fungert hvis begge maskinene var på samtidig. Mailservere er alltid på og fungerer som mellomlager — Alice's server putter meldingen i en utgående kø og leverer når Bob's server er nåbar; Bob's server lagrer meldingen i postkassen til Bob plukker den opp. Asynkron levering er hele poenget.</p>
+        </div>
+      </li>
+
+      <li data-card>
         <div data-fc-front>Hva kjennetegner SMTP, og hvorfor brukes en annen protokoll for å hente posten?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> SMTP (RFC 5321, port 25, over TCP) er en <em>push</em>-protokoll i klartekst-ASCII der avsenderens mailserver dytter meldinger frem til mottakerens mailserver. Samtalen har tre faser — håndhilsing (<code>HELO</code>), overføring (<code>MAIL FROM</code>, <code>RCPT TO</code>, <code>DATA</code>) og avslutning (<code>QUIT</code>) — og meldingen avsluttes med <code>CRLF.CRLF</code>. Alt må være 7-bits ASCII, så binære vedlegg MIME-kodes.</p>
           <p><strong>Hvorfor egen access-protokoll:</strong> Bob skal hente posten — kanskje fra mobil, kanskje senere, kanskje fra flere enheter. Det er <em>pull</em>, et helt annet bruksmønster enn SMTPs <em>push</em>. Derfor bruker man IMAP (eller HTTPS for webmail) mellom mottakerens server og mottakerens klient. SMTP brukes kun mellom serverne (og fra avsenderens klient inn til hans egen server).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar de tre fasene i en SMTP-samtale med kommandoene og hva statuskodene 220, 250, 354 og 221 betyr.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Tre faser: <em>håndhilsing</em> (<code>HELO</code>), <em>overføring</em> (<code>MAIL FROM</code>, <code>RCPT TO</code>, <code>DATA</code>) og <em>avslutning</em> (<code>QUIT</code>). Klienten skriver kommandoer i klartekst-ASCII; serveren svarer med en tresifret statuskode + kort tekst. Etter <code>DATA</code> sender klienten meldingen og avslutter med en linje med kun ett punktum (serveren ser etter <code>CRLF.CRLF</code>).</p>
+          <p><strong>Statuskodene:</strong> <code>220</code> — server klar (åpning). <code>250</code> — OK, kommandoen lyktes. <code>354</code> — fortsett, send meldingsinnhold. <code>221</code> — lukker forbindelsen pent. Mønsteret minner om HTTPs koder, men SMTP er eldre (RFC 821 fra 1982, oppdatert til RFC 5321) og brukes fortsatt nesten uendret — et bevis på hvor godt det løste problemet sitt.</p>
         </div>
       </li>
 
@@ -358,10 +406,34 @@
       </li>
 
       <li data-card>
+        <div data-fc-front>Hva er forskjellen på SMTP-konvolutten (<code>MAIL FROM</code>/<code>RCPT TO</code>) og selve meldingens RFC 822-headere (<code>From:</code>/<code>To:</code>/<code>Subject:</code>)?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> SMTP-kommandoene er en del av <em>forhandlingen</em> mellom mailserverne — analogt med utsiden av en konvolutt: «hvem sender, hvem skal motta». RFC 822-headerne er en del av selve <em>brevet</em> som ligger inne i konvolutten, sammen med en blank linje og deretter brødteksten (body).</p>
+          <p><strong>Hvorfor det betyr noe:</strong> Adressene er ofte de samme begge steder, men <em>trenger ikke å være det</em>. Det er nettopp dette gapet som utnyttes i visse phishing-angrep: <code>MAIL FROM</code> kan være en server som har tillatelse til å levere, mens <code>From:</code> i headeren forfalskes til å se ut som en troverdig avsender. Den som leser e-posten ser bare RFC 822-headerne; SMTP-konvolutten er mest synlig for serverne underveis.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan fungerer moderne webmail (Gmail, Outlook på web) med tanke på protokoller?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Webmail = <strong>HTTPS</strong> fra deg til din egen server, <strong>SMTP</strong> mellom serverne, <strong>HTTPS</strong> fra mottakerens server til mottakeren. Tradisjonell e-postklient (Outlook, Apple Mail) = <em>SMTP</em> fra deg ut, <em>SMTP</em> mellom serverne, <em>IMAP</em> (eller POP3) fra mottakerens server til mottakeren.</p>
+          <p><strong>Hvorfor blandingen:</strong> Når du bruker Gmail i nettleseren, er det ikke SMTP du snakker fra nettleseren ut til Googles server — det er HTTPS. Først når Gmails servere skal levere meldingen videre til mottakerens server, kommer SMTP inn. SMTP er fortsatt limet mellom organisasjoner; alt fra brukeren til hans <em>egen</em> server er gjerne HTTPS når det er en webtjeneste, eller SMTP/IMAP når det er en tradisjonell klient. Blanding er normalen, ikke unntaket.</p>
+        </div>
+      </li>
+
+      <li data-card>
         <div data-fc-front>Hvorfor er DNS organisert hierarkisk og distribuert i stedet for som én sentral tabell?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> DNS har tre nivåer: <em>rotservere</em> (ca. 13 logiske, replikert til 1000+ fysiske via anycast, administrert av ICANN) → <em>TLD-servere</em> (.com, .no, .org …) → <em>autoritative servere</em> for hvert enkelt domene (driftet av domeneeieren selv). Ingen enkelt server vet alt; hver server vet litt og vet hvem den skal spørre om resten.</p>
           <p><strong>Hvorfor ikke sentralt:</strong> Comcast alene håndterer ~600 milliarder DNS-oppslag i døgnet. Én sentral server ville (1) være et enkeltpunkt for feil, (2) ha umulig trafikkvolum, (3) være langt unna for de fleste, (4) være umulig å holde oppdatert når enhver kan flytte sin tjeneste til ny IP. Hierarkiet fordeler både last og administrativt ansvar, og caching gjør at det meste stopper hos den lokale navneserveren.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er rollen til den <em>lokale navneserveren</em>, og hvorfor kalles den «den glemte helten»?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Mellom maskinen din og hele DNS-hierarkiet sitter en lokal navneserver — driftet av ISP-en din, NTNU, eller bedriften du jobber i. Hver gang maskinen din skal slå opp et navn, går spørsmålet alltid <em>først</em> hit. Den lokale serveren er teknisk sett ikke en del av selve DNS-hierarkiet, men er den absolutt viktigste serveren for ytelsen din.</p>
+          <p><strong>Hvorfor:</strong> Den har en lokal cache med navn den nylig har slått opp. Ligger svaret der, slipper du hele turen oppover hierarkiet — du får svaret tilbake på millisekunder. Det er derfor DNS oppleves som umiddelbart selv om det egentlig kan involvere flere mellomledd: <em>de fleste forespørsler stopper i cachen</em>. Den lokale serveren er det som skjuler all kompleksiteten, og samtidig det som utfører selve hopperingen i iterative oppslag.</p>
         </div>
       </li>
 
@@ -402,10 +474,38 @@
       </li>
 
       <li data-card>
+        <div data-fc-front>Hvordan registrerer man et nytt domene (f.eks. <code>networkutopia.com</code>) inn i DNS-hierarkiet?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Du går til en <strong>registrar</strong> — en ICANN-akkreditert organisasjon (GoDaddy, Domeneshop osv.) — sjekker at navnet er ledig, betaler en avgift, og oppgir navn og IP-adresser til <em>dine egne</em> autoritative navneservere (f.eks. <code>dns1.networkutopia.com</code>, <code>dns2.networkutopia.com</code>). Registraren setter da inn poster i <code>.com</code>-TLD-serverne: en <code>NS</code>-post som peker domenet til dine navneservere, og en <code>A</code>-post med IP-adressene deres.</p>
+          <p><strong>Hvorfor flere ledd:</strong> Etter registrering legger du selv inn <code>A</code>-poster for webserveren (<code>www.networkutopia.com</code> → IP) og <code>MX</code>-poster for mailserveren på dine autoritative servere. Da er hele kjeden komplett: root → TLD → autoritativ → endelig svar. ICANN delegerer altså myndighet nedover — TLD-eieren kontrollerer .com, du kontrollerer ditt eget domene.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke tre angrepstyper rammer DNS, og hva er forsvarsmekanismen?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> (1) <strong>DDoS</strong> — bombardere root- eller TLD-serverne med trafikk for å lamme dem. Hittil aldri lyktes med å lamme Internett, blant annet på grunn av caching og trafikkfiltrering. (2) <strong>DNS-poisoning</strong> — sende falske svar til en navneserver så den cacher feil informasjon og sender brukere til feil sted. (3) <strong>DNS-amplifisering</strong> — sende DNS-spørsmål med forfalsket avsender-IP slik at de mye større svarene treffer offeret; brukes som DDoS-våpen.</p>
+          <p><strong>DNSSEC (RFC 4033)</strong> er forsvaret: digitale signaturer på DNS-svar slik at klienten kan verifisere at svaret faktisk kommer fra en autoritativ kilde. Det stopper poisoning ved at usigerte/feilaktige svar avvises. Ikke universelt utrullet ennå, men er den langsiktige løsningen. DDoS løses heller med caching, anycast-replikering av rotservere, og trafikkfiltrering.</p>
+        </div>
+      </li>
+
+      <li data-card>
         <div data-fc-front>Hvordan skiller en TCP-server seg fra en UDP-server i socket-API-et? Hva er <em>velkomstsokkelen</em>?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> En UDP-server klarer seg med <em>én</em> sokkel for alle klienter (<code>SOCK_DGRAM</code>): <code>recvfrom</code> returnerer både dataene <em>og</em> avsenderens adresse, og <code>sendto</code> tar adresse hver gang — det er ingen forbindelse å holde rede på. En TCP-server (<code>SOCK_STREAM</code>) har <em>to</em> typer sokler: en <strong>velkomstsokkel</strong> som gjør <code>accept()</code> og venter på nye forbindelser, og én <strong>forbindelsessokkel</strong> per aktiv klient.</p>
           <p><strong>Hvorfor:</strong> TCP er forbindelsesorientert. Når en klient kobler seg til, lager OS en helt ny sokkel dedikert til <em>akkurat denne</em> samtalen, slik at innkommende bytes kan rutes til riktig sesjon. Velkomstsokkelen lever videre og venter på neste klient. Slik kan én server snakke med mange klienter parallelt — én velkomst, mange forbindelser.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke fire gjennomgående designtemaer går igjen i applikasjonslaget — push vs pull, sentralisering, kompleksitet og pålitelighet?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>(1) <em>Push vs pull</em>: SMTP er push (avsender dytter), HTTP og IMAP er pull (mottaker spør). Bruksmønsteret bestemmer protokollformen.</p>
+          <p>(2) <em>Sentralisert vs desentralisert</em>: SMTP er desentralisert (hver organisasjon driver sin server). DNS er hierarkisk distribuert — ingen vet alt, men strukturen sikrer at du alltid kan finne den som vet. Sentralisering er enkelt; desentralisering er nødvendig på Internetts skala.</p>
+          <p>(3) <em>Tilstandsløs vs tilstand</em>: HTTP er tilstandsløs for skalerbarhet; cookies legger på tilstand der det trengs. UDP er tilstandsløs, TCP er tilstandsbevart.</p>
+          <p>(4) <em>Kompleksitet i kanten</em>: Selve nettverket er bevisst dumt; all intelligens sitter i endepunktene. Det er derfor en student kan rulle ut en ny tjeneste globalt uten å spørre noen om lov.</p>
+          <p><strong>Hvorfor:</strong> Hvert designvalg ble tatt fordi alternativet ikke ville fungert i den skalaen eller med de begrensningene som fantes. Når du forstår problemet, blir formen protokollen tar nesten uunngåelig.</p>
         </div>
       </li>
     </ol>

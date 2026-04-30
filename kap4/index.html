@@ -373,6 +373,141 @@
           <p><strong>Hvorfor og når:</strong> Default-rute er ideell i <em>små nett som har én oppstrøms-ISP</em> — istedenfor å holde en kvart million prefikser i tabellen, sender hjemmeruteren bare alt ukjent til ISP-en, som har den fulle BGP-tabellen. Ditt hjemmenett trenger bare å vite hva som er lokalt; resten "drar på defaulten." I store ISP-er som peerer med flere andre er full tabell nødvendig fordi default ikke kan velge mellom flere oppstrøms-stier.</p>
         </div>
       </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er en <em>subnettmaske</em>, og hva er forskjellen på notasjonene <code>255.255.255.0</code> og <code>/24</code>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Subnettmasken skiller nettverksdelen fra vertsdelen i en IPv4-adresse. <code>255.255.255.0</code> er den dotted-decimal-formen — alle 1-ere i nettverksbitene, alle 0-ere i vertsbitene. <code>/24</code> er CIDR-notasjon for samme ting (24 ledende 1-bit). De er to skrivemåter for nøyaktig samme informasjon.</p>
+          <p><strong>Hvorfor det er viktig:</strong> Verten din bruker masken til å avgjøre om en destinasjons-IP ligger på samme subnett (send pakken direkte over lenken) eller utenfor (send til default gateway). Operasjonen er enkel: en bitvis AND mellom IP og maske gir nettverksprefikset; sammenlign med eget prefiks. /24 = 8 vertsbit = 256 adresser; /28 = 4 vertsbit = 16 adresser; /30 = bare 4 adresser (typisk for point-to-point-lenker mellom rutere).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke IPv4-adresseområder er reservert som <em>private</em>, og hvorfor er de ikke globalt rutbare?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Tre områder, definert i RFC 1918:</p>
+          <ul>
+            <li><code>10.0.0.0/8</code> — ~16,7 millioner adresser</li>
+            <li><code>172.16.0.0/12</code> — ~1 million adresser</li>
+            <li><code>192.168.0.0/16</code> — 65 536 adresser</li>
+          </ul>
+          <p><strong>Hvorfor:</strong> Pakker med private adresser droppes av rutere på det offentlige Internett — disse blokkene er reservert for lokal bruk bak NAT. Det gjør at hjemmenett, bedrifter og 4G/5G-operatører kan tildele IP-adresser fritt internt uten å koordinere med ICANN. NAT oversetter den private adressen til en offentlig når trafikken forlater nettverket. <code>192.168.0.0/16</code> er det vanligste i hjemmerutere — derav adresser som <code>192.168.0.1</code> eller <code>192.168.1.1</code> for husets ruter.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva gjør en vert når den vil sende en pakke til en destinasjon som ligger <em>utenfor</em> sitt eget subnett?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Verten sjekker (via subnettmasken) om destinasjonsadressen er på samme subnett. Hvis ikke: pakken sendes ikke direkte til destinasjonen, men til <strong>default gateway</strong> — typisk førsteruteren på subnettet. Verten lager en lenkelagsramme der:</p>
+          <ul>
+            <li><em>destinasjons-IP</em> = den endelige målets IP (uendret hele veien til endepunktet)</li>
+            <li><em>destinasjons-MAC</em> = gatewayens MAC-adresse (funnet via ARP)</li>
+          </ul>
+          <p><strong>Hvorfor:</strong> En vert kan bare snakke direkte med andre på samme lenke (samme subnett). For alt annet er det ruterens jobb å finne veien videre. Default gateway-adressen leveres som en del av DHCP-tilbudet sammen med IP, maske og DNS — det er derfor du må kjenne alle fire for å være "online". MAC-adressene endres ved hvert hopp, men IP-adressene forblir uendret hele veien.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva gjør nettverkslaget på <em>sendersiden</em> sammenlignet med <em>mottakersiden</em>, og hva gjør rutere annerledes?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> På sendersiden mottar nettverkslaget et <em>segment</em> fra transportlaget (TCP/UDP), kapsler det inn i et <strong>datagram</strong> ved å legge til IP-header (kildeadresse, destinasjonsadresse, TTL, protokollfelt osv.), og leverer datagrammet til lenkelaget under. På mottakersiden gjøres motsatt: datagrammet kommer fra lenkelaget, segmentet trekkes ut og leveres opp til transportlaget.</p>
+          <p><strong>Hva rutere gjør forskjellig:</strong> Rutere kjører nettverkslaget, men <em>leverer ikke segmentet opp</em> — de bruker IP-headerens destinasjonsadresse til å forwarde datagrammet videre på riktig utport. Dette er enkapsulerings-mønsteret som gjør lagdelingen mulig: hvert lag legger på sin egen header på vei ned, og fjerner den på vei opp. Endesystemer kjører hele stabelen; rutere stopper ved nettverkslaget.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <em>match plus action</em>-mønsteret, og hvorfor dominerer det forwarding-design?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Den fundamentale operasjonsstrukturen i en ruter: (1) <strong>Match</strong> — les ett eller flere felt i pakkens header. (2) <strong>Action</strong> — utfør den tilhørende handlingen (typisk "send ut på interface X", men kan også være "drop", "modifiser felt", eller "send til CPU").</p>
+          <p><strong>Hvorfor det dominerer:</strong> Mønsteret er enkelt nok til å implementeres i maskinvare (TCAM + ASIC) på nanosekunder, men generelt nok til å beskrive hele spektret. Tradisjonell IP-forwarding bruker bare <em>destinasjons-IP</em> som match-felt og "send ut port" som action. SDN (OpenFlow) generaliserer ved å la match omfatte mange felt (porter, MAC, VLAN, IP) og action være vilkårlig — men strukturen er den samme. Kompleksiteten ligger bare i hvor rik match og action får være.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke felt har en IPv4-header, og hvor mange bytes er den minimum?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Minimum 20 bytes. Utover 32-bit kilde- og destinasjons-IP (8 bytes til sammen):</p>
+          <ul>
+            <li><em>Version</em> (4 for IPv4) + <em>HLen</em> (header-lengde i 32-bits ord, vanligvis 5 = 20 bytes)</li>
+            <li><em>Type of Service</em> — Diffserv-bits + ECN-bits</li>
+            <li><em>Total Length</em> — hele datagrammet inkl. payload, maks 65 535 bytes</li>
+            <li><em>Identifier / Flags / Fragment Offset</em> — fragmentering</li>
+            <li><em>TTL</em> — hopgrense</li>
+            <li><em>Protocol</em> — 6 = TCP, 17 = UDP, 1 = ICMP</li>
+            <li><em>Header Checksum</em></li>
+          </ul>
+          <p><strong>Hvorfor det er nyttig å kjenne:</strong> Overhead summerer seg: 20 IP + 20 TCP = 40 bytes per pakke før noe payload. <em>Protocol</em>-feltet er nøkkelen til <em>demultipleksing</em> i mottakeren — det forteller hvilken transportprotokoll segmentet skal leveres til. <em>Total Length</em> er hva mottakeren bruker for å vite når payload slutter, siden lenkelagsrammen kan ha padding.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvem deler ut IPv4-adresser globalt, og hva betyr det at IPv4-poolen er "tom"?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>ICANN</strong> (Internet Corporation for Assigned Names and Numbers) allokerer IP-blokker globalt, gjennom fem regionale registre (RIR-er): ARIN (Nord-Amerika), RIPE (Europa), APNIC (Asia/Stillehavet), LACNIC (Latin-Amerika), AFRINIC (Afrika). RIR-ene tildeler videre til ISP-er og store organisasjoner. ICANN tildelte den <em>siste</em> IPv4-blokken til et RIR i 2011 — den globale poolen er tom.</p>
+          <p><strong>Hvorfor det betyr noe:</strong> Dette er motivasjonen for IPv6 (128-bit adresser), og forklaringen på hvorfor NAT er nødvendig — uten port-omskriving ville knappe IPv4-adresser ikke rakt til milliarder av enheter. Adresser kan nå handles på et sekundærmarked: det er ikke uvanlig at /24-blokker selges for titusenvis av dollar mellom selskaper.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvor i en ruter oppstår køer typisk, og hvilken kø er dominerende i moderne rutere?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> To muligheter:</p>
+          <ul>
+            <li><strong>Input-køer</strong> — bygger seg opp ved innportene hvis switching fabric er tregere enn summen av innports kapasitet.</li>
+            <li><strong>Output-køer</strong> — bygger seg opp ved utportene når flere innporter sender til samme utport (ankomstrate &gt; sendingsrate).</li>
+          </ul>
+          <p>Output-køer dominerer i moderne rutere fordi fabric-en designes raskere enn N × innport-kapasitet, slik at HOL-blokkering ved input unngås.</p>
+          <p><strong>Hvorfor output-køer er der "alt skjer":</strong> De reiser to klassiske spørsmål: (1) hva droppes når køen er full? (tail drop, RED, ECN), og (2) hvilken pakke sendes først? (FCFS, priority, WFQ). Det er her congestion-håndtering og nettnøytralitet får teknisk innhold. Input-køer derimot lider av <em>HOL-blokkering</em> — derfor unngås de.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Sammenlign tre <em>buffer management</em>-strategier: tail drop, RED og ECN.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <ul>
+            <li><strong>Tail drop:</strong> dropp pakken som <em>nettopp ankom</em> hvis køen er full. Enkelt, men signaliserer congestion sent — først når køen allerede er full.</li>
+            <li><strong>RED (Random Early Detection):</strong> dropp pakker tilfeldig med økende sannsynlighet etter hvert som køen fyller seg, <em>før</em> den er full. TCP ser tap tidligere og reduserer sending før køen renner over.</li>
+            <li><strong>ECN (Explicit Congestion Notification):</strong> i stedet for å droppe, sett en bit i headeren. Mottaker informerer avsender, som reduserer sending — uten at noen pakke gikk tapt.</li>
+          </ul>
+          <p><strong>Hvorfor hierarkiet:</strong> Fra mest brutalt (tail drop) til mest informativt (ECN). RED og ECN unngår det verste ved tail drop: at TCP først reagerer når køene er fulle (selve årsaken til bufferbloat). ECN krever støtte i både endesystem og ruter, men gir ingen pakketap — derav verdt overgangskostnaden.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <em>Path MTU Discovery</em>, og hvorfor er det <em>helt nødvendig</em> i IPv6?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Avsenderen finner det <em>minste</em> MTU langs hele ruten ved å sende pakker med DF=1 (Don't Fragment). Hvis en ruter underveis har lavere MTU, dropper den pakken og sender ICMP "Fragmentation Needed" (IPv4) eller ICMPv6 "Packet Too Big" (IPv6) tilbake. Avsenderen reduserer pakkestørrelsen og prøver igjen, helt til alt går gjennom.</p>
+          <p><strong>Hvorfor IPv6 krever det:</strong> IPv6-rutere fragmenterer ikke i det hele tatt — så avsenderen <em>må</em> kjenne path MTU. I IPv4 er det en optimalisering: alternativet er at hver ruter fragmenterer, men fragmenter koster ekstra header-overhead (hvert fragment har sin egen 20-byte IP-header) og setter mottakeren i fare for å miste hele datagrammet hvis ett fragment forsvinner. Bedre å fragmentere ved kilden — én gang, riktig størrelse.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan skrives en IPv6-adresse, og hvilke komprimeringsregler finnes?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> 128 bits, skrevet som åtte 16-bits grupper i heksadesimal, atskilt med kolon: <code>2001:0db8:85a3:0000:0000:8a2e:0370:7334</code>. To komprimeringsregler:</p>
+          <ul>
+            <li>Ledende nuller i hver gruppe kan droppes: <code>0db8</code> → <code>db8</code></li>
+            <li>Sammenhengende grupper med null kan komprimeres med dobbel-kolon — men kun <em>én gang</em> per adresse: <code>2001:db8:85a3::8a2e:370:7334</code></li>
+          </ul>
+          <p><strong>Hvorfor det er praktisk:</strong> 2¹²⁸ adresser er astronomisk mye flere enn IPv4 (2³² ≈ 4,3 milliarder) — så hver enhet kan i prinsippet ha sin egen globalt rutbare adresse, og NAT er unødvendig. Komprimeringsreglene gjør at typiske adresser (mye nullpadding i praksis) blir korte nok til å være håndterlige, til tross for å være fire ganger så lange som IPv4.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan skiller ATMs tjenestemodeller (CBR, ABR, Intserv, Diffserv) seg fra Internetts <em>best-effort</em>, og hvorfor vant best-effort?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> ATM tilbød rike garantier:</p>
+          <ul>
+            <li><strong>CBR (Constant Bit Rate):</strong> garantert fast båndbredde, ingen tap, rekkefølge og timing — virtuell krets.</li>
+            <li><strong>ABR (Available Bit Rate):</strong> minimum garantert båndbredde, men ingen tap-garanti.</li>
+            <li><strong>Intserv Guaranteed:</strong> per-flow ressursreservering på IP — full garanti.</li>
+            <li><strong>Diffserv:</strong> grov klasse-basert prioritering uten harde garantier.</li>
+          </ul>
+          <p>Internetts best-effort gir <em>ingen</em> garantier.</p>
+          <p><strong>Hvorfor best-effort vant:</strong> Garantier krever <em>per-flow-tilstand og ressursreservering i hver eneste ruter</em>. Det skalerer ikke til milliarder av samtidige flows. Best-effort holder rutere enkle og billige å bygge — kompleksiteten flyttes til endesystemene (TCP for pålitelighet, applikasjonen for ratebegrensning). Resultatet: Internett har skalert til milliarder av enheter; ATM har forsvunnet fra det offentlige nettet.</p>
+        </div>
+      </li>
     </ol>
   </div>
 </div>

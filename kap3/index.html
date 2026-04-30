@@ -176,6 +176,14 @@
       </li>
 
       <li data-card>
+        <div data-fc-front>Hvilke tjenester kan transportlaget tilby applikasjonen, og hvilke kan det <em>ikke</em> garantere uansett protokoll?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Transportlaget kan tilby pålitelig levering, rekkefølge-garanti, flytkontroll og metningskontroll (TCP), eller minimal tilstandsløs levering (UDP). Det kan <em>ikke</em> garantere lav forsinkelse eller spesifikk båndbredde — uansett protokoll.</p>
+          <p><strong>Hvorfor:</strong> Forsinkelse og båndbredde bestemmes av selve nettverket — av lenker, ruter-kø, og IP-lagets «best effort»-leveranse. Transportlaget kan legge til pålitelighet ved å kompensere for IP (med ACKs, retransmisjon, sekvensnumre), men det kan ikke trylle frem ressurser nettet ikke har. En videosamtale over en treg lenke vil hakke uansett om du bruker TCP eller UDP.</p>
+        </div>
+      </li>
+
+      <li data-card>
         <div data-fc-front>Hvordan demultiplekser UDP og TCP innkommende segmenter — og hva er den praktiske konsekvensen?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> En <em>UDP-socket</em> identifiseres av et 2-tuppel <code>(dest-IP, dest-port)</code>. En <em>TCP-socket</em> identifiseres av et 4-tuppel <code>(kilde-IP, kilde-port, dest-IP, dest-port)</code>.</p>
@@ -204,6 +212,22 @@
         <div data-fc-back>
           <p><strong>Svar:</strong> rdt 2.0 brukte ACK/NAK over en kanal med bitfeil — men hadde ingen plan for at <em>selve ACK/NAK-pakken</em> kan bli korrupt. Da vet ikke avsender om mottaker faktisk fikk dataene, og en blind retransmisjon ville skapt udetekterbare duplikater. rdt 2.1 løser dette ved å stemple hver pakke med et sekvensnummer (0/1 holder for stop-and-wait): mottaker oppdager duplikat og kaster det, men sender ACK uansett.</p>
           <p><strong>Hvorfor det er nok med 0/1:</strong> Med kun én pakke utestående om gangen kan ikke avsender og mottaker komme mer enn ett skritt ut av sync. Sekvensnumre er den minimale ekstra informasjonen som lar de to sidene skille «ny pakke» fra «retransmisjon av forrige».</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva gjør rdt 2.2 annerledes enn rdt 2.1, og hvorfor brukte TCPs designere denne strategien?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> rdt 2.2 fjerner NAK helt. I stedet sender mottakeren <em>alltid</em> en ACK — men med sekvensnummeret til den <strong>siste korrekt mottatte</strong> pakken. Får avsender en ACK med «feil» seq# (en duplikat-ACK), tolker hun det som et NAK og retransmitterer.</p>
+          <p><strong>Hvorfor TCP bruker dette:</strong> TCP kan ikke ha en separat NAK-meldingstype uten å komplisere protokollen — alt skal uansett bæres i samme segment-format. Ved å bruke <em>duplikat-ACK</em> som tap-signal får man feildeteksjon «gratis» i den vanlige ACK-strømmen. Det er nettopp dette som danner grunnlaget for <em>fast retransmit</em>: tre duplikat-ACKer = retransmitter umiddelbart.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke nye scenarier oppstår i rdt 3.0 (alternating-bit), og hvordan håndterer protokollen dem?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> rdt 3.0 utvider rdt 2.2 til en kanal som også kan <em>miste</em> pakker (data eller ACK forsvinner sporløst). Løsningen er en countdown-timer hos avsender — ved timeout retransmitteres pakken.</p>
+          <p><strong>Fire scenarier håndteres riktig:</strong> (a) ingen tap — vanlig drift; (b) datapakke tapt — timeout utløser retransmisjon; (c) ACK tapt — timeout utløser retransmisjon, mottaker oppdager duplikat via seq# og kaster det, men ACKer likevel; (d) for tidlig timeout — avsender retransmitterer unødvendig, mottaker kaster duplikat. <em>Hvorfor det fungerer:</em> sekvensnumrene fra rdt 2.1/2.2 håndterer alle duplikatene timeren kan skape. Protokollen er korrekt, men <strong>katastrofalt treg</strong> — derav behovet for pipelining.</p>
         </div>
       </li>
 
@@ -245,6 +269,30 @@
         <div data-fc-back>
           <p><strong>Svar:</strong> Sentrale felt: <code>source/dest port</code> (mux/demux), <code>sequence number</code> (32 bit, byte-offset i strømmen), <code>ACK number</code> (32 bit, neste forventede byte), <code>HLen</code> (header-lengde i 4-byte ord), <code>flags</code> (SYN, ACK, FIN, RST, PSH, URG, m.fl.), <code>receive window</code> (rwnd, 16 bit, flow control), <code>checksum</code>, og <code>options</code> (MSS, window scale, timestamps).</p>
           <p><strong>Hvorfor ingen payload length:</strong> Lengden utledes fra IP-laget: <code>payload = IP_total − IP_header − TCP_header</code>. TCP gjenbruker IP-headerens informasjon i stedet for å duplisere den.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva betyr de viktigste TCP-flaggene (SYN, ACK, FIN, RST, PSH, URG)?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>SYN</strong> — synchronize, brukes til å initiere en forbindelse (sette sekvensnummer). <strong>ACK</strong> — segmentet inneholder en gyldig ACK-nummerverdi. <strong>FIN</strong> — finish, avsender har sendt sin siste byte og vil lukke retningen. <strong>RST</strong> — reset, abort forbindelsen umiddelbart (ofte ved feil eller forsøk på å koble til en lukket port). <strong>PSH</strong> — push, mottakerens TCP bør levere data umiddelbart til applikasjonen i stedet for å buffre. <strong>URG</strong> — urgent, peker på «hastedata» i segmentet via Urgent Pointer.</p>
+          <p><strong>Hvorfor det er greit å kunne:</strong> Flaggene styrer hele forbindelsens livssyklus. SYN+ACK gjenkjennes som andre del av håndtrykket, FIN+ACK i lukkesekvensen, og RST forklarer hvorfor «connection refused» er øyeblikkelig — serveren svarer aktivt med RST, ikke bare timeout. PSH og URG brukes sjelden i praksis, men er en del av protokollen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva betyr det at TCP er en <em>bytestrøm</em>, og hvordan skiller det seg fra UDP?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> TCP behandler dataene fra applikasjonen som en kontinuerlig strøm av bytes uten <em>meldingsgrenser</em>. Hvis applikasjonen kaller <code>send()</code> tre ganger med 100 bytes hver, kan TCP sende dem som ett 300-byte segment, eller dele dem opp på en helt annen måte. UDP, derimot, bevarer meldingsgrenser: hver <code>sendto()</code> blir nøyaktig ett UDP-datagram hos mottakeren.</p>
+          <p><strong>Konsekvens:</strong> Applikasjonsutvikleren må selv avgrense meldinger over TCP — typisk med en lengde-prefix (HTTP Content-Length), en avslutter (HTTP linjeskift, JSON-objektgrenser), eller en sentinel. <em>Hvorfor TCP er designet sånn:</em> Bytestrøm-modellen lar TCP optimalisere når den vil sende (Nagle's algorithm, MSS-fyll) uten å tenke på applikasjonens meldingsstruktur.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke tre hendelser styrer TCP-senderens logikk, og hvorfor bruker TCP kun <em>én</em> retransmisjons-timer per forbindelse?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Senderens tre hendelser er: (1) <em>Data fra app</em> — bygg segment med <code>seq=NextSeqNum</code>, send, oppdater pekere, start timer hvis ingen aktiv. (2) <em>Timeout</em> — retransmitter eldste ubekreftede segment, restart timer. (3) <em>ACK med y &gt; SendBase</em> — flytt SendBase fram, restart timer hvis flere ubekreftede gjenstår, ellers stopp den.</p>
+          <p><strong>Hvorfor én timer:</strong> Den naive idéen om én timer per pakke skalerer dårlig — en travel server med tusenvis av forbindelser ville hatt millioner av aktive timere samtidig. TCP velger derfor å la timeren alltid følge <em>eldste ubekreftede pakke</em> (SendBase). Det er en bevisst kompromiss: enkelt og billig, men noe tregere reaksjon på tap enn Selective Repeats per-pakke-timere.</p>
         </div>
       </li>
 
@@ -313,6 +361,22 @@
         <div data-fc-back>
           <p><strong>Svar:</strong> CUBIC er en moderne metningskontroll-variant som lar cwnd være en <em>kubisk funksjon av tid siden siste tap</em>, ikke RTT som i Reno. Etter et tap husker den <code>W_max</code> (cwnd ved siste tap), vokser raskt langt fra W_max, sakte når den nærmer seg, og sonderer forsiktig forbi.</p>
           <p><strong>Hvorfor den slo Reno:</strong> Renos lineære AIMD bruker for lang tid på å gjenoppta full kapasitet etter et tap på lenker med stor BDP (bandwidth-delay product) — moderne datasenter- og fiberlenker. CUBIC når raskt opp igjen til der det ble galt sist, og er samtidig RTT-uavhengig, så den oppfører seg likere mellom korte og lange lenker. Standard i Linux fra 2006 og dominerer trafikken til store webservere.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen på <em>end-to-end</em> og <em>nettverksassistert</em> metningskontroll, og hvilken bruker TCP?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <em>End-to-end</em>: endesystemene utleder selv om nettet er overbelastet, basert på indirekte signaler som tap (timeout eller dup-ACK) og økt RTT. Rutere er passive. <em>Nettverksassistert</em>: rutere gir endesystemene eksplisitt tilbakemelding (f.eks. ECN — Explicit Congestion Notification — eller eldre ICMP Source Quench).</p>
+          <p><strong>Hvorfor TCP er end-to-end:</strong> TCP kjører over IP, som ikke garanterer noen ruterstøtte for feedback. Ved å utlede metning fra <em>tap</em> alene, fungerer TCP overalt — selv gjennom rutere som ikke samarbeider. ECN er et tillegg som styrker signalet (rutere markerer pakker før de dropper dem), men det krever støtte i hele kjeden og er ikke universelt utrullet. CUBIC, BBR og lignende moderne varianter er fortsatt fundamentalt end-to-end.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er senderens grunnlov for cwnd, og hvordan oversettes det til effektiv senderate?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Senderens lov: <code>LastByteSent − LastByteAcked ≤ min(cwnd, rwnd)</code>. Det vil si: mengden ubekreftet data i nettet kan aldri overstige det minste av <em>congestion window</em> (nettets toleranse) og <em>receive window</em> (mottakerens buffer). Senderens effektive rate er da omtrent <code>cwnd / RTT</code> bytes per sekund (i steady state, når rwnd ikke binder).</p>
+          <p><strong>Hvorfor formelen er den sentrale:</strong> Hele metningskontrollen handler om å justere cwnd slik at <code>cwnd / RTT</code> ligger nær flaskehalsens kapasitet — «keep the pipe just full, but not fuller». For lite cwnd → ubrukt båndbredde. For stor cwnd → kø bygges opp i flaskehalsruteren, RTT øker, og til slutt kommer pakketap. cwnd er altså sender-sidens forsøk på å estimere et tall den aldri direkte kan måle.</p>
         </div>
       </li>
 
