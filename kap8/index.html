@@ -33,7 +33,8 @@
   <ol class="chapter-toc-list">
     <li><span class="toc-num">01</span><a href="#overblikk">Helhetsbilde</a></li>
     <li><span class="toc-num">02</span><a href="#deler">Deler</a></li>
-    <li><span class="toc-num">03</span><a href="#quiz">Test deg selv</a></li>
+    <li><span class="toc-num">03</span><a href="#flashcards">Flashcards</a></li>
+    <li><span class="toc-num">04</span><a href="#quiz">Test deg selv</a></li>
   </ol>
 </div>
 </nav>
@@ -140,6 +141,226 @@
       <div class="sp-info"><div class="sp-title">Protokoller og brannmurer</div><div class="sp-desc">Sikker e-post, TLS, IPsec, trådløs sikkerhet og brannmurer</div></div>
       <span class="sp-arrow">&rarr;</span>
     </a>
+  </div>
+</div>
+</section>
+
+<!-- ============ FLASHCARDS ============ -->
+<section id="flashcards" class="flashcards-section">
+<div class="container">
+  <div class="section-badge">Flashcards</div>
+  <h2>Rask <em>repetisjon</em></h2>
+  <p class="section-intro">Åpne spørsmål i tilfeldig rekkefølge. Klikk kortet for å snu — bruk <strong>&larr; / &rarr;</strong> for å bla, <strong>mellomrom</strong> for å snu, <strong>R</strong> for å shuffle.</p>
+
+  <div class="flashcards" data-flashcards>
+    <div class="fc-stage">
+      <article class="fc-card" tabindex="0" role="button" aria-label="Flashcard — klikk for å snu">
+        <div class="fc-face fc-front">
+          <div class="fc-label">Spørsmål</div>
+          <p class="fc-text" data-fc-front-display aria-live="polite">&nbsp;</p>
+          <div class="fc-hint">Klikk eller mellomrom for å vise svar</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-label">Svar</div>
+          <div class="fc-text" data-fc-back-display aria-live="polite">&nbsp;</div>
+        </div>
+      </article>
+    </div>
+
+    <div class="fc-controls">
+      <button class="fc-btn fc-prev" type="button" aria-label="Forrige kort" title="Forrige (←)">&larr;</button>
+      <div class="fc-progress">
+        <span class="fc-counter">1 / 1</span>
+        <div class="fc-bar"><div class="fc-bar-fill"></div></div>
+      </div>
+      <button class="fc-btn fc-next" type="button" aria-label="Neste kort" title="Neste (→)">&rarr;</button>
+      <button class="fc-btn fc-shuffle" type="button" aria-label="Shuffle bunken" title="Shuffle (R)">&#8635;</button>
+    </div>
+
+    <ol class="fc-deck" hidden>
+      <li data-card>
+        <div data-fc-front>Hvilke fire egenskaper må et sikkert kommunikasjonssystem oppfylle, og hvordan henger de sammen med CIA-triaden?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> (1) <em>Konfidensialitet</em> — kun avsender og mottaker forstår innholdet. (2) <em>Autentisering</em> — partene kan bekrefte hverandres identitet. (3) <em>Meldingsintegritet</em> — innholdet er uendret underveis. (4) <em>Tilgjengelighet</em> — legitime brukere kommer fram.</p>
+          <p><strong>Hvorfor:</strong> CIA-triaden i informasjonssikkerhet (Confidentiality, Integrity, Availability) er det samme rammeverket. Autentisering støtter særlig integritetsdelen — du må vite hvem som skrev meldingen for å vurdere om den er autentisk. <em>Tjenestenektangrep (DoS)</em> er det klassiske angrepet på A-delen: flommen av falsk trafikk hindrer ekte brukere uten å bryte konfidensialitet eller integritet. Hver av de fire egenskapene løses med ulike kryptografiske/operasjonelle verktøy — kryptering for C, MAC/signaturer for I, sertifikater for autentisering, brannmurer/oppstrømsfiltrering for A.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva slags angrep kan en angriper (Trudy) utføre mellom Alice og Bob?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> (1) <em>Avlytting (eavesdrop)</em> — passivt fange opp meldinger. (2) <em>Injeksjon</em> — aktivt sette inn falske pakker i en pågående forbindelse. (3) <em>Spoofing</em> — forfalske kildeadressen i en pakke. (4) <em>Hijacking</em> — overta en pågående TCP-forbindelse ved å fjerne den ene parten. (5) <em>Tjenestenekt (DoS/DDoS)</em> — oversvømme en server med forespørsler slik at den ikke kan betjene ekte brukere.</p>
+          <p><strong>Hvorfor:</strong> Hvert angrep utnytter en bestemt mangel — avlytting fordi nettet ikke krypterer av seg selv, spoofing fordi IP-laget ikke autentiserer avsender, hijacking fordi TCP er tilstandsfull og dermed kan kapres. Forsvarene speiler dette: kryptering mot avlytting, MAC/digital signatur mot injeksjon, sertifikater mot spoofing av identitet, sekvensnummer mot replay/hijacking, og brannmurer/SYN-cookies mot DoS.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar grunnmodellen <code>m = K<sub>B</sub>(K<sub>A</sub>(m))</code>. Hva er forskjellen mellom symmetrisk og offentlig nøkkelkryptografi?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Klartekst <em>m</em> krypteres med nøkkel K<sub>A</sub> til chiffertekst K<sub>A</sub>(m), og dekrypteres med K<sub>B</sub> tilbake til m. I <strong>symmetrisk</strong> kryptografi er K<sub>A</sub> = K<sub>B</sub> = K<sub>S</sub> — én delt hemmelig nøkkel. I <strong>offentlig nøkkelkryptografi</strong> er K<sub>A</sub> og K<sub>B</sub> ulike: én er offentlig (publisert fritt), den andre er privat.</p>
+          <p><strong>Hvorfor begge eksisterer:</strong> Symmetrisk er <em>raskt</em> (AES, ofte ~1000× raskere enn RSA) og brukes til å kryptere selve dataene i TLS, IPsec og WiFi. Offentlig nøkkel er tregt, men løser to problemer symmetrisk ikke kan: (a) <em>nøkkelutveksling</em> uten forhåndsdelt hemmelighet, og (b) <em>digitale signaturer</em>. I praksis kombineres de i hybridoppsett — public-key brukes én gang for å utveksle en symmetrisk K<sub>S</sub>, deretter krypterer K<sub>S</sub> selve dataene.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor er klassiske chiffer som Caesar, monoalfabetisk substitusjon og Vigenère ikke trygge?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Caesar har bare 25 mulige nøkler — trivielt brute force. Monoalfabetisk har 26! ≈ 4·10²⁶ nøkler, men knekkes av <strong>frekvensanalyse</strong>: «e» er hyppigst i engelsk (~12,7 %), «t» nest hyppigst (~9 %), og bigrammer som «th», «he», «in» avslører resten på 100–200 tegn chiffertekst. Vigenère er polyalfabetisk, men knekkes ved å først gjette nøkkellengden, deretter gjøre frekvensanalyse på hver «posisjon mod nøkkellengde» som et eget Caesar-chiffer.</p>
+          <p><strong>Hvorfor:</strong> Felles svakhet er at de behandler én bokstav om gangen og lar <em>statistisk struktur</em> i klarteksten lekke gjennom. Moderne blokkchiffer (DES, AES) opererer på <em>bit-blokker</em> med mange runder substitusjon, permutasjon og XOR — Shannons <strong>confusion</strong> (skjul nøkkelen) og <strong>diffusion</strong> (spred klarteksten) gjør at hver bit av chifferteksten avhenger av <em>hver</em> bit i klarteksten og nøkkelen. Stort nøkkelrom alene er ikke nok.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom blokkchiffer og strømchiffer, og hvorfor erstattet AES både DES og 3DES?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Et <strong>strømchiffer</strong> krypterer én bit/byte om gangen ved å XOR-e klarteksten med en pseudo-tilfeldig nøkkelstrøm. Et <strong>blokkchiffer</strong> krypterer faste blokker — DES bruker 64-bits blokker og en <strong>56-bits nøkkel</strong>, AES bruker 128-bits blokker og <strong>128/192/256-bits nøkkel</strong>.</p>
+          <p><strong>Hvorfor AES vant:</strong> DES' 56-bits nøkkel ble knekt med brute force på under ett døgn i DES Challenge. 3DES (kryptering med tre forskjellige nøkler etter hverandre) ga ~168-bits nøkkelstyrke som mellomløsning, men ble for tregt. AES-128 vil ta ca. 149 billioner år å brute force selv om DES tok 1 sekund. AES er i dag dominerende i TLS, WPA2/WPA3, IPsec og 4G/5G.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er Cipher Block Chaining (CBC), og hva er rollen til Initialization Vector (IV)?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Uten CBC ville to like klartekstblokker gitt to like chiffertekstblokker — en angriper som ser «AB12 ... AB12» vet at de er like uten å kjenne innholdet. CBC løser dette ved å XOR-e hver klartekstblokk med <em>forrige chiffertekstblokk</em> før kryptering. Den første blokken har ingen «forrige» — derfor genererer avsenderen en tilfeldig <strong>IV</strong> som XOR-es med blokk 1.</p>
+          <p><strong>Hvorfor IV-en sendes i klartekst:</strong> IV må være <em>ny</em> (uforutsigbar) for hver melding, men trenger ikke være hemmelig. Når IV varierer, gir samme melding kryptert to ganger helt forskjellig chiffertekst — Trudy kan ikke kjenne igjen «meldingen jeg så i går». Dette beskytter strukturerte data (faste headere, passordfelt, repeterte mønstre) der likhet ellers ville lekket informasjon.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom <em>ciphertext-only</em>, <em>known-plaintext</em> og <em>chosen-plaintext</em>-angrep?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p><strong>Ciphertext-only:</strong> Trudy har bare chifferteksten — må bruke brute force eller statistisk analyse.<br>
+          <strong>Known-plaintext:</strong> Hun har noen klartekst-chiffertekst-par (f.eks. fordi meldingen begynner med «Dear Bob,»). Parene brukes til å utlede nøkkelen.<br>
+          <strong>Chosen-plaintext:</strong> Hun kan <em>velge</em> hvilken klartekst som krypteres og se chifferteksten — det sterkeste tilfellet.</p>
+          <p><strong>Hvorfor det betyr noe:</strong> En algoritme må holde også mot det sterkeste angrepet (chosen-plaintext) for å regnes som trygg i moderne kryptografi. AES er designet med dette for øye. Klassiske chiffer faller raskt i alle tre kategoriene; selv WEP-protokollen ble brutt fordi den var sårbar mot known-plaintext-angrep med gjenbrukte IV-er.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er hovedidéen i offentlig nøkkelkryptografi, og hvilke to avgjørende egenskaper må nøkkelparet ha?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Bob har et nøkkelpar: <strong>offentlig K<sub>B</sub><sup>+</sup></strong> (publisert fritt) og <strong>privat K<sub>B</sub><sup>-</sup></strong> (holdt hemmelig). To egenskaper:</p>
+          <p>(1) K<sub>B</sub><sup>-</sup>(K<sub>B</sub><sup>+</sup>(m)) = m — det den offentlige krypterer, kan bare den private dekryptere (og omvendt for signaturer).<br>
+          (2) Gitt K<sub>B</sub><sup>+</sup> er det <em>beregningsmessig umulig</em> å finne K<sub>B</sub><sup>-</sup>.</p>
+          <p><strong>Hvorfor det er revolusjonerende:</strong> Diffie-Hellman (1976) og RSA (1978) løste 2000 års kryptografihistories største problem: nøkkelutveksling uten forhåndsmøte. Alice kan kryptere til Bob selv om de aldri har snakket sammen. Samme matematikk muliggjør digitale signaturer (signer med privat, verifiser med offentlig). I dag er dette grunnsteinen i TLS, sikker e-post og hele PKI.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er hybridkryptering, hvorfor brukes det, og hvor møter du det?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Hybridkryptering kombinerer offentlig-nøkkel og symmetrisk: (1) Alice genererer en tilfeldig <em>symmetrisk sesjonsnøkkel K<sub>S</sub></em>, (2) krypterer meldingen raskt med K<sub>S</sub> (AES), (3) krypterer den korte K<sub>S</sub> med Bobs offentlige nøkkel K<sub>B</sub><sup>+</sup>, og sender begge. Bob dekrypterer K<sub>S</sub> med K<sub>B</sub><sup>-</sup> og bruker den til å dekryptere meldingen.</p>
+          <p><strong>Hvorfor:</strong> Offentlig-nøkkel-kryptering er ~1000× tregere enn AES — å kryptere en hel e-post med RSA ville vært upraktisk. Hybridkryptering bruker den dyre operasjonen <em>én gang</em> på en kort nøkkel, og den raske én på dataene. Mønsteret går igjen overalt: <strong>sikker e-post</strong>, <strong>TLS</strong>, <strong>IPsec</strong> og <strong>WPA3</strong>. Som bonus får hver økt sin egen K<sub>S</sub>, så en kompromittert sesjonsnøkkel avslører bare den ene øktens data.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er en kryptografisk hashfunksjon, og hvorfor er TCP/Internett-checksum utilstrekkelig som integritetsbeskyttelse?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En hashfunksjon H tar input av vilkårlig lengde og produserer et kort «fingeravtrykk» H(m) av <strong>fast lengde</strong>. Den må være (1) <em>enveis</em> — gitt H(m) er det praktisk umulig å finne m, (2) <em>kollisjonsresistent</em> — praktisk umulig å finne to ulike meldinger m₁, m₂ med H(m₁) = H(m₂), og (3) små endringer i input gir helt forskjellig output.</p>
+          <p><strong>Hvorfor ikke checksum:</strong> TCP-checksum er designet for å oppdage <em>tilfeldige</em> bitfeil, ikke ondsinnet manipulasjon. Det er trivielt å konstruere to forskjellige meldinger med samme 16-bits checksum — f.eks. har «IOU 100.99 BOB» og «IOU 900.19 BOB» identisk checksum. SHA-256 er dagens anbefaling; MD5 og SHA-1 er foreldet etter at kollisjoner er funnet/demonstrert (SHA-1 i 2017).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom en MAC og en digital signatur?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p><strong>MAC (HMAC):</strong> Krever en <em>delt hemmelig nøkkel</em> K<sub>S</sub>. Senderen beregner MAC = H(melding + K<sub>S</sub>); mottakeren gjør det samme og sammenligner. Avvik avslører manipulasjon eller feil avsender.<br>
+          <strong>Digital signatur:</strong> Senderen krypterer hashen H(m) med <em>privat</em> nøkkel K<sub>A</sub><sup>-</sup>; hvem som helst kan verifisere med <em>offentlig</em> K<sub>A</sub><sup>+</sup>.</p>
+          <p><strong>Hvorfor begge eksisterer:</strong> MAC er raskt og krever ingen PKI — perfekt for protokoller der partene allerede deler en nøkkel (TLS-record, WiFi-trafikk). Men det gir <em>ikke</em> ikke-benektbarhet, fordi begge parter kjenner K<sub>S</sub>. Digital signatur gir <strong>non-repudiation</strong>: bare Bob har K<sub>A</sub><sup>-</sup>, så Alice kan vise meldingen og signaturen til en domstol som bevis. Trade-off: signatur er tregere og krever sertifikat-infrastruktur (CA).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er en CA, hva inneholder et sertifikat, og hvordan motvirker det et man-in-the-middle-angrep?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En <strong>Certification Authority (CA)</strong> er en pålitelig tredjepart som binder en identitet (f.eks. domenenavn) til en offentlig nøkkel. Sertifikatet (X.509) inneholder eierens identitet, eierens offentlige nøkkel, utstedende CA og utløpsdato — alt <em>signert av CA-en</em> med dens private nøkkel. CA-ens egen rotnøkkel kommer forhåndsinstallert i nettleseren/operativsystemet.</p>
+          <p><strong>Hvorfor det stopper MITM:</strong> Uten sertifikater kunne Trudy plassere seg mellom Alice og Bob, sende sin <em>egen</em> offentlige nøkkel til Alice (og utgi seg for Bob) og lese alt. Sertifikatet løser dette: Alice verifiserer CA-signaturen med CA-ens forhåndsinstallerte offentlige nøkkel, og vet dermed at den offentlige nøkkelen virkelig tilhører Bob — Trudy kan ikke forfalske sertifikatet uten CA-ens private nøkkel. Dette er fundamentet i TLS/HTTPS.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>I sikker e-post bruker Alice tre forskjellige nøkler. Hvilke, og hvorfor akkurat disse tre?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>1. <strong>K<sub>A</sub><sup>-</sup></strong> (Alices private nøkkel) — signerer hashen H(m) for <em>integritet og avsenderautentisering</em>.<br>
+          2. <strong>K<sub>S</sub></strong> (tilfeldig symmetrisk sesjonsnøkkel) — krypterer hele {melding + signatur} raskt med AES for <em>konfidensialitet</em>.<br>
+          3. <strong>K<sub>B</sub><sup>+</sup></strong> (Bobs offentlige nøkkel) — krypterer den korte K<sub>S</sub> slik at bare Bob kan utvinne den med K<sub>B</sub><sup>-</sup>.</p>
+          <p><strong>Hvorfor akkurat denne kombinasjonen:</strong> Hver nøkkel gjør én ting de andre ikke kan. Signering må gjøres med Alices private nøkkel (bare hun har den), så Bob kan verifisere med hennes offentlige nøkkel og <em>vite</em> at det er Alice. Selve dataene må krypteres symmetrisk fordi public-key er for tregt for lange meldinger. K<sub>S</sub> selv kan ikke sendes i klartekst — derfor pakkes den inn i Bobs offentlige nøkkel. Bob gjør de tre operasjonene i omvendt rekkefølge ved mottak.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er de fire fasene i en TLS-forbindelse, og hvor i protokollstabelen «bor» TLS?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>1. <strong>Håndtrykk:</strong> Sertifikatutveksling og autentisering. Partene avtaler en felles hemmelighet (master secret) — i TLS 1.3 typisk via ephemeral Diffie-Hellman.<br>
+          2. <strong>Nøkkelutledning:</strong> Fra master secret utledes <em>fire</em> separate nøkler (én krypterings- og én MAC-nøkkel per retning).<br>
+          3. <strong>Dataoverføring:</strong> Data sendes som krypterte <em>records</em>, hver med MAC for integritet og lengde. TLS 1.3 bruker AEAD (kryptering + integritet i én operasjon).<br>
+          4. <strong>Nedkobling:</strong> Spesielle close-meldinger sendes før TCP FIN, slik at en angriper ikke kan gjennomføre <em>truncation attack</em> ved å sende en falsk FIN.</p>
+          <p><strong>Hvorfor lagdelingen virker:</strong> TLS er ikke et eget OSI-lag, men et <em>sublag</em> mellom TCP og applikasjonen. Applikasjonen skriver til en TLS-socket; TLS krypterer og leverer til TCP som vanlige segmenter. TCP/IP under vet ingenting om kryptering — derfor kan TLS sikre HTTPS, IMAP, SMTP osv. uten å endre transportlaget.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor utleder TLS fire separate nøkler fra master secret i stedet for å bruke én?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> TLS utleder:</p>
+          <p><strong>E<sub>A</sub></strong> — kryptering Alice→Bob<br>
+          <strong>E<sub>B</sub></strong> — kryptering Bob→Alice<br>
+          <strong>M<sub>A</sub></strong> — MAC Alice→Bob<br>
+          <strong>M<sub>B</sub></strong> — MAC Bob→Alice</p>
+          <p><strong>Hvorfor:</strong> God kryptografisk praksis er å aldri bruke samme nøkkel til to ulike formål eller retninger. Forskjellige nøkler <em>per retning</em> gjør det vanskeligere for en angriper å «reflektere» en kryptert melding tilbake til avsender og få den akseptert. Forskjellige nøkler <em>per formål</em> (kryptering vs MAC) isolerer skadeomfanget hvis én algoritme skulle vise seg svekket — kompromittering av MAC-konstruksjonen lekker ikke krypteringsnøkkelen, og omvendt.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er en TLS-record, og hvorfor inkluderes et sekvensnummer i MAC-beregningen?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> TCP gir en byte-strøm, men TLS deler den opp i <strong>records</strong>: hver record inneholder data, en MAC og en lengde, og krypteres som en helhet før den leveres til TCP. Sekvensnummeret er en intern teller hos hver part — det <em>sendes ikke</em> eksplisitt i recorden, men inkluderes i MAC-beregningen.</p>
+          <p><strong>Hvorfor:</strong> Uten sekvensnummer kunne Trudy fange opp en gyldig record og spille den av igjen senere (<strong>replay-angrep</strong>), eller bytte rekkefølge på records uten at mottakeren oppdaget det — meldingen ville fortsatt vært gyldig kryptert og MAC-en ville stemt. Med sekvensnummer i MAC-beregningen vil enhver replay/omrokering få MAC-verifiseringen til å feile, fordi forventet sekvensnummer hos mottakeren ikke matcher det som ble brukt da MAC-en ble laget. Samme prinsipp brukes også på record-nivå i AEAD-modus i TLS 1.3.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom IPsec transport-modus og tunnel-modus, og hvordan bygger en VPN på dette?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p><strong>Transport-modus:</strong> Krypterer bare <em>payloaden</em> i IP-datagrammet — den opprinnelige IP-headeren er fortsatt synlig. Brukes mellom to endepunkter (host-to-host).<br>
+          <strong>Tunnel-modus:</strong> Krypterer <em>hele</em> det opprinnelige datagrammet (inkludert headeren) og pakker det inn i et nytt IP-datagram med ny ytre header. Brukes mellom gateways.</p>
+          <p><strong>Hvorfor tunnel-modus dominerer i praksis:</strong> En <strong>VPN (Virtual Private Network)</strong> bygges på tunnel-modus. Tenk på et selskap med kontorer i Oslo og Trondheim: gateway-ruterne på hvert kontor setter opp en IPsec-tunnel, og all trafikk mellom kontorene pakkes inn i krypterte IP-datagrammer som tunneleres over offentlig Internett. På linja er både innholdet <em>og</em> de opprinnelige IP-adressene skjult. IPsec sikrer alt på nettverkslaget — uavhengig av applikasjon eller port — i motsetning til TLS som bare sikrer én TCP-forbindelse om gangen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan oppnår WPA3-håndtrykket (SAE) at det forhåndsdelte passordet aldri sendes over lufta?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> I WPA3-håndtrykket utveksler mobilenheten og Authentication Server bare <strong>nonce-verdier</strong> (engangsbrukstall) og en <strong>HMAC-verifiseringsverdi</strong>. Begge parter <em>utleder lokalt</em> samme symmetriske sesjonsnøkkel K<sub>M-AP</sub> fra: passordet, begge nonce-ene og MAC-adressene. Hver part beregner og verifiserer en HMAC over disse ingrediensene. Hvis HMAC-en stemmer på begge sider, vet de at den andre kjenner passordet.</p>
+          <p><strong>Hvorfor det er trygt:</strong> Passordet selv blir aldri overført. Trudy som lytter på lufta ser bare nonce-er og en HMAC — hun kan ikke regne baklengs til passordet (HMAC er enveis), og hun kan heller ikke gjenta gamle handshakes fordi nonce-ene er nye hver gang. WEP og WPA2-PSK var sårbare for ordbokangrep mot fanget håndtrykk-trafikk; WPA3 SAE er designet for å motstå dette ved at hver gjettings-runde krever en ny aktiv handshake.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er den viktigste sikkerhetsforbedringen fra 4G LTE til 5G, og hvorfor er den viktig?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> I 4G LTE sendes <strong>IMSI</strong> (mobilenhetens unike identifikator på SIM-kortet) i <em>klartekst</em> ved nettverkstilkobling. I 5G krypteres IMSI med <strong>public-key-kryptografi</strong> før den sendes, slik at bare hjemmenettverkets HSS kan dekryptere den. I tillegg flyttes selve <em>autentiseringsbeslutningen</em> fra MME i besøkt nett (4G) til hjemmenettverket (5G).</p>
+          <p><strong>Hvorfor det betyr noe:</strong> I 4G muliggjorde klartekst-IMSI såkalte <strong>IMSI-catchers</strong> — falske basestasjoner («Stingrays») som lurer mobiler til å koble seg til, fanger opp identiteten og sporer bevegelser. 5G-krypteringen gjør dette sporet umulig fordi bare hjemmenettverket har den private nøkkelen. Flyttingen av autentiseringsbeslutningen reduserer også tilliten et besøkt operatørnett trenger — selv en kompromittert besøkt operatør kan ikke utstede falske autentiseringsvedtak. Begge endringene styrker både konfidensialitet og autentisering.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom tilstandsløs og tilstandsfull pakkefiltrering, og hva er en applikasjonsgateway?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p><strong>Tilstandsløs (stateless) brannmur:</strong> Ser på hver pakke <em>isolert</em>. Beslutter ut fra header-felt (kilde-/dest-IP, port, protokoll, TCP-flagg) og en ACL-tabell som sjekkes ovenfra og ned.<br>
+          <strong>Tilstandsfull (stateful) brannmur:</strong> Holder en <em>forbindelsestabell</em> over alle aktive TCP-forbindelser (sporer SYN, FIN, timeouts). Innkommende pakker slippes bare hvis de hører til en kjent forbindelse.<br>
+          <strong>Applikasjonsgateway:</strong> Inspiserer applikasjonsdata (lag 7), ikke bare pakkehodet. F.eks. krever den brukerautentisering før den setter opp en viderekoblet Telnet-forbindelse.</p>
+          <p><strong>Hvorfor stateful løser et reelt problem:</strong> En tilstandsløs brannmur slipper igjennom en TCP-pakke med ACK-flagg satt fordi den «ser ut som» et svar — selv om Trudy fabrikkerte pakken og ingen forbindelse finnes. En tilstandsfull brannmur sjekker forbindelsestabellen og avviser den. Applikasjonsgateways går enda lengre, men har høyere overhead og krever én gateway per applikasjonsprotokoll. Felles begrensninger: brannmurer er fortsatt sårbare for IP-spoofing, og kryptert trafikk (TLS) skjuler innholdet for inspeksjon.</p>
+        </div>
+      </li>
+    </ol>
   </div>
 </div>
 </section>
@@ -379,6 +600,7 @@
 </main>
 <footer><div class="container"><div class="ornament">&#10043; &#10043; &#10043;</div><p>NTNU · TTM4100 · Vår 2026</p></div></footer>
 <script src="../quiz.js"></script>
+<script src="../flashcards.js"></script>
 <script src="../chat-widget.js"></script>
 <script src="../nav-search.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
