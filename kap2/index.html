@@ -114,6 +114,11 @@
   </div>
 
   <p>I dette kapittelet ser vi på de viktigste mønstrene: <strong>klient–server</strong> vs. <strong>peer-to-peer</strong> (to helt forskjellige måter å organisere kommunikasjon på), protokollene <strong>HTTP</strong>, <strong>SMTP</strong> og <strong>DNS</strong> (som dekker web, e-post og navneoppslag), og til slutt <strong>socket-programmering</strong> — der du selv får skrive kode som snakker over nettverket.</p>
+
+  <div class="callout callout-blue">
+    <h4>Pensum i emnet (kapittel 2)</h4>
+    <p>TTM4100 følger Kurose &amp; Ross, 8. utgave, kapittel 2 i sin helhet, <em>bortsett fra</em> deler av avsnittet om BitTorrent (bokas s. 170–173). Vi dekker P2P-fordeling, formler og selv-skalering som i boka, men ikke BitTorrent-protokollen innvendig (f.eks. utvelgelse av peers og «tit-for-tat»). Navnet BitTorrent brukes noen steder som kjent eksempel på P2P-fildeling — det er ikke det samme som å kreve pensum i protokolldetaljene.</p>
+  </div>
 </div>
 </section>
 
@@ -155,7 +160,7 @@
 <div class="container">
   <div class="section-badge">Flashcards</div>
   <h2>Rask <em>repetisjon</em></h2>
-  <p class="section-intro">Åpne spørsmål i tilfeldig rekkefølge, dekker hele pensum i kapittel 2. Klikk kortet for å snu — bruk <strong>&larr; / &rarr;</strong> for å bla, <strong>mellomrom</strong> for å snu, <strong>R</strong> for å shuffle.</p>
+  <p class="section-intro">Åpne spørsmål i tilfeldig rekkefølge, tilpasset TTM4100-pensum for Kurose kapittel 2 (unntatt detaljer om BitTorrent-protokollen på bokas s. 170–173). Ett kort om norsk ekom/cookie-regelverk er tillegg utenom læreboka. Klikk kortet for å snu — bruk <strong>&larr; / &rarr;</strong> for å bla, <strong>mellomrom</strong> for å snu, <strong>R</strong> for å shuffle.</p>
 
   <div class="flashcards" data-flashcards>
     <div class="fc-stage">
@@ -284,7 +289,7 @@
       </li>
 
       <li data-card>
-        <div data-fc-front>Hva er <em>tredjeparts</em> cookies, og hvilke krav stiller den norske ekomloven (2025)?</div>
+        <div data-fc-front>Hva er <em>tredjeparts</em> cookies, og hvilke krav stiller den norske ekomloven (2025)? <small>(tilleggsstoff utenom læreboka)</small></div>
         <div data-fc-back>
           <p><strong>Svar:</strong> Tredjeparts cookies er cookies satt av et annet domene enn det du ser i adressefeltet — typisk fra annonse- og analysenettverk. Fordi den samme tredjeparten er innebygd på mange nettsteder, kan en og samme cookie identifisere deg på tvers av tjenester og bygge en detaljert profil av aktiviteten din.</p>
           <p><strong>Ekomloven 2025:</strong> Trådte i kraft 1. januar 2025 og krever at samtykke til cookies oppfyller GDPR-kravene — det skal være <em>frivillig, spesifikt, informert, utvetydig, gitt gjennom en aktiv handling, dokumenterbart, og like enkelt å trekke tilbake som å gi</em>. Det er grunnen til cookie-bannerne du ser ved første besøk på alle norske nettsteder. Sporing er ikke ulovlig, men <em>skjult</em> sporing er det.</p>
@@ -551,7 +556,7 @@
     <div class="q-text">Hva tilbyr TCP applikasjoner?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">TCP tilbyr pålitelig, ordnet byte-strøm med flyt- og køkontroll, men med mer overhead.</div>
+      <div class="answer">TCP tilbyr pålitelig, ordnet byte-strøm med flyt- og overbelastningskontroll, men med mer overhead.</div>
     </div>
   </div>
 
@@ -560,7 +565,7 @@
     <div class="q-text">Hva tilbyr UDP applikasjoner?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">UDP tilbyr lav latenst og enkel datagramtransport uten leveringsgarantier.</div>
+      <div class="answer">UDP tilbyr lav latens og enkel datagramtransport uten leveringsgarantier.</div>
     </div>
   </div>
 

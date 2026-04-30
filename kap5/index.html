@@ -283,7 +283,7 @@
         <div data-fc-front>Forklar klassifiseringsaksen <em>global vs. desentralisert</em> rutinginformasjon.</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> <em>Global</em> betyr at hver ruter kjenner hele nettverkets topologi (alle rutere, alle lenker, alle kostnader) og kan beregne beste sti alene — dette er ideen bak link-state-algoritmer. <em>Desentralisert</em> betyr at ingen har hele bildet; hver ruter kjenner bare sine direkte naboer og bygger gradvis opp kunnskap gjennom utveksling med dem — dette er ideen bak distance-vector-algoritmer.</p>
-          <p><strong>Hvorfor:</strong> Aksen påvirker både hvor mye kommunikasjon som trengs og hvor raskt nettverket konvergerer ved endringer. Global informasjon krever at endringer flooder ut til alle, men gir rask konvergens. Desentralisert informasjon krever bare nabolags-prat, men endringer "bølger" gjennom nettverket og kan ta lengre tid å nå alle.</p>
+          <p><strong>Hvorfor:</strong> Aksen avgjør hvor mye topologi-informasjon hver ruter må samle og dele med andre før alle har konsistente tabeller — uten at én sentral enhet styrer alt.</p>
         </div>
       </li>
 
@@ -322,8 +322,8 @@
       <li data-card>
         <div data-fc-front>Hvilke felter inneholder en ICMP-melding?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> <em>Type</em> (kategori melding), <em>code</em> (underkategori med mer detaljer), og <em>de første 8 bytene av IP-datagrammet som forårsaket feilen</em>.</p>
-          <p><strong>Hvorfor:</strong> Type og code identifiserer hva slags ICMP-melding dette er — f.eks. type 3 + code 1 = "host unreachable". De første 8 bytene av det opprinnelige datagrammet er med slik at avsenderen kan identifisere hvilken pakke meldingen gjelder. Disse bytene inneholder typisk port-numre fra transportlaget — så en applikasjon kan koble feilen til riktig socket.</p>
+          <p><strong>Svar:</strong> <em>Type</em> og <em>code</em>. Ved typiske feilmeldinger inkluderes også IP-headeren og de første 8 bytene av det datagrammet som utløste ICMP-meldingen (jf. Kurose kap. 5.6).</p>
+          <p><strong>Hvorfor:</strong> Type og code sier hva slags melding det er. Utdraget fra det opprinnelige datagrammet lar avsenderen koble meldingen til riktig pakke og ofte til riktig transportlag-socket.</p>
         </div>
       </li>
 
@@ -395,7 +395,7 @@
         <div data-fc-front>Hva betyr <em>konvergens</em> i en rutingprotokoll, og hvorfor er det viktig?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> Konvergens er prosessen der alle rutere blir enige om en konsistent forwarding-tabell etter en endring i nettverket. Et system har konvergert når ingen flere oppdateringer flyter, og alle tabeller stemmer overens med den nåværende topologien.</p>
-          <p><strong>Hvorfor:</strong> Det er <em>under</em> konvergensperioden at pakker kan havne i løkker eller bli droppet — fordi forskjellige rutere har midlertidig motstridende oppfatninger av nettverket. Rask og stabil konvergens er ett av hovedkriteriene en god rutingalgoritme måles på. Link-state-algoritmer konvergerer typisk raskt fordi LSA-er flooder ut til alle samtidig; distance-vector kan ta lengre tid fordi informasjonen må "bølge" gjennom nettverket.</p>
+          <p><strong>Hvorfor:</strong> Det er <em>under</em> konvergensperioden at pakker kan havne i løkker eller bli droppet — fordi forskjellige rutere midlertidig kan ha motstridende tabeller. Rask og stabil konvergens er derfor et viktig mål for rutingprotokoller.</p>
         </div>
       </li>
 
@@ -565,7 +565,7 @@
     <div class="q-text">Hva er konvergens i rutingprotokoller, og hvorfor er det viktig?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Rask og stabil konvergens reduserer perioder med tap, løkker og suboptimale ruter.</div>
+      <div class="answer">Konvergens er prosessen der alle rutere får konsistente forwarding-tabeller etter en endring. Underveis kan tabellene være midlertidig ulike; rask og stabil konvergens reduserer risiko for løkker og tap.</div>
     </div>
   </div>
 

@@ -54,7 +54,7 @@
   <div class="callout callout-blue">
     <span class="label">Analogy — the busy office</span>
     <p>
-      Imagine a busy office with one shared printer cable. Everyone wants to print at the same time. <strong>CSMA/CD</strong> is the rules they follow: listen before you send (<em>carrier sense</em>), don't send if someone else is sending (<em>collision avoidance</em>), and if two send simultaneously, both stop, wait a random time, and try again (<em>collision detection + exponential backoff</em>). Ethernet uses exactly this logic.
+      Imagine a busy office with one shared printer cable. Everyone wants to print at the same time. <strong>CSMA/CD</strong> is the rules they follow: listen before you send (<em>carrier sense</em>), transmit when the channel is idle, and <em>listen while transmitting</em> (<em>collision detection</em>) — if a collision is detected, both sides stop, wait a random time (<em>exponential backoff</em>), and try again. (<em>Collision avoidance</em> is characteristic of CSMA/CA, used in WiFi — covered in chapter 7.) Classic shared-medium Ethernet follows CSMA/CD.
     </p>
   </div>
 

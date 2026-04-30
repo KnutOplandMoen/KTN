@@ -60,7 +60,7 @@
   <div class="callout callout-blue">
     <span class="label">Analogi — det travle kontoret</span>
     <p>
-      Tenk deg et travelt kontor med én delt printerkabel. Alle vil skrive ut samtidig. <strong>CSMA/CD</strong> er reglene de følger: lytt før du sender (<em>carrier sense</em>), ikke send hvis noen andre sender (<em>collision avoidance</em>), og hvis to sender samtidig, stopper begge, venter en tilfeldig tid, og prøver igjen (<em>collision detection + exponential backoff</em>). Ethernet bruker nøyaktig denne logikken.
+      Tenk deg et travelt kontor med én delt printerkabel. Alle vil skrive ut samtidig. <strong>CSMA/CD</strong> er reglene de følger: lytt før du sender (<em>carrier sense</em>), send når kanalen er ledig, og <em>lytt mens du sender</em> (<em>collision detection</em>) — oppdages kollisjon, stopper begge, venter en tilfeldig tid (<em>exponential backoff</em>), og prøver igjen. (Kollisjons<em>unngåelse</em> er typisk CSMA/CA, som brukes i WiFi — det er tema i kapittel 7.) Ethernet bruker nøyaktig CSMA/CD-logikken på delt medium.
     </p>
   </div>
 

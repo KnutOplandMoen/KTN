@@ -28,7 +28,6 @@
       <a href="#ruting"><span>02</span>Routing protocols</a>
       <a href="#icmp"><span>03</span>ICMP</a>
       <a href="#traceroute"><span>04</span>Traceroute</a>
-      <a href="#nettverksadmin"><span>05</span>Network administration</a>
     </nav>
 
     <div class="learn-box">
@@ -43,7 +42,7 @@
       </ul>
     </div>
 
-    <div class="margin-note"><strong>Syllabus from chapter 5:</strong> 5.1 Introduction, 5.2 Routing Algorithms (intro only — not 5.2.1 Link-State or 5.2.2 Distance-Vector), and 5.6 ICMP. The rest of the material on this page is elaboration and background.</div>
+    <div class="margin-note"><strong>Syllabus (chapter 5):</strong> 5.1 Introduction, 5.2 Routing Algorithms (introduction only — not 5.2.1 or 5.2.2), and 5.6 ICMP. This page covers only that.</div>
   </div>
 </header>
 
@@ -72,9 +71,9 @@
 
     <p>There are broadly two philosophies for how the control plane should be built:</p>
 
-    <p><strong>1. Per-router control (traditional).</strong> Each router runs its own little routing algorithm, talks to its neighbors, and builds its own local forwarding table. No boss. Everyone is equal. This is how the Internet is built today, and it is what we focus on in this chapter.</p>
+    <p><strong>1. Per-router control (traditional).</strong> Each router runs its own little routing algorithm, talks to its neighbors, and builds its own local forwarding table. No boss. Everyone is equal. This is typical of the public Internet, so many examples here follow this model.</p>
 
-    <p><strong>2. Logically centralized control (Software Defined Networking, SDN).</strong> A central controller somewhere in the network computes all forwarding tables and pushes them out to all routers. The routers become "dumb" — they just do what the controller says. This is modern, and is used in large data centers, but is outside the scope of this chapter.</p>
+    <p><strong>2. Logically centralized control (Software Defined Networking, SDN).</strong> A central controller somewhere in the network computes all forwarding tables and pushes them out to all routers. The routers become "dumb" — they just do what the controller says. Both organizations are required reading from Section 5.1 in the textbook; SDN is common in data centers and private operational networks.</p>
 
     <!-- Figure: two planes -->
     <figure>
@@ -167,94 +166,6 @@
     <h4>Axis 2 — Static or dynamic?</h4>
 
     <p><strong>Static</strong> routes change infrequently (perhaps when a network administrator manually configures something). <strong>Dynamic</strong> routes are updated continuously — either at regular intervals or in response to a link changing cost or disappearing. Modern networks almost always use dynamic algorithms, because the Internet changes too often to keep up manually.</p>
-
-    <div class="info-box">
-      <h4>Elaboration — outside the syllabus</h4>
-      <p>What follows about link-state and distance-vector is <em>not</em> part of the syllabus (5.2.1 and 5.2.2 are explicitly excluded). It is included as useful background for understanding how routing algorithms actually work in practice.</p>
-    </div>
-
-    <h3>Link-state: "I have the map"</h3>
-
-    <p>Link-state algorithms are built on a simple but powerful idea: if every router has a complete map of the network, each one can compute the best paths entirely on its own, without having to ask anyone. The question then becomes: how does one obtain that map?</p>
-
-    <p>The solution is <em>flooding</em>. Each router creates a small message — a <strong>Link-State Advertisement</strong> (LSA) — that describes all the links it has and what they cost. Then it sends the LSA to all its neighbors. The neighbors forward it to their neighbors. And so on. After a short time, <em>every</em> router in the network has received LSAs from all others, and thus has knowledge of the entire topology.</p>
-
-    <p>Once a router has this complete map, it runs a shortest-path algorithm (typically Dijkstra's algorithm) locally to find the best path to every possible destination. The result is filled into the forwarding table, and the data plane is ready to move packets.</p>
-
-    <div class="info-box blue">
-      <h4>Advantages of link-state</h4>
-      <p><em>Fast convergence:</em> When something changes (a link goes down), the new information spreads quickly through the entire network, and all routers can update rapidly. <em>Good scaling:</em> Handles large, complex networks well. <em>Adaptability:</em> Suitable for networks that change frequently.</p>
-    </div>
-
-    <h3>Distance-vector: "I trust my neighbors"</h3>
-
-    <p>Distance-vector algorithms take an entirely different approach. Instead of everyone having the complete map, each router has only a <strong>distance vector</strong> — a table that says "to destination X, my best distance is Y, and I send the packet out via neighbor Z." The router gets no global overview; it gets only its own little list.</p>
-
-    <p>Here is how it works in practice:</p>
-
-    <p><strong>Step 1 — Information sharing.</strong> Each router sends its own distance vector to its direct neighbors. "This is what the world looks like from my vantage point," it says.</p>
-
-    <p><strong>Step 2 — Updating.</strong> When a router receives a neighbor's vector, it compares: "Hmm, neighbor B says it can reach destination X with cost 5. To reach neighbor B costs me 2. So if I send via B, I can reach X with cost 7. Is that better than what I had?" If yes, it updates its own table.</p>
-
-    <p><strong>Step 3 — Convergence.</strong> Every time a router's table changes, it sends out its new vector to its neighbors, who might update their tables, who might send out new vectors, etc. After a while, everything stabilizes, and all routers have consistent and (hopefully) optimal tables.</p>
-
-    <div class="margin-note"><strong>The analogy.</strong> Link-state is like giving everyone a GPS map of the entire city. Distance-vector is like asking your neighbors: "How far is it to the store from here?" — and they ask their neighbors — until you have all agreed on the shortest route.</div>
-
-    <h3>Comparison</h3>
-
-    <table class="compare-table">
-      <thead>
-        <tr>
-          <th>Property</th>
-          <th>Link-State</th>
-          <th>Distance-Vector</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Knowledge</td>
-          <td>Entire topology (global)</td>
-          <td>Only neighbors (local)</td>
-        </tr>
-        <tr>
-          <td>Computation</td>
-          <td>Dijkstra locally at each router</td>
-          <td>Iterative exchange with neighbors</td>
-        </tr>
-        <tr>
-          <td>Messages</td>
-          <td>LSAs are flooded to all</td>
-          <td>Vectors are sent only to neighbors</td>
-        </tr>
-        <tr>
-          <td>Convergence</td>
-          <td>Fast</td>
-          <td>Can be slower; may have "count to infinity"</td>
-        </tr>
-        <tr>
-          <td>Scalability</td>
-          <td>Good for large networks</td>
-          <td>Best for smaller networks</td>
-        </tr>
-        <tr>
-          <td>Example</td>
-          <td>OSPF</td>
-          <td>RIP</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- QUIZ 2 -->
-    <div class="quiz" data-quiz="2">
-      <div class="q-label">Check question</div>
-      <div class="q-text">A new router-neighbor pair discovers that the link between them has just gotten twice the delay. Which algorithm type will typically react fastest to this change?</div>
-      <div class="options">
-        <button class="option" data-correct="true">Link-state, because the LSA is flooded quickly to all routers in the network</button>
-        <button class="option" data-correct="false">Distance-vector, because it only needs to talk to the nearest neighbor</button>
-        <button class="option" data-correct="false">Both react at exactly the same speed</button>
-      </div>
-      <div class="explanation">Correct — link-state spreads changes via flooding, so all routers learn about it almost immediately and can recalculate their tables. Distance-vector can take longer because information must "ripple" through the network one neighbor at a time.</div>
-    </div>
   </div>
 </section>
 
@@ -279,13 +190,9 @@
 
     <p>Here is a detail that often confuses: ICMP is considered part of the network layer, but ICMP messages are transported <em>inside</em> IP datagrams. So strictly speaking, ICMP sits <em>"on top of"</em> IP, even though both are considered part of the network layer. Think of ICMP as a small helper protocol that piggybacks on IP to get where it needs to go.</p>
 
-    <p>An ICMP message contains three main fields:</p>
+    <p>ICMP messages have <strong>type</strong> and <strong>code</strong> fields (see the table below). In addition, typical <em>error messages</em> include a copy of the <strong>IP header</strong> and the <strong>first 8 bytes</strong> of the IP datagram that triggered the ICMP message, so the sender can identify which original packet was involved — as Kurose and Ross describe in Section 5.6.</p>
 
-    <ul style="list-style: none; padding-left: 0; margin-bottom: 22px;">
-      <li style="padding: 10px 0; border-bottom: 1px dashed var(--line);"><strong>Type</strong> — which category of message this is (e.g. 3 = "destination unreachable", 8 = "echo request")</li>
-      <li style="padding: 10px 0; border-bottom: 1px dashed var(--line);"><strong>Code</strong> — a subcategory that provides more detail (e.g. type 3 + code 1 = "host unreachable")</li>
-      <li style="padding: 10px 0;"><strong>The first 8 bytes of the IP datagram that caused the error</strong> — so the sender knows <em>which</em> packet the ICMP message refers to</li>
-    </ul>
+    <div class="margin-note">Echo request/reply and some other message types do not carry this error-datagram payload in the same way as classic error reports.</div>
 
     <h3>The most important ICMP types</h3>
 
@@ -311,6 +218,8 @@
         <tr><td>12</td><td>0</td><td>error in IP header</td></tr>
       </tbody>
     </table>
+
+    <p>IPv6 uses <strong>ICMPv6</strong> (RFC 4443) for the same roles, including types such as "Packet Too Big" for MTU issues on IPv6 paths.</p>
   </div>
 </section>
 
@@ -324,7 +233,7 @@
     <p class="section-intro">How can you find out which routers your packets pass through on the way to a destination — without having access to any of them? The answer is one of the networking world's finest tricks.</p>
 
     <div class="container" style="padding: 0;">
-    <p class="lead">The command <code>traceroute</code> (and variants like <code>tracert</code> on Windows, <code>mtr</code>, etc.) shows you a list of all routers a packet passes on the way to a target. It is incredibly useful when troubleshooting — but how on earth does it do it? You cannot ask each router along the way for its name. They do not even know you are trying to reach them.</p>
+    <p class="lead">The <code>traceroute</code> program shows you a list of routers a packet passes on the way to a target. It is useful when troubleshooting — but how does it do it? You cannot ask each router along the way for its name. They do not even know you are trying to reach them.</p>
 
     <p>The trick exploits a feature that was actually designed to prevent packets from living forever: the <strong>TTL</strong> field (Time To Live) in the IP header. TTL is a number that is decremented by 1 each time a packet passes through a router. When TTL hits 0, the router discards the packet and sends an ICMP message back to the sender: <em>"type 11, code 0 — TTL expired."</em> And — this is the key — that message contains the router's own IP address.</p>
 
@@ -360,7 +269,7 @@
 
     <p><strong>2.</strong> The source sees this message and understands: <em>aha, we have reached the target</em>. It stops.</p>
 
-    <div class="margin-note">The beauty is that traceroute never actually "asked for" the information. It just exploited two entirely normal ICMP mechanisms — TTL expired and port unreachable — to force a result that no one had intended it to get. It is the hacker spirit at its finest.</div>
+    <div class="margin-note">Traceroute uses two ordinary ICMP mechanisms — TTL expired along the path and port unreachable at the destination — to reveal each hop.</div>
     </div>
 
     <!-- STEPPER -->
@@ -444,28 +353,6 @@
 </section>
 
 <div class="divider">❋ &nbsp;❋ &nbsp;❋</div>
-
-<!-- ============ SECTION 5: Network management ============ -->
-<section id="nettverksadmin">
-  <div class="container">
-    <div class="section-badge">05 · Conclusion</div>
-    <h2>And finally: network management</h2>
-    <p class="section-intro">Routing algorithms and ICMP are the building blocks. But someone must put it all together, monitor it, and fix it when things break.</p>
-
-    <div class="margin-note"><strong>Not part of the syllabus.</strong> Network management is not part of the syllabus for chapter 5, but provides useful context.</div>
-
-    <p class="lead">A modern <em>autonomous system</em> — the technical term for "a network operated by one organization," for example an ISP, a university, or a large enterprise — consists of thousands of interacting hardware and software components. Keeping something this complex in order requires its own discipline: <strong>network management</strong>.</p>
-
-    <p>The classic definition from Saydam &amp; Magedanz (1996) captures the breadth well: network management encompasses the deployment, integration, and coordination of hardware, software, and human elements to monitor, test, configure, analyze, evaluate, and control the network and its resources — so that performance and quality-of-service requirements are met at a reasonable cost.</p>
-
-    <p>Translated into everyday language: someone must make sure the lights are on, nothing is on fire, and the users are not calling to complain. Other complex systems have the same type of challenge — a passenger aircraft, a nuclear power plant, a large factory — all must be continuously monitored and controlled to avoid collapse.</p>
-
-    <div class="info-box">
-      <h4>What to take away from this chapter</h4>
-      <p>The network layer has two faces: the <em>data plane</em> that rapidly moves packets according to pre-built tables, and the <em>control plane</em> that builds those tables by having routers talk to each other via routing protocols. Link-state algorithms give everyone the full map; distance-vector algorithms let each router learn from its neighbors. And when something goes wrong, or when we simply want to trace the path a packet took, ICMP serves as the network's internal signaling language — quiet and discreet, but absolutely essential.</p>
-    </div>
-  </div>
-</section>
 
 <footer>
   <div class="container">

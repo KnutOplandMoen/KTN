@@ -17,7 +17,6 @@ Hele Chapter 4, MINUS:
 - 4.4 Generalized Forwarding and SDN
 4.6 Middleboxes
 Fra Chapter 5 er KUN FØLGENDE pensum:
--
 5.1 Introduction
 - 5.2 Routing algorithms (intro, dvs. ikke 5.2.1 eller 5.2.2)
 - 5.6 ICMP: The Internet Control Message Protocol

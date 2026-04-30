@@ -33,7 +33,6 @@
       <a href="#ruting"><span>02</span>Rutingprotokoller</a>
       <a href="#icmp"><span>03</span>ICMP</a>
       <a href="#traceroute"><span>04</span>Traceroute</a>
-      <a href="#nettverksadmin"><span>05</span>Nettverksadministrasjon</a>
     </nav>
 
     <div class="learn-box">
@@ -48,7 +47,7 @@
       </ul>
     </div>
 
-    <div class="margin-note"><strong>Pensum fra kapittel 5:</strong> 5.1 Introduction, 5.2 Routing Algorithms (kun intro — ikke 5.2.1 Link-State eller 5.2.2 Distance-Vector), og 5.6 ICMP. Resten av stoffet på denne siden er utdypning og bakgrunn.</div>
+    <div class="margin-note"><strong>Pensum (kapittel 5):</strong> 5.1 Introduction, 5.2 Routing Algorithms (kun innledningen — ikke 5.2.1 eller 5.2.2), og 5.6 ICMP. Denne siden dekker bare det.</div>
   </div>
 </header>
 
@@ -77,9 +76,9 @@
 
     <p>Det finnes grovt sett to filosofier for hvordan kontrollplanet skal bygges:</p>
 
-    <p><strong>1. Per-ruter kontroll (tradisjonell).</strong> Hver ruter kjører sin egen lille routing-algoritme, snakker med sine naboer, og bygger sin egen lokale forwarding-tabell. Ingen sjef. Alle er likeverdige. Dette er slik internett er bygget i dag, og det er det vi fokuserer på i dette kapittelet.</p>
+    <p><strong>1. Per-ruter kontroll (tradisjonell).</strong> Hver ruter kjører sin egen lille routing-algoritme, snakker med sine naboer, og bygger sin egen lokale forwarding-tabell. Ingen sjef. Alle er likeverdige. Dette er typisk for det åpne internettet, så mange eksempler her handler om denne modellen.</p>
 
-    <p><strong>2. Logisk sentralisert kontroll (Software Defined Networking, SDN).</strong> En sentral kontroller et sted i nettverket beregner alle forwarding-tabeller og dytter dem ut til alle ruterne. Ruterne blir "dumme" — de bare gjør det kontrolleren sier. Dette er moderne, og brukes i store datasentere, men er utenfor rammen for dette kapittelet.</p>
+    <p><strong>2. Logisk sentralisert kontroll (Software Defined Networking, SDN).</strong> En sentral kontroller et sted i nettverket beregner alle forwarding-tabeller og dytter dem ut til alle ruterne. Ruterne blir "dumme" — de bare gjør det kontrolleren sier. Begge organiseringene er pensum fra kapittel 5.1 i læreboken; SDN er vanlig blant annet i datasentre og egne driftsnett.</p>
 
     <!-- Figure: two planes -->
     <figure>
@@ -172,94 +171,6 @@
     <h4>Akse 2 — Statisk eller dynamisk?</h4>
 
     <p><strong>Statiske</strong> ruter endres sjelden (kanskje når en nettverksadministrator manuelt konfigurerer noe). <strong>Dynamiske</strong> ruter oppdateres fortløpende — enten med jevne mellomrom eller som respons på at en lenke endrer kostnad eller forsvinner. Moderne nettverk bruker nesten alltid dynamiske algoritmer, fordi internett endrer seg for ofte til å holde tritt manuelt.</p>
-
-    <div class="info-box">
-      <h4>Utdypning — utenfor pensum</h4>
-      <p>Det som følger om link-state og distance-vector er <em>ikke</em> pensum (5.2.1 og 5.2.2 er eksplisitt utelatt). Det er tatt med som nyttig bakgrunn for å forstå hvordan rutingalgoritmer faktisk fungerer i praksis.</p>
-    </div>
-
-    <h3>Link-state: "jeg har kartet"</h3>
-
-    <p>Link-state-algoritmer bygger på en enkel, men sterk idé: hvis hver ruter har et komplett kart over nettverket, kan hver enkelt beregne de beste stiene helt alene, uten å måtte spørre noen. Spørsmålet blir da: hvordan skaffer man seg det kartet?</p>
-
-    <p>Løsningen er <em>flooding</em>. Hver ruter lager en liten melding — en <strong>Link-State Advertisement</strong> (LSA) — som beskriver alle lenkene den selv har og hva de koster. Så sender den LSA-en til alle sine naboer. Naboene videresender den til sine naboer. Osv. Etter kort tid har <em>hver</em> ruter i nettverket mottatt LSA-er fra alle andre, og har dermed kunnskap om hele topologien.</p>
-
-    <p>Når en ruter har dette komplette kartet, kjører den en kortest-sti-algoritme (typisk Dijkstras algoritme) lokalt for å finne den beste stien til hver mulige destinasjon. Resultatet fylles inn i forwarding-tabellen, og dataplanet er klart til å flytte pakker.</p>
-
-    <div class="info-box blue">
-      <h4>Fordeler med link-state</h4>
-      <p><em>Rask konvergens:</em> Når noe endrer seg (en lenke går ned), sprer den nye informasjonen seg raskt gjennom hele nettverket, og alle rutere kan raskt oppdatere seg. <em>God skalering:</em> Håndterer store, komplekse nettverk godt. <em>Tilpasningsevne:</em> Egner seg for nettverk som endrer seg ofte.</p>
-    </div>
-
-    <h3>Distance-vector: "jeg stoler på naboene mine"</h3>
-
-    <p>Distance-vector-algoritmer tar en helt annen tilnærming. I stedet for at alle skal ha hele kartet, har hver ruter bare en <strong>distansevektor</strong> — en tabell som sier "til destinasjon X, er min beste avstand Y, og jeg sender pakken ut via nabo Z". Ruteren får ikke noe globalt overblikk; den får bare sin egen lille liste.</p>
-
-    <p>Slik fungerer det i praksis:</p>
-
-    <p><strong>Steg 1 — Informasjonsdeling.</strong> Hver ruter sender sin egen distansevektor til sine direkte naboer. "Slik ser verden ut fra mitt ståsted," sier den.</p>
-
-    <p><strong>Steg 2 — Oppdatering.</strong> Når en ruter mottar en naboene sine sin vektor, sammenligner den: "Hmm, nabo B sier den kan nå destinasjon X med kostnad 5. For å nå nabo B koster det meg 2. Så hvis jeg sender via B, kan jeg nå X med kostnad 7. Er det bedre enn det jeg hadde?" Hvis ja, oppdaterer den sin egen tabell.</p>
-
-    <p><strong>Steg 3 — Konvergens.</strong> Hver gang en ruters tabell endres, sender den ut sin nye vektor til naboene, som kanskje oppdaterer sine tabeller, som kanskje sender ut nye vektorer, osv. Etter en stund stabiliserer alt seg, og alle rutere har konsistente og (forhåpentligvis) optimale tabeller.</p>
-
-    <div class="margin-note"><strong>Analogien.</strong> Link-state er som å gi alle et GPS-kart over hele byen. Distance-vector er som å spørre naboene dine: "Hvor langt er det til butikken herfra?" — og de spør sine naboer — til dere alle har blitt enige om korteste rute.</div>
-
-    <h3>Sammenligning</h3>
-
-    <table class="compare-table">
-      <thead>
-        <tr>
-          <th>Egenskap</th>
-          <th>Link-State</th>
-          <th>Distance-Vector</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Kunnskap</td>
-          <td>Hele topologien (globalt)</td>
-          <td>Bare naboer (lokalt)</td>
-        </tr>
-        <tr>
-          <td>Beregning</td>
-          <td>Dijkstra lokalt hos hver ruter</td>
-          <td>Iterativ utveksling med naboer</td>
-        </tr>
-        <tr>
-          <td>Meldinger</td>
-          <td>LSA-er flood-es til alle</td>
-          <td>Vektorer sendes bare til naboer</td>
-        </tr>
-        <tr>
-          <td>Konvergens</td>
-          <td>Rask</td>
-          <td>Kan være tregere; kan ha "count to infinity"</td>
-        </tr>
-        <tr>
-          <td>Skalerbarhet</td>
-          <td>God for store nett</td>
-          <td>Best for mindre nett</td>
-        </tr>
-        <tr>
-          <td>Eksempel</td>
-          <td>OSPF</td>
-          <td>RIP</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- QUIZ 2 -->
-    <div class="quiz" data-quiz="2">
-      <div class="q-label">Sjekkspørsmål</div>
-      <div class="q-text">Et nytt ruter-nabopar oppdager at lenken mellom dem nettopp har fått dobbelt så stor forsinkelse. Hvilken algoritme-type vil typisk reagere raskest på denne endringen?</div>
-      <div class="options">
-        <button class="option" data-correct="true">Link-state, fordi LSA-en flood-es raskt til alle rutere i nettverket</button>
-        <button class="option" data-correct="false">Distance-vector, fordi den bare trenger å snakke med nærmeste nabo</button>
-        <button class="option" data-correct="false">Begge reagerer nøyaktig like raskt</button>
-      </div>
-      <div class="explanation">Riktig — link-state sprer endringer via flooding, slik at alle rutere får vite det nesten umiddelbart og kan rekalkulere sine tabeller. Distance-vector kan ta lengre tid fordi informasjonen må "bølge" gjennom nettverket en nabo om gangen.</div>
-    </div>
   </div>
 </section>
 
@@ -284,13 +195,9 @@
 
     <p>Her er en detalj som ofte forvirrer: ICMP regnes som en del av nettverkslaget, men ICMP-meldinger transporteres <em>inni</em> IP-datagram. Så strengt tatt ligger ICMP <em>"oppå"</em> IP, selv om begge regnes som del av nettverkslaget. Tenk på ICMP som en liten hjelpeprotokoll som snylter på IP for å komme fram.</p>
 
-    <p>En ICMP-melding inneholder tre hovedfelter:</p>
+    <p>ICMP-meldinger har <strong>type</strong>- og <strong>code</strong>-felt (tabellen nedenfor). I tillegg inneholder typiske <em>feilmeldinger</em> en kopi av <strong>IP-headeren</strong> og <strong>de første 8 bytene</strong> av det IP-datagrammet som utløste ICMP-meldingen, slik at avsenderen kan identifisere hvilken opprinnelig pakke det gjelder — slik Kurose og Ross beskriver i kapittel 5.6.</p>
 
-    <ul style="list-style: none; padding-left: 0; margin-bottom: 22px;">
-      <li style="padding: 10px 0; border-bottom: 1px dashed var(--line);"><strong>Type</strong> — hvilken kategori melding dette er (f.eks. 3 = "destination unreachable", 8 = "echo request")</li>
-      <li style="padding: 10px 0; border-bottom: 1px dashed var(--line);"><strong>Code</strong> — en underkategori som gir mer detaljer (f.eks. type 3 + code 1 = "host unreachable")</li>
-      <li style="padding: 10px 0;"><strong>De første 8 bytene av IP-datagrammet som forårsaket feilen</strong> — slik at avsenderen vet <em>hvilken</em> pakke ICMP-meldingen gjelder</li>
-    </ul>
+    <div class="margin-note">Echo request/reply og noen andre meldingstyper bruker ikke denne «feildatagram»-nyttelasten på samme måte som klassiske feilrapporter.</div>
 
     <h3>De viktigste ICMP-typene</h3>
 
@@ -316,6 +223,8 @@
         <tr><td>12</td><td>0</td><td>feil i IP-headeren</td></tr>
       </tbody>
     </table>
+
+    <p>IPv6 har tilsvarende funksjon gjennom <strong>ICMPv6</strong> (RFC 4443), med blant annet typen «Packet Too Big» for MTU-problemer på IPv6-stier.</p>
   </div>
 </section>
 
@@ -329,7 +238,7 @@
     <p class="section-intro">Hvordan kan du finne ut hvilke rutere pakkene dine passerer gjennom på vei til en destinasjon — uten å ha tilgang til noen av dem? Svaret er et av nettverks-verdens fineste triks.</p>
 
     <div class="container" style="padding: 0;">
-    <p class="lead">Kommandoen <code>traceroute</code> (og variantene <code>tracert</code> på Windows, <code>mtr</code> osv.) viser deg en liste over alle rutere en pakke passerer på vei til et mål. Det er utrolig nyttig når du feilsøker — men hvordan i all verden klarer den det? Du kan jo ikke spørre hver ruter underveis om navnet sitt. De vet ikke engang at du prøver å nå dem.</p>
+    <p class="lead">Programmet <code>traceroute</code> viser deg en liste over rutere en pakke passerer på vei til et mål. Det er nyttig når du feilsøker — men hvordan klarer den det? Du kan jo ikke spørre hver ruter underveis om navnet sitt. De vet ikke engang at du prøver å nå dem.</p>
 
     <p>Trikset utnytter en feature som egentlig er laget for å hindre at pakker lever evig: <strong>TTL</strong>-feltet (Time To Live) i IP-headeren. TTL er et tall som dekrementeres med 1 hver gang en pakke passerer en ruter. Når TTL treffer 0, kaster ruteren pakken og sender en ICMP-melding tilbake til avsenderen: <em>"type 11, code 0 — TTL expired"</em>. Og — dette er nøkkelen — den meldingen inneholder ruterens egen IP-adresse.</p>
 
@@ -365,7 +274,7 @@
 
     <p><strong>2.</strong> Kilden ser denne meldingen og skjønner: <em>aha, vi har nådd målet</em>. Den stopper.</p>
 
-    <div class="margin-note">Det vakre er at traceroute aldri egentlig "ba om" informasjonen. Den utnyttet bare to helt normale ICMP-mekanismer — TTL expired og port unreachable — til å tvinge frem et resultat ingen hadde tenkt den skulle få. Det er hackeråndens beste uttrykk.</div>
+    <div class="margin-note">Traceroute bruker to helt vanlige ICMP-mekanismer — TTL expired underveis og port unreachable ved mål — for å få ut identiteten til hvert hopp.</div>
     </div>
 
     <!-- STEPPER -->
@@ -449,28 +358,6 @@
 </section>
 
 <div class="divider">❋ &nbsp;❋ &nbsp;❋</div>
-
-<!-- ============ SECTION 5: Network management ============ -->
-<section id="nettverksadmin">
-  <div class="container">
-    <div class="section-badge">05 · Avslutning</div>
-    <h2>Og til slutt: nettverksadministrasjon</h2>
-    <p class="section-intro">Rutingalgoritmer og ICMP er byggesteinene. Men noen må sette alt sammen, overvåke det, og fikse det når det går i stykker.</p>
-
-    <div class="margin-note"><strong>Ikke pensum.</strong> Nettverksadministrasjon er ikke del av pensum for kapittel 5, men gir nyttig kontekst.</div>
-
-    <p class="lead">Et moderne <em>autonomt system</em> — det tekniske ordet for "et nettverk drevet av én organisasjon", for eksempel en ISP, et universitet eller en stor bedrift — består av tusenvis av samhandlende maskinvare- og programvarekomponenter. Å holde orden på noe så komplekst krever et eget fagfelt: <strong>nettverksadministrasjon</strong>.</p>
-
-    <p>Den klassiske definisjonen fra Saydam &amp; Magedanz (1996) fanger bredden godt: nettverksadministrasjon omfatter utrulling, integrering og koordinering av maskinvare, programvare og menneskelige elementer for å overvåke, teste, konfigurere, analysere, evaluere og kontrollere nettverket og dets ressurser — slik at kravene til ytelse og tjenestekvalitet møtes til en rimelig kostnad.</p>
-
-    <p>Oversatt til hverdagsspråk: noen må sørge for at lyset er på, at ingenting er på fyr, og at brukerne ikke ringer og klager. Andre komplekse systemer har samme type utfordring — et passasjerfly, et atomkraftverk, en stor fabrikk — alle må overvåkes og kontrolleres kontinuerlig for ikke å kollapse.</p>
-
-    <div class="info-box">
-      <h4>Hva tar du med deg fra dette kapittelet</h4>
-      <p>Nettverkslaget har to ansikter: <em>dataplanet</em> som raskt flytter pakker etter ferdige tabeller, og <em>kontrollplanet</em> som bygger disse tabellene ved at rutere snakker sammen via rutingprotokoller. Link-state-algoritmer gir alle hele kartet; distance-vector-algoritmer lar hver ruter lære av sine naboer. Og når noe går galt, eller når vi bare vil peke på stien pakken tok, fungerer ICMP som nettverkets indre signalspråk — lavmælt og diskret, men helt avgjørende.</p>
-    </div>
-  </div>
-</section>
 
 <footer>
   <div class="container">
