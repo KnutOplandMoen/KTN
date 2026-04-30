@@ -322,15 +322,17 @@
   </div>
 
   <h3>WPA3-håndtrykket i detalj</h3>
-  <p>Steg 2 (gjensidig autentisering og nøkkelutledning) er det mest interessante. I WPA3 foregår det slik:</p>
+  <p>Steg 2 (gjensidig autentisering og nøkkelutledning) er det mest interessante. Målet er en <strong>felles sesjonsnøkkel</strong> K<sub>M-AP</sub> uten at det forhåndsdelte passordet forlater enhetene i klartekst. Passordet inngår bare i <em>lokale</em> beregninger; over lufta sendes verdier som er avledet av passordet, men som ikke avslører passordet direkte — en angriper må fortsatt gjette eller teste passordet (derfor teller sterke passord).</p>
+
+  <p>I denne forenklede beskrivelsen (som samsvarer med fire-stegs-oversikten over) skjer utvekslingen slik:</p>
 
   <ol>
-    <li><strong>AS sender Nonce<sub>AS</sub></strong> — et tilfeldig engangsbrukstall — til mobilenheten.</li>
-    <li><strong>Mobilenheten genererer Nonce<sub>M</sub></strong>, utleder en symmetrisk sesjonsnøkkel K<sub>M-AP</sub> fra begge nonce-ene, det forhåndsdelte passordet og MAC-adressene, og sender Nonce<sub>M</sub> pluss en <strong>HMAC-verdi</strong> (autentiseringskode utledet med den hemmelige nøkkelmaten — ikke en digital signatur i PKI-forstand) tilbake.</li>
-    <li><strong>AS utleder samme K<sub>M-AP</sub></strong> med samme ingredienser, verifiserer HMAC-en, og begge parter har nå en felles sesjonsnøkkel — uten at passordet noensinne ble sendt over lufta.</li>
+    <li><strong>AS sender Nonce<sub>AS</sub></strong> — et tilfeldig engangsnummer — til mobilenheten. Verdien er offentlig i den forstand at den avlyttes i klartekst, men den binder denne økten til et bestemt tidspunkt og hindrer enkelt gjenbruk av gamle meldinger (replay).</li>
+    <li><strong>Mobilenheten</strong> trekker sitt eget tilfeldige <strong>Nonce<sub>M</sub></strong> og kjører en avtalt <strong>nøkkelutledning (KDF)</strong> lokalt: den blander passordet (som bare finnes på enheten), Nonce<sub>AS</sub>, Nonce<sub>M</sub> og typisk MAC-adressene til stasjon og tilgangspunkt. Resultatet er K<sub>M-AP</sub> og kryptografisk materiale til å lage en bekreftelse. Enheten sender <strong>Nonce<sub>M</sub></strong> og en <strong>HMAC</strong> tilbake. HMAC-en er en kort autentiseringskode basert på hash og delt hemmelighet — <em>ikke</em> en asymmetrisk signatur med privat nøkkel fra PKI — men den viser likevel at avsenderen kan ha brukt samme hemmelige grunnlag som mottakeren forventer etter å ha blandet inn riktig passord og riktige nonce-verdier.</li>
+    <li><strong>AS</strong> gjør samme KDF med samme ingredienser, beregner forventet HMAC og sammenligner med det som ble mottatt. Stemmer de, er partene gjensidig overbevist om at den andre kjenner passordet, og de deler nå K<sub>M-AP</sub> — uten at passordet noensinne ble sendt over lufta.</li>
   </ol>
 
-  <div class="margin-note">HMAC (Hash-based Message Authentication Code) er en symmetrisk MAC: hash + delt hemmelig materiale (RFC 2104). Den bekrefter integritet og at parten kjenner det samme hemmelige grunnlaget som i håndtrykket.</div>
+  <div class="margin-note">HMAC (Hash-based Message Authentication Code) er en symmetrisk MAC: hash + delt hemmelig materiale (RFC 2104). Den bekrefter både integritet (meldingen er uendret) og at peer kjenner det hemmelige grunnlaget håndtrykket bygger på.</div>
 
   <h3>4G LTE: autentisering med SIM-kort</h3>
   <p>Mobilnett er fundamentalt annerledes enn WiFi fordi identiteten ligger i <strong>SIM-kortet</strong>, ikke i et passord. SIM-kortet inneholder en globalt unik identifikator (IMSI) og en forhåndsdelt hemmelig nøkkel K<sub>HSS-M</sub> som bare SIM-kortet og hjemmenettverkets <strong>HSS (Home Subscriber Server)</strong> kjenner.</p>
@@ -514,7 +516,7 @@
 (function(){
   var steps = [
     {title:'Steg 1: Oppdagelse av sikkerhetskapabiliteter', text:'AP-et annonserer sin tilstedeværelse og hvilke former for autentisering og kryptering det støtter. Mobilenheten velger den ønskede formen. På dette tidspunktet er enheten ikke autentisert og har ingen krypteringsnøkler (bortsett fra et forhåndsdelt passord).'},
-    {title:'Steg 2: Gjensidig autentisering og nøkkelutledning', text:'Authentication Server (AS) og mobilenheten bruker det forhåndsdelte passordet, nonce-verdier (engangsbrukstall) og kryptografisk hashing til å autentisere hverandre — uten å sende passordet over lufta. Begge utleder en felles symmetrisk sesjonsnøkkel K_M-AP.'},
+    {title:'Steg 2: Gjensidig autentisering og nøkkelutledning', text:'AS og mobilenheten bytter nonce-verdier og en HMAC-bekreftelse. Begge kjører samme nøkkelutledning lokalt: de blander inn det forhåndsdelte passordet, noncene og MAC-adresser, og får samme symmetriske sesjonsnøkkel K_M-AP. Passordet sendes aldri i klartekst — bare verdier som beviser at begge kjenner det.'},
     {title:'Steg 3: Distribusjon av sesjonsnøkkel', text:'AS informerer AP-et om den delte symmetriske sesjonsnøkkelen, slik at AP-et kan kryptere trafikken mellom seg og mobilenheten.'},
     {title:'Steg 4: Kryptert kommunikasjon', text:'Mobilenheten og AP-et bruker nå den symmetriske sesjonsnøkkelen (typisk AES) til å kryptere all videre kommunikasjon over WiFi-linken. All trafikk er nå konfidensiell.'}
   ];
