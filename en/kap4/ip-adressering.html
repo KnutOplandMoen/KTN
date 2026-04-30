@@ -21,16 +21,17 @@
   <div class="container">
     <div class="eyebrow">Chapter 4b &middot; The Network Layer</div>
     <h1>IP and <em>addressing</em></h1>
-    <p class="lede">IP datagrams, CIDR, DHCP, NAT, IPv6 and the Internet&rsquo;s architectural principles &mdash; everything about how addresses and packets work.</p>
+    <p class="lede">IP datagrams, CIDR, DHCP, NAT, middleboxes, IPv6 and the Internet&rsquo;s architectural principles &mdash; everything about how addresses and packets work.</p>
     <nav class="toc">
       <a href="#ip"><span>09</span> The IP datagram</a>
       <a href="#addressing"><span>10</span> IP addresses and subnets</a>
       <a href="#cidr"><span>11</span> CIDR</a>
       <a href="#dhcp"><span>12</span> DHCP</a>
       <a href="#nat"><span>13</span> NAT</a>
-      <a href="#ipv6"><span>14</span> IPv6</a>
-      <a href="#hourglass"><span>15</span> Hourglass and end-to-end</a>
-      <a href="#summary"><span>16</span> Summary</a>
+      <a href="#middleboxes"><span>14</span> Middleboxes</a>
+      <a href="#ipv6"><span>15</span> IPv6</a>
+      <a href="#hourglass"><span>16</span> Hourglass and end-to-end</a>
+      <a href="#summary"><span>17</span> Summary</a>
     </nav>
   </div>
 </header>
@@ -301,10 +302,30 @@
   </div>
 </section>
 
-<!-- ============ 14 IPv6 ============ -->
+<!-- ============ 14 MIDDLEBOXES ============ -->
+<section id="middleboxes">
+  <div class="container">
+    <div class="section-badge">14 &middot; Middleboxes</div>
+    <h2>Devices that do <em>more than IP forwarding</em></h2>
+    <p class="section-intro">A <strong>middlebox</strong> is network equipment that performs functions beyond ordinary routing and forwarding &mdash; often by inspecting, modifying, or steering traffic that passes through.</p>
+
+    <p class="dropcap">The &laquo;pure&raquo; IP model is simple: routers look up the destination and forward. In practice, many boxes sit between client and server that complicate that picture. The textbook groups them under the term <em>middleboxes</em>.</p>
+
+    <ul>
+      <li><strong>NAT</strong> &mdash; translates addresses and ports; already covered above. Typical home or enterprise edge devices.</li>
+      <li><strong>Firewall</strong> &mdash; filters or logs traffic by rules (IP address, port, protocol, connection state). Can block unwanted traffic before it reaches an internal network.</li>
+      <li><strong>Load balancer</strong> &mdash; spreads requests across several servers behind one public address; often must choose or rewrite destinations beyond standard IP forwarding.</li>
+      <li><strong>DPI (deep packet inspection)</strong> &mdash; looks deeper than the IP header (e.g. payload or application patterns) for security, policy, or traffic measurement.</li>
+    </ul>
+
+    <p>Middleboxes make the network more capable, but they echo the same tension as NAT: more logic and state <em>on the path</em>, often at odds with strict readings of the end-to-end principle and the &laquo;narrow waist&raquo; story.</p>
+  </div>
+</section>
+
+<!-- ============ 15 IPv6 ============ -->
 <section id="ipv6">
   <div class="container">
-    <div class="section-badge">14 &middot; IPv6</div>
+    <div class="section-badge">15 &middot; IPv6</div>
     <h2>128-bit addresses and a <em>simpler</em> header</h2>
     <p class="section-intro">IPv6 was specified in 1998. The motivation: 32-bit addresses would run out. The solution: 128-bit addresses &mdash; enough to give every grain of sand on Earth its own address several trillion times over.</p>
 
@@ -366,16 +387,16 @@
   </div>
 </section>
 
-<!-- ============ 15 HOURGLASS ============ -->
+<!-- ============ 16 HOURGLASS ============ -->
 <section id="hourglass">
   <div class="container">
-    <div class="section-badge">15 &middot; The hourglass &amp; end-to-end</div>
+    <div class="section-badge">16 &middot; The hourglass &amp; end-to-end</div>
     <h2>The Internet&rsquo;s <em>architectural principles</em></h2>
     <p class="section-intro">IP is the Internet&rsquo;s &laquo;narrow waist&raquo; &mdash; the only thing everyone must implement. Complexity lives at the edges. This is a deliberate design choice.</p>
 
     <div class="callout">
-      <span class="label">Syllabus note</span>
-      <p>Section 4.5 (Middleboxes) in the textbook is <strong>not part of the syllabus</strong>. The hourglass model and the end-to-end argument are nevertheless central architectural principles referenced throughout the course. This section provides useful background, but the exam focus is on sections 4.1&ndash;4.3.</p>
+      <span class="label">Syllabus note (TTM4100)</span>
+      <p>Chapter 4 in the course follows the textbook with one explicit omission: <strong>Section 4.4 &mdash; Generalized Forwarding and SDN</strong> is not exam syllabus material. The rest of Chapter 4, including middleboxes and the topics in this section, is in scope.</p>
     </div>
 
     <h3>The IP hourglass</h3>
@@ -409,10 +430,10 @@
   </div>
 </section>
 
-<!-- ============ 16 SUMMARY ============ -->
+<!-- ============ 17 SUMMARY ============ -->
 <section id="summary">
   <div class="container">
-    <div class="section-badge">16 &middot; Summary</div>
+    <div class="section-badge">17 &middot; Summary</div>
     <h2>Simple <em>by design</em></h2>
 
     <p class="dropcap">If there is one thing to take away from this chapter: the Internet&rsquo;s network layer is simple by design. Every design decision &mdash; best-effort, dumb routers, hierarchical addressing, destination-based forwarding &mdash; is a choice <em>against</em> complexity.</p>

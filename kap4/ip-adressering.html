@@ -290,10 +290,30 @@
   </div>
 </section>
 
-<!-- ============ 14 IPv6 ============ -->
+<!-- ============ 14 MIDDLEBOXES ============ -->
+<section id="middleboxes">
+  <div class="container">
+    <div class="section-badge">14 &middot; Mellombokser</div>
+    <h2>Enheter som gj&oslash;r <em>mer enn IP-forwarding</em></h2>
+    <p class="section-intro">En <strong>mellomboks</strong> (middlebox) er nettverksutstyr som utf&oslash;rer funksjoner utover vanlig ruting og videresending &mdash; ofte ved &aring; inspisere, endre eller styre trafikk som passerer.</p>
+
+    <p class="dropcap">Den &laquo;rene&raquo; IP-modellen er enkel: rutere sl&aring;r opp destinasjon og sender videre. I praksis ligger det likevel mange bokser mellom klient og tjener som bryter det rene bildet. L&aelig;reboka samler dem under begrepet <em>middleboxes</em>.</p>
+
+    <ul>
+      <li><strong>NAT</strong> &mdash; oversetter adresser og porter; allerede gjennomg&aring;tt over. Typisk hjemme- eller bedriftsruter.</li>
+      <li><strong>Brannmur (firewall)</strong> &mdash; filtrerer eller logger trafikk etter regler (IP-adresse, port, protokoll, tilstand i forbindelsen). Kan stoppe u&oslash;nsket trafikk f&oslash;r den n&aring;r internt nett.</li>
+      <li><strong>Lastbalanserer (load balancer)</strong> &mdash; fordeler foresp&oslash;rsel mellom flere servere bak &eacute;n offentlig adresse; m&aring; ofte endre eller v&aelig;lge m&aring;l for trafikken utover standard IP-forwarding.</li>
+      <li><strong>DPI (deep packet inspection)</strong> &mdash; ser dypere enn IP-header (f.eks. innhold eller applikasjonsm&oslash;nstre) for sikkerhet, policy eller trafikkm&aring;ling.</li>
+    </ul>
+
+    <p>Mellombokser gj&oslash;r nettet mer nyansert, men de understreker samme spenning som for NAT: mer logikk og tilstand <em>i veien</em> for trafikken, ofte i konflikt med strenge tolkninger av end-to-end-prinsippet og &laquo;smal midje&raquo;-modellen.</p>
+  </div>
+</section>
+
+<!-- ============ 15 IPv6 ============ -->
 <section id="ipv6">
   <div class="container">
-    <div class="section-badge">14 &middot; IPv6</div>
+    <div class="section-badge">15 &middot; IPv6</div>
     <h2>128-bit adresser og en <em>enklere</em> header</h2>
     <p class="section-intro">IPv6 ble spesifisert i 1998. Motivasjonen: 32-bit adresser ville g&aring; tomt. L&oslash;sningen: 128-bit adresser &mdash; nok til &aring; gi hvert sandkorn p&aring; jorden sin egen adresse flere tusen milliarder ganger.</p>
 
