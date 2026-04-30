@@ -147,7 +147,7 @@
     </a>
     <a href="ip-adressering.html" class="subpage-card">
       <span class="sp-icon">4b</span>
-      <div class="sp-info"><div class="sp-title">IP og adressering</div><div class="sp-desc">IP-datagrammer, CIDR, DHCP, NAT, IPv6 og Internetts arkitekturprinsipper</div></div>
+      <div class="sp-info"><div class="sp-title">IP og adressering</div><div class="sp-desc">IP-datagrammer, CIDR, DHCP, NAT, IPv6 og arkitekturprinsipper</div></div>
       <span class="sp-arrow">&rarr;</span>
     </a>
   </div>
@@ -159,7 +159,7 @@
 <div class="container">
   <div class="section-badge">Flashcards</div>
   <h2>Rask <em>repetisjon</em></h2>
-  <p class="section-intro">Åpne spørsmål i tilfeldig rekkefølge — forankret i TTM4100-pensum for kapittel 4 i læreboka (hele kapittelet unntatt 4.4 om generalisert videresending og SDN). Klikk kortet for å snu — bruk <strong>&larr; / &rarr;</strong> for å bla, <strong>mellomrom</strong> for å snu, <strong>R</strong> for å shuffle.</p>
+  <p class="section-intro">Åpne spørsmål i tilfeldig rekkefølge — forankret i TTM4100-pensum for kapittel 4 i læreboka (hele kapittelet unntatt <strong>4.4</strong> generalisert videresending/SDN og <strong>4.6</strong> Middleboxes). Klikk kortet for å snu — bruk <strong>&larr; / &rarr;</strong> for å bla, <strong>mellomrom</strong> for å snu, <strong>R</strong> for å shuffle.</p>
 
   <div class="flashcards" data-flashcards>
     <div class="fc-stage">
@@ -419,7 +419,7 @@
         <div data-fc-front>Hva er <em>match plus action</em>-mønsteret, og hvorfor dominerer det forwarding-design?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> Den fundamentale operasjonsstrukturen i en ruter: (1) <strong>Match</strong> — les ett eller flere felt i pakkens header. (2) <strong>Action</strong> — utfør den tilhørende handlingen (typisk "send ut på interface X", men kan også være "drop", "modifiser felt", eller "send til CPU").</p>
-          <p><strong>Hvorfor det dominerer:</strong> Mønsteret er enkelt nok til å implementeres i maskinvare (TCAM + ASIC) på nanosekunder. I pensumets IP-forwarding er <em>destinasjons-IP</em> match-feltet og handlingen nesten alltid «send ut på denne utporten» (eventuelt drop). Det er nok til å beskrive ruting i Internett-kjernen; mer generelle varianter av samme idé hører til avsnitt om SDN og er ikke pensum i dette kapittelet.</p>
+          <p><strong>Hvorfor det dominerer:</strong> Mønsteret er enkelt nok til å implementeres i maskinvare (TCAM + ASIC) på nanosekunder. I pensumets IP-forwarding er <em>destinasjons-IP</em> match-feltet og handlingen nesten alltid «send ut på denne utporten» (eventuelt drop). Mer generelle «match + action»-varianter (lærebok 4.4 / SDN) og middleboxes-teori (4.6) er <em>ikke</em> pensum i TTM4100.</p>
         </div>
       </li>
 

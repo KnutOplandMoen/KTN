@@ -26,16 +26,15 @@
   <div class="container">
     <div class="eyebrow">Kapittel 4b &middot; Nettverkslaget</div>
     <h1>IP og <em>adressering</em></h1>
-    <p class="lede">IP-datagrammer, CIDR, DHCP, NAT, mellombokser, IPv6 og Internetts arkitekturprinsipper &mdash; alt om hvordan adresser og pakker fungerer.</p>
+    <p class="lede">IP-datagrammer, CIDR, DHCP, NAT, IPv6 og Internetts arkitekturprinsipper &mdash; alt om hvordan adresser og pakker fungerer.</p>
     <nav class="toc">
       <a href="#ip"><span>09</span> IP-datagrammet</a>
       <a href="#addressing"><span>10</span> IP-adresser og subnett</a>
       <a href="#cidr"><span>11</span> CIDR</a>
       <a href="#dhcp"><span>12</span> DHCP</a>
       <a href="#nat"><span>13</span> NAT</a>
-      <a href="#middleboxes"><span>14</span> Mellombokser</a>
-      <a href="#ipv6"><span>15</span> IPv6</a>
-      <a href="#summary"><span>16</span> Oppsummering</a>
+      <a href="#ipv6"><span>14</span> IPv6</a>
+      <a href="#summary"><span>15</span> Oppsummering</a>
     </nav>
   </div>
 </header>
@@ -290,30 +289,10 @@
   </div>
 </section>
 
-<!-- ============ 14 MIDDLEBOXES ============ -->
-<section id="middleboxes">
-  <div class="container">
-    <div class="section-badge">14 &middot; Mellombokser</div>
-    <h2>Enheter som gj&oslash;r <em>mer enn IP-forwarding</em></h2>
-    <p class="section-intro">En <strong>mellomboks</strong> (middlebox) er nettverksutstyr som utf&oslash;rer funksjoner utover vanlig ruting og videresending &mdash; ofte ved &aring; inspisere, endre eller styre trafikk som passerer.</p>
-
-    <p class="dropcap">Den &laquo;rene&raquo; IP-modellen er enkel: rutere sl&aring;r opp destinasjon og sender videre. I praksis ligger det likevel mange bokser mellom klient og tjener som bryter det rene bildet. L&aelig;reboka samler dem under begrepet <em>middleboxes</em>.</p>
-
-    <ul>
-      <li><strong>NAT</strong> &mdash; oversetter adresser og porter; allerede gjennomg&aring;tt over. Typisk hjemme- eller bedriftsruter.</li>
-      <li><strong>Brannmur (firewall)</strong> &mdash; filtrerer eller logger trafikk etter regler (IP-adresse, port, protokoll, tilstand i forbindelsen). Kan stoppe u&oslash;nsket trafikk f&oslash;r den n&aring;r internt nett.</li>
-      <li><strong>Lastbalanserer (load balancer)</strong> &mdash; fordeler foresp&oslash;rsel mellom flere servere bak &eacute;n offentlig adresse; m&aring; ofte endre eller v&aelig;lge m&aring;l for trafikken utover standard IP-forwarding.</li>
-      <li><strong>DPI (deep packet inspection)</strong> &mdash; ser dypere enn IP-header (f.eks. innhold eller applikasjonsm&oslash;nstre) for sikkerhet, policy eller trafikkm&aring;ling.</li>
-    </ul>
-
-    <p>Mellombokser gj&oslash;r nettet mer nyansert, men de understreker samme spenning som for NAT: mer logikk og tilstand <em>i veien</em> for trafikken, ofte i konflikt med strenge tolkninger av end-to-end-prinsippet og &laquo;smal midje&raquo;-modellen.</p>
-  </div>
-</section>
-
-<!-- ============ 15 IPv6 ============ -->
+<!-- ============ 14 IPv6 ============ -->
 <section id="ipv6">
   <div class="container">
-    <div class="section-badge">15 &middot; IPv6</div>
+    <div class="section-badge">14 &middot; IPv6</div>
     <h2>128-bit adresser og en <em>enklere</em> header</h2>
     <p class="section-intro">IPv6 ble spesifisert i 1998. Motivasjonen: 32-bit adresser ville g&aring; tomt. L&oslash;sningen: 128-bit adresser &mdash; nok til &aring; gi hvert sandkorn p&aring; jorden sin egen adresse flere tusen milliarder ganger.</p>
 
@@ -375,10 +354,10 @@
   </div>
 </section>
 
-<!-- ============ 16 SUMMARY ============ -->
+<!-- ============ 15 SUMMARY ============ -->
 <section id="summary">
   <div class="container">
-    <div class="section-badge">16 &middot; Oppsummering</div>
+    <div class="section-badge">15 &middot; Oppsummering</div>
     <h2>Enkelt <em>med vilje</em></h2>
 
     <p class="dropcap">Hvis det er &eacute;n ting &aring; ta med seg fra dette kapittelet: Internetts nettverkslag er enkelt med vilje. Hver designbeslutning &mdash; best-effort, dumme routere, hierarkisk adressering, destinasjonsbasert forwarding &mdash; er et valg <em>mot</em> kompleksitet.</p>
@@ -387,7 +366,7 @@
     <ul>
       <li>Til <strong>endesystemene</strong>: TCP s&oslash;rger for p&aring;litelighet, QUIC for lav latens.</li>
       <li>Til <strong>control plane</strong>: BGP er et av de mest komplekse systemene mennesker har bygd.</li>
-      <li>Til <strong>mellombokser</strong>: NAT, brannmurer, load balancers, deep packet inspection.</li>
+      <li>Til <strong>NAT og adressering i praksis</strong> (se over): n&oslash;dvendig for IPv4 i stor skala, men i konflikt med streng end-to-end- og lagdelingsmodell slik l&aelig;reboka beskriver det.</li>
     </ul>
 
     <p>Data plane har holdt seg relativt enkelt &mdash; og derfor har det kunnet fly. N&aring;r vi neste gang &aring;pner control plane-delen, ser vi <em>hvordan</em> forwarding-tabellene faktisk fylles ut: rutingalgoritmer, OSPF, BGP, og ICMP.</p>
