@@ -32,11 +32,11 @@ Studenten svarer på egenhånd (mentalt eller på papir), deretter åpner de fas
 
 ### Poengnivåer
 - 2–3 poeng per spørsmål
-- Ca. 12–15 spørsmål per eksamen
+- Ca. 12-17 spørsmål per eksamen
 
 ## 4. Del II — Åpne oppgaver (~60 poeng)
 
-### Oppgavetyper som brukes
+### Typiske oppgavetyper som brukes
 - **Beregninger** — forsinkelse, subnetting, RTT, gjennomstrømning
 - **Protokoll-gjennomgang / scenario** — beskriv protokollkjede fra A til B
 - **Definisjons-/sammenligningsoppgaver** — to begreper forklart og sammenlignet
@@ -72,6 +72,8 @@ Temaer som dekkes jevnt over eksamenene:
 | WiFi og trådløst (802.11, CSMA/CA) | 7 |
 | Kryptografi (Caesar, symmetrisk, offentlig nøkkel, TLS, brannmur) | 8 |
 | Multimedia-nett (streaming, DASH, CDN) | 9 (utgave 7) |
+
+Husk også å lese pensum.md for å dobbelsjekke hva som er pensum
 
 ## 6. Kvalitetskriterier for nye spørsmål
 

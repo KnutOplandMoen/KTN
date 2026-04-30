@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Øvingseksamen 2 — TTM4100</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Alle eksamener</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
+  </div>
+</nav>
+
+<main data-chapter="Øvingseksamen 2 — TTM4100">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Øvingseksamen · TTM4100</div>
+  <h1>Øvingseksamen <em>2</em></h1>
+  <p class="lede">Del I: 14 flervalgsoppgaver (42 poeng). Del II: 5 åpne oppgaver (58 poeng). Totalt 100 poeng. Settet vektlegger transportlaget, ruting, trådløst og TLS — og avsluttes med multimedia.</p>
+
+  <div class="learn-box">
+    <span class="label">Temaer i dette settet</span>
+    <ul>
+      <li>Lag-arkitektur, gjennomstrømning, flaskehals (kap. 1)</li>
+      <li>HTTP persistent, DNS-hierarkiet, web-cache (kap. 2)</li>
+      <li>TCP-handshake og TCP metningskontroll (kap. 3)</li>
+      <li>NAT, IPv6 og forwarding (kap. 4)</li>
+      <li>Rutingalgoritmer — link-state vs. distance-vector (kap. 5)</li>
+      <li>Ethernet-rammer og lærende svitsjer (kap. 6)</li>
+      <li>WiFi 802.11 og CSMA/CA — skjult terminal (kap. 7)</li>
+      <li>TLS-handshake, sertifikater, meldingsintegritet (kap. 8)</li>
+      <li>DASH-streaming (kap. 9)</li>
+    </ul>
+  </div>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">I</span><a href="#del1">Del I — Flervalg (42p)</a></li>
+    <li><span class="toc-num">II</span><a href="#del2">Del II — Åpne oppgaver (58p)</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ==================== DEL I ==================== -->
+<section id="del1">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del I — Automatisk rettede spørsmål</h2>
+    <span class="del-points">14 spørsmål · 3 poeng per spørsmål · 42 poeng totalt</span>
+  </div>
+  <p class="section-intro">Velg det alternativet du mener er riktig. Klikk «Vis fasit» for å sjekke svaret og lese forklaringen.</p>
+
+  <!-- Q1 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 1</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Når en HTTP-forespørsel sendes nedover protokollstakken, hvilken rekkefølge har innkapslingen?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> HTTP → IP-pakke → TCP-segment → Ethernet-ramme</li>
+        <li><span class="opt-label">B</span> HTTP → TCP-segment → IP-pakke → Ethernet-ramme</li>
+        <li><span class="opt-label">C</span> Ethernet-ramme → IP-pakke → TCP-segment → HTTP</li>
+        <li><span class="opt-label">D</span> HTTP → Ethernet-ramme → TCP-segment → IP-pakke</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Innkapsling går nedover lagene: applikasjonsdataen (HTTP-meldingen) blir TCP-segment når TCP-headeren legges på, deretter IP-pakke når IP-headeren legges på, og til slutt Ethernet-ramme når MAC-headeren og fottegnet (FCS) legges på.</p>
+          <p>Hvert lag legger sin egen header utenpå dataenheten fra laget over (payload). Hos mottakeren skjer det motsatte — hvert lag fjerner sin header og leverer payload til neste lag.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Lagdelt arkitektur og innkapsling</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q2 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 2</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En sti fra A til B består av tre serielle linker med kapasitet 100 Mbps, 50 Mbps og 200 Mbps. Hva er den maksimale ende-til-ende gjennomstrømningen, antatt at ingen andre brukere belaster nettet?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 350 Mbps</li>
+        <li><span class="opt-label">B</span> 200 Mbps</li>
+        <li><span class="opt-label">C</span> 100 Mbps</li>
+        <li><span class="opt-label">D</span> 50 Mbps</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: D — 50 Mbps</span>
+          <p>For en serie av linker er ende-til-ende gjennomstrømning bestemt av <strong>flaskehals-linken</strong> — den linken med lavest kapasitet: min(100, 50, 200) = <strong>50 Mbps</strong>.</p>
+          <p>Linkene er ikke parallelle, så kapasitetene summeres ikke. Pakker må passere hver link i tur og orden, og den tregeste linken setter grensen for hele stien.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Gjennomstrømning og flaskehalslink</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q3 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 3</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken påstand om HTTP/1.1 med <strong>persistent connections</strong> og <strong>pipelining</strong> er riktig?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Hver enkelt objektnedlasting krever en ny TCP-handshake</li>
+        <li><span class="opt-label">B</span> Klienten kan sende flere forespørsler etter hverandre uten å vente på svar mellom hver</li>
+        <li><span class="opt-label">C</span> Server og klient bruker UDP i stedet for TCP for å redusere latency</li>
+        <li><span class="opt-label">D</span> HTTP/1.1 krever én separat TCP-forbindelse per HTTP-objekt</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Med persistent connections holdes TCP-forbindelsen åpen etter første forespørsel — påfølgende objekter kan hentes uten ny handshake. Med pipelining kan klienten sende flere forespørsler i strøm uten å vente på svar mellom hver, noe som reduserer total tid betydelig.</p>
+          <p>A og D beskriver non-persistent HTTP (HTTP/1.0-standard, hvor hver objektnedlasting krevde sin egen TCP-handshake). C er feil — HTTP/1.x kjører over TCP.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — HTTP persistent vs. non-persistent</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q4 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 4</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken DNS-server er <strong>autoritativ</strong> for domenet <code>www.ntnu.no</code>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> DNS-roten</li>
+        <li><span class="opt-label">B</span> TLD-serveren for <code>.no</code></li>
+        <li><span class="opt-label">C</span> Den lokale DNS-serveren (resolveren) til klienten</li>
+        <li><span class="opt-label">D</span> NTNUs egen DNS-server</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: D</span>
+          <p>En autoritativ DNS-server er den serveren som har den definitive informasjonen om et domene — den som "eier sannheten" om hvilke IP-adresser navnene i domenet peker til. NTNU drifter sine egne DNS-servere og er autoritative for navn under <code>ntnu.no</code>.</p>
+          <p>DNS-roten kjenner kun TLD-serverne. TLD-serveren for <code>.no</code> peker videre til NTNUs autoritative server. Den lokale DNS-serveren cacher svar og fungerer som mellomledd, men er ikke autoritativ.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — DNS-hierarkiet</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q5 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 5</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">I TCP-headeren angir feltet «Acknowledgment number» hvilket sekvensnummer mottakeren neste gang forventer. Anta at mottakeren har mottatt og kvittert byte 1–999 og akkurat har mottatt byte 1000–1499. Hvilken ACK-verdi sender mottakeren tilbake?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 1499</li>
+        <li><span class="opt-label">B</span> 1500</li>
+        <li><span class="opt-label">C</span> 1000</li>
+        <li><span class="opt-label">D</span> 999</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B — 1500</span>
+          <p>TCP bruker <em>kumulative ACK</em>: feltet "Acknowledgment number" inneholder sekvensnummeret for <strong>neste byte</strong> mottakeren forventer. Hvis byte 1000–1499 nettopp er mottatt, er neste forventede byte 1500, så ACK-verdien er <strong>1500</strong>.</p>
+          <p>Dette er en vanlig feil — mange tror ACK-verdien er sekvensnummeret til den siste mottatte byten. Det er sekvensnummeret til den <em>neste</em> forventede.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — TCP sekvens- og kvitteringsnummer</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q6 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 6</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">I TCP «classic» metningskontroll: hva skjer med <code>cwnd</code> (congestion window) når senderen er i <em>slow start</em>-fasen og mottar én ACK?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> cwnd halveres</li>
+        <li><span class="opt-label">B</span> cwnd økes med 1 MSS (effektivt fordobling per RTT)</li>
+        <li><span class="opt-label">C</span> cwnd økes med 1 MSS per RTT</li>
+        <li><span class="opt-label">D</span> cwnd holdes konstant</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>I <strong>slow start</strong> økes <code>cwnd</code> med 1 MSS for <em>hver ACK</em> som mottas. Siden hele cwnd vanligvis kvitteres innenfor én RTT, fører dette til en <strong>eksponentiell</strong> vekst — cwnd dobles per RTT.</p>
+          <p>C beskriver <em>congestion avoidance</em>-fasen, hvor cwnd økes med 1 MSS per RTT (lineær vekst). A skjer ved en triple-duplicate ACK i TCP Reno (cwnd halveres). Slow start startes på nytt med cwnd = 1 MSS ved en timeout.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — TCP metningskontroll, slow start og congestion avoidance</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q7 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 7</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er den primære grunnen til å gå over fra IPv4 til IPv6?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> IPv6-pakker er mindre og gir lavere overhead</li>
+        <li><span class="opt-label">B</span> IPv6 har et mye større adresserom (128 bit vs. 32 bit)</li>
+        <li><span class="opt-label">C</span> IPv6 er bakoverkompatibel med IPv4 og kan enkelt erstatte den</li>
+        <li><span class="opt-label">D</span> IPv6 reduserer pakkesvitsjingsforsinkelse i rutere</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>IPv4-adresserommet (2<sup>32</sup> ≈ 4,3 milliarder) ble offisielt brukt opp i 2011 hos IANA. IPv6 utvider til 128 bit (2<sup>128</sup> ≈ 3,4 × 10<sup>38</sup>) — nok adresser til at hver kvadratmillimeter på jordoverflaten kan ha milliarder.</p>
+          <p>A er feil — IPv6-headeren er faktisk lengre (40 byte fast) enn typisk IPv4-header (20 byte). C er feil — IPv4 og IPv6 er ikke direkte interoperable; tunneling og dual-stack-løsninger trengs i overgangen.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — IPv6</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q8 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 8</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken egenskap har NAT (Network Address Translation)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Den oversetter mellom IPv4 og IPv6 i bittenivå</li>
+        <li><span class="opt-label">B</span> Den lar mange interne enheter dele én offentlig IP-adresse via portoversettelse</li>
+        <li><span class="opt-label">C</span> Den krypterer all trafikk mellom et hjemmenett og Internett</li>
+        <li><span class="opt-label">D</span> Den reduserer størrelsen på pakker for raskere transmisjon</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>En NAT-ruter har én (eller få) offentlig IPv4-adresse på WAN-siden og bruker en privat adresseblokk (typisk 192.168.0.0/16 eller 10.0.0.0/8) på LAN-siden. NAT-tabellen mapper kombinasjoner av (intern IP, intern port) ↔ (ekstern IP, ekstern port). Når en pakke går ut, oversettes kildeadresse og kildeport; når svaret kommer tilbake, slås det opp i tabellen og pakken videresendes til riktig intern enhet.</p>
+          <p>NAT bidrar til å spare IPv4-adresser, men bryter prinsippet om end-to-end adressering og kompliserer protokoller som forventer å se ekte IP-adresser.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — NAT</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q9 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 9</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 5</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er hovedforskjellen mellom en <strong>link-state</strong>-rutingalgoritme og en <strong>distance-vector</strong>-algoritme?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Link-state bruker TCP, distance-vector bruker UDP</li>
+        <li><span class="opt-label">B</span> Link-state-noder har global topologi-oversikt; distance-vector-noder kjenner bare avstand til naboer</li>
+        <li><span class="opt-label">C</span> Distance-vector kjører i applikasjonslaget; link-state i nettverkslaget</li>
+        <li><span class="opt-label">D</span> Link-state skalerer bedre fordi den ikke trenger pakker mellom rutere</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>I en <strong>link-state</strong>-algoritme (f.eks. OSPF) flooder hver ruter informasjon om sine egne lenker til alle rutere. Hver ruter bygger en fullstendig topologi-graf og kjører Dijkstras algoritme lokalt for å finne korteste vei. Beslutninger er <em>sentrale</em> i den forstand at hver ruter har global oversikt.</p>
+          <p>I en <strong>distance-vector</strong>-algoritme (f.eks. RIP) kjenner ruteren kun "kostnaden til hver destinasjon via hver nabo", basert på det naboene har fortalt. Dette er en distribuert iterativ Bellman-Ford-prosess. Den krever mindre informasjon per ruter, men kan være sårbar for "count-to-infinity"-problemer.</p>
+          <p class="ref">Pensum: <a href="../kap5/innhold.html">Kap. 5 — Rutingalgoritmer</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q10 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 10</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er hensikten med <strong>preamble</strong>-feltet i en Ethernet-ramme?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Å lagre kildens MAC-adresse i en mer kompakt form</li>
+        <li><span class="opt-label">B</span> Å la mottakerens NIC synkronisere klokken sin med senderens signal</li>
+        <li><span class="opt-label">C</span> Å fungere som CRC-sjekksum for rammen</li>
+        <li><span class="opt-label">D</span> Å indikere prioritet og QoS-klassen for rammen</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Preamblet (7 byte med <code>10101010</code> + 1 byte SFD-mønster) er et alternasjonsmønster som vekker mottakerens fysiske lag og lar klokken til mottakerens NIC låses til senderens bit-takt. Uten dette vil mottakeren risikere å lese bitene på feil tidspunkt.</p>
+          <p>CRC ligger i FCS-feltet på slutten av rammen. MAC-adresser ligger i sine egne felt. Standard Ethernet-rammer har ikke et eget prioritets-/QoS-felt (det finnes utvidelser, f.eks. 802.1Q-tagger, men ikke som del av basis-rammeformat).</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — Ethernet-rammeformat</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q11 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 11</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En lærende svitsj (self-learning switch) mottar en ramme med kjent destinasjons-MAC og kjent kilde-MAC. Hva gjør svitsjen?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Flooder rammen ut på alle porter unntatt innkommende</li>
+        <li><span class="opt-label">B</span> Slipper rammen, fordi den allerede vet om kilden</li>
+        <li><span class="opt-label">C</span> Sender rammen kun ut på den porten der destinasjonen er kjent</li>
+        <li><span class="opt-label">D</span> Sender rammen videre til ruteren for ruting</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C</span>
+          <p>En lærende svitsj vedlikeholder en <strong>switch table</strong> (MAC-tabell) som mapper MAC-adresser til porter. Hver gang en ramme ankommer, lærer svitsjen at "kilde-MAC X finnes på port Y" — dermed bygges tabellen automatisk over tid.</p>
+          <p>Når destinasjons-MAC <em>er kjent</em> i tabellen: svitsjen sender rammen <strong>kun</strong> ut på den porten der destinasjonen er. Dette kalles <em>selective forwarding</em>.</p>
+          <p>A skjer kun når destinasjons-MAC ikke er kjent (eller for broadcast).</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — Lærende svitsjer</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q12 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 12</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 7</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvorfor brukes CSMA/CA (Collision Avoidance) i 802.11 WiFi i stedet for CSMA/CD (Collision Detection) som i Ethernet?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> WiFi er kryptert og kan ikke ha kollisjoner</li>
+        <li><span class="opt-label">B</span> WiFi-stasjoner kan ikke samtidig sende og lytte (half-duplex), og signalet er sterkest hos senderen — kollisjoner kan derfor ikke pålitelig detekteres mens man sender</li>
+        <li><span class="opt-label">C</span> WiFi har høyere båndbredde, så kollisjoner skjer aldri</li>
+        <li><span class="opt-label">D</span> CSMA/CD er bare lov å bruke i kabelnettverk på grunn av juridiske begrensninger</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>I 802.11 sender og mottar samme antenne — typisk halv-dupleks. Senderens eget signal er flere størrelsesordener kraftigere enn et innkommende signal fra en annen stasjon, så mottakerelektronikken «overdøves» mens man sender. Det er derfor umulig å pålitelig detektere kollisjoner samtidig som man sender (CD).</p>
+          <p>I tillegg finnes problemet med "skjulte terminaler" — to stasjoner kan være utenfor hørevidde av hverandre, men begge innenfor hørevidde av samme aksesspunkt. Begge tror mediet er ledig og kolliderer hos AP.</p>
+          <p>Løsningen er <strong>collision avoidance</strong>: stasjoner venter en tilfeldig backoff selv når mediet er ledig (DIFS + tilfeldig contention window), bruker positive ACK-er for å bekrefte mottak, og kan eventuelt bruke RTS/CTS for å reservere mediet.</p>
+          <p class="ref">Pensum: <a href="../kap7/innhold.html">Kap. 7 — CSMA/CA i 802.11</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q13 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 13</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er hovedformålet med et X.509-sertifikat utstedt av en Certificate Authority (CA) i TLS?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Å kryptere all trafikk mellom klient og server</li>
+        <li><span class="opt-label">B</span> Å garantere at en bestemt offentlig nøkkel virkelig tilhører den entiteten (f.eks. domenenavnet) den hevder å tilhøre</li>
+        <li><span class="opt-label">C</span> Å lagre passord trygt på serveren</li>
+        <li><span class="opt-label">D</span> Å forkorte TLS-handshakens varighet</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Et sertifikat inneholder en entitets offentlige nøkkel og er <strong>signert</strong> av en CA. Klienten har CA-ens offentlige nøkkel forhåndsinstallert (i nettleserens "trust store") og kan dermed verifisere signaturen. Hvis signaturen er gyldig, kan klienten stole på at den offentlige nøkkelen i sertifikatet faktisk tilhører den listede serveren — og ikke en angriper i et MITM-scenario.</p>
+          <p>Selve krypteringen i TLS skjer med symmetriske nøkler etter handshake. Sertifikater løser det grunnleggende problemet med autentisitet av offentlige nøkler.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8 — TLS, sertifikater og PKI</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q14 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 14</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 9</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er den viktigste fordelen med DASH (Dynamic Adaptive Streaming over HTTP) for videostreaming?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Videoen krypteres lag-for-lag for personvern</li>
+        <li><span class="opt-label">B</span> Klienten kan dynamisk velge bitrate per chunk basert på målt båndbredde</li>
+        <li><span class="opt-label">C</span> Serveren bestemmer bitraten og pusher data direkte til klienten</li>
+        <li><span class="opt-label">D</span> Hele filmen sendes som én stor TCP-strøm uten oppdeling</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>I DASH blir videoen kodet inn i flere bitrater (f.eks. 360p, 720p, 1080p). Serveren tilbyr en manifestfil som lister tilgjengelige chunker (typisk noen sekunder hver) for hver kvalitet. <strong>Klienten</strong> måler nedlastningshastigheten i sanntid og velger neste chunk fra den kvaliteten som passer best — høyere ved god båndbredde, lavere ved redusert.</p>
+          <p>Dette gjør at intelligensen ligger hos klienten (server-stateless), at innholdet kan distribueres via vanlige HTTP-cacher/CDN-er, og at brukeren får jevn avspilling uten frosset video selv ved varierende nettverkskvalitet.</p>
+          <p class="ref">Pensum: <a href="../kap9/innhold.html">Kap. 9 — DASH og adaptiv streaming</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+
+<!-- ==================== DEL II ==================== -->
+<section id="del2">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del II — Åpne oppgaver</h2>
+    <span class="del-points">5 oppgaver · 58 poeng totalt</span>
+  </div>
+  <p class="section-intro">Åpne, skriftlige svar. Begrunn svarene dine. Vis utregning der det er relevant. Klikk «Vis fasit» for å sammenligne med modellbesvarelsen.</p>
+
+  <!-- Oppgave 1 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 1</span>
+      <span class="exam-q__points">8 poeng</span>
+      <span class="exam-q__topic">Kap. 1</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) En klient i Trondheim laster ned en fil på 50 MB fra en server i USA. Banen består av tre serielle linker med hastighet 100 Mbps, 25 Mbps og 80 Mbps. Hva er teoretisk minimum nedlastningstid (uten andre delaytyper, kun overføring)? (4p)</p>
+      <p class="q-text">b) Ende-til-ende RTT mellom Trondheim og USA er 150 ms. Forklar hvorfor faktisk nedlastningstid med TCP kan være betydelig høyere enn det du beregnet i a). Nevn minst to mekanismer. (4p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Minimum nedlastningstid:</strong></p>
+          <p>Ende-til-ende gjennomstrømning ≤ flaskehals = min(100, 25, 80) Mbps = <strong>25 Mbps</strong></p>
+          <p>Filstørrelse: 50 MB = 50 × 8 × 10<sup>6</sup> = 400 × 10<sup>6</sup> bits</p>
+          <p>Tid = bits / rate = 400 × 10<sup>6</sup> / 25 × 10<sup>6</sup> = <strong>16 sekunder</strong></p>
+          <p><strong>b) Hvorfor er faktisk nedlasting tregere?</strong></p>
+          <ol>
+            <li><strong>TCP slow start:</strong> Senderens cwnd starter på 1 MSS og dobles per RTT til den når terskelen for congestion avoidance. Med RTT på 150 ms tar det flere sekunder før senderen når full kapasitet — særlig betydelig på små/mellomstore filer eller "fat-long" lenker.</li>
+            <li><strong>Køforsinkelse og pakketap:</strong> Andre brukere kan kø opp i samme rutere; pakketap fører til retransmisjoner og reduksjon av cwnd. Med stor RTT er hver retransmisjon dyr.</li>
+            <li><strong>Båndbredde-forsinkelses-produkt og rwnd:</strong> Hvis mottakerens annonserte vindu (rwnd) er for lite, eller socketens send-/mottaksbuffer er for små i forhold til BDP = kapasitet × RTT, vil senderen bli tomgangsbegrenset uavhengig av kapasiteten.</li>
+            <li>(Andre gyldige svar: forsinkelse i TCP-handshake, ekstra RTT for DNS-oppslag, oppstart av TLS, m.m.)</li>
+          </ol>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Gjennomstrømning</a> · <a href="../kap3/innhold.html">Kap. 3 — TCP slow start</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 2 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 2</span>
+      <span class="exam-q__points">12 poeng</span>
+      <span class="exam-q__topic">Kap. 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) Tegn (eller beskriv steg-for-steg) hvordan TCPs «classic» metningskontroll utvikler <code>cwnd</code> over tid: start med cwnd = 1 MSS, ssthresh = 16 MSS. Vis hva som skjer ved (i) overgangen til congestion avoidance, og (ii) en triple duplicate ACK som inntreffer når cwnd = 24 MSS (TCP Reno). (6p)</p>
+      <p class="q-text">b) Hva er forskjellen i atferd mellom TCP Tahoe og TCP Reno ved triple duplicate ACK? (3p)</p>
+      <p class="q-text">c) Hvorfor reduserer TCP sendraten ved et timeout-tap, og hvorfor er dette i praksis "rettferdig"? (3p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) cwnd-utvikling:</strong></p>
+          <ol>
+            <li><strong>Slow start:</strong> cwnd dobles per RTT (1 → 2 → 4 → 8 → 16). Etter 4 RTT-er når cwnd ssthresh = 16 MSS.</li>
+            <li><strong>Overgang til congestion avoidance:</strong> Vekst går fra eksponentiell til lineær — cwnd øker med 1 MSS per RTT (16 → 17 → 18 → … → 24).</li>
+            <li><strong>Triple duplicate ACK ved cwnd = 24 (TCP Reno — fast recovery):</strong>
+              <ul>
+                <li>ssthresh settes til cwnd / 2 = <strong>12 MSS</strong></li>
+                <li>cwnd settes til ssthresh = 12 MSS (multiplicative decrease)</li>
+                <li>Senderen fortsetter i congestion avoidance (lineær vekst) fra cwnd = 12 MSS</li>
+              </ul>
+            </li>
+          </ol>
+          <p>Ved et <em>timeout</em> i stedet for triple duplicate ACK ville cwnd vært satt til 1 MSS og slow start startet på nytt.</p>
+          <p><strong>b) TCP Tahoe vs. Reno ved triple duplicate ACK:</strong></p>
+          <table>
+            <thead><tr><th></th><th>Tahoe</th><th>Reno</th></tr></thead>
+            <tbody>
+              <tr><td>ssthresh</td><td>cwnd / 2</td><td>cwnd / 2</td></tr>
+              <tr><td>cwnd settes til</td><td>1 MSS (slow start fra start)</td><td>ssthresh (fast recovery / fast retransmit)</td></tr>
+              <tr><td>Resultat</td><td>Konservativ — full slow start</td><td>Mindre dramatisk — fortsetter i congestion avoidance</td></tr>
+            </tbody>
+          </table>
+          <p>Tanken bak Reno: triple duplicate ACK betyr at <em>noen</em> pakker fortsatt kommer frem (mottakeren genererer ACK-er), så nettverket er ikke totalt overbelastet — full slow start er overdrevent.</p>
+          <p><strong>c) Reduksjon ved timeout og rettferdighet:</strong></p>
+          <p>Et timeout indikerer alvorlig metning (pakkene kommer ikke frem). TCP «backer av» kraftig — cwnd settes til 1 og slow start startes — for å gi nettverket tid til å tømmes.</p>
+          <p>Rettferdighet kommer av AIMD (Additive Increase, Multiplicative Decrease): alle TCP-flows som deler en flaskehals, øker cwnd lineært ved suksess og halverer ved tap. Over tid konvergerer flowsene mot lik andel av kapasiteten — uavhengig av når de startet.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — TCP metningskontroll, AIMD, fast retransmit/recovery</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 3 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 3</span>
+      <span class="exam-q__points">15 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · 5</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Du er nettverksansvarlig for et lite selskap og har fått tildelt blokken <code>10.50.0.0/22</code>. Du skal dele den i <strong>4 like store subnett</strong> for fire avdelinger.</p>
+      <p class="q-text">a) Hva er prefikslengden for hvert nytt subnett, og hvor mange adresser totalt får hvert subnett? (3p)</p>
+      <p class="q-text">b) List nettverksadressen, første brukbare adresse, siste brukbare adresse og broadcast-adressen for alle 4 subnettene. (6p)</p>
+      <p class="q-text">c) En ruter har følgende forwarding-tabell (basert på longest prefix match):
+      <br><code>10.50.0.0/24 → port 1</code>
+      <br><code>10.50.0.0/22 → port 2</code>
+      <br><code>10.50.2.0/23 → port 3</code>
+      <br><code>0.0.0.0/0 → port 4 (default)</code>
+      <br>Hvilken port brukes for destinasjonsadressene under? Begrunn for hver:</p>
+      <ul>
+        <li><code>10.50.0.55</code></li>
+        <li><code>10.50.2.200</code></li>
+        <li><code>10.50.3.10</code></li>
+        <li><code>192.168.1.1</code></li>
+      </ul>
+      <p class="q-text">(6p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Prefikslengde og størrelse:</strong></p>
+          <p>4 subnett krever 2<sup>2</sup> = 4 → 2 ekstra bits. Ny prefikslengde: /22 + 2 = <strong>/24</strong></p>
+          <p>Hvert subnett har 2<sup>32−24</sup> = 2<sup>8</sup> = <strong>256 adresser</strong> (hvorav 254 er brukbare verter, etter at nettverks- og broadcast-adresse er reservert).</p>
+          <p><strong>b) Subnetter:</strong></p>
+          <p>/22 dekker områder med tredje oktett 0–3 (siden 22 = 16 + 6 betyr de første 6 bits av tredje oktett er fastlåst → variasjon i de siste 2 bits, som gir 0, 1, 2, 3).</p>
+          <table>
+            <thead><tr><th>Subnett</th><th>Nettverk</th><th>Første brukbar</th><th>Siste brukbar</th><th>Broadcast</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>10.50.0.0/24</td><td>10.50.0.1</td><td>10.50.0.254</td><td>10.50.0.255</td></tr>
+              <tr><td>2</td><td>10.50.1.0/24</td><td>10.50.1.1</td><td>10.50.1.254</td><td>10.50.1.255</td></tr>
+              <tr><td>3</td><td>10.50.2.0/24</td><td>10.50.2.1</td><td>10.50.2.254</td><td>10.50.2.255</td></tr>
+              <tr><td>4</td><td>10.50.3.0/24</td><td>10.50.3.1</td><td>10.50.3.254</td><td>10.50.3.255</td></tr>
+            </tbody>
+          </table>
+          <p><strong>c) Longest prefix match-oppslag:</strong></p>
+          <ul>
+            <li><code>10.50.0.55</code> — matcher <code>10.50.0.0/24</code> (lengste prefiks: 24 bits) og også <code>10.50.0.0/22</code> (22 bits). Lengst vinner → <strong>port 1</strong>.</li>
+            <li><code>10.50.2.200</code> — matcher <code>10.50.0.0/22</code> (22) og <code>10.50.2.0/23</code> (23). Lengst → <strong>port 3</strong>.</li>
+            <li><code>10.50.3.10</code> — matcher <code>10.50.0.0/22</code> (22) og <code>10.50.2.0/23</code> (23, fordi /23 dekker 10.50.2.0–10.50.3.255). Lengst → <strong>port 3</strong>.</li>
+            <li><code>192.168.1.1</code> — matcher kun <code>0.0.0.0/0</code> → <strong>port 4 (default)</strong>.</li>
+          </ul>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — Subnetting, longest prefix matching</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 4 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 4</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 6 · 7</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) Sammenlign Ethernet (kablet) og 802.11 (WiFi) i lenkelaget. Diskuter <strong>medium access</strong>-mekanismer, behov for ACK på lenkelaget og rammeformat. Bruk gjerne tabell. (6p)</p>
+      <p class="q-text">b) Forklar fenomenet <strong>skjult terminal</strong> i et WiFi-nett. Hvordan kan RTS/CTS bidra til å løse problemet? (4p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Sammenligning Ethernet vs. 802.11:</strong></p>
+          <table>
+            <thead><tr><th></th><th>Ethernet (802.3)</th><th>WiFi (802.11)</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Medium access</strong></td><td>CSMA/CD — lytt før send, oppdag kollisjon, jam og backoff</td><td>CSMA/CA — lytt før send, vent random backoff selv ved ledig medium, ingen kollisjonsdeteksjon under sending</td></tr>
+              <tr><td><strong>ACK på L2</strong></td><td>Nei — kollisjon detekteres direkte</td><td>Ja — mottakeren sender ACK etter SIFS; mangler ACK ⇒ retransmisjon</td></tr>
+              <tr><td><strong>Rammeformat</strong></td><td>Preamble + dest-MAC + src-MAC + EtherType + payload + FCS</td><td>Mer kompleks — frame control, durasjon, opptil <em>fire</em> MAC-adresser, sekvensnummer, payload, FCS</td></tr>
+              <tr><td><strong>Halvdupleks/fullduplex</strong></td><td>Moderne svitsjet Ethernet er fullduplex (ingen kollisjoner)</td><td>Halvdupleks per kanal</td></tr>
+              <tr><td><strong>Mediepålitelighet</strong></td><td>Lav feilrate (kobber/fiber)</td><td>Høy — interferens, fading, hindringer</td></tr>
+            </tbody>
+          </table>
+          <p>Hvorfor ACK på L2 i WiFi: feilrate er mye høyere på radiomediet, og det er ineffektivt å la transportlaget retransmittere etter timeout (sekunder) når lenkelaget kan rette opp innen millisekunder.</p>
+          <p><strong>b) Skjult terminal og RTS/CTS:</strong></p>
+          <p>Skjult terminal-problemet oppstår når to stasjoner A og C er <em>utenfor</em> hverandres rekkevidde, men begge er innenfor rekkevidden til samme aksesspunkt B. Når A sender til B, hører ikke C noe og oppfatter mediet som ledig; C kan dermed begynne å sende samtidig — pakkene kolliderer hos B. Verken A eller C oppdager direkte at de "kolliderer", siden CSMA/CA ikke gjør collision detection.</p>
+          <p><strong>RTS/CTS-løsning:</strong></p>
+          <ol>
+            <li>A sender en kort <strong>RTS</strong>-ramme til B med ønsket sendetid.</li>
+            <li>B svarer med en <strong>CTS</strong>-ramme som inneholder reservasjonstiden.</li>
+            <li>CTS-en høres av <em>alle</em> stasjoner innenfor B's rekkevidde — inkludert C, selv om C ikke hørte RTS-en.</li>
+            <li>Alle som hører CTS, holder seg stille i den annonserte tiden (NAV — Network Allocation Vector).</li>
+          </ol>
+          <p>Slik unngås kollisjoner forårsaket av skjulte terminaler. RTS/CTS er valgfritt og brukes typisk kun for store rammer (overhead på små rammer er for høyt).</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — Ethernet</a> · <a href="../kap7/innhold.html">Kap. 7 — 802.11, skjult terminal, RTS/CTS</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 5 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 5</span>
+      <span class="exam-q__points">13 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · 8 · 9</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) Beskriv stegene i en TLS-handshake (forenklet, med RSA- eller DH-basert nøkkelutveksling — ikke detaljert kryptografi). Hva oppnås av hvert steg? (5p)</p>
+      <p class="q-text">b) Hvorfor brukes TLS sammen med HTTP (dvs. HTTPS) — hva gir TLS som ren HTTP ikke gir? Nevn tre konkrete sikkerhetsegenskaper. (3p)</p>
+      <p class="q-text">c) Et CDN (Content Delivery Network) bruker geografisk distribuerte servere for å levere innhold som video og bilder. Forklar to måter CDN-er reduserer ende-til-ende-forsinkelse for brukeren. (3p)</p>
+      <p class="q-text">d) Hvordan samspiller DASH og CDN i praksis ved videostreaming? (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) TLS-handshake (forenklet):</strong></p>
+          <ol>
+            <li><strong>ClientHello</strong>: Klienten sender støttede TLS-versjoner, cipher suites og en tilfeldig <em>client nonce</em>.</li>
+            <li><strong>ServerHello + sertifikat</strong>: Serveren velger cipher suite, sender sin egen nonce og sender et X.509-sertifikat med sin offentlige nøkkel.</li>
+            <li><strong>Klient verifiserer sertifikatet</strong>: ved hjelp av en kjent CA-rotnøkkel — autentiserer serveren.</li>
+            <li><strong>Premaster-utveksling</strong>: Klienten genererer et "premaster secret" og sender det kryptert med serverens offentlige nøkkel (RSA-handshake), eller partene kjører en Diffie–Hellman-utveksling for å opprette et delt premaster secret.</li>
+            <li><strong>Avledning av sesjonsnøkler</strong>: Begge partene utleder symmetriske krypterings-/MAC-nøkler fra premaster + nonces ved en KDF.</li>
+            <li><strong>Finished-meldinger</strong>: Begge sender en MAC over alle tidligere handshake-meldinger — bekrefter at ingen har manipulert handshaken.</li>
+          </ol>
+          <p>Etter dette krypteres all videre kommunikasjon med de symmetriske sesjonsnøklene — som er mye raskere enn asymmetrisk kryptografi.</p>
+          <p><strong>b) Sikkerhetsegenskaper TLS gir over HTTP:</strong></p>
+          <ol>
+            <li><strong>Konfidensialitet</strong> — payload krypteres så mellomledd ikke kan lese innholdet.</li>
+            <li><strong>Integritet</strong> — MAC-sjekk avslører enhver modifikasjon underveis.</li>
+            <li><strong>Autentisering av server</strong> (og evt. klient) — sertifikatkjeden gir kryptografisk bevis på identitet.</li>
+          </ol>
+          <p><strong>c) Hvordan CDN reduserer forsinkelse:</strong></p>
+          <ol>
+            <li><strong>Geografisk nærhet</strong>: Innhold cacheres på CDN-noder nær brukeren, så fysisk avstand og dermed propagasjonsforsinkelse reduseres.</li>
+            <li><strong>Avlasting av origin-server og bedre lokal kapasitet</strong>: CDN-nodene har høy kapasitet, så flaskehals fjernes; samtidig avlastes opprinnelses-serveren — ingen lange RTT-er over kontinenter for hvert objekt.</li>
+            <li>(Andre gyldige svar: TCP-slow-start "starter på nytt" på en geografisk nærmere node og får raskere oppstart; bedre inter-domain ruting via CDN-overlay.)</li>
+          </ol>
+          <p><strong>d) DASH + CDN:</strong></p>
+          <p>DASH-chunker er statiske HTTP-objekter — de cacheres godt på CDN-noder. Når en bruker spiller av en video, hentes hver chunk fra nærmeste CDN-node (rask). Klienten kan adaptivt velge bitrate basert på målt kapasitet til den noden, og selv om mange seere ser samme video samtidig, treffer mesteparten av forespørslene CDN-cachen i stedet for opprinnelses-serveren.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8 — TLS</a> · <a href="../kap9/innhold.html">Kap. 9 — DASH og CDN</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Vår 2026</p>
+  </div>
+</footer>
+<script src="../chat-widget.js"></script>
+<script src="../nav-search.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>

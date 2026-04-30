@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Øvingseksamen 4 — TTM4100</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Alle eksamener</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
+  </div>
+</nav>
+
+<main data-chapter="Øvingseksamen 4 — TTM4100">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Øvingseksamen · TTM4100</div>
+  <h1>Øvingseksamen <em>4</em></h1>
+  <p class="lede">Del I: 14 flervalgsoppgaver (42 poeng). Del II: 5 åpne oppgaver (58 poeng). Totalt 100 poeng. Settet vektlegger trafikkintensitet, RTT-estimering, longest prefix matching, og brannmurer/IPSec/RTP.</p>
+
+  <div class="learn-box">
+    <span class="label">Temaer i dette settet</span>
+    <ul>
+      <li>Køforsinkelse, trafikkintensitet og pakketap (kap. 1)</li>
+      <li>Cookies og rekursive vs. iterative DNS-spørringer (kap. 2)</li>
+      <li>TCP RTT-estimering og fast retransmit (kap. 3)</li>
+      <li>Longest prefix matching, IP-header og TTL (kap. 4)</li>
+      <li>Link-state-rutingens generelle ide (kap. 5)</li>
+      <li>CRC og lenkelagets feildeteksjon (kap. 6)</li>
+      <li>WiFi-assosiering og rammeformat (kap. 7)</li>
+      <li>IPSec, VPN og brannmurer (kap. 8)</li>
+      <li>RTP og sanntidsstrømming (kap. 9)</li>
+    </ul>
+  </div>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">I</span><a href="#del1">Del I — Flervalg (42p)</a></li>
+    <li><span class="toc-num">II</span><a href="#del2">Del II — Åpne oppgaver (58p)</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ==================== DEL I ==================== -->
+<section id="del1">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del I — Automatisk rettede spørsmål</h2>
+    <span class="del-points">14 spørsmål · 3 poeng per spørsmål · 42 poeng totalt</span>
+  </div>
+  <p class="section-intro">Velg det alternativet du mener er riktig. Klikk «Vis fasit» for å sjekke svaret og lese forklaringen.</p>
+
+  <!-- Q1 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 1</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En ruter mottar pakker med snittrate L · a, og linkraten ut er R. Trafikkintensiteten ρ = La/R brukes som mål på køoppførsel. Hva skjer når ρ &gt; 1?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Køen er alltid tom og pakker går rett gjennom uten forsinkelse</li>
+        <li><span class="opt-label">B</span> Køen vokser uten øvre grense og pakker vil før eller siden tapes</li>
+        <li><span class="opt-label">C</span> Pakker repliseres for å øke ende-til-ende-gjennomstrømning</li>
+        <li><span class="opt-label">D</span> Linkraten økes automatisk for å håndtere overskudd</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Når ρ &gt; 1 ankommer pakker raskere enn linken kan sende dem ut. Køen vokser ubegrenset i et idealisert system; i realiteten har køen en endelig størrelse, så når den fylles, må nye pakker droppes — dette er <strong>pakketap pga. køoverflyt</strong>.</p>
+          <p>Når ρ er nær 1 (men &lt; 1) er køforsinkelsen sterkt voksende — derfor er det viktig å designe nettverk slik at gjennomsnittlig ρ holdes godt under 1.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Trafikkintensitet og kø</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q2 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 2</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvordan brukes cookies typisk i en nettløsning?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> For å la HTTP unngå TCP-handshake på senere forespørsler</li>
+        <li><span class="opt-label">B</span> For å gjøre HTTP til en tilstandsfull protokoll: serveren utsteder en unik ID som klienten sender med i hver påfølgende forespørsel</li>
+        <li><span class="opt-label">C</span> For å erstatte DNS-oppslaget</li>
+        <li><span class="opt-label">D</span> For å kryptere brukernavn og passord før de sendes over nettet</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>HTTP er tilstandsløs i seg selv. For at en server skal kunne "huske" en pålogget bruker eller en handlekurv, sender den en cookie med <code>Set-Cookie</code>-headeren ved første respons. Klienten lagrer cookien og inkluderer den i <code>Cookie</code>-headeren på alle senere forespørsler til samme domene. Serveren bruker cookien som nøkkel inn i sin egen sesjonsdatabase.</p>
+          <p>Cookies handler altså om <strong>tilstand på applikasjonsnivå</strong> — de påvirker ikke TCP-laget, ikke DNS, og er ikke en krypteringsmekanisme.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — Cookies</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q3 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 3</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er forskjellen mellom <strong>rekursive</strong> og <strong>iterative</strong> DNS-spørringer?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Rekursiv: serveren returnerer enten endelig svar eller en henvisning videre. Iterativ: serveren tar fullt ansvar for å finne svaret</li>
+        <li><span class="opt-label">B</span> Rekursiv: serveren tar fullt ansvar for å finne det endelige svaret. Iterativ: serveren returnerer enten svaret eller en henvisning til neste server som spørreren selv må kontakte</li>
+        <li><span class="opt-label">C</span> Rekursiv brukes bare i offline DNS, iterativ bare online</li>
+        <li><span class="opt-label">D</span> Rekursiv DNS bruker UDP, iterativ DNS bruker TCP</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>I en <strong>rekursiv spørring</strong> sier spørreren: "finn ut svaret for meg uansett hvor mye arbeid det krever". Den lokale DNS-resolveren tar typisk imot rekursive spørringer fra klienter og gjør hele jobben.</p>
+          <p>I en <strong>iterativ spørring</strong> sier spørreren: "gi meg det beste svaret du har akkurat nå". Hvis den spurte serveren ikke vet svaret, returnerer den en <em>henvisning</em> (referral) til en annen server som spørreren må gå videre til selv. Iterativ er det vanlige mønsteret mellom rotservere → TLD → autoritative servere.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — DNS rekursiv vs. iterativ</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q4 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 4</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">TCP estimerer RTT med <code>EstimatedRTT = (1 − α) · EstimatedRTT + α · SampleRTT</code>. Hva er hovedformålet med formelen?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Garantere at hver enkelt RTT-måling er nøyaktig</li>
+        <li><span class="opt-label">B</span> Glatte ut tilfeldige variasjoner og gi en stabil verdi som timeoutverdi (RTO) kan bygges på</li>
+        <li><span class="opt-label">C</span> Eliminere helt RTT-er på lange linker</li>
+        <li><span class="opt-label">D</span> Tillate sender å overstige rwnd</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Formelen er et eksponensielt veid glidende gjennomsnitt (EWMA) — den gir mye vekt til historiske verdier (1 − α) og mindre vekt til den nyeste prøven (α, typisk 0,125). Dette filtrerer bort enkeltmålinger som er ekstreme (f.eks. en pakke som tilfeldigvis sto lenge i kø).</p>
+          <p>I tillegg estimeres RTT-variasjon (DevRTT). Selve TCP-timeouten settes til <code>RTO = EstimatedRTT + 4 · DevRTT</code> — robust nok til å unngå unødvendige retransmisjoner, men kort nok til å reagere raskt ved reelle tap.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — RTT-estimering i TCP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q5 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 5</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er en <strong>fast retransmit</strong> i TCP?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Sender venter på en lang RTO før retransmisjon</li>
+        <li><span class="opt-label">B</span> Sender retransmitterer det manglende segmentet etter å ha mottatt 3 duplicate ACKs uten å vente på timeout</li>
+        <li><span class="opt-label">C</span> Sender øker cwnd raskere enn vanlig slow start tillater</li>
+        <li><span class="opt-label">D</span> Mottakeren sender et negativ-ACK direkte til sender</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Når mottakeren får ut-av-rekkefølge-segmenter, gjentar den den siste gyldige ACK-verdien. Hvis senderen ser tre <em>duplikate</em> ACK-er — det vil si fire totalt med samme verdi (1 original + 3 dupliserte) — tolker den dette som et sterkt signal om at neste segment er tapt, og <strong>retransmitterer umiddelbart</strong> uten å vente på at RTO går ut.</p>
+          <p>Fast retransmit reduserer ventetiden ved tap betydelig på lenker med høy RTT.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — Fast retransmit</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q6 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 6</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En ruter har følgende oppføringer i forwarding-tabellen:
+      <br><code>10.0.0.0/8 → port 1</code>
+      <br><code>10.20.0.0/16 → port 2</code>
+      <br><code>10.20.32.0/20 → port 3</code>
+      <br>Hvilken port brukes for destinasjonsadressen <code>10.20.34.10</code>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Port 1</li>
+        <li><span class="opt-label">B</span> Port 2</li>
+        <li><span class="opt-label">C</span> Port 3</li>
+        <li><span class="opt-label">D</span> Adressen matcher ingen oppføringer</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — Port 3</span>
+          <p>10.20.34.10 matcher alle tre prefiks: /8, /16 og /20. <strong>Longest prefix match</strong> velger den lengste — /20 → <strong>port 3</strong>.</p>
+          <p>Sjekk /20: 10.20.32.0/20 dekker fra 10.20.32.0 til 10.20.47.255. 10.20.34.10 ligger innenfor → match. Den mest spesifikke ruten vinner.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — Longest prefix matching</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q7 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 7</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva representerer feltet TTL (Time to Live) i en IPv4-pakke?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Maksimal tid pakken kan eksistere, målt i sekunder</li>
+        <li><span class="opt-label">B</span> Maksimum antall rutere/hopp pakken kan passere før den forkastes</li>
+        <li><span class="opt-label">C</span> Antall ganger pakken kan retransmitteres</li>
+        <li><span class="opt-label">D</span> Levetiden til TCP-forbindelsen pakken tilhører</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Til tross for navnet "Time to Live" er TTL implementert som en <em>hop counter</em>. Hver ruter dekrementerer den med 1 — ikke med en faktisk tidsmåling. Når TTL går fra 1 til 0, forkastes pakken og avsenderen får en ICMP Time Exceeded.</p>
+          <p>Formålet er å hindre at pakker sirkulerer for evig i ruting-løkker (f.eks. midlertidige feilkonfigureringer i ruting-protokoller).</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — IPv4-header og TTL</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q8 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 8</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 5</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">I en link-state-protokoll: hvilken algoritme brukes typisk for å beregne korteste vei fra én ruter til alle andre, gitt full topologi-informasjon?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Bellman-Ford</li>
+        <li><span class="opt-label">B</span> Dijkstra</li>
+        <li><span class="opt-label">C</span> Floyd-Warshall</li>
+        <li><span class="opt-label">D</span> Round-robin</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B — Dijkstra</span>
+          <p>Når en ruter har full oversikt over topologien (alle lenker og kostnader), beregner den korteste vei til hver destinasjon med <strong>Dijkstras algoritme</strong>. Algoritmen er en grådig algoritme som steg for steg utvider mengden av noder med kjent korteste vei.</p>
+          <p>Bellman-Ford ligger bak distance-vector-protokoller. Floyd-Warshall beregner korteste vei mellom alle par — overkill for en enkelt ruters behov.</p>
+          <p class="ref">Pensum: <a href="../kap5/innhold.html">Kap. 5 — Link-state-ruting</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q9 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 9</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">CRC (Cyclic Redundancy Check) brukes i lenkelaget for feildeteksjon. Hvilken påstand er riktig om CRC?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> CRC kan rette opp alle feil som oppdages</li>
+        <li><span class="opt-label">B</span> CRC oppdager alle enkeltbitsfeil og typisk lange burst-feil opp til en gitt lengde, men kan ikke rette opp dem</li>
+        <li><span class="opt-label">C</span> CRC krypterer payload</li>
+        <li><span class="opt-label">D</span> CRC brukes kun i transportlaget, ikke i lenkelaget</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>CRC er en kraftig feildeteksjonsmekanisme — basert på polynomdivisjon i GF(2). Med en valgt generatorpolynom på r+1 bits oppdager CRC alle enkeltbits-feil, alle dobbelbits-feil (gitt riktig generator), alle burst-feil av lengde ≤ r, og en stor andel andre feilmønstre.</p>
+          <p>Men CRC er kun deteksjon, ikke korreksjon — ved feil må rammen kastes og enten retransmitteres eller ignoreres avhengig av lag/policy. (Forward Error Correction, f.eks. Reed-Solomon, brukes der korreksjon trengs uten retransmisjon.)</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — Feildeteksjon og CRC</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q10 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 10</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 7</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er den korrekte rekkefølgen når en ny WiFi-enhet kobles til et 802.11-aksesspunkt (typisk hjemmenett)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Authentication → Association → DHCP → ARP</li>
+        <li><span class="opt-label">B</span> DHCP → Authentication → Association → ARP</li>
+        <li><span class="opt-label">C</span> ARP → Authentication → Association → DHCP</li>
+        <li><span class="opt-label">D</span> DHCP → ARP → Authentication → Association</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A</span>
+          <p>Tilkoblingsprosessen i 802.11:</p>
+          <ol>
+            <li><strong>Skanning</strong>: enheten finner aksesspunkter via beacon-frames eller probe requests.</li>
+            <li><strong>Authentication</strong>: en lenkelagshandshake mellom enhet og AP (med eller uten kryptografisk autentisering, f.eks. WPA2/WPA3-EAPOL-handshake).</li>
+            <li><strong>Association</strong>: enheten "hekter seg på" AP — enheten er nå offisielt en del av BSS-en.</li>
+            <li><strong>DHCP</strong>: enheten henter IP-adresse og parametre. Krever at lenkelagsnivå er klart.</li>
+            <li><strong>ARP</strong> kommer først når enheten skal sende sin første pakke til en annen vert (typisk gateway).</li>
+          </ol>
+          <p>De første tre stegene er alle på lenkelaget i 802.11. DHCP og ARP kjører oppe på IP- / applikasjonsnivå.</p>
+          <p class="ref">Pensum: <a href="../kap7/innhold.html">Kap. 7 — WiFi-assosiering</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q11 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 11</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er forskjellen mellom <strong>transport mode</strong> og <strong>tunnel mode</strong> i IPSec?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Transport mode er kryptert, tunnel mode er ikke</li>
+        <li><span class="opt-label">B</span> Transport mode beskytter kun payload (originale IP-headere bevares); tunnel mode innkapsler hele original IP-pakken inni en ny IP-pakke (vanlig i VPN)</li>
+        <li><span class="opt-label">C</span> Transport mode brukes bare i kontorer, tunnel mode i hjemmet</li>
+        <li><span class="opt-label">D</span> Tunnel mode bruker UDP, transport mode bruker TCP</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>I <strong>transport mode</strong> beskyttes kun payload (TCP/UDP-segmentet) av IPSec, mens originale IP-headere er synlige. Brukes typisk vert-til-vert.</p>
+          <p>I <strong>tunnel mode</strong> innkapsles hele den originale IP-pakken (inkludert headere) i en ny IP-pakke. Den ytre headeren brukes for ruting mellom IPSec-gateways. Dette er det vanlige modus for <strong>VPN</strong> (site-to-site eller klient-til-site), fordi det skjuler den interne nettstrukturen og lar private adresseområder traversere offentlig nett.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8 — IPSec og VPN</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q12 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 12</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken av følgende er <strong>ikke</strong> en oppgave for en tradisjonell pakkefilter-brannmur (stateless firewall)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Tillate eller blokkere trafikk basert på kilde- og destinasjons-IP-adresser</li>
+        <li><span class="opt-label">B</span> Tillate eller blokkere trafikk basert på TCP/UDP-port</li>
+        <li><span class="opt-label">C</span> Tillate eller blokkere trafikk basert på IP-protokollnummer (TCP, UDP, ICMP …)</li>
+        <li><span class="opt-label">D</span> Inspisere og forstå applikasjonsdata, som å oppdage en bestemt phishing-URL i en HTTP-request</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: D</span>
+          <p>En tradisjonell pakkefilter-brannmur opererer på pakke-headere — IP-adresser, porter, protokollnummer, flagg (f.eks. SYN/ACK). Den ser ikke inn i applikasjonsinnholdet.</p>
+          <p>For å inspisere applikasjonsinnhold trengs en <strong>application gateway</strong> (proxy) eller en <strong>deep packet inspection (DPI)</strong>-løsning. Pensum nevner application gateway som en separat kategori.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8 — Brannmurer (pakkefilter, stateful, application gateway)</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q13 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 13</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 9</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er hovedfunksjonen til RTP (Real-time Transport Protocol)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Garantere pålitelig levering av lyd- og videopakker, akkurat som TCP</li>
+        <li><span class="opt-label">B</span> Tillegge headerfelt som sekvensnummer, tidsstempel og payload-type for sanntidsstrømmer (kjører typisk over UDP)</li>
+        <li><span class="opt-label">C</span> Erstatte IP for sanntidsapplikasjoner</li>
+        <li><span class="opt-label">D</span> Kryptere lyd- og videostrømmer ende-til-ende</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>RTP gir en standard rammeverk for å transportere sanntids medie-data. Headeren inneholder bl.a.:</p>
+          <ul>
+            <li><strong>Sekvensnummer</strong> — for å oppdage tap og rekkefølgefeil</li>
+            <li><strong>Tidsstempel</strong> — for å re-synkronisere medie-strømmer hos mottaker (avgjørende for jitter-buffer og A/V-sync)</li>
+            <li><strong>Payload type</strong> — angir kodeken (PCM, Opus, H.264 osv.)</li>
+            <li><strong>SSRC</strong> — identifikator for kilden i en multipart-strøm</li>
+          </ul>
+          <p>RTP gir <em>ikke</em> pålitelig levering eller QoS — det er opp til underliggende lag og applikasjonen. RTP kjører typisk over UDP for å unngå TCPs retransmisjoner som ville økt forsinkelsen.</p>
+          <p class="ref">Pensum: <a href="../kap9/innhold.html">Kap. 9 — RTP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q14 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 14</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 9</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvorfor brukes UDP — og ikke TCP — typisk for VoIP-trafikk?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> UDP gir bedre kryptering enn TCP</li>
+        <li><span class="opt-label">B</span> UDP er den eneste protokollen som garanterer levering</li>
+        <li><span class="opt-label">C</span> UDP unngår retransmisjoner og congestion-relaterte forsinkelser; en sterkt forsinket lydpakke er ubrukelig uansett</li>
+        <li><span class="opt-label">D</span> UDP har større headere som gir bedre kvalitet</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C</span>
+          <p>VoIP er sanntid: en lydpakke som kommer 300+ ms for sent er bortkastet — den hadde uansett ikke kunnet spilles av. TCP ville prioritert pålitelighet og retransmittert tapte segmenter, men det medfører ekstra RTT(er) og blokkering av etterfølgende data (head-of-line blocking) — uakseptabelt for sanntid.</p>
+          <p>UDP slipper denne overheaden. Eventuell pakketap håndteres av audio-kodeken (skjules ved interpolering eller redundans) eller aksepteres som kvalitetsfall.</p>
+          <p class="ref">Pensum: <a href="../kap9/innhold.html">Kap. 9 — VoIP og valg av transport</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+
+<!-- ==================== DEL II ==================== -->
+<section id="del2">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del II — Åpne oppgaver</h2>
+    <span class="del-points">5 oppgaver · 58 poeng totalt</span>
+  </div>
+  <p class="section-intro">Åpne, skriftlige svar. Begrunn svarene dine. Vis utregning der det er relevant. Klikk «Vis fasit» for å sammenligne med modellbesvarelsen.</p>
+
+  <!-- Oppgave 1 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 1</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) En TCP-forbindelse går mellom A og B. Banen har RTT 200 ms og flaskehalskapasitet 10 Mbps. Beregn båndbredde-forsinkelsesproduktet (BDP) i bits og i bytes. (3p)</p>
+      <p class="q-text">b) For at TCP skal kunne fylle linjen i steady state, hvor stort må senderens vindu (uavhengig av rwnd / cwnd-detaljer) minst være? (2p)</p>
+      <p class="q-text">c) Anta at mottakeren annonserer rwnd = 64 KB og cwnd er stor nok. Hva blir maksimalt oppnåelig gjennomstrømning, og hvorfor er den lavere enn 10 Mbps? (3p)</p>
+      <p class="q-text">d) Foreslå én konkret tiltak (uten å bytte til en annen protokoll enn TCP) for å øke gjennomstrømningen. (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) BDP:</strong></p>
+          <p>BDP = kapasitet × RTT = 10 × 10<sup>6</sup> bps × 0,2 s = 2 × 10<sup>6</sup> bits = <strong>2 000 000 bits</strong></p>
+          <p>I bytes: 2 × 10<sup>6</sup> / 8 = <strong>250 000 byte ≈ 244 KiB</strong></p>
+          <p><strong>b) Minimum vindu for å fylle linjen:</strong></p>
+          <p>Senderen må kunne ha hele BDP i ukvitterte bytes underveis: vindu ≥ BDP = <strong>250 000 byte</strong>. Hvis vinduet er mindre, blir senderen tomgangsbegrenset (vinduet "tømmes" før første ACK kommer tilbake).</p>
+          <p><strong>c) Maks gjennomstrømning med rwnd = 64 KB:</strong></p>
+          <p>Senderen begrenses til 64 KB ukvittert per RTT: 65 536 byte × 8 / 0,2 s = 2 621 440 bps ≈ <strong>2,6 Mbps</strong></p>
+          <p>Dette er bare ~26 % av flaskehalskapasiteten. Vinduet er for lite for stien — typisk problem på "long fat networks" (LFN).</p>
+          <p><strong>d) Tiltak:</strong></p>
+          <p>Aktivere <strong>TCP window scaling</strong> (RFC 1323) — en TCP-opsjon som lar rwnd-feltet effektivt være større enn 64 KB. (Andre gyldige svar: øke socket buffer-størrelser i applikasjonen, bruke flere parallelle TCP-forbindelser, redusere RTT med en CDN nærmere klienten.)</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Gjennomstrømning</a> · <a href="../kap3/innhold.html">Kap. 3 — TCP-vindu og BDP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 2 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 2</span>
+      <span class="exam-q__points">15 poeng</span>
+      <span class="exam-q__topic">Kap. 4</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En ISP har følgende forwarding-tabell i en kjerneruter:
+        <br><code>10.0.0.0/8        → port 1</code>
+        <br><code>10.128.0.0/9      → port 2</code>
+        <br><code>10.130.0.0/15     → port 3</code>
+        <br><code>10.130.4.0/22     → port 4</code>
+        <br><code>0.0.0.0/0         → port 5 (default)</code></p>
+      <p class="q-text">a) Skriv subnettmaske i dotted-decimal for hver oppføring. (4p)</p>
+      <p class="q-text">b) Bruk longest prefix matching og bestem utgangsport for følgende destinasjoner. Begrunn for hver:</p>
+      <ul>
+        <li><code>10.10.20.30</code></li>
+        <li><code>10.130.5.100</code></li>
+        <li><code>10.130.10.5</code></li>
+        <li><code>10.200.1.1</code></li>
+        <li><code>172.16.0.1</code></li>
+      </ul>
+      <p class="q-text">(7p)</p>
+      <p class="q-text">c) Beskriv kort hva som skjer i ruteren mellom å motta en pakke og å sende den ut igjen — inkludert IP-headerendringer. (4p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Subnettmasker:</strong></p>
+          <table>
+            <thead><tr><th>Prefiks</th><th>Maske</th></tr></thead>
+            <tbody>
+              <tr><td>/8</td><td>255.0.0.0</td></tr>
+              <tr><td>/9</td><td>255.128.0.0</td></tr>
+              <tr><td>/15</td><td>255.254.0.0</td></tr>
+              <tr><td>/22</td><td>255.255.252.0</td></tr>
+              <tr><td>/0</td><td>0.0.0.0</td></tr>
+            </tbody>
+          </table>
+          <p><strong>b) Longest prefix matching:</strong></p>
+          <ul>
+            <li><code>10.10.20.30</code> — matcher /8 (10.0.0.0–10.255.255.255). Ikke /9 (10.128.0.0–10.255.255.255 — utenfor 10.10.x.x). → <strong>port 1</strong></li>
+            <li><code>10.130.5.100</code> — matcher /8, /9 (10.128.0.0/9 dekker 10.128.0.0–10.255.255.255), /15 (10.130.0.0/15 dekker 10.130.0.0–10.131.255.255), /22 (10.130.4.0/22 dekker 10.130.4.0–10.130.7.255). Lengst: /22 → <strong>port 4</strong></li>
+            <li><code>10.130.10.5</code> — matcher /8, /9, /15, men ikke /22 (utenfor 10.130.4.0–10.130.7.255). Lengst: /15 → <strong>port 3</strong></li>
+            <li><code>10.200.1.1</code> — matcher /8, /9. Lengst: /9 → <strong>port 2</strong></li>
+            <li><code>172.16.0.1</code> — matcher kun /0 → <strong>port 5 (default)</strong></li>
+          </ul>
+          <p><strong>c) Behandling i ruteren:</strong></p>
+          <ol>
+            <li><strong>Motta ramme</strong> på inngangsport, fjerne lenkelagshoder.</li>
+            <li><strong>Sjekke IP-headerintegritet</strong> (header checksum).</li>
+            <li><strong>Dekrementer TTL</strong> med 1. Hvis TTL = 0, forkast pakken og send ICMP Time Exceeded.</li>
+            <li><strong>Slå opp i forwarding-tabellen</strong> med longest prefix matching og finn utgangsport + neste-hop.</li>
+            <li>Hvis nødvendig, <strong>fragmenter</strong> pakken hvis MTU på utgangslink er mindre enn pakkestørrelse (og DF-flagget ikke er satt).</li>
+            <li><strong>Beregn ny header checksum</strong> (siden TTL endret seg).</li>
+            <li><strong>Slå opp neste-hops MAC</strong> via ARP, bygg ny lenkelagsramme og send ut på utgangsporten.</li>
+          </ol>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — IP-forwarding</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 3 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 3</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 6 · 7</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) Forklar — gjerne i punkter — den fullstendige sekvensen av lenkelagsoperasjoner som skjer når en bærbar PC er nylig assosiert med et WiFi-aksesspunkt og skal sende sin <em>første</em> IP-pakke (etter at den har fått IP via DHCP) til en server på Internett. Anta at PC-ens IP-stakk allerede vet at pakken må gå via default gateway. (6p)</p>
+      <p class="q-text">b) Hvorfor må PC-en kjenne til MAC-adressen til <strong>gatewayen</strong> og ikke til den endelige destinasjonen, selv om destinasjonens IP er målet? (4p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Sekvens av lenkelagsoperasjoner:</strong></p>
+          <ol>
+            <li><strong>Konstruere IP-pakken</strong>: kilde-IP = PC, destinasjon-IP = serverens IP.</li>
+            <li><strong>ARP-oppslag for gateway</strong>: PC-en sjekker sin ARP-cache. Hvis gatewayens MAC ikke er der, sender den en ARP Request som broadcast i 802.11-rammen (destinasjons-MAC = ff:ff:ff:ff:ff:ff). Aksesspunktet videresender broadcasten til alle andre i BSS-en, og gatewayen svarer med ARP Reply (unicast).</li>
+            <li><strong>CSMA/CA — vente på ledig medium</strong>: PC-en utfører carrier sense. Hvis mediet er ledig, venter PC-en DIFS + tilfeldig backoff (counts down i ledige slots, fryser ved opptatt medium).</li>
+            <li><strong>Send 802.11-ramme</strong>: payload = IP-pakken; mottaker-MAC i rammen = gatewayens MAC; rammen sendes til AP først (siden vi er i infrastrukturmodus).</li>
+            <li><strong>Vent på ACK fra AP</strong>: 802.11 har lenkelags-ACK. Hvis ingen ACK kommer innen SIFS-grensen, retransmitter PC-en (med eksponentiell backoff).</li>
+            <li><strong>AP videresender til gateway</strong>: AP-en mottar rammen, fjerner 802.11-rammen og videresender pakken (med ny lenkelagsramme om nødvendig) i retning av gatewayen.</li>
+          </ol>
+          <p><strong>b) Hvorfor MAC-adressen til gatewayen?</strong></p>
+          <p>MAC-adresser er <strong>kun lokalt meningsfulle</strong> — de gjelder innenfor ett lenkelagsdomene (LAN/BSS). Serveren ute på Internett er ikke i samme broadcast-domene som PC-en. ARP-broadcasten ville aldri nådd serveren — den stoppes ved første ruter.</p>
+          <p>I lenkelagsrammen må mottaker-MAC være <strong>neste hop</strong> langs ruten — i dette tilfellet gatewayen. Pakken sendes da til gatewayen, som bytter ut MAC-headeren for sitt utgående interface og sender pakken videre. IP-adressene endres ikke (kilde- og destinasjons-IP forblir konstant ende til ende, modulo NAT), men lag-2-adressene byttes ut for hver lenke.</p>
+          <p>Dette er essensen av lagdeling: lag 2 vet ikke (og trenger ikke vite) noe om Internett-topologien — det er lag 3-arbeid.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — Lenkelagsramme og ARP</a> · <a href="../kap7/innhold.html">Kap. 7 — 802.11 sending</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 4 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 4</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 8</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Du skal hjelpe en liten bedrift med å sikre nettet sitt. Bedriften har en webserver (port 80/443) i en DMZ, og interne ansatte skal kunne surfe på Internett (men ingen tjenester skal være eksponert utenfra mot det interne nettet).</p>
+      <p class="q-text">a) Foreslå et sett med pakkefilter-brannmurregler som beskriver hva som skal slippes inn og ut. Bruk en tabell med felter som «retning», «protokoll», «kildeport/IP», «destinasjonsport/IP», «aksjon». Du trenger ikke skrive perfekt syntaks — det viktige er logikken. (5p)</p>
+      <p class="q-text">b) Forklar hvorfor en <strong>stateful</strong> brannmur er bedre egnet enn en stateless ved at den kan implementere "established connections" enkelt og trygt. (3p)</p>
+      <p class="q-text">c) Bedriften vil i tillegg gi hjemmekontorbrukere sikker tilgang til interne ressurser. Hvilken løsning anbefaler du, og hva oppnår man med den? (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Forslag til regler (anta tre soner: INSIDE, DMZ, OUTSIDE):</strong></p>
+          <table>
+            <thead><tr><th>#</th><th>Retning</th><th>Protokoll</th><th>Kilde</th><th>Destinasjon (IP/port)</th><th>Aksjon</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>OUTSIDE → DMZ</td><td>TCP</td><td>any</td><td>DMZ-server : 80, 443</td><td>ALLOW</td></tr>
+              <tr><td>2</td><td>DMZ → OUTSIDE</td><td>TCP</td><td>DMZ-server : 80, 443</td><td>any (etablerte svar)</td><td>ALLOW</td></tr>
+              <tr><td>3</td><td>INSIDE → OUTSIDE</td><td>TCP/UDP</td><td>INSIDE-nett</td><td>any : 80, 443, 53</td><td>ALLOW</td></tr>
+              <tr><td>4</td><td>OUTSIDE → INSIDE</td><td>any</td><td>any</td><td>INSIDE-nett</td><td>DENY</td></tr>
+              <tr><td>5</td><td>DMZ → INSIDE</td><td>any</td><td>DMZ-server</td><td>INSIDE-nett</td><td>DENY</td></tr>
+              <tr><td>6 (default)</td><td>any</td><td>any</td><td>any</td><td>any</td><td>DENY</td></tr>
+            </tbody>
+          </table>
+          <p>Logikken: kun web-trafikk fra Internett til DMZ-serveren tillates inn. INSIDE-nett kan initiere utgående trafikk på vanlige porter (80, 443 = web; 53 = DNS). Alt annet er stengt — særlig viktig: INSIDE skal aldri være direkte målbar utenfra.</p>
+          <p><strong>b) Stateful brannmur:</strong></p>
+          <p>En stateful brannmur sporer aktive forbindelser i en tilstandstabell. Når en intern bruker initierer en forbindelse ut (f.eks. TCP-handshake til en webserver), legges forbindelsen i tabellen. Returpakker som <em>tilhører den allerede etablerte forbindelsen</em> slippes automatisk gjennom — uten å trenge en eksplisitt regel som åpner alle høye porter inn.</p>
+          <p>En stateless brannmur ville måtte tillate ALL trafikk inn på høye porter for at returtrafikk skulle nå tilbake — en stor sikkerhetsrisiko. Stateful brannmur ser også sammenhengen i protokollen (f.eks. at en ACK må følge et SYN) og kan oppdage uregelmessigheter.</p>
+          <p><strong>c) Løsning for hjemmekontor:</strong></p>
+          <p>En <strong>VPN-løsning basert på IPSec (tunnel mode)</strong> eller <strong>TLS-VPN (f.eks. OpenVPN)</strong>. Hjemmebrukere oppretter en kryptert tunnel til selskapets VPN-gateway og får en intern IP-adresse. Trafikken til interne ressurser går da kryptert over Internett gjennom tunnelen. Dette gir konfidensialitet (kryptering), integritet (autentiseringskode) og autentisering (mutual auth ved sertifikater eller pre-shared keys), samtidig som interne ressurser ikke trenger å eksponeres direkte mot Internett.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8 — Brannmurer, IPSec og VPN</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 5 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 5</span>
+      <span class="exam-q__points">13 poeng</span>
+      <span class="exam-q__topic">Kap. 7 · 9</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) En 802.11-ramme har plass til opptil <em>fire</em> MAC-adressefelt, mens en Ethernet-ramme har bare to. Forklar hvorfor 802.11 trenger flere — bruk infrastrukturmodus (BSS med AP) som eksempel og beskriv hvilke adresser som settes når en stasjon i BSS-en sender til en mottaker utenfor BSS-en. (5p)</p>
+      <p class="q-text">b) En sanntids-VoIP-strøm har sendrate 64 kbps og pakkeintervall på 20 ms. Hvor stor er hver lyd-payload (i byte)? Hva slags problemer kan oppstå hvis det er stor jitter på linjen, og hvordan kan en adaptiv playout-buffer håndtere dette? (5p)</p>
+      <p class="q-text">c) Forklar hvorfor RTP-tidsstemplet er viktig nettopp for sanntidsstrømmer — i hvilke situasjoner brukes det, og hva ville skjedd uten? (3p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Hvorfor fire adressefelt i 802.11?</strong></p>
+          <p>I infrastrukturmodus passerer all trafikk via aksesspunktet. Når stasjon A i BSS-en sender til en host R utenfor BSS-en, må rammen inneholde:</p>
+          <ul>
+            <li><strong>Address 1 (Receiver)</strong>: MAC-adressen til neste lenkelagsmottaker = <strong>AP</strong> (BSSID).</li>
+            <li><strong>Address 2 (Transmitter)</strong>: MAC til den som faktisk sender rammen = <strong>A</strong>.</li>
+            <li><strong>Address 3 (final endpoint i lenkelaget)</strong>: MAC til <strong>ruteren / gatewayens interface</strong> som ligger innenfor samme broadcast-domene som AP — dvs. neste hop ut av LAN-et.</li>
+            <li><strong>Address 4</strong>: brukes <em>kun</em> i ad-hoc / WDS / mesh-konfigurasjoner (når trafikk vandrer mellom flere AP-er på 802.11-nivå). I infrastrukturmodus er den ikke i bruk.</li>
+          </ul>
+          <p>I Ethernet er det enklere: src og dst MAC er nok fordi Ethernet ikke har en "mellomstasjon" som AP — svitsjen forwarder transparent uten å manipulere headeren.</p>
+          <p><strong>b) VoIP-payload og jitter:</strong></p>
+          <p>Sendrate × intervall = bits per pakke = 64 000 bps × 0,020 s = 1 280 bits = <strong>160 byte</strong> per lyd-payload. (Pluss header for RTP/UDP/IP/lenkelag, men spørsmålet gjaldt payload.)</p>
+          <p>Stor jitter betyr at noen pakker ankommer mye senere eller tidligere enn forventet. Konsekvenser uten håndtering: pause/glipp i avspilling (manglende pakke ved playout-tidspunkt), eller tap av rytme. Adaptiv playout-buffer håndterer dette ved at:</p>
+          <ul>
+            <li>Pakkene legges i en buffer ved ankomst og spilles av med en konstant forsinkelse <em>p</em> målt fra senders tidsstempel.</li>
+            <li>Verdien av <em>p</em> justeres adaptivt — hvis jitter er høy, økes <em>p</em>; hvis lav, kan <em>p</em> reduseres for å minske ende-til-ende-forsinkelse.</li>
+            <li>Justering skjer fortrinnsvis i pauser mellom snakketurer (talkspurts) for at brukeren ikke skal merke det.</li>
+          </ul>
+          <p><strong>c) Hvorfor RTP-tidsstempel?</strong></p>
+          <p>Tidsstemplet representerer tidspunktet for samples i opprinnelseskilden — ikke tiden pakken ble sendt. Dette lar mottakeren:</p>
+          <ol>
+            <li>Spille av lyden med konsistent rytme uavhengig av nettverks-jitter (ankomstrekkefølge eller -tidspunkt har ingen direkte avhengighet av samples-tiden).</li>
+            <li>Synkronisere flere medie-strømmer (f.eks. lyd + video).</li>
+          </ol>
+          <p>Uten RTP-tidsstempel måtte mottaker ha gjettet samples-tider basert på ankomsttid, noe som ville gitt unaturlig avspilling under jitter eller tap.</p>
+          <p class="ref">Pensum: <a href="../kap7/innhold.html">Kap. 7 — 802.11-rammeformat</a> · <a href="../kap9/innhold.html">Kap. 9 — RTP og playout-buffer</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Vår 2026</p>
+  </div>
+</footer>
+<script src="../chat-widget.js"></script>
+<script src="../nav-search.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>

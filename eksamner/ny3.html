@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Øvingseksamen 3 — TTM4100</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Alle eksamener</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
+  </div>
+</nav>
+
+<main data-chapter="Øvingseksamen 3 — TTM4100">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Øvingseksamen · TTM4100</div>
+  <h1>Øvingseksamen <em>3</em></h1>
+  <p class="lede">Del I: 14 flervalgsoppgaver (42 poeng). Del II: 5 åpne oppgaver (58 poeng). Totalt 100 poeng. Settet vektlegger pålitelig dataoverføring, DNS-detaljer, distance-vector-ruting og digitale signaturer.</p>
+
+  <div class="learn-box">
+    <span class="label">Temaer i dette settet</span>
+    <ul>
+      <li>Pakke- vs. linjesvitsjing, propagasjonstid (kap. 1)</li>
+      <li>DNS-recordtyper, web-cache, RTT for HTTP (kap. 2)</li>
+      <li>UDP-checksum, Go-Back-N og Selective Repeat (kap. 3)</li>
+      <li>DHCP, IP-fragmentering (kap. 4)</li>
+      <li>Distance-vector og ICMP traceroute (kap. 5)</li>
+      <li>Svitsj vs. ruter, MAC-adresser (kap. 6)</li>
+      <li>Trådløse signalproblemer (kap. 7)</li>
+      <li>Digitale signaturer, hash, sikker e-post (kap. 8)</li>
+      <li>VoIP — jitter og playout-buffer (kap. 9)</li>
+    </ul>
+  </div>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">I</span><a href="#del1">Del I — Flervalg (42p)</a></li>
+    <li><span class="toc-num">II</span><a href="#del2">Del II — Åpne oppgaver (58p)</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ==================== DEL I ==================== -->
+<section id="del1">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del I — Automatisk rettede spørsmål</h2>
+    <span class="del-points">14 spørsmål · 3 poeng per spørsmål · 42 poeng totalt</span>
+  </div>
+  <p class="section-intro">Velg det alternativet du mener er riktig. Klikk «Vis fasit» for å sjekke svaret og lese forklaringen.</p>
+
+  <!-- Q1 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 1</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En lyssignal beveger seg gjennom en fiberoptisk kabel med 2 × 10<sup>8</sup> m/s. Hva er propagasjonsforsinkelsen for en pakke som krysser en 2 000 km lang fiber?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 1 ms</li>
+        <li><span class="opt-label">B</span> 10 ms</li>
+        <li><span class="opt-label">C</span> 100 ms</li>
+        <li><span class="opt-label">D</span> 0,1 ms</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B — 10 ms</span>
+          <p><strong>Formel:</strong> d<sub>prop</sub> = d / s = 2 000 × 10<sup>3</sup> m / 2 × 10<sup>8</sup> m/s = 10<sup>−2</sup> s = <strong>10 ms</strong></p>
+          <p>Propagasjonsforsinkelse avhenger kun av distansen og signalhastigheten i mediet — <em>ikke</em> av pakkestørrelse eller linkkapasitet. Dette er en viktig forskjell fra transmisjonsforsinkelse.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Propagasjonsforsinkelse</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q2 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 2</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er den primære motivasjonen for å organisere kommunikasjon i lag (layered architecture) som i Internett-protokollstakken?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Den krever mindre minne i nettverkskortet</li>
+        <li><span class="opt-label">B</span> Modularitet — hvert lag kan endres uavhengig så lenge grensesnittet til naboen er det samme</li>
+        <li><span class="opt-label">C</span> Det reduserer faktiske transmisjonsforsinkelser i fysiske medier</li>
+        <li><span class="opt-label">D</span> Den krever ingen pakkehoder</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Lagdeling gir to hovedfordeler: <strong>modularitet</strong> (hvert lag kan utvikles, oppdateres eller byttes ut uavhengig av nabolagene, så lenge tjenestegrensesnittet er konstant) og <strong>abstraksjon</strong> (et lag trenger ikke vite detaljer om implementasjonen i lagene over og under).</p>
+          <p>Faktisk gir lagdeling overhead — hver header tar ekstra bytes — men gevinsten i utviklingsenkelhet og skalerbarhet er stor. Internett kunne ikke evolvert uten denne modulariteten (vurder f.eks. overgangen fra 802.3-koaks til 802.11 — applikasjoner trenger ikke endres).</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Lagdelt arkitektur</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q3 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 3</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken DNS-recordtype brukes til å peke et domenenavn til mailservere?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> A</li>
+        <li><span class="opt-label">B</span> CNAME</li>
+        <li><span class="opt-label">C</span> NS</li>
+        <li><span class="opt-label">D</span> MX</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: D — MX</span>
+          <p>MX-records (Mail eXchange) brukes til å peke et domene til e-postservere som mottar e-post for det domenet, sammen med en prioritetsverdi.</p>
+          <table>
+            <thead><tr><th>Record</th><th>Funksjon</th></tr></thead>
+            <tbody>
+              <tr><td>A</td><td>Domenenavn → IPv4-adresse</td></tr>
+              <tr><td>AAAA</td><td>Domenenavn → IPv6-adresse</td></tr>
+              <tr><td>CNAME</td><td>Domenenavn → annet domenenavn (alias)</td></tr>
+              <tr><td>NS</td><td>Domenenavn → autoritativ navneserver</td></tr>
+              <tr><td>MX</td><td>Domenenavn → mailserver med prioritet</td></tr>
+            </tbody>
+          </table>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — DNS resource records</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q4 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 4</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En organisasjon plasserer en web-cache (proxy) inne på sitt eget LAN. Hvilken påstand er <strong>ikke</strong> en korrekt fordel ved dette?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Bruker opplever raskere svartid på populære sider</li>
+        <li><span class="opt-label">B</span> Reduserer trafikk på den eksterne tilgangslinken</li>
+        <li><span class="opt-label">C</span> Reduserer belastning på den opprinnelige webserveren</li>
+        <li><span class="opt-label">D</span> Garanterer at brukerne alltid får siste versjon av en side</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: D — denne påstanden er feil</span>
+          <p>En web-cache kan tvert imot servere <em>foreldede</em> versjoner av en side hvis ressursen har blitt oppdatert siden cachen lagret den. For å redusere risikoen for foreldede svar, bruker HTTP <strong>conditional GET</strong> (med <code>If-Modified-Since</code>): cachen spør serveren <em>"har dette endret seg siden tidspunkt T?"</em>. Hvis ikke, svarer serveren <code>304 Not Modified</code> uten å sende selve dataen. Caching-headere som <code>Cache-Control: max-age</code> styrer hvor lenge cachen kan beholde et svar uten å sjekke.</p>
+          <p>A, B og C er alle reelle fordeler.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — Web-cache og conditional GET</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q5 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 5</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">I Go-Back-N (GBN): hvis vinduet er N = 4 og pakke 2 går tapt mens pakke 3, 4 og 5 kommer frem korrekt, hva sender mottakeren?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> ACK 3, ACK 4, ACK 5 — pakkene buffres som i Selective Repeat</li>
+        <li><span class="opt-label">B</span> ACK 1 (kumulativ) for hver av de mottatte ut-av-rekkefølge-pakkene</li>
+        <li><span class="opt-label">C</span> NAK 2 og venter på retransmisjon</li>
+        <li><span class="opt-label">D</span> Forkaster ut-av-rekkefølge-pakkene uten å sende noe</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>I GBN kvitterer mottakeren bare den siste <em>i-rekkefølge</em>-pakken. Når pakke 2 går tapt og pakke 3, 4, 5 ankommer ut av rekkefølge, forkaster mottakeren disse og resender en kumulativ ACK for sist mottatte i-rekkefølge-pakke (her: ACK 1, dvs. "alt opp til og med 1 er mottatt"). Senderen oppdager etter timeout for pakke 2 at noe er galt og <strong>retransmitterer alle pakkene fra og med pakke 2</strong> — derav navnet "Go-Back-N".</p>
+          <p>Dette er enklere å implementere enn Selective Repeat, men kan være ineffektivt fordi pakker som <em>kom</em> frem må sendes på nytt.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — Go-Back-N</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q6 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 6</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">UDP har et checksum-felt. Hva skjer hvis mottakeren oppdager at checksum-en er feil?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Mottakeren retransmitterer datagrammet automatisk</li>
+        <li><span class="opt-label">B</span> Mottakeren forkaster datagrammet stille (silent discard)</li>
+        <li><span class="opt-label">C</span> Mottakeren reparerer feilen ved hjelp av Hamming-koden</li>
+        <li><span class="opt-label">D</span> Mottakeren sender en NAK til avsender</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>UDP er en upålitelig (best-effort) transportprotokoll. Hvis checksum ikke stemmer, kastes datagrammet uten varsel — ingen retransmisjon, ingen NAK. Det er opp til applikasjonslaget å oppdage og håndtere tap (eller akseptere det).</p>
+          <p>Dette skiller UDP klart fra TCP, som ville forsøkt å reparere problemet via retransmisjon.</p>
+          <p>(Merk: UDPs checksum brukes til <em>deteksjon</em> av feil, ikke korreksjon. Den dekker pseudoheader + UDP-header + payload.)</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — UDP og checksum</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q7 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 7</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken DHCP-melding sendes <strong>først</strong> av en klient som akkurat har koblet seg til et nytt nettverk?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> DHCP Offer</li>
+        <li><span class="opt-label">B</span> DHCP Request</li>
+        <li><span class="opt-label">C</span> DHCP Discover</li>
+        <li><span class="opt-label">D</span> DHCP ACK</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — DHCP Discover</span>
+          <p>DHCP-prosessen har fire steg (DORA):</p>
+          <ol>
+            <li><strong>Discover</strong> — klient sender broadcast: "Finnes det en DHCP-server her?"</li>
+            <li><strong>Offer</strong> — DHCP-server svarer med en IP-adresse og parametre</li>
+            <li><strong>Request</strong> — klient bekrefter ønsket tilbud (broadcast så andre servere vet at deres tilbud kan slippes)</li>
+            <li><strong>ACK</strong> — server bekrefter tildelingen</li>
+          </ol>
+          <p>Klienten har ingen IP ennå og må derfor bruke broadcast (255.255.255.255) som destinasjon — vanlig unicast-adressering ville kreve en gateway å sende gjennom.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — DHCP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q8 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 8</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En IPv4-pakke på 4 000 byte (inkludert IP-header på 20 byte) skal sendes over en link med MTU = 1 500 byte. Hvor mange fragmenter blir den delt opp i?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 2</li>
+        <li><span class="opt-label">B</span> 3</li>
+        <li><span class="opt-label">C</span> 4</li>
+        <li><span class="opt-label">D</span> 5</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B — 3 fragmenter</span>
+          <p>MTU = 1500 byte er <em>maksimum</em> total pakkestørrelse, inkludert IP-header på 20 byte. Hver fragment kan da inneholde maksimalt 1500 − 20 = 1480 byte med data fra det opprinnelige IP-payloadet. Dessuten må fragment-payload være delelig på 8 (ettersom Fragment Offset-feltet teller i 8-byte-enheter), så maksimum payload per fragment er 1480 byte (delelig på 8 ✓).</p>
+          <p>Opprinnelig payload: 4000 − 20 = 3980 byte. Trengs 3980 / 1480 = 2,69 → <strong>3 fragmenter</strong>.</p>
+          <table>
+            <thead><tr><th>Fragment</th><th>Payload</th><th>Offset</th><th>MF-flagg</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>1480 byte</td><td>0</td><td>1 (mer kommer)</td></tr>
+              <tr><td>2</td><td>1480 byte</td><td>185 (1480/8)</td><td>1 (mer kommer)</td></tr>
+              <tr><td>3</td><td>1020 byte</td><td>370</td><td>0 (siste)</td></tr>
+            </tbody>
+          </table>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — IPv4-fragmentering</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q9 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 9</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 5</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">I en distance-vector-rutingalgoritme: hva er årsaken til "count-to-infinity"-problemet?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Det finnes for mange rutere i nettverket</li>
+        <li><span class="opt-label">B</span> Etter at en link bryter, kan rutere annonsere lave kostnader til hverandre basert på utdatert informasjon, og kostnaden vokser sakte uten en konvergens</li>
+        <li><span class="opt-label">C</span> Algoritmen bruker uendelig store tall som en del av Bellman-Ford-iterasjonen</li>
+        <li><span class="opt-label">D</span> TCP-pakker kan ikke bære distance-vector-meldinger</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Eksempel: A — B — C, med kostnad 1 mellom A–B og 1 mellom B–C. Hvis link A–B bryter: B oppdager dette, men B har fortsatt en gammel oppføring fra C som sa "jeg kan nå A med kostnad 2 (via B)". B oppdaterer derfor til "jeg kan nå A med kostnad 3 via C". Når B annonserer til C, oppdaterer C til 4. Slik vandrer kostnaden oppover én linje av gangen — <em>"counting to infinity"</em> — istedenfor å konvergere raskt.</p>
+          <p>Løsninger: <em>poisoned reverse</em> (annonser ∞ tilbake til naboen som ruter via deg) og forskjellige hold-down/split-horizon-strategier.</p>
+          <p class="ref">Pensum: <a href="../kap5/innhold.html">Kap. 5 — Distance-vector og count-to-infinity</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q10 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 10</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 5</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Verktøyet <code>traceroute</code> bruker IP TTL-feltet sammen med ICMP. Hva skjer når en ruter mottar en pakke med TTL = 1 (og som ikke er adressert til ruteren selv)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Ruteren videresender pakken normalt — den har ingen spesiell behandling</li>
+        <li><span class="opt-label">B</span> Ruteren forkaster pakken og sender en ICMP "Time Exceeded"-melding tilbake til avsender</li>
+        <li><span class="opt-label">C</span> Ruteren krypterer pakken før videresending</li>
+        <li><span class="opt-label">D</span> Ruteren broadcaster pakken til alle naboer</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Hver ruter dekrementerer TTL med 1. Når TTL går fra 1 til 0, forkastes pakken og ruteren sender en ICMP <strong>"Time Exceeded"</strong>-melding (type 11) tilbake til opprinnelig avsender. Dette beskytter mot uendelige rutings-løkker.</p>
+          <p><code>traceroute</code> utnytter dette ved å sende en sekvens av prøvepakker med TTL = 1, deretter 2, deretter 3 osv. Den første ruteren returnerer Time Exceeded for TTL = 1, den andre for TTL = 2, og så videre. Dermed kartlegges ruten hop for hop.</p>
+          <p class="ref">Pensum: <a href="../kap5/innhold.html">Kap. 5 — ICMP og traceroute</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q11 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 11</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er den viktigste forskjellen mellom en svitsj (Layer 2) og en ruter (Layer 3)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Svitsjer er raskere fordi de er hardware, rutere er alltid software</li>
+        <li><span class="opt-label">B</span> Svitsjer videresender basert på MAC-adresser innenfor ett LAN; rutere videresender basert på IP-adresser mellom ulike subnett</li>
+        <li><span class="opt-label">C</span> Svitsjer dropper alltid broadcast-trafikk</li>
+        <li><span class="opt-label">D</span> Rutere bruker ARP, mens svitsjer bruker DNS</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>En <strong>svitsj</strong> opererer i lenkelaget (Layer 2). Den ser kun MAC-adresser og videresender rammer innenfor ett broadcast-domene (LAN/subnett). En svitsj endrer ikke pakke-headere — kun rammen for fysisk overføring.</p>
+          <p>En <strong>ruter</strong> opererer i nettverkslaget (Layer 3). Den ser IP-adresser, gjør routing-beslutninger basert på forwarding-tabellen, dekrementerer TTL og bytter ut MAC-headeren for neste link.</p>
+          <p>Rutere segmenterer broadcast-domener — broadcasts (f.eks. ARP) krysser ikke en ruter med mindre konfigurert (DHCP-relay).</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — Svitsj vs. ruter</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q12 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 12</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 7</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken påstand om signalstyrke i et trådløst 802.11-nettverk er riktig?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Signalstyrken faller eksakt lineært med avstanden</li>
+        <li><span class="opt-label">B</span> Signalstyrken faller med (minst) kvadratet av avstanden i fritt rom — i bygninger ofte enda raskere på grunn av hindringer</li>
+        <li><span class="opt-label">C</span> Signalstyrken er konstant så lenge man er innenfor BSS-en</li>
+        <li><span class="opt-label">D</span> Signalstyrken faller raskere ved lavere frekvenser</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Radiosignaler avtar med <em>minst</em> kvadratet av avstanden i fritt rom (free-space path loss ∝ 1/d²). Inne i bygninger er fall-off ofte enda raskere på grunn av vegger, multipath fading og refleksjoner — i typiske kontormiljøer regnes ofte med 1/d<sup>3</sup> eller mer.</p>
+          <p>Dessuten varierer signalstyrken med tiden på grunn av interferens fra andre 2,4/5 GHz-kilder (mikrobølger, Bluetooth, andre WiFi-nett). Dette er et grunnleggende skille fra kabelnettverk og er årsaken til at trådløse linker har høyere bitfeilrate og krever lenkelags-ACK.</p>
+          <p class="ref">Pensum: <a href="../kap7/innhold.html">Kap. 7 — Trådløse linker og signaltap</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q13 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 13</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">For å lage en digital signatur av en lang melding kombineres en hashfunksjon med offentlig nøkkel-kryptografi. Hva er den korrekte prosessen for at <em>Alice</em> skal signere en melding M til <em>Bob</em>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Alice krypterer hele M med Bobs offentlige nøkkel; resultatet er signaturen</li>
+        <li><span class="opt-label">B</span> Alice beregner H(M) og krypterer H(M) med sin <strong>private</strong> nøkkel; signaturen er resultatet, og Alice sender (M, signatur)</li>
+        <li><span class="opt-label">C</span> Alice krypterer H(M) med Bobs offentlige nøkkel</li>
+        <li><span class="opt-label">D</span> Alice deler en symmetrisk nøkkel med Bob og bruker denne til å signere</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>En digital signatur lages slik:</p>
+          <ol>
+            <li>Alice beregner et meldingsdigest <code>h = H(M)</code> med en kryptografisk hashfunksjon (f.eks. SHA-256). Dette gir en kort, fast lengde uavhengig av M.</li>
+            <li>Alice krypterer h med sin <strong>private</strong> nøkkel: <code>signatur = K<sub>A</sub><sup>−</sup>(h)</code>.</li>
+            <li>Alice sender (M, signatur) til Bob.</li>
+            <li>Bob beregner H(M) selv, dekrypterer signaturen med Alices <strong>offentlige</strong> nøkkel og sjekker at de to verdiene matcher.</li>
+          </ol>
+          <p>Dette gir både <strong>integritet</strong> (manipulasjon endrer hash-verdien) og <strong>autentisering</strong> (kun Alice har den private nøkkelen). Hashfunksjonen er nødvendig fordi offentlig nøkkel-operasjoner er trege på lange meldinger.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8 — Digitale signaturer og hash</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q14 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 14</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 9</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er hovedformålet med en <strong>playout-buffer</strong> hos mottakeren i en VoIP- eller streaming-applikasjon?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Å kryptere de mottatte lydpakkene</li>
+        <li><span class="opt-label">B</span> Å kompensere for jitter (variasjon i nettverksforsinkelse) ved å holde tilbake pakkene i en kort buffer før avspilling</li>
+        <li><span class="opt-label">C</span> Å øke totalt overføringsvolum for høyere kvalitet</li>
+        <li><span class="opt-label">D</span> Å redusere RTT mellom sender og mottaker</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p><strong>Jitter</strong> er variasjonen i nettverksforsinkelse mellom påfølgende pakker — noen pakker kommer raskere, andre tregere, fordi køforsinkelsen varierer. For sanntids lyd/video må pakkene spilles av med jevn rytme.</p>
+          <p>Playout-bufferen utsetter avspillingen med en liten konstant forsinkelse (typisk 50–400 ms for VoIP). Pakkene som ankommer "for tidlig" venter i bufferen; pakker som kommer "for sent" (etter playout-tidspunktet) anses som tapt og forkastes.</p>
+          <p>Trade-off: stor buffer ⇒ mer robust mot jitter, men mer ende-til-ende forsinkelse ⇒ vanskeligere samtale. Adaptive playout-bufferalgoritmer justerer størrelsen dynamisk basert på målt jitter.</p>
+          <p class="ref">Pensum: <a href="../kap9/innhold.html">Kap. 9 — Playout-buffer og jitter i VoIP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+
+<!-- ==================== DEL II ==================== -->
+<section id="del2">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del II — Åpne oppgaver</h2>
+    <span class="del-points">5 oppgaver · 58 poeng totalt</span>
+  </div>
+  <p class="section-intro">Åpne, skriftlige svar. Begrunn svarene dine. Vis utregning der det er relevant. Klikk «Vis fasit» for å sammenligne med modellbesvarelsen.</p>
+
+  <!-- Oppgave 1 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 1</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 2</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En klient vil hente en HTML-side med ett innebygget bilde fra en webserver. RTT mellom klient og server = 100 ms. HTML-filen og bildet er begge så små at transmisjonsforsinkelse er neglisjerbar. DNS-oppslag er allerede gjort.</p>
+      <p class="q-text">a) Beregn total tid fra klienten initierer forespørselen til hele siden er nede, dersom <strong>non-persistent HTTP uten parallell forbindelser</strong> brukes. (4p)</p>
+      <p class="q-text">b) Beregn samme tid med <strong>non-persistent HTTP, men 2 parallelle TCP-forbindelser</strong>. (3p)</p>
+      <p class="q-text">c) Beregn tiden med <strong>persistent HTTP med pipelining</strong>. (3p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>Konvensjon:</strong> Vi regner RTT-er fra klientens klokke. TCP-handshake bruker 1 RTT (SYN/SYN-ACK før klienten kan sende GET). HTTP-request + svar bruker ytterligere 1 RTT.</p>
+          <p><strong>a) Non-persistent uten parallell:</strong></p>
+          <p>To objekter (HTML + bilde), hvert med eget TCP-handshake og GET:</p>
+          <ul>
+            <li>HTML: 1 RTT (handshake) + 1 RTT (GET/respons) = 2 RTT</li>
+            <li>Bilde: 1 RTT (handshake) + 1 RTT (GET/respons) = 2 RTT</li>
+          </ul>
+          <p>Total: 4 RTT = 4 × 100 ms = <strong>400 ms</strong></p>
+          <p><strong>b) Non-persistent, 2 parallelle TCP:</strong></p>
+          <p>HTML hentes først (klienten må parse den for å vite om bildet): 1 RTT handshake + 1 RTT GET = 2 RTT. Deretter åpnes 2 TCP-er parallelt; men det er bare ett bilde, så:</p>
+          <ul>
+            <li>HTML: 2 RTT</li>
+            <li>Bilde: 2 RTT (1 handshake + 1 GET)</li>
+          </ul>
+          <p>Total: <strong>400 ms</strong> (parallellitet hjelper bare når flere objekter henvises). Fordelen ville vært synlig med 5 bilder (samme tid som 3 sekvensielle objekter pga. parallellitet).</p>
+          <p><strong>c) Persistent HTTP med pipelining:</strong></p>
+          <p>Én TCP-handshake (1 RTT). Deretter sendes GET for HTML (svar etter 1 RTT). Klienten parser HTML og sender umiddelbart GET for bildet på samme forbindelse — bildet kommer 1 RTT senere. (Med ekte pipelining kunne klienten sendt begge GET-er samtidig dersom bildets URL var kjent på forhånd, men her må klienten først motta HTML.)</p>
+          <p>Total: 1 RTT (handshake) + 1 RTT (HTML) + 1 RTT (bilde) = <strong>3 RTT = 300 ms</strong></p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — HTTP RTT-analyse</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 2 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 2</span>
+      <span class="exam-q__points">12 poeng</span>
+      <span class="exam-q__topic">Kap. 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) Forklar Stop-and-Wait, Go-Back-N (GBN) og Selective Repeat (SR) som mekanismer for pålitelig dataoverføring. Hvilke ACK-strategier og buffring krever hver av dem? (6p)</p>
+      <p class="q-text">b) En sender bruker Stop-and-Wait med pakkestørrelse L = 8 000 bits, linkrate R = 1 Mbps og RTT = 30 ms. Beregn senderutnyttelse (utilization). Hvorfor er Stop-and-Wait dårlig egnet for høy-RTT-lenker? (4p)</p>
+      <p class="q-text">c) Hvilken protokoll (GBN eller SR) er mest egnet i et nettverk med høy RTT og høy pakketapsrate, og hvorfor? (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Sammenligning:</strong></p>
+          <table>
+            <thead><tr><th></th><th>Stop-and-Wait</th><th>Go-Back-N</th><th>Selective Repeat</th></tr></thead>
+            <tbody>
+              <tr><td>Vindu (sender)</td><td>1</td><td>N (alle pakker innen vinduet kan være ute)</td><td>N</td></tr>
+              <tr><td>Vindu (mottaker)</td><td>1</td><td>1 (forventer kun neste i-rekkefølge)</td><td>N (buffer ut-av-rekkefølge-pakker)</td></tr>
+              <tr><td>ACK</td><td>Per pakke</td><td>Kumulativ — siste i-rekkefølge</td><td>Selektiv — én per mottatt pakke</td></tr>
+              <tr><td>Ved tap</td><td>Timeout → resend</td><td>Timeout → resend hele vinduet fra tapet</td><td>Timeout → resend kun den manglende pakken</td></tr>
+              <tr><td>Kompleksitet</td><td>Lavest</td><td>Middels</td><td>Høyest (mer buffring og logikk)</td></tr>
+            </tbody>
+          </table>
+          <p><strong>b) Stop-and-Wait utnyttelse:</strong></p>
+          <p>Transmisjonstid: t<sub>trans</sub> = L/R = 8 000 / 10<sup>6</sup> = 8 ms</p>
+          <p>Total tid for én pakke + ACK: t<sub>trans</sub> + RTT = 8 + 30 = 38 ms</p>
+          <p>Utnyttelse U = t<sub>trans</sub> / (t<sub>trans</sub> + RTT) = 8 / 38 ≈ <strong>0,21 (21 %)</strong></p>
+          <p>Senderen er i tomgang i 79 % av tiden — venter på ACK. På høy-RTT-lenker (f.eks. satellitter, transatlantiske linker) blir utnyttelsen enda dårligere, derfor brukes pipelined protokoller med vindu N >> 1.</p>
+          <p><strong>c) GBN vs. SR ved høy RTT og høy tapsrate:</strong></p>
+          <p>SR er bedre. Ved høy RTT er hver retransmisjon dyr (krever en RTT til). GBN må retransmittere alle pakker fra den tapte og fremover, selv pakker som allerede har kommet frem — det forsterker problemet ved høy tapsrate. SR retransmitterer kun de tapte pakkene og buffer mottakerne kan beholde fremtidige pakker som er kommet frem. Trade-off: SR krever mer minne og mer kompleks logikk hos mottakeren.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — Pålitelig dataoverføring, Stop-and-Wait/GBN/SR</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 3 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 3</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 5</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) Forklar steg for steg hvordan <code>traceroute</code> finner ruten fra en klient til en gitt destinasjon. Hvilke pakketyper sendes ut og hvilke tas imot? (5p)</p>
+      <p class="q-text">b) Hvorfor sender traceroute typisk <em>tre</em> prøvepakker per TTL-verdi, og ikke bare én? (2p)</p>
+      <p class="q-text">c) En traceroute fra norsk klient til USA viser plutselig ett "* * *"-resultat på ett av hopene. Nevn to mulige årsaker. (3p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) traceroute-prosess:</strong></p>
+          <ol>
+            <li>Klienten sender en pakke (UDP til en uutilgjengelig port — eller ICMP Echo Request avhengig av implementasjon) med <code>TTL = 1</code> mot destinasjonen.</li>
+            <li>Den første ruteren langs ruten dekrementerer TTL til 0, forkaster pakken og returnerer en <strong>ICMP Time Exceeded</strong>-melding (type 11). Klienten ser kilde-IP til denne meldingen — det er ruterens IP. RTT for hopet måles.</li>
+            <li>Klienten sender en ny pakke med <code>TTL = 2</code>. Andre ruter returnerer Time Exceeded.</li>
+            <li>Prosessen gjentas til pakken endelig når destinasjonen. Når destinasjonen mottar pakken på en uutilgjengelig UDP-port, svarer den med <strong>ICMP Destination Unreachable: Port Unreachable</strong>. Det er signalet for at sluttdestinasjonen er nådd, og klienten avslutter.</li>
+          </ol>
+          <p><strong>b) Hvorfor tre prøver per TTL?</strong></p>
+          <p>Tre prøver gir robusthet mot enkeltpakketap og lar verktøyet vise variasjon i RTT for det aktuelle hopet. Hvis én av tre svarer, har vi fortsatt informasjon om hvem ruteren er.</p>
+          <p><strong>c) Mulige årsaker til "* * *":</strong></p>
+          <ol>
+            <li><strong>Ruteren er konfigurert til ikke å svare med ICMP</strong> (rate-limiting eller policy — vanlig for sikkerhetspolicy/brannmurer).</li>
+            <li><strong>Pakketap</strong> i den aktuelle hopet på det øyeblikket — alle 3 prøver gikk tapt.</li>
+            <li>(Andre gyldige svar: ruteren er overbelastet og svarer langsommere enn timeoutgrensen; brannmur dropper enten utgående eller innkommende ICMP.)</li>
+          </ol>
+          <p class="ref">Pensum: <a href="../kap5/innhold.html">Kap. 5 — ICMP og traceroute</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 4 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 4</span>
+      <span class="exam-q__points">14 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · 6</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Du har blokken <code>192.168.40.0/24</code> og trenger 4 subnett med ulik størrelse: 60 verter, 28 verter, 12 verter og 5 verter (VLSM — Variable Length Subnet Masking).</p>
+      <p class="q-text">a) For hvert subnett: hva er minste prefikslengde som passer? (3p)</p>
+      <p class="q-text">b) Foreta en tildeling — start med det største subnettet og fortsett nedover. Oppgi nettverksadresse, broadcast-adresse og brukbart område for hvert. (8p)</p>
+      <p class="q-text">c) En vert i subnett 1 (med 60 verter) ønsker å sende en IP-pakke til en vert i subnett 3 (med 12 verter). Forklar kort hvilke lag-2-adresser (MAC) og lag-3-adresser (IP) som er i pakken/rammen idet den forlater senderen og idet den ankommer mottakeren. (3p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Minste prefikslengde:</strong></p>
+          <table>
+            <thead><tr><th>Krav verter</th><th>Trenger 2<sup>n</sup>−2 ≥ verter</th><th>Hostbit n</th><th>Prefiks</th><th>Adresser totalt</th></tr></thead>
+            <tbody>
+              <tr><td>60</td><td>2<sup>6</sup>−2 = 62 ✓</td><td>6</td><td>/26</td><td>64</td></tr>
+              <tr><td>28</td><td>2<sup>5</sup>−2 = 30 ✓</td><td>5</td><td>/27</td><td>32</td></tr>
+              <tr><td>12</td><td>2<sup>4</sup>−2 = 14 ✓</td><td>4</td><td>/28</td><td>16</td></tr>
+              <tr><td>5</td><td>2<sup>3</sup>−2 = 6 ✓</td><td>3</td><td>/29</td><td>8</td></tr>
+            </tbody>
+          </table>
+          <p><strong>b) Tildeling fra 192.168.40.0/24, største først:</strong></p>
+          <table>
+            <thead><tr><th>#</th><th>Behov</th><th>Subnett</th><th>Brukbart</th><th>Broadcast</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>60</td><td>192.168.40.0/26</td><td>.40.1 – .40.62</td><td>192.168.40.63</td></tr>
+              <tr><td>2</td><td>28</td><td>192.168.40.64/27</td><td>.40.65 – .40.94</td><td>192.168.40.95</td></tr>
+              <tr><td>3</td><td>12</td><td>192.168.40.96/28</td><td>.40.97 – .40.110</td><td>192.168.40.111</td></tr>
+              <tr><td>4</td><td>5</td><td>192.168.40.112/29</td><td>.40.113 – .40.118</td><td>192.168.40.119</td></tr>
+            </tbody>
+          </table>
+          <p>Resterende ledig adresseplass: <code>192.168.40.120/29</code> til <code>192.168.40.255</code>.</p>
+          <p><strong>c) Adresser i pakken/rammen:</strong></p>
+          <p>Subnett 1 og subnett 3 er forskjellige — pakken må gjennom (minst) én ruter. Anta én default gateway G som har et interface i hvert subnett. Senderens IP = S, mottakerens IP = D.</p>
+          <table>
+            <thead><tr><th>Sted</th><th>IP src</th><th>IP dst</th><th>MAC src</th><th>MAC dst</th></tr></thead>
+            <tbody>
+              <tr><td>Forlater sender</td><td>S</td><td>D</td><td>MAC<sub>S</sub></td><td>MAC<sub>G,subnett1</sub></td></tr>
+              <tr><td>Ankommer mottaker</td><td>S</td><td>D</td><td>MAC<sub>G,subnett3</sub></td><td>MAC<sub>D</sub></td></tr>
+            </tbody>
+          </table>
+          <p><strong>IP-adressene</strong> (S og D) endres ikke fra ende til ende. <strong>MAC-adressene</strong> byttes ut for hver lenke — i lenkelaget er det neste nodes MAC som teller. Ruteren bruker ARP for å finne MAC-en i hver retning.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — VLSM</a> · <a href="../kap6/innhold.html">Kap. 6 — MAC vs. IP, ARP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 5 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 5</span>
+      <span class="exam-q__points">12 poeng</span>
+      <span class="exam-q__topic">Kap. 8</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) Alice vil sende en e-post til Bob slik at: (i) bare Bob kan lese den, (ii) Bob er sikker på at det faktisk er Alice som har sendt den, (iii) ingen kan ha endret innholdet underveis. Hvilke kryptografiske primitiver må kombineres, og i hvilken rekkefølge? Beskriv hva Alice gjør og hva Bob gjør. (7p)</p>
+      <p class="q-text">b) Hvorfor brukes en symmetrisk sesjonsnøkkel for selve meldingsteksten i stedet for å kryptere alt med Bobs offentlige nøkkel? (2p)</p>
+      <p class="q-text">c) Forklar hva en kryptografisk hashfunksjon må oppfylle (nevn to egenskaper) for å være egnet til digitale signaturer. (3p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Sikker e-post (PGP-aktig):</strong></p>
+          <p><em>Alice gjør:</em></p>
+          <ol>
+            <li>Beregner H(M) av meldingen M, og signerer: <code>signatur = K<sub>A</sub><sup>−</sup>(H(M))</code> — dette gir autentisering og integritet.</li>
+            <li>Lager en symmetrisk sesjonsnøkkel K<sub>S</sub> (tilfeldig, kun for denne meldingen).</li>
+            <li>Krypterer (M, signatur) med K<sub>S</sub> — gir konfidensialitet.</li>
+            <li>Krypterer K<sub>S</sub> med Bobs offentlige nøkkel: <code>K<sub>B</sub><sup>+</sup>(K<sub>S</sub>)</code> — slik at bare Bob kan lese den.</li>
+            <li>Sender begge til Bob: <code>{K<sub>S</sub>(M, signatur), K<sub>B</sub><sup>+</sup>(K<sub>S</sub>)}</code>.</li>
+          </ol>
+          <p><em>Bob gjør:</em></p>
+          <ol>
+            <li>Dekrypterer K<sub>S</sub> med sin private nøkkel.</li>
+            <li>Bruker K<sub>S</sub> til å dekryptere (M, signatur).</li>
+            <li>Beregner H(M) og dekrypterer signaturen med Alices offentlige nøkkel — sjekker at de matcher. Match ⇒ meldingen er autentisk og uforandret.</li>
+          </ol>
+          <p><strong>b) Hvorfor symmetrisk for innholdet?</strong></p>
+          <p>Asymmetrisk kryptografi (RSA, ElGamal, ECC) er <em>flere størrelsesordener tregere</em> enn symmetrisk. For lange meldinger ville det være upraktisk. Hybridtilnærmingen — bruk asymmetrisk til å sikre nøkkeldistribusjonen, deretter symmetrisk for selve dataen — gir både ytelse og sikkerhet.</p>
+          <p><strong>c) Hashfunksjonens egenskaper:</strong></p>
+          <ol>
+            <li><strong>Kollisjonsresistens</strong> — det skal være praktisk umulig å finne to ulike meldinger M ≠ M' med H(M) = H(M'). Hvis ikke, kunne en angriper laget en alternativ melding med samme hash som en lovlig signert melding.</li>
+            <li><strong>Preimage-resistens</strong> — gitt h, skal det være praktisk umulig å finne M slik at H(M) = h. (Også: andre-preimage-resistens — gitt M, skal det være vanskelig å finne M' ≠ M med H(M) = H(M').)</li>
+            <li>(Andre egenskaper: rask å beregne, stort utgangsrom slik at brute-force er upraktisk.)</li>
+          </ol>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8 — Sikker e-post, hash, digitale signaturer</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Vår 2026</p>
+  </div>
+</footer>
+<script src="../chat-widget.js"></script>
+<script src="../nav-search.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>
