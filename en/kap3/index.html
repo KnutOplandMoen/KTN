@@ -147,7 +147,7 @@
     <div class="q-text">In practice, which statement about the UDP header size is most correct?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">The UDP header is 8 bytes, giving low protocol overhead.</div>
+      <div class="answer">The UDP header is always 8 bytes: four 16-bit fields — source port, destination port, length (entire datagram), and checksum. That is minimal overhead compared with TCP.</div>
     </div>
   </div>
 
@@ -237,7 +237,7 @@
     <div class="q-text">In a larger network setting, which evaluation of congestion control with cwnd is most accurate?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">The sender limits its send window with cwnd to avoid overloading the network.</div>
+      <div class="answer"><code>cwnd</code> is the sender-side congestion window. Bytes in flight are capped by <code>min(cwnd, rwnd)</code> — the smaller of congestion control and the receiver&rsquo;s advertised window. Effective throughput is roughly <code>cwnd/RTT</code> when <code>rwnd</code> is not the bottleneck.</div>
     </div>
   </div>
 
@@ -273,7 +273,7 @@
     <div class="q-text">In practice, which statement about response to timeout in classic TCP Reno is most correct?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">On timeout, cwnd is reduced sharply and the connection returns to cautious startup behavior.</div>
+      <div class="answer">On timeout, classic Reno behaves like Tahoe: set <code>ssthresh = cwnd/2</code>, set <code>cwnd = 1 MSS</code>, and re-enter <strong>slow start</strong>. A timeout suggests severe loss or a long idle period, so the sender restarts cautiously instead of using fast recovery.</div>
     </div>
   </div>
 
@@ -291,7 +291,7 @@
     <div class="q-text">In a larger network setting, which evaluation of fast recovery in Reno is most accurate?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">Reno keeps data flowing after fast retransmit instead of restarting from scratch.</div>
+      <div class="answer">After three duplicate ACKs, Reno runs <strong>fast retransmit</strong>, then <strong>fast recovery</strong>: set <code>ssthresh = cwnd/2</code>, set <code>cwnd = ssthresh + 3 MSS</code>, inflate <code>cwnd</code> by one MSS per additional duplicate ACK, then on a <em>new</em> ACK set <code>cwnd = ssthresh</code> and continue in congestion avoidance — avoiding a full slow start after a single loss.</div>
     </div>
   </div>
 
@@ -309,7 +309,7 @@
     <div class="q-text">In a larger network setting, which evaluation of RTT estimation in TCP is most accurate?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">TCP uses smoothed RTT and variance to set a robust retransmission timer.</div>
+      <div class="answer">TCP measures <code>SampleRTT</code> on acknowledged segments and smooths it: <code>EstimatedRTT = (1−α)·EstimatedRTT + α·SampleRTT</code> (typically <code>α = 1/8</code>). It also tracks variability: <code>DevRTT = (1−β)·DevRTT + β·|SampleRTT − EstimatedRTT|</code> (typically <code>β = 1/4</code>). The retransmission timeout is <code>TimeoutInterval = EstimatedRTT + 4·DevRTT</code>, widening automatically when RTT is jittery and tightening when the path is stable.</div>
     </div>
   </div>
 

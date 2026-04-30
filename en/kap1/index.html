@@ -28,7 +28,8 @@
   <ol class="chapter-toc-list">
     <li><span class="toc-num">01</span><a href="#overblikk">Overview</a></li>
     <li><span class="toc-num">02</span><a href="#deler">Parts</a></li>
-    <li><span class="toc-num">03</span><a href="#quiz">Test yourself</a></li>
+    <li><span class="toc-num">03</span><a href="#flashcards">Flashcards</a></li>
+    <li><span class="toc-num">04</span><a href="#quiz">Test yourself</a></li>
   </ol>
 </div>
 </nav>
@@ -141,6 +142,171 @@
       </div>
       <span class="sp-arrow">&rarr;</span>
     </a>
+  </div>
+</div>
+</section>
+
+<!-- ============ FLASHCARDS ============ -->
+<section id="flashcards" class="flashcards-section">
+<div class="container">
+  <div class="section-badge">Flashcards</div>
+  <h2>Quick <em>review</em></h2>
+  <p class="section-intro">Open questions in random order. Click the card to flip — use <strong>&larr; / &rarr;</strong> to move, <strong>space</strong> to flip, <strong>R</strong> to shuffle.</p>
+
+  <div class="flashcards" data-flashcards>
+    <div class="fc-stage">
+      <article class="fc-card" tabindex="0" role="button" aria-label="Flashcard — click to flip">
+        <div class="fc-face fc-front">
+          <div class="fc-label">Question</div>
+          <p class="fc-text" data-fc-front-display aria-live="polite">&nbsp;</p>
+          <div class="fc-hint">Click or space to show answer</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-label">Answer</div>
+          <div class="fc-text" data-fc-back-display aria-live="polite">&nbsp;</div>
+        </div>
+      </article>
+    </div>
+
+    <div class="fc-controls">
+      <button class="fc-btn fc-prev" type="button" aria-label="Previous card" title="Previous (←)">&larr;</button>
+      <div class="fc-progress">
+        <span class="fc-counter">1 / 1</span>
+        <div class="fc-bar"><div class="fc-bar-fill"></div></div>
+      </div>
+      <button class="fc-btn fc-next" type="button" aria-label="Next card" title="Next (→)">&rarr;</button>
+      <button class="fc-btn fc-shuffle" type="button" aria-label="Shuffle deck" title="Shuffle (R)">&#8635;</button>
+    </div>
+
+    <ol class="fc-deck" hidden>
+      <li data-card>
+        <div data-fc-front>What is a network protocol, and what three things does it define?</div>
+        <div data-fc-back>
+          <p><strong>Answer:</strong> A protocol is a shared set of rules that defines (1) the <em>format</em> of messages exchanged, (2) the <em>order</em> in which they are sent and received, and (3) the <em>actions</em> taken on send and receive.</p>
+          <p><strong>Why it matters:</strong> Without an agreed protocol, bits are just voltages or light pulses with no meaning. Two devices without a common protocol cannot interpret each other. Everything from HTTP to IP to Ethernet is ultimately such an agreement.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Compare packet switching and circuit switching. Why did packet switching win?</div>
+        <div data-fc-back>
+          <p><strong>Answer:</strong> Packet switching shares link capacity dynamically by sending data as independent packets. Circuit switching reserves a dedicated circuit (frequency band or time slot) end-to-end before communication starts.</p>
+          <p><strong>Why packet switching won:</strong> <em>Statistical multiplexing</em>. Users are rarely active at the same time. Packet switching uses idle periods; circuit switching leaves reserved capacity unused. Example: on a 1 Mbps link with users active 10% of the time, TDM supports about 10 users, packet switching about 35, with under 0.04% overload probability. The tradeoff is no delay or loss guarantees with packet switching.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Explain store-and-forward. What is total transmission delay for one packet over N links (transmission only)?</div>
+        <div data-fc-back>
+          <p><strong>Answer:</strong> A router must receive the entire packet before it can forward it. For one packet of L bits on a link of rate R bps, transmission time is L/R. Over N links (N−1 routers), total transmission delay is <code>N × L/R</code>.</p>
+          <p><strong>Why:</strong> The router needs the full header and payload before forwarding reliably. Each hop repeats the L/R cost, so smaller packets finish faster, all else equal.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>What is the difference between <em>transmission delay</em> and <em>propagation delay</em>?</div>
+        <div data-fc-back>
+          <p><strong>Answer:</strong> Transmission delay (<code>L/R</code>) is the time to push all bits onto the link — depends on packet size and link rate. Propagation delay (<code>d/v</code>) is the time for bits to travel through the medium — depends on distance and signal speed (~2×10⁸ m/s in fiber/copper).</p>
+          <p><strong>Why people confuse them:</strong> Both are time, but they are governed by different physics. <em>Caravan analogy:</em> time at the toll booth ≈ transmission; time on the road ≈ propagation. You can speed up the booth without shortening the road, and vice versa.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Compute transmission delay for a 1500-byte packet on a 100 Mbps link. What is it on 1 Gbps?</div>
+        <div data-fc-back>
+          <p><strong>Answer:</strong> 1500 bytes = 12,000 bits.<br>
+            At 100 Mbps: <code>d_trans = 12 000 / (100×10⁶) = 120 µs</code>.<br>
+            At 1 Gbps: <code>d_trans = 12 000 / 10⁹ = 12 µs</code>.</p>
+          <p><strong>Why:</strong> d_trans scales with 1/R. Convert bytes to bits (×8) and express R in bps — the most common mistake is forgetting that conversion.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>What does traffic intensity <code>La/R</code> tell you, and what happens as it approaches 1?</div>
+        <div data-fc-back>
+          <p><strong>Answer:</strong> <code>La/R</code> is (average packet length × arrival rate) / link rate — the fraction of capacity used on average. As it approaches 1, average queueing delay grows toward infinity. Above 1, arrivals exceed service rate and packets are dropped when buffers overflow.</p>
+          <p><strong>Why it “explodes” near 1:</strong> Arrivals are bursty; random bunching fills the queue faster than it drains. Networks are designed to keep intensity well below 1.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>What is a bottleneck link, and where is it usually found?</div>
+        <div data-fc-back>
+          <p><strong>Answer:</strong> The bottleneck is the lowest-capacity link on an end-to-end path; it limits throughput.</p>
+          <p><strong>Where:</strong> Often in the <em>access network</em> (last mile — DSL, mobile, home WiFi) or at the server. The Internet core uses very fast fiber, so it is rarely the bottleneck. That is why 1 Gbps fiber at home does not always feel 10× faster than 100 Mbps.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Describe the five layers of the Internet protocol stack and what each is responsible for.</div>
+        <div data-fc-back>
+          <p><strong>Answer (top-down):</strong></p>
+          <p>5 — <strong>Application</strong>: messages between processes (HTTP, SMTP, DNS).<br>
+             4 — <strong>Transport</strong>: end-to-end delivery between processes, multiplexing (TCP, UDP).<br>
+             3 — <strong>Network</strong>: routing datagrams source to destination (IP, ICMP).<br>
+             2 — <strong>Link</strong>: frame transfer between adjacent nodes (Ethernet, WiFi).<br>
+             1 — <strong>Physical</strong>: bits on a medium (voltages, light, radio).</p>
+          <p><strong>Why layering:</strong> Each layer only uses the layer below and only offers services to the layer above, so layers can be swapped independently (e.g., WiFi vs Ethernet without TCP caring).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>What is encapsulation, and why does it matter?</div>
+        <div data-fc-back>
+          <p><strong>Answer:</strong> Each layer wraps data from the layer above with its own header (and sometimes a trailer). An application message becomes a transport segment (TCP/UDP header), then a network datagram (IP header), then a link-layer frame (MAC header, FCS trailer).</p>
+          <p><strong>Why it matters:</strong> Each layer sees only its own header; the payload is opaque “data.” On the receiver, headers are stripped in reverse order, so layers stay independent and composable.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>How does the Internet five-layer model differ from the seven-layer OSI model?</div>
+        <div data-fc-back>
+          <p><strong>Answer:</strong> OSI adds two layers between application and transport: <em>presentation</em> (compression, encryption, format conversion) and <em>session</em> (session control, synchronization). The Internet does not split these out; applications or libraries handle them.</p>
+          <p><strong>Why it matters:</strong> OSI is academic vocabulary (“layer 7” = application). Real Internet stacks use five layers; TLS and similar run as libraries on top of the transport/application boundary.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>What is the role of the socket interface?</div>
+        <div data-fc-back>
+          <p><strong>Answer:</strong> The socket is the API between an application and the transport layer — the “door” apps send and receive through. It lets the app request delivery to a destination without knowing routers, IP details, or link behavior.</p>
+          <p><strong>Why:</strong> Same idea as the postal analogy: you drop the letter in the box and trust the system below.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>How is the ISP hierarchy organized? What is an IXP?</div>
+        <div data-fc-back>
+          <p><strong>Answer:</strong> <em>Access ISPs</em> connect end systems; <em>regional ISPs</em> interconnect access ISPs; <em>Tier-1 ISPs</em> (e.g. Lumen, NTT) have global reach and peer with each other without settlement.</p>
+          <p>An <strong>IXP</strong> (Internet Exchange Point) is a physical location where many ISPs exchange traffic by <em>peering</em>, reducing transit cost and often RTT.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Explain three common denial-of-service (DoS) attack patterns.</div>
+        <div data-fc-back>
+          <p><strong>Answer:</strong> (1) <strong>Vulnerability attack</strong> — crafted messages crash or hang the service. (2) <strong>Bandwidth flooding</strong> — saturate the link; often needs a botnet (DDoS). (3) <strong>Connection flooding</strong> — many half-open TCP connections (e.g. SYN flood) exhaust server state.</p>
+          <p><strong>Why different:</strong> Each targets software robustness, link capacity, or connection tables — defenses differ (patching, upstream filtering, rate limits).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>What is IP spoofing, and why is it dangerous?</div>
+        <div data-fc-back>
+          <p><strong>Answer:</strong> Sending packets with a forged source IP so the receiver trusts the wrong identity.</p>
+          <p><strong>Why dangerous:</strong> IP does not authenticate senders. Used in <em>reflection DDoS</em> (replies hit the victim) and to bypass IP-only access controls.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>What does <code>ping</code> measure, and what does <code>traceroute</code> reveal that ping does not?</div>
+        <div data-fc-back>
+          <p><strong>Answer:</strong> <code>ping</code> sends an ICMP echo request and measures RTT to a host — reachability and total delay.</p>
+          <p><code>traceroute</code> sends packets with increasing TTL; each router returns ICMP time exceeded, giving a hop-by-hop path with delay per hop.</p>
+          <p><strong>Use:</strong> Ping gives one number; traceroute shows <em>where</em> delay appears. Both use ICMP and may show <code>* * *</code> when firewalls block.</p>
+        </div>
+      </li>
+    </ol>
   </div>
 </div>
 </section>
@@ -387,6 +553,7 @@
 </footer>
 <script src="../../chat-widget.js"></script>
 <script src="../../lang-switch.js"></script>
+<script src="../../flashcards.js"></script>
 <script src="../../quiz.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 <script defer src="/_vercel/speed-insights/script.js"></script>

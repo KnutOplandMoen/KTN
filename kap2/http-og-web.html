@@ -45,11 +45,11 @@
   <div class="container">
     <div class="section-badge">01 · Hvor apper bor</div>
     <h2>Programmer i hver sin ende av nettet</h2>
-    <p class="section-intro">Før vi snakker om HTTP eller BitTorrent, må vi forstå én enkel ting: hvor kjører egentlig en nettverksapp?</p>
+    <p class="section-intro">Før vi snakker om HTTP eller P2P-fildeling, må vi forstå én enkel ting: hvor kjører egentlig en nettverksapp?</p>
 
     <p class="lead">En nettleser kjører på din maskin. En webserver kjører på en annen. Mellom dem ligger Internett — millioner av rutere og lenker som flytter pakker rundt. Den helt sentrale ideen i applikasjonslaget er denne: <em>du skriver kode bare for endesystemene</em>. Ruterne i kjernen kjører ingen brukerapplikasjoner; de bare videresender pakker. Dette er grunnen til at en student kan finne på en helt ny nettjeneste i kveld og rulle den ut over hele kloden i morgen, uten å måtte oppdatere noe som helst i nettverkets infrastruktur.</p>
 
-    <p>Å skrive en nettverksapp betyr altså å skrive to (eller flere) programmer som kjører på <em>forskjellige</em> maskiner og som utveksler meldinger over nettet. Et webserverprogram snakker med et nettleserprogram. To Skype-klienter snakker med hverandre. En BitTorrent-klient snakker med dusinvis av andre klienter samtidig. Mønsteret er likt overalt: prosesser på endesystemer som sender meldinger gjennom nettverket.</p>
+    <p>Å skrive en nettverksapp betyr altså å skrive to (eller flere) programmer som kjører på <em>forskjellige</em> maskiner og som utveksler meldinger over nettet. Et webserverprogram snakker med et nettleserprogram. To Skype-klienter snakker med hverandre. En P2P-klient kan snakke med mange andre klienter samtidig. Mønsteret er likt overalt: prosesser på endesystemer som sender meldinger gjennom nettverket.</p>
 
     <h3>Prosesser, sockets og adresser</h3>
     <p>Inne i operativsystemet er en kjørende app en <strong>prosess</strong>. To prosesser på samme maskin snakker sammen via mekanismer operativsystemet tilbyr (delt minne, pipes, etc.). To prosesser på forskjellige maskiner snakker sammen ved å sende meldinger gjennom nettet — og porten ut av prosessen kalles en <strong>socket</strong>.</p>
@@ -118,11 +118,11 @@
 
     <p>Den alternative modellen er <strong>peer-to-peer</strong>. Her finnes det ingen alltid-på-tjener. Vilkårlige endesystemer — <em>peers</em> — snakker direkte med hverandre. En peer ber om en tjeneste fra en annen peer, og leverer selv tjenester tilbake til andre. Den fascinerende egenskapen er <em>selv-skalering</em>: hver nye peer som kommer inn i systemet bringer ikke bare nye krav, men også ny kapasitet. Jo flere som vil ha filen, jo flere er det som kan dele filen videre.</p>
 
-    <p>Prisen man betaler er kompleksitet. Peers er kun til og fra koblet, IP-adressene deres skifter, og det finnes ingen sentral oversikt. Klassiske eksempler er BitTorrent (fildeling), KanKan (strømming) og Skype (VoIP).</p>
+    <p>Prisen man betaler er kompleksitet. Peers er kun til og fra koblet, IP-adressene deres skifter, og det finnes ingen sentral oversikt. Klassiske eksempler er storstilt P2P-fildeling, strømmetjenester med P2P-elementer og Skype (VoIP).</p>
 
     <div class="callout callout-blue">
       <h4>Hybridvirkeligheten</h4>
-      <p>I praksis er nesten alle moderne systemer hybrider. Skype bruker peer-to-peer for selve samtalen, men trenger sentraliserte tjenere for å finne ut <em>hvor</em> motparten er. BitTorrent bruker P2P for filoverføringen, men ofte en sentralisert «tracker» eller distribuert hashtabell for å oppdage andre peers. Den rene formen er sjeldne; det viktige er å forstå begge modellene fordi systemer låner trekk fra begge.</p>
+      <p>I praksis er nesten alle moderne systemer hybrider. Skype bruker peer-to-peer for selve samtalen, men trenger sentraliserte tjenere for å finne ut <em>hvor</em> motparten er. Mange P2P-fildelingssystemer bruker P2P for selve dataflyten, men trenger en støttetjeneste (f.eks. katalog eller koordineringsserver) for å oppdage andre peers. Den rene formen er sjelden; det viktige er å forstå begge modellene fordi systemer låner trekk fra begge.</p>
     </div>
 
     <div class="quiz" id="quiz1">

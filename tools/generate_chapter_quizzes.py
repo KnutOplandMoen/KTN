@@ -211,13 +211,13 @@ def chapter_facts():
             {
                 "topic_no": "hva TCP tilbyr applikasjoner",
                 "topic_en": "what TCP offers applications",
-                "answer_no": "TCP tilbyr pålitelig, ordnet byte-strøm med flyt- og køkontroll, men med mer overhead.",
+                "answer_no": "TCP tilbyr pålitelig, ordnet byte-strøm med flyt- og overbelastningskontroll, men med mer overhead.",
                 "answer_en": "TCP provides reliable, ordered byte-stream delivery with flow and congestion control, but with more overhead.",
             },
             {
                 "topic_no": "hva UDP tilbyr applikasjoner",
                 "topic_en": "what UDP offers applications",
-                "answer_no": "UDP tilbyr lav latenst og enkel datagramtransport uten leveringsgarantier.",
+                "answer_no": "UDP tilbyr lav latens og enkel datagramtransport uten leveringsgarantier.",
                 "answer_en": "UDP offers low-latency, simple datagram transport without delivery guarantees.",
             },
             {
@@ -409,7 +409,7 @@ def chapter_facts():
                 "answer_en": "The receiver advertises rwnd to prevent the sender from overrunning the receive buffer.",
             },
             {
-                "topic_no": "køkontroll med cwnd",
+                "topic_no": "overbelastningskontroll med cwnd",
                 "topic_en": "congestion control with cwnd",
                 "answer_no": "Avsender begrenser sendevindu med cwnd for å unngå overbelastning i nettverket.",
                 "answer_en": "The sender limits its send window with cwnd to avoid overloading the network.",
@@ -1399,7 +1399,7 @@ def chapter_facts():
                 "answer_en": "Unicast works across today's Internet without requiring global multicast support.",
             },
             {
-                "topic_no": "pacing og køkontroll i medieavspilling",
+                "topic_no": "pacing og overbelastningskontroll i medieavspilling",
                 "topic_en": "pacing and congestion control in media delivery",
                 "answer_no": "Jevn utsending og købevisst styring reduserer burst, tap og varians i mottak.",
                 "answer_en": "Smooth pacing and congestion-aware control reduce bursts, loss, and arrival variance.",

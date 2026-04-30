@@ -436,7 +436,7 @@
     <div class="q-text">Hva er størrelsen på UDP-headeren, og hva inneholder den?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">UDP-headeren er 8 byte, noe som gir lav protokolloverhead.</div>
+      <div class="answer">UDP-headeren er alltid 8 byte og består av fire 16-bits felt: kildeport, destinasjonsport, lengde (hele segmentet) og sjekksum. Det gir lav overhead sammenliknet med TCP.</div>
     </div>
   </div>
 
@@ -523,10 +523,10 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 12 · Vanskelig</div>
-    <div class="q-text">Hva er cwnd, og hvilken rolle spiller det i køkontroll?</div>
+    <div class="q-text">Hva er cwnd, og hvilken rolle spiller det i overbelastningskontroll?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Avsender begrenser sendevindu med cwnd for å unngå overbelastning i nettverket.</div>
+      <div class="answer"><code>cwnd</code> (congestion window) er senderens eget vindu mot nettverksmetning. Mengden data «in flight» er begrenset av <code>min(cwnd, rwnd)</code> — det minste av metningsvinduet og mottakerens receive window. Effektiv sendefart er omtrent <code>cwnd/RTT</code> når <code>rwnd</code> ikke er flaskehalsen.</div>
     </div>
   </div>
 
@@ -550,7 +550,7 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 15 · Vanskelig</div>
-    <div class="q-text">Hva er AIMD-prinsippet i TCP-køkontroll?</div>
+    <div class="q-text">Hva er AIMD-prinsippet i TCP-overbelastningskontroll?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">AIMD (Additive Increase, Multiplicative Decrease): cwnd økes lineært med 1 MSS per RTT (additiv), men halveres ved tap (multiplikativ). Dette konvergerer mot rettferdig kapasitetsdeling mellom samtidige forbindelser på samme flaskehals.</div>
@@ -562,7 +562,7 @@
     <div class="q-text">Hvordan reagerer klassisk TCP Reno på en timeout?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Ved timeout settes cwnd lavt igjen og forbindelsen går tilbake til forsiktig oppstart.</div>
+      <div class="answer">Ved timeout (klassisk Reno, samme som Tahoe her): <code>ssthresh = cwnd/2</code>, <code>cwnd = 1 MSS</code>, og TCP går tilbake til <strong>slow start</strong>. Timeout tyder på alvorlig tap eller lang stillestand, så senderen starter på nytt fra bunnen i stedet for fast recovery.</div>
     </div>
   </div>
 
@@ -598,7 +598,7 @@
     <div class="q-text">Hvordan estimerer TCP RTT for retransmisjonsstimeren?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">TCP bruker glattet RTT og varians for å sette en robust retransmisjonstimer.</div>
+      <div class="answer">TCP måler <code>SampleRTT</code> på kvitterte segmenter og glatter med EWMA: <code>EstimatedRTT = (1−α)·EstimatedRTT + α·SampleRTT</code> (typisk <code>α = 1/8</code>). Avvik glattes til <code>DevRTT = (1−β)·DevRTT + β·|SampleRTT − EstimatedRTT|</code> (typisk <code>β = 1/4</code>). Retransmisjonstimer: <code>TimeoutInterval = EstimatedRTT + 4·DevRTT</code> — stor margin når RTT svinger, tettere når nettet er stabilt.</div>
     </div>
   </div>
 

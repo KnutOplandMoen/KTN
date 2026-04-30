@@ -40,11 +40,11 @@
   <div class="container">
     <div class="section-badge">01 · Where apps live</div>
     <h2>Programs at each end of the network</h2>
-    <p class="section-intro">Before we talk about HTTP or BitTorrent, we need to understand one simple thing: where does a network application actually run?</p>
+    <p class="section-intro">Before we talk about HTTP or P2P file sharing, we need to understand one simple thing: where does a network application actually run?</p>
 
     <p class="lead">A browser runs on your machine. A web server runs on another. Between them lies the Internet — millions of routers and links that move packets around. The absolutely central idea in the application layer is this: <em>you only write code for the end systems</em>. The routers in the core run no user applications; they merely forward packets. This is the reason a student can invent a completely new network service tonight and roll it out across the globe tomorrow, without having to update anything in the network's infrastructure.</p>
 
-    <p>Writing a network application thus means writing two (or more) programs that run on <em>different</em> machines and exchange messages over the network. A web server program talks with a browser program. Two Skype clients talk with each other. A BitTorrent client talks with dozens of other clients simultaneously. The pattern is the same everywhere: processes on end systems sending messages through the network.</p>
+    <p>Writing a network application thus means writing two (or more) programs that run on <em>different</em> machines and exchange messages over the network. A web server program talks with a browser program. Two Skype clients talk with each other. A P2P client may talk with many other clients at once. The pattern is the same everywhere: processes on end systems sending messages through the network.</p>
 
     <h3>Processes, sockets, and addresses</h3>
     <p>Inside the operating system, a running app is a <strong>process</strong>. Two processes on the same machine communicate via mechanisms the operating system provides (shared memory, pipes, etc.). Two processes on different machines communicate by sending messages through the network — and the gateway out of the process is called a <strong>socket</strong>.</p>
@@ -113,11 +113,11 @@
 
     <p>The alternative model is <strong>peer-to-peer</strong>. Here there is no always-on server. Arbitrary end systems — <em>peers</em> — talk directly with each other. A peer requests a service from another peer, and itself provides services back to others. The fascinating property is <em>self-scaling</em>: each new peer that enters the system brings not only new demands, but also new capacity. The more people who want the file, the more people there are who can share it further.</p>
 
-    <p>The price you pay is complexity. Peers are only intermittently connected, their IP addresses change, and there is no central directory. Classic examples are BitTorrent (file sharing), KanKan (streaming), and Skype (VoIP).</p>
+    <p>The price you pay is complexity. Peers are only intermittently connected, their IP addresses change, and there is no central directory. Classic examples are large-scale P2P file sharing, streaming systems with P2P elements, and Skype (VoIP).</p>
 
     <div class="callout callout-blue">
       <h4>The hybrid reality</h4>
-      <p>In practice, nearly all modern systems are hybrids. Skype uses peer-to-peer for the actual conversation, but needs centralized servers to find out <em>where</em> the other party is. BitTorrent uses P2P for the file transfer, but often a centralized "tracker" or distributed hash table to discover other peers. The pure form is rare; what matters is understanding both models because systems borrow features from both.</p>
+      <p>In practice, nearly all modern systems are hybrids. Skype uses peer-to-peer for the actual conversation, but needs centralized servers to find out <em>where</em> the other party is. Many P2P file-sharing systems use P2P for the data transfer itself, but rely on a supporting service (e.g. a directory or coordination server) to discover other peers. The pure form is rare; what matters is understanding both models because systems borrow features from both.</p>
     </div>
 
     <div class="quiz" id="quiz1">

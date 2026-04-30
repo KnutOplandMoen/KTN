@@ -6,7 +6,7 @@
     'kap3/transport-udp.html', 'kap3/palitelig-dataoverforing.html', 'kap3/tcp.html', 'kap3/congestion.html',
     'kap4/rutere-videresending.html', 'kap4/ip-adressering.html',
     'kap5/innhold.html',
-    'kap6/grunnleggende-tilgang.html', 'kap6/ethernet-svitsjer.html',
+    'kap6/innhold.html', 'kap6/grunnleggende-tilgang.html', 'kap6/ethernet-svitsjer.html',
     'kap7/innhold.html',
     'kap8/kryptografi.html', 'kap8/protokoller-brannmur.html',
     'kap9/innhold.html',

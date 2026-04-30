@@ -198,8 +198,8 @@
       <li data-card>
         <div data-fc-front>Hva er <em>data plane</em> og <em>control plane</em> i en ruter, og hvorfor skilles de ad?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> Data plane er maskinvaren som faktisk flytter pakker fra innport til utport (forwarding-tabell, switching fabric, ASIC-er — nanosekunder). Control plane er programvaren som beregner ruter og skriver ned forwarding-tabellen (rutingalgoritmer som OSPF/BGP, eller en SDN-controller — millisekunder).</p>
-          <p><strong>Hvorfor skille:</strong> Hver pakke gjennom en 100 Gbps-lenke har bare ~5 ns til disposisjon — det går ikke å kjøre rutingalgoritmer i den løkka. Ved å skille bort den langsomme planleggingen til control plane og la data plane bare slå opp og videresende, klarer ruteren tempoet. Skillet finnes i begge modellene: tradisjonell per-router-kontroll (hver ruter kjører OSPF/BGP) og moderne sentralisert SDN (en fjernkontroller pusher tabeller ut).</p>
+          <p><strong>Svar:</strong> Data plane er maskinvaren som faktisk flytter pakker fra innport til utport (forwarding-tabell, switching fabric, ASIC-er — nanosekunder). Control plane er programvaren som beregner ruter og skriver inn i forwarding-tabellen (typisk rutingprotokoller som OSPF og BGP — millisekunder til sekunder).</p>
+          <p><strong>Hvorfor skille:</strong> Hver pakke gjennom en 100 Gbps-lenke har bare ~5 ns til disposisjon — det går ikke å kjøre rutingalgoritmer i den løkka. Ved å skille bort den langsomme planleggingen til control plane og la data plane bare slå opp og videresende, klarer ruteren tempoet. I TTM4100-pensum for kapittel 4 er det den tradisjonelle modellen som gjelder: hver ruter kjører kontrollplanet lokalt og fyller sin egen forwarding-tabell.</p>
         </div>
       </li>
 
@@ -215,7 +215,7 @@
         <div data-fc-front>Hvilke fire hoveddeler består en ruter av, og hvilke tilhører data plane vs. control plane?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> (1) <strong>Innporter</strong> — linjeavslutning, lenkelagsdekoding og <em>tabelloppslag</em> for å bestemme utport. (2) <strong>Switching fabric</strong> — flytter pakken fra innport til riktig utport. (3) <strong>Utporter</strong> — kø, scheduling, lenkelagsenkoding og transmisjon. (4) <strong>Routing-prosessor</strong> — kjører rutingprotokoller og fyller forwarding-tabellen. De tre første er <em>data plane</em>; den siste er <em>control plane</em>.</p>
-          <p><strong>Hvorfor designet er slik:</strong> Tabelloppslaget gjøres lokalt i hver innport uten å involvere CPU-en, slik at alle porter jobber parallelt. Mønsteret kalles <em>match plus action</em>: les et felt i headeren, finn matchende rad, utfør handlingen ("send ut på interface 3"). Det går igjen overalt i nettverkslaget — fra enkel destinasjonsforwarding til avansert SDN-policy.</p>
+          <p><strong>Hvorfor designet er slik:</strong> Tabelloppslaget gjøres lokalt i hver innport uten å involvere CPU-en, slik at alle porter jobber parallelt. Mønsteret kalles <em>match plus action</em>: les et felt i headeren (her typisk destinasjons-IP), finn matchende rad, utfør handlingen ("send ut på interface 3"). Det er kjernen i destinasjonsbasert IP-forwarding i dataplanet.</p>
         </div>
       </li>
 
@@ -419,7 +419,7 @@
         <div data-fc-front>Hva er <em>match plus action</em>-mønsteret, og hvorfor dominerer det forwarding-design?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> Den fundamentale operasjonsstrukturen i en ruter: (1) <strong>Match</strong> — les ett eller flere felt i pakkens header. (2) <strong>Action</strong> — utfør den tilhørende handlingen (typisk "send ut på interface X", men kan også være "drop", "modifiser felt", eller "send til CPU").</p>
-          <p><strong>Hvorfor det dominerer:</strong> Mønsteret er enkelt nok til å implementeres i maskinvare (TCAM + ASIC) på nanosekunder, men generelt nok til å beskrive hele spektret. Tradisjonell IP-forwarding bruker bare <em>destinasjons-IP</em> som match-felt og "send ut port" som action. SDN (OpenFlow) generaliserer ved å la match omfatte mange felt (porter, MAC, VLAN, IP) og action være vilkårlig — men strukturen er den samme. Kompleksiteten ligger bare i hvor rik match og action får være.</p>
+          <p><strong>Hvorfor det dominerer:</strong> Mønsteret er enkelt nok til å implementeres i maskinvare (TCAM + ASIC) på nanosekunder. I pensumets IP-forwarding er <em>destinasjons-IP</em> match-feltet og handlingen nesten alltid «send ut på denne utporten» (eventuelt drop). Det er nok til å beskrive ruting i Internett-kjernen; mer generelle varianter av samme idé hører til avsnitt om SDN og er ikke pensum i dette kapittelet.</p>
         </div>
       </li>
 
