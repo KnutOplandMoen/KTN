@@ -1836,3 +1836,162 @@ footer p {
   .rtw-stat:last-child { border-bottom: none; }
   .rtw-nav { flex-wrap: wrap; }
 }
+
+/* ============ EKSAMEN ============ */
+.exam-del-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin: 56px 0 4px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--line);
+}
+.exam-del-header h2 { margin: 0; }
+.exam-del-header .del-points {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faded);
+}
+
+.exam-q {
+  background: var(--paper-dark);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 26px 30px;
+  margin: 28px 0;
+}
+.exam-q__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+  border-bottom: 1px dotted var(--line);
+}
+.exam-q__num {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rust);
+}
+.exam-q__points,
+.exam-q__topic {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 2px;
+  border: 1px solid var(--line);
+  color: var(--ink-faded);
+  background: var(--paper);
+}
+.exam-q__topic { color: var(--blue); border-color: rgba(45,74,122,0.3); }
+.exam-q__body .q-text {
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ink);
+  margin: 0 0 14px;
+}
+.exam-q__opts {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.exam-q__opts li {
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 8px 14px;
+  border: 1px solid var(--line-soft);
+  border-radius: 3px;
+  background: var(--paper);
+  color: var(--ink-soft);
+}
+.exam-q__opts li .opt-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--rust);
+  margin-right: 10px;
+}
+
+.fasit-details { margin-top: 10px; }
+.fasit-details summary {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rust);
+  cursor: pointer;
+  padding: 7px 14px;
+  border: 1px solid rgba(176,68,40,0.4);
+  border-radius: 3px;
+  background: var(--paper);
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+  transition: background 0.12s;
+}
+.fasit-details summary::-webkit-details-marker { display: none; }
+.fasit-details summary::after { content: '▾'; transition: transform 0.15s; }
+.fasit-details[open] summary::after { transform: rotate(-180deg); }
+.fasit-details summary:hover { background: #fff9ee; }
+.fasit-body {
+  margin-top: 10px;
+  padding: 16px 20px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+.fasit-body .fasit-correct {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--green);
+  margin-bottom: 10px;
+  display: block;
+}
+.fasit-body p { margin: 0 0 10px; }
+.fasit-body p:last-child { margin-bottom: 0; }
+.fasit-body ol, .fasit-body ul { margin: 0 0 10px; padding-left: 20px; }
+.fasit-body li { margin-bottom: 5px; }
+.fasit-body .ref {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-faded);
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dotted var(--line);
+}
+.fasit-body strong { color: var(--ink); }
+.fasit-body code {
+  font-family: var(--mono);
+  font-size: 13px;
+  background: var(--paper-dark);
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+.fasit-body table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 14px; }
+.fasit-body th, .fasit-body td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; }
+.fasit-body th { background: var(--paper-dark); font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-faded); }
+
+@media (max-width: 640px) {
+  .exam-q { padding: 18px 16px; }
+  .exam-q__body .q-text { font-size: 16px; }
+}

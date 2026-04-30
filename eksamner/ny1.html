@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Øvingseksamen 1 — TTM4100</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Alle eksamener</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
+  </div>
+</nav>
+
+<main data-chapter="Øvingseksamen 1 — TTM4100">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Øvingseksamen · TTM4100</div>
+  <h1>Øvingseksamen <em>1</em></h1>
+  <p class="lede">Del I: 14 flervalgsoppgaver (42 poeng). Del II: 5 åpne oppgaver (58 poeng). Totalt 100 poeng. Svar på egenhånd — åpne fasiten etterpå.</p>
+
+  <div class="learn-box">
+    <span class="label">Temaer i dette settet</span>
+    <ul>
+      <li>Pakkesvitsjing, forsinkelse og gjennomstrømning (kap. 1)</li>
+      <li>DNS, HTTP, e-post — applikasjonslaget (kap. 2)</li>
+      <li>TCP og UDP — transportlaget (kap. 3)</li>
+      <li>IP-adressering, subnetting, forwarding (kap. 4)</li>
+      <li>ICMP (kap. 5)</li>
+      <li>ARP og CSMA/CD — lenkelaget (kap. 6)</li>
+      <li>Caesar-cipher og kryptografi (kap. 8)</li>
+    </ul>
+  </div>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">I</span><a href="#del1">Del I — Flervalg (42p)</a></li>
+    <li><span class="toc-num">II</span><a href="#del2">Del II — Åpne oppgaver (58p)</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ==================== DEL I ==================== -->
+<section id="del1">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del I — Automatisk rettede spørsmål</h2>
+    <span class="del-points">14 spørsmål · 3 poeng per spørsmål · 42 poeng totalt</span>
+  </div>
+  <p class="section-intro">Velg det alternativet du mener er riktig. Klikk «Vis fasit» for å sjekke svaret og lese forklaringen.</p>
+
+  <!-- Q1 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 1</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er den viktigste fordelen med pakkesvitsjing (packet switching) sammenlignet med linjesvitsjing (circuit switching)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Garantert, konstant forsinkelse for alle brukere</li>
+        <li><span class="opt-label">B</span> Dedikert båndbredde reserveres per forbindelse</li>
+        <li><span class="opt-label">C</span> Bedre ressursutnyttelse gjennom statistisk multipleksing</li>
+        <li><span class="opt-label">D</span> Lavere pakkefeilrate enn linjesvitsjing</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C</span>
+          <p>Pakkesvitsjing lar mange brukere dele den samme linken dynamisk — ressursene brukes bare når noen faktisk sender data. Dette kalles statistisk multipleksing. Siden nettverkstrafikk er "bursty" (ikke jevn), kan man i praksis betjene langt flere brukere enn det dedikerte linjer ville tillatt.</p>
+          <p>Ulempen er at forsinkelse og pakketap kan variere, siden pakker deler kapasitet med andre. Linjesvitsjing gir garantert kapasitet (A og B), men sløser ressurser når ingen sender.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Pakkesvitsjing vs. linjesvitsjing</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q2 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 2</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En pakke på 2 000 bits sendes over en link med overføringshastighet 500 kbps. Hva er transmisjonstiden?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 0,4 ms</li>
+        <li><span class="opt-label">B</span> 4 ms</li>
+        <li><span class="opt-label">C</span> 40 ms</li>
+        <li><span class="opt-label">D</span> 0,04 ms</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B — 4 ms</span>
+          <p><strong>Formel:</strong> Transmisjonstid = L / R = 2 000 bits / 500 000 bps = 0,004 s = <strong>4 ms</strong></p>
+          <p>Transmisjonstiden er tiden det tar å skyve alle bitene i pakken ut på linken. Den avhenger ikke av distansen — det er propageringsforsinkelsen som avhenger av avstand.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Transmisjonsforsinkelse (d_trans = L/R)</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q3 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 3</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er den primære funksjonen til DNS (Domain Name System)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Tildele IP-adresser dynamisk til nye enheter på nettverket</li>
+        <li><span class="opt-label">B</span> Kryptere kommunikasjon mellom klient og server</li>
+        <li><span class="opt-label">C</span> Oversette lesbare domenenavn til IP-adresser</li>
+        <li><span class="opt-label">D</span> Dirigere pakker mellom rutere i Internett</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C</span>
+          <p>DNS fungerer som Internetts telefonkatalog: du slår opp et navn (f.eks. <code>www.ntnu.no</code>) og får tilbake en IP-adresse (f.eks. <code>129.241.0.1</code>). Datamaskiner bruker IP-adresser for ruting, ikke navn.</p>
+          <p>A beskriver DHCP, D beskriver ruting-protokoller som OSPF/BGP.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — DNS</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q4 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 4</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">HTTP er en tilstandsløs (stateless) protokoll. Hva betyr dette i praksis?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> HTTP-meldinger inneholder ingen tilstandsinformasjon i headerne</li>
+        <li><span class="opt-label">B</span> Serveren husker ikke informasjon om klienten mellom separate forespørsler</li>
+        <li><span class="opt-label">C</span> HTTP krever ikke en TCP-forbindelse</li>
+        <li><span class="opt-label">D</span> HTTP støtter ikke cookies</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Stateless betyr at serveren ikke lagrer noen kontekst mellom forespørsler fra samme klient. Hvert HTTP-request behandles som helt uavhengig — serveren "husker ikke" at du akkurat lastet ned en annen side.</p>
+          <p>Cookies (og sessions) er nettopp et lag <em>over</em> HTTP laget for å simulere tilstand på toppen av en tilstandsløs protokoll — det er ikke en del av selve HTTP-protokollen.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — HTTP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q5 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 5</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken protokoll brukes for å <strong>sende</strong> e-post fra en klient til en e-postserver?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> IMAP</li>
+        <li><span class="opt-label">B</span> POP3</li>
+        <li><span class="opt-label">C</span> SMTP</li>
+        <li><span class="opt-label">D</span> FTP</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — SMTP</span>
+          <p>SMTP (Simple Mail Transfer Protocol) brukes til å <strong>sende og videresende</strong> e-post — fra klient til utgående server, og mellom servere. IMAP og POP3 brukes til å <strong>hente ned</strong> e-post fra en server til en klient.</p>
+          <table>
+            <thead><tr><th>Protokoll</th><th>Retning</th><th>Typisk port</th></tr></thead>
+            <tbody>
+              <tr><td>SMTP</td><td>Sender → Server (og Server → Server)</td><td>25 / 587</td></tr>
+              <tr><td>IMAP</td><td>Server → Klient (synkronisert)</td><td>143 / 993</td></tr>
+              <tr><td>POP3</td><td>Server → Klient (laster ned)</td><td>110 / 995</td></tr>
+            </tbody>
+          </table>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — E-post: SMTP, IMAP, POP3</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q6 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 6</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken påstand om UDP er <strong>feil</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> UDP er raskere enn TCP for mange sanntidsapplikasjoner</li>
+        <li><span class="opt-label">B</span> DNS bruker vanligvis UDP</li>
+        <li><span class="opt-label">C</span> UDP garanterer at datagrammer leveres i riktig rekkefølge</li>
+        <li><span class="opt-label">D</span> UDP har ingen forbindelsesoppbygging (connection setup)</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — denne påstanden er feil</span>
+          <p>UDP (User Datagram Protocol) garanterer <strong>ikke</strong> levering i riktig rekkefølge, og heller ikke at pakker kommer frem i det hele tatt. Det er nettopp dette som gjør UDP raskere — ingen sekvensnummering, ingen ACK, ingen retransmisjoner.</p>
+          <p>A, B og D er alle korrekte påstander om UDP. DNS bruker UDP fordi oppslag er korte og hastighet er viktigere enn garantert levering.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — TCP vs. UDP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q7 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 7</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva representerer <code>rwnd</code> (receive window) i TCP-flytkontroll?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Antallet ukvitterte pakker senderen har sendt</li>
+        <li><span class="opt-label">B</span> Mottakerens tilgjengelige bufferkapasitet</li>
+        <li><span class="opt-label">C</span> Senderens nåværende sendehastighet</li>
+        <li><span class="opt-label">D</span> Størrelsen på TCP-segmentet</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p><code>rwnd</code> (receive window) er verdien mottakeren annonserer til senderen i TCP-headeren, og representerer hvor mye ledig plass det er i mottakerens buffer. Senderen begrenser mengden ukvitterte data til <code>rwnd</code> for å unngå å oversvømme mottakeren.</p>
+          <p>Dersom <code>rwnd = 0</code> stopper senderen å sende ny data og sender i stedet periodiske 1-byte-segmenter for å sjekke om bufferen har frigjort plass (probe-segmenter).</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — TCP flytkontroll</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q8 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 8</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvor mange bits er en IPv4-adresse?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 16</li>
+        <li><span class="opt-label">B</span> 48</li>
+        <li><span class="opt-label">C</span> 32</li>
+        <li><span class="opt-label">D</span> 128</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — 32 bits</span>
+          <p>En IPv4-adresse er 32 bits lang, skrevet som fire grupper på 8 bits (oktetter) i desimalform, f.eks. <code>192.168.1.100</code>. Dette gir 2<sup>32</sup> ≈ 4,3 milliarder mulige adresser.</p>
+          <p>48 bits er lengden på en MAC-adresse (Ethernet). 128 bits er IPv6-adresselengden — innført nettopp fordi IPv4-rommet er uttømt.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — IPv4-adressering</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q9 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 9</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Et subnett har prefikset <code>192.168.10.0/28</code>. Hvor mange <strong>adresserbare verter</strong> finnes i subnettet?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 30</li>
+        <li><span class="opt-label">B</span> 16</li>
+        <li><span class="opt-label">C</span> 14</li>
+        <li><span class="opt-label">D</span> 28</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — 14 verter</span>
+          <p>Et /28-subnett har 32 − 28 = 4 host-biter, som gir 2<sup>4</sup> = 16 adresser totalt. Av disse er to reservert:</p>
+          <ul>
+            <li>Nettverksadresse: <code>192.168.10.0</code> (alle host-biter = 0)</li>
+            <li>Broadcast-adresse: <code>192.168.10.15</code> (alle host-biter = 1)</li>
+          </ul>
+          <p>Adresserbare verter = 16 − 2 = <strong>14</strong></p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — CIDR og subnetting</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q10 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 10</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva brukes en forwarding-tabell (videresendingstabell) til?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Lagre brukernavn og passord for nettverksenheter</li>
+        <li><span class="opt-label">B</span> Beregne den korteste ruten mellom to rutere</li>
+        <li><span class="opt-label">C</span> Bestemme hvilken utgangslink en innkommende pakke skal sendes på, basert på destinasjons-IP</li>
+        <li><span class="opt-label">D</span> Oversette IP-adresser til MAC-adresser</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C</span>
+          <p>Forwarding er den lokale operasjonen i en ruter: når en pakke ankommer, slår ruteren opp destinasjons-IP-adressen i forwarding-tabellen og bestemmer hvilken utgangslink (interface) pakken skal videresendes på. Dette skjer i dataplanen (data plane).</p>
+          <p>B beskriver routing — prosessen som bygger forwarding-tabellen og kjøres i kontrollplanen (control plane). D beskriver ARP.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — Forwarding vs. routing</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q11 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 11</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 5</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er ICMP (Internet Control Message Protocol) brukt til?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Transportere applikasjonsdata mellom verter</li>
+        <li><span class="opt-label">B</span> Opprette og avslutte TCP-forbindelser</li>
+        <li><span class="opt-label">C</span> Rapportere feil og sende diagnostikkmeldinger om nettverksforhold</li>
+        <li><span class="opt-label">D</span> Kryptere IP-pakker i transit</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C</span>
+          <p>ICMP er nettverkslagets "feilrapporterings"-protokoll. Kjente bruksområder:</p>
+          <ul>
+            <li><strong>ping</strong> bruker ICMP Echo Request / Echo Reply for å teste tilgjengelighet og måle RTT</li>
+            <li><strong>traceroute</strong> bruker ICMP Time Exceeded-meldinger (TTL utløpt) for å kartlegge ruten</li>
+            <li>Rutere sender ICMP "Destination Unreachable" når de ikke kan videresende en pakke</li>
+          </ul>
+          <p class="ref">Pensum: <a href="../kap5/innhold.html">Kap. 5 — ICMP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q12 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 12</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er formålet med ARP (Address Resolution Protocol)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Tildele IP-adresser dynamisk til nettverksenheter</li>
+        <li><span class="opt-label">B</span> Oversette et domenenavn til en IP-adresse</li>
+        <li><span class="opt-label">C</span> Finne MAC-adressen som tilsvarer en kjent IP-adresse på lokalnettet</li>
+        <li><span class="opt-label">D</span> Opprette krypterte tunneler mellom rutere</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C</span>
+          <p>Lenkelaget trenger MAC-adressen for å konstruere en Ethernet-ramme. ARP løser dette: når vert A vil sende til IP-adresse 192.168.1.5, sender den en ARP-broadcast (<em>"Hvem har 192.168.1.5?"</em>). Vert B med den IP-adressen svarer med sin MAC-adresse. A cacher svaret i ARP-tabellen sin.</p>
+          <p>A beskriver DHCP, B beskriver DNS.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — ARP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q13 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 13</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er en kollisjon i et Ethernet-nettverk med CSMA/CD?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> En pakke som er for stor for det maksimale tillatte segmentet (MTU)</li>
+        <li><span class="opt-label">B</span> En situasjon der to stasjoner begynner å sende samtidig og signalene blander seg på mediet</li>
+        <li><span class="opt-label">C</span> En TCP-timeout som fører til at et segment sendes på nytt</li>
+        <li><span class="opt-label">D</span> En pakke adressert til en MAC-adresse som ikke finnes i nettverket</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>I CSMA/CD (Carrier Sense Multiple Access / Collision Detection): en stasjon lytter (<em>carrier sense</em>) om mediet er ledig, og sender dersom det er stille. Dersom to stasjoner begynner å sende nesten samtidig, kolliderer signalene. Stasjonene oppdager kollisjonen (<em>collision detection</em>), avbryter sendingen, sender et jam-signal og venter en tilfeldig tid (binary exponential backoff) før de prøver igjen.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — CSMA/CD</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q14 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 14</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er den viktigste forskjellen mellom symmetrisk kryptografi og kryptografi med offentlig nøkkel (asymmetrisk)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Symmetrisk kryptografi er alltid raskere og brukes aldri i praksis</li>
+        <li><span class="opt-label">B</span> Med offentlig nøkkel brukes én nøkkel til kryptering og en annen (privat) til dekryptering</li>
+        <li><span class="opt-label">C</span> Symmetrisk kryptografi bruker to separate nøkler som aldri er like</li>
+        <li><span class="opt-label">D</span> Offentlig nøkkel-kryptografi er sikrere og har fullstendig erstattet symmetrisk kryptografi</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>I <strong>asymmetrisk kryptografi</strong> har hver part et nøkkelpar: en offentlig nøkkel (kan deles fritt) og en privat nøkkel (hemmelig). Det som krypteres med den offentlige nøkkelen, kan bare dekrypteres med den tilhørende private nøkkelen.</p>
+          <p>I <strong>symmetrisk kryptografi</strong> bruker begge parter <em>samme</em> hemmelige nøkkel — utfordringen er å bli enige om nøkkelen uten at noen avlytter nøkkelutvekslingen.</p>
+          <p>I praksis bruker TLS/HTTPS asymmetrisk kryptografi for å utveksle en symmetrisk sesjonsnøkkel — deretter brukes den raskere symmetriske kryptografien for selve dataoverføringen.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8 — Symmetrisk vs. offentlig nøkkel</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+
+<!-- ==================== DEL II ==================== -->
+<section id="del2">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del II — Åpne oppgaver</h2>
+    <span class="del-points">5 oppgaver · 58 poeng totalt</span>
+  </div>
+  <p class="section-intro">Åpne, skriftlige svar. Begrunn svarene dine. Vis utregning der det er relevant. Klikk «Vis fasit» for å sammenligne med modellbesvarelsen.</p>
+
+  <!-- Oppgave 1 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 1</span>
+      <span class="exam-q__points">8 poeng</span>
+      <span class="exam-q__topic">Kap. 1</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) Beskriv de fire typene nodal forsinkelse (nodal delay) og gi formelen eller forklaringen for hver. (4p)</p>
+      <p class="q-text">b) En pakke på 1 000 bits sendes fra vert A til vert B via 2 rutere (3 linker totalt). Alle linker har overføringshastighet 1 Mbps og propagasjonsforsinkelse 5 ms per link. Anta store-and-forward-svitsjing og ignorer kø- og prosesseringsforsinkelse. Beregn total ende-til-ende forsinkelse. Vis alle steg. (4p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) De fire typene nodal forsinkelse:</strong></p>
+          <table>
+            <thead><tr><th>Type</th><th>Formel / Forklaring</th></tr></thead>
+            <tbody>
+              <tr><td>Prosesseringsforsinkelse</td><td>Tid ruteren bruker til å sjekke headerintegritet og bestemme utgangslink. Typisk µs-rekkevidde.</td></tr>
+              <tr><td>Køforsinkelse</td><td>Ventetid i utgangsbufferen mens andre pakker sendes. Varierer med trafikkintensitet (ρ = La/R).</td></tr>
+              <tr><td>Transmisjonsforsinkelse</td><td>d<sub>trans</sub> = L / R, der L = pakkestørrelse (bits), R = linkrate (bps)</td></tr>
+              <tr><td>Propageringsforsinkelse</td><td>d<sub>prop</sub> = d / s, der d = distanse, s ≈ 2×10<sup>8</sup> m/s (lyshastighet i kobber/fiber)</td></tr>
+            </tbody>
+          </table>
+          <p><strong>b) Beregning:</strong></p>
+          <p>Topologi: A → R1 → R2 → B (3 linker, store-and-forward)</p>
+          <p>Transmisjonsforsinkelse per link: d<sub>trans</sub> = 1 000 bits / 1 000 000 bps = <strong>1 ms</strong></p>
+          <p>Med store-and-forward og 3 linker: total transmisjonsforsinkelse = 3 × 1 ms = <strong>3 ms</strong></p>
+          <p>Total propagasjonsforsinkelse = 3 linker × 5 ms = <strong>15 ms</strong></p>
+          <p><strong>Total forsinkelse = 3 ms + 15 ms = 18 ms</strong></p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Forsinkelse og gjennomstrømning</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 2 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 2</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) Forklar TCP tre-veis handshake (three-way handshake) steg for steg. Hva er formålet med hvert steg? (5p)</p>
+      <p class="q-text">b) Anta at klientens første SYN-pakke går tapt i nettverket. Hva skjer videre? Hva bestemmer hvor lenge klienten venter før den prøver på nytt? (3p)</p>
+      <p class="q-text">c) Hva er forskjellen mellom TCP flytkontroll (flow control) og TCP metningskontroll (congestion control)? (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Tre-veis handshake:</strong></p>
+          <ol>
+            <li><strong>SYN</strong> (klient → server): Klienten velger et tilfeldig initialt sekvensnummer (ISN) og setter SYN-flagget. Formål: informere serveren om at klienten vil opprette en forbindelse, og annonsere klientens ISN.</li>
+            <li><strong>SYN-ACK</strong> (server → klient): Serveren bekrefter klientens SYN (ACK = klientens ISN + 1) og velger sitt eget ISN. Formål: bekrefte klientens forespørsel og annonsere serverens ISN.</li>
+            <li><strong>ACK</strong> (klient → server): Klienten bekrefter serverens SYN (ACK = serverens ISN + 1). Forbindelsen er nå etablert i begge retninger.</li>
+          </ol>
+          <p><strong>b) SYN-pakken går tapt:</strong></p>
+          <p>Klienten mottar ingen SYN-ACK. Etter en timeout (TCP retransmission timer, starter typisk på 1 sekund og dobles ved hver feilede forsøk — exponential backoff) sender klienten SYN på nytt. Antall forsøk er begrenset av OS-innstillinger (typisk 5–6 ganger).</p>
+          <p><strong>c) Flow control vs. congestion control:</strong></p>
+          <table>
+            <thead><tr><th></th><th>Flow control</th><th>Congestion control</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Hensikt</strong></td><td>Beskytte mottakerens buffer mot oversvømmelse</td><td>Beskytte nettverket mot overbelastning</td></tr>
+              <tr><td><strong>Styrt av</strong></td><td>Mottakerens rwnd-verdi</td><td>cwnd (congestion window), tapssignaler</td></tr>
+            </tbody>
+          </table>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — TCP-forbindelsesstyring, flow control, congestion control</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 3 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 3</span>
+      <span class="exam-q__points">15 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · 4 · 6</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En ny bærbar PC kobles til et kontornett via Ethernet for første gang. Brukeren åpner nettleseren og skriver inn <code>www.example.com</code> i adressefeltet. Gi en detaljert beskrivelse av alle protokoller som brukes — i riktig rekkefølge — fra PC-en kobles til nettverket og frem til HTML-siden er fullstendig lastet ned i nettleseren. For hvert steg: angi protokollnavn, lag og hva som skjer. (15p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>Steg 1 — DHCP (kap. 2 / applikasjonslaget, over UDP)</strong></p>
+          <p>PC-en har ingen IP-adresse og sender en DHCP Discover-melding som broadcast (255.255.255.255). DHCP-serveren svarer med en Offer (tilbyr IP, subnettmaske, gateway, DNS-server). PC-en sender DHCP Request; serveren bekrefter med DHCP ACK. PC-en har nå: IP-adresse, subnettmaske, standard gateway-adresse og DNS-serveradresse.</p>
+
+          <p><strong>Steg 2 — ARP (kap. 6 / lenkelaget)</strong></p>
+          <p>PC-en vil sende til standard gateway (for å nå DNS-serveren utenfor lokalnettet). Den kjenner gateway-IP, men ikke MAC-adressen. Den sender en ARP Request-broadcast (<em>"Hvem har gateway-IP?"</em>). Gatewayens ARP Reply gir MAC-adressen. PC-en cacher dette i ARP-tabellen.</p>
+
+          <p><strong>Steg 3 — DNS (kap. 2 / applikasjonslaget, UDP port 53)</strong></p>
+          <p>PC-en sender en DNS-spørring til DNS-serveren: <em>"Hva er IP-adressen til www.example.com?"</em>. DNS-serveren svarer (mulig med iterative/recursive oppslag i DNS-hierarkiet) med IP-adressen, f.eks. <code>93.184.216.34</code>.</p>
+
+          <p><strong>Steg 4 — TCP tre-veis handshake (kap. 3 / transportlaget)</strong></p>
+          <p>PC-en oppretter en TCP-forbindelse til webserveren på port 80 (HTTP) via SYN → SYN-ACK → ACK.</p>
+
+          <p><strong>Steg 5 — HTTP GET (kap. 2 / applikasjonslaget)</strong></p>
+          <p>PC-en sender <code>GET / HTTP/1.1</code>. Webserveren svarer med <code>HTTP/1.1 200 OK</code> etterfulgt av HTML-innholdet. Nettleseren parser HTML og kan sende ytterligere GET-forespørsler for CSS, bilder osv.</p>
+
+          <p><strong>Steg 6 — TCP-avslutning</strong></p>
+          <p>Etter overføring avsluttes TCP-forbindelsen med en fire-veis FIN-handshake (FIN → ACK → FIN → ACK). Med HTTP/1.1 persistent connections kan dette utsettes til ingen flere forespørsler er planlagt.</p>
+
+          <p><em>Merk:</em> I hele prosessen håndterer lenkelaget (Ethernet) innkapsling i rammer med MAC-adresser, og nettverkslaget (IP) håndterer routing mellom subnett.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2</a> · <a href="../kap3/innhold.html">Kap. 3</a> · <a href="../kap4/innhold.html">Kap. 4</a> · <a href="../kap6/innhold.html">Kap. 6</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 4 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 4</span>
+      <span class="exam-q__points">14 poeng</span>
+      <span class="exam-q__topic">Kap. 4</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Du har fått tildelt adresseblokken <code>172.20.0.0/16</code> og skal dele den inn i <strong>8 like store subnett</strong>.</p>
+      <p class="q-text">a) Hva er prefikslengden for hvert subnett? Skriv subnettmasken i dotted-decimal. (3p)</p>
+      <p class="q-text">b) List opp nettverksadressen (med CIDR-notasjon) for alle 8 subnettene. (4p)</p>
+      <p class="q-text">c) Hva er broadcast-adressen for det <strong>5. subnettet</strong>? (3p)</p>
+      <p class="q-text">d) Hvor mange adresserbare verter er det per subnett? (2p)</p>
+      <p class="q-text">e) En pakke ankommer en ruter med destinasjonsadresse <code>172.20.130.45</code>. Hvilke av de 8 subnettene tilhører denne adressen? (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Prefikslengde og subnettmaske:</strong></p>
+          <p>8 subnett krever 2<sup>3</sup> = 8 → 3 ekstra bits. Ny prefikslengde: /16 + 3 = <strong>/19</strong></p>
+          <p>Subnettmaske: de første 19 bitene er 1 → <strong>255.255.224.0</strong></p>
+          <p>(11111111.11111111.11100000.00000000)</p>
+
+          <p><strong>b) Nettverksadressene for alle 8 subnettene:</strong></p>
+          <p>Hvert subnett spenner over 2<sup>32−19</sup> = 2<sup>13</sup> = 8192 adresser. Tredje oktett øker med 32 (256/8):</p>
+          <table>
+            <thead><tr><th>Subnett</th><th>Nettverksadresse</th><th>Adresserange</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>172.20.0.0/19</td><td>172.20.0.0 – 172.20.31.255</td></tr>
+              <tr><td>2</td><td>172.20.32.0/19</td><td>172.20.32.0 – 172.20.63.255</td></tr>
+              <tr><td>3</td><td>172.20.64.0/19</td><td>172.20.64.0 – 172.20.95.255</td></tr>
+              <tr><td>4</td><td>172.20.96.0/19</td><td>172.20.96.0 – 172.20.127.255</td></tr>
+              <tr><td>5</td><td>172.20.128.0/19</td><td>172.20.128.0 – 172.20.159.255</td></tr>
+              <tr><td>6</td><td>172.20.160.0/19</td><td>172.20.160.0 – 172.20.191.255</td></tr>
+              <tr><td>7</td><td>172.20.192.0/19</td><td>172.20.192.0 – 172.20.223.255</td></tr>
+              <tr><td>8</td><td>172.20.224.0/19</td><td>172.20.224.0 – 172.20.255.255</td></tr>
+            </tbody>
+          </table>
+
+          <p><strong>c) Broadcast for subnett 5 (172.20.128.0/19):</strong></p>
+          <p>Siste adresse i rekken: <strong>172.20.159.255</strong></p>
+
+          <p><strong>d) Adresserbare verter per subnett:</strong></p>
+          <p>2<sup>13</sup> − 2 = 8192 − 2 = <strong>8 190 verter</strong></p>
+
+          <p><strong>e) Hvilket subnett tilhører 172.20.130.45?</strong></p>
+          <p>Tredje oktett er 130. Subnett 5 spenner fra .128.0 til .159.255. 128 ≤ 130 ≤ 159 → <strong>Subnett 5 (172.20.128.0/19)</strong></p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — CIDR, subnetting, longest prefix matching</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 5 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 5</span>
+      <span class="exam-q__points">11 poeng</span>
+      <span class="exam-q__topic">Kap. 8</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) Krypter meldingen <strong>«DATANETT»</strong> med Caesar-cipher med k = 4. Vis alle steg (bokstav for bokstav). (4p)</p>
+      <p class="q-text">b) Dekrypter den krypterte meldingen fra a) for å verifisere at du får tilbake «DATANETT». Vis alle steg. (3p)</p>
+      <p class="q-text">c) Forklar hvorfor Caesar-cipher er en svak krypteringsalgoritme, og gi ett eksempel på et angrep som bryter den. (2p)</p>
+      <p class="q-text">d) Hva er en «man-in-the-middle»-angrep, og i hvilken situasjon er kryptografi med offentlig nøkkel sårbar for dette? (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Kryptering: DATANETT, k = 4</strong></p>
+          <p>Enkode: hvert bokstav flyttes 4 plasser fremover i alfabetet (mod 26). Bruker A=0, B=1 … Z=25.</p>
+          <table>
+            <thead><tr><th>Klartekst</th><th>Pos (0-ind.)</th><th>+4 (mod 26)</th><th>Chiffertekst</th></tr></thead>
+            <tbody>
+              <tr><td>D</td><td>3</td><td>7</td><td>H</td></tr>
+              <tr><td>A</td><td>0</td><td>4</td><td>E</td></tr>
+              <tr><td>T</td><td>19</td><td>23</td><td>X</td></tr>
+              <tr><td>A</td><td>0</td><td>4</td><td>E</td></tr>
+              <tr><td>N</td><td>13</td><td>17</td><td>R</td></tr>
+              <tr><td>E</td><td>4</td><td>8</td><td>I</td></tr>
+              <tr><td>T</td><td>19</td><td>23</td><td>X</td></tr>
+              <tr><td>T</td><td>19</td><td>23</td><td>X</td></tr>
+            </tbody>
+          </table>
+          <p><strong>Kryptert: HEXERIXX</strong></p>
+
+          <p><strong>b) Dekryptering: HEXERIXX, k = 4</strong></p>
+          <p>Dekode: flytt 4 plasser bakover (pos − 4 + 26) mod 26:</p>
+          <table>
+            <thead><tr><th>Chiffertekst</th><th>Pos</th><th>−4 (mod 26)</th><th>Klartekst</th></tr></thead>
+            <tbody>
+              <tr><td>H</td><td>7</td><td>3</td><td>D</td></tr>
+              <tr><td>E</td><td>4</td><td>0</td><td>A</td></tr>
+              <tr><td>X</td><td>23</td><td>19</td><td>T</td></tr>
+              <tr><td>E</td><td>4</td><td>0</td><td>A</td></tr>
+              <tr><td>R</td><td>17</td><td>13</td><td>N</td></tr>
+              <tr><td>I</td><td>8</td><td>4</td><td>E</td></tr>
+              <tr><td>X</td><td>23</td><td>19</td><td>T</td></tr>
+              <tr><td>X</td><td>23</td><td>19</td><td>T</td></tr>
+            </tbody>
+          </table>
+          <p>Resultat: <strong>DATANETT</strong> ✓</p>
+
+          <p><strong>c) Hvorfor er Caesar svak?</strong></p>
+          <p>Caesar-cipher er en substitusjonschiffer med bare 25 mulige nøkler (k = 1…25). En angriper kan prøve alle 25 kombinasjoner (brute force / uttømmende søk) og finne klarteksten på sekunder. I tillegg bevarer den bokstavfrekvensene fra klarteksten, noe som gjør frekvensanalyse effektivt.</p>
+
+          <p><strong>d) Man-in-the-middle (MITM) og offentlig nøkkel:</strong></p>
+          <p>I et MITM-angrep posisjonerer en angriper (Eve) seg mellom Alice og Bob. Eve utgir seg for å være Bob overfor Alice og Alice overfor Bob — og kan avlytte og endre all kommunikasjon. Offentlig nøkkel-kryptografi er sårbar for MITM dersom Alice ikke kan verifisere at den offentlige nøkkelen hun mottar faktisk tilhører Bob og ikke Eve. Løsningen er sertifikater (PKI) — en betrodd tredjepart (CA) signerer at "denne offentlige nøkkelen tilhører Bob".</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8 — Kryptografi, Caesar, offentlig nøkkel, MITM</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Vår 2026</p>
+  </div>
+</footer>
+<script src="../chat-widget.js"></script>
+<script src="../nav-search.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>
