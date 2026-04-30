@@ -160,7 +160,7 @@
 <div class="container">
   <div class="section-badge">Flashcards</div>
   <h2>Rask <em>repetisjon</em></h2>
-  <p class="section-intro">Åpne spørsmål i tilfeldig rekkefølge, tilpasset TTM4100-pensum for Kurose kapittel 2 (unntatt detaljer om BitTorrent-protokollen på bokas s. 170–173). Ett kort om norsk ekom/cookie-regelverk er tillegg utenom læreboka. Klikk kortet for å snu — bruk <strong>&larr; / &rarr;</strong> for å bla, <strong>mellomrom</strong> for å snu, <strong>R</strong> for å shuffle.</p>
+  <p class="section-intro">Åpne spørsmål i tilfeldig rekkefølge, tilpasset TTM4100-pensum for Kurose kapittel 2 (unntatt detaljer om BitTorrent-protokollen på bokas s. 170–173). Klikk kortet for å snu — bruk <strong>&larr; / &rarr;</strong> for å bla, <strong>mellomrom</strong> for å snu, <strong>R</strong> for å shuffle.</p>
 
   <div class="flashcards" data-flashcards>
     <div class="fc-stage">
@@ -285,14 +285,6 @@
         <div data-fc-back>
           <p><strong>Svar:</strong> (1) Et <code>Set-Cookie</code>-felt i HTTP-svaret fra tjeneren, (2) et <code>Cookie</code>-felt i påfølgende HTTP-forespørsler fra klienten, (3) en cookie-fil på brukerens maskin (administrert av nettleseren, knyttet til domenet), og (4) en database på tjenersiden der cookien knyttes til faktisk informasjon (handlekurv, innloggingsstatus, profil).</p>
           <p><strong>Hvorfor det fungerer:</strong> Første besøk: tjeneren genererer en unik ID, lagrer den i sin database, og sender den tilbake i <code>Set-Cookie</code>. Nettleseren lagrer cookien. Neste besøk: nettleseren legger automatisk ved <code>Cookie: 1678</code>, og tjeneren slår opp ID-en i databasen og «kjenner igjen» brukeren. Tilstand bygges altså ovenpå en tilstandsløs protokoll, uten å endre selve protokollen.</p>
-        </div>
-      </li>
-
-      <li data-card>
-        <div data-fc-front>Hva er <em>tredjeparts</em> cookies, og hvilke krav stiller den norske ekomloven (2025)? <small>(tilleggsstoff utenom læreboka)</small></div>
-        <div data-fc-back>
-          <p><strong>Svar:</strong> Tredjeparts cookies er cookies satt av et annet domene enn det du ser i adressefeltet — typisk fra annonse- og analysenettverk. Fordi den samme tredjeparten er innebygd på mange nettsteder, kan en og samme cookie identifisere deg på tvers av tjenester og bygge en detaljert profil av aktiviteten din.</p>
-          <p><strong>Ekomloven 2025:</strong> Trådte i kraft 1. januar 2025 og krever at samtykke til cookies oppfyller GDPR-kravene — det skal være <em>frivillig, spesifikt, informert, utvetydig, gitt gjennom en aktiv handling, dokumenterbart, og like enkelt å trekke tilbake som å gi</em>. Det er grunnen til cookie-bannerne du ser ved første besøk på alle norske nettsteder. Sporing er ikke ulovlig, men <em>skjult</em> sporing er det.</p>
         </div>
       </li>
 

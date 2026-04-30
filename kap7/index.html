@@ -189,7 +189,7 @@
       <li data-card>
         <div data-fc-front>Hvilke tre fysiske fenomener gjør en trådløs link fundamentalt annerledes enn en kabel?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> (1) <em>Signaltap (path loss)</em> — radiosignalet svekkes med avstanden, omtrent med kvadratet av avstanden i åpent rom. (2) <em>Interferens fra andre kilder</em> — andre WiFi-nett, Bluetooth, mikrobølgeovner og babymonitorer deler 2,4 GHz-båndet. (3) <em>Flerveispropagering (multipath)</em> — signalet reflekteres av vegger og bygninger og når mottakeren flere ganger med litt forskjellig forsinkelse, slik at bølgene kan både forsterke og dempe hverandre.</p>
+          <p><strong>Svar:</strong> (1) <em>Signaltap (path loss)</em> — radiosignalet svekkes med avstanden, omtrent med kvadratet av avstanden i åpent rom. (2) <em>Interferens fra andre kilder</em> — andre WiFi-nett, mikrobølgeovner, babymonitorer og annet utstyr i det åpne 2,4 GHz-båndet. (3) <em>Flerveispropagering (multipath)</em> — signalet reflekteres av vegger og bygninger og når mottakeren flere ganger med litt forskjellig forsinkelse, slik at bølgene kan både forsterke og dempe hverandre.</p>
           <p><strong>Hvorfor:</strong> En kabel skjermer signalet fra omverdenen — derfor er kabel-Ethernet praktisk talt feilfri. Radiomediet er åpent og delt med alle, og de tre fenomenene gir uforutsigbare "døde flekker" og høy bitfeilrate. Konsekvensen er at hele MAC-laget i WiFi (CSMA/CA, ACK, RTS/CTS) er bygget for å håndtere et upålitelig medium — i motsetning til Ethernet som stort sett kan stole på at en sendt ramme også blir mottatt.</p>
         </div>
       </li>
@@ -344,26 +344,26 @@
       </li>
 
       <li data-card>
-        <div data-fc-front>Hvordan kan vi klassifisere trådløse nettverk langs to dimensjoner, og hvor passer WiFi, Bluetooth, mobilnett og MANET inn?</div>
+        <div data-fc-front>Hvordan kan vi klassifisere trådløse nettverk langs to dimensjoner, og hvor passer WiFi, mobilnett og MANET inn?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> To ja/nei-spørsmål gir fire familier: <em>(1) Finnes det en basestasjon?</em> og <em>(2) Trenger pakkene flere hopp for å nå målet?</em></p>
           <p><strong>Med infrastruktur, ett hopp:</strong> klassisk WiFi og mobilnett — verten snakker direkte med basestasjon, som videresender til Internett.<br>
              <strong>Med infrastruktur, flere hopp:</strong> mesh-nett — noen noder relayer trafikk gjennom andre for å nå basestasjonen.<br>
-             <strong>Uten infrastruktur, ett hopp:</strong> Bluetooth og ad hoc-WiFi — direkte mellom to noder, ingen vei ut til Internett.<br>
+             <strong>Uten infrastruktur, ett hopp:</strong> ad hoc-WiFi — direkte mellom to noder uten AP, typisk kort rekkevidde.<br>
              <strong>Uten infrastruktur, flere hopp:</strong> MANET, VANET (kjøretøy-til-kjøretøy) — pakker rutes gjennom flere ad hoc-noder.</p>
-          <p><strong>Hvorfor det er nyttig:</strong> Det aller meste vi møter i dagliglivet ligger i det øverste venstre hjørnet — ett hopp, med infrastruktur — fordi det er enklest. Hele resten av kapittelet handler om denne familien, mens mesh og MANET er nisjer (industrielle sensornettverk, militære feltnett, etc.). Klassifiseringen forklarer også hvorfor ad hoc-modus i WiFi finnes, men knapt brukes.</p>
+          <p><strong>Pensum:</strong> Detaljert Bluetooth (lærebok 7.3.6) er utelatt i TTM4100 — klassifiseringen over dekker pensumets trådløse familier uten kortdistanse-PAN som eget fokus.</p>
+          <p><strong>Hvorfor det er nyttig:</strong> Det aller meste vi møter i dagliglivet ligger i det øverste venstre hjørnet — ett hopp, med infrastruktur — fordi det er enklest. Mesh og MANET er nisjer (industrielle sensornettverk, militære feltnett, etc.). Klassifiseringen forklarer også hvorfor ad hoc-modus i WiFi finnes, men knapt brukes.</p>
         </div>
       </li>
 
       <li data-card>
-        <div data-fc-front>Sammenlign Bluetooth, WiFi-generasjonene (802.11b/g/n/ac/ax), 4G LTE og 5G langs dimensjonene hastighet og rekkevidde. Hva er det generelle kompromisset?</div>
+        <div data-fc-front>Sammenlign WiFi-generasjonene (802.11b/g/n/ac/ax), 4G LTE og 5G langs dimensjonene hastighet og rekkevidde. Hva er det generelle kompromisset?</div>
         <div data-fc-back>
           <p><strong>Svar (omtrentlige tall):</strong></p>
-          <p><strong>Bluetooth:</strong> 2 Mbps, ~10 m — innendørs, peer-to-peer.<br>
-             <strong>802.11b:</strong> 11 Mbps, ~30 m. <strong>g:</strong> 54 Mbps, ~30 m. <strong>n (WiFi 4):</strong> 600 Mbps, ~70 m. <strong>ac (WiFi 5):</strong> 3,5 Gbps. <strong>ax (WiFi 6):</strong> 14 Gbps, optimalisert for høy tetthet.<br>
+          <p><strong>802.11b:</strong> 11 Mbps, ~30 m. <strong>g:</strong> 54 Mbps, ~30 m. <strong>n (WiFi 4):</strong> 600 Mbps, ~70 m. <strong>ac (WiFi 5):</strong> 3,5 Gbps. <strong>ax (WiFi 6):</strong> 14 Gbps, optimalisert for høy tetthet.<br>
              <strong>4G LTE:</strong> ~100 Mbps, flere km — mobilbredbånd.<br>
              <strong>5G:</strong> ~10 Gbps, men bare 10–100 m på mmWave.</p>
-          <p><strong>Hvorfor kompromisset:</strong> Jo høyere hastighet, jo kortere rekkevidde — det er en gjennomgående regel. Høyere hastighet krever mer båndbredde, og mer båndbredde finnes bare på høyere frekvenser, som dempes raskere og blokkeres lettere. Konsekvensen er at 5G på mmWave krever <em>mange flere</em> basestasjoner per km² enn 4G, og at ekte 5G-dekning er begrenset til tett bebygde områder.</p>
+          <p><strong>Hvorfor kompromisset:</strong> Jo høyere hastighet, jo kortere rekkevidde — det er en gjennomgående regel. Høyere hastighet krever mer båndbredde, og mer båndbredde finnes oftere på høyere frekvenser, som dempes raskere og blokkeres lettere. Konsekvensen er at 5G på mmWave krever <em>mange flere</em> basestasjoner per km² enn 4G, og at ekte høyhastighets-5G-dekning er begrenset til tett bebygde områder.</p>
         </div>
       </li>
 

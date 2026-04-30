@@ -215,7 +215,7 @@
         <div data-fc-front>Hvilke fire hoveddeler består en ruter av, og hvilke tilhører data plane vs. control plane?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> (1) <strong>Innporter</strong> — linjeavslutning, lenkelagsdekoding og <em>tabelloppslag</em> for å bestemme utport. (2) <strong>Switching fabric</strong> — flytter pakken fra innport til riktig utport. (3) <strong>Utporter</strong> — kø, scheduling, lenkelagsenkoding og transmisjon. (4) <strong>Routing-prosessor</strong> — kjører rutingprotokoller og fyller forwarding-tabellen. De tre første er <em>data plane</em>; den siste er <em>control plane</em>.</p>
-          <p><strong>Hvorfor designet er slik:</strong> Tabelloppslaget gjøres lokalt i hver innport uten å involvere CPU-en, slik at alle porter jobber parallelt. Mønsteret kalles <em>match plus action</em>: les et felt i headeren (her typisk destinasjons-IP), finn matchende rad, utfør handlingen ("send ut på interface 3"). Det er kjernen i destinasjonsbasert IP-forwarding i dataplanet.</p>
+          <p><strong>Hvorfor designet er slik:</strong> Tabelloppslaget gjøres lokalt i hver innport uten å involvere CPU-en, slik at alle porter jobber parallelt. Det er et raskt prefiks-/destinasjonsoppslag: les typisk destinasjons-IP, finn lengste matchende prefiks i forwarding-tabellen, og send pakken ut på angitt utport. Det er kjernen i tradisjonell destinasjonsbasert IP-forwarding i dataplanet (jfr. pensum utenfor generalisert videresending i lærebok 4.4).</p>
         </div>
       </li>
 
@@ -258,7 +258,7 @@
         <div data-fc-front>Hva er <em>bufferbloat</em>, og hvorfor er for store routerbuffere skadelig?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> Bufferbloat oppstår når routerbuffere er <em>for store</em>. Tap-raten ser bra ut (få pakker droppes), men pakkene står lenge i kø før de sendes videre. Resultatet er <em>høy og variabel latens</em> som ødelegger interaktive applikasjoner: VoIP, spill, videosamtaler.</p>
-          <p><strong>Hvorfor det er kontraintuitivt:</strong> TCP regulerer ned vinduet sitt først når det ser tap; med ekstra store buffere blir tapet utsatt, så TCP holder køene fulle lenger. Den gamle tommelfingerregelen RTT·C (250 ms × 10 Gbps = 2,5 Gbit) er erstattet av <em>RTT·C/√N</em> for N flows — fordi statistisk multipleksing reduserer behovet. Aktive køstyringer som <strong>RED</strong> (drop tilfeldige pakker <em>før</em> køen er full) og <strong>ECN</strong> (markér i stedet for å droppe) signaliserer congestion tidligere uten å fylle buffere.</p>
+          <p><strong>Hvorfor det er kontraintuitivt:</strong> TCP regulerer ned vinduet sitt først når det ser tap; med ekstra store buffere blir tapet utsatt, så TCP holder køene fulle lenger. Den gamle tommelfingerregelen RTT·C (250 ms × 10 Gbps = 2,5 Gbit) er erstattet av <em>RTT·C/√N</em> for N flows — fordi statistisk multipleksing reduserer behovet. Aktive køstyringer som <strong>RED</strong> (drop tilfeldige pakker <em>før</em> køen er full) kan signalisere metning tidligere uten å fylle buffere helt.</p>
         </div>
       </li>
 
@@ -416,20 +416,12 @@
       </li>
 
       <li data-card>
-        <div data-fc-front>Hva er <em>match plus action</em>-mønsteret, og hvorfor dominerer det forwarding-design?</div>
-        <div data-fc-back>
-          <p><strong>Svar:</strong> Den fundamentale operasjonsstrukturen i en ruter: (1) <strong>Match</strong> — les ett eller flere felt i pakkens header. (2) <strong>Action</strong> — utfør den tilhørende handlingen (typisk "send ut på interface X", men kan også være "drop", "modifiser felt", eller "send til CPU").</p>
-          <p><strong>Hvorfor det dominerer:</strong> Mønsteret er enkelt nok til å implementeres i maskinvare (TCAM + ASIC) på nanosekunder. I pensumets IP-forwarding er <em>destinasjons-IP</em> match-feltet og handlingen nesten alltid «send ut på denne utporten» (eventuelt drop). Mer generelle «match + action»-varianter (lærebok 4.4 / SDN) og middleboxes-teori (4.6) er <em>ikke</em> pensum i TTM4100.</p>
-        </div>
-      </li>
-
-      <li data-card>
         <div data-fc-front>Hvilke felt har en IPv4-header, og hvor mange bytes er den minimum?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> Minimum 20 bytes. Utover 32-bit kilde- og destinasjons-IP (8 bytes til sammen):</p>
           <ul>
             <li><em>Version</em> (4 for IPv4) + <em>HLen</em> (header-lengde i 32-bits ord, vanligvis 5 = 20 bytes)</li>
-            <li><em>Type of Service</em> — Diffserv-bits + ECN-bits</li>
+            <li><em>Type of Service</em> — brukes blant annet til Diffserv (DSCP)</li>
             <li><em>Total Length</em> — hele datagrammet inkl. payload, maks 65 535 bytes</li>
             <li><em>Identifier / Flags / Fragment Offset</em> — fragmentering</li>
             <li><em>TTL</em> — hopgrense</li>
@@ -457,20 +449,19 @@
             <li><strong>Output-køer</strong> — bygger seg opp ved utportene når flere innporter sender til samme utport (ankomstrate &gt; sendingsrate).</li>
           </ul>
           <p>Output-køer dominerer i moderne rutere fordi fabric-en designes raskere enn N × innport-kapasitet, slik at HOL-blokkering ved input unngås.</p>
-          <p><strong>Hvorfor output-køer er der "alt skjer":</strong> De reiser to klassiske spørsmål: (1) hva droppes når køen er full? (tail drop, RED, ECN), og (2) hvilken pakke sendes først? (FCFS, priority, WFQ). Det er her congestion-håndtering og nettnøytralitet får teknisk innhold. Input-køer derimot lider av <em>HOL-blokkering</em> — derfor unngås de.</p>
+          <p><strong>Hvorfor output-køer er der "alt skjer":</strong> De reiser to klassiske spørsmål: (1) hva droppes når køen er full? (tail drop, RED), og (2) hvilken pakke sendes først? (FCFS, priority, WFQ). Det er her metningshåndtering og nettnøytralitet får teknisk innhold. Input-køer derimot lider av <em>HOL-blokkering</em> — derfor unngås de.</p>
         </div>
       </li>
 
       <li data-card>
-        <div data-fc-front>Sammenlign tre <em>buffer management</em>-strategier: tail drop, RED og ECN.</div>
+        <div data-fc-front>Sammenlign to <em>buffer management</em>-strategier: <strong>tail drop</strong> og <strong>RED</strong> (Random Early Detection).</div>
         <div data-fc-back>
           <p><strong>Svar:</strong></p>
           <ul>
-            <li><strong>Tail drop:</strong> dropp pakken som <em>nettopp ankom</em> hvis køen er full. Enkelt, men signaliserer congestion sent — først når køen allerede er full.</li>
-            <li><strong>RED (Random Early Detection):</strong> dropp pakker tilfeldig med økende sannsynlighet etter hvert som køen fyller seg, <em>før</em> den er full. TCP ser tap tidligere og reduserer sending før køen renner over.</li>
-            <li><strong>ECN (Explicit Congestion Notification):</strong> i stedet for å droppe, sett en bit i headeren. Mottaker informerer avsender, som reduserer sending — uten at noen pakke gikk tapt.</li>
+            <li><strong>Tail drop:</strong> dropp pakken som <em>nettopp ankom</em> hvis køen er full. Enkelt, men signaliserer metning sent — først når køen allerede er full.</li>
+            <li><strong>RED:</strong> dropp pakker tilfeldig med økende sannsynlighet etter hvert som køen fyller seg, <em>før</em> den er full. TCP ser tap tidligere og reduserer sending før køen renner over.</li>
           </ul>
-          <p><strong>Hvorfor hierarkiet:</strong> Fra mest brutalt (tail drop) til mest informativt (ECN). RED og ECN unngår det verste ved tail drop: at TCP først reagerer når køene er fulle (selve årsaken til bufferbloat). ECN krever støtte i både endesystem og ruter, men gir ingen pakketap — derav verdt overgangskostnaden.</p>
+          <p><strong>Hvorfor det spiller rolle i pensum:</strong> Begge er klassiske ruter-kømekanismer i læreboka. Mer avansert ECN-basert metningsvarsling (lærebok 3.7.2) er <em>ikke</em> pensum i TTM4100 — her holder vi oss til drop-baserte strategier.</p>
         </div>
       </li>
 
