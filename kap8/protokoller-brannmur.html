@@ -174,26 +174,7 @@
 
   <p class="dropcap">TLS sikrer enkelttransportforbindelser (én TCP-forbindelse om gangen). Men hva om du vil sikre <em>all</em> trafikk mellom to nettverk — uansett applikasjon, uansett port? Da trenger du sikkerhet på nettverkslaget, og det er der <strong>IPsec</strong> kommer inn. IPsec gir kryptering, autentisering og integritetskontroll på datagram-nivå, for både brukerdata og kontrolltrafikk (BGP, DNS, osv.).</p>
 
-  <div class="callout">
-    <span class="label">Pensum-avgrensning</span>
-    <p>Pensum dekker <strong>8.7 (intro) og 8.7.1 IPsec og VPNs</strong> — altså helhetsbildet, transport vs tunnel-modus og VPN-eksempelet. Avsnittene under om <em>Security Association</em>, <em>SPD</em>, <em>AH/ESP</em> og <em>IKE</em> tilsvarer 8.7.2–8.7.5 og er <strong>ikke pensum</strong>, men er tatt med som kontekst for å vise hvordan en VPN-tunnel faktisk settes opp og driftes. Du trenger ikke kunne SPI, SAD eller IKE-faser i detalj for eksamen.</p>
-  </div>
-
-  <h3>Security Association (SA) <span style="font-family: 'IBM Plex Mono'; font-size: 0.7em; color: #6b6257; font-weight: normal;">— utenfor pensum</span></h3>
-  <p>Før IPsec kan sende et eneste kryptert datagram, må de to endepunktene opprette en <strong>Security Association (SA)</strong> — en enveis logisk forbindelse som definerer sikkerhetsparameterne for trafikken. Hver SA identifiseres av tre ting:</p>
-
-  <ul>
-    <li><strong>SPI (Security Parameter Index):</strong> et 32-bits tall som inkluderes i hvert IPsec-datagram, slik at mottakeren vet hvilken SA (og dermed hvilke nøkler og algoritmer) pakken tilhører.</li>
-    <li><strong>Destinasjons-IP:</strong> adressen til den andre enden av SA-en.</li>
-    <li><strong>Protokollidentifikator:</strong> om SA-en bruker AH eller ESP.</li>
-  </ul>
-
-  <p>Fordi en SA er <em>enveis</em>, trengs det to SA-er for toveis kommunikasjon — én i hver retning, hver med sin egen SPI og sine egne nøkler. Alle aktive SA-er lagres i en <strong>SAD (Security Association Database)</strong> på begge endepunkter. Når et IPsec-datagram ankommer, bruker mottakeren SPI-verdien i headeren til å slå opp riktig SA i SAD-en og dermed finne krypteringsnøkkelen og algoritmen som trengs for å dekryptere.</p>
-
-  <h3>SPD — hvilken trafikk skal inn i IPsec? <span style="font-family: 'IBM Plex Mono'; font-size: 0.7em; color: #6b6257; font-weight: normal;">— utenfor pensum</span></h3>
-  <p>I tillegg til SAD finnes <strong>SPD (Security Policy Database)</strong>: en liste med policy-regler som sier <em>hvilke</em> pakker (f.eks. basert på kilde/dest-subnett, protokoll eller port) som skal behandles av IPsec, og om de skal droppes, sendes i klartekst, eller tunneleres/krypteres med en bestemt SA. Kort sagt: <strong>SPD bestemmer om</strong> IPsec skal brukes; <strong>SAD forteller hvordan</strong> (nøkler og algoritmer for en aktiv SA).</p>
-
-  <h3>To moduser <span style="font-family: 'IBM Plex Mono'; font-size: 0.7em; color: #3d6b3a; font-weight: normal;">— pensum (8.7.1)</span></h3>
+  <h3>To moduser</h3>
 
   <table>
     <tr><th>Modus</th><th>Hva krypteres</th><th>Bruk</th></tr>
@@ -210,35 +191,6 @@
   </table>
 
   <p>Tunnel-modus er fundamentet for <strong>VPN (Virtual Private Network)</strong>. Tenk på et selskap med kontorer i Oslo og Trondheim. Begge kontorene er koblet til Internett, og mellom gateway-ruterne på hvert kontor settes det opp en IPsec-tunnel. All trafikk mellom de to kontornettene pakkes inn i krypterte IP-datagrammer og tunneleres over det offentlige Internett. For brukerens PC ser det ut som om den er på samme lokalnett — men i virkeligheten er alt kryptert underveis.</p>
-
-  <h3>To protokoller <span style="font-family: 'IBM Plex Mono'; font-size: 0.7em; color: #6b6257; font-weight: normal;">— utenfor pensum</span></h3>
-
-  <table>
-    <tr><th>Protokoll</th><th>Autentisering</th><th>Integritet</th><th>Konfidensialitet</th><th>Bruk</th></tr>
-    <tr>
-      <td class="mono-cell">AH</td>
-      <td>Ja</td>
-      <td>Ja</td>
-      <td>Nei</td>
-      <td>Sjelden brukt alene</td>
-    </tr>
-    <tr>
-      <td class="mono-cell">ESP</td>
-      <td>Ja</td>
-      <td>Ja</td>
-      <td>Ja</td>
-      <td>Mest brukt — gir alt</td>
-    </tr>
-  </table>
-
-  <p>ESP er klart den mest brukte av de to — den gir alle tre egenskapene. AH gir bare autentisering og integritet (men ingen kryptering), og er sjelden brukt alene i moderne nettverk.</p>
-
-  <h3>IKE — når og hvordan SA-er opprettes <span style="font-family: 'IBM Plex Mono'; font-size: 0.7em; color: #6b6257; font-weight: normal;">— utenfor pensum</span></h3>
-  <p>En Security Association beskriver <em>hvilke</em> nøkler og algoritmer som skal brukes — men SA-en må etableres på forhånd. <strong>IKE</strong> (Internet Key Exchange, i dag IKEv2) er protokollen som kjører mellom IPsec-endepunktene (verter eller gatewayer) for å forhandle og installere disse SA-ene på en sikker måte.</p>
-
-  <p>I korte trekk: partene autentiserer hverandre (f.eks. med delt hemmelighet, digitale sertifikater eller begge deler), utveksler eller utleder nøkkemateriale (ofte med Diffie–Hellman-lignende steg for <em>perfect forward secrecy</em>), og avtaler hvilke IPsec-SA-er (SPI, algoritmer, livslengde) som skal legges inn i SAD. Uten IKE ville administratoren måttet konfigurere nøkler manuelt — upraktisk og risikabelt i store nett.</p>
-
-  <p>Resultatet er at VPN-tunnelen du så i forrige avsnitt ikke bare «krypterer IP»; den bygger på at IKE først har etablert de konkrete ESP- eller AH-SA-ene som datapakken senere refererer til via SPI.</p>
 </div>
 </section>
 
