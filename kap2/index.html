@@ -33,7 +33,8 @@
   <ol class="chapter-toc-list">
     <li><span class="toc-num">01</span><a href="#overblikk">Helhetsbilde</a></li>
     <li><span class="toc-num">02</span><a href="#deler">Deler</a></li>
-    <li><span class="toc-num">03</span><a href="#quiz">Test deg selv</a></li>
+    <li><span class="toc-num">03</span><a href="#flashcards">Flashcards</a></li>
+    <li><span class="toc-num">04</span><a href="#quiz">Test deg selv</a></li>
   </ol>
 </div>
 </nav>
@@ -149,6 +150,222 @@
 </div>
 </section>
 
+<!-- ============ FLASHCARDS ============ -->
+<section id="flashcards" class="flashcards-section">
+<div class="container">
+  <div class="section-badge">Flashcards</div>
+  <h2>Rask <em>repetisjon</em></h2>
+  <p class="section-intro">Åpne spørsmål i tilfeldig rekkefølge, dekker hele pensum i kapittel 2. Klikk kortet for å snu — bruk <strong>&larr; / &rarr;</strong> for å bla, <strong>mellomrom</strong> for å snu, <strong>R</strong> for å shuffle.</p>
+
+  <div class="flashcards" data-flashcards>
+    <div class="fc-stage">
+      <article class="fc-card" tabindex="0" role="button" aria-label="Flashcard — klikk for å snu">
+        <div class="fc-face fc-front">
+          <div class="fc-label">Spørsmål</div>
+          <p class="fc-text" data-fc-front-display aria-live="polite">&nbsp;</p>
+          <div class="fc-hint">Klikk eller mellomrom for å vise svar</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-label">Svar</div>
+          <div class="fc-text" data-fc-back-display aria-live="polite">&nbsp;</div>
+        </div>
+      </article>
+    </div>
+
+    <div class="fc-controls">
+      <button class="fc-btn fc-prev" type="button" aria-label="Forrige kort" title="Forrige (←)">&larr;</button>
+      <div class="fc-progress">
+        <span class="fc-counter">1 / 1</span>
+        <div class="fc-bar"><div class="fc-bar-fill"></div></div>
+      </div>
+      <button class="fc-btn fc-next" type="button" aria-label="Neste kort" title="Neste (→)">&rarr;</button>
+      <button class="fc-btn fc-shuffle" type="button" aria-label="Shuffle bunken" title="Shuffle (R)">&#8635;</button>
+    </div>
+
+    <ol class="fc-deck" hidden>
+      <li data-card>
+        <div data-fc-front>Sammenlign klient&ndash;server- og peer-to-peer-arkitektur. Hva menes med <em>selv-skalering</em>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> I klient&ndash;server står en alltid-tilgjengelig tjener med fast IP og betjener mange klienter; klientene snakker aldri direkte med hverandre. I P2P finnes ingen sentral tjener — vilkårlige <em>peers</em> snakker direkte med hverandre, og hver peer både ber om og leverer tjenester.</p>
+          <p><strong>Hvorfor selv-skalering:</strong> Hver ny peer som kobler seg til, bringer ikke bare ny etterspørsel inn i systemet, men <em>også</em> ny opplastningskapasitet. I klient&ndash;server er total opplastningskapasitet konstant lik <code>u<sub>s</sub></code>; i P2P vokser den med <code>u<sub>s</sub> + Σu<sub>i</sub></code>. Det er denne effekten som gjør at BitTorrent skalerer til millioner av samtidige nedlastere uten at noen sentral ressurs blir flaskehals.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er en <em>socket</em>, og hvordan identifiseres en mottakerprosess på Internett?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En socket er API-et — «døren» — mellom en applikasjonsprosess og transportlaget. Apputvikleren kontrollerer alt over socketen; OS styrer alt under. En mottakerprosess identifiseres med to ting: <strong>IP-adressen</strong> (hvilken vert) og <strong>portnummeret</strong> (hvilken prosess på den verten).</p>
+          <p><strong>Hvorfor begge trengs:</strong> IP alene er ikke nok — én vert kjører ofte titalls prosesser samtidig. Tenk på IP som gateadressen og porten som leilighetsnummeret. En HTTP-server lytter typisk på port 80, en mailserver på port 25. Operativsystemet bruker porten til å rute innkommende segmenter til riktig socket og dermed riktig prosess.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke fire dimensjoner styrer hva en applikasjon trenger fra transportlaget?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> (1) <em>Datapålitelighet</em> — tåler appen tap? (2) <em>Tidskrav</em> — må data komme frem innen en viss tid? (3) <em>Gjennomstrømning</em> — trenger appen en minimumshastighet? (4) <em>Sikkerhet</em> — skal data krypteres, integritetssjekkes, autentiseres?</p>
+          <p><strong>Hvorfor det betyr noe:</strong> Disse fire bestemmer om TCP eller UDP er riktig valg. Filoverføring tåler ingen tap (TCP), men spiller ingen rolle om det tar et halvt sekund ekstra. Internettelefoni tåler litt tap, men <em>ikke</em> mye forsinkelse (UDP). Streaming-video krever en viss minimumsgjennomstrømning. Først når du har skrevet ned hva appen din trenger på alle fire akser, kan du velge transporttjeneste fornuftig.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva tilbyr TCP som UDP ikke tilbyr, og hva er prisen?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> TCP gir <em>pålitelig</em> overføring (alle byter kommer frem i riktig rekkefølge), <em>flytkontroll</em> (avsender bremser hvis mottaker er treg), <em>overbelastningskontroll</em> (avsender bremser hvis nettet er stappet) og er <em>forbindelsesorientert</em> (3-veis håndtrykk før data flyter). UDP har ingenting av dette — én pakke ut, kanskje frem, kanskje ikke.</p>
+          <p><strong>Hvorfor UDP likevel finnes:</strong> Prisen for TCP-garantiene er overhead og forsinkelse — håndhilsing før første byte, retransmisjoner ved tap, bremsing ved overbelastning. For DNS-oppslag (lite, raskt, idempotent) eller stemme-/videosamtaler (hellere droppe en pakke enn å vente) er det bedre å hoppe over alt det og leve med upålitelighet. Verken TCP eller UDP gir tidsgarantier eller minimum gjennomstrømning.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>HTTP er <em>tilstandsløst</em>. Hva betyr det, og hvorfor er det en designstyrke?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Tjeneren husker ingenting mellom forespørsler. Hver HTTP-forespørsel behandles uavhengig — som om den var den første tjeneren noen gang har sett fra denne klienten.</p>
+          <p><strong>Hvorfor det er smart:</strong> Tilstandsløshet gjør tjenere enkle å skalere — sett mange tjenere bak en lastbalanser, og en hvilken som helst av dem kan svare på en hvilken som helst forespørsel uten å rekonstruere noen sesjon. Krasjer en tjener, kan en annen ta over umiddelbart. Cookies løser tilstandsbehovet for de applikasjonene som faktisk trenger det, uten å påtvinge kostnaden på hele protokollen — det er et opt-in-system, ikke en innebygd egenskap.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Sammenlign persistent og ikke-persistent HTTP. Hvor mange RTT trengs for å hente en HTML-fil med 8 bilder fra samme tjener?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Ikke-persistent: én TCP-forbindelse per objekt. Med 9 objekter blir det 9 forbindelser, og hver koster 2 RTT (én for TCP-oppsett, én for forespørsel/svar) — totalt <strong>18 RTT + overføringstid</strong>. Persistent: én forbindelse, mange forespørsler. Da koster det <strong>1 RTT + 9 RTT = 10 RTT</strong> totalt (og enda mindre med pipelining).</p>
+          <p><strong>Hvorfor det betyr så mye:</strong> Hver TCP-oppsett koster én ekstra RTT bare for å komme i gang, pluss OS-overhead for å allokere socket-tilstand. Over en høy-RTT-forbindelse (mobilnett, satellitt) er forskjellen mellom 18 og 10 RTT enorm. HTTP/1.1 gjorde persistent forbindelser til standard nettopp for å fjerne dette tapet.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke deler består en HTTP-melding av, og hva skiller GET, POST, PUT og HEAD?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En HTTP-melding er ren ASCII med tre deler: en <em>startlinje</em> (request line eller statuslinje), <em>hodelinjer</em> (<code>navn: verdi</code>), en blank linje, og en valgfri <em>kropp</em>. Forespørselens første linje er <code>METODE URL VERSJON</code>.</p>
+          <p><strong>Metodene:</strong> <code>GET</code> ber om et objekt; eventuelle parametre legges i URL-en. <code>POST</code> sender data — typisk fra et webskjema — i forespørselens kropp. <code>HEAD</code> ber om hodet uten selve innholdet (nyttig for debugging og cacher). <code>PUT</code> laster opp en ny fil til en angitt URL og erstatter eventuelt eksisterende innhold der. Forskjellen mellom GET og POST er hvor data ligger (URL vs body) og semantikk: GET skal være trygg å gjenta, POST kan ha sideeffekter.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva betyr HTTP-statuskodene 200, 301, 304 og 404?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p><code>200 OK</code> — forespørselen lyktes; objektet følger i svaret.<br>
+             <code>301 Moved Permanently</code> — objektet er flyttet; ny adresse oppgis i <code>Location</code>-headeren.<br>
+             <code>304 Not Modified</code> — svar på betinget GET; cachen kan trygt bruke sin egen versjon.<br>
+             <code>404 Not Found</code> — det forespurte dokumentet finnes ikke på tjeneren.</p>
+          <p><strong>Hvorfor 1xx&ndash;5xx-systemet:</strong> Første sifferet sier kategori — 1xx informasjonell, 2xx suksess, 3xx omdirigering, 4xx klientfeil, 5xx tjenerfeil. Det lar klienten håndtere koder den aldri har sett før: en 478 vet jeg ikke betydningen av, men jeg vet det er klientens skyld. Designen er tiår gammel, men holder fortsatt fordi den er fornuftig partisjonert.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Cookies løser tilstandsproblemet i HTTP. Hvilke fire deler består systemet av?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> (1) Et <code>Set-Cookie</code>-felt i HTTP-svaret fra tjeneren, (2) et <code>Cookie</code>-felt i påfølgende HTTP-forespørsler fra klienten, (3) en cookie-fil på brukerens maskin (administrert av nettleseren, knyttet til domenet), og (4) en database på tjenersiden der cookien knyttes til faktisk informasjon (handlekurv, innloggingsstatus, profil).</p>
+          <p><strong>Hvorfor det fungerer:</strong> Første besøk: tjeneren genererer en unik ID, lagrer den i sin database, og sender den tilbake i <code>Set-Cookie</code>. Nettleseren lagrer cookien. Neste besøk: nettleseren legger automatisk ved <code>Cookie: 1678</code>, og tjeneren slår opp ID-en i databasen og «kjenner igjen» brukeren. Tilstand bygges altså ovenpå en tilstandsløs protokoll, uten å endre selve protokollen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er en webcache, og hva er de to viktigste fordelene?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En webcache (proxy-tjener) er en mellommann som husker tidligere svar. Klientens nettleser konfigureres til å sende forespørsler gjennom cachen; hvis cachen har objektet, leveres det umiddelbart, ellers henter cachen det fra opprinnelses-tjeneren, lagrer en kopi, og videresender. Cachen fungerer samtidig som tjener (mot klienten) og klient (mot opprinnelses-tjeneren).</p>
+          <p><strong>Hvorfor:</strong> (1) <em>Kortere responstid</em> for brukeren — cachen er typisk geografisk nærmere enn opprinnelses-tjeneren. (2) <em>Mindre trafikk</em> på institusjonens aksesslinje, fordi populært innhold bare må lastes ned én gang og deretter serveres lokalt. For et universitet eller kontornettverk kan dette spare enorme mengder båndbredde — særlig før CDN-er ble allestedsnærværende.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar betinget GET. Hva sender cachen, og hva svarer tjeneren?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Cachen sender en vanlig GET, men med headeren <code>If-Modified-Since: &lt;dato&gt;</code> der datoen er da kopien ble lagret. Tjeneren sjekker om objektet er endret etter datoen. Hvis ikke: svar <code>304 Not Modified</code> uten kropp — cachen kan trygt bruke sin lagrede versjon. Hvis endret: svar <code>200 OK</code> med det nye innholdet, akkurat som en vanlig GET.</p>
+          <p><strong>Hvorfor det er elegant:</strong> I det vanlige tilfellet — innholdet er uendret — slipper man å overføre objektet i det hele tatt; bare en bitteliten 304-melding går over nettet. Cachen får verifisert at kopien er gyldig uten å sløse båndbredde. Dette er hvorfor caching og betinget GET hører tett sammen: caching gjør at objektet er der; betinget GET gjør at vi tør stole på det.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <em>head-of-line-blokkering</em> i HTTP/1.1, og hvordan løser HTTP/2 det?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> I HTTP/1.1 sender tjeneren svar i samme rekkefølge som forespørslene kom (FCFS). Hvis det første objektet er stort (en video), må alle senere objekter — selv små bilder som kunne kommet på et øyeblikk — vente bak i køen. Dette kalles head-of-line-blokkering: det fremste objektet sperrer for resten.</p>
+          <p><strong>HTTP/2 (RFC 7540, 2015):</strong> Deler hvert objekt i mindre <em>frames</em> og blander rammer fra forskjellige objekter på samme TCP-forbindelse. Tjeneren kan også prioritere rammer ut fra hva klienten har bedt om. Tre små objekter får da overført sine rammer mellom rammer fra det store, og ankommer raskt mens det store fortsatt streames. HTTP/2 introduserte også <em>server push</em> — tjeneren sender CSS/bilder før klienten har bedt om dem.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Vis matematikken bak P2P-distribusjonens skaleringsfordel. Hvordan vokser distribusjonstiden i klient&ndash;server vs P2P?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Med fil <em>F</em>, <em>N</em> klienter, tjenerkapasitet <em>u<sub>s</sub></em>, klient-opplastning <em>u<sub>i</sub></em>, klient-nedlastning <em>d<sub>i</sub></em>:</p>
+          <p>Klient&ndash;server: <code>D<sub>cs</sub> = max{ NF/u<sub>s</sub> , F/d<sub>min</sub> }</code> — første ledd vokser <em>lineært</em> med N (tjeneren må laste opp filen N ganger).</p>
+          <p>P2P: <code>D<sub>P2P</sub> = max{ F/u<sub>s</sub> , F/d<sub>min</sub> , NF/(u<sub>s</sub> + Σu<sub>i</sub>) }</code> — det tredje leddet vokser med N i telleren, <em>men nevneren vokser også</em> fordi hver ny peer bidrar med sin <em>u<sub>i</sub></em>.</p>
+          <p><strong>Hvorfor:</strong> I klient&ndash;server eksploderer kostnaden — dobler du N, dobler du tiden. I P2P bidrar etterspørselen sin egen kapasitet, og kurven flater ut. Det er prinsippet bak BitTorrents skalerbarhet til millioner av nedlastere.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er DASH, og hvorfor ligger «intelligensen» hos klienten og ikke hos tjeneren?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> DASH (Dynamic, Adaptive Streaming over HTTP) deler videoen opp i mange korte <em>chunks</em> (typisk noen sekunder), koder hver chunk i flere bitrater (lav, middels, høy, ultra), og publiserer en <em>manifest-fil</em> med URL-er. Klienten henter manifestet, måler kontinuerlig båndbredden, og bestemmer selv hvilken chunk i hvilken kvalitet den ber om.</p>
+          <p><strong>Hvorfor klient-side:</strong> Bare klienten kjenner sin egen bufferstatus, sin egen målte gjennomstrømning, og sine egne preferanser. En tjener som skulle pushe «riktig» kvalitet, måtte ha laget feedback-mekanismer per klient — det skalerer ikke til millioner. Dum tjener + smart klient er også grunnen til at DASH kjører over vanlig HTTP og drar nytte av cacher, brannmurer og CDN-er uten endringer.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Sammenlign CDN-strategiene «enter deep» og «bring home». Når velger man hvilken?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <em>Enter deep</em> (Akamai-modellen): plasser CDN-tjenere helt inne i mange aksessnett, så nær brukerne som mulig — Akamai hadde rundt 240 000 tjenere i 120+ land i 2015. <em>Bring home</em> (Limelight-modellen): et mindre antall større klynger plassert i POP-er nær — men ikke inni — aksessnettverkene.</p>
+          <p><strong>Når hva:</strong> Enter deep gir minimal latens og minst trafikk over Internett-kjernen, men er driftsmessig komplekst (tusenvis av lokasjoner). Velg det for latenskritisk innhold som live-video. Bring home er enklere å drifte og kostnadsstyre, men gir litt høyere latens. Velg det når noe forsinkelse er akseptabelt og driftsenkelhet teller mer. DNS-omdirigering (CNAME til CDN-domenet) er det som styrer hver bruker til riktig node uansett strategi.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva kjennetegner SMTP, og hvorfor brukes en annen protokoll for å hente posten?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> SMTP (RFC 5321, port 25, over TCP) er en <em>push</em>-protokoll i klartekst-ASCII der avsenderens mailserver dytter meldinger frem til mottakerens mailserver. Samtalen har tre faser — håndhilsing (<code>HELO</code>), overføring (<code>MAIL FROM</code>, <code>RCPT TO</code>, <code>DATA</code>) og avslutning (<code>QUIT</code>) — og meldingen avsluttes med <code>CRLF.CRLF</code>. Alt må være 7-bits ASCII, så binære vedlegg MIME-kodes.</p>
+          <p><strong>Hvorfor egen access-protokoll:</strong> Bob skal hente posten — kanskje fra mobil, kanskje senere, kanskje fra flere enheter. Det er <em>pull</em>, et helt annet bruksmønster enn SMTPs <em>push</em>. Derfor bruker man IMAP (eller HTTPS for webmail) mellom mottakerens server og mottakerens klient. SMTP brukes kun mellom serverne (og fra avsenderens klient inn til hans egen server).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva skiller IMAP fra POP3 som mail access-protokoll?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> IMAP lar klienter synkronisere mapper, flagg og meldingsstatus mens e-posten <em>forblir lagret på serveren</em>. POP3 laster meldinger ned til klienten og sletter dem typisk fra serveren etterpå.</p>
+          <p><strong>Hvorfor det betyr noe:</strong> Med IMAP kan du lese e-post fra mobil, jobb-PC og hjemme-PC og se samme tilstand alle steder — leste meldinger er lest, mapper er like overalt. Med POP3, der posten flyttes til den første enheten som henter den, ser du ikke samme innboks fra ulike enheter. IMAP er derfor blitt standarden i den moderne flerenheter-verdenen, mens POP3 er det enklere alternativet for enkeltmaskin-bruk.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor er DNS organisert hierarkisk og distribuert i stedet for som én sentral tabell?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> DNS har tre nivåer: <em>rotservere</em> (ca. 13 logiske, replikert til 1000+ fysiske via anycast, administrert av ICANN) → <em>TLD-servere</em> (.com, .no, .org …) → <em>autoritative servere</em> for hvert enkelt domene (driftet av domeneeieren selv). Ingen enkelt server vet alt; hver server vet litt og vet hvem den skal spørre om resten.</p>
+          <p><strong>Hvorfor ikke sentralt:</strong> Comcast alene håndterer ~600 milliarder DNS-oppslag i døgnet. Én sentral server ville (1) være et enkeltpunkt for feil, (2) ha umulig trafikkvolum, (3) være langt unna for de fleste, (4) være umulig å holde oppdatert når enhver kan flytte sin tjeneste til ny IP. Hierarkiet fordeler både last og administrativt ansvar, og caching gjør at det meste stopper hos den lokale navneserveren.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar forskjellen på iterativ og rekursiv DNS-oppslag.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> I <em>iterativ</em> oppslag svarer hver navneserver med «jeg vet ikke, men spør denne i stedet» — den lokale navneserveren gjør selv hopperingen: rot → TLD → autoritativ, og samler svaret. I <em>rekursiv</em> oppslag spør den lokale serveren rotserveren og sier «finn ut av dette for meg»; rotserveren spør TLD som spør autoritativ, og svaret bobler tilbake gjennom hele kjeden.</p>
+          <p><strong>Hvorfor det blir en miks:</strong> Rekursivt er enkelt på klientsiden, men legger tung last på de øverste lagene. Iterativt fordeler arbeidet, men gjør den lokale serveren mer kompleks. I praksis er det vanligvis rekursivt mellom deg og din lokale navneserver, og iterativt videre opp i hierarkiet — det balanserer enkelhet ved klienten mot skalerbarhet for rot-/TLD-serverne.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva inneholder DNS resource records av typene A, NS, CNAME og MX?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Hver RR har formatet <code>(name, value, type, ttl)</code>:</p>
+          <p><code>A</code>: <em>name</em> = hostname, <em>value</em> = IPv4-adresse — den klassiske «navn til IP»-mappingen.<br>
+             <code>NS</code>: <em>name</em> = domene (f.eks. <code>amazon.com</code>), <em>value</em> = hostname til en autoritativ navneserver for det domenet.<br>
+             <code>CNAME</code>: <em>name</em> = alias, <em>value</em> = det kanoniske navnet — gjør at <code>www.ibm.com</code> kan peke videre til noe sånt som <code>servereast.backup2.ibm.com</code>.<br>
+             <code>MX</code>: <em>name</em> = domene, <em>value</em> = hostname til en mailserver for domenet.</p>
+          <p><strong>Hvorfor MX og CNAME er separate:</strong> Uten MX-poster ville e-post for et domene ikke fungert — sendere må vite hvilken server som tar imot, og den heter sjelden det samme som webserveren. CNAME muliggjør CDN-magi: <code>netcinema.com</code> kan peke til <code>kingcdn.com</code> uten at brukeren merker det.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan skiller en TCP-server seg fra en UDP-server i socket-API-et? Hva er <em>velkomstsokkelen</em>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En UDP-server klarer seg med <em>én</em> sokkel for alle klienter (<code>SOCK_DGRAM</code>): <code>recvfrom</code> returnerer både dataene <em>og</em> avsenderens adresse, og <code>sendto</code> tar adresse hver gang — det er ingen forbindelse å holde rede på. En TCP-server (<code>SOCK_STREAM</code>) har <em>to</em> typer sokler: en <strong>velkomstsokkel</strong> som gjør <code>accept()</code> og venter på nye forbindelser, og én <strong>forbindelsessokkel</strong> per aktiv klient.</p>
+          <p><strong>Hvorfor:</strong> TCP er forbindelsesorientert. Når en klient kobler seg til, lager OS en helt ny sokkel dedikert til <em>akkurat denne</em> samtalen, slik at innkommende bytes kan rutes til riktig sesjon. Velkomstsokkelen lever videre og venter på neste klient. Slik kan én server snakke med mange klienter parallelt — én velkomst, mange forbindelser.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</div>
+</section>
+
+<!-- ============ QUIZ ============ -->
 <section id="quiz">
 <div class="container">
   <h2>Test deg selv</h2>

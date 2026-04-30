@@ -133,6 +133,209 @@
 </div>
 </section>
 
+<!-- ============ FLASHCARDS ============ -->
+<section id="flashcards" class="flashcards-section">
+<div class="container">
+  <div class="section-badge">Flashcards</div>
+  <h2>Rask <em>repetisjon</em></h2>
+  <p class="section-intro">Åpne spørsmål i tilfeldig rekkefølge. Klikk kortet for å snu — bruk <strong>&larr; / &rarr;</strong> for å bla, <strong>mellomrom</strong> for å snu, <strong>R</strong> for å shuffle.</p>
+
+  <div class="flashcards" data-flashcards>
+    <div class="fc-stage">
+      <article class="fc-card" tabindex="0" role="button" aria-label="Flashcard — klikk for å snu">
+        <div class="fc-face fc-front">
+          <div class="fc-label">Spørsmål</div>
+          <p class="fc-text" data-fc-front-display aria-live="polite">&nbsp;</p>
+          <div class="fc-hint">Klikk eller mellomrom for å vise svar</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-label">Svar</div>
+          <div class="fc-text" data-fc-back-display aria-live="polite">&nbsp;</div>
+        </div>
+      </article>
+    </div>
+
+    <div class="fc-controls">
+      <button class="fc-btn fc-prev" type="button" aria-label="Forrige kort" title="Forrige (←)">&larr;</button>
+      <div class="fc-progress">
+        <span class="fc-counter">1 / 1</span>
+        <div class="fc-bar"><div class="fc-bar-fill"></div></div>
+      </div>
+      <button class="fc-btn fc-next" type="button" aria-label="Neste kort" title="Neste (→)">&rarr;</button>
+      <button class="fc-btn fc-shuffle" type="button" aria-label="Shuffle bunken" title="Shuffle (R)">&#8635;</button>
+    </div>
+
+    <ol class="fc-deck" hidden>
+      <li data-card>
+        <div data-fc-front>Hva er den fundamentale forskjellen mellom transportlaget og nettverkslaget?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Nettverkslaget (IP) gir logisk kommunikasjon mellom <em>verter</em> — IP-adresser identifiserer maskiner. Transportlaget gir logisk kommunikasjon mellom <em>prosesser</em> — portnumre identifiserer applikasjoner på samme maskin.</p>
+          <p><strong>Hvorfor:</strong> En vert kjører mange prosesser samtidig (nettleser, e-post, Spotify), og IP-laget kan bare levere pakken til riktig hus. Transportlaget er Ann og Bill som tar imot posten i hvert hus og deler den ut til riktig søsken. Transportlaget kan legge til pålitelighet og rekkefølge over IP, men kan <em>ikke</em> trylle frem garantier for forsinkelse eller båndbredde — de krever støtte i selve nettet.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan demultiplekser UDP og TCP innkommende segmenter — og hva er den praktiske konsekvensen?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En <em>UDP-socket</em> identifiseres av et 2-tuppel <code>(dest-IP, dest-port)</code>. En <em>TCP-socket</em> identifiseres av et 4-tuppel <code>(kilde-IP, kilde-port, dest-IP, dest-port)</code>.</p>
+          <p><strong>Hvorfor det betyr noe:</strong> To UDP-pakker fra ulike klienter til samme dest-port havner i <em>samme</em> socket — UDP bryr seg ikke om hvor de kom fra. For TCP havner de derimot i <em>forskjellige</em> sockets, fordi 4-tuppelet er unikt per forbindelse. Dette er hvorfor en webserver kan ha hundrevis av samtidige TCP-forbindelser, alle på port 80, og holde dem adskilt.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva inneholder UDP-headeren, hvor stor er den, og hvorfor velger applikasjoner UDP fremfor TCP?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> UDP-headeren er <strong>8 byte</strong> og har fire 16-bits felt: <code>source port</code>, <code>dest port</code>, <code>length</code> (header + data) og <code>checksum</code>.</p>
+          <p><strong>Hvorfor velge UDP:</strong> Ingen håndtrykk (sparer en RTT), ingen tilstand (servere håndterer flere klienter), liten header (8 vs. 20+ byte for TCP), og ingen metningskontroll (applikasjonen sender så fort den vil). Det gjør UDP perfekt for DNS, SNMP, sanntidsmedia og HTTP/3 (som bygger pålitelighet selv oppå UDP via QUIC).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan beregnes UDP-sjekksummen, og hva er dens viktigste svakhet?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Avsender behandler segmentet (header + data + pseudo-header fra IP) som en sekvens av 16-bits ord, summerer dem med <em>one's complement</em>-addisjon (carry ut fra bit 15 legges tilbake i bit 0), og lagrer one's complement av summen i checksum-feltet. Mottaker gjør samme regnestykke; hvis sjekksummen ikke stemmer, forkastes segmentet.</p>
+          <p><strong>Svakhet:</strong> Sjekksummen oppdager nesten alltid enkelt-bit-feil, men hvis to bits flipper på «motsatt» måte kan de nulle ut hverandre uten å endre summen. Sjekksummen gir altså <em>rimelig sjanse</em> for å oppdage feil, ikke garanti. One's complement velges fordi addisjonen er rekkefølgeuavhengig — enkel å implementere.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilket problem løser sekvensnumre i rdt 2.1, og hvorfor klarte ikke rdt 2.0 seg uten?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> rdt 2.0 brukte ACK/NAK over en kanal med bitfeil — men hadde ingen plan for at <em>selve ACK/NAK-pakken</em> kan bli korrupt. Da vet ikke avsender om mottaker faktisk fikk dataene, og en blind retransmisjon ville skapt udetekterbare duplikater. rdt 2.1 løser dette ved å stemple hver pakke med et sekvensnummer (0/1 holder for stop-and-wait): mottaker oppdager duplikat og kaster det, men sender ACK uansett.</p>
+          <p><strong>Hvorfor det er nok med 0/1:</strong> Med kun én pakke utestående om gangen kan ikke avsender og mottaker komme mer enn ett skritt ut av sync. Sekvensnumre er den minimale ekstra informasjonen som lar de to sidene skille «ny pakke» fra «retransmisjon av forrige».</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvor effektivt er stop-and-wait på en rask, lang lenke? Bruk formelen for kanalutnyttelse.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Senderens utnyttelse er <code>U = (L/R) / (RTT + L/R)</code>.</p>
+          <p><strong>Eksempel (rdt 3.0):</strong> 1 Gbps lenke, RTT = 30 ms, pakker på 8000 bit. Da er <code>L/R = 8 µs</code> og <code>U = 8 µs / 30 008 µs ≈ 0,00027</code> — <strong>0,027 %</strong>. 99,97 % av tiden står senderen og venter.</p>
+          <p><strong>Hvorfor:</strong> Stop-and-wait holder kun én pakke i flyt om gangen; resten av rør-volumet (bandwidth-delay product) ligger ubrukt. Det er <em>protokollen</em>, ikke nettverket, som er flaskehalsen. Løsningen er pipelining.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er pipelining, og hvilke nye krav stiller det til protokollen?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Pipelining lar avsender ha flere ubekreftede pakker i nettet samtidig — «fyller røret» i stedet for å vente på ACK mellom hver pakke.</p>
+          <p><strong>Krav:</strong> (1) Sekvensnummer-rommet må være større, fordi flere pakker kan være i flyt samtidig. (2) Avsender må <em>buffre</em> alle ubekreftede pakker for mulig retransmisjon. (3) Mottaker kan trenge å buffre out-of-order pakker. (4) Det må finnes regler for hva som retransmitteres ved tap. Dette gir to hovedstrategier: <em>Go-Back-N</em> og <em>Selective Repeat</em>.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan oppfører Go-Back-N seg ved et pakketap?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> GBN bruker <em>kumulative ACKs</em> — ACK(n) bekrefter alt opp til og med pakke n — og <em>én</em> retransmisjons-timer for eldste ubekreftede pakke. Mottakeren godtar bare in-order pakker; out-of-order kastes og siste in-order ACK gjentas. Ved timeout retransmitterer avsender <strong>hele vinduet</strong> fra eldste ubekreftede pakke og fremover.</p>
+          <p><strong>Hvorfor designet sånn:</strong> Mottakeren slipper å buffre noe — billig og enkelt. Prisen betales på sendersiden: ett tap utløser potensielt mange unødvendige retransmisjoner. Det fungerer godt på lavfeil-lenker, men sløser båndbredde når feilraten øker.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan skiller Selective Repeat seg fra Go-Back-N — og hva er SR-dilemmaet?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> SR bruker <em>individuell ACK</em> per pakke (ikke kumulativ), <em>én timer per ubekreftet pakke</em>, og mottakeren <em>buffrer</em> out-of-order pakker. Ved timeout retransmitteres bare den ene tapte pakken.</p>
+          <p><strong>SR-dilemmaet:</strong> Hvis sekvensnummer-rommet er for lite, kan ikke mottakeren skille en helt ny pakke fra en retransmisjon av en gammel. <em>Vinduregelen</em>: SR krever vindusstørrelse <code>N ≤ 2^(k−1)</code>, mens GBN tillater <code>N ≤ 2^k − 1</code> (k = antall bit i seq#-feltet). SR betaler altså med halvert vindu mot mer effektiv håndtering av tap.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er de viktigste feltene i en TCP-header (minimum 20 byte), og hvorfor mangler det et "payload length"-felt?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Sentrale felt: <code>source/dest port</code> (mux/demux), <code>sequence number</code> (32 bit, byte-offset i strømmen), <code>ACK number</code> (32 bit, neste forventede byte), <code>HLen</code> (header-lengde i 4-byte ord), <code>flags</code> (SYN, ACK, FIN, RST, PSH, URG, m.fl.), <code>receive window</code> (rwnd, 16 bit, flow control), <code>checksum</code>, og <code>options</code> (MSS, window scale, timestamps).</p>
+          <p><strong>Hvorfor ingen payload length:</strong> Lengden utledes fra IP-laget: <code>payload = IP_total − IP_header − TCP_header</code>. TCP gjenbruker IP-headerens informasjon i stedet for å duplisere den.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forholdet mellom MTU og MSS — og hva skjer hvis MSS settes for høyt?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <em>MTU</em> (Maximum Transmission Unit) er den største rammen lenkelaget kan bære (typisk 1500 byte for Ethernet). <em>MSS</em> (Maximum Segment Size) er den største applikasjonsdataen som får plass i ett TCP-segment — vanligvis <code>MSS = MTU − 20 (IP) − 20 (TCP) = 1460 byte</code>. MSS forhandles i SYN-pakkene under håndtrykket.</p>
+          <p><strong>Hvorfor det er viktig:</strong> Hvis MSS settes høyere enn MTU på en lenke underveis, må IP-laget fragmentere segmentet — ekstra overhead, høyere taps-sannsynlighet (én tapt fragment = hele datagrammet retransmitteres) og generelt vondt for ytelsen. Korrekt MSS holder TCP-segmenter innenfor stien.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva betyr det at TCPs sekvensnumre er <em>byte-orienterte</em>, og hvordan virker kumulative ACK-er i TCP?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Sekvensnummeret i et TCP-segment er offsetten i bytestrømmen til <em>første byte</em> i segmentets nyttelast — det teller bytes, ikke pakker. ACK-nummeret <code>y</code> betyr «alle bytes opp til og med byte y−1 er mottatt; jeg venter på byte y».</p>
+          <p><strong>Hvorfor det er robust:</strong> Kumulativ ACK gjør at en tapt ACK ofte ikke betyr noe — neste ACK overstyrer den (ACK=1000 dekker alt før byte 1000, så en tidligere tapt ACK=600 spiller ingen rolle). Avsender slipper å starte timeren på nytt for hver delvis kvittering, og protokollen tåler godt tap av enkelt-ACKs.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan estimerer TCP RTT, og hvordan settes timeout-intervallet?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> TCP fører et glidende gjennomsnitt (EWMA) av målte RTT-er:<br>
+            <code>EstimatedRTT = (1−α) · EstimatedRTT + α · SampleRTT</code> — typisk α = 0,125.<br>
+            Og et glidende gjennomsnitt av avviket:<br>
+            <code>DevRTT = (1−β) · DevRTT + β · |SampleRTT − EstimatedRTT|</code> — typisk β = 0,25.<br>
+            Timeout: <code>TimeoutInterval = EstimatedRTT + 4 · DevRTT</code>.</p>
+          <p><strong>Hvorfor 4·DevRTT:</strong> Marginen utvider seg automatisk når RTT svinger mye, og krymper når nettet er stabilt. For lav timeout → unødige retransmisjoner; for høy → seig respons på tap. EWMA gir et stabilt estimat uten å lagre alle målinger.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er fast retransmit, og hvorfor venter TCP på akkurat <em>tre</em> duplikat-ACKer?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Når et TCP-segment kommer ut-av-rekkefølge til mottakeren, sender hun en duplikat-ACK med samme «forventet byte»-nummer som før. Etter <strong>tre</strong> duplikat-ACKer for samme byte konkluderer avsender at segmentet er tapt og retransmitterer det <em>umiddelbart</em>, uten å vente på timeout.</p>
+          <p><strong>Hvorfor 3:</strong> Pakker kan komme ut-av-rekkefølge selv uten tap (ulike ruter gjennom nettet), og det vil typisk gi 1–2 duplikat-ACKer. Tre er en empirisk balanse — strengt nok til å unngå falske retransmisjoner, lavt nok til å reagere før timeout-timeren (som kan være hundretalls millisekunder) løper ut.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er flytkontroll i TCP, og hvordan fungerer mekanismen?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Flytkontroll hindrer at avsender oversvømmer <em>mottakerens</em> mottaksbuffer (en helt annen ting enn metningskontroll, som beskytter nettverket). Mottakeren annonserer i hver header sin ledige bufferplass — <code>rwnd</code> (Receive Window). Avsender holder mengden ubekreftet data i nettet ≤ <code>rwnd</code>.</p>
+          <p><strong>Begrensning:</strong> rwnd-feltet er bare 16 bit, altså maks 64 KB — for lite på «long fat networks» (høy båndbredde × høy RTT). Løsningen er <em>Window Scale</em>-opsjonen, som forhandles i SYN-pakkene og kan skalere rwnd opp til ~1 GB. Den må med i håndtrykket; ikke senere.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Beskriv treveis håndtrykket i TCP og forklar hvorfor toveis ikke ville være nok.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> (1) Klient → Server: <code>SYN, seq=x</code>. (2) Server → Klient: <code>SYN+ACK, seq=y, ack=x+1</code>. (3) Klient → Server: <code>ACK, ack=y+1</code> (kan piggyback'e applikasjonsdata). Etter dette er begge sider i ESTABLISHED, og sekvensnumre er synkronisert i begge retninger.</p>
+          <p><strong>Hvorfor tre meldinger:</strong> Toveis ville ikke kunne skille en ny SYN fra et forsinket gammelt SYN-duplikat — serveren risikerte å åpne en forbindelse alene (halvåpen, sårbar for SYN-flood) eller å akseptere gamle data som nye. Den tredje meldingen er klientens bevis på at hun lever <em>nå</em> og at serverens valgte startsekvensnummer er bekreftet. Tilfeldige startsekvenser hindrer i tillegg at gamle forbindelsers data forveksles med nye.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar slow start og overgangen til congestion avoidance. Hvilken rolle spiller ssthresh?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Slow start starter med <code>cwnd = 1 MSS</code>. For hver mottatte ACK økes cwnd med 1 MSS, slik at cwnd <em>dobles per RTT</em> — eksponentiell vekst. Når <code>cwnd ≥ ssthresh</code> går TCP over til <em>congestion avoidance</em>, der cwnd vokser lineært med 1 MSS per RTT (additive increase).</p>
+          <p><strong>Hvorfor:</strong> Slow start er ikke «slow» — den er rask, men starter veldig lavt. Idéen er å finne nettets kapasitet kjapt før vi sonderer forsiktig. <code>ssthresh</code> er TCPs minne om hvor det gikk galt sist (settes typisk til <code>cwnd/2</code> ved tap), så neste oppstart bremser før vi treffer samme tak. Ved timeout settes cwnd = 1 MSS og slow start begynner på nytt.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er AIMD-prinsippet, og hva er forskjellen mellom hvordan TCP Tahoe og TCP Reno reagerer på 3 duplikat-ACK?</div>
+        <div data-fc-back>
+          <p><strong>Svar (AIMD):</strong> <em>Additive Increase, Multiplicative Decrease</em>. cwnd vokser lineært (+1 MSS per RTT) under congestion avoidance, og halveres ved tap. Dette gir det karakteristiske «sagtann»-mønsteret og konvergerer mot rettferdig deling av flaskehalsen.</p>
+          <p><strong>Tahoe vs. Reno:</strong> Begge halverer ssthresh ved tap. <em>Tahoe</em> behandler alle tap likt: cwnd = 1 MSS, slow start på nytt. <em>Reno</em> skiller: ved <strong>3 dup-ACK</strong> setter den ssthresh = cwnd/2, cwnd = ssthresh + 3 MSS og går rett inn i <em>fast recovery</em> (hopper over slow start). Ved <strong>timeout</strong> oppfører Reno seg som Tahoe. Reno kommer seg derfor mye raskere etter et enkelt tap fordi tre dup-ACK indikerer at nettet fortsatt fungerer — det er ingen grunn til å starte fra cwnd = 1.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor konvergerer AIMD mot rettferdig deling mellom samtidige TCP-forbindelser — og når svikter denne rettferdigheten?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> To TCP-strømmer som deler samme flaskehals øker begge cwnd lineært (langs en 45°-linje i et 2D-plot) til de treffer kapasiteten og taper en pakke. Da halveres begges cwnd (mot origo). Repeterer man dette, konvergerer de mot lik andel <code>R/K</code> hver — additive increase trekker dem mot likhet, multiplicative decrease bevarer forholdet.</p>
+          <p><strong>Når det svikter:</strong> Forutsetningene er sjeldent oppfylt i praksis. (1) Forbindelser med <em>kortere RTT</em> får urettferdig stor andel — de vokser fortere. (2) <em>UDP</em> følger ikke metningskontroll og kan ta hva den vil. (3) En nettleser med <em>10 parallelle TCP-forbindelser</em> får 10× sin «rettferdige» andel. Det finnes intet «internett-politi» som tvinger fram fairness.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke konkrete problemer ved TCP løser QUIC, og hvorfor er det implementert oppå UDP?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> QUIC (RFC 9000, grunnlag for HTTP/3) flytter pålitelighet, metningskontroll, kryptering og multipleksing opp i applikasjonslaget oppå UDP. Det løser fire ting: (1) <em>Håndtrykk</em>: TCP+TLS = 2 RTT; QUIC kombinerer det til 1 RTT, og 0 RTT ved gjentilkobling. (2) <em>Head-of-line blocking</em>: i HTTP/2 over TCP blokkerer ett tap alle multipleksede forespørsler, fordi TCP er én bytestrøm. QUIC har uavhengige <em>streams</em> med egne seq# — tap i én stream stopper ikke de andre. (3) <em>Mobilitet</em>: TCP identifiserer forbindelsen via 4-tuppelet, så bytte fra Wi-Fi til mobil bryter den. QUIC bruker en <em>connection ID</em> som overlever IP-endring. (4) <em>Oppdaterbarhet</em>: TCP-stack ligger i OS-kjernen og oppdateres tregt; QUIC ligger i applikasjonen og kan ruller ut nye metningskontroll-algoritmer (f.eks. BBR) raskt.</p>
+          <p><strong>Hvorfor UDP:</strong> Mellomboksene (NAT, brannmurer) på Internett godtar bare TCP og UDP. Å bygge en helt ny transportprotokoll i kjernen ville vært umulig å rulle ut globalt — å maskere QUIC som UDP er den pragmatiske utveien.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</div>
+</section>
+
+<!-- ============ QUIZ ============ -->
 <section id="quiz">
 <div class="container">
   <h2>Test deg selv</h2>

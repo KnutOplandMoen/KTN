@@ -33,7 +33,8 @@
   <ol class="chapter-toc-list">
     <li><span class="toc-num">01</span><a href="#overblikk">Helhetsbilde</a></li>
     <li><span class="toc-num">02</span><a href="#deler">Deler</a></li>
-    <li><span class="toc-num">03</span><a href="#quiz">Test deg selv</a></li>
+    <li><span class="toc-num">03</span><a href="#flashcards">Flashcards</a></li>
+    <li><span class="toc-num">04</span><a href="#quiz">Test deg selv</a></li>
   </ol>
 </div>
 </nav>
@@ -144,6 +145,217 @@
 </div>
 </section>
 
+<!-- ============ FLASHCARDS ============ -->
+<section id="flashcards" class="flashcards-section">
+<div class="container">
+  <div class="section-badge">Flashcards</div>
+  <h2>Rask <em>repetisjon</em></h2>
+  <p class="section-intro">Åpne spørsmål i tilfeldig rekkefølge. Klikk kortet for å snu — bruk <strong>&larr; / &rarr;</strong> for å bla, <strong>mellomrom</strong> for å snu, <strong>R</strong> for å shuffle.</p>
+
+  <div class="flashcards" data-flashcards>
+    <div class="fc-stage">
+      <article class="fc-card" tabindex="0" role="button" aria-label="Flashcard — klikk for å snu">
+        <div class="fc-face fc-front">
+          <div class="fc-label">Spørsmål</div>
+          <p class="fc-text" data-fc-front-display aria-live="polite">&nbsp;</p>
+          <div class="fc-hint">Klikk eller mellomrom for å vise svar</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-label">Svar</div>
+          <div class="fc-text" data-fc-back-display aria-live="polite">&nbsp;</div>
+        </div>
+      </article>
+    </div>
+
+    <div class="fc-controls">
+      <button class="fc-btn fc-prev" type="button" aria-label="Forrige kort" title="Forrige (←)">&larr;</button>
+      <div class="fc-progress">
+        <span class="fc-counter">1 / 1</span>
+        <div class="fc-bar"><div class="fc-bar-fill"></div></div>
+      </div>
+      <button class="fc-btn fc-next" type="button" aria-label="Neste kort" title="Neste (→)">&rarr;</button>
+      <button class="fc-btn fc-shuffle" type="button" aria-label="Shuffle bunken" title="Shuffle (R)">&#8635;</button>
+    </div>
+
+    <ol class="fc-deck" hidden>
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom <em>trådløshet</em> og <em>mobilitet</em>, og hvorfor er det viktig å skille dem?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Trådløshet handler om <em>overføringsmediet</em> — at bits sendes over radio i stedet for kabel. Mobilitet handler om at <em>noden flytter seg</em> mellom basestasjoner eller nettverk mens den kommuniserer.</p>
+          <p><strong>Hvorfor:</strong> De to opptrer ofte sammen, men er uavhengige problemer som krever helt forskjellige løsninger. En smart-TV på WiFi i stua er trådløs, men aldri mobil. Et nettbrett som bæres rundt med USB-kabel er mobilt, men ikke trådløst. Trådløshet løses med radiofysikk og MAC-protokoller (CSMA/CA, rate-tilpasning); mobilitet løses med nettverksarkitektur (GTP-tunneler, P-GW, mobilitetshåndtering). Hvis du blander dem sammen, klarer du ikke å forstå hvorfor 4G-arkitekturen ser ut som den gjør.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke tre fysiske fenomener gjør en trådløs link fundamentalt annerledes enn en kabel?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> (1) <em>Signaltap (path loss)</em> — radiosignalet svekkes med avstanden, omtrent med kvadratet av avstanden i åpent rom. (2) <em>Interferens fra andre kilder</em> — andre WiFi-nett, Bluetooth, mikrobølgeovner og babymonitorer deler 2,4 GHz-båndet. (3) <em>Flerveispropagering (multipath)</em> — signalet reflekteres av vegger og bygninger og når mottakeren flere ganger med litt forskjellig forsinkelse, slik at bølgene kan både forsterke og dempe hverandre.</p>
+          <p><strong>Hvorfor:</strong> En kabel skjermer signalet fra omverdenen — derfor er kabel-Ethernet praktisk talt feilfri. Radiomediet er åpent og delt med alle, og de tre fenomenene gir uforutsigbare "døde flekker" og høy bitfeilrate. Konsekvensen er at hele MAC-laget i WiFi (CSMA/CA, ACK, RTS/CTS) er bygget for å håndtere et upålitelig medium — i motsetning til Ethernet som stort sett kan stole på at en sendt ramme også blir mottatt.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er sammenhengen mellom SNR, BER og rate-tilpasning i WiFi?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>SNR</strong> (Signal-to-Noise Ratio) er forholdet mellom signalstyrke og støy, vanligvis i dB. Lav SNR gir høy <strong>BER</strong> (Bit Error Rate). <strong>Rate-tilpasning</strong> bytter automatisk modulasjon avhengig av SNR: god SNR → aggressiv modulasjon (f.eks. QAM256, ~8 Mbps); dårlig SNR → robust modulasjon (f.eks. BPSK, ~1 Mbps som tåler mye lavere SNR).</p>
+          <p><strong>Hvorfor:</strong> Det finnes et fundamentalt kompromiss mellom <em>hastighet og robusthet</em>. Å pakke mange bits inn i hvert symbol gir høy rate, men er sårbart for støy. Når du går lengre fra ruteren, faller SNR og senderen skifter ned til en tregere men mer robust modulasjon. Det er derfor WiFi-hastigheten ikke bare "kobler fra" plutselig, men gradvis blir tregere — du går nedover et trinn av gangen i en modulasjonsstige.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er det <em>skjulte terminal-problemet</em>, og hvorfor løses det ikke av "lytt før du sender"?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Tre noder A, B og C der B sitter i midten. A og C er utenfor hverandres rekkevidde (et fjell, en betongvegg, eller for stor avstand), men begge når B. Hvis A og C sender samtidig, lytter begge og hører at det er stille — fordi den andre er usynlig for dem — og kollisjonen skjer hos B uten at noen av senderne merker det.</p>
+          <p><strong>Hvorfor "lytt før du sender" ikke hjelper:</strong> CSMA antar at hvis du ikke hører noen, så er det ingen som sender. Det stemmer på en kabel der alle deler samme medium, men ikke trådløst, der to sendere kan være helt usynlige for hverandre. Selv om du på magisk vis kunne lytte mens du sendte (CSMA/CD), ville du fortsatt ikke høre den skjulte terminalen. Løsningen er å la <em>basestasjonen</em> — som hører alle — formidle en eksplisitt reservasjon via RTS/CTS.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor bruker 802.11 CSMA/CA i stedet for CSMA/CD slik Ethernet gjør?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Fordi kollisjonsdeteksjon er praktisk umulig på en radiolink. (1) Senderens eget signal er enormt mye sterkere enn alt den mottar, så når den sender, "døver" den sin egen mottaker fullstendig — det er som å rope og samtidig prøve å høre om noen andre roper. (2) Selv om man kunne lytte mens man sendte, ville skjulte terminaler kollidere ved en tredje node uten at noen av senderne merket noe.</p>
+          <p><strong>Hvorfor det betyr noe:</strong> Konsekvensen er at 802.11 må <em>unngå</em> kollisjoner i utgangspunktet i stedet for å oppdage dem og avbryte. Derav navnet — Collision Avoidance, ikke Collision Detection. Det forklarer også hvorfor hver eneste 802.11-ramme må bekreftes med en ACK på linklaget (Ethernet trenger ikke det), og hvorfor RTS/CTS finnes som valgfri reservasjonsmekanisme.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar hvordan CSMA/CA-protokollen fungerer steg for steg, inkludert rollen til DIFS, SIFS og backoff.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> (1) Lytt på kanalen. Hvis den er ledig i et tidsrom kalt <em>DIFS</em>, send hele rammen. (2) Hvis kanalen er opptatt, velg en tilfeldig <em>backoff-tid</em> og start en nedteller. Telleren går nedover når kanalen er stille og fryses når noen andre sender. Når telleren når null, send. (3) Mottakeren venter <em>SIFS</em> (kortere enn DIFS) og sender ACK. (4) Hvis ingen ACK kommer, dobles backoff-vinduet (eksponentiell backoff) og senderen prøver igjen.</p>
+          <p><strong>Hvorfor:</strong> Tilfeldig backoff hindrer at to noder som har ventet på samme opptatte kanal sender samtidig idet den blir ledig. SIFS er kortere enn DIFS slik at en ACK alltid får sende først, før noen ny node prøver å starte en ny transmisjon — det beskytter den pågående utvekslingen. Eksponentiell backoff gjør at sannsynligheten for ny kollisjon synker drastisk hver gang det skjer en — samme idé som i Ethernet.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er RTS/CTS, og hvordan løser det skjult terminal-problemet?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> RTS (Request to Send) og CTS (Clear to Send) er små kontrollrammer. Senderen reserverer kanalen ved å sende en kort RTS til AP-en, som svarer med en kort CTS. Alle noder som hører CTS-en — også den skjulte terminalen — vet at kanalen er reservert i et bestemt tidsrom, og holder seg stille i det intervallet (Network Allocation Vector, NAV). Først deretter sendes selve datarammen.</p>
+          <p><strong>Hvorfor det virker:</strong> RTS- og CTS-rammene er <em>korte</em>, så sjansen for at de selv kolliderer er liten. Det avgjørende er at AP-en kan høre <em>alle</em> noder innenfor sin rekkevidde. Når CTS-en kringkastes ut fra AP-en, mottar den skjulte terminalen den selv om den aldri hørte den opprinnelige RTS-en. Mekanismen brukes typisk bare for store rammer der det er verdt overhead-en — for små rammer er det billigere bare å risikere en sjelden kollisjon.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor må hver 802.11-ramme bekreftes med ACK på linklaget, når Ethernet klarer seg uten?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Fordi en trådløs link har altfor mange måter å miste en ramme på — signalfading, skjulte terminaler, interferens fra andre kilder. På Ethernet kan vi vanligvis stole på at en sendt ramme også blir mottatt korrekt; bitfeilraten er svært lav, så det holder å la transportlaget (TCP) ta seg av eventuelle gjenværende tap.</p>
+          <p><strong>Hvorfor på linklaget:</strong> Hvis vi ventet på TCP-retransmisjon for hver tapt WiFi-ramme, ville vi måttet vente på en RTT som er hundrevis av ganger lengre enn selve det trådløse hoppet. Lokal retransmisjon på linklaget tar bare noen få millisekunder. Dette gir oss et <em>spesielt problem</em> som skaper behovet for sekvensnummer i 802.11-rammen: hvis ACK-en går tapt, retransmitterer senderen — og uten sekvensnummer ville mottakeren levert duplikat-data oppover i stakken.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er en BSS i 802.11, og hva er forskjellen på <em>infrastrukturmodus</em> og <em>ad hoc-modus</em>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En <strong>BSS (Basic Service Set)</strong> — eller "celle" — består av et <strong>aksesspunkt (AP)</strong> og de trådløse vertene som har assosiert seg med det. AP-en er broen mellom radio og det kablede nettet. I <em>infrastrukturmodus</em> går all trafikk gjennom AP-en, selv mellom to verter i samme BSS. I <em>ad hoc-modus</em> snakker vertene direkte med hverandre uten noe AP.</p>
+          <p><strong>Hvorfor det betyr noe:</strong> Et hjemme-WiFi har én BSS. Et større kontorbygg har mange BSS-er — én per AP — som dekker bygget. Ad hoc-modus brukes sjelden i praksis (litt mellom enheter peer-to-peer), så hele resten av WiFi-arkitekturen — assosiering, beacons, fire MAC-adresser, mobilitet — er bygd rundt infrastrukturmodus.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar forskjellen mellom <em>passiv skanning</em> og <em>aktiv skanning</em> ved assosiering, og hva som skjer etter selve assosieringen.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Ved <em>passiv skanning</em> sender AP-en ut <strong>beacon-rammer</strong> ca. 10 ganger per sekund med SSID og MAC; verten lytter på alle kanaler og velger ett AP. Ved <em>aktiv skanning</em> kringkaster verten en <strong>probe request</strong> selv, og alle AP-er innen rekkevidde svarer med <strong>probe response</strong>. Begge varianter ender med at verten sender en assosieringsforespørsel og AP-en svarer med en bekreftelse.</p>
+          <p><strong>Hvorfor og hva som følger:</strong> Aktiv skanning er det som skjer når mobilen din lister opp WiFi-nettverk i nærheten — det er probes som kringkastes og svar som samles inn. Etter assosieringen kommer <em>autentisering</em> (passordet ditt verifiseres) og deretter <em>DHCP</em> for å få en IP-adresse i AP-ens subnett. Først nå er du faktisk på Internett — assosiering alene er ikke nok.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>En 802.11-ramme har fire MAC-adressefelter, mens Ethernet bare har to. Hva inneholder hvert av de fire feltene når en vert H1 sender en pakke gjennom AP-en til ruter R1?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p><strong>Adresse 1</strong> (mottaker av denne rammen): AP-ens MAC — hvem som plukker rammen opp fra lufta.<br>
+             <strong>Adresse 2</strong> (sender av denne rammen): H1 sin MAC — hvem som transmitterte den.<br>
+             <strong>Adresse 3</strong> (endelig destinasjon på det kablede nettet): R1 sin MAC — hvem AP-en skal videresende til etter at den har pakket ut rammen.<br>
+             <strong>Adresse 4</strong>: tom i infrastrukturmodus; brukes i ad hoc og når to AP-er videresender trådløst til hverandre (WDS).</p>
+          <p><strong>Hvorfor tre i stedet for to:</strong> Ethernet trenger bare kilde og destinasjon fordi sendingen skjer mellom to noder på samme delte medium. På WiFi er rammen <em>på vei</em> til R1, men det første hoppet går via AP-en — så AP-en må stå som mottaker (addr 1), mens R1 må stå som "hvor pakken egentlig skal" (addr 3) slik at AP vet hvilken destinasjon den skal sette inn i den nye Ethernet-rammen den lager.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor inneholder 802.11-rammen et sekvensnummer-felt, når Ethernet ikke trenger det?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> ACK-mekanismen i CSMA/CA skaper et duplikat-problem: senderen sender en ramme, mottakeren tar imot den og sender ACK, men <em>ACK-en går tapt</em>. Senderen får ingen bekreftelse og retransmitterer — men mottakeren har allerede levert rammen oppover i stakken. Sekvensnummeret lar mottakeren gjenkjenne en retransmisjon og forkaste duplikatet i stedet for å levere det videre.</p>
+          <p><strong>Hvorfor Ethernet slipper:</strong> Ethernet har ingen link-lags-ACK i det hele tatt — duplikater kan derfor ikke oppstå på linklaget. WiFi har ACK fordi radio er upålitelig, og når man først har ACK må man håndtere konsekvensene: tapte bekreftelser fører til retransmisjon, og retransmisjon krever et sekvensnummer for å skille gammelt fra nytt.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva skjer i bakgrunnen når en laptop bytter fra AP-1 til AP-2 innenfor samme IP-subnett, og hvorfor merker TCP-forbindelsen ingenting?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Hvis begge AP-ene henger på samme svitsj og dermed samme subnett, beholder verten IP-adressen sin. Selve roamingen — deassosiering fra AP-1 og assosiering med AP-2 — håndteres på 802.11-laget og er usynlig for IP. Det eneste som må skje på det kablede nettet er at <em>svitsjen må lære</em> at verten nå er nådd via en annen port, og det skjer automatisk via self-learning første gang en ramme ankommer fra den nye porten.</p>
+          <p><strong>Hvorfor TCP overlever:</strong> TCP identifiserer en forbindelse med (kilde-IP, kilde-port, dest-IP, dest-port). Siden ingen av disse fire endres — IP-en er den samme, portene er upåvirket — vet TCP ingenting om det fysiske byttet av AP. Dette er det <em>enkle</em> mobilitetstilfellet. Det vanskelige tilfellet er bytte mellom subnett eller operatørnett, og det er nettopp derfor mobilnettene har bygget en hel tunneling-arkitektur (GTP) rundt det.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke hovedkomponenter består 4G LTEs Evolved Packet Core (EPC) av, og hva gjør hver av dem?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p><strong>UE</strong> (User Equipment) — selve mobilenheten, identifisert globalt med IMSI på SIM-kortet.<br>
+             <strong>eNode-B</strong> — basestasjonen; styrer radioressurser i sin egen celle og koordinerer med naboceller for handover.<br>
+             <strong>MME</strong> (Mobility Management Entity) — hjernen i kontrollplanet; autentiserer enheten, sporer hvilken celle den er i, håndterer handover og setter opp tunneler.<br>
+             <strong>HSS</strong> (Home Subscriber Server) — sentral abonnentdatabase med SIM-nøkler, tjenester og regler for hjemmenettets brukere.<br>
+             <strong>S-GW</strong> (Serving Gateway) — lokalt endepunkt for datatrafikken på dataplanet.<br>
+             <strong>P-GW</strong> (PDN Gateway) — ut-porten mot Internett; eier UE-ens IP-adresse og fungerer som ruter med NAT.</p>
+          <p><strong>Hvorfor så mange:</strong> Et globalt mobilnett må håndtere milliarder av brukere som flytter seg, ta betalt riktig, autentisere mot SIM, og garantere at samtaler ikke knekker. Det krever en arkitektur som er mye mer ambisiøs enn WiFi sin "AP + Internett" — derav skille mellom kontrollplan (MME/HSS) og dataplan (S-GW/P-GW), og en separat database (HSS) for abonnentdata.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva betyr "skille mellom data- og kontrollplan" i LTE, og hvordan henger det sammen med SDN-idéen?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Kontrollplanet (autentisering, mobilitetshåndtering, oppsett av forbindelser) går gjennom MME og HSS. Dataplanet (selve nettleser-trafikken, video, etc.) går aldri innom MME — det går rett gjennom eNode-B → S-GW → P-GW → Internett. De to planene har forskjellige veier gjennom kjernenettet.</p>
+          <p><strong>Hvorfor og hvordan det knytter til SDN:</strong> Dette er nøyaktig samme idé som <strong>SDN</strong> (Software-Defined Networking): en sentralisert kontroller (MME) bestemmer hvordan dataplanet skal oppføre seg, mens selve pakkene flyter forbi i full hastighet uten å innom kontrolleren. Fordelen er at man kan skalere dataplanet og kontrollplanet uavhengig, oppgradere kontrolllogikken uten å røre dataplanet, og legge mye mer "intelligens" inn i kontrolllaget enn man kunne hvis hver pakke måtte innom det.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor pakker LTE inn IP-pakker i nye IP-pakker via GTP-tunneling i stedet for å bare rute dem direkte?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> For at telefonens IP-adresse skal kunne forbli den samme uansett hvilken basestasjon den snakker med akkurat nå. P-GW eier IP-adressen og er alltid endepunktet sett fra Internett. Når telefonen flytter seg mellom celler, oppdateres bare endepunktet på GTP-tunnelen hos eNode-B — IP-adressen og TCP-forbindelsene forblir urørt.</p>
+          <p><strong>Hvorfor det er nødvendig:</strong> Vanlig IP-ruting binder en IP-adresse til et bestemt subnett. Hvis telefonen byttet subnett ved hver basestasjon, ville den trengt ny IP — og alle pågående TCP-forbindelser ville knekt. GTP er i bunn og grunn en form for <em>indireksjon</em>: "ring alltid P-GW, og P-GW vet hvor telefonen er akkurat nå." Det er denne mekanismen som gjør at YouTube-videoen din ikke avbrytes mens toget farer forbi titalls celler.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er PDCP, RLC og MAC, og hvorfor har LTE-radiogrensesnittet et helt eget sett med linklags-protokoller som ikke finnes på vanlig Internett?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p><strong>PDCP</strong> (Packet Data Convergence Protocol): komprimerer IP-headere og krypterer brukerdata.<br>
+             <strong>RLC</strong> (Radio Link Control): fragmenterer pakkene til biter som passer til radiotidsluker, og håndterer pålitelig overføring (retransmisjon) på linklaget.<br>
+             <strong>MAC</strong>: avgjør hvilken radiotidsluke som brukes når. I motsetning til WiFi er det ikke "lytt før du sender" — basestasjonen <em>tildeler</em> tidsluker sentralt etter en planleggingsalgoritme.</p>
+          <p><strong>Hvorfor helt egne protokoller:</strong> En TCP/IP-header er ofte 40 bytes — like stor som en kort talepakke — så uten headerkomprimering ville mye av den dyre radioluft-kapasiteten gått til overhead. RLC-fragmentering trengs fordi radiotidslukene er små og faste. Og sentralisert MAC-tildeling er filosofisk motsatt av WiFis distribuerte konkurransebaserte tilnærming: i mobilnett orkestrerer basestasjonen alt, noe som gir bedre forutsigbarhet og høyere total kapasitet under høy belastning.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er OFDM, og hvordan deler LTE radiomediet mellom mange enheter samtidig?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> OFDM (Orthogonal Frequency Division Multiplexing) deler et stort frekvensbånd inn i mange smale, "ortogonale" delkanaler som ikke interfererer med hverandre. Hver aktive enhet får tildelt en eller flere 0,5 ms tidsluker over 12 frekvenser. Kombinasjonen av FDM (frekvens-) og TDM (tidsdeling) gjør at mange enheter kan dele samme celle uten å trampe på hverandre.</p>
+          <p><strong>Hvorfor:</strong> En celle har fast frekvensspekter — det er en knapp ressurs som må deles. FDM alene ville gitt for få samtidige brukere; TDM alene ville gitt for stor latens. OFDM er smart fordi det kombinerer begge dimensjoner: brukere får små biter av både frekvens og tid, og basestasjonen kan justere fordelingen dynamisk avhengig av trafikkmønster og signalforhold. Dette er en helt annen filosofi enn WiFi, der alle konkurrerer om hele kanalen om gangen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom 5Gs FR1 og FR2, og hva er det fysiske kompromisset bak mmWave?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>FR1</strong> (450 MHz – 6 GHz) er en utvidet versjon av tradisjonelle mobilfrekvenser — god rekkevidde og god penetrasjon gjennom vegger, men begrenset hastighetsgevinst over 4G. Mesteparten av "5G" i Norge i dag er FR1. <strong>FR2</strong> (24–52 GHz, "millimeter-bølger") gir enorm båndbredde og opptil 10 Gbps — men signalet stoppes av nesten hva som helst: en vegg, en regndråpe, en menneskekropp. Rekkevidden er typisk 10–100 meter.</p>
+          <p><strong>Hvorfor kompromisset:</strong> Høyere frekvens betyr kortere bølgelengde, og kortere bølgelengde betyr at signalet absorberes lettere og diffrakterer dårligere rundt hindringer. Det er fysikk — det finnes ikke en magisk løsning. Konsekvensen er at "ekte 5G"-dekning krever <em>massiv</em> utbygging av små basestasjoner (pico-celler) på hvert gatehjørne, hver lyktestolpe. Det er hovedgrunnen til at FR2 har vært tregt å rulle ut og er begrenset til tett bebygde områder.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er MIMO og beamforming, og hvorfor er pico-celler nødvendige i 5G?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>MIMO</strong> (Multiple-Input Multiple-Output) bruker flere antenner på både sender- og mottakersiden for å sende parallelle datastrømmer i samme frekvensbånd og rette stråler i bestemte retninger (<strong>beamforming</strong>). En basestasjon kan dermed sende ulike strømmer til forskjellige brukere samtidig på samme frekvens. <strong>Pico-celler</strong> er svært små basestasjoner med dekningsradius på 10–100 meter, plassert på hvert gatehjørne, hver lyktestolpe og hvert bygg.</p>
+          <p><strong>Hvorfor nødvendig:</strong> 5G hadde tre offisielle mål — 10× høyere bitrate, 10× lavere latens, 100× mer kapasitet per km². MIMO/beamforming øker kapasiteten ved å gjenbruke samme frekvens i parallelle stråler i samme celle. Pico-celler øker kapasiteten ved tett <em>frekvensgjenbruk</em> — samme spekter brukes om igjen i hver lille celle. Begge er <em>nødvendige</em> fordi mmWave-fysikken ikke gir lang rekkevidde, så uten både smartere antenner og tettere utbygging vil ikke kapasitetsmålet kunne nås.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</div>
+</section>
+
+<!-- ============ QUIZ ============ -->
 <section id="quiz">
 <div class="container">
   <h2>Test deg selv</h2>
