@@ -45,7 +45,7 @@
   <h2>En live-konsert gjennom <em>postsystemet</em></h2>
   <p class="section-intro">Internett ble designet for data som tåler forsinkelse. Multimedia krever noe helt annet — og hele kapittelet handler om hvordan vi fikser det gapet.</p>
 
-  <p class="dropcap">Tenk deg at du skal holde en live-konsert, men musikerne sitter spredt rundt i Norge — og den eneste måten å kommunisere på er postsystemet. Hvert noteark du sender kommer frem, men noen brev bruker én dag, andre bruker fem. For vanlig korrespondanse er det uproblematisk. Men for musikerne er det katastrofe: hvis trommenoten ankommer tre takter for sent, høres hele stykket forferdelig ut. <em>Det</em> er problemet med multimedia over Internett. Nettet garanterer bare «best effort» — pakkene kommer nok frem til slutt, men ingen lover <em>når</em>. For e-post og nettsider spiller det ingen rolle. For video og tale er timing alt.</p>
+  <p>Tenk deg at du skal holde en live-konsert, men musikerne sitter spredt geografisk — og den eneste måten å kommunisere på er postsystemet. Hvert noteark du sender kommer frem, men noen brev bruker én dag, andre bruker fem. For vanlig korrespondanse er det uproblematisk. Men for musikerne er det katastrofe: hvis trommenoten ankommer tre takter for sent, høres hele stykket forferdelig ut. <em>Det</em> er problemet med multimedia over Internett. Nettet garanterer bare «best effort» — pakkene kommer nok frem til slutt, men ingen lover <em>når</em>. For e-post og nettsider spiller det ingen rolle. For video og tale er timing alt.</p>
 
   <p>Løsningen er overraskende elegant: vi kan ikke fikse nettverket (det vil alltid ha variabel forsinkelse), men vi kan bygge smarte mekanismer i endepunktene. Den viktigste idéen er <strong>playout-bufferen</strong> — en mellomlager hos mottakeren som samler opp pakker og spiller dem av med jevn rate, selv om de ankom med ujevne mellomrom. Det er som om konsertdirigenten venter med å starte stykket til tilstrekkelig mange noteark har kommet frem, slik at musikerne alltid har neste note klar.</p>
 
@@ -173,7 +173,7 @@
         <div data-fc-front>Forklar forskjellen mellom <em>spatial</em> og <em>temporal</em> videokoding, og hvorfor MPEG bruker begge.</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> Spatial (romlig) koding utnytter redundans <em>innenfor</em> ett enkelt bilde — store områder har samme farge, så vi sender fargen og antallet piksler i stedet for hver enkelt piksel. Temporal koding utnytter redundans <em>mellom</em> påfølgende bilder — vi sender bare differansen fra forrige bilde i stedet for hele det neste.</p>
-          <p><strong>Hvorfor:</strong> Rå video er enormt båndbredde-tung. De to redundansformene er komplementære: spatial fjerner det som er likt innen et bilde, temporal det som er likt mellom bilder. Kombinasjonen gjør at MPEG-4 leverer Internett-video på under 1 Mbps, mens MPEG-2 (DVD) bruker 3–6 Mbps og rå video ville krevd hundrevis av Mbps.</p>
+          <p><strong>Hvorfor:</strong> Rå video er enormt båndbredde-tung. De to redundansformene er komplementære: spatial fjerner det som er likt innen et bilde, temporal det som er likt mellom bilder. Utdraget viser at komprimering kan lage flere versjoner av samme video (f.eks. 300 kbps, 1 Mbps og 3 Mbps) slik at klienten velger etter tilgjengelig båndbredde.</p>
         </div>
       </li>
 
@@ -212,7 +212,7 @@
       <li data-card>
         <div data-fc-front>Hvorfor vant <em>HTTP/TCP</em> over <em>UDP</em> som dominerende transport for video-streaming?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> HTTP/TCP passerer brannmurer uproblematisk (port 80/443 er åpen overalt), kan serveres fra en vanlig webserver uten spesialinfrastruktur, og TCP gir pålitelig, ordnet levering så applikasjonen slipper å håndtere tap selv.</p>
+          <p><strong>Svar:</strong> HTTP/TCP passerer brannmurer lettere enn rå UDP-video, kan serveres fra en vanlig webserver uten spesialinfrastruktur, og TCP gir pålitelig, ordnet levering så applikasjonen slipper å håndtere tap selv.</p>
           <p><strong>Hvorfor — praksis trumfer teori:</strong> UDP gir lavere forsinkelse og ingen retransmisjon, som teoretisk er bedre for streaming. Men UDP-trafikk blokkeres ofte av brannmurer, og UDP-streaming krever egen serverinfrastruktur og egen tapshåndtering. Avveiningen — høyere playout-buffer for å jevne ut TCPs variable sende-rate — er akseptabel for lagret video. YouTube, Netflix og stort sett alt i dag bruker DASH oppå HTTP/TCP.</p>
         </div>
       </li>
@@ -252,7 +252,7 @@
       <li data-card>
         <div data-fc-front>Hvilke to typer "tap" må VoIP håndtere, og hvorfor tåler VoIP at noen pakker går tapt?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> (1) <strong>Nettverkstap</strong> — IP-datagram droppes pga. metning i ruterbuffere. (2) <strong>Forsinkelsestap</strong> — pakken kommer fysisk frem, men <em>etter</em> sin playout-tid; effektivt det samme som tap. Mottakeren bruker <em>loss concealment</em> for å produsere noe lyd i hullet (pakkeduplisering, signalinterpolering eller stillhet).</p>
+          <p><strong>Svar:</strong> (1) <strong>Nettverkstap</strong> — IP-datagram droppes pga. metning i ruterbuffere. (2) <strong>Forsinkelsestap</strong> — pakken kommer fysisk frem, men <em>etter</em> sin playout-tid; effektivt det samme som tap. Mottakeren kan bruke <em>packet repetition</em> eller <em>interpolation</em> (feilretting ved mottaker) for å fylle korte hull.</p>
           <p><strong>Hvorfor tap tåles:</strong> I motsetning til filoverføring, der hver tapt byte er katastrofal, er stemme svært tapstolerant — 1–20 % pakketap kan tåles med riktige teknikker. Kombinert med FEC og adaptiv playout fungerer VoIP brukbart selv ved 5–10 % tap. Retransmisjon er ikke et alternativ — én RTT er for dyrt i et 400 ms-budsjett.</p>
         </div>
       </li>
@@ -268,19 +268,19 @@
       <li data-card>
         <div data-fc-front>Hvordan fungerer <em>adaptiv playout-forsinkelse</em>, og hvorfor er formelen så lik TCPs RTO-estimering?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> Mottakeren estimerer både gjennomsnittlig nettverksforsinkelse d og avvik v løpende med EWMA:<br>
+          <p><strong>Svar:</strong> Mottakeren estimerer gjennomsnittlig nettverksforsinkelse d og avvik v fortløpende med glidende gjennomsnitt (utdraget bruker vekter α og β på nye målinger):<br>
           d<sub>i</sub> = (1−α)·d<sub>i−1</sub> + α·(r<sub>i</sub> − t<sub>i</sub>),<br>
           v<sub>i</sub> = (1−β)·v<sub>i−1</sub> + β·|r<sub>i</sub> − t<sub>i</sub> − d<sub>i</sub>|.<br>
           Playout for første pakke i ny snakkefase: <code>t<sub>j</sub> + d<sub>j</sub> + K·v<sub>j</sub></code> (K typisk 4).</p>
-          <p><strong>Hvorfor identisk struktur:</strong> Strukturen er identisk med TCPs <code>timeout = EstimatedRTT + 4·DevRTT</code> — og av samme grunn. Vi vil ha en sikkerhetsmargin proporsjonal med <em>variansen</em>, ikke en fast konstant. Når jitter er lav, holder vi forsinkelsen stram; når jitter øker, øker bufferen automatisk for å unngå tap. K = 4 standardavvik gir høy sannsynlighet for at pakker rekker frem. Justering skjer bare ved snakkefasens start — under en snakkefase spilles alle 20 ms-biter av med faste mellomrom.</p>
+          <p><strong>Hvorfor lik TCP:</strong> Utdraget sammenligner bevisst med RTT-estimering i TCP (kapittel 3): et glidende gjennomsnitt av forsinkelse pluss et ledd proporsjonalt med variasjon gir en dynamisk sikkerhetsmargin. Når jitter er lav, holder vi forsinkelsen stram; når den øker, øker bufferen. Justering skjer bare ved snakkefasens start — under en snakkefase spilles alle 20 ms-biter av med faste mellomrom.</p>
         </div>
       </li>
 
       <li data-card>
-        <div data-fc-front>Hvordan oppdager mottakeren start av en <em>ny snakkefase</em>, og hvorfor må man se på <em>både</em> tidsstempler og sekvensnummer?</div>
+        <div data-fc-front>Hvordan oppdager mottakeren start av en <em>ny snakkefase</em>?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> En ny snakkefase = stillhetsperiode etterfulgt av tale. Uten tap: hvis tidsstempelforskjellen mellom to påfølgende pakker er > 20 ms, har det vært stillhet. Med mulig tap: man sjekker også sekvensnummer — gap i tidsstempler <em>uten</em> gap i sekvensnummer betyr ny snakkefase, ikke pakketap.</p>
-          <p><strong>Hvorfor:</strong> Senderen sender ikke pakker under stillhet (silent suppression). Et tidsstempelgap kan derfor enten skyldes stillhet (legitim ny snakkefase) eller pakketap (vi har bare ikke sett pakkene i mellomtiden). Sekvensnummeret er kontinuerlig uavhengig av stillhet — derfor avslører gap der at det var tap, ikke stillhet. Senderen kan også markere snakkefasens start eksplisitt med M-biten (marker bit) i RTP-headeren; i praksis brukes ofte en kombinasjon der signalenergi bekrefter deteksjonen.</p>
+          <p><strong>Svar:</strong> I kapittelutdraget beskrives at mottakeren kan undersøke <strong>signalenergien</strong> i hver mottatt pakke: lav energi tyder på stillhet, høy energi på tale, slik at starten av en ny snakkefase kan skilles fra pauser i støy.</p>
+          <p><strong>Hvorfor:</strong> Adaptiv playout justeres ved starten av hver ny snakkefase; mottakeren må da vite når snakkefase starter. Utdraget fokuserer på energimåling i mottatte samples.</p>
         </div>
       </li>
 
@@ -304,8 +304,8 @@
       <li data-card>
         <div data-fc-front>Hvordan løser <em>Skype</em> problemet med at <em>begge</em> samtalepartene sitter bak NAT?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> Begge klienter holder en <em>åpen TCP-forbindelse</em> til hver sin <strong>supernode (SN)</strong> — den er initiert <em>innenfra</em> NAT-en og er derfor tillatt, og holdes åpen. Når Alice vil ringe Bob, signalerer hun gjennom sin SN til Bobs SN, som bruker den åpne forbindelsen til Bob. Selve VoIP-dataene <em>relayes</em> så gjennom supernodene.</p>
-          <p><strong>Hvorfor:</strong> NAT lar ikke utenforstående initiere en forbindelse <em>inn</em> — det er hele poenget med NAT. Den eneste måten å nå en bruker bak NAT er via en forbindelse brukeren selv har åpnet. Supernodene tilbyr denne "møteplassen". Det er ikke optimalt (dobbelt så mange hopp og belaster supernodens båndbredde), men det fungerer. Skype er et tidlig eksempel på P2P + sentralisert kontroll: login-server for autentisering, supernoder for lokalisering og NAT-traversering.</p>
+          <p><strong>Svar:</strong> I utdraget tildeles hver klient en ikke-NATet <strong>super peer</strong>; klienten initierer en sesjon dit (tillatt ut fra NAT). Når Alice ringer Bob, koordineres kallet via super peers. Trengs relay, velger to super peers en tredje <em>relay peer</em> som ikke er bak NAT; Alice og Bob initierer så hver sin sesjon til relayen, som videresender tale.</p>
+          <p><strong>Hvorfor:</strong> NAT blokkerer innkommende oppstart fra utsiden; løsningen er alltid utgående sesjoner som allerede er åpnet. Det gir ekstra hopp og belastning på relay, men gjør samtale mulig når direkte peer-forbindelse feiler.</p>
         </div>
       </li>
 
@@ -317,15 +317,7 @@
           (2) <strong>Sequence number</strong> (16 bit) — øker med 1 per pakke; lar mottakeren oppdage tap og rekonstruere rekkefølge.<br>
           (3) <strong>Timestamp</strong> (32 bit) — samplingsøyeblikket for første byte; for 8 kHz audio +160 per 20 ms pakke. Klokken tikker også gjennom stillhet.<br>
           (4) <strong>SSRC</strong> (32 bit) — tilfeldig identifikator for denne mediestrømmen i sesjonen.</p>
-          <p><strong>Hvorfor RTP eksisterer:</strong> RTP gir <em>tre ting UDP mangler</em> — type-info, rekkefølge, timing — som er nødvendige for sanntidsavspilling. Men RTP gir <strong>ingen</strong> garanti for levering, rekkefølge eller forsinkelse: rutere ser bare et UDP-segment og behandler det best-effort. All intelligens (adaptiv playout, FEC, tapsskjuling) ligger i endepunktene.</p>
-        </div>
-      </li>
-
-      <li data-card>
-        <div data-fc-front>Hva er <em>RTCP</em>, og hvilken rolle spiller det sammen med RTP?</div>
-        <div data-fc-back>
-          <p><strong>Svar:</strong> RTCP (RTP Control Protocol) er søsterprotokollen til RTP og frakter <em>tilbakemelding</em> om strømkvaliteten — ikke selve mediedataene. <em>Receiver Reports</em> fra mottakere inkluderer brøkdel pakker tapt, høyeste sekvensnummer mottatt og <em>interarrival jitter</em>. <em>Sender Reports</em> fra senderen inkluderer antall sendte bytes og en NTP-tidsavbildning som lar mottakeren synkronisere flere strømmer (lip-sync mellom lyd og bilde). Total RTCP-trafikk er begrenset til typisk 5 % av sesjonsbåndbredden.</p>
-          <p><strong>Hvorfor det trengs:</strong> RTP gir ingen QoS — rutere ser bare UDP. Senderen trenger likevel å vite hvordan det går for å kunne tilpasse seg: bytte til lavere bitrate-koding, justere FEC, redusere sende-rate. RTCP gir denne tilbakemeldingsløkken. 5 %-grensen og at rapporter sendes sjeldnere når deltakerantallet vokser, gjør at totalsummen forblir konstant uavhengig av gruppestørrelse — elegant skalering for mange-til-mange-konferanser.</p>
+          <p><strong>Hvorfor RTP eksisterer:</strong> RTP gir <em>tre ting UDP mangler</em> — type-info, rekkefølge, timing — som er nødvendige for sanntidsavspilling. Men RTP gir <strong>ingen</strong> garanti for levering, rekkefølge eller forsinkelse: rutere ser bare et UDP-segment og behandler det best-effort. All intelligens (adaptiv playout, FEC, feilretting ved mottaker) ligger i endepunktene.</p>
         </div>
       </li>
 
@@ -338,18 +330,18 @@
       </li>
 
       <li data-card>
-        <div data-fc-front>Hva er <strong>DASH</strong> (Dynamic Adaptive Streaming over HTTP), og hvordan velger klienten kvaliteten på videosegmentene?</div>
+        <div data-fc-front>Hva er <strong>DASH</strong> (Dynamic Adaptive Streaming over HTTP), og hvordan velger klienten videokvalitet?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> Serveren tilbyr videoen i flere kvalitetsnivåer (oppløsninger/bitrater), og deler hver versjon i korte segmenter (typisk 2–10 sekunder). Klienten henter ett segment om gangen via vanlig HTTP GET, og velger hvilken kvalitet den vil be om basert på <em>målte</em> nedlastingstider for tidligere segmenter og hvor full playout-bufferen er.</p>
-          <p><strong>Hvorfor:</strong> All adaptiv logikk ligger i klienten — serveren er en helt vanlig webserver som leverer statiske filer. Når kapasiteten faller, henter klienten neste segment i lavere oppløsning ("plutselig pikselete Netflix"); når kapasiteten kommer tilbake, hopper den opp igjen. Bygger på vanlig HTTP/TCP, så det fungerer over alle webservere, CDN-er og brannmurer. Brukes i dag av YouTube, Netflix, NRK TV og de fleste streamingtjenester.</p>
+          <p><strong>Svar:</strong> Utdraget beskriver DASH som adaptiv HTTP-strømming: flere komprimerte versjoner av samme video, slik at klienten kan bytte kvalitet etter målt båndbredde og buffer. Klienten henter data med vanlige HTTP GET-forespørsler over TCP.</p>
+          <p><strong>Hvorfor:</strong> All adaptiv logikk ligger i klienten; serveren kan være en vanlig webserver. Når kapasiteten faller, velger klienten lavere bitrate (dårligere bilde); når den stiger, kan den gå opp igjen. YouTube og Netflix bruker slike løsninger i utdraget.</p>
         </div>
       </li>
 
       <li data-card>
-        <div data-fc-front>Beskriv de tre vanligste teknikkene for <em>loss concealment</em> i VoIP, og hvor i tapshåndteringen passer de inn?</div>
+        <div data-fc-front>Hvilke to <em>error concealment</em>-teknikker ved mottaker beskrives i utdraget for tapt tale?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> (1) <strong>Pakkeduplisering</strong> — spill av forrige mottatte chunk på nytt. Enkel og rimelig effektiv for korte tap (1 pakke ≈ 20 ms — øret er svært tilgivende). (2) <strong>Signalinterpolering</strong> — rekonstruer den manglende lyden ut fra nabopakkenes signalegenskaper (frekvensspektrum, amplitudemønster). Bedre kvalitet, men mer regnetungt. (3) <strong>Stille innsetting</strong> — spill av stillhet i hullet. Fungerer bare ved svært korte tap; gir hakkete lyd ved hyppige tap.</p>
-          <p><strong>Hvorfor:</strong> Mottakeren <em>må</em> produsere noe lyd for de 20 ms som mangler — ren stillhet uten konsealering gir hørbare klikk. Loss concealment er den siste forsvarslinjen <em>etter</em> at FEC, interleaving og adaptiv playout ikke har klart å skaffe en kopi å spille av. De tre teknikkene er komplementære: FEC/interleaving prøver å hindre at tap merkes; loss concealment skjuler det som likevel slipper igjennom.</p>
+          <p><strong>Svar:</strong> (1) <strong>Pakkegjentakelse (<em>packet repetition</em>)</strong> — erstatt tapte pakker med en kopi av den siste mottatte pakken før tapet. (2) <strong>Interpolering (<em>interpolation</em>)</strong> — bruk lyden før og etter tapet til å konstruere en erstatning.</p>
+          <p><strong>Hvorfor:</strong> De kompletterer FEC og interleaving: først prøver man å unngå eller reparere tap; hvis en pakke likevel mangler ved playout, må mottakeren fylle hullet. Interpolering gir bedre kvalitet enn gjentakelse, men koster mer CPU.</p>
         </div>
       </li>
 
@@ -370,14 +362,10 @@
       </li>
 
       <li data-card>
-        <div data-fc-front>Hvilke komponenter består <em>Skype-arkitekturen</em> av, og hvilken rolle spiller hver?</div>
+        <div data-fc-front>Hvordan er <em>Skype-peers</em> organisert, og hvordan brukes <strong>super peers</strong> og <strong>relay peers</strong>?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong></p>
-          <p>(1) <strong>Skype-klienter (SC)</strong> — vanlige brukere som kjører Skype-applikasjonen; under en samtale kobler to klienter seg helst direkte til hverandre.<br>
-          (2) <strong>Supernoder (SN)</strong> — utvalgte Skype-peers med spesielle funksjoner; hjelper med å lokalisere brukere og rute trafikk gjennom et overlay.<br>
-          (3) <strong>Overlay-nettverk</strong> — supernodene danner et overliggende P2P-nett seg imellom for brukerlokalisering.<br>
-          (4) <strong>Login-server</strong> — én sentralisert server for autentisering (brukernavn/passord).</p>
-          <p><strong>Hvorfor hybridarkitektur:</strong> P2P (supernoder) skalerer for "telefonkatalog" og NAT-relay som er kontinuerlig belastning, mens sentralisert kontroll passer for autentisering som er sjelden men må være pålitelig. Login-serveren ville ikke skalere som relay. Supernodene er ofte vanlige brukere med god uplink — Skype velger dem automatisk og brukeren merker det ikke.</p>
+          <p><strong>Svar:</strong> Peers er organisert i et hierarkisk overlay der hver peer er en <strong>super peer</strong> eller en vanlig peer. En indeks som mapper Skype-brukernavn til gjeldende IP-adresse (og port) er <em>distribuert over super peers</em>. Når Alice vil ringe Bob, søker klienten i denne indeksen etter Bobs IP. P2P-teknikker brukes også i <strong>relays</strong>: hvis begge parter er bak NAT, velger to super peers en tredje ikke-NATet super peer som <strong>relay peer</strong> som videresender data mellom Alice og Bob.</p>
+          <p><strong>Hvorfor:</strong> Super peers støtter både lokalisering og NAT-traversering; relay gir en sti når direkte peer-forbindelse ikke lar seg gjøre.</p>
         </div>
       </li>
 
@@ -385,7 +373,7 @@
         <div data-fc-front>Hvorfor sier vi at <em>"RTP gir ingen QoS-garantier"</em>, når RTP nettopp er designet for sanntidsmedia?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> RTP-pakker er innkapslet i vanlige UDP-segmenter. Rutere underveis ser bare et IP-datagram med en UDP-header og behandler det med vanlig best-effort — de "vet" ikke at det er RTP og gjør ingen spesiell innsats for å levere det raskere eller mer pålitelig.</p>
-          <p><strong>Hvorfor:</strong> RTP er bare en konvensjon for <em>applikasjonsdata</em> — felter som hjelper mottakeren tolke pakken (payload type, sekvens, tidsstempel). Det er ingen "RTP-laget" i nettverket. All smarthet for forsinkelse og tap — adaptiv playout, FEC, jitterbuffer, RTCP-feedback — ligger i endepunktene. Dette er konsistent med Internetts grunnfilosofi: <em>smartness in the edges, dumb routers in the middle</em>. Reelle QoS-garantier krever andre mekanismer (DiffServ, MPLS) helt uavhengig av RTP.</p>
+          <p><strong>Hvorfor:</strong> RTP er bare en konvensjon for <em>applikasjonsdata</em> — felter som hjelper mottakeren tolke pakken (payload type, sekvens, tidsstempel). Det er ingen egen «RTP-kø» i rutere. RTP kan derfor ikke i seg selv gi QoS, garantert levering eller garantert forsinkelse — det er ikke svikt, det er design.</p>
         </div>
       </li>
 
@@ -398,26 +386,10 @@
       </li>
 
       <li data-card>
-        <div data-fc-front>Hvordan synkroniseres to separate RTP-strømmer (én for lyd, én for video) til <em>lip-sync</em> hos mottakeren?</div>
-        <div data-fc-back>
-          <p><strong>Svar:</strong> RTP-tidsstemplene i de to strømmene tikker på <em>uavhengige</em> klokker (ulik klokkerate) og kan ikke direkte sammenlignes. Synkroniseringen skjer via <strong>RTCP Sender Reports</strong>: senderen inkluderer en avbildning mellom RTP-tidsstempel og NTP-wall-clock-tid. Mottakeren bruker disse avbildningene til å oversette hver strøms RTP-tidsstempel til en felles wall-clock-tidsskala — og kan da spille av lyd og bilde på rett tidspunkt sammen.</p>
-          <p><strong>Hvorfor:</strong> Audio-RTP bruker typisk 8 kHz-klokke, video-RTP 90 kHz — RTP-tidsstempler er ikke direkte sammenlignbare på tvers. NTP-tiden i Sender Report er "broen" som binder dem sammen. Lip-sync er strengere enn intuisjonen tilsier — feiljustering på 80–100 ms er klart merkbar — og det er derfor RTCP-mekanismen er en del av kjernen, ikke en valgfri ekstrafunksjon.</p>
-        </div>
-      </li>
-
-      <li data-card>
-        <div data-fc-front>Hvordan unngår <em>RTCP</em> at tilbakemeldingstrafikken oversvømmer nettet i store mange-til-mange-sesjoner?</div>
-        <div data-fc-back>
-          <p><strong>Svar:</strong> Standarden begrenser total RTCP-trafikk til typisk <strong>5 % av sesjonsbåndbredden</strong>. Når antall deltakere øker, sender hver enkelt RTCP-rapporter <em>sjeldnere</em> — slik at totalsummen forblir konstant uavhengig av gruppestørrelse.</p>
-          <p><strong>Hvorfor:</strong> Hadde alle deltakere sendt rapporter med fast frekvens, ville en sesjon med 1000 deltakere generert tusenfold mer kontrolltrafikk enn én med to — feedback-trafikken ville stjålet all båndbredden fra mediet selv. Den dynamiske skaleringen av rapportintervall holder prosentandelen konstant. Resultat: RTCP forblir nyttig som tilbakemeldingsmekanisme selv i store videokonferanser med hundrevis av deltakere.</p>
-        </div>
-      </li>
-
-      <li data-card>
         <div data-fc-front>Hvorfor egner ikke TCPs <em>retransmisjonsmodell</em> seg for VoIP, selv om den er gull verdt for filoverføring?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> En retransmisjon krever minst én ekstra rundtur (RTT) — pakken må først detekteres som tapt, så bes om på nytt, og kommer tilbake. Selv på et raskt nett er én RTT typisk 30–100 ms; over Atlanteren 100+ ms.</p>
-          <p><strong>Hvorfor det dreper VoIP:</strong> VoIPs hele forsinkelsesbudsjett er 400 ms. En retransmisjon spiser fort opp 100+ ms av det, og pakken blir uansett "for sen" hvis playout-tiden allerede er passert. For filoverføring er ekstra forsinkelse irrelevant — det viktige er at hver byte til slutt kommer korrekt frem. For samtale er bytene <em>verdiløse</em> hvis de kommer for sent. Derfor bruker VoIP UDP (ingen retransmisjon) og takler tap proaktivt med FEC, interleaving og loss concealment — ikke reaktivt.</p>
+          <p><strong>Svar:</strong> En retransmisjon krever minst én ekstra rundtur (RTT) — pakken må først detekteres som tapt, så bes om på nytt, og kommer tilbake. Det gir merkbar ekstra forsinkelse.</p>
+          <p><strong>Hvorfor det dreper VoIP:</strong> VoIPs hele forsinkelsesbudsjett er omtrent 400 ms. En retransmisjon bruker fort mye av det, og pakken blir uansett «for sen» hvis playout-tiden allerede er passert. For filoverføring er ekstra forsinkelse ofte irrelevant — det viktige er at hver byte til slutt kommer korrekt frem. For samtale er bytene <em>verdiløse</em> hvis de kommer for sent. Derfor bruker VoIP UDP (ingen retransmisjon) og takler tap med FEC, interleaving og <strong>error concealment</strong> (f.eks. pakkegjentakelse og interpolering) — ikke primært retransmisjon.</p>
         </div>
       </li>
 
@@ -433,7 +405,7 @@
         <div data-fc-front>Hvorfor er det en så stor sak at RTPs <em>payload type</em>-felt kan endres midt i en strøm?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> Senderen kan bytte koding under samtalen — f.eks. fra PCM (64 kbps) til GSM (13 kbps) hvis nettverket blir tregt — og mottakeren ser endringen umiddelbart i payload-type-feltet og bytter dekoder uten å måtte forhandle på nytt.</p>
-          <p><strong>Hvorfor:</strong> Adaptiv koding er en kraftfull respons på endrede nettverksforhold: når RTCP-rapporter viser økende tap eller jitter, kan senderen droppe til lavere bitrate uten å avbryte samtalen. Dette gjør VoIP robust mot dårlige nettverksforhold (mobil som beveger seg ut av dekning, kongestion på en link). En statisk koding ville tvunget senderen til enten å droppe samtalen eller fortsette på en bitrate nettet ikke takler — begge dårlige alternativer.</p>
+          <p><strong>Hvorfor:</strong> Adaptiv koding er en kraftfull respons på endrede nettverksforhold: senderen kan bytte til lavere bitrate-koding uten å avbryte samtalen, så lenge mottakeren leser payload-type-feltet. Dette gjør VoIP mer robust når nettet blir mettet eller tap øker.</p>
         </div>
       </li>
 
@@ -442,14 +414,6 @@
         <div data-fc-back>
           <p><strong>Svar:</strong> Telefon: <strong>64 kbps</strong> (8 kHz × 8 bit). CD: <strong>1,411 Mbps</strong> (44,1 kHz × 16 bit, stereo). MP3: <strong>96–160 kbps</strong>. Internett-telefoni: helt ned til <strong>5,3 kbps</strong> med god koding.</p>
           <p><strong>Hvorfor så stor spennvidde:</strong> De to faktorene er samplingsrate og bits per sample. Telefon bruker lav sampling (8 kHz) fordi tale dominerer i frekvenser under 4 kHz; CD bruker høy sampling for å fange hele hørselsspekteret. MP3 oppnår dramatisk reduksjon ved <em>psykoakustisk komprimering</em> — fjerner detaljer øret ikke oppfatter likevel. Disse tallene er fundamentet for å forstå hvorfor tale-strømming er trivielt mens HD-musikk-streaming krever mer båndbredde.</p>
-        </div>
-      </li>
-
-      <li data-card>
-        <div data-fc-front>Hvilke typiske bitrater bruker <em>MPEG-1</em>, <em>MPEG-2</em> og <em>MPEG-4</em>, og hvor brukes hver?</div>
-        <div data-fc-back>
-          <p><strong>Svar:</strong> MPEG-1: ~1,5 Mbps (CD-ROM-video). MPEG-2: 3–6 Mbps (DVD). MPEG-4: under 1 Mbps (Internett-video).</p>
-          <p><strong>Hvorfor:</strong> Forbedringer i koding-effektivitet — bedre temporal/spatial komprimering, smartere prediksjon, finere kvantisering — har gjort hver generasjon dramatisk mer effektiv. MPEG-4s lave bitrate er det som gjorde Internett-video praktisk i utgangspunktet — uten den ville HD-streaming krevd dedikert infrastruktur. Mer moderne kodeker (H.264, H.265, AV1) skyver tallene videre nedover, men prinsippet er det samme: hver ny standard sikter på samme kvalitet ved lavere bitrate.</p>
         </div>
       </li>
 
@@ -465,7 +429,7 @@
         <div data-fc-front>Hvorfor kan aggressiv prefetching i HTTP-streaming være sløsing av båndbredde?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> Hvis klienten har lastet ned B bits og brukeren spoler videre eller forlater siden, er alt det prefetcha innholdet kastet — båndbredden og serverressursene som ble brukt på det er bortkastet.</p>
-          <p><strong>Hvorfor det er kritisk:</strong> Særlig på mobilnett, der båndbredde er en begrenset ressurs (og brukeren betaler for data). Streamingsystemer balanserer derfor mellom buffer-trygghet og prefetching-overshoot. Vanlige strategier: moderat bufferstørrelse, segment-basert prefetching (DASH: ikke prefetch flere segmenter enn nødvendig), eller adaptiv prefetching som vokser i en stabil sesjon men begrenses tidlig i avspillingen før brukeren har vist intensjon om å bli værende.</p>
+          <p><strong>Hvorfor det er kritisk:</strong> Særlig på mobilnett, der båndbredde er begrenset (og koster penger), er det sløsing hvis mye innhold forhåndslastes som aldri spilles av. Systemer balanserer derfor mellom buffer-trygghet og hvor mye som lastes ned på forhånd.</p>
         </div>
       </li>
 
@@ -481,38 +445,10 @@
       </li>
 
       <li data-card>
-        <div data-fc-front>Hvor mye <em>propageringsforsinkelse</em> legger en transatlantisk forbindelse til VoIP-budsjettet, og hvorfor er det et problem?</div>
-        <div data-fc-back>
-          <p><strong>Svar:</strong> Norge til USA er ~70 ms én vei i lyset alene; over en faktisk fiberforbindelse (med svinger og repeatere) typisk 80–120 ms. Tur-retur blir 160–240 ms før man har lagt til pakketisering, ruting og playout-buffer.</p>
-          <p><strong>Hvorfor det betyr noe:</strong> VoIPs forsinkelsesbudsjett er 400 ms. Å bruke nesten halvparten på ren propagering er ille. Det er derfor interaktiv kommunikasjon mellom kontinenter føles "tregere" enn lokal — det er ingen teknologisk feil, det er fysikk: lyset bruker tid på avstanden. Dette er også grunnen til at CDN-er og regionale møtepunkter er så viktige: de holder geografisk avstand kort der det betyr noe for forsinkelse.</p>
-        </div>
-      </li>
-
-      <li data-card>
-        <div data-fc-front>Hva brukes <em>marker bit (M-bit)</em> i RTP-headeren til?</div>
-        <div data-fc-back>
-          <p><strong>Svar:</strong> M-biten lar senderen markere viktige hendelser i mediestrømmen — typisk starten på en ny snakkefase i VoIP, eller siste pakke i en videoramme.</p>
-          <p><strong>Hvorfor det er nyttig:</strong> Mottakeren kan oppdage hendelsen direkte uten å gjette ut fra tidsstempler og sekvensnumre. For VoIP gjør M-biten det enklere å vite presis hvor en snakkefase starter — adaptiv playout kan justere bufferen umiddelbart, uten å falle tilbake på heuristikker som signalenergi-deteksjon. For video kan M-biten markere "siste pakke i denne rammen", slik at mottakeren vet når den kan sende rammen til dekoder. Det er en liten men kostnadsfri kanal for sender-til-mottaker-signalering.</p>
-        </div>
-      </li>
-
-      <li data-card>
-        <div data-fc-front>Beskriv stegene i en <em>Skype-samtale</em> fra brukeren trykker "ring" til dataene flyter.</div>
-        <div data-fc-back>
-          <p><strong>Svar:</strong></p>
-          <p>(1) Klienten kobler seg til en supernode (SN) via TCP — IP-en er cachet lokalt fra forrige sesjon.<br>
-          (2) Klienten logger inn mot den sentraliserte login-serveren.<br>
-          (3) SN-overlayet brukes til å finne IP-en til den man vil ringe (eller IP hentes fra kontaktlisten).<br>
-          (4) Klienten initierer samtalen direkte mot den andre klienten — eller via SN-relay hvis NAT blokkerer direkte forbindelse.</p>
-          <p><strong>Hvorfor:</strong> Hvert steg løser et delproblem — autentisering hos en pålitelig sentral, lokalisering distribuert via P2P, og direkte forbindelse for selve dataene. Resultatet skalerer godt: bare login-serveren har sentralisert belastning, mens den kontinuerlige kommunikasjonsbelastningen er fordelt på P2P-supernoder.</p>
-        </div>
-      </li>
-
-      <li data-card>
         <div data-fc-front>Hvilke kodingsformater identifiserer RTP-payload-type 0, 3, 26 og 33?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> 0 = PCM µ-law (64 kbps audio). 3 = GSM (13 kbps audio). 26 = Motion JPEG (variabel video). 33 = MPEG-2 video (variabel).</p>
-          <p><strong>Hvorfor det er standardisert:</strong> Hver verdi peker på en standardisert koding som mottakeren vet hvordan dekode. Tabellen er en del av RTP-standarden, så to applikasjoner fra forskjellige leverandører kan kommunisere så lenge begge støtter samme payload-type. Det er denne standardiseringen som gir RTP-baserte systemer (Zoom, Teams, WebRTC) interoperabilitet — uten et felles vokabular for "hva slags data er dette" ville mottakeren bare se en strøm av bytes uten mening. Husk: man trenger ikke pugge alle verdier, bare forstå at feltet eksisterer og hvorfor det er nyttig.</p>
+          <p><strong>Hvorfor det er standardisert:</strong> Hver verdi peker på en standardisert koding som mottakeren vet hvordan dekode. Tabellen er en del av RTP-standarden, så to applikasjoner fra forskjellige leverandører kan kommunisere så lenge begge støtter samme payload-type.</p>
         </div>
       </li>
 
@@ -524,24 +460,6 @@
         </div>
       </li>
 
-      <li data-card>
-        <div data-fc-front>Hva kan en sender konkret gjøre når <em>RTCP-rapporter</em> viser dårlig nettverksstatus?</div>
-        <div data-fc-back>
-          <p><strong>Svar:</strong> Tre vanlige tilpasninger:<br>
-          (1) <strong>Bytte til lavere bitrate-koding</strong> (f.eks. PCM 64 kbps → GSM 13 kbps) via payload-type-feltet.<br>
-          (2) <strong>Justere FEC-redundansen</strong> — øke ved høy taprate, redusere igjen ved stabilt nett.<br>
-          (3) <strong>Senke send-raten direkte</strong> (færre frames/sekund eller lavere oppløsning).</p>
-          <p><strong>Hvorfor:</strong> RTCP er ikke nyttig hvis senderen ikke gjør noe med informasjonen. Sammen utgjør RTP og RTCP en lukket sløyfe der senderen tilpasser seg det mottakeren faktisk opplever — analogt med adaptiv kvalitet i DASH, men for sanntidssamtaler. Uten RTCP ville senderen vært "blind" og fortsatt sende på en bitrate nettet ikke håndterer, noe som gir kaskaderende tap og en ubrukelig samtale.</p>
-        </div>
-      </li>
-
-      <li data-card>
-        <div data-fc-front>Hvilke moderne videosamtale-tjenester bygger på <em>RTP</em> eller varianter, og hvilke relaterte standarder hører med?</div>
-        <div data-fc-back>
-          <p><strong>Svar:</strong> Zoom, WhatsApp, Teams, Google Meet og WebRTC bruker alle RTP eller varianter under panseret. Kjernepakken er RTP + et knippe relaterte standarder: <strong>RTCP</strong> (tilbakemelding), <strong>SRTP</strong> (kryptering), <strong>SDP</strong> (sesjonsbeskrivelser), <strong>SIP</strong> (samtale-oppsett — utelatt fra pensum).</p>
-          <p><strong>Hvorfor RTP vant:</strong> Standarden er "tynn" og overlater alt det interessante til endepunktene — det er enkelt å bygge nye tjenester oppå. Moderne tjenester bygger sin egen logikk for koding, kvalitetstilpasning og synkronisering oppå disse byggeklossene. WebRTC standardiserer også API-et i nettleseren slik at videosamtaler kan bygges direkte i webapper uten plugin — alt under panseret er fortsatt RTP. Når vi snakker om "protokoller for sanntidskommunikasjon" i 2026, er dette stacken.</p>
-        </div>
-      </li>
     </ol>
   </div>
 </div>
@@ -551,7 +469,7 @@
 <section id="quiz">
 <div class="container">
   <h2>Test deg selv</h2>
-  <p class="section-intro">Sjekk om du har forstått de viktigste konseptene fra dette kapittelet.</p>
+  <p class="section-intro">Sjekk om du har forstått de viktigste konseptene som beskrives i kapittelutdraget.</p>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 1 · Lett</div>
@@ -594,21 +512,12 @@
     <div class="q-text">Hva er DASH, og hvordan velger klienten bitrate?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">DASH (Dynamic Adaptive Streaming over HTTP) deler video i segmenter tilgjengelig i flere kvalitetsnivåer. Klienten velger segmentkvalitet dynamisk basert på estimert nettkapasitet (f.eks. nedlastet bitrate) og bufferfylling. Ved god tilkobling velges høy kvalitet; ved treg tilkobling reduseres kvaliteten for å unngå stopp.</div>
+      <div class="answer">DASH (Dynamic Adaptive Streaming over HTTP) bruker flere versjoner av samme video, hver komprimert med ulik bitrate. Klienten velger dynamisk hvilken versjon den henter, ut fra tilgjengelig båndbredde og buffer, slik at avspillingen kan fortsette uten å stoppe.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 6 · Vanskelig</div>
-    <div class="q-text">Hva er avveiingen ved valg av segmentlengde i DASH?</div>
-    <div class="quiz-reveal">
-      <button class="reveal-btn">Se svar</button>
-      <div class="answer">Kortere segmenter gir raskere tilpasning, men høyere protokoll- og request-overhead.</div>
-    </div>
-  </div>
-
-  <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 7 · Middels</div>
+    <div class="q-label">Spørsmål 6 · Middels</div>
     <div class="q-text">Hva er en CDN, og hva er fordelen for multimedia?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
@@ -617,7 +526,7 @@
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 8 · Vanskelig</div>
+    <div class="q-label">Spørsmål 7 · Vanskelig</div>
     <div class="q-text">Hva er RTP-sekvensnummeret, og hva brukes det til?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
@@ -626,34 +535,25 @@
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 9 · Lett</div>
+    <div class="q-label">Spørsmål 8 · Lett</div>
     <div class="q-text">Hva er RTP-tidsstempelet, og hva brukes det til?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">RTP-tidsstempel hjelper mottakeren å plassere mediedata riktig i tidslinjen.</div>
+      <div class="answer">Tidsstempelet angir samplingsøyeblikket for første byte i RTP-pakken. Mottakeren bruker det blant annet til å fjerne jitter og for synkron avspilling. Klokken tikker videre med konstant rate også når kilden er inaktiv.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 9 · Middels</div>
+    <div class="q-text">Hva sier utdraget om forsinkelse i talesamtale (ca. 150 ms og 400 ms)?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Forsinkelse under omtrent 150 ms merkes knapt; mellom 150 og 400 ms kan være akseptabelt men ikke ideelt; over omtrent 400 ms hindres interaktiviteten i samtalen tydelig.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 10 · Vanskelig</div>
-    <div class="q-text">Hva er RTCP, og hva rapporterer det?</div>
-    <div class="quiz-reveal">
-      <button class="reveal-btn">Se svar</button>
-      <div class="answer">RTCP (RTP Control Protocol) er en tilbakemeldingsprotokoll som går parallelt med RTP. Mottakeren sender RTCP Receiver Reports med mål som pakketap, jitter og rundtursforsinkelse. Senderen bruker disse til å tilpasse bitrate, og rapporten hjelper diagnostisere nettverkskvalitet. RTCP er begrenset til en brøkdel av total båndbredde for å ikke forstyrre mediestrømmen.</div>
-    </div>
-  </div>
-
-  <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 11 · Middels</div>
-    <div class="q-text">Hva er forsinkelsesgrensen for naturlig talesamtale?</div>
-    <div class="quiz-reveal">
-      <button class="reveal-btn">Se svar</button>
-      <div class="answer">Rundt under 150 ms oppleves samtale som naturlig; større forsinkelse gjør dialog vanskeligere.</div>
-    </div>
-  </div>
-
-  <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 12 · Vanskelig</div>
     <div class="q-text">Hva skjer med talesamtalen når forsinkelsen overstiger 400 ms?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
@@ -662,7 +562,7 @@
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 13 · Lett</div>
+    <div class="q-label">Spørsmål 11 · Lett</div>
     <div class="q-text">Hvorfor brukes UDP fremfor TCP for sanntidsmedia?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
@@ -671,25 +571,25 @@
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 14 · Middels</div>
-    <div class="q-text">Hva er ulempen med TCP for live mediastrømming?</div>
+    <div class="q-label">Spørsmål 12 · Middels</div>
+    <div class="q-text">Hvorfor kan TCP være problematisk for sanntids- eller strømmeapplikasjoner?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">TCP-retransmisjoner og head-of-line blocking kan øke latenstid uakseptabelt for liveinnhold.</div>
+      <div class="answer">TCPs pålitelige dataoverføring og retransmisjoner kan gi betydelig ekstra forsinkelse som er uheldig for sanntidsinnhold. For tapte talepakker som allerede har passert playout-fristen, hjelper retransmisjon lite.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 15 · Vanskelig</div>
+    <div class="q-label">Spørsmål 13 · Vanskelig</div>
     <div class="q-text">Hva er FEC (Forward Error Correction) i mediestrømmer?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">FEC legger til redundante pakker (f.eks. XOR av flere originalpakker) slik at mottakeren kan rekonstruere tapte pakker uten å be om retransmisjon. Dette er spesielt nyttig for sanntidsmedia der retransmisjoner er for trege. Ulempen er økt båndbreddebruk (overhead proporsjonal med redundansnivå).</div>
+      <div class="answer">FEC legger til redundante data (f.eks. XOR av flere originalpakker, eller en lavbitratespor lagt ved siden av hovedsporet) slik at mottakeren kan rekonstruere eller skjule tap uten å be om retransmisjon. Det øker typisk båndbredde og kan øke playout-forsinkelse avhengig av variant.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 16 · Middels</div>
+    <div class="q-label">Spørsmål 14 · Middels</div>
     <div class="q-text">Hva er interleaving i mediestrømmer?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
@@ -698,16 +598,7 @@
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 17 · Lett</div>
-    <div class="q-text">Hvilke faktorer påvirker QoE (Quality of Experience) i videostrømming?</div>
-    <div class="quiz-reveal">
-      <button class="reveal-btn">Se svar</button>
-      <div class="answer">Oppstartstid, rebuffering, bildekvalitet og kvalitetsbytter påvirker brukeropplevelse mest.</div>
-    </div>
-  </div>
-
-  <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 18 · Vanskelig</div>
+    <div class="q-label">Spørsmål 15 · Lett</div>
     <div class="q-text">Hva bør en DASH-klient gjøre når nettkapasiteten synker?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
@@ -716,65 +607,11 @@
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 19 · Middels</div>
-    <div class="q-text">Hva er avveiingen ved lavlatens live-streaming?</div>
+    <div class="q-label">Spørsmål 16 · Middels</div>
+    <div class="q-text">Begrenser RTP seg til unicast?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Lavlatensoppsett bruker mindre buffere og kortere segmenter, men tåler mindre nettverksvariasjon.</div>
-    </div>
-  </div>
-
-  <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 20 · Vanskelig</div>
-    <div class="q-text">Hva er I-, P- og B-rammer i videokoding?</div>
-    <div class="quiz-reveal">
-      <button class="reveal-btn">Se svar</button>
-      <div class="answer">I-rammer (Intra) er nøkkelbilder kodet uten referanse til andre — selvstendig dekodbare. P-rammer (Predicted) refererer til forrige I/P-ramme og lagrer kun differansen. B-rammer (Bidirectional) refererer til både forrige og neste ramme for enda bedre komprimering. P/B-rammer gir høy komprimeringsrate, men gjør seek og klippredigering vanskeligere.</div>
-    </div>
-  </div>
-
-  <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 21 · Middels</div>
-    <div class="q-text">Hva er konsekvensen av kortere keyframe-intervall?</div>
-    <div class="quiz-reveal">
-      <button class="reveal-btn">Se svar</button>
-      <div class="answer">Kortere keyframe-intervall forbedrer seek og robusthet, men krever mer bitrate.</div>
-    </div>
-  </div>
-
-  <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 22 · Vanskelig</div>
-    <div class="q-text">Hva er lip-sync, og hva sikrer korrekt synkronisering?</div>
-    <div class="quiz-reveal">
-      <button class="reveal-btn">Se svar</button>
-      <div class="answer">Lyd og bilde må synkroniseres med tidsstempler og klokkehåndtering for naturlig avspilling.</div>
-    </div>
-  </div>
-
-  <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 23 · Lett</div>
-    <div class="q-text">Hva er multicast, og hva er fordelen for distribusjon?</div>
-    <div class="quiz-reveal">
-      <button class="reveal-btn">Se svar</button>
-      <div class="answer">Multicast kan skalere én-til-mange effektivt der infrastrukturen støtter det.</div>
-    </div>
-  </div>
-
-  <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 24 · Middels</div>
-    <div class="q-text">Hvorfor bruker OTT-tjenester unicast fremfor multicast?</div>
-    <div class="quiz-reveal">
-      <button class="reveal-btn">Se svar</button>
-      <div class="answer">Unicast fungerer over dagens internett uten global multicast-støtte i mellomnett.</div>
-    </div>
-  </div>
-
-  <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 25 · Vanskelig</div>
-    <div class="q-text">Hva er pacing i mediestrømming?</div>
-    <div class="quiz-reveal">
-      <button class="reveal-btn">Se svar</button>
-      <div class="answer">Jevn utsending og købevisst styring reduserer burst, tap og varians i mottak.</div>
+      <div class="answer">Nei. RTP-pakker kan også sendes over én-til-mange og mange-til-mange multicast-trær. I en slik økt bruker ofte alle sendere samme multicast-gruppe for RTP-strømmene sine.</div>
     </div>
   </div>
 </div>
@@ -784,7 +621,7 @@
 <footer>
   <div class="container">
     <div class="ornament">&#10043; &#10043; &#10043;</div>
-    <p>NTNU · TTM4100 · Vår 2026</p>
+    <p>Kapittel 9 · basert på lærebokutdrag (Multimedia Networking)</p>
   </div>
 </footer>
 <script src="../chat-widget.js"></script>

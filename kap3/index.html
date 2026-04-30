@@ -621,11 +621,11 @@
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 23 · Lett</div>
-    <div class="q-text">Hvordan reduserer QUIC head-of-line blocking?</div>
+    <div class="q-label">Spørsmål 23 · Middels</div>
+    <div class="q-text">Hva skjer typisk i <strong>TCP Reno</strong> når avsenderen mottar <strong>tre duplikat-ACK</strong> for samme segment?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">QUIC bruker uavhengige strømmer slik at tap i én strøm ikke stopper alle andre.</div>
+      <div class="answer">Avsenderen tolker det som tegn på et pakketap uten å vente på timeout: den retransmitterer det mistede segmentet raskt (fast retransmit) og går inn i fast recovery — <code>cwnd</code> reduseres (typisk halveres) i stedet for å gå helt tilbake til én MSS som ved timeout.</div>
     </div>
   </div>
 

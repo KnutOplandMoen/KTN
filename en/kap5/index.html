@@ -173,230 +173,230 @@
 <section id="quiz">
 <div class="container">
   <h2>Test yourself</h2>
-  <p class="section-intro">Check whether you have understood the most important concepts from this chapter.</p>
+  <p class="section-intro">Aligned with TTM4100: Kurose &amp; Ross chapter 5 sections <strong>5.1</strong> (introduction), <strong>5.2</strong> routing algorithms at overview level only (not 5.2.1 link-state or 5.2.2 distance-vector in depth), and <strong>5.6</strong> ICMP.</p>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 1 · Easy</div>
-    <div class="q-text">Which statement best describes what the control plane does?</div>
+    <div class="q-text">What does the control plane do?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">The control plane computes routes and populates forwarding tables used by the data plane.</div>
+      <div class="answer">The control plane computes routes and fills forwarding tables that the data plane uses.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 2 · Medium</div>
-    <div class="q-text">In practice, which statement about the link-state principle is most correct?</div>
+    <div class="q-label">Question 2 · Easy</div>
+    <div class="q-text">What is the difference between <em>forwarding</em> and <em>routing</em>?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">In link-state, routers know the full topology and compute shortest paths locally.</div>
+      <div class="answer">Forwarding is the local data-plane action—move one packet from input port to the correct output port via a table lookup. Routing is the control-plane job of computing end-to-end paths across many routers.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 3 · Hard</div>
-    <div class="q-text">In a larger network setting, which evaluation of Dijkstra in routing is most accurate?</div>
+    <div class="q-label">Question 3 · Easy</div>
+    <div class="q-text">What is the difference between the data plane and the control plane?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">Dijkstra builds a shortest-path tree from one source given known link costs.</div>
+      <div class="answer">The data plane forwards packets using a ready-made forwarding table—on nanosecond scales. The control plane builds that table as routers coordinate and agree on good routes—on second to minute scales.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 4 · Medium</div>
-    <div class="q-text">In practice, which statement about the distance-vector principle is most correct?</div>
+    <div class="q-text">What is the difference between per-router control and logically centralized control (SDN)?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">Distance-vector exchanges cost estimates neighbor-to-neighbor and updates iteratively.</div>
+      <div class="answer">With per-router control, each router runs its own routing algorithm and builds its forwarding table by talking to neighbors. With logically centralized control (SDN), one controller computes all forwarding tables and pushes them to the routers.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 5 · Easy</div>
-    <div class="q-text">Which statement best describes Bellman-Ford in DV?</div>
+    <div class="q-label">Question 5 · Medium</div>
+    <div class="q-text">What does a &ldquo;good route&rdquo; mean? Name at least three criteria.</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">Bellman-Ford updates best routes by minimizing over neighbors&#x27; advertised costs.</div>
+      <div class="answer">It depends what you optimize for. Common criteria: (1) lowest cost (hops, bandwidth, or money), (2) lowest delay, (3) least congested (avoid links with large queues).</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 6 · Hard</div>
-    <div class="q-text">In a larger network setting, which evaluation of the count-to-infinity problem is most accurate?</div>
+    <div class="q-label">Question 6 · Medium</div>
+    <div class="q-text">Which two axes are used to classify routing algorithms at a high level?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">In DV, incorrect reachability info can persist and metrics can climb gradually.</div>
+      <div class="answer">(1) Global vs. decentralized—does each router have the full topology or only neighborhood information? (2) Static vs. dynamic—do routes change rarely (manual) or continuously in response to network events?</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 7 · Medium</div>
-    <div class="q-text">In practice, which statement about poison reverse is most correct?</div>
+    <div class="q-text">What is the main goal of a routing protocol?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">Poison reverse advertises infinity back to the neighbor that supplied a route to mitigate simple loops.</div>
+      <div class="answer">To determine good paths from sending hosts to receiving hosts through the network of routers.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 8 · Hard</div>
-    <div class="q-text">In a larger network setting, which evaluation of convergence in routing protocols is most accurate?</div>
+    <div class="q-text">What is convergence in routing protocols, and why does it matter?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">Fast, stable convergence reduces periods of loss, loops, and suboptimal routing.</div>
+      <div class="answer">Convergence is the process where all routers obtain consistent forwarding tables after a change. Along the way tables may temporarily disagree; fast, stable convergence reduces the risk of loops and packet loss.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 9 · Easy</div>
-    <div class="q-text">Which statement best describes OSPF?</div>
+    <div class="q-text">What is ICMP, and at which layer does it operate?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">OSPF is a link-state IGP using cost metrics and LSA flooding.</div>
+      <div class="answer">ICMP (Internet Control Message Protocol) is the network layer&rsquo;s signaling for errors and echo tests. It is considered part of the network layer, but ICMP messages are carried inside IP datagrams—so strictly speaking above IP, yet still &ldquo;network layer&rdquo; in the textbook sense.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 10 · Hard</div>
-    <div class="q-text">In a larger network setting, which evaluation of RIP is most accurate?</div>
+    <div class="q-label">Question 10 · Medium</div>
+    <div class="q-text">Which fields does an ICMP message contain?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">RIP is a simple distance-vector protocol using hop count as metric.</div>
+      <div class="answer">Type, code, and a header plus the first 8 bytes of the original IP datagram that triggered the error—so the sender can identify which packet the message refers to.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 11 · Medium</div>
-    <div class="q-text">In practice, which statement about BGP as the inter-AS protocol is most correct?</div>
+    <div class="q-label">Question 11 · Easy</div>
+    <div class="q-text">Which ICMP type/code values does <code>ping</code> use?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">BGP advertises AS paths and policy attributes between autonomous systems.</div>
+      <div class="answer">Echo request is type 8, code 0. Echo reply is type 0, code 0.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 12 · Hard</div>
-    <div class="q-text">In a larger network setting, which evaluation of policy in BGP is most accurate?</div>
+    <div class="q-label">Question 12 · Medium</div>
+    <div class="q-text">Which ICMP type does <code>traceroute</code> rely on to reveal each router along the path?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">BGP often selects routes by business policy and economics, not only shortest path.</div>
+      <div class="answer">Type 11 (time exceeded). When a router decrements TTL to 0, it discards the packet and sends ICMP type 11 back with its own IP—that is the signal traceroute collects at each hop.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 13 · Easy</div>
-    <div class="q-text">Which statement best describes eBGP versus iBGP?</div>
+    <div class="q-label">Question 13 · Hard</div>
+    <div class="q-text">Which ICMP type/code means &ldquo;destination port unreachable&rdquo;?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">eBGP runs between ASes, while iBGP distributes external routes inside an AS.</div>
+      <div class="answer">Type 3, code 3. Traceroute uses this as an end signal—the destination replies this way because traceroute sends to a high port where no service is listening.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 14 · Medium</div>
-    <div class="q-text">In practice, which statement about an SDN controller is most correct?</div>
+    <div class="q-text">What is ICMP source quench (type 4), and why is it obsolete in practice?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">In SDN, control logic moves to a logically centralized controller that programs network devices.</div>
+      <div class="answer">Source quench was meant as feedback from an overloaded router asking the sender to slow down. It was never well supported; modern congestion handling is done at the transport layer (TCP). Source quench is considered deprecated.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 15 · Hard</div>
-    <div class="q-text">In a larger network setting, which evaluation of match-action tables is most accurate?</div>
+    <div class="q-label">Question 15 · Medium</div>
+    <div class="q-text">Is ICMP part of the control plane or the data plane?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">Match-action rules determine packet handling based on header fields.</div>
+      <div class="answer">ICMP is regarded as control-plane signaling—it reports errors and exchanges network-level information, not ordinary user payload forwarding.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 16 · Medium</div>
-    <div class="q-text">In practice, which statement about an OpenFlow-like southbound API is most correct?</div>
+    <div class="q-label">Question 16 · Hard</div>
+    <div class="q-text">How do ICMP and IP compare regarding reliability?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">A southbound interface lets the controller install and update rules in switches/routers.</div>
+      <div class="answer">Both are unreliable (best-effort). An ICMP message can be lost just like any other IP packet. That is why traceroute sends multiple probes per TTL and uses timeouts.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 17 · Easy</div>
-    <div class="q-text">Which statement best describes data plane versus control plane?</div>
+    <div class="q-text">What is the difference between the data plane and the control plane (short version)?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">The data plane forwards packets, while the control plane computes the rules it follows.</div>
+      <div class="answer">The data plane forwards packets; the control plane computes the rules the data plane follows.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 18 · Hard</div>
-    <div class="q-text">In a larger network setting, which evaluation of ping and ICMP echo is most accurate?</div>
+    <div class="q-text">What is ICMP, and what is <code>ping</code> used for?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">Ping tests reachability by sending ICMP echo requests and timing echo replies.</div>
+      <div class="answer"><code>ping</code> tests reachability by sending ICMP echo requests and measuring the time until echo replies return.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 19 · Medium</div>
-    <div class="q-text">In practice, which statement about traceroute and TTL is most correct?</div>
+    <div class="q-text">How does traceroute use TTL to map the route?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">Traceroute uses increasing TTL values to elicit replies from each hop along the path.</div>
+      <div class="answer">Traceroute increases TTL step by step to get a response from each router along the path.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 20 · Hard</div>
-    <div class="q-text">In a larger network setting, which evaluation of flooding of link-state advertisements is most accurate?</div>
+    <div class="q-label">Question 20 · Medium</div>
+    <div class="q-text">What is a &ldquo;route&rdquo; or &ldquo;path&rdquo; in concrete network terms?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">Flooding distributes topology changes quickly so all routers can recompute consistently.</div>
+      <div class="answer">The sequence of routers a packet traverses from the source host to the destination—for example R1 &rarr; R4 &rarr; R7 &rarr; R9.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 21 · Medium</div>
-    <div class="q-text">In practice, which statement about LSA sequence numbers is most correct?</div>
+    <div class="q-text">What does an ICMP &ldquo;destination unreachable&rdquo; message tell the sender?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">Sequence numbers and age prevent stale link-state messages from overriding fresh ones.</div>
+      <div class="answer">The packet could not be delivered; the code field explains why—code 0 network unreachable, 1 host unreachable, 2 protocol unreachable, 3 port unreachable. The sender avoids waiting forever for a reply that will never come.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 22 · Hard</div>
-    <div class="q-text">In a larger network setting, which evaluation of hierarchical routing is most accurate?</div>
+    <div class="q-text">Why is it important that routing algorithms react dynamically to network changes?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">Hierarchy improves control-plane scalability by dividing networks into administrative regions.</div>
+      <div class="answer">Links fail, come back, become congested, or change capacity. Dynamic response lets routers find alternate paths automatically—without manual intervention and without prolonged packet loss.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 23 · Easy</div>
-    <div class="q-text">Which statement best describes hot-potato routing?</div>
+    <div class="q-label">Question 23 · Medium</div>
+    <div class="q-text">Why must IP have a TTL field?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">An AS often exits traffic at the nearest egress to minimize internal transport cost.</div>
+      <div class="answer">To prevent packets stuck in routing loops from living forever and wasting bandwidth. TTL is decremented by one at each hop and the packet is discarded at 0—this is also what traceroute exploits (ICMP type 11).</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 24 · Medium</div>
-    <div class="q-text">In practice, which statement about routing instability is most correct?</div>
+    <div class="q-label">Question 24 · Easy</div>
+    <div class="q-text">How do <code>ping</code> and <code>traceroute</code> differ as diagnostic tools?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">Conflicting policies and rapid changes can cause oscillations and temporary route instability.</div>
+      <div class="answer"><code>ping</code> checks whether a host is reachable and measures total RTT (echo types 0/8). <code>traceroute</code> maps the full path and RTT per hop using TTL-expired (type 11) and port-unreachable (type 3 code 3) at the end.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Question 25 · Hard</div>
-    <div class="q-text">In a larger network setting, which evaluation of fast failure response in the control plane is most accurate?</div>
+    <div class="q-text">Why is fast error response important in the control plane?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">Fast failure detection and reconvergence reduce downtime and packet loss.</div>
+      <div class="answer">Quick detection and reconvergence after failures reduce downtime and packet loss.</div>
     </div>
   </div>
 </div>

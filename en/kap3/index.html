@@ -332,11 +332,11 @@
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Question 23 · Easy</div>
-    <div class="q-text">Which statement best describes why QUIC reduces HOL problems?</div>
+    <div class="q-label">Question 23 · Medium</div>
+    <div class="q-text">In classic TCP Reno, what typically happens when the sender receives <strong>three duplicate ACKs</strong> for the same segment?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Show answer</button>
-      <div class="answer">QUIC uses independent streams so loss in one stream does not block all others.</div>
+      <div class="answer">The sender treats it as loss without waiting for timeout: it fast-retransmits the missing segment and enters fast recovery—<code>cwnd</code> is reduced (often cut in half) rather than dropping all the way back to one MSS as on timeout.</div>
     </div>
   </div>
 

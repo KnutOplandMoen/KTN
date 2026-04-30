@@ -90,10 +90,9 @@
 
   <div class="table-wrap">
   <table>
-    <tr><th>Standard</th><th>Typisk bitrate</th><th>Bruk</th></tr>
-    <tr><td class="mono-cell">MPEG-1</td><td>1,5 Mbps</td><td>CD-ROM-video</td></tr>
-    <tr><td class="mono-cell">MPEG-2</td><td>3–6 Mbps</td><td>DVD</td></tr>
-    <tr><td class="mono-cell">MPEG-4</td><td>&lt; 1 Mbps</td><td>Internett-video</td></tr>
+    <tr><th>Eksempel</th><th>Bitrate</th><th>Merknad (fra kapittelutdraget)</th></tr>
+    <tr><td class="mono-cell">Tre versjoner av samme video</td><td>300 kbps, 1 Mbps, 3 Mbps</td><td>Brukeren velger etter tilgjengelig båndbredde (f.eks. mobil vs. høyhastighetslinje).</td></tr>
+    <tr><td class="mono-cell">MPEG 1 / MPEG 2 (RTP-tabellen)</td><td>variabel</td><td>Nevnes som videokodingsformater i RTP-payload-tabellen.</td></tr>
   </table>
   </div>
 
@@ -140,7 +139,7 @@
         <li>Interaktiv kommunikasjon mellom mennesker</li>
         <li>Svært strenge krav til <em>forsinkelse</em> — over 400 ms ødelegger samtalen</li>
         <li>Tåler noe pakketap, men ikke mye forsinkelse</li>
-        <li>Eksempler: Skype, Zoom, Teams, VoIP-telefoni</li>
+        <li>Eksempler: Skype, Google Talk, WeChat, VoIP-telefoni</li>
       </ul>
     </div>
     <div>
@@ -206,7 +205,7 @@
   </div>
   <p style="font-size:14px;color:var(--ink-faded);font-style:italic;margin-top:-20px">Dra slideren for å se hvordan initial playout-forsinkelse påvirker bufferrobusthet og brukeropplevelse. Modellen er forenklet, men illustrerer kjernen av trade-off-en.</p>
 
-  <div class="margin-note">Moderne tjenester som YouTube bruker <a href="../kap2/p2p-video-cdn.html#streaming">DASH (Dynamic Adaptive Streaming over HTTP)</a>, der klienten dynamisk ber om videosegmenter i den kvaliteten som passer til nettverksforholdene akkurat nå — men det grunnleggende prinsippet med buffering er det samme.</div>
+  <div class="margin-note">Teksten viser til <strong>DASH</strong> (Dynamic Adaptive Streaming over HTTP): flere komprimerte versjoner av samme video, slik at klienten kan tilpasse kvalitet til båndbredde. Det grunnleggende prinsippet med klient-side buffering er det samme.</div>
 
   <h3>Matematisk analyse av buffring</h3>
   <p>La oss formalisere intuisjonen. La <em>B</em> være bufferstørrelsen (i bits), <em>Q</em> antall bits som må bufres før avspilling starter (Q &lt; B), <em>r</em> avspillingsraten (bits/s) og <em>x</em> fyllraten fra serveren (bits/s). Initial playout-forsinkelse t<sub>p</sub> er da tiden det tar å bygge opp Q bits:</p>
@@ -272,7 +271,7 @@
         <li>TCP sørger for pålitelig, ordnet levering (retransmisjon)</li>
         <li>Sende-raten varierer pga. TCPs metningskontroll</li>
         <li>Større playout-buffer trengs for å jevne ut variasjonen</li>
-        <li>Passerer brannmurer uproblematisk (port 80/443)</li>
+        <li>Passerer brannmurer uproblematisk (HTTP/TCP, ofte tillatt der UDP blokkes)</li>
         <li>Brukes av YouTube, Netflix, og stort sett alt i dag</li>
       </ul>
     </div>
@@ -399,18 +398,17 @@
     </div>
   </div>
 
-  <p>Et viktig poeng: VoIP <strong>tåler noe tap</strong>. Avhengig av lydkoding og teknikker for å skjule tap (loss concealment), kan man tolerere 1–20% pakketap uten at samtalen blir uforståelig. Det er en dramatisk forskjell fra f.eks. filoverføring, der ethvert tapt byte er katastrofalt.</p>
+  <p>Et viktig poeng: VoIP <strong>tåler noe tap</strong>. Avhengig av lydkoding og <em>error concealment</em>-teknikker, kan man tolerere 1–20% pakketap uten at samtalen blir uforståelig. Det er en dramatisk forskjell fra f.eks. filoverføring, der ethvert tapt byte er katastrofalt.</p>
 
-  <h3>Loss concealment: skjule tap ved mottaker</h3>
-  <p>Når en pakke er tapt eller ankommer for sent, må mottakeren produsere <em>noe</em> lyd for de 20 ms som mangler — bare å la det bli stille gir en hørbar klikkelyd. Dette kalles <strong>loss concealment</strong> og er den enkleste forsvarslinjen mot tap. Tre vanlige teknikker:</p>
+  <h3>Feilretting ved mottaker (<em>error concealment</em>)</h3>
+  <p>Når en pakke er tapt eller ankommer for sent, må mottakeren produsere <em>noe</em> lyd for de 20 ms som mangler. I kapittelutdraget beskrives to mottakerbaserte teknikker:</p>
 
   <ul style="margin:0 0 24px 24px;color:var(--ink-soft)">
-    <li style="margin-bottom:8px"><strong>Pakkeduplisering:</strong> spill av forrige mottatte chunk på nytt. Enkelt og rimelig effektivt for korte tap (1 pakke ≈ 20 ms — øret er svært tilgivende).</li>
-    <li style="margin-bottom:8px"><strong>Signalinterpolering:</strong> rekonstruer den manglende lyden ut fra nabopakkenes signalegenskaper (frekvensspektrum, amplitudemønster). Bedre kvalitet enn duplisering, men mer regnetungt.</li>
-    <li><strong>Stille innsetting:</strong> spill av stillhet i hullet — fungerer hvis tapet er svært kort, men gir hakkete lyd ved hyppige tap.</li>
+    <li style="margin-bottom:8px"><strong>Pakkegjentakelse (<em>packet repetition</em>):</strong> erstatt tapte pakker med en kopi av pakken som kom rett før tapet. Lav beregningskostnad og fungerer bra ved små tap.</li>
+    <li><strong>Interpolering (<em>interpolation</em>):</strong> bruk lyden før og etter tapet til å konstruere en erstatningspakke. Bedre kvalitet, men tyngre beregning.</li>
   </ul>
 
-  <p>Loss concealment er <em>komplementært</em> til FEC og interleaving (neste seksjon): det forsvarer den siste skansen når andre teknikker ikke har en kopi av pakken å rekonstruere fra. Kombinasjonen av loss concealment, FEC og adaptiv playout er grunnen til at VoIP kan fungere brukbart selv ved 5–10 % pakketap.</p>
+  <p>Dette er <em>komplementært</em> til FEC og interleaving (neste seksjon): FEC og interleaving prøver å unngå tap; disse teknikkene tar over når pakken likevel mangler. Sammen med adaptiv playout gjør det at VoIP kan tåle en del pakketap.</p>
 </div>
 </section>
 
@@ -471,7 +469,7 @@
   <h3>Adaptiv playout-forsinkelse</h3>
   <p>I stedet for å velge en fast q kan vi gjøre den <em>adaptiv</em>: vi estimerer nettverksforsinkelsen fortløpende og justerer playout-forsinkelsen ved starten av hver ny snakkefase. Stille perioder komprimeres eller forlenges litt for å ta igjen endringen — lytteren merker ikke dette.</p>
 
-  <p>Estimeringen bruker en <strong>EWMA (Exponentially Weighted Moving Average)</strong>, nøyaktig samme idé som TCP bruker for å estimere RTT:</p>
+  <p>Estimeringen bruker <strong>glidende gjennomsnitt</strong> av observerte forsinkelser (utdraget bruker en liten vekt &alpha; på nyeste måling), på samme måte som når TCP estimerer rundturtid i kapittel 3:</p>
 
   <div class="formula">
     d<sub>i</sub> = (1 - &alpha;) &middot; d<sub>i-1</sub> + &alpha; &middot; (r<sub>i</sub> - t<sub>i</sub>)
@@ -491,7 +489,7 @@
     playout<sub>j</sub> = t<sub>j</sub> + d<sub>j</sub> + K &middot; v<sub>j</sub>
   </div>
 
-  <p>Her er K en konstant (typisk 4). Legg merke til parallellen til TCP: der settes timeout til EstimatedRTT + 4 &middot; DevRTT — nøyaktig samme struktur. Gjennomsnittet fanger opp «normaltilstanden», og K &middot; v legger til en sikkerhetsmargin proporsjonalt med hvor mye forsinkelsen varierer. Alle etterfølgende pakker i samme snakkefase spilles av med faste 20 ms mellomrom fra dette utgangspunktet.</p>
+  <p>Her er K en konstant (typisk 4). Strukturen ligner på hvordan TCP setter utløpstid ut fra estimert RTT og variasjon i kapittel 3: et glidende gjennomsnitt av forsinkelse pluss et ledd proporsjonalt med avvik. Alle etterfølgende pakker i samme snakkefase spilles av med faste 20 ms mellomrom fra dette utgangspunktet.</p>
 
   <div class="stepper" id="ewmaStepper">
     <div class="step-display">
@@ -506,9 +504,7 @@
   </div>
 
   <h3>Detektere start av ny snakkefase</h3>
-  <p>Mottakeren må vite når en ny snakkefase starter, for det er da playout-forsinkelsen kan justeres. Uten pakketap er det enkelt: hvis forskjellen mellom to påfølgende tidsstempler er > 20 ms, har det vært en stillhetsperiode. Med mulig pakketap ser mottakeren på <em>både</em> tidsstempler og sekvensnummer — hvis tidsstempelgapet er > 20 ms <em>og</em> det ikke mangler sekvensnummer, er det en ny snakkefase.</p>
-
-  <p>En alternativ teknikk er å se på <strong>signalenergien</strong> i pakken direkte: stillhetsperioder har lav energi, mens snakkefaser har høy. Senderen kan også markere snakkefasens start eksplisitt med en flagg-bit i RTP-headeren (M-biten — «marker bit»). I praksis brukes ofte en kombinasjon: tidsstempel/sekvensnummer for grov deteksjon, signalenergi for å bekrefte at det faktisk er stemme og ikke bare kort pause i støy.</p>
+  <p>Mottakeren må vite når en ny snakkefase starter, for det er da playout-forsinkelsen kan justeres. I kapittelutdraget beskrives at mottakeren kan undersøke <strong>signalenergien</strong> i hver mottatt pakke: lav energi tyder på stillhet, høy energi på tale.</p>
 </div>
 </section>
 
@@ -595,24 +591,22 @@
 <div class="container">
   <div class="section-badge">08 · Skype</div>
   <h2>Skype: <em>P2P</em> VoIP i praksis</h2>
-  <p class="section-intro">Et tidlig eksempel på storskala VoIP — med supernoder, overlay-nettverk og NAT-traversering.</p>
+  <p class="section-intro">Et tidlig eksempel på storskala VoIP — med <em>super peers</em>, overlay-nettverk og NAT-traversering.</p>
 
-  <p>Skype var i mange år det dominerende eksempelet på VoIP over Internett. Det brukte en proprietær, kryptert protokoll som ble reverseengineered av forskere. Arkitekturen er interessant fordi den kombinerer P2P-elementer med sentralisert kontroll.</p>
+  <p>Skype var i mange år det dominerende eksempelet på VoIP over Internett. Det brukte en proprietær, kryptert protokoll som ble reverseengineered av forskere. Arkitekturen er interessant fordi den kombinerer P2P-elementer med distribuert indeksering.</p>
 
   <h3>Arkitekturen</h3>
   <ul style="margin:0 0 24px 24px;color:var(--ink-soft)">
-    <li style="margin-bottom:8px"><strong>Skype-klienter (SC):</strong> vanlige brukere som kjører Skype-applikasjonen. Under en samtale kobler to klienter seg direkte til hverandre for selve VoIP-datastrømmen.</li>
-    <li style="margin-bottom:8px"><strong>Supernoder (SN):</strong> utvalgte Skype-peers med spesielle funksjoner — de hjelper til med å lokalisere andre brukere og rute trafikk gjennom et overlay-nettverk.</li>
-    <li style="margin-bottom:8px"><strong>Overlay-nettverk:</strong> supernodene danner et overliggende nettverk seg imellom for å finne brukeres IP-adresser.</li>
-    <li><strong>Login-server:</strong> en sentralisert server for autentisering (brukernavn/passord).</li>
+    <li style="margin-bottom:8px"><strong>Skype-klienter:</strong> vanlige brukere som kjører Skype-applikasjonen. Under en samtale kobler to klienter seg gjerne direkte til hverandre for selve tale-/videostrømmen.</li>
+    <li style="margin-bottom:8px"><strong>Super peers:</strong> utvalgte Skype-peers med spesielle funksjoner — de hjelper til med å lokalisere andre brukere og med relay gjennom et overlay-nettverk.</li>
+    <li><strong>Overlay-nettverk:</strong> super peers danner et overliggende nett seg imellom; en distribuert indeks mapper Skype-brukernavn til gjeldende IP-adresser (og portnumre).</li>
   </ul>
 
   <h3>Oppkobling av en samtale</h3>
   <ol style="margin:20px 0 24px 24px;color:var(--ink-soft)">
-    <li style="margin-bottom:8px">Klienten kobler seg til en supernode (IP-adressen er cachet lokalt) via TCP.</li>
-    <li style="margin-bottom:8px">Logger inn mot den sentraliserte login-serveren.</li>
-    <li style="margin-bottom:8px">Får IP-adressen til den man vil ringe fra supernodenes overlay (eller fra kontaktlisten).</li>
-    <li>Initierer samtale direkte til den andre klienten.</li>
+    <li style="margin-bottom:8px">Klienten kobler seg til en super peer (forbindelsen er initiert innenfra NAT der det trengs).</li>
+    <li style="margin-bottom:8px">Klienten søker i den distribuerte indeksen for å finne IP-adressen til den som skal ringes.</li>
+    <li>Vanlig toveis samtale går peer-to-peer; ved NAT-problemer brukes relay via en ikke-NATet super peer, som beskrevet nedenfor.</li>
   </ol>
 
   <h3>NAT-problemet og relay-løsningen</h3>
@@ -634,10 +628,10 @@
       <text x="170" y="170" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">NAT</text>
       <!-- SN A -->
       <ellipse cx="300" cy="80" rx="40" ry="25" fill="#f4f1ea" stroke="#b04428" stroke-width="2"/>
-      <text x="300" y="85" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">SN-A</text>
+      <text x="300" y="85" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">SP-A</text>
       <!-- SN B -->
       <ellipse cx="440" cy="80" rx="40" ry="25" fill="#f4f1ea" stroke="#b04428" stroke-width="2"/>
-      <text x="440" y="85" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">SN-B</text>
+      <text x="440" y="85" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">SP-B</text>
       <!-- NAT B -->
       <rect x="540" y="120" width="60" height="90" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5" rx="3"/>
       <text x="570" y="170" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#6b6257">NAT</text>
@@ -648,17 +642,17 @@
       <path d="M 110 155 Q 200 60 260 80" stroke="#2d4a7a" stroke-width="2" fill="none" marker-end="url(#arr4)"/>
       <text font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a"><textPath href="#skype-lbl-tcp1" startOffset="38%">1. TCP</textPath></text>
       <line x1="340" y1="80" x2="400" y2="80" stroke="#b04428" stroke-width="2" marker-end="url(#arr4)"/>
-      <text x="370" y="70" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428">2. SN-SN</text>
+      <text x="370" y="70" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#b04428">2. SP–SP</text>
       <path d="M 480 80 Q 540 60 630 155" stroke="#2d4a7a" stroke-width="2" fill="none" marker-end="url(#arr4)"/>
       <text font-family="IBM Plex Mono" font-size="9" fill="#2d4a7a"><textPath href="#skype-lbl-tcp2" startOffset="42%">3. TCP</textPath></text>
       <!-- relay arrow -->
       <path d="M 110 175 Q 370 260 630 175" stroke="#3d6b3a" stroke-width="2.5" fill="none" stroke-dasharray="8 4" marker-end="url(#arr4)"/>
-      <text font-family="Newsreader" font-size="11" font-style="italic" fill="#3d6b3a"><textPath href="#skype-lbl-relay" startOffset="50%" text-anchor="middle">VoIP-data relayed via supernoder</textPath></text>
+      <text font-family="Newsreader" font-size="11" font-style="italic" fill="#3d6b3a"><textPath href="#skype-lbl-relay" startOffset="50%" text-anchor="middle">VoIP-data relayes via super peers</textPath></text>
     </svg>
-    <figcaption>Begge parter bak NAT: Alice og Bob holder åpne TCP-forbindelser til sine supernoder. Supernodene relayer datatrafikken mellom dem.</figcaption>
+    <figcaption>Begge parter bak NAT: Alice og Bob holder åpne forbindelser til hver sin super peer (typisk TCP for kontroll). Super peers relayer taletrafikk mellom dem når direkte peer-forbindelse ikke lar seg gjøre.</figcaption>
   </figure>
 
-  <p>Løsningen: Alice og Bob holder begge en <em>åpen TCP-forbindelse</em> til sin respektive supernode (forbindelsen er initiert <em>innenfra</em> NAT-en, så den er tillatt). Når Alice vil ringe Bob, signalerer hun gjennom sin SN til Bobs SN, som bruker sin åpne forbindelse til Bob. Selve taledataene kan da relays gjennom supernodene. Det er ikke optimalt (dobbelt så mange hopp), men det fungerer selv når begge parter er bak NAT.</p>
+  <p>Løsningen i utdraget: når begge har NAT, velger to super peers en tredje, ikke-NATet <em>relay peer</em> som mellomledd. Alice og Bob initierer hver sin sesjon til relayen (fra innsiden av NAT), og relayen videresender pakker. Tale går da over to hopp via relay — tyngre enn direkte P2P, men det fungerer når direkte forbindelse blokkes.</p>
 </div>
 </section>
 
@@ -676,8 +670,8 @@
   <p class="dropcap">RTP (RFC 3550) er protokollen som gir struktur til multimedia-pakker. Den er ikke en transportprotokoll i tradisjonell forstand — den kjører <em>oppå</em> UDP og gir et sett med felter som applikasjoner trenger for å håndtere sanntidsdata, men som UDP ikke tilbyr: informasjon om hva slags data pakken inneholder, i hvilken rekkefølge den hører hjemme, og nøyaktig når den ble generert.</p>
 
   <h3>Hvor passer RTP inn?</h3>
-  <p>I lærebokens kapittel 9.4 «Protocols for Real-Time Conversational Applications» introduseres to standardprotokoller fra IETF: <strong>RTP</strong> (Real-Time Transport Protocol) for selve mediadataene, og <strong>SIP</strong> (Session Initiation Protocol) for samtale-oppsett (signaling). Vi fokuserer her bare på RTP, som er det pensum krever — SIP utelates.</p>
-  <p>RTP er det rammeverket nesten all moderne VoIP- og videosamtale-trafikk bygger på: Zoom, WhatsApp, Teams, Google Meet og WebRTC bruker alle RTP eller varianter under panseret. Når vi snakker om «protokoller for sanntidskommunikasjon» i 2026, snakker vi i praksis om RTP pluss et knippe relaterte standarder (RTCP, SRTP for kryptering, SDP for sesjonsbeskrivelser).</p>
+  <p>I kapittelutdraget 9.4 introduseres RTP (Real-Time Transport Protocol) for sanntidsmediedata, og SIP for samtale-oppsett. Pensum dekker RTP; SIP kan utelates.</p>
+  <p>RTP brukes i mange kommersielle VoIP- og videosystemer sammen med UDP. Protokollen standardiserer hvordan mediechunks innkapsles slik at ulike applikasjoner kan samhandle.</p>
 
   <h3>Hva RTP gir oss</h3>
   <div class="callout callout-green">
@@ -720,7 +714,7 @@
 
       <!-- misc -->
       <rect x="30" y="80" width="640" height="30" fill="#e8e3d6" stroke="#1a1612" stroke-width="1.5"/>
-      <text x="350" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">Diverse felter (versjon, padding, extension, CC, marker) + evt. CSRC-liste</text>
+      <text x="350" y="100" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">Øvrige små felter i RTP-headeren (bl.a. versjon)</text>
 
       <!-- payload -->
       <rect x="30" y="120" width="640" height="50" fill="#e8e3d6" stroke="#a39886" stroke-width="1.5"/>
@@ -767,23 +761,8 @@
   </table>
   </div>
 
-  <h3>RTCP: Real-Time Control Protocol</h3>
-  <p>RTP kommer alltid sammen med en søsterprotokoll — <strong>RTCP</strong> (RTP Control Protocol). Mens RTP frakter selve mediepakkene, brukes RTCP til <em>tilbakemelding</em> om kvaliteten på strømmen. Hver deltaker i en RTP-sesjon sender periodiske RTCP-rapporter til alle andre deltakere på en separat UDP-port (typisk RTP-port + 1).</p>
-
-  <div class="callout">
-    <span class="label">Hva RTCP-rapporter inneholder</span>
-    <p><strong>Receiver Reports</strong> sendes fra mottakere og inkluderer: brøkdel av pakker tapt siden forrige rapport, totalt antall tapte pakker, høyeste sekvensnummer mottatt, og <em>interarrival jitter</em> (et glidende mål på variasjonen i pakkeforsinkelse). <strong>Sender Reports</strong> sendes fra senderen og inkluderer en avbildning mellom RTP-tidsstempel og «wall-clock»-tid (NTP-format), samt antall sendte pakker og bytes.</p>
-  </div>
-
-  <p>Hvorfor er dette nyttig? Senderen kan bruke RTCP-feedback til å <em>tilpasse seg</em> nettverket dynamisk — bytte til lavere bitrate-koding hvis tapraten øker, justere FEC-redundansen, eller redusere sende-raten. RTCP gir også verktøy for synkronisering på tvers av strømmer: NTP-tidsstemplene i Sender Reports lar mottakeren synkronisere lyd og bilde fra samme kilde nøyaktig (<em>lip-sync</em>) selv om de sendes som to separate RTP-strømmer med uavhengige RTP-klokker.</p>
-
-  <div class="callout callout-blue">
-    <span class="label">Båndbreddebegrensning på RTCP</span>
-    <p>For at RTCP-trafikken ikke skal stjele båndbredde fra selve medieinnholdet, begrenser standarden RTCP til typisk <strong>5 % av total sesjonsbåndbredde</strong>. Når antallet deltakere øker, sendes RTCP-rapporter sjeldnere fra hver enkelt — så totalsummen forblir konstant uansett gruppestørrelse. Det er en elegant måte å skalere tilbakemelding til mange-til-mange-sesjoner uten å overbelaste nettet.</p>
-  </div>
-
   <h3>RTP og QoS</h3>
-  <p>Et viktig poeng til slutt: <strong>RTP gir ingen QoS-garantier</strong>. RTP-pakker er innkapslet i vanlige UDP-segmenter, og rutere i nettet ser bare et IP-datagram med en UDP-header. De gjør ingen spesiell innsats for å levere RTP-pakker raskere eller mer pålitelig enn andre pakker. All smarthet — adaptiv playout, FEC, jitterbuffer, RTCP-feedback — ligger i endepunktene, ikke i nettverket.</p>
+  <p>Et viktig poeng til slutt: <strong>RTP gir ingen QoS-garantier</strong>. RTP-pakker er innkapslet i vanlige UDP-segmenter, og rutere i nettet ser bare et IP-datagram med en UDP-header. De gjør ingen spesiell innsats for å levere RTP-pakker raskere eller mer pålitelig enn andre pakker. All smarthet — adaptiv playout, FEC, jitterbuffer — ligger i endepunktene, ikke i nettverket.</p>
 
   <div class="callout callout-blue">
     <span class="label">Interoperabilitet</span>
@@ -885,26 +864,26 @@
 
   <div class="callout callout-green">
     <span class="label">3 — VoIP: adaptiv playout og tapsskjuling</span>
-    <p>For interaktiv tale er forsinkelsesbudsjettet knepent (mål: under 150 ms). Adaptiv playout-forsinkelse justerer bufferstørrelsen ved starten av hver snakkefase ved hjelp av EWMA — samme struktur som TCPs RTO-estimering. Tap kan skjules med FEC (XOR eller piggyback med lavkvalitetsstrøm) eller interleaving, som sprer tap utover slik at hvert hull er umerkelig kort.</p>
+    <p>For interaktiv tale er forsinkelsesbudsjettet knepent (mål: under 150 ms). Adaptiv playout-forsinkelse justerer bufferen ved starten av hver snakkefase med glidende gjennomsnitt av målt forsinkelse og avvik — samme idé som TCPs RTT-estimering i kapittel 3. Tap kan skjules med FEC (XOR eller piggyback med lavkvalitetsstrøm) eller interleaving, som sprer tap utover slik at hvert hull er kortere.</p>
   </div>
 
   <div class="callout">
     <span class="label">4 — HTTP/TCP vant over UDP for streaming</span>
-    <p>UDP gir lavere forsinkelse og ingen retransmisjon, men blokkeres av brannmurer og krever egen serverinfrastruktur. HTTP/TCP passerer port 80/443 overalt, fungerer med standard webservere, og gir pålitelig levering. Den høyere playout-bufferen som trengs for å jevne ut TCPs variable sende-rate er akseptabel for lagret video. Moderne tjenester bruker DASH på toppen av HTTP for adaptiv kvalitet.</p>
+    <p>UDP gir lavere forsinkelse og ingen retransmisjon, men blokkeres ofte av brannmurer og krever egen serverinfrastruktur. HTTP/TCP brukes vanligvis over webkanaler som slipper gjennom brannmurer, fungerer med standard webservere, og gir pålitelig levering. Den høyere playout-bufferen som trengs for å jevne ut TCPs variable sende-rate er akseptabel for lagret video. Moderne tjenester bruker DASH på toppen av HTTP for adaptiv kvalitet.</p>
   </div>
 
   <div class="callout callout-blue">
     <span class="label">5 — RTP gir struktur, ikke garantier</span>
-    <p>RTP kjører oppå UDP og legger til tre felter multimedia trenger men UDP mangler: payload-type (hvilken koding), sekvensnummer (tapsdeteksjon og rekkefølge) og tidsstempel (playout-timing). RTP gir <em>ingen</em> QoS-garantier — rutere ser bare vanlige UDP-pakker. All intelligens — adaptiv playout, FEC, jitterbuffer — ligger i endepunktene. Standardiseringen gir interoperabilitet mellom leverandører.</p>
+    <p>RTP kjører oppå UDP og legger til tre felter multimedia trenger men UDP mangler: payload-type (hvilken koding), sekvensnummer (tapsdeteksjon og rekkefølge) og tidsstempel (playout-timing). RTP gir <em>ingen</em> QoS-garantier — rutere ser bare vanlige UDP-pakker. All intelligens — adaptiv playout, FEC, interleaving, error concealment — ligger i endepunktene. Standardiseringen gir interoperabilitet mellom leverandører.</p>
   </div>
 
-  <p>Den røde tråden: <em>alle</em> disse teknikkene — buffering, adaptiv playout, FEC, interleaving, RTP — er svar på det samme grunnproblemet: et tidssensitivt medium som skal fungere over et nettverk som ikke gir noen tidsgarantier. Løsningen ligger alltid i endepunktene, aldri i nettverket.</p>
+  <p>Den røde tråden: <em>alle</em> disse teknikkene — buffering, adaptiv playout, FEC, interleaving, error concealment, RTP — er svar på det samme grunnproblemet: et tidssensitivt medium som skal fungere over et nettverk som ikke gir noen tidsgarantier. Løsningen ligger alltid i endepunktene, aldri i nettverket.</p>
 </div>
 </section>
 
 <footer>
   <div class="container">
-    <p>Basert på <em>Computer Networking: A Top-Down Approach</em>, 7. utgave, av Kurose &amp; Ross — kapittel 9 (9.1–9.4.1). Denne siden dekker pensum for TTM4100 og forklarer mekanismene bak multimedia over pakkenett.</p>
+    <p>Basert på kapittelutdraget (multimedia networking) i læreboken <em>Computer Networking: A Top-Down Approach</em> (Kurose &amp; Ross). Mekanismene er forklart i tråd med dette utdraget.</p>
     <p style="margin-top:20px;color:var(--rust);letter-spacing:0.6em">&#10043; &#10043; &#10043;</p>
   </div>
 </footer>
@@ -941,13 +920,13 @@
   update();
 })();
 
-// STEPPER: EWMA adaptive playout
+// STEPPER: adaptiv playout (glidende estimat av forsinkelse)
 (function(){
   var steps = [
     {title:'Hva er problemet?', text:'Fast playout-forsinkelse q fungerer, men er et kompromiss: for stor q gir unødvendig forsinkelse i samtalen, for liten q gir for mange «for sene» pakker. Kan vi gjøre q adaptiv?'},
-    {title:'EWMA-estimering', text:'Vi bruker en eksponentielt vektet glidende gjennomsnitt (EWMA) for å estimere nettverksforsinkelsen: dᵢ = (1 − α) · dᵢ₋₁ + α · (rᵢ − tᵢ), der α typisk er 0,1. I tillegg estimerer vi avviket: vᵢ = (1 − β) · vᵢ₋₁ + β · |rᵢ − tᵢ − dᵢ|. Playout-tidspunktet for første pakke j i en ny snakkefase blir: tⱼ + dⱼ + K · vⱼ (K = 4). Nøyaktig samme struktur som TCPs RTO = EstimatedRTT + 4 · DevRTT.'},
+    {title:'Glidende estimering', text:'Vi estimerer nettverksforsinkelsen med glidende gjennomsnitt: dᵢ = (1 − α) · dᵢ₋₁ + α · (rᵢ − tᵢ), der α typisk er liten (f.eks. 0,01 i utdraget). I tillegg estimerer vi avviket: vᵢ = (1 − β) · vᵢ₋₁ + β · |rᵢ − tᵢ − dᵢ|. Playout-tidspunktet for første pakke j i en ny snakkefase blir: tⱼ + dⱼ + K · vⱼ (K = 4). Samme idé som når TCP estimerer RTT og variasjon (kapittel 3).'},
     {title:'Når justerer vi?', text:'Playout-forsinkelsen justeres bare ved starten av en ny snakkefase — aldri midt i en. Under en snakkefase spilles alle pakker av med fast 20 ms mellomrom. Mellom snakkefasene (stillheten) kan vi strekke eller komprimere pausen for å ta igjen den nye forsinkelsen.'},
-    {title:'Hvordan oppdage ny snakkefase?', text:'Uten pakketap: hvis tidsstempelforskjellen mellom to påfølgende pakker er > 20 ms, har det vært en stillhetsperiode. Med mulig tap: vi sjekker også sekvensnumrene — gap i tidsstempler uten gap i sekvensnummer betyr ny snakkefase, ikke pakketap.'},
+    {title:'Hvordan oppdage ny snakkefase?', text:'I utdraget beskrives at mottakeren kan undersøke signalenergien i hver mottatt pakke for å avgjøre om en ny snakkefase starter.'},
     {title:'Resultatet', text:'Adaptiv playout gir oss det beste fra to verdener: når nettverket er stabilt, holder vi forsinkelsen lav. Når jitteret øker, øker vi automatisk playout-bufferen for å unngå tap. Brukeren merker bare at «stillheten» mellom setninger er litt lengre eller kortere — noe som er helt umerkelig.'}
   ];
   var i = 0;
@@ -984,7 +963,7 @@
       wrong: 'RTP gir ingen garantier om levering eller QoS. Tenk på hva som trengs for å spille av sanntidsdata riktig: når ble pakken generert, hva slags data er det, og i hvilken rekkefølge?'
     },
     'qFeedback4': {
-      correct: 'Riktig! HTTP/TCP passerer brannmurer (port 80/443 er nesten alltid åpen), fungerer med standard webservere, og gir pålitelig levering. Større playout-buffer kompenserer for TCPs variable sende-rate.',
+      correct: 'Riktig! HTTP/TCP passerer brannmurer lettere enn rå UDP-video, fungerer med standard webservere, og gir pålitelig levering. Større playout-buffer kompenserer for TCPs variable sende-rate.',
       wrong: 'Tenk pragmatisk: hva er den praktiske barrieren som gjør at UDP-streaming feiler i mange nettverk?'
     },
     'qFeedback5': {

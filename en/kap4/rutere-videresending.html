@@ -211,7 +211,7 @@
       <figcaption>Generic router architecture. The data plane (input ports, fabric, output ports) does the fast work; the control plane (routing processor) updates the tables.</figcaption>
     </figure>
 
-    <p>The lookup follows a pattern that is fundamental to the network layer in this course: <strong>match plus action</strong>. Look at fields in the header (typically the destination IP address), find a matching row in the table, perform the action (typically &laquo;send out on interface 3&raquo;). That is destination-based IP forwarding in the data plane.</p>
+    <p>The lookup is a fast prefix/destination match: read the destination IP (typically), find the longest matching prefix in the forwarding table, and send the packet out on the indicated interface. That is traditional destination-based IP forwarding in the data plane (as in this course, excluding generalized forwarding / SDN in textbook section 4.4).</p>
   </div>
 </section>
 
@@ -349,7 +349,7 @@
     <p>An old rule of thumb (RFC 3439) states that the buffer should be approximately <strong>RTT &times; C</strong> (for example, 250&nbsp;ms &times; 10&nbsp;Gbps = 2.5&nbsp;Gbit). More recent research recommends RTT&middot;C&nbsp;/&nbsp;&radic;N where N is the number of flows &mdash; because overly large buffers create <em>bufferbloat</em> and ruin latency for real-time traffic.</p>
 
     <h3>Buffer management</h3>
-    <p><strong>Tail drop:</strong> drop the packet that just arrived. <strong>RED (Random Early Detection):</strong> drop packets randomly <em>before</em> the queue is full to signal congestion. <strong>ECN:</strong> mark packets without dropping them.</p>
+    <p><strong>Tail drop:</strong> drop the packet that just arrived. <strong>RED (Random Early Detection):</strong> drop packets randomly <em>before</em> the queue is full to signal congestion earlier. (ECN-based marking instead of drops is tied to textbook sections not included in TTM4100.)</p>
 
     <h3>Scheduling &mdash; who goes first?</h3>
 

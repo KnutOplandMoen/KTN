@@ -354,7 +354,7 @@
     <p>En gammel tommelfingerregel (RFC 3439) sier at bufferen b&oslash;r v&aelig;re omtrent <strong>RTT &times; C</strong> (for eksempel 250&nbsp;ms &times; 10&nbsp;Gbps = 2,5&nbsp;Gbit). Nyere forskning anbefaler RTT&middot;C&nbsp;/&nbsp;&radic;N der N er antall flows &mdash; fordi for store buffere skaper <em>bufferbloat</em> og &oslash;delegger latens for real-time-trafikk.</p>
 
     <h3>Buffer management</h3>
-    <p><strong>Tail drop:</strong> dropp pakken som nettopp ankom. <strong>RED (Random Early Detection):</strong> dropp pakker tilfeldig <em>f&oslash;r</em> k&oslash;en er full for &aring; signalisere congestion. <strong>ECN:</strong> marker pakker uten &aring; droppe dem.</p>
+    <p><strong>Tail drop:</strong> dropp pakken som nettopp ankom. <strong>RED (Random Early Detection):</strong> dropp pakker tilfeldig <em>f&oslash;r</em> k&oslash;en er full for &aring; signalisere metning tidligere. (ECN-basert merking i stedet for drop er pensum-messig knyttet til avsnitt som ikke er med i TTM4100.)</p>
 
     <h3>Scheduling &mdash; hvem g&aring;r f&oslash;rst?</h3>
 

@@ -586,10 +586,10 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 10 · Middels</div>
-    <div class="q-text">Hva skjer når en laptop bytter fra ett AP til et annet innenfor samme IP-subnett, og hvorfor merker TCP-forbindelsen ingenting?</div>
+    <div class="q-text">Hva er <em>NAV</em> (Network Allocation Vector) i 802.11, og hvordan henger den sammen med RTS/CTS?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Verten beholder samme IP-adresse, så TCP-fire-tuppelen er uendret. Svitsjen lærer at MAC-en nå nås via en annen port via self-learning. Hele byttet skjer på 802.11-laget og er usynlig for IP og TCP.</div>
+      <div class="answer">NAV er en intern «kanalen er opptatt så lenge»-teller hos hver node. Når en node hører RTS, CTS eller en lang datapakke, leser den varighetsfeltet i rammen og setter NAV til den verdien. Så lenge NAV &gt; 0, sender ikke noden — selv om den fysisk ville hørt stillhet på lufta. Dermed reserveres kanalen for skjulte terminaler som ikke hørte den opprinnelige RTS-en.</div>
     </div>
   </div>
 
@@ -667,10 +667,10 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 19 · Middels</div>
-    <div class="q-text">Hva er hovedrollen til MME i 4G LTE-kontrollplanet?</div>
+    <div class="q-text">Hva er <strong>eNode-B</strong> i 4G LTE, og hvordan skiller den seg grovt fra et vanlig WiFi-tilgangspunkt (AP)?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">MME (Mobility Management Entity) er hjernen i kontrollplanet: den autentiserer enheten (i samarbeid med HSS), setter opp tunneler og styrer kontroll-signalering — men er ikke i selve dataveien.</div>
+      <div class="answer">eNode-B er LTE-basestasjonen: den styrer radioressurser, planlegger uplink/downlink og samarbeider med naboceller for spektrum og håndover. Et typisk WiFi-AP er i hovedsak en bro mellom 802.11 og Ethernet med langt enklere, mer «passiv» rolle. (Detaljert mobilitetsadministrasjon i praksis — f.eks. MME/HSS — er utelatt fra pensum som eget eksamenstema.)</div>
     </div>
   </div>
 
