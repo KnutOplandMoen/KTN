@@ -100,8 +100,8 @@
         <rect x="140" y="180" width="360" height="100" fill="#f4f1ea" stroke="#b04428" stroke-width="1.5" rx="3"/>
         <text x="320" y="205" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#b04428" font-weight="600" letter-spacing="2">DATA PLANE</text>
         <text x="320" y="228" text-anchor="middle" font-family="Newsreader" font-size="15" font-style="italic" fill="#3d3832">Forwarding-tabell</text>
-        <text x="320" y="248" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">dst 10.0.1.0 ? port 2</text>
-        <text x="320" y="264" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">dst 10.0.2.0 ? port 3</text>
+        <text x="320" y="248" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">dst 10.0.1.0 → port 2</text>
+        <text x="320" y="264" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#6b6257">dst 10.0.2.0 → port 3</text>
 
         <!-- Arrow from control to data -->
         <path d="M 470 150 Q 495 165 470 180" fill="none" stroke="#b04428" stroke-width="1.5" marker-end="url(#arrow1)"/>
@@ -142,7 +142,7 @@
   </div>
 </section>
 
-<div class="divider">? &nbsp;? &nbsp;?</div>
+<div class="divider">❋ &nbsp;❋ &nbsp;❋</div>
 
 <!-- ============ SECTION 2: Routing protocols ============ -->
 <section id="ruting">
@@ -153,7 +153,7 @@
 
     <p class="lead">En rutingprotokoll har ett hovedmål: <em>bestemme gode ruter (paths) fra sendende verter til mottakende verter, gjennom nettverket av rutere</em>. La oss pakke opp den setningen nøye, for hvert ord betyr noe.</p>
 
-    <p>En <strong>rute</strong> (eller <em>path</em>) er rett og slett sekvensen av rutere en pakke passerer gjennom, fra startverten til destinasjonen. Hvis du sender en pakke fra laptoppen din og den går gjennom rutere R1 ? R4 ? R7 ? R9 før den når målet, så er det <em>ruten</em>.</p>
+    <p>En <strong>rute</strong> (eller <em>path</em>) er rett og slett sekvensen av rutere en pakke passerer gjennom, fra startverten til destinasjonen. Hvis du sender en pakke fra laptoppen din og den går gjennom rutere R1 → R4 → R7 → R9 før den når målet, så er det <em>ruten</em>.</p>
 
     <p>Men hva betyr "god"? Det kommer an på hva du optimerer for. Vanlige tolkninger er <strong>lavest kostnad</strong> (kanskje målt i antall hopp, kanskje i båndbredde, kanskje i pengeleieavtaler mellom ISP-er), <strong>raskest</strong> (minst forsinkelse), eller <strong>minst overbelastet</strong> (unngå lenker der det står i kø). Hver ruterprotokoll gjør sine egne valg om hva "god" betyr — og det er en del av grunnen til at ruting regnes som en av de klassiske "topp 10"-utfordringene innen nettverk.</p>
 
@@ -263,7 +263,7 @@
   </div>
 </section>
 
-<div class="divider">? &nbsp;? &nbsp;?</div>
+<div class="divider">❋ &nbsp;❋ &nbsp;❋</div>
 
 <!-- ============ SECTION 3: ICMP ============ -->
 <section id="icmp">
@@ -319,7 +319,7 @@
   </div>
 </section>
 
-<div class="divider">? &nbsp;? &nbsp;?</div>
+<div class="divider">❋ &nbsp;❋ &nbsp;❋</div>
 
 <!-- ============ SECTION 4: Traceroute ============ -->
 <section id="traceroute">
@@ -349,9 +349,9 @@
     <p>Kildemaskinen sender ut <em>sett</em> av UDP-segmenter (vanligvis tre per TTL-verdi, for å kunne måle RTT-variasjon). Hver pakke i et sett har samme TTL.</p>
 
     <ul style="list-style: none; padding-left: 0;">
-      <li style="padding: 8px 0;"><strong>Sett 1</strong> har TTL = 1 ? dør på ruter 1 ? ruter 1 sender "TTL expired"</li>
-      <li style="padding: 8px 0;"><strong>Sett 2</strong> har TTL = 2 ? dør på ruter 2 ? ruter 2 sender "TTL expired"</li>
-      <li style="padding: 8px 0;"><strong>Sett 3</strong> har TTL = 3 ? dør på ruter 3 ? ruter 3 sender "TTL expired"</li>
+      <li style="padding: 8px 0;"><strong>Sett 1</strong> har TTL = 1 → dør på ruter 1 → ruter 1 sender "TTL expired"</li>
+      <li style="padding: 8px 0;"><strong>Sett 2</strong> har TTL = 2 → dør på ruter 2 → ruter 2 sender "TTL expired"</li>
+      <li style="padding: 8px 0;"><strong>Sett 3</strong> har TTL = 3 → dør på ruter 3 → ruter 3 sender "TTL expired"</li>
       <li style="padding: 8px 0;">... og så videre</li>
     </ul>
 
@@ -427,8 +427,8 @@
         </div>
       </div>
       <div class="stepper-controls">
-        <button class="stepper-btn" id="prev-btn">? Forrige</button>
-        <button class="stepper-btn" id="next-btn">Neste ?</button>
+        <button class="stepper-btn" id="prev-btn">← Forrige</button>
+        <button class="stepper-btn" id="next-btn">Neste →</button>
       </div>
     </div>
 
@@ -448,7 +448,7 @@
   </div>
 </section>
 
-<div class="divider">? &nbsp;? &nbsp;?</div>
+<div class="divider">❋ &nbsp;❋ &nbsp;❋</div>
 
 <!-- ============ SECTION 5: Network management ============ -->
 <section id="nettverksadmin">
@@ -474,7 +474,7 @@
 
 <footer>
   <div class="container">
-    <div class="ornament">? &nbsp;? &nbsp;?</div>
+    <div class="ornament">❋ &nbsp;❋ &nbsp;❋</div>
     <p>Basert på <em>Computer Networking: A Top-Down Approach</em>, 8. utgave,</p>
     <p>Jim Kurose &amp; Keith Ross, Kapittel 5.</p>
   </div>
@@ -518,7 +518,7 @@ document.querySelectorAll('.quiz').forEach(quiz => {
       highlight: 'r1'
     },
     {
-      caption: '<strong>Steg 2: Send TTL=2.</strong> Ny pakke, TTL=2. Overlever R1 (TTL?1), dør på R2 (TTL?0).',
+      caption: '<strong>Steg 2: Send TTL=2.</strong> Ny pakke, TTL=2. Overlever R1 (TTL→1), dør på R2 (TTL→0).',
       packet: { from: 55, to: 320, label: 'TTL=2' },
       icmp: null
     },
