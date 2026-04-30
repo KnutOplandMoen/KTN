@@ -1923,6 +1923,57 @@ footer p {
   color: var(--rust);
   margin-right: 10px;
 }
+.exam-q__opts li.is-clickable {
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, transform 0.08s;
+  user-select: none;
+}
+.exam-q__opts li.is-clickable:hover {
+  background: #fff9ee;
+  border-color: var(--rust);
+}
+.exam-q__opts li.is-clickable:focus-visible {
+  outline: 2px solid var(--rust);
+  outline-offset: 2px;
+}
+.exam-q__opts.is-answered li {
+  cursor: default;
+}
+.exam-q__opts.is-answered li:not(.is-correct):not(.is-wrong) {
+  opacity: 0.5;
+}
+.exam-q__opts li.is-correct {
+  background: #eaf3e8;
+  border-color: var(--green);
+  color: var(--ink);
+}
+.exam-q__opts li.is-correct .opt-label { color: var(--green); }
+.exam-q__opts li.is-correct::after {
+  content: '✓ Riktig';
+  float: right;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--green);
+  font-weight: 700;
+}
+.exam-q__opts li.is-wrong {
+  background: #fbeae6;
+  border-color: var(--rust);
+  color: var(--ink);
+}
+.exam-q__opts li.is-wrong .opt-label { color: var(--rust); }
+.exam-q__opts li.is-wrong::after {
+  content: '✗ Feil';
+  float: right;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--rust);
+  font-weight: 700;
+}
 
 .fasit-details { margin-top: 10px; }
 .fasit-details summary {
