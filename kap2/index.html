@@ -398,10 +398,10 @@
       </li>
 
       <li data-card>
-        <div data-fc-front>Hva skiller IMAP fra POP3 som mail access-protokoll?</div>
+        <div data-fc-front>Hvilke mail-access-protokoller bruker mottakeren for å hente posten sin, og hvorfor er ikke SMTP brukt der?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> IMAP lar klienter synkronisere mapper, flagg og meldingsstatus mens e-posten <em>forblir lagret på serveren</em>. POP3 laster meldinger ned til klienten og sletter dem typisk fra serveren etterpå.</p>
-          <p><strong>Hvorfor det betyr noe:</strong> Med IMAP kan du lese e-post fra mobil, jobb-PC og hjemme-PC og se samme tilstand alle steder — leste meldinger er lest, mapper er like overalt. Med POP3, der posten flyttes til den første enheten som henter den, ser du ikke samme innboks fra ulike enheter. IMAP er derfor blitt standarden i den moderne flerenheter-verdenen, mens POP3 er det enklere alternativet for enkeltmaskin-bruk.</p>
+          <p><strong>Svar:</strong> De to mail-access-protokollene som er pensum, er <strong>IMAP</strong> og <strong>HTTP(S)</strong>. IMAP lar klienter synkronisere mapper, flagg og meldingsstatus mens e-posten <em>forblir lagret på serveren</em>. HTTP(S) brukes av webmail (Gmail, Outlook på web), der nettleseren snakker direkte med tjenestens egen webserver i stedet for med en mailprotokoll.</p>
+          <p><strong>Hvorfor ikke SMTP:</strong> SMTP er en <em>push</em>-protokoll — avsender dytter meldingen frem til mottakerens server. Mottakeren skal <em>pull</em>-e meldingene ned (kanskje fra mobil, kanskje senere, kanskje fra flere enheter), og det er et helt annet bruksmønster. Derfor IMAP (eller HTTPS for webmail) mellom mottakerens server og hans klient, og SMTP kun mellom serverne.</p>
         </div>
       </li>
 
@@ -416,7 +416,7 @@
       <li data-card>
         <div data-fc-front>Hvordan fungerer moderne webmail (Gmail, Outlook på web) med tanke på protokoller?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> Webmail = <strong>HTTPS</strong> fra deg til din egen server, <strong>SMTP</strong> mellom serverne, <strong>HTTPS</strong> fra mottakerens server til mottakeren. Tradisjonell e-postklient (Outlook, Apple Mail) = <em>SMTP</em> fra deg ut, <em>SMTP</em> mellom serverne, <em>IMAP</em> (eller POP3) fra mottakerens server til mottakeren.</p>
+          <p><strong>Svar:</strong> Webmail = <strong>HTTPS</strong> fra deg til din egen server, <strong>SMTP</strong> mellom serverne, <strong>HTTPS</strong> fra mottakerens server til mottakeren. Tradisjonell e-postklient (Outlook, Apple Mail) = <em>SMTP</em> fra deg ut, <em>SMTP</em> mellom serverne, <em>IMAP</em> fra mottakerens server til mottakeren.</p>
           <p><strong>Hvorfor blandingen:</strong> Når du bruker Gmail i nettleseren, er det ikke SMTP du snakker fra nettleseren ut til Googles server — det er HTTPS. Først når Gmails servere skal levere meldingen videre til mottakerens server, kommer SMTP inn. SMTP er fortsatt limet mellom organisasjoner; alt fra brukeren til hans <em>egen</em> server er gjerne HTTPS når det er en webtjeneste, eller SMTP/IMAP når det er en tradisjonell klient. Blanding er normalen, ikke unntaket.</p>
         </div>
       </li>
@@ -424,7 +424,7 @@
       <li data-card>
         <div data-fc-front>Hvorfor er DNS organisert hierarkisk og distribuert i stedet for som én sentral tabell?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> DNS har tre nivåer: <em>rotservere</em> (ca. 13 logiske, replikert til 1000+ fysiske via anycast, administrert av ICANN) → <em>TLD-servere</em> (.com, .no, .org …) → <em>autoritative servere</em> for hvert enkelt domene (driftet av domeneeieren selv). Ingen enkelt server vet alt; hver server vet litt og vet hvem den skal spørre om resten.</p>
+          <p><strong>Svar:</strong> DNS har tre nivåer: <em>rotservere</em> (ca. 13 logiske, replikert til 1000+ fysiske via anycast, koordinert av IANA (under ICANN)) → <em>TLD-servere</em> (.com, .no, .org …) → <em>autoritative servere</em> for hvert enkelt domene (driftet av domeneeieren selv). Ingen enkelt server vet alt; hver server vet litt og vet hvem den skal spørre om resten.</p>
           <p><strong>Hvorfor ikke sentralt:</strong> Comcast alene håndterer ~600 milliarder DNS-oppslag i døgnet. Én sentral server ville (1) være et enkeltpunkt for feil, (2) ha umulig trafikkvolum, (3) være langt unna for de fleste, (4) være umulig å holde oppdatert når enhver kan flytte sin tjeneste til ny IP. Hierarkiet fordeler både last og administrativt ansvar, og caching gjør at det meste stopper hos den lokale navneserveren.</p>
         </div>
       </li>
@@ -656,10 +656,10 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 16 · Middels</div>
-    <div class="q-text">Hva er IMAP, og hva skiller det fra POP3?</div>
+    <div class="q-text">Hva gjør IMAP, og hvordan skiller det seg fra SMTP?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">IMAP lar klienter synkronisere mapper, flagg og meldingsstatus mens e-posten forblir lagret på serveren. Dette gjør at man kan lese e-post fra flere enheter og se samme tilstand overalt — i motsetning til POP3 som laster ned og typisk sletter meldinger fra serveren.</div>
+      <div class="answer">IMAP er en <em>mail-access</em>-protokoll: mottakeren bruker den for å hente meldinger fra sin egen mailserver, og den lar klienter synkronisere mapper, flagg og meldingsstatus mens e-posten forblir lagret på serveren. SMTP er derimot en <em>push</em>-protokoll som flytter meldinger mellom mailservere (og fra avsenderens klient inn til hans egen server). Kort sagt: SMTP for å sende, IMAP (eller HTTP for webmail) for å hente.</div>
     </div>
   </div>
 
@@ -677,7 +677,7 @@
     <div class="q-text">Forklar hierarkiet i DNS.</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">DNS er organisert i tre nivåer: rotnivå (13 rotservere globalt), TLD-nivå (f.eks. .no, .com) og autoritative navneservere for hvert enkelt domene. Hierarkiet fordeler last og gjør det skalerbart å betjene milliarder av oppslag daglig.</div>
+      <div class="answer">DNS er organisert i tre nivåer: rotnivå (13 logiske rotservere som er replikert til 1000+ fysiske instanser via anycast), TLD-nivå (f.eks. .no, .com) og autoritative navneservere for hvert enkelt domene. Hierarkiet fordeler last og gjør det skalerbart å betjene milliarder av oppslag daglig.</div>
     </div>
   </div>
 
@@ -731,7 +731,7 @@
     <div class="q-text">Forklar de vanligste HTTP-metodene i et REST API.</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">GET leser ressurser, POST oppretter/trigger handlinger, og PUT/PATCH brukes for oppdatering.</div>
+      <div class="answer">GET leser ressurser, POST oppretter/trigger handlinger, PUT laster opp/erstatter en ressurs på en gitt URL, DELETE fjerner ressurser, og HEAD ber om hodet uten selve innholdet.</div>
     </div>
   </div>
 

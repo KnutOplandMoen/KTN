@@ -34,8 +34,7 @@
       <a href="#dhcp"><span>12</span> DHCP</a>
       <a href="#nat"><span>13</span> NAT</a>
       <a href="#ipv6"><span>14</span> IPv6</a>
-      <a href="#hourglass"><span>15</span> Timeglasset og end-to-end</a>
-      <a href="#summary"><span>16</span> Oppsummering</a>
+      <a href="#summary"><span>15</span> Oppsummering</a>
     </nav>
   </div>
 </header>
@@ -351,49 +350,6 @@
       <div class="q">Hvorfor har IPv6 ingen header checksum, mens IPv4 har det?</div>
       <button>Vis svar</button>
       <div class="answer">I IPv4 m&aring; header checksum <strong>reberegnes i hver eneste router</strong>, fordi TTL-feltet dekrementeres for hvert hopp. Dette koster tid i en enhet som m&aring; prosessere millioner av pakker per sekund. Samtidig har b&aring;de TCP og UDP sine egne checksummer som beskytter data og header end-to-end. IPv6-designerne konkluderte med at en hop-by-hop checksum p&aring; nettverkslaget var bortkastet prosessering &mdash; og fjernet den for &aring; gj&oslash;re forwarding raskere.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 15 HOURGLASS ============ -->
-<section id="hourglass">
-  <div class="container">
-    <div class="section-badge">15 &middot; Timeglasset &amp; end-to-end</div>
-    <h2>Internetts <em>arkitekturprinsipper</em></h2>
-    <p class="section-intro">IP er Internetts &laquo;smale midje&raquo; &mdash; det eneste som alle m&aring; implementere. Kompleksiteten lever i kantene. Dette er et bevisst designvalg.</p>
-
-    <div class="callout">
-      <span class="label">Pensum-merknad</span>
-      <p>Seksjon 4.5 (Middleboxes) i boken er <strong>ikke pensum</strong>. Timeglassmodellen og end-to-end-argumentet er likevel sentrale arkitekturprinsipper som refereres gjennom hele kurset. Denne seksjonen gir nyttig bakgrunn, men eksamensfokuset ligger p&aring; seksjonene 4.1&ndash;4.3.</p>
-    </div>
-
-    <h3>IP-timeglasset</h3>
-    <p>Internett har mange protokoller i applikasjons-, transport-, lenke- og fysisk lag &mdash; men bare <strong>&eacute;n</strong> nettverkslagsprotokoll: IP. Denne &laquo;smale midjen&raquo; er det som gj&oslash;r interoperabilitet mulig: enhver enhet som implementerer IP kan kommunisere med enhver annen.</p>
-
-    <p>I &laquo;middelalderen&raquo; har Internett f&aring;tt &laquo;love handles&raquo;: mellombokser (firewalls, NAT, caches) som opererer inne i nettverket og bryter den rene timeglassmodellen.</p>
-
-    <h3>Arkitekturprinsipper (RFC 1958)</h3>
-
-    <div class="callout callout-blue">
-      <span class="label">&#9733; RFC 1958</span>
-      <p>&laquo;The goal is connectivity, the tool is the Internet Protocol, and the intelligence is end to end rather than hidden in the network.&raquo;</p>
-      <p style="margin-top:12px">Tre hj&oslash;rnesteiner: <strong>enkel konnektivitet</strong>, <strong>IP som den smale midjen</strong>, og <strong>intelligens i kantene</strong>.</p>
-    </div>
-
-    <h3>End-to-end-argumentet</h3>
-    <p>Saltzer, Reed og Clark (1981) formulerte det slik: en funksjon kan <em>kun</em> implementeres fullstendig og korrekt med kunnskap fra applikasjonen i endepunktene. &Aring; bygge den inn i nettverket selv er ikke mulig. En ufullstendig versjon i nettverket <em>kan</em> v&aelig;re nyttig som ytelsesoptimalisering, men kan aldri erstatte endepunktimplementeringen.</p>
-
-    <p>Konkret: p&aring;litelig dataoverf&oslash;ring kan enten implementeres hop-by-hop i nettverket (dyrt, komplekst) eller end-to-end i endesystemene (TCP). Internett valgte end-to-end &mdash; og det har skalert bedre enn alle alternativene.</p>
-
-    <div class="quiz">
-      <p class="q-text">Hva betyr end-to-end-argumentet i praksis for nettverksdesign?</p>
-      <div class="options">
-        <button class="option" data-correct="false">At routere b&oslash;r kryptere all trafikk for sikkerhet.</button>
-        <button class="option" data-correct="true">At funksjoner som p&aring;litelighet best implementeres i endesystemene, ikke i nettverket.</button>
-        <button class="option" data-correct="false">At alle enheter m&aring; kj&oslash;re samme operativsystem.</button>
-        <button class="option" data-correct="false">At pakker alltid f&oslash;lger den korteste ruten.</button>
-      </div>
-      <div class="explanation"><strong>Riktig!</strong> Intelligensen &mdash; p&aring;litelighet, kryptering, ordnede leveranser &mdash; h&oslash;rer hjemme i endesystemene. Nettverket holdes enkelt og fokusert p&aring; best-effort-levering.</div>
     </div>
   </div>
 </section>

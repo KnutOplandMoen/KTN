@@ -268,7 +268,7 @@
         <div data-fc-front>Hva er forskjellen mellom Internetts fem-lagsmodell og OSI-modellens syv lag?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> OSI har syv lag — to ekstra mellom applikasjons- og transportlaget: <em>presentasjonslaget</em> (datakompresjon, kryptering, formatkonvertering) og <em>sesjonslaget</em> (sesjonsadministrasjon, synkronisering). I Internett finnes ikke disse som separate lag; funksjonene er overlatt til applikasjonen selv.</p>
-          <p><strong>Hvorfor det betyr noe:</strong> OSI er en akademisk referansemodell og brukes som vokabular ("lag 7" = applikasjon). Men i praksis kjører ekte Internett på fem lag, og presentasjons-/sesjonsfunksjoner som TLS-kryptering implementeres som biblioteker brukt direkte fra applikasjonen. Når noen sier "lag 7-brannmur" mener de altså en brannmur som inspiserer applikasjonsdata.</p>
+          <p><strong>Hvorfor det betyr noe:</strong> OSI er en akademisk referansemodell og brukes som vokabular ("lag 7" = applikasjon). Men i praksis kjører ekte Internett på fem lag, og presentasjons-/sesjonsfunksjoner som TLS-kryptering implementeres som biblioteker brukt direkte fra applikasjonen. Når noen sier "lag 7" mener de altså noe som opererer på applikasjonsnivå.</p>
         </div>
       </li>
 
@@ -299,7 +299,7 @@
           <p>1. <strong>Sårbarhetsutnyttelse</strong> — angriperen sender spesielt utformede meldinger som krasjer eller henger tjenesten (utnytter en bug i selve programvaren).<br>
              2. <strong>Båndbreddeflom</strong> — angriperen oversvømmer mål-linken med så mye trafikk at legitim trafikk ikke kommer fram. Krever ofte et botnett (DDoS) for å produsere nok volum.<br>
              3. <strong>Tilkoblingsflom</strong> — angriperen åpner enormt mange halvferdige TCP-forbindelser (f.eks. SYN flooding) til serverens forbindelsestabell er full og ingen nye tilkoblinger kan opprettes.</p>
-          <p><strong>Hvorfor de er forskjellige:</strong> Hver utnytter en ulik begrensning — programvarens robusthet, linkens kapasitet, eller serverens tilstandsbuffer. Tilsvarende krever de ulike forsvar: patching, oppstrøms-filtrering, og SYN cookies/connection rate-limits.</p>
+          <p><strong>Hvorfor de er forskjellige:</strong> Hver utnytter en ulik begrensning — programvarens robusthet, linkens kapasitet, eller serverens tilstandsbuffer. Tilsvarende krever de ulike forsvar: patching, oppstrøms-filtrering, og connection rate-limits.</p>
         </div>
       </li>
 
@@ -307,7 +307,7 @@
         <div data-fc-front>Hva er IP-spoofing, og hvorfor er det farlig?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> IP-spoofing er å sende pakker med en forfalsket avsender-IP-adresse, slik at mottakeren tror pakken kommer fra noen andre.</p>
-          <p><strong>Hvorfor det er farlig:</strong> IP-laget verifiserer ikke avsenderen — protokollen ble designet for et tillitsfullt nett. Konsekvensene er flere: (1) <em>refleksjonsangrep</em> brukes i DDoS — angriperen sender forespørsler med offerets IP som "avsender", og svar-trafikken treffer offeret. (2) <em>Omgåelse av tilgangskontroll</em> — systemer som stoler på IP-adresse alene kan lures. (3) Forsvarsmekanismer som <em>ingress filtering</em> (BCP 38) finnes, men er ikke universelt utrullet.</p>
+          <p><strong>Hvorfor det er farlig:</strong> IP-laget verifiserer ikke avsenderen — protokollen ble designet for et tillitsfullt nett. Konsekvensene er flere: (1) <em>refleksjonsangrep</em> brukes i DDoS — angriperen sender forespørsler med offerets IP som "avsender", og svar-trafikken treffer offeret. (2) <em>Omgåelse av tilgangskontroll</em> — systemer som stoler på IP-adresse alene kan lures.</p>
         </div>
       </li>
 
@@ -542,7 +542,7 @@
     <div class="q-text">Hvorfor holdes nettverksutstyr i Internetts kjerne enkelt?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Enkle dataplane-operasjoner i kjernen gir bedre skalerbarhet og høyere videresendingshastighet.</div>
+      <div class="answer">Enkle videresending-operasjoner i kjernen gir bedre skalerbarhet og høyere videresendingshastighet.</div>
     </div>
   </div>
 

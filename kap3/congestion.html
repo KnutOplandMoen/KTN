@@ -932,7 +932,7 @@
     <p>QUIC bruker i stedet en <strong>connection ID</strong> i pakkene sine. Denne ID-en er uavhengig av de underliggende IP-adressene og portene. Når en klient bytter nettverk, holder connection ID-en forbindelsen i live — klienten fortsetter å sende pakker med samme ID fra sin nye adresse, og serveren gjenkjenner forbindelsen uten re-etablering.</p>
 
     <h3>Metningskontroll i QUIC</h3>
-    <p>QUIC implementerer sin egen metningskontroll, separat fra operativsystemets TCP-stabel. Som standard bruker QUIC algoritmer som likner på TCP CUBIC, men siden QUIC kjører i brukerrommet (user space) kan metningskontrollalgoritmen oppdateres uavhengig av OS. Google har for eksempel eksperimentert med og rullet ut BBR (Bottleneck Bandwidth and RTT) i sin QUIC-implementasjon, helt uten å måtte oppdatere operativsystemer.</p>
+    <p>QUIC implementerer sin egen metningskontroll, separat fra operativsystemets TCP-stabel. Som standard bruker QUIC algoritmer som likner på TCP CUBIC, men siden QUIC kjører i brukerrommet (user space) kan metningskontrollalgoritmen oppdateres uavhengig av OS.</p>
 
     <h3>Oppsummering: QUICs fordeler over TCP</h3>
     <table class="compare">

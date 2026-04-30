@@ -367,8 +367,8 @@
       <li data-card>
         <div data-fc-front>Hva er forskjellen på <em>end-to-end</em> og <em>nettverksassistert</em> metningskontroll, og hvilken bruker TCP?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> <em>End-to-end</em>: endesystemene utleder selv om nettet er overbelastet, basert på indirekte signaler som tap (timeout eller dup-ACK) og økt RTT. Rutere er passive. <em>Nettverksassistert</em>: rutere gir endesystemene eksplisitt tilbakemelding (f.eks. ECN — Explicit Congestion Notification — eller eldre ICMP Source Quench).</p>
-          <p><strong>Hvorfor TCP er end-to-end:</strong> TCP kjører over IP, som ikke garanterer noen ruterstøtte for feedback. Ved å utlede metning fra <em>tap</em> alene, fungerer TCP overalt — selv gjennom rutere som ikke samarbeider. ECN er et tillegg som styrker signalet (rutere markerer pakker før de dropper dem), men det krever støtte i hele kjeden og er ikke universelt utrullet. CUBIC, BBR og lignende moderne varianter er fortsatt fundamentalt end-to-end.</p>
+          <p><strong>Svar:</strong> <em>End-to-end</em>: endesystemene utleder selv om nettet er overbelastet, basert på indirekte signaler som tap (timeout eller dup-ACK) og økt RTT. Rutere er passive. <em>Nettverksassistert</em>: rutere gir endesystemene eksplisitt tilbakemelding om metning.</p>
+          <p><strong>Hvorfor TCP er end-to-end:</strong> TCP kjører over IP, som ikke garanterer noen ruterstøtte for feedback. Ved å utlede metning fra <em>tap</em> alene, fungerer TCP overalt — selv gjennom rutere som ikke samarbeider. CUBIC og lignende moderne varianter er fortsatt fundamentalt end-to-end.</p>
         </div>
       </li>
 
@@ -407,7 +407,7 @@
       <li data-card>
         <div data-fc-front>Hvilke konkrete problemer ved TCP løser QUIC, og hvorfor er det implementert oppå UDP?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> QUIC (RFC 9000, grunnlag for HTTP/3) flytter pålitelighet, metningskontroll, kryptering og multipleksing opp i applikasjonslaget oppå UDP. Det løser fire ting: (1) <em>Håndtrykk</em>: TCP+TLS = 2 RTT; QUIC kombinerer det til 1 RTT, og 0 RTT ved gjentilkobling. (2) <em>Head-of-line blocking</em>: i HTTP/2 over TCP blokkerer ett tap alle multipleksede forespørsler, fordi TCP er én bytestrøm. QUIC har uavhengige <em>streams</em> med egne seq# — tap i én stream stopper ikke de andre. (3) <em>Mobilitet</em>: TCP identifiserer forbindelsen via 4-tuppelet, så bytte fra Wi-Fi til mobil bryter den. QUIC bruker en <em>connection ID</em> som overlever IP-endring. (4) <em>Oppdaterbarhet</em>: TCP-stack ligger i OS-kjernen og oppdateres tregt; QUIC ligger i applikasjonen og kan ruller ut nye metningskontroll-algoritmer (f.eks. BBR) raskt.</p>
+          <p><strong>Svar:</strong> QUIC (RFC 9000, grunnlag for HTTP/3) flytter pålitelighet, metningskontroll, kryptering og multipleksing opp i applikasjonslaget oppå UDP. Det løser fire ting: (1) <em>Håndtrykk</em>: TCP+TLS = 2 RTT; QUIC kombinerer det til 1 RTT, og 0 RTT ved gjentilkobling. (2) <em>Head-of-line blocking</em>: i HTTP/2 over TCP blokkerer ett tap alle multipleksede forespørsler, fordi TCP er én bytestrøm. QUIC har uavhengige <em>streams</em> med egne seq# — tap i én stream stopper ikke de andre. (3) <em>Mobilitet</em>: TCP identifiserer forbindelsen via 4-tuppelet, så bytte fra Wi-Fi til mobil bryter den. QUIC bruker en <em>connection ID</em> som overlever IP-endring. (4) <em>Oppdaterbarhet</em>: TCP-stack ligger i OS-kjernen og oppdateres tregt; QUIC ligger i applikasjonen og kan rulle ut nye metningskontroll-algoritmer raskt.</p>
           <p><strong>Hvorfor UDP:</strong> Mellomboksene (NAT, brannmurer) på Internett godtar bare TCP og UDP. Å bygge en helt ny transportprotokoll i kjernen ville vært umulig å rulle ut globalt — å maskere QUIC som UDP er den pragmatiske utveien.</p>
         </div>
       </li>

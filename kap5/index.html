@@ -507,56 +507,56 @@
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 2 · Middels</div>
-    <div class="q-text">Forklar link-state-prinsippet i ruting.</div>
+    <div class="q-label">Spørsmål 2 · Lett</div>
+    <div class="q-text">Hva er forskjellen mellom <em>forwarding</em> og <em>routing</em>?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">I link-state kjenner rutere hele topologien og beregner egne korteste veier lokalt.</div>
+      <div class="answer">Forwarding er den lokale dataplan-handlingen — å flytte én pakke fra inngangsport til riktig utgangsport via et tabelloppslag. Routing er kontrollplan-jobben med å beregne hele veien fra kilde til destinasjon gjennom flere rutere.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 3 · Vanskelig</div>
-    <div class="q-text">Hva gjør Dijkstras algoritme i ruting?</div>
+    <div class="q-label">Spørsmål 3 · Lett</div>
+    <div class="q-text">Hva er forskjellen mellom dataplanet og kontrollplanet?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Dijkstra bygger et korteste-veier-tre fra én kilde gitt kjente linkkostnader.</div>
+      <div class="answer">Dataplanet videresender pakker basert på en ferdig forwarding-tabell — det skjer i nanosekunder. Kontrollplanet bygger den tabellen ved at rutere snakker sammen og blir enige om gode ruter — det skjer på sekund- til minutt-skala.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 4 · Middels</div>
-    <div class="q-text">Forklar distance-vector-prinsippet.</div>
+    <div class="q-text">Hva er forskjellen mellom per-ruter kontroll og logisk sentralisert kontroll (SDN)?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Distance-vector utveksler kostnadsestimater nabo-til-nabo og oppdaterer iterativt.</div>
+      <div class="answer">I per-ruter kontroll kjører hver ruter sin egen rutingalgoritme og bygger sin egen forwarding-tabell ved å snakke med naboene. I logisk sentralisert kontroll (SDN) beregner én sentral kontroller alle forwarding-tabellene og dytter dem ut til ruterne.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 5 · Lett</div>
-    <div class="q-text">Hva gjør Bellman-Ford-algoritmen i DV-ruting?</div>
+    <div class="q-label">Spørsmål 5 · Middels</div>
+    <div class="q-text">Hva betyr "en god rute"? Nevn minst tre kriterier.</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Bellman-Ford oppdaterer beste rute via minimering over naboers annonserte kostnader.</div>
+      <div class="answer">Det avhenger av hva man optimerer for. Vanlige kriterier er (1) lavest kostnad (antall hopp, båndbredde, eller leieavtaler), (2) raskest (lavest forsinkelse), og (3) minst overbelastet (unngå lenker med kø).</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 6 · Vanskelig</div>
-    <div class="q-text">Hva er count-to-infinity-problemet i distance-vector-ruting?</div>
+    <div class="q-label">Spørsmål 6 · Middels</div>
+    <div class="q-text">Hvilke to akser brukes for å klassifisere rutingalgoritmer?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Count-to-infinity oppstår i DV-ruting når en rute feiler: nabonoder tror de kan nå målet via hverandre og øker metrikken gradvis mot uendelig. Feil informasjon sprer seg sakte. Poison reverse og holdown-timere er teknikker som demper problemet.</div>
+      <div class="answer">(1) Global vs. desentralisert — har hver ruter hele topologien eller bare nabolags-info? (2) Statisk vs. dynamisk — endres rutene sjelden (manuelt) eller fortløpende som respons på endringer i nettverket?</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 7 · Middels</div>
-    <div class="q-text">Hva er poison reverse?</div>
+    <div class="q-text">Hva er hovedmålet til en rutingprotokoll?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Poison reverse annonserer uendelig kost via naboen som ga ruten, for å dempe enkle løkker.</div>
+      <div class="answer">Å bestemme gode ruter (paths) fra sendende verter til mottakende verter gjennom nettverket av rutere.</div>
     </div>
   </div>
 
@@ -571,73 +571,73 @@
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 9 · Lett</div>
-    <div class="q-text">Hva er OSPF?</div>
+    <div class="q-text">Hva er ICMP, og på hvilket lag opererer det?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">OSPF (Open Shortest Path First) er en link-state protokoll brukt innen ett autonomt system (IGP). Alle rutere bygger et kart over topologien gjennom flooding av link-state-annonser (LSA), og kjører Dijkstras algoritme lokalt. Kost er gjerne basert på båndbredde, og OSPF støtter hierarki med areas for skalerbarhet.</div>
+      <div class="answer">ICMP (Internet Control Message Protocol) er nettverkets signalspråk for feilrapportering og echo. Det regnes som del av nettverkslaget, men ICMP-meldinger transporteres inni IP-datagram — så det ligger strengt tatt "oppå" IP, men hører fortsatt til nettverkslaget.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 10 · Vanskelig</div>
-    <div class="q-text">Hva er RIP, og hva er dens begrensninger?</div>
+    <div class="q-label">Spørsmål 10 · Middels</div>
+    <div class="q-text">Hvilke felter inneholder en ICMP-melding?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">RIP er en enkel distance-vector-protokoll med hop count som metrikk.</div>
+      <div class="answer">Type, code, og header pluss de første 8 bytene av det opprinnelige IP-datagrammet som forårsaket feilen — slik at avsenderen kan identifisere hvilken pakke meldingen gjelder.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 11 · Middels</div>
-    <div class="q-text">Hva er BGP, og hvorfor brukes det mellom autonome systemer?</div>
+    <div class="q-label">Spørsmål 11 · Lett</div>
+    <div class="q-text">Hvilke ICMP type/code-verdier brukes av <code>ping</code>?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">BGP (Border Gateway Protocol) er Internettets inter-AS-rutingprotokoll. Det annonserer IP-prefikser med AS-path (listen over AS-er trafikken må passere), og rutevalget styres av policy og økonomi like mye som teknisk avstand. BGP binder de autonome systemene i Internett sammen.</div>
+      <div class="answer">Echo request er type 8, code 0. Echo reply er type 0, code 0.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 12 · Vanskelig</div>
-    <div class="q-text">Hvordan påvirker policy rutevalg i BGP?</div>
+    <div class="q-label">Spørsmål 12 · Middels</div>
+    <div class="q-text">Hvilken ICMP-type bruker <code>traceroute</code> for å avsløre hver ruter underveis?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">BGP velger ofte ruter etter økonomi og policy, ikke bare teknisk korteste vei.</div>
+      <div class="answer">Type 11 (TTL expired). Når en ruter dekrementerer TTL til 0, kaster den pakken og sender en ICMP type 11 tilbake med sin egen IP — det er det signalet traceroute samler opp for hvert hopp.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 13 · Lett</div>
-    <div class="q-text">Hva er forskjellen mellom eBGP og iBGP?</div>
+    <div class="q-label">Spørsmål 13 · Vanskelig</div>
+    <div class="q-text">Hvilken ICMP type/code betyr "destination port unreachable"?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">eBGP brukes mellom AS-er, mens iBGP distribuerer eksterne ruter internt i et AS.</div>
+      <div class="answer">Type 3, code 3. Det er denne meldingen traceroute bruker som "fremme"-signal — destinasjonen svarer slik fordi traceroute sender til en usannsynlig høy port der ingen tjeneste lytter.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 14 · Middels</div>
-    <div class="q-text">Hva er en SDN-kontroller?</div>
+    <div class="q-text">Hva er ICMP source quench (type 4), og hvorfor er den i praksis avlegs?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">I SDN flyttes kontrolllogikk til en logisk sentral kontroller som programmerer nettutstyr.</div>
+      <div class="answer">Source quench var ment som signal fra en overbelastet ruter for å be avsenderen redusere sendetempoet. Det ble aldri godt nok støttet, og moderne overbelastnings-håndtering gjøres i transportlaget (TCP). Source quench regnes som deprekert.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 15 · Vanskelig</div>
-    <div class="q-text">Hva er match-action-tabeller i SDN?</div>
+    <div class="q-label">Spørsmål 15 · Middels</div>
+    <div class="q-text">Er ICMP del av kontrollplanet eller dataplanet?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Match-action-regler bestemmer hvordan pakker behandles basert på headerfelter.</div>
+      <div class="answer">ICMP regnes som del av kontrollplanet — det er signalspråket nettverket bruker for å rapportere feil og utveksle nettverks-nivå-informasjon, ikke for å videresende vanlige nyttedata.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 16 · Middels</div>
-    <div class="q-text">Hva er et southbound API i SDN?</div>
+    <div class="q-label">Spørsmål 16 · Vanskelig</div>
+    <div class="q-text">Hva er forskjellen mellom ICMP og IP når det gjelder pålitelighet?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Southbound-grensesnitt lar kontrolleren installere og oppdatere regler i svitsjer/rutere.</div>
+      <div class="answer">Begge er upålitelige (best-effort). En ICMP-melding kan tapes på samme måte som en hvilken som helst annen IP-pakke. Det er derfor traceroute må sende flere pakker per TTL og bruke timeouts.</div>
     </div>
   </div>
 
@@ -669,47 +669,47 @@
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 20 · Vanskelig</div>
-    <div class="q-text">Hva er flooding av link-state-annonser (LSA)?</div>
+    <div class="q-label">Spørsmål 20 · Middels</div>
+    <div class="q-text">Hva er en "rute" eller "path" konkret i nettverkssammenheng?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Flooding sprer topologiendringer raskt slik at alle rutere kan rekalkulere konsekvent.</div>
+      <div class="answer">Sekvensen av rutere en pakke passerer gjennom fra startverten til destinasjonen — f.eks. R1 → R4 → R7 → R9.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 21 · Middels</div>
-    <div class="q-text">Hva er rollen til sekvensnummer i link-state-annonser?</div>
+    <div class="q-text">Hva betyr en "ICMP destination unreachable"-melding for avsenderen?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Sekvensnummer og alder hindrer at gamle link-state-meldinger overskriver nye.</div>
+      <div class="answer">Den forteller at pakken ikke kunne leveres, og code-feltet sier hvorfor — code 0 = nett utilgjengelig, code 1 = host utilgjengelig, code 2 = protokoll utilgjengelig, code 3 = port utilgjengelig. Avsenderen slipper dermed å vente blindt på et svar som aldri kommer.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
     <div class="q-label">Spørsmål 22 · Vanskelig</div>
-    <div class="q-text">Hva er hierarkisk ruting?</div>
+    <div class="q-text">Hvorfor er det viktig at rutingalgoritmer reagerer dynamisk på endringer i nettverket?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Hierarki reduserer kontrollplane-skala ved å dele nettet i administrative områder.</div>
+      <div class="answer">Lenker går ned, kommer opp igjen, blir overbelastet eller får ny kapasitet. Dynamisk respons gjør at rutere automatisk finner alternative veier når noe svikter — uten menneskelig inngripen og uten varig pakketap.</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 23 · Lett</div>
-    <div class="q-text">Hva er hot-potato-ruting?</div>
+    <div class="q-label">Spørsmål 23 · Middels</div>
+    <div class="q-text">Hvorfor må IP ha et TTL-felt?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Et AS sender ofte trafikk ut ved nærmeste utgang for å minimere intern transportkostnad.</div>
+      <div class="answer">For å hindre at pakker som havner i en rutingløkke lever evig og spiser båndbredde. TTL dekrementeres med 1 ved hvert hopp, og pakken kastes ved 0 — det er også denne mekanismen traceroute utnytter (ICMP type 11).</div>
     </div>
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 24 · Middels</div>
-    <div class="q-text">Hva er rutinginstabilitet, og hva forårsaker det?</div>
+    <div class="q-label">Spørsmål 24 · Lett</div>
+    <div class="q-text">Hva skiller <code>ping</code> og <code>traceroute</code> som diagnostiske verktøy?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
-      <div class="answer">Konfliktende policyer og raske endringer kan gi oscillering og midlertidig ustabile ruter.</div>
+      <div class="answer">Ping måler om en host er nåbar og total RTT (echo type 0/8). Traceroute kartlegger hele stien og RTT til hvert hopp ved å kombinere TTL-expired (type 11) og port-unreachable (type 3 code 3).</div>
     </div>
   </div>
 
