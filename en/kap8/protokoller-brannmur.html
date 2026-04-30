@@ -282,15 +282,17 @@
   </div>
 
   <h3>The WPA3 handshake in detail</h3>
-  <p>Step 2 (mutual authentication and key derivation) is the most interesting. In WPA3, it works as follows:</p>
+  <p>Step 2 (mutual authentication and key derivation) is the most interesting. The goal is a <strong>shared session key</strong> K<sub>M-AP</sub> without the pre-shared password ever leaving the devices in plaintext. The password is used only in <em>local</em> computations; over the air go values derived from the password that cannot feasibly be reversed to recover the password without guessing (which is why strong passwords still matter).</p>
+
+  <p>In this simplified description (aligned with the four-step overview above), the exchange works as follows:</p>
 
   <ol>
-    <li><strong>AS sends Nonce<sub>AS</sub></strong> — a random one-time-use number — to the mobile device.</li>
-    <li><strong>The mobile device generates Nonce<sub>M</sub></strong>, derives a symmetric session key K<sub>M-AP</sub> from both nonces, the pre-shared password, and the MAC addresses, and sends Nonce<sub>M</sub> plus an <strong>HMAC value</strong> (authentication code derived with the secret keying material — not a digital signature in the PKI sense) back.</li>
-    <li><strong>AS derives the same K<sub>M-AP</sub></strong> using the same ingredients, verifies the HMAC, and both parties now have a shared session key — without the password ever having been sent over the air.</li>
+    <li><strong>The AS sends Nonce<sub>AS</sub></strong> — a random one-time number — to the mobile device. The value may be observable on the channel, but it binds this session to a specific attempt and makes simple reuse of old messages (replay) harder.</li>
+    <li><strong>The mobile device</strong> picks its own random <strong>Nonce<sub>M</sub></strong> and runs an agreed <strong>key derivation function (KDF)</strong> locally: it mixes the password (which exists only on the device), Nonce<sub>AS</sub>, Nonce<sub>M</sub>, and typically the station and access-point MAC addresses. The result is K<sub>M-AP</sub> and cryptographic material used to build a confirmation. The device sends <strong>Nonce<sub>M</sub></strong> and an <strong>HMAC</strong> back. The HMAC is a short authentication code based on a hash and a shared secret — <em>not</em> an asymmetric signature with a PKI private key — but it still shows that the sender could have used the same secret basis the receiver expects after mixing in the correct password and nonces.</li>
+    <li><strong>The AS</strong> runs the same KDF with the same inputs, computes the expected HMAC, and compares it to what was received. If they match, both sides are convinced the peer knows the password, and they share K<sub>M-AP</sub> — without the password ever having been sent over the air.</li>
   </ol>
 
-  <div class="margin-note">HMAC (Hash-based Message Authentication Code) is a symmetric MAC: hash plus shared secret material (RFC 2104). It confirms integrity and that the peer knows the same secret basis as in the handshake.</div>
+  <div class="margin-note">HMAC (Hash-based Message Authentication Code) is a symmetric MAC: hash plus shared secret material (RFC 2104). It confirms both integrity (the message was not altered) and that the peer knows the secret basis the handshake relies on.</div>
 
   <h3>4G LTE: authentication with SIM cards</h3>
   <p>Mobile networks are fundamentally different from WiFi because the identity resides in the <strong>SIM card</strong>, not in a password. The SIM card contains a globally unique identifier (IMSI) and a pre-shared secret key K<sub>HSS-M</sub> that only the SIM card and the home network's <strong>HSS (Home Subscriber Server)</strong> know.</p>
@@ -474,7 +476,7 @@
 (function(){
   var steps = [
     {title:'Step 1: Discovery of security capabilities', text:'The AP announces its presence and which forms of authentication and encryption it supports. The mobile device selects the desired form. At this point, the device is not authenticated and has no encryption keys (apart from a pre-shared password).'},
-    {title:'Step 2: Mutual authentication and key derivation', text:'The Authentication Server (AS) and the mobile device use the pre-shared password, nonce values (one-time-use numbers), and cryptographic hashing to authenticate each other — without sending the password over the air. Both derive a shared symmetric session key K_M-AP.'},
+    {title:'Step 2: Mutual authentication and key derivation', text:'The AS and the mobile device exchange nonce values and an HMAC confirmation. Both run the same key derivation locally: they mix in the pre-shared password, the nonces, and MAC addresses, and obtain the same symmetric session key K_M-AP. The password is never sent in plaintext — only values that prove both parties know it.'},
     {title:'Step 3: Distribution of session key', text:'The AS informs the AP about the shared symmetric session key, so the AP can encrypt traffic between itself and the mobile device.'},
     {title:'Step 4: Encrypted communication', text:'The mobile device and the AP now use the symmetric session key (typically AES) to encrypt all further communication over the WiFi link. All traffic is now confidential.'}
   ];
