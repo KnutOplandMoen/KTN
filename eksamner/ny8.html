@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Øvingseksamen 8 — TTM4100</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Alle eksamener</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
+  </div>
+</nav>
+
+<main data-chapter="Øvingseksamen 8 — TTM4100">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Øvingseksamen · TTM4100</div>
+  <h1>Øvingseksamen <em>8</em></h1>
+  <p class="lede">Del I: 14 flervalgsoppgaver (42 poeng). Del II: 5 åpne oppgaver (58 poeng). Totalt 100 poeng. Svar på egenhånd — åpne fasiten etterpå.</p>
+
+  <div class="learn-box">
+    <span class="label">Temaer i dette settet</span>
+    <ul>
+      <li>RTT, HTTP HEAD og DNS-caching (kap. 1 og 2)</li>
+      <li>rdt 3.0-timer og demultipleksering i transportlaget (kap. 3)</li>
+      <li>CIDR-oppslag og DHCP DORA (kap. 4)</li>
+      <li>ICMP-typer (kap. 5)</li>
+      <li>Ethernet ramme-størrelse, kollisjons- vs. broadcast-domener (kap. 6)</li>
+      <li>2.4 GHz vs. 5 GHz WiFi (kap. 7)</li>
+      <li>Nonce, VPN-typer og TLS-MITM-resistens (kap. 8)</li>
+      <li>Nyquist-sampling, web-caching og hop-for-hop-adresser (kap. 9 og oppsummering)</li>
+    </ul>
+  </div>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">I</span><a href="#del1">Del I — Flervalg (42p)</a></li>
+    <li><span class="toc-num">II</span><a href="#del2">Del II — Åpne oppgaver (58p)</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ==================== DEL I ==================== -->
+<section id="del1">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del I — Automatisk rettede spørsmål</h2>
+    <span class="del-points">14 spørsmål · 3 poeng per spørsmål · 42 poeng totalt</span>
+  </div>
+  <p class="section-intro">Velg det alternativet du mener er riktig. Klikk «Vis fasit» for å sjekke svaret og lese forklaringen.</p>
+
+  <!-- Q1 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 1</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er den korrekte definisjonen av <strong>RTT</strong> (Round-Trip Time)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Tiden det tar for én pakke å nå destinasjonen</li>
+        <li><span class="opt-label">B</span> Tiden mellom at en pakke sendes og en korresponderende kvittering returnerer til senderen — tur-retur-tiden</li>
+        <li><span class="opt-label">C</span> Lenkens fysiske avstand delt på lyshastigheten</li>
+        <li><span class="opt-label">D</span> Variasjonen i forsinkelse over tid</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>RTT er den fulle tur-retur-tiden — fra senderen sender en pakke til den får tilbake en respons (typisk en ACK). Den inkluderer alle forsinkelseskomponenter (transmission, propagation, kø, prosessering) på begge veier.</p>
+          <p>RTT brukes bl.a. som basis for TCPs timeout-beregning, for å estimere båndbreddeforsinkelsesproduktet og som mål på «opplevd» nettverkskvalitet (ping-tid).</p>
+          <p>Alternativ A er ensretningsforsinkelse (one-way delay), C er propagasjonsforsinkelse, og D er jitter.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Forsinkelsesbegreper</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q2 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 2</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er forskjellen mellom HTTP-metodene <code>GET</code> og <code>HEAD</code>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> HEAD ber om bare ressursens header-felter — uten selve innholdet i body</li>
+        <li><span class="opt-label">B</span> HEAD er den krypterte varianten av GET</li>
+        <li><span class="opt-label">C</span> HEAD oppdaterer en ressurs på serveren, GET henter</li>
+        <li><span class="opt-label">D</span> HEAD krever autentisering, GET ikke</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A</span>
+          <p>HEAD er identisk med GET, bortsett fra at serveren ikke returnerer ressursens body — bare statuslinje og headerlinjer. Brukes typisk til å sjekke om en ressurs eksisterer, hvor stor den er (<code>Content-Length</code>), eller når den sist ble endret (<code>Last-Modified</code>) — uten å betale båndbredden for å laste den ned.</p>
+          <p>Eksempler: linkkontrollere, debugging-verktøy, og scenariobeslutning før man bestemmer seg for å gjøre full GET.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — HTTP-metoder</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q3 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 3</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">DNS-svar har et <strong>TTL</strong>-felt (Time to Live) som indikerer hvor lenge et svar kan caches. Hvilket konkret kompromiss styrer valg av TTL-verdi?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Lav TTL gir bedre sikkerhet mot DNS-spoofing</li>
+        <li><span class="opt-label">B</span> Høy TTL → mindre DNS-trafikk og raskere oppslag, men endringer i records (f.eks. ny IP) tar lenger tid å spre seg ut til brukerne</li>
+        <li><span class="opt-label">C</span> TTL-verdien styrer kun retten til å bruke domenet, ikke caching</li>
+        <li><span class="opt-label">D</span> TTL er et eldre felt som ikke lenger brukes</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Høy TTL (timer/dager): færre DNS-spørringer går til autoritativ server, raskere brukeroppslag fra cache, mindre belastning på DNS-infrastrukturen — men endringer av A-records tar opp til TTL-verdien å nå frem til alle brukere som har en eldre cachet kopi.</p>
+          <p>Lav TTL (sekunder/minutter): endringer spres raskt — nyttig for fail-over og dynamiske CDN — men gir høy belastning på autoritativ server og økt oppslagsforsinkelse for brukere med kald cache.</p>
+          <p>Typiske TTL-er: 24 timer for stabile A-records, 60 sek eller mindre for tjenester med rask fail-over.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — DNS-caching og TTL</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q4 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 4</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken funksjon har <strong>timeren</strong> i rdt 3.0 (Stop-and-Wait med alternating bit)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Mottakeren bruker timeren til å vente på flere pakker før den ACK-er</li>
+        <li><span class="opt-label">B</span> Timeren er en ren rate-begrenser hos senderen</li>
+        <li><span class="opt-label">C</span> Senderen retransmitterer pakken når timeren utløper, siden den ikke kan skille mellom tap av data og tap av ACK</li>
+        <li><span class="opt-label">D</span> Mottakeren bruker timeren til å beregne sin egen NAK</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C</span>
+          <p>I rdt 3.0 håndteres tap (av data eller ACK) ved at senderen starter en timer når den sender en pakke. Hvis ingen ACK ankommer før timeren utløper, sender senderen pakken på nytt. Senderen vet ikke om det var data- eller ACK-tap — men begge tilfellene løses av samme strategi.</p>
+          <p>Mottakeren bruker alternating bit (sekvensnummer 0/1) til å oppdage om en mottatt pakke er en ny pakke eller et duplikat (forrige ble retransmittert pga. tapt ACK). Duplikater ACK-es på nytt, men leveres ikke til applikasjonen en andre gang.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — rdt 3.0 / Stop-and-Wait</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q5 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 5</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken kombinasjon av felter bruker <strong>TCP</strong> for å demultiplekse innkommende segmenter til riktig socket?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Bare destinasjons-port</li>
+        <li><span class="opt-label">B</span> Kilde-IP og destinasjon-IP</li>
+        <li><span class="opt-label">C</span> 4-tuppelet (kilde-IP, kilde-port, destinasjons-IP, destinasjons-port)</li>
+        <li><span class="opt-label">D</span> 4-tuppelet kombinert med MAC-adressen</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C</span>
+          <p>I TCP er en forbindelse identifisert av hele 4-tuppelet. Det betyr at en server kan ha mange samtidige TCP-forbindelser til <em>samme</em> portnummer (f.eks. 443 for HTTPS) fra ulike klienter — hver forbindelse skiller seg ved kilde-IP og kilde-port.</p>
+          <p><strong>UDP</strong> derimot bruker bare 2-tuppelet (destinasjons-IP, destinasjons-port) for å demultiplekse — to UDP-pakker fra forskjellige avsendere til samme port-IP havner i samme socket.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — Multipleksing/demultipleksing</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q6 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 6</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">IP-adressen <code>192.168.45.137</code> tilhører subnettet med prefiks <code>/26</code>. Hvilken er nettverksadressen?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 192.168.45.0</li>
+        <li><span class="opt-label">B</span> 192.168.45.128</li>
+        <li><span class="opt-label">C</span> 192.168.45.137</li>
+        <li><span class="opt-label">D</span> 192.168.45.192</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B — 192.168.45.128</span>
+          <p>/26 betyr 26 bits nettverksdel og 6 host-bits. I siste oktett bruker prefikset 2 bits — dvs. blokkstørrelsen er 2<sup>6</sup> = 64. Mulige nettverksadresser i .45 er: 0, 64, 128, 192.</p>
+          <p>137 = 128 + 9. Siden 128 ≤ 137 &lt; 192, ligger adressen i nettet som starter på 128.</p>
+          <p>Nettverksadresse: <strong>192.168.45.128</strong>. Broadcast = 192.168.45.191. Adresserbare verter: .129 – .190 (62 stk).</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — CIDR og subnetting</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q7 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 7</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er den korrekte rekkefølgen av meldingene i DHCPs «DORA»-sekvens?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Discover, Offer, Reply, ACK</li>
+        <li><span class="opt-label">B</span> Detect, Open, Renew, Acknowledge</li>
+        <li><span class="opt-label">C</span> Discover, Offer, Request, ACK</li>
+        <li><span class="opt-label">D</span> Decode, Output, Receive, Apply</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — Discover, Offer, Request, ACK</span>
+          <p>DORA er det vanlige akronymet for de fire DHCP-meldingene:</p>
+          <ol>
+            <li><strong>Discover</strong> (klient → broadcast): «Er det noen DHCP-server her?»</li>
+            <li><strong>Offer</strong> (server → klient): «Jeg tilbyr deg IP X.X.X.X med disse parametrene.»</li>
+            <li><strong>Request</strong> (klient → broadcast): «Jeg aksepterer tilbudet — også et signal til andre servere om at deres tilbud kan slippes.»</li>
+            <li><strong>ACK</strong> (server → klient): «Bekreftet — du eier IP-adressen i lease-tiden.»</li>
+          </ol>
+          <p>Discover og Request sendes som broadcast siden klienten enten ikke har IP ennå, eller skal informere alle DHCP-servere på nettet om sitt valg.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — DHCP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q8 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 8</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 5</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er forskjellen i bruk mellom ICMP type 3 (Destination Unreachable) og type 11 (Time Exceeded)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Type 3 sendes når TTL utløper, type 11 når destinasjonen ikke eksisterer</li>
+        <li><span class="opt-label">B</span> Type 3 sendes når et endesystem (vert eller ruter) ikke kan levere pakken til destinasjonen (ukjent vert, lukket port, blokkert nett); type 11 sendes når TTL går til null på en ruter underveis</li>
+        <li><span class="opt-label">C</span> Begge sendes ved samme situasjon — de er duplikater</li>
+        <li><span class="opt-label">D</span> Type 3 brukes kun av ping, type 11 kun av traceroute</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>De to typene løser ulike problemer:</p>
+          <ul>
+            <li><strong>Type 3 — Destination Unreachable.</strong> Pakken kunne ikke leveres til endemålet. Underkoder presiserer årsaken: kode 0 = nettverk ukjent, 1 = vert ukjent, 3 = port lukket, 4 = fragmentering nødvendig osv.</li>
+            <li><strong>Type 11 — Time Exceeded.</strong> En ruter dekrementerer TTL og finner at den er null. I stedet for å videresende, kastes pakken og en Time Exceeded sendes til kilden.</li>
+          </ul>
+          <p>Traceroute utnytter type 11 ved å sende pakker med stadig økende TTL — hver ruter underveis sender Time Exceeded når TTL utløper, og kartleggingen er gjort.</p>
+          <p class="ref">Pensum: <a href="../kap5/innhold.html">Kap. 5 — ICMP-typer</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q9 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 9</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er minimum og maksimum <em>data-payload</em> i en standard Ethernet (IEEE 802.3) ramme — uten jumbo frames og uten 802.1Q-tag?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 0–65 535 byte</li>
+        <li><span class="opt-label">B</span> 46–1 500 byte</li>
+        <li><span class="opt-label">C</span> 64–1 518 byte</li>
+        <li><span class="opt-label">D</span> 1–1 024 byte</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B — 46 til 1 500 byte</span>
+          <p>Ethernet-rammens header er 14 byte (6 dest-MAC + 6 kilde-MAC + 2 type/length) og CRC er 4 byte — totalt 18 byte overhead. For at ramen skal nå minimum 64 byte (kreves for at CSMA/CD-kollisjonsdeteksjon skal fungere), må payload være minst 64 − 18 = <strong>46 byte</strong>. Mindre payload puttes inn med padding.</p>
+          <p>Maksimum payload er <strong>1 500 byte</strong>, noe som gir maksimalt 1 518 byte total ramme (1 500 + 18). Dette er Ethernets MTU.</p>
+          <p>Alternativ C beskriver hele rammens størrelse (inkl. headere/CRC), ikke payload alene.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — Ethernet-rammeformat</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q10 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 10</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Et nettverk består av tre LAN-segmenter, hver med en egen 4-ports switch og 4 verter, koblet sammen via én ruter med tre porter (én port per LAN). Hvor mange <strong>kollisjonsdomener</strong> og <strong>broadcast-domener</strong> er det totalt?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 1 kollisjonsdomene · 1 broadcast-domene</li>
+        <li><span class="opt-label">B</span> 12 kollisjonsdomener · 1 broadcast-domene</li>
+        <li><span class="opt-label">C</span> 12 kollisjonsdomener · 3 broadcast-domener</li>
+        <li><span class="opt-label">D</span> 3 kollisjonsdomener · 3 broadcast-domener</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — 12 kollisjonsdomener, 3 broadcast-domener</span>
+          <p>Hver port på en switch er sitt eget kollisjonsdomene (full-duplex, ingen kollisjon mellom forskjellige porter). 3 switcher × 4 porter med vert = <strong>12 kollisjonsdomener</strong>.</p>
+          <p>En switch deler ikke broadcast-domene — alle verter på samme switch ser ARP/DHCP-broadcast. En ruter, derimot, deler broadcast-domener fordi den ikke videresender L2-broadcast. 3 LAN-segmenter, hvert med egen ruter-port = <strong>3 broadcast-domener</strong>.</p>
+          <p>Kort: switch deler kollisjon, ruter deler både kollisjon og broadcast.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — Switch vs. ruter</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q11 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 11</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 7</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken påstand om 802.11-frekvensbåndene 2.4 GHz og 5 GHz er korrekt?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 2.4 GHz har generelt høyere maksrate, mens 5 GHz har lengre rekkevidde</li>
+        <li><span class="opt-label">B</span> 2.4 GHz har lengre rekkevidde og bedre vegg-penetrasjon, men mer interferens og lavere maksrate; 5 GHz har høyere maksrate og mer tilgjengelig spektrum, men kortere rekkevidde</li>
+        <li><span class="opt-label">C</span> Båndene er identiske og brukes om hverandre</li>
+        <li><span class="opt-label">D</span> 5 GHz er kun for innendørs bruk i alle land</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>De fysiske egenskapene til de to båndene gir ulike avveininger:</p>
+          <table>
+            <thead><tr><th>Egenskap</th><th>2.4 GHz</th><th>5 GHz</th></tr></thead>
+            <tbody>
+              <tr><td>Rekkevidde / vegg-penetrasjon</td><td>Bedre</td><td>Dårligere (signal absorberes mer)</td></tr>
+              <tr><td>Tilgjengelig spektrum</td><td>Smalt — kun 3 ikke-overlappende kanaler (1, 6, 11)</td><td>Bredt — mange kanaler tilgjengelige</td></tr>
+              <tr><td>Maksimal datarate</td><td>Lavere (typisk 802.11n-rater)</td><td>Høyere (802.11ac/ax)</td></tr>
+              <tr><td>Interferens fra andre enheter</td><td>Mye (Bluetooth, mikrobølgeovner, naboers WiFi)</td><td>Mindre</td></tr>
+            </tbody>
+          </table>
+          <p>Praktisk: 2.4 GHz gir bedre dekning i store/komplekse hus, mens 5 GHz gir høyere ytelse i nærhet til AP-et.</p>
+          <p class="ref">Pensum: <a href="../kap7/innhold.html">Kap. 7 — 802.11-frekvensbånd</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q12 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 12</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er hovedformålet med en <strong>nonce</strong> i en kryptografisk autentiseringsprotokoll?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Et synonym for hash-verdi</li>
+        <li><span class="opt-label">B</span> En tilfeldig engangsverdi som motvirker at en angriper kan «spille av» tidligere fanget kommunikasjon — hindrer replay-angrep</li>
+        <li><span class="opt-label">C</span> Et lengre passord enn vanlig</li>
+        <li><span class="opt-label">D</span> En bredbåndsmåling sendt til AP-et</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>«Nonce» = number used once. En part trekker en tilfeldig verdi som inkluderes i en autentiseringsmelding, og motparten må svare med en funksjon av nonce-en (f.eks. en signatur eller MAC). Selv om en angriper fanger en gammel autentiseringsmelding og prøver å «spille den av igjen» senere, vil den nye nonce-en være forskjellig — angriperen kan ikke gjenta svaret.</p>
+          <p>Nonces er brukt i bl.a. WPA2 4-veis handshake, TLS handshake (ClientRandom/ServerRandom), CHAP-autentisering og Kerberos. Det er viktig at de er <em>tilfeldige</em> og <em>unike per sesjon</em> — gjenbruk åpner for angrep.</p>
+          <p class="ref">Pensum: <a href="../kap8/protokoller-brannmur.html">Kap. 8 — Autentisering og replay-angrep</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q13 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 13</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er forskjellen mellom <strong>site-to-site VPN</strong> og <strong>remote-access VPN</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Site-to-site forbinder to faste nettverk via en kryptert tunnel mellom to gateways; remote-access lar én individuell bruker logge seg inn til et nettverk fra en hvilken som helst plass</li>
+        <li><span class="opt-label">B</span> Site-to-site bruker IPSec, remote-access bruker SSL — alltid</li>
+        <li><span class="opt-label">C</span> Site-to-site er kryptert, remote-access er ikke</li>
+        <li><span class="opt-label">D</span> De er ulike navn for samme oppsett</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A</span>
+          <p><strong>Site-to-site</strong>: en VPN-tunnel mellom to faste lokasjoner (typisk to kontorers gateways). All trafikk mellom de interne nettene rutes gjennom tunnelen — for brukerne ser det ut som ett sammenhengende nett. Vanlig protokoll: IPSec i tunnel mode.</p>
+          <p><strong>Remote-access</strong>: en individuell bruker (med VPN-klient på sin laptop) bygger en kryptert tunnel til bedriftens VPN-konsentrator. Brukeren får da en intern IP og kan nå interne ressurser. Vanlige protokoller: SSL/TLS-VPN (OpenVPN, WireGuard), IKEv2/IPSec.</p>
+          <p>I praksis bruker bedrifter ofte begge: site-to-site mellom kontorer, remote-access for hjemmekontor og reisende ansatte.</p>
+          <p class="ref">Pensum: <a href="../kap8/protokoller-brannmur.html">Kap. 8.7 — IPSec og VPN</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q14 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 14</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 9</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Standard telefoni bruker PCM med 8 kHz sampling. Hvilket grunnleggende prinsipp begrunner at dette er tilstrekkelig for menneskelig tale?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Shannon-Hartley-teoremet</li>
+        <li><span class="opt-label">B</span> Nyquist-prinsippet: et signal med båndbredde B kan rekonstrueres fullstendig med samplingrate ≥ 2B</li>
+        <li><span class="opt-label">C</span> Heisenbergs uskarphetsprinsipp</li>
+        <li><span class="opt-label">D</span> Reed-Solomon-koding</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Nyquist-Shannons samplingteorem sier at et signal med båndbredde B må samples minst 2B ganger per sekund for å kunne rekonstrueres uten tap. Menneskelig tale har det meste av sin energi under 3,4 kHz, og telefoni filtrerer signalet til ca. 4 kHz. Sampling på 8 kHz (= 2 × 4 kHz) er derfor akkurat nok.</p>
+          <p>Hvis samplingraten er for lav, oppstår <em>aliasing</em>: høyere frekvenser foldes ned i hørbart område og forvrenger lyden.</p>
+          <p>Til sammenligning bruker CD-lyd 44,1 kHz sampling for å dekke det fulle hørbare området (opp til ca. 20 kHz).</p>
+          <p class="ref">Pensum: <a href="../kap9/innhold.html">Kap. 9 — VoIP og digitalisering av tale</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+
+<!-- ==================== DEL II ==================== -->
+<section id="del2">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del II — Åpne oppgaver</h2>
+    <span class="del-points">5 oppgaver · 58 poeng totalt</span>
+  </div>
+  <p class="section-intro">Åpne, skriftlige svar. Begrunn svarene dine. Vis utregning der det er relevant. Klikk «Vis fasit» for å sammenligne med modellbesvarelsen.</p>
+
+  <!-- Oppgave 1 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 1</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 2</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En bedrift har 50 ansatte som hver i snitt sender 1 HTTP-forespørsel per sekund med gjennomsnittsobjekt på 200 kB. Bedriften har én Internett-link på 50 Mbps med RTT 100 ms til typiske webservere. Du vurderer å installere en lokal web-cache.</p>
+      <p class="q-text">a) Beregn gjennomsnittlig trafikkintensitet (ρ) på Internett-linken <em>uten</em> cache. (3p)</p>
+      <p class="q-text">b) En lokal cache med <em>hit-rate</em> 0,4 (40 % av forespørslene treffer cache) installeres. Beregn ny trafikkintensitet på Internett-linken. Anta at intern trafikk til/fra cachen er ubegrenset. (3p)</p>
+      <p class="q-text">c) Anslag forventet ende-til-ende-forsinkelse for en cache-miss og en cache-hit (cache-hit har RTT ≈ 1 ms til lokal cache, ingen Internett-tur). Hvor stor er gjennomsnittlig forventet forsinkelse for en typisk forespørsel etter installasjonen? (4p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Trafikkintensitet uten cache:</strong></p>
+          <p>Total forespørselsrate: 50 ansatte × 1/s = 50 forespørsler/s.</p>
+          <p>Per forespørsel: 200 kB = 1 600 kbit = 1 600 000 bit.</p>
+          <p>Total trafikkrate: 50 × 1 600 000 = 80 × 10⁶ bps = 80 Mbps.</p>
+          <p>Linjekapasitet: 50 Mbps. ρ = 80 / 50 = <strong>1,6</strong> — over 1, dvs. linjen er overbelastet, store køer og pakketap.</p>
+
+          <p><strong>b) Med cache (hit-rate 0,4):</strong></p>
+          <p>40 % av forespørslene besvares lokalt, 60 % må ut på Internett.</p>
+          <p>Internett-trafikk: 0,6 × 80 = 48 Mbps. ρ = 48 / 50 = <strong>0,96</strong>.</p>
+          <p>Fortsatt høy intensitet (96 %), men under 1 — systemet er stabilt, om enn med betydelig kø-forsinkelse.</p>
+
+          <p><strong>c) Forventet forsinkelse:</strong></p>
+          <p>Cache-miss: RTT 100 ms + transmisjonstid (ignoreres ved kort transmisjon, men ved 200 kB / 50 Mbps = 32 ms) + kø-forsinkelse (kan bli betydelig ved ρ = 0,96 — anta f.eks. 100 ms i snitt). Total ≈ 100 + 32 + 100 ≈ <strong>~230 ms</strong>.</p>
+          <p>Cache-hit: 1 ms (lokal). Transmisjonstid på lokalt LAN er neglisjerbar. Total ≈ <strong>~1 ms</strong>.</p>
+          <p>Vektet snitt: 0,4 × 1 + 0,6 × 230 ≈ 0,4 + 138 ≈ <strong>~138 ms</strong>. Vesentlig bedre enn uten cache (der trafikk ikke konvergerer).</p>
+          <p>I tillegg er besparelsen i Internett-båndbredde betydelig — bedriften kan klare seg med samme link i lengre tid.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — Web-caching</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 2 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 2</span>
+      <span class="exam-q__points">12 poeng</span>
+      <span class="exam-q__topic">Kap. 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Den enkle TCP-throughput-formelen i steady-state med periodiske tap er ofte gitt som:</p>
+      <p class="q-text"><code>B ≈ (1,22 · MSS) / (RTT · √p)</code>, der p er sannsynligheten for tap per segment.</p>
+      <p class="q-text">a) En TCP-forbindelse har MSS = 1 460 byte og RTT = 80 ms. Tap-rate p = 0,001 (0,1 %). Beregn maksimal forventet gjennomsnittlig throughput. (5p)</p>
+      <p class="q-text">b) Hva blir throughput hvis tap-raten øker til p = 0,01 (1 %)? Hva sier resultatet om sammenhengen mellom tap og TCP-ytelse? (3p)</p>
+      <p class="q-text">c) Forklar hvordan formelen «forklarer» den klassiske sagtannmodellen: hvor kommer faktoren <code>√p</code> fra (intuitivt)? (4p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) MSS = 1 460 byte = 11 680 bits, RTT = 0,08 s, p = 0,001:</strong></p>
+          <p>√p = √0,001 ≈ 0,0316.</p>
+          <p>B ≈ (1,22 × 11 680) / (0,08 × 0,0316) = 14 250 / 0,00253 ≈ 5,63 × 10⁶ bps</p>
+          <p>≈ <strong>5,6 Mbps</strong>.</p>
+
+          <p><strong>b) p = 0,01:</strong></p>
+          <p>√p = 0,1.</p>
+          <p>B ≈ (1,22 × 11 680) / (0,08 × 0,1) = 14 250 / 0,008 ≈ 1,78 × 10⁶ bps</p>
+          <p>≈ <strong>1,78 Mbps</strong> — ca. en tredjedel av før.</p>
+          <p>Konklusjon: en tidobling av tap-raten halverer ikke throughput, den senker den med faktor 1/√10 ≈ 0,32. Selv små økninger i tap kan halvere TCP-ytelse — derfor er TCP svært følsomt for tap på lange, høyt-belastede ruter.</p>
+
+          <p><strong>c) Hvor kommer √p fra:</strong></p>
+          <p>I AIMD-fasen øker cwnd lineært med 1 MSS per RTT. Etter et visst antall RTT-er treffer cwnd verdien W (i MSS) der det skjer et tap, og cwnd halveres til W/2. Antall pakker sendt mellom to tap er da omtrent (W/2 + W) · (W/2) / 2 — i størrelsesorden W²/2.</p>
+          <p>Tap-raten p = 1 / (antall pakker per «syklus») ≈ 2 / W², dvs. W ≈ √(2/p).</p>
+          <p>Gjennomsnittlig cwnd ≈ ¾ · W, og throughput = (gjennomsnittlig cwnd · MSS) / RTT ∝ MSS / (RTT · √p). Derav den karakteristiske <code>1/√p</code>-skaleringen.</p>
+          <p>Sagtannmodellen gir altså formelen — det er ikke en empirisk tilpasning, men direkte konsekvens av AIMD med periodiske tap.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — TCP throughput</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 3 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 3</span>
+      <span class="exam-q__points">15 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · 6</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Vert <strong>A</strong> (IP <code>10.1.1.5</code>, MAC <code>aa:01</code>) er på subnett 10.1.1.0/24. Vert <strong>B</strong> (IP <code>10.2.2.7</code>, MAC <code>bb:07</code>) er på subnett 10.2.2.0/24. Mellom dem er en ruter <strong>R</strong> med to interfaces:</p>
+      <ul>
+        <li>R-eth0: IP <code>10.1.1.1</code>, MAC <code>r1:01</code> (mot subnett A)</li>
+        <li>R-eth1: IP <code>10.2.2.1</code>, MAC <code>r2:01</code> (mot subnett B)</li>
+      </ul>
+      <p class="q-text">A skal sende en IP-pakke til B. ARP-tabeller på A og R er allerede oppdatert.</p>
+      <p class="q-text">a) Hvilke kilde-/destinasjons-MAC-adresser og kilde-/destinasjons-IP-adresser har rammen idet den <strong>forlater A</strong>? (3p)</p>
+      <p class="q-text">b) Hvilke MAC- og IP-adresser har rammen idet den <strong>mottas av R</strong> på R-eth0? (2p)</p>
+      <p class="q-text">c) Hvilke MAC- og IP-adresser har rammen idet den <strong>forlater R</strong> på R-eth1? (3p)</p>
+      <p class="q-text">d) Hvilke MAC- og IP-adresser har rammen idet den <strong>mottas av B</strong>? (2p)</p>
+      <p class="q-text">e) Forklar prinsippet bak dette mønsteret: hvorfor endres MAC-adressene ved hver hop, mens IP-adressene forblir uendret? (5p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Forlater A:</strong></p>
+          <table>
+            <thead><tr><th>Felt</th><th>Verdi</th></tr></thead>
+            <tbody>
+              <tr><td>Kilde MAC</td><td>aa:01 (A)</td></tr>
+              <tr><td>Dest. MAC</td><td>r1:01 (R-eth0 — A's standard gateway)</td></tr>
+              <tr><td>Kilde IP</td><td>10.1.1.5 (A)</td></tr>
+              <tr><td>Dest. IP</td><td>10.2.2.7 (B — endelig mottaker)</td></tr>
+            </tbody>
+          </table>
+          <p>A vet at B er på et annet subnett (sammenlikner sin egen IP/maske med B's IP). A sender derfor rammen til standard gateway, hvis MAC den allerede har lært via ARP.</p>
+
+          <p><strong>b) Mottas av R på R-eth0:</strong></p>
+          <p>Identisk med a) — innholdet i rammen endres ikke i transit. Kilde MAC = aa:01, dest. MAC = r1:01, kilde IP = 10.1.1.5, dest. IP = 10.2.2.7.</p>
+
+          <p><strong>c) Forlater R på R-eth1:</strong></p>
+          <table>
+            <thead><tr><th>Felt</th><th>Verdi</th></tr></thead>
+            <tbody>
+              <tr><td>Kilde MAC</td><td>r2:01 (R-eth1)</td></tr>
+              <tr><td>Dest. MAC</td><td>bb:07 (B — funnet via ARP på subnett B)</td></tr>
+              <tr><td>Kilde IP</td><td>10.1.1.5 (A — uforandret)</td></tr>
+              <tr><td>Dest. IP</td><td>10.2.2.7 (B — uforandret)</td></tr>
+            </tbody>
+          </table>
+          <p>R kapsler IP-pakken inn i en ny ramme på utgangs-interface, med MAC-adresser som passer til subnett B.</p>
+
+          <p><strong>d) Mottas av B:</strong></p>
+          <p>Som c). Kilde MAC = r2:01, dest. MAC = bb:07, kilde IP = 10.1.1.5, dest. IP = 10.2.2.7.</p>
+
+          <p><strong>e) Prinsippet:</strong></p>
+          <p>MAC-adresser er <em>lokale</em> for ett LAN-segment (én lenke). For at en ramme skal nå én eller annen vert på lenken, må dest. MAC stemme med en vert som faktisk er på den lenken — enten endelig mottaker eller en gateway som leder videre. Ved hver hop blir rammen «pakket inn på nytt» med nye MAC-er som passer det aktuelle segmentet.</p>
+          <p>IP-adresser er derimot <em>ende-til-ende</em>. De identifiserer den opprinnelige kilden og endelige mottakeren av pakken. Rutere i mellom skal ikke endre dem — IP er den globale «postadressen», MAC er det lokale «hus-nummeret» på hver gate som rutes gjennom.</p>
+          <p>Konsekvens: ved feilsøking kan du følge IP-adressene gjennom tcpdump på flere ruter-grensesnitt — de er like overalt — mens MAC-adressene bytter ved hver hop.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4</a> · <a href="../kap6/innhold.html">Kap. 6 — Lag-2 vs. lag-3-adressering</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 4 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 4</span>
+      <span class="exam-q__points">11 poeng</span>
+      <span class="exam-q__topic">Kap. 8</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) En angriper, Eve, sitter mellom Alice og en webserver og prøver å utføre et MITM-angrep mot Alices HTTPS-økt. Hvilke <em>konkrete</em> egenskaper ved TLS hindrer at Eve kan (i) lese trafikken og (ii) utgi seg for serveren overfor Alice? (5p)</p>
+      <p class="q-text">b) Bedrift A og bedrift B vil koble sammen sine to interne nettverk slik at all trafikk mellom dem er kryptert og autentisert — uten at hver enkelt klient/server trenger sin egen TLS-konfigurasjon. Hvilken type løsning anbefaler du, og på hvilket lag i protokollstakken arbeider den? (3p)</p>
+      <p class="q-text">c) Forklar forskjellen mellom <em>autentisering av server</em> og <em>gjensidig autentisering</em> i TLS. I hvilke situasjoner brukes gjensidig autentisering vanligvis? (3p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) TLS-egenskaper mot MITM:</strong></p>
+          <p><strong>(i) Lesing av trafikken:</strong> TLS Record Protocol krypterer all applikasjonsdata med en sesjonsspesifikk symmetrisk nøkkel som ble forhandlet under handshake (typisk via Diffie-Hellman). Eve som passivt lytter ser bare krypterte bytes — ingen lesbar tekst. DH-baserte handshakes gir også <em>forward secrecy</em>: selv om Eve senere får tak i serverens private nøkkel, kan tidligere opptak ikke dekrypteres.</p>
+          <p><strong>(ii) Utgi seg for serveren:</strong> Serveren presenterer et X.509-sertifikat under handshake, signert av en CA i Alices trust store. Eve kan presentere et hvilket som helst sertifikat hun vil — men hvis hun ikke har en CA-signert sertifikat for det riktige domenet, vil Alices nettleser oppdage misforholdet og advare. Eve kan heller ikke kopiere det ekte sertifikatet og utgi seg som server, fordi handshake krever at hun beviser eierskap til den private nøkkelen (signerer en handshake-melding). Uten serverens private nøkkel feiler dette.</p>
+
+          <p><strong>b) Anbefalt løsning:</strong></p>
+          <p>En <strong>site-to-site IPSec-VPN</strong> mellom de to bedriftenes gateways. IPSec arbeider på <em>nettverkslaget</em> (lag 3) i tunnel mode: hele IP-pakker mellom de interne nettene kapsles inn i nye, eksternt-rutbare IP-pakker, krypteres og autentiseres med ESP. Klienter og servere på de interne nettene trenger ingen ekstra konfigurasjon — for dem ser nettverkene ut som direkte koblet.</p>
+
+          <p><strong>c) Server-autentisering vs. gjensidig autentisering:</strong></p>
+          <p>I vanlig TLS (f.eks. HTTPS-webside): kun <em>serveren</em> presenterer et sertifikat. Klienten verifiserer servern, men serveren vet ikke hvem klienten er — typisk skjer brukerautentisering etterpå med passord/2FA over den krypterte kanalen.</p>
+          <p>Ved <strong>gjensidig autentisering (mTLS)</strong> presenterer <em>også</em> klienten et sertifikat. Begge sider verifiserer hverandre via PKI før forbindelsen aksepteres. Dette brukes typisk i:</p>
+          <ul>
+            <li>Bedriftsintern API-trafikk (server-til-server-kommunikasjon)</li>
+            <li>VPN-løsninger og Zero-Trust-arkitekturer</li>
+            <li>Bank/finans-API-er der både parter må kunne identifiseres</li>
+          </ul>
+          <p>Det er sterkere sikkerhet, men krever utstedelse og forvaltning av klientsertifikater.</p>
+          <p class="ref">Pensum: <a href="../kap8/protokoller-brannmur.html">Kap. 8.6 — TLS</a> · <a href="../kap8/protokoller-brannmur.html">Kap. 8.7 — IPSec/VPN</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 5 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 5</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 9</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En utvikler bygger en sanntidslyd-applikasjon. Brukerne sender lyd til hverandre med følgende kjente parametere: bitrate 32 kbps (tale-koding), RTT typisk 50 ms, pakketapsrate 5 % på den trådløse delen av nettverket, og brukernes opplevde latensbudsjett er 200 ms én vei.</p>
+      <p class="q-text">a) Foreslå en konkret transport- og applikasjonsstrategi for lydstrømmen: hvilken protokoll bør brukes, hvor stor bør hver pakke være, og hvilke teknikker mot tap er relevante? Begrunn valgene mot kravene. (6p)</p>
+      <p class="q-text">b) RTT øker plutselig til 200 ms. Hvilke av valgene fra a) må revurderes, og hva slags forsinkelsesbudsjett er igjen? (4p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Anbefaling:</strong></p>
+          <ul>
+            <li><strong>Transport:</strong> RTP over UDP. TCP er uegnet — retransmisjon utløst av tap ankommer for sent (etter timeout og full RTT) og forsinker hele strømmen pga. hodet-av-køen-blokkering.</li>
+            <li><strong>Pakkestørrelse:</strong> 20 ms tale per pakke gir 32 kbps × 0,02 s = 640 bits = 80 byte payload. Mindre pakker (10 ms) reduserer tap-merkbarheten men gir høyere overhead-andel; større pakker (40 ms+) gir bedre overhead-effektivitet men gjør hver tap mer hørbar. 20 ms er et standard kompromiss.</li>
+            <li><strong>Tap-resiliens:</strong> Med 5 % tap er ren tap-styring nødvendig. Anbefalinger: (1) FEC i form av lav-bitrate backup-kopi av forrige pakke i hver ny pakke (gir vesentlig bedre opplevelse ved enkelt-pakketap, til kostnad av ~30 % ekstra båndbredde); (2) interleaving (sprer samples) er nyttig hvis tap er bursty; (3) god lyd-koding som tåler enkelt-pakketap (f.eks. Opus, som har innebygd PLC).</li>
+            <li><strong>Adaptiv playout-buffer:</strong> Med RTT 50 ms og 200 ms latensbudsjett er det ca. 100 ms å bruke på buffer + behandling. En buffer på 40–60 ms absorberer typisk jitter mens den holder seg innenfor budsjettet.</li>
+          </ul>
+
+          <p><strong>b) RTT øker til 200 ms:</strong></p>
+          <p>Latensbudsjettet (200 ms én vei) er nå nesten brukt opp av selve transit-tiden. Dette er kritisk — én-vei-forsinkelsen kommer typisk i nærheten av 100 ms (≈ halv RTT pluss kø). Med 100 ms én-vei-transit er det bare ca. 100 ms igjen til buffer + behandling, men VoIP «føles» allerede dårligere over 150 ms én vei.</p>
+          <p>Det som må revurderes:</p>
+          <ul>
+            <li><strong>Mindre playout-buffer.</strong> Reduser fra 40–60 ms til 20–30 ms — mindre jitter-toleranse, men mindre tilleggslatens.</li>
+            <li><strong>Sterkere fokus på FEC enn på retransmisjon.</strong> Selv hvis vi vurderte selektiv retransmisjon, vil det neppe rekke fram i tide.</li>
+            <li><strong>Mulig vurdering av kortere pakker (10 ms)</strong> for å redusere innkapslingsforsinkelsen — men dette øker pakkraten og dermed båndbreddeforbruket.</li>
+          </ul>
+          <p>Hvis RTT vedvarer høyt, vil opplevelsen uansett bli merkbart dårligere enn ved 50 ms — det er en grense for hva applikasjonsteknikker kan kompensere for når selve nettet er treigt.</p>
+          <p class="ref">Pensum: <a href="../kap9/innhold.html">Kap. 9 — VoIP-design</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Vår 2026</p>
+  </div>
+</footer>
+<script src="../chat-widget.js"></script>
+<script src="../nav-search.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>
