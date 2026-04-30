@@ -33,7 +33,8 @@
   <ol class="chapter-toc-list">
     <li><span class="toc-num">01</span><a href="#overblikk">Helhetsbilde</a></li>
     <li><span class="toc-num">02</span><a href="#deler">Deler</a></li>
-    <li><span class="toc-num">03</span><a href="#quiz">Test deg selv</a></li>
+    <li><span class="toc-num">03</span><a href="#flashcards">Flashcards</a></li>
+    <li><span class="toc-num">04</span><a href="#quiz">Test deg selv</a></li>
   </ol>
 </div>
 </nav>
@@ -149,6 +150,230 @@
       <div class="sp-info"><div class="sp-title">IP og adressering</div><div class="sp-desc">IP-datagrammer, CIDR, DHCP, NAT, IPv6 og Internetts arkitekturprinsipper</div></div>
       <span class="sp-arrow">&rarr;</span>
     </a>
+  </div>
+</div>
+</section>
+
+<!-- ============ FLASHCARDS ============ -->
+<section id="flashcards" class="flashcards-section">
+<div class="container">
+  <div class="section-badge">Flashcards</div>
+  <h2>Rask <em>repetisjon</em></h2>
+  <p class="section-intro">Åpne spørsmål i tilfeldig rekkefølge — alle forankret i pensum (4.1–4.3 og 4.5). Klikk kortet for å snu — bruk <strong>&larr; / &rarr;</strong> for å bla, <strong>mellomrom</strong> for å snu, <strong>R</strong> for å shuffle.</p>
+
+  <div class="flashcards" data-flashcards>
+    <div class="fc-stage">
+      <article class="fc-card" tabindex="0" role="button" aria-label="Flashcard — klikk for å snu">
+        <div class="fc-face fc-front">
+          <div class="fc-label">Spørsmål</div>
+          <p class="fc-text" data-fc-front-display aria-live="polite">&nbsp;</p>
+          <div class="fc-hint">Klikk eller mellomrom for å vise svar</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-label">Svar</div>
+          <div class="fc-text" data-fc-back-display aria-live="polite">&nbsp;</div>
+        </div>
+      </article>
+    </div>
+
+    <div class="fc-controls">
+      <button class="fc-btn fc-prev" type="button" aria-label="Forrige kort" title="Forrige (←)">&larr;</button>
+      <div class="fc-progress">
+        <span class="fc-counter">1 / 1</span>
+        <div class="fc-bar"><div class="fc-bar-fill"></div></div>
+      </div>
+      <button class="fc-btn fc-next" type="button" aria-label="Neste kort" title="Neste (→)">&rarr;</button>
+      <button class="fc-btn fc-shuffle" type="button" aria-label="Shuffle bunken" title="Shuffle (R)">&#8635;</button>
+    </div>
+
+    <ol class="fc-deck" hidden>
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom <em>forwarding</em> og <em>routing</em>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Forwarding er den lokale, per-pakke-operasjonen i <em>én</em> ruter — slå opp destinasjonsadressen i forwarding-tabellen og send pakken ut riktig utport, på nanosekunder. Routing er den nettverksglobale prosessen som bestemmer hvilke ruter som finnes og fyller forwarding-tabellen, på millisekunder–sekunder.</p>
+          <p><strong>Hvorfor skillet er viktig:</strong> De to oppgavene har helt ulike tidsskalaer og krav. Forwarding må gå så fort at det implementeres i dedikerte ASIC-er (data plane), mens routing er kompleks logikk som kjører i programvare (control plane). Dette skillet er hele organiseringsprinsippet for kapittel 4 og for moderne ruterdesign. Analogi: forwarding = ta høyre i veikrysset; routing = planlegge hele turen fra Trondheim til Roma før du setter deg i bilen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <em>data plane</em> og <em>control plane</em> i en ruter, og hvorfor skilles de ad?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Data plane er maskinvaren som faktisk flytter pakker fra innport til utport (forwarding-tabell, switching fabric, ASIC-er — nanosekunder). Control plane er programvaren som beregner ruter og skriver ned forwarding-tabellen (rutingalgoritmer som OSPF/BGP, eller en SDN-controller — millisekunder).</p>
+          <p><strong>Hvorfor skille:</strong> Hver pakke gjennom en 100 Gbps-lenke har bare ~5 ns til disposisjon — det går ikke å kjøre rutingalgoritmer i den løkka. Ved å skille bort den langsomme planleggingen til control plane og la data plane bare slå opp og videresende, klarer ruteren tempoet. Skillet finnes i begge modellene: tradisjonell per-router-kontroll (hver ruter kjører OSPF/BGP) og moderne sentralisert SDN (en fjernkontroller pusher tabeller ut).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva betyr at IP er en <em>best-effort</em>-tjeneste, og hvorfor vant denne modellen over rikere alternativer som ATM?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Best-effort betyr at IP <em>ikke</em> gir noen garantier — verken for at pakken kommer fram, hvilken rekkefølge den ankommer i, hvilken båndbredde du får, eller hvor lang forsinkelsen blir. Pakken sendes så godt nettverket klarer det, og resten er endepunktets ansvar.</p>
+          <p><strong>Hvorfor det fungerer:</strong> (1) <em>Enkelhet skalerer</em> — en ruter som bare slår opp én destinasjon og sender videre kan bygges billig av hvem som helst; ATM krevde per-flow-tilstand i hver eneste ruter. (2) <em>Overprovisjonering</em> — båndbredde har blitt billig nok til at video og tale fungerer godt nok, mesteparten av tiden. (3) <em>CDN-er + congestion control</em> — innhold replikeres nær brukerne, og TCP hindrer kollaps. Internett valgte enkelhet i nettverket og intelligens i kantene — og det er grunnen til at IP, ikke ATM, vant.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke fire hoveddeler består en ruter av, og hvilke tilhører data plane vs. control plane?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> (1) <strong>Innporter</strong> — linjeavslutning, lenkelagsdekoding og <em>tabelloppslag</em> for å bestemme utport. (2) <strong>Switching fabric</strong> — flytter pakken fra innport til riktig utport. (3) <strong>Utporter</strong> — kø, scheduling, lenkelagsenkoding og transmisjon. (4) <strong>Routing-prosessor</strong> — kjører rutingprotokoller og fyller forwarding-tabellen. De tre første er <em>data plane</em>; den siste er <em>control plane</em>.</p>
+          <p><strong>Hvorfor designet er slik:</strong> Tabelloppslaget gjøres lokalt i hver innport uten å involvere CPU-en, slik at alle porter jobber parallelt. Mønsteret kalles <em>match plus action</em>: les et felt i headeren, finn matchende rad, utfør handlingen ("send ut på interface 3"). Det går igjen overalt i nettverkslaget — fra enkel destinasjonsforwarding til avansert SDN-policy.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar <em>longest prefix matching</em> (LPM). Hvorfor velges det <strong>lengste</strong> prefikset når flere matcher?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Forwarding-tabellen inneholder prefikser (f.eks. <code>10.0.0.0/8</code>, <code>10.1.0.0/16</code>), ikke hele adresser. Når en destinasjonsadresse matcher flere oppføringer, velger ruteren den med <em>lengst prefiks</em> fordi det er den mest spesifikke ruten. Eksempel: pakken til 10.1.5.3 matcher både /8 og /16, men /16-ruten vinner.</p>
+          <p><strong>Hvorfor det er nødvendig:</strong> Hierarkisk adressering og rute-aggregering gjør at det ofte finnes overlappende oppføringer — en ISP annonserer et stort blokk-prefiks, mens en enkeltkunde innenfor blokken har en mer spesifikk rute via en annen lenke. Uten LPM ville disse vært tvetydige. Lengre prefiks = mer spesifikk = nærmere sluttdestinasjon, så LPM er det riktige valget.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor implementeres forwarding i maskinvare (ASIC og TCAM) i stedet for programvare?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En 100 Gbps-lenke leverer en 64-byte-pakke omtrent hvert 5. nanosekund. Programvare på en generell CPU klarer ikke å gjøre et tabelloppslag så raskt — særlig ikke med en kvart million prefikser i tabellen.</p>
+          <p><strong>Hvorfor TCAM:</strong> Ternary Content-Addressable Memory sammenligner alle oppføringer parallelt på <em>én</em> klokkesyklus, uavhengig av tabellstørrelsen. "Ternary" betyr at den i tillegg kan ha "wildcard"-bits, perfekt for prefiksmatching. ASIC-er er kretser hardkodet til denne ene jobben. Uten denne maskinvareakselerasjonen ville ruterne blitt selve flaskehalsen i Internett — Cisco Catalyst-svitsjer har ~1 million oppføringer i TCAM.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er de tre generasjonene av <em>switching fabric</em>, og hvilken flaskehals fjerner hver generasjon?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>1. <strong>Via minne</strong> — pakke kopieres innport → systemminne → utport via CPU-en. To busskrysninger; begrenses av minnebåndbredden.<br>
+             2. <strong>Via buss</strong> — direkte innport-til-utport over delt buss, uten CPU. Men bare <em>én</em> pakke om gangen pga. <em>bus contention</em> (Cisco 5600: 32 Gbps).<br>
+             3. <strong>Sammenkoblingsnettverk (crossbar)</strong> — flere pakker krysser <em>parallelt</em> så lenge de skal til ulike utporter. Moderne rutere bruker flere parallelle <em>fabric planes</em> (Cisco CRS: 8 planes, hundrevis av Tbps).</p>
+          <p><strong>Hvorfor evolusjonen:</strong> Hver generasjon fjerner én flaskehals — først CPU-en, så bussen, til slutt sekvensiell prosessering — og åpner for stadig høyere ruterkapasitet.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <em>head-of-line (HOL) blocking</em> ved input-køer i en ruter?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Hvis switching fabric er tregere enn summen av innportene, bygger det seg opp køer ved <em>innportene</em>. HOL-blokkering oppstår når pakken først i innport-køen venter på en opptatt utport, og dermed blokkerer pakkene bak seg — selv om <em>deres</em> utporter er ledige.</p>
+          <p><strong>Hvorfor det er ille:</strong> Du sløser kapasitet: ledige utporter står ubrukte mens trafikk hoper seg opp lokalt. Moderne rutere unngår problemet ved å bruke <em>virtual output queues</em> (én kø per utport per innport) eller ved å gjøre fabric-en raskere enn summen av innportene, slik at kun output-køer (som ikke har samme problem) bygger seg opp.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <em>bufferbloat</em>, og hvorfor er for store routerbuffere skadelig?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Bufferbloat oppstår når routerbuffere er <em>for store</em>. Tap-raten ser bra ut (få pakker droppes), men pakkene står lenge i kø før de sendes videre. Resultatet er <em>høy og variabel latens</em> som ødelegger interaktive applikasjoner: VoIP, spill, videosamtaler.</p>
+          <p><strong>Hvorfor det er kontraintuitivt:</strong> TCP regulerer ned vinduet sitt først når det ser tap; med ekstra store buffere blir tapet utsatt, så TCP holder køene fulle lenger. Den gamle tommelfingerregelen RTT·C (250 ms × 10 Gbps = 2,5 Gbit) er erstattet av <em>RTT·C/√N</em> for N flows — fordi statistisk multipleksing reduserer behovet. Aktive køstyringer som <strong>RED</strong> (drop tilfeldige pakker <em>før</em> køen er full) og <strong>ECN</strong> (markér i stedet for å droppe) signaliserer congestion tidligere uten å fylle buffere.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Sammenlign de viktigste scheduling-disiplinene i ruterens utport-kø — FCFS, prioritet, og Weighted Fair Queueing.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p><strong>FCFS / FIFO:</strong> sender i ankomstrekkefølge — enkel og "nøytral", men en stor nedlasting kan gjøre en VoIP-samtale ubrukelig.<br>
+             <strong>Priority scheduling:</strong> klassifiser pakker, server alltid høyeste klasse med pakker først — gir lav latens til viktig trafikk, men kan <em>sulte ut</em> lavprioriterte flows.<br>
+             <strong>Round Robin / WFQ:</strong> hver klasse får sin tur. WFQ gir vekt w<sub>i</sub> til klasse i, slik at klassen får andelen w<sub>i</sub>/Σw<sub>j</sub> av lenkekapasiteten. Slik kan man garantere minimum båndbredde uten å sulte de andre.</p>
+          <p><strong>Hvorfor det er politisk ladet:</strong> Scheduling- og buffer-regler er <em>mekanismene</em> der nettnøytralitet får teknisk innhold. FCFS er strengt nøytralt; priority-scheduling basert på betalende kunder er "paid prioritization" — det 2015 FCC-regelverket forbød.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <em>TTL</em>-feltet i IPv4-headeren, og hvilke to formål har det?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> TTL (Time To Live) er et 8-bits felt som <em>dekrementeres med 1 i hver eneste ruter</em>. Når TTL når 0, dropper ruteren pakken og sender en ICMP "Time Exceeded" tilbake til avsenderen.</p>
+          <p><strong>Hvorfor det finnes:</strong> Først og fremst for å <em>hindre evige løkker</em>: ved en feilkonfigurasjon i ruting kunne pakker sirkulert uendelig og spist opp båndbredde. TTL gir en garantert øvre grense på antall hopp. <strong>Sekundærbruk:</strong> <code>traceroute</code> utnytter mekanismen aktivt — ved å sende pakker med TTL = 1, 2, 3, … får man én ICMP-feilmelding per ruter på ruta og kan kartlegge hopp-for-hopp-forsinkelse.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor må IPv4-headerchecksum reberegnes i hver eneste ruter, og hvorfor ble den fjernet i IPv6?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Checksummen dekker bare <em>headeren</em> (ikke payloaden). Siden TTL-feltet endres ved hvert hopp (dekrementeres), endres checksummen tilsvarende — og hver ruter må regne den ut på nytt for å bevare integriteten på den nye headeren.</p>
+          <p><strong>Hvorfor IPv6 dropper det:</strong> Beregningen er en kostnad som gjentas på <em>millioner av pakker per sekund</em> i en travel ruter, og dupliserer arbeid som allerede gjøres på andre lag — TCP og UDP har egne ende-til-ende-checksums som dekker både header og data, og lenkelaget (Ethernet FCS) fanger bitfeil per hopp. IPv6-designerne konkluderte med at en hop-by-hop checksum på nettverkslaget var bortkastet prosessering, og fjernet den for raskere forwarding.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar IP-fragmentering. Hva er rollen til feltene <em>Identifier</em>, <em>Flags (MF, DF)</em> og <em>Fragment Offset</em>, og hvor settes pakken sammen igjen?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Hvis et datagram er større enn neste lenkes <strong>MTU</strong> (typisk 1500 bytes på Ethernet), må ruteren fragmentere det i mindre biter. <em>Identifier</em> er lik for alle fragmenter fra samme originale datagram (slik at mottakeren kan gruppere dem). <em>MF</em> (More Fragments) = 1 i alle fragmenter unntatt det siste. <em>DF</em> (Don't Fragment) = 1 forbyr fragmentering — for store pakker droppes da, og avsender får ICMP-feil. <em>Fragment Offset</em> angir plasseringen i originalen, målt i 8-byte-enheter.</p>
+          <p><strong>Hvor reassembleres:</strong> Kun i <em>destinasjonsverten</em>, ikke i mellomliggende rutere. Fragmenter kan ta forskjellige ruter, så bare destinasjonen er garantert å se alle. Hvis ett fragment går tapt, forkaster mottakeren resten — TCP eller applikasjonen sørger for retransmisjon. Eksempel: 4000-byte datagram over MTU=1500 deles i tre fragmenter med payload 1480/1480/1020 og offsets 0/185/370.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva betyr det at en IP-adresse er bundet til et <em>grensesnitt</em> (interface), og hvordan defineres et <em>subnett</em>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En 32-bits IPv4-adresse identifiserer <em>ikke en maskin</em>, men ett <em>grensesnitt</em>. En bærbar med både Ethernet og WiFi har to grensesnitt og dermed to forskjellige IP-adresser. En ruter med åtte porter har åtte adresser. Et <strong>subnett</strong> er et sett med grensesnitt som kan nå hverandre direkte uten å passere en ruter — de deler felles nettverksdel av adressen og varierer bare i vertsdelen.</p>
+          <p><strong>Hvorfor det er viktig:</strong> Subnett-konseptet er fundamentet for forwarding. En ruter ser på destinasjonsadressens nettverksprefiks for å bestemme hvilket subnett pakken skal til, ikke hvilken individuell maskin. Oppskrift for å identifisere subnett: ta av alle grensesnitt fra rutere og verter, og de sammenhengende "øyene" som blir igjen er subnettene.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <strong>CIDR</strong>, og hvordan muliggjør den <em>rute-aggregering</em>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> CIDR (Classless Inter-Domain Routing) dropper de gamle faste klassene (/8, /16, /24) og lar prefikslengden være vilkårlig fra 0 til 32. <code>200.23.16.0/23</code> betyr "de første 23 bitene er nettverksdelen", som gir 2⁹ = 512 adresser. Notasjonen kalles <em>dotted-decimal/prefix</em>.</p>
+          <p><strong>Hvorfor rute-aggregering:</strong> En ISP som eier <code>200.23.16.0/20</code> kan annonsere <em>én</em> rute til resten av Internett, selv om den internt deler rommet i åtte /23-blokker for åtte kunder. Resten av Internett trenger ikke kjenne underoppdelingen, og forwarding-tabellene globalt holdes mye mindre. Når en kunde bytter ISP, annonserer den nye et mer spesifikt prefiks (lengre), og takket være LPM finner trafikken fram automatisk.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar DHCP-sekvensen <strong>DORA</strong>. Hvorfor sendes alle fire meldinger som broadcast?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <em>D</em>iscover (klient → broadcast: "noen som har en IP til meg?") → <em>O</em>ffer (server → broadcast: "her er IP X, lease Y sek") → <em>R</em>equest (klient → broadcast: "jeg velger denne") → <em>ACK</em> (server → broadcast: "bekreftet"). I tillegg til IP-adressen leverer DHCP også subnettmaske, default gateway og DNS-serveradresse.</p>
+          <p><strong>Hvorfor broadcast hele veien:</strong> I steg 1–2 har klienten ingen IP, så unicast er umulig. I steg 3 (Request) <em>kunne</em> klienten teoretisk sendt unicast — men broadcasten har en viktig sidefunksjon: hvis flere DHCP-servere har sendt tilbud, ser de andre nå at klienten valgte en konkurrent og kan frigjøre sine reservasjoner. Det unngår at adresser blir liggende reservert unødig.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan fungerer <strong>NAT</strong> med portoversettelse, og hvilket problem løser den?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> IPv4 har bare 2³² ≈ 4,3 milliarder adresser — for få for verdens enheter. NAT lar et helt privat nettverk (typisk <code>10.0.0.0/8</code> eller <code>192.168.0.0/16</code>) dele <em>én</em> offentlig IP utad. Når en intern maskin sender en pakke ut, omskriver NAT-ruteren kildeadressen til sin egen offentlige IP <em>og</em> bytter kildeporten til et unikt nummer som lagres i en <strong>NAT-tabell</strong>. Når svaret kommer tilbake, slår ruteren opp i tabellen via destinasjonsporten og oversetter tilbake til riktig intern maskin og port.</p>
+          <p><strong>Hvorfor port-trikset er nøkkelen:</strong> Én offentlig IP har 65 535 mulige portnumre, så samme adresse kan multiplekse mange tusen samtidige flows. Uten port-omskriving ville det ikke vært nok unikhet til å rute svarpakkene tilbake. NAT er bredt utrullet i hjemmenett, bedrifter og 4G/5G — og er en hovedgrunn til at IPv4 har overlevd så lenge.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor er NAT kontroversielt blant nettverksarkitekter, og hvilke arkitekturprinsipper bryter den?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> NAT bryter <em>end-to-end-prinsippet</em>: en maskin bak NAT kan ikke uten videre ta imot innkommende forbindelser, fordi NAT-tabellen bare har oppføringer for flows som er initiert <em>innenfra</em>. Servere hjemme krever "port forwarding"; P2P-applikasjoner må bruke "hole punching"; IoT blir vanskelig.</p>
+          <p><strong>Andre brudd:</strong> (1) NAT er en lag-3-enhet (ruter), men manipulerer <em>portnumre</em>, som er lag-4-informasjon — det bryter den rene lagdelingen. (2) Den må holde <em>tilstand</em> per flow (NAT-tabellen), som strider mot den tilstandsløse IP-modellen. Likevel er NAT her for å bli — den løste IPv4-knappheten godt nok til at presset for IPv6-overgang forsvant.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva har IPv6 fjernet fra IPv4-headeren, og hvorfor?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> IPv6 har en <em>fast 40-byte basisheader</em> uten options. Tre ting er fjernet:</p>
+          <p>1. <strong>Header checksum</strong> — duplisert arbeid; transportlaget (TCP/UDP) har ende-til-ende-checksum og lenkelaget fanger bitfeil per hopp.<br>
+             2. <strong>Fragmentering i rutere</strong> — hvis pakken er for stor, sender ruteren ICMPv6 "Packet Too Big" og avsenderen må fragmentere selv (eller gjøre Path MTU Discovery).<br>
+             3. <strong>Inline options</strong> — erstattet av <em>extension headers</em> som linkes via Next Header-feltet.</p>
+          <p><strong>Hvorfor:</strong> Alle tre var kostnader som ble betalt på <em>hver pakke i hver ruter</em>. Ved å flytte dem ut av forwarding-stien (eller til endesystemene) kan IPv6-rutere prosessere pakker raskere, til tross for at adressene er fire ganger lengre. 128-bits adresserommet gir 2¹²⁸ adresser — nok til å adressere hvert sandkorn på jorden mange ganger over.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan håndteres overgangen mellom IPv4 og IPv6 i praksis (<em>dual stack</em> og <em>tunneling</em>)?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> IPv4 og IPv6 er <em>ikke</em> bakoverkompatible — en IPv4-bare ruter forstår ikke en IPv6-pakke og omvendt. To overgangsmekanismer brukes:</p>
+          <p><strong>Dual stack:</strong> verter og rutere kjører <em>begge</em> protokollstabler samtidig og velger versjon basert på destinasjonens støtte (typisk via DNS-oppslag — AAAA for IPv6, A for IPv4).<br>
+             <strong>Tunneling:</strong> en IPv6-pakke pakkes inn som payload i et IPv4-datagram for å krysse en IPv4-bare del av nettverket; IPv6 "pakkes ut" igjen i andre enden.</p>
+          <p><strong>Hvorfor overgangen er treg:</strong> NAT holdt IPv4 på livstøtte ved å løse adresseknappheten godt nok, så det presserende behovet for IPv6 forsvant. I 2026 ligger global IPv6-trafikk på rundt 45–47 % etter over 25 år med gradvis migrasjon.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar <em>IP-timeglasset</em> og <em>end-to-end-argumentet</em> som arkitekturprinsipper for Internett.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Internett har mange protokoller på applikasjons-, transport-, lenke- og fysisk lag — men bare <em>én</em> nettverkslagsprotokoll: IP. Denne "smale midjen" i timeglasset er det <em>alle</em> må implementere, og det som gjør interoperabilitet mulig: enhver enhet som snakker IP kan kommunisere med enhver annen.</p>
+          <p><strong>End-to-end-argumentet (Saltzer, Reed, Clark, 1981):</strong> En funksjon kan kun implementeres fullstendig og korrekt med kunnskap fra applikasjonen i <em>endepunktene</em>. En ufullstendig versjon i nettverket kan være en ytelsesoptimalisering, men kan aldri erstatte endepunktimplementeringen. <strong>Konkret:</strong> pålitelig dataoverføring kan enten bygges hop-by-hop inn i nettverket (dyrt, komplekst) eller end-to-end via TCP. Internett valgte end-to-end — intelligens i kantene, dumt nett — og har skalert bedre enn alle alternativene. RFC 1958: "the goal is connectivity, the tool is the Internet Protocol, and the intelligence is end-to-end rather than hidden in the network."</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Når er en <em>default-rute</em> en god strategi i forwarding-tabellen?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En default-rute er en oppføring med prefiks <code>0.0.0.0/0</code> som matcher <em>alle</em> destinasjoner. Den brukes når ingen mer spesifikk oppføring finnes i tabellen — siden /0 har lengde null, vinner den bare når alt annet feiler i LPM.</p>
+          <p><strong>Hvorfor og når:</strong> Default-rute er ideell i <em>små nett som har én oppstrøms-ISP</em> — istedenfor å holde en kvart million prefikser i tabellen, sender hjemmeruteren bare alt ukjent til ISP-en, som har den fulle BGP-tabellen. Ditt hjemmenett trenger bare å vite hva som er lokalt; resten "drar på defaulten." I store ISP-er som peerer med flere andre er full tabell nødvendig fordi default ikke kan velge mellom flere oppstrøms-stier.</p>
+        </div>
+      </li>
+    </ol>
   </div>
 </div>
 </section>
@@ -394,6 +619,7 @@
   </div>
 </footer>
 <script src="../quiz.js"></script>
+<script src="../flashcards.js"></script>
 <script src="../chat-widget.js"></script>
 <script src="../nav-search.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>

@@ -33,7 +33,8 @@
   <ol class="chapter-toc-list">
     <li><span class="toc-num">01</span><a href="#overblikk">Helhetsbilde</a></li>
     <li><span class="toc-num">02</span><a href="#deler">Deler</a></li>
-    <li><span class="toc-num">03</span><a href="#quiz">Test deg selv</a></li>
+    <li><span class="toc-num">03</span><a href="#flashcards">Flashcards</a></li>
+    <li><span class="toc-num">04</span><a href="#quiz">Test deg selv</a></li>
   </ol>
 </div>
 </nav>
@@ -296,6 +297,22 @@
         <div data-fc-back>
           <p><strong>Svar:</strong> (1) Klient → Server: <code>SYN, seq=x</code>. (2) Server → Klient: <code>SYN+ACK, seq=y, ack=x+1</code>. (3) Klient → Server: <code>ACK, ack=y+1</code> (kan piggyback'e applikasjonsdata). Etter dette er begge sider i ESTABLISHED, og sekvensnumre er synkronisert i begge retninger.</p>
           <p><strong>Hvorfor tre meldinger:</strong> Toveis ville ikke kunne skille en ny SYN fra et forsinket gammelt SYN-duplikat — serveren risikerte å åpne en forbindelse alene (halvåpen, sårbar for SYN-flood) eller å akseptere gamle data som nye. Den tredje meldingen er klientens bevis på at hun lever <em>nå</em> og at serverens valgte startsekvensnummer er bekreftet. Tilfeldige startsekvenser hindrer i tillegg at gamle forbindelsers data forveksles med nye.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan lukkes en TCP-forbindelse, og hvorfor venter den initierende parten i TIME_WAIT?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Lukking krever <strong>fire meldinger</strong> fordi TCP er full duplex og hver retning lukkes separat: (1) part A sender <code>FIN</code>, (2) B svarer <code>ACK</code> (A→B-retningen er nå lukket, B kan fortsatt sende), (3) når B er ferdig sender den <code>FIN</code>, (4) A svarer <code>ACK</code>. Etter siste ACK går A inn i <strong>TIME_WAIT</strong> og venter typisk <code>2 × MSL</code> (Maximum Segment Lifetime, ofte 30 s–2 min) før porten frigis.</p>
+          <p><strong>Hvorfor TIME_WAIT:</strong> Hvis As siste ACK forsvinner, vil B retransmittere FIN. Da må A fortsatt være tilgjengelig for å re-ACKe. Uten TIME_WAIT kunne en ny forbindelse på samme portpar fått en gammel FIN/ACK feiltolket som sin egen — TIME_WAIT garanterer at alle gamle pakker er døde før portene gjenbrukes.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er TCP CUBIC, og hvorfor er den standard på Linux i stedet for Reno?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> CUBIC er en moderne metningskontroll-variant som lar cwnd være en <em>kubisk funksjon av tid siden siste tap</em>, ikke RTT som i Reno. Etter et tap husker den <code>W_max</code> (cwnd ved siste tap), vokser raskt langt fra W_max, sakte når den nærmer seg, og sonderer forsiktig forbi.</p>
+          <p><strong>Hvorfor den slo Reno:</strong> Renos lineære AIMD bruker for lang tid på å gjenoppta full kapasitet etter et tap på lenker med stor BDP (bandwidth-delay product) — moderne datasenter- og fiberlenker. CUBIC når raskt opp igjen til der det ble galt sist, og er samtidig RTT-uavhengig, så den oppfører seg likere mellom korte og lange lenker. Standard i Linux fra 2006 og dominerer trafikken til store webservere.</p>
         </div>
       </li>
 
@@ -576,6 +593,7 @@
   </div>
 </footer>
 <script src="../quiz.js"></script>
+<script src="../flashcards.js"></script>
 <script src="../chat-widget.js"></script>
 <script src="../nav-search.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>

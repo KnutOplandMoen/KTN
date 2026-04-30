@@ -33,7 +33,8 @@
   <ol class="chapter-toc-list">
     <li><span class="toc-num">01</span><a href="#overblikk">Helhetsbilde</a></li>
     <li><span class="toc-num">02</span><a href="#deler">Deler</a></li>
-    <li><span class="toc-num">03</span><a href="#quiz">Test deg selv</a></li>
+    <li><span class="toc-num">03</span><a href="#flashcards">Flashcards</a></li>
+    <li><span class="toc-num">04</span><a href="#quiz">Test deg selv</a></li>
   </ol>
 </div>
 </nav>
@@ -150,6 +151,259 @@
       <div class="sp-info"><div class="sp-title">Ethernet, svitsjer og ARP</div><div class="sp-desc">MAC-adresser, ARP, Ethernet-rammen, svitsjer og en dag i livet til en web-forespørsel</div></div>
       <span class="sp-arrow">&rarr;</span>
     </a>
+  </div>
+</div>
+</section>
+
+<!-- ============================================ -->
+<!-- FLASHCARDS                                     -->
+<!-- ============================================ -->
+<section id="flashcards" class="flashcards-section">
+<div class="container">
+  <div class="section-badge">Flashcards</div>
+  <h2>Rask <em>repetisjon</em></h2>
+  <p class="section-intro">Åpne spørsmål i tilfeldig rekkefølge. Klikk kortet for å snu — bruk <strong>&larr; / &rarr;</strong> for å bla, <strong>mellomrom</strong> for å snu, <strong>R</strong> for å shuffle.</p>
+
+  <div class="flashcards" data-flashcards>
+    <div class="fc-stage">
+      <article class="fc-card" tabindex="0" role="button" aria-label="Flashcard — klikk for å snu">
+        <div class="fc-face fc-front">
+          <div class="fc-label">Spørsmål</div>
+          <p class="fc-text" data-fc-front-display aria-live="polite">&nbsp;</p>
+          <div class="fc-hint">Klikk eller mellomrom for å vise svar</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-label">Svar</div>
+          <div class="fc-text" data-fc-back-display aria-live="polite">&nbsp;</div>
+        </div>
+      </article>
+    </div>
+
+    <div class="fc-controls">
+      <button class="fc-btn fc-prev" type="button" aria-label="Forrige kort" title="Forrige (←)">&larr;</button>
+      <div class="fc-progress">
+        <span class="fc-counter">1 / 1</span>
+        <div class="fc-bar"><div class="fc-bar-fill"></div></div>
+      </div>
+      <button class="fc-btn fc-next" type="button" aria-label="Neste kort" title="Neste (→)">&rarr;</button>
+      <button class="fc-btn fc-shuffle" type="button" aria-label="Shuffle bunken" title="Shuffle (R)">&#8635;</button>
+    </div>
+
+    <ol class="fc-deck" hidden>
+      <li data-card>
+        <div data-fc-front>Hva er lenkelagets rolle, og hva kalles dataenheten på dette laget?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Lenkelaget overfører data over <em>hver enkelt fysiske lenke</em> mellom to nabonoder. Dataenheten kalles en <strong>ramme</strong> (frame), som kapsler inn et IP-datagram med lokal adresse-, type- og kontrollinformasjon.</p>
+          <p><strong>Hvorfor:</strong> IP tar seg av stien fra ende til ende, men IP bryr seg ikke om <em>hvordan</em> en pakke fysisk kommer fra én ruter til neste. Den jobben gjøres på lenkelaget. En typisk reise fra Trondheim til California kan ha 15 hopp — hver med sitt eget lenkelag og potensielt forskjellig teknologi (fiber, WiFi, satellitt). Hver lenke er ett hopp; hver ramme leveres bare ett hopp av gangen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke fem typer tjenester kan lenkelaget tilby?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> (1) <em>Framing og lenketilgang</em> — pakke datagrammet inn med hode/hale, og bestemme hvem som får sende på et delt medium. (2) <em>Pålitelig levering</em> via lokal retransmisjon. (3) <em>Flytkontroll</em> mellom nabonoder. (4) <em>Feildeteksjon og feilretting</em>. (5) <em>Halv- eller full-dupleks</em>.</p>
+          <p><strong>Hvorfor:</strong> Ikke alle teknologier tilbyr alt — designet velger bevisst hva som hører hjemme på lenkelaget og hva som overlates til høyere lag. På kablet Ethernet er feilraten så lav at pålitelig levering hører bedre hjemme i TCP ende-til-ende; derfor kjører Ethernet kun feildeteksjon (CRC), ikke retransmisjon. WiFi har høyere feilrate og bruker linklags-ACK for å skjule mest mulig fra TCP.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvor i en datamaskin er lenkelaget implementert, og hvorfor akkurat der?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> I <strong>nettverkskortet</strong> (NIC) — en blanding av maskinvare, firmware og litt programvare. Operativsystemet snakker med NIC-en over systembussen.</p>
+          <p><strong>Hvorfor:</strong> Lenkelaget må operere på bit-nivå med strenge tidskrav: carrier sense, kollisjonsdeteksjon og CRC-sjekk i sanntid på linehastighet. Det er for tidkritisk til å gjøres i ren programvare. Ethernet-brikken og WiFi-brikken i laptopen er to forskjellige lenkelagsimplementasjoner som lever side om side.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar enkel paritetsbit og todimensjonal paritet — hva kan hver av dem oppdage og rette?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Enkel paritet legger til én bit som gjør at totalt antall 1-ere blir partall. Den oppdager alle <em>odde</em> antall bitfeil, men misser partall. Todimensjonal paritet arrangerer bits i et rutenett med rad- og kolonneparitet og kan både <em>oppdage og rette</em> en enkeltbitfeil.</p>
+          <p><strong>Hvorfor:</strong> Med 2D peker den brutte raden og den brutte kolonnen ut feilen i krysset, som kan flippes tilbake. Dette er bare en pekepinn på smartere koder (Hamming, etc.). I praksis brukes ikke 2D til Ethernet — CRC er mye mer effektivt mot bursts, som er den dominerende feiltypen ved elektrisk støy.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er CRC, hvordan virker den, og hvor mange feil fanger den?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> CRC (Cyclic Redundancy Check) er feildeteksjon basert på modulo-2-polynomdivisjon (XOR). Sender og mottaker er enige om en generator <code>G</code> på <code>r+1</code> bits. Senderen finner <code>R</code> slik at <code>&lt;D,R&gt;</code> går opp i <code>G</code>; mottaker deler det mottatte på <code>G</code> og forventer rest 0. CRC fanger <em>alle</em> bursts kortere enn <code>r+1</code> bits, alle odde antall bitfeil, og lengre bursts med sannsynlighet <code>1 − (½)ʳ</code>.</p>
+          <p><strong>Hvorfor:</strong> XOR er ekstremt billig i maskinvare (et skiftregister + noen porter), og burst-feil er typisk for elektrisk støy. Ethernet bruker <strong>CRC-32</strong>, så sjansen for å gå glipp av en lang burst er ca. 1 av 4 milliarder. CRC er <em>ren feildeteksjon</em> — feil rammer kastes uten retransmisjon.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom punkt-til-punkt-lenker og broadcast-lenker, og hvorfor må vi koordinere på sistnevnte?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En <em>punkt-til-punkt</em>-lenke har akkurat to endepunkter (én sender, én mottaker) og trenger ingen koordinering. En <em>broadcast</em>-lenke deler ett medium mellom flere noder; sender to samtidig, overlapper signalene og blir uleselige — en <strong>kollisjon</strong>.</p>
+          <p><strong>Hvorfor:</strong> På et delt medium har vi et koordineringsproblem (cocktailparty-analogien): hvem får sende, og når? Det er nettopp dette MAC-protokoller (multiple-access) løser. Eksempler på broadcast-medium: gammelt koaks-Ethernet, WiFi i luften, hub-baserte segmenter. Moderne svitsjet Ethernet er i praksis punkt-til-punkt — derfor er kollisjoner sjeldne i dag.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke tre brede klasser av multiple-access-protokoller finnes, og hva er hovedfilosofien til hver?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> (1) <strong>Kanalpartisjonering</strong> (TDMA, FDMA): del kanalen i faste biter — én bit per node. (2) <strong>Random access</strong> (ALOHA, CSMA, CSMA/CD, CSMA/CA): bare send når du vil; håndter kollisjoner når de skjer. (3) <strong>Ta tur</strong> (polling, token passing): en avtalt mekanisme bestemmer hvem som får sende neste.</p>
+          <p><strong>Hvorfor:</strong> De idealene en MAC-protokoll burde oppfylle (én aktiv node bruker hele <code>R</code>; <code>M</code> noder deler rettferdig <code>R/M</code>; ingen sentral master; enkel) kan <em>ingen</em> protokoll oppfylle samtidig. Hver klasse er et kompromiss: partisjonering er forutsigbar men sløser ved lav last; random access er effektiv ved lav last men kollapser ved høy; ta-tur unngår begge ulemper, men har overhead og enkeltfeilpunkter.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er fordelen og ulempen med TDMA/FDMA?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <em>Fordel:</em> Ingen kollisjoner og garantert båndbredde — perfekt ved høy, jevn last. <em>Ulempe:</em> Ved lav last sløses tildelte slots/bånd som ingen bruker.</p>
+          <p><strong>Hvorfor:</strong> Hvis bare 1 av 6 noder har data å sende, må den vente på sitt slot hver sjette gang og får bare <code>R/6</code>, mens <code>5R/6</code> ligger ubrukt. Det er prisen for forutsigbarheten. Brukes derfor i mobilnett og satellitt der trafikken er jevn nok til at det lønner seg, ikke i kontornett der trafikken er burst-y.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er maksimal effektivitet i slotted ALOHA, og hva betyr tallet?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Maks effektivitet er <code>1/e ≈ 37 %</code> under idealiserte antagelser (uendelig mange noder, like sannsynlige rammer). Det betyr at i beste fall er 63 % av tidslukene enten kollisjoner eller tomme.</p>
+          <p><strong>Hvorfor:</strong> Optimum nås når i snitt nøyaktig 1 node sender per slot — for få og mange slots står tomme; for mange og kollisjoner dominerer. Slotted ALOHA er enkel og fin ved lav last, men ineffektiv når mange vil sende samtidig. Den ble historisk brukt til oppstrøms forespørsler i kabelmodemnett.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er maksimal effektivitet i ren (unslotted) ALOHA, og hvorfor er den lavere enn slotted?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Maks effektivitet er <code>1/(2e) ≈ 18 %</code> — nøyaktig halvparten av slotted.</p>
+          <p><strong>Hvorfor:</strong> Uten synkroniserte slots kan en ny ramme kollidere både med <em>slutten</em> av en pågående ramme og med <em>starten</em> av neste. Den «sårbare perioden» er dobbelt så lang (<code>2T</code> mot <code>T</code>). Slotted ALOHA halverer denne perioden ved å tvinge alle til å starte på samme slot-grense — som dobler effektiviteten.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor kan kollisjoner skje i CSMA, selv om alle noder lytter før de sender?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> På grunn av <strong>propageringsforsinkelse</strong>. Når node A begynner å sende, tar det en endelig tid før signalet når node B i andre enden. I det tidsvinduet hører B ingenting og kan også begynne å sende — så møtes signalene midt på linjen og kolliderer.</p>
+          <p><strong>Hvorfor det betyr noe:</strong> Det er propageringsforsinkelsen som setter den øvre grensen for hvor lang en Ethernet-kabel kan være — jo lengre kabel, jo større vindu for kollisjoner. Det er også grunnen til at Ethernet har en minimum rammestørrelse: sendetiden må være lenger enn rundturs-propagering for at CSMA/CD i det hele tatt skal fungere.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar CSMA/CD-algoritmen som klassisk Ethernet bruker.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> (1) NIC-en lager en ramme. (2) Lytter på kanalen — venter til ledig. (3) Begynner å sende, og lytter samtidig på sitt eget signal. (4) Hvis signalet avviker fra det den sender → kollisjon: avbryt og send et 48-bits <em>jam-signal</em> så alle vet det skjedde. (5) Gå inn i binær eksponentiell backoff og prøv igjen. (6) Etter maks 10 forsøk: gi opp og rapporter feil.</p>
+          <p><strong>Hvorfor:</strong> Forskjellen fra ren CSMA er steg 4 — ved å oppdage kollisjonen <em>mens den skjer</em>, slipper man å fullføre en ramme som likevel er ødelagt. Det sparer mye tid på korte kabler. Jam-signalet sikrer at alle andre noder også registrerer kollisjonen, ikke bare de to som krasjet.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar binær eksponentiell backoff i Ethernet — og hvorfor den er adaptiv.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Etter den <em>m</em>-te kollisjonen velges et tilfeldig heltall <code>K</code> fra <code>{0, 1, …, 2ᵐ−1}</code>, og noden venter <code>K · 512</code> bit-tider før neste forsøk. Etter 1. kollisjon: <code>K ∈ {0,1}</code>; etter 2.: <code>{0..3}</code>; ved <code>m = 10</code>: <code>{0..1023}</code>.</p>
+          <p><strong>Hvorfor:</strong> Genialt fordi det er <em>adaptivt</em>. Når kollisjoner er sjeldne, er ventetiden kort og systemet svarer raskt. Når kollisjoner blir hyppige (mange noder kjemper), øker ventetiden automatisk og systemet roer seg ned av seg selv. 512 bit-tider tilsvarer rundturstiden for et maks Ethernet-segment, så et nytt forsøk ikke kan kollidere med en pågående ramme.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er polling og token passing — og hva er deres største svakhet?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Begge tilhører klasse 3 («ta tur»). Ved <em>polling</em> sender en master-node en invitasjon til hver slavenode etter tur («Har du noe å sende?»). Ved <em>token passing</em> sirkulerer en spesiell liten melding (token) mellom nodene, og du får bare sende når du holder tokenet.</p>
+          <p><strong>Hvorfor:</strong> Begge unngår kollisjoner og sløsing ved lav last — ideelle på papiret. Svakheten er <em>single point of failure</em>: dør master-noden eller mistes tokenet, stopper alt opp. I tillegg er det polling-overhead og forsinkelse. Bluetooth bruker en variant av polling; gammel Token Ring og FDDI brukte token passing.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor trenger vi <em>både</em> MAC-adresser og IP-adresser?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> IP-adresser er <em>logiske</em> og ende-til-ende — de identifiserer hvor du er i nettverket og brukes av rutere for å nå riktig subnett. MAC-adresser er <em>fysiske</em> og hopp-for-hopp — innbrent i NIC-en, brukt på lenken for å levere rammen til rett nabo.</p>
+          <p><strong>Hvorfor:</strong> Lagdeling. Lenkelaget må kunne fungere med <em>hvilken som helst</em> nettverksprotokoll (IP, men historisk også IPX, AppleTalk) og trenger sin egen adresseringsform. Dessuten følger MAC-en kortet (uendret når du flytter), mens IP-adressen byttes med subnett. Postanalogi: <em>IP = postadresse</em> (endres når du flytter), <em>MAC = personnummer</em> (følger deg).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er ARP, og hvordan fungerer en ARP-utveksling?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> ARP (Address Resolution Protocol) finner MAC-adressen til en gitt IP <em>på samme LAN</em>. Avsenderen broadcaster en ARP-query («Hvem har IP 192.168.1.5?») til <code>FF-FF-FF-FF-FF-FF</code>. Verten med den IP-en svarer unicast med en ARP-reply som inneholder sin MAC. Resultatet caches typisk i 20 minutter.</p>
+          <p><strong>Hvorfor:</strong> Når A skal sende et datagram, kjenner den IP-en til mottakeren (f.eks. fra DNS), men ikke MAC-en. Uten MAC-en kan ikke en Ethernet-ramme adresseres. ARP er den minimale broen mellom IP og MAC. Cachen unngår at hver eneste ramme krever en ny utveksling. ARP har ingen autentisering — derfor er <em>ARP-spoofing</em> et klassisk Man-in-the-Middle-angrep.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva skjer hvis IP-mottakeren <em>ikke</em> ligger på samme LAN — hvordan brukes ARP da?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Avsenderen ARP-er ikke etter mottakeren, men etter sin <em>default gateway-router</em>. Ethernet-rammen får routerens MAC som destinasjon, mens IP-datagrammet inni har fortsatt sluttvertens IP som mål. Routeren mottar rammen, pakker ut datagrammet, slår opp i rutetabellen, og pakker det inn på nytt med nye MAC-adresser for neste hopp.</p>
+          <p><strong>Hvorfor:</strong> ARP fungerer kun innenfor ett LAN — du kan ikke broadcaste til hele internett. Kjerneinnsikten: <strong>IP-adressene er ende-til-ende</strong> (uendret hele veien), mens <strong>MAC-adressene byttes ved hvert hopp</strong>. Rammen er lokal levering; IP-pakken er global rute.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke felter inneholder en Ethernet-ramme, og hva gjør hvert av dem?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <ul>
+            <li><strong>Preamble (8 byte)</strong> — synkroniserer mottakerens klokke; siste to bits «11» signaliserer rammestart.</li>
+            <li><strong>Destinasjons-MAC (6 byte)</strong> — hvem rammen er til.</li>
+            <li><strong>Kilde-MAC (6 byte)</strong> — hvem som sendte den.</li>
+            <li><strong>Type (2 byte)</strong> — hvilken protokoll ligger inni (<code>0x0800</code> = IP, <code>0x0806</code> = ARP).</li>
+            <li><strong>Data (46–1500 byte)</strong> — payload (typisk et IP-datagram).</li>
+            <li><strong>CRC-32 (4 byte)</strong> — feildeteksjon over hele rammen.</li>
+          </ul>
+          <p><strong>Hvorfor:</strong> Type-feltet er multipleksingen oppover — NIC-en bruker det til å levere rammen til riktig protokoll på lag 3. 1500 byte er Ethernets <em>MTU</em>. CRC-feil → rammen kastes taust; Ethernet retransmitterer ikke.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor har klassisk Ethernet en minimums-rammestørrelse på 64 byte?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> For at CSMA/CD skal kunne oppdage en kollisjon <em>før</em> rammen er ferdig sendt. Sendetiden må være minst like lang som rundturs-propageringstid (<code>2 · t_prop</code>) over det lengste segmentet — ellers kunne en kollisjon ha skjedd lengst borte uten at senderen merket det.</p>
+          <p><strong>Hvorfor 64 spesifikt:</strong> Ved 10 Mbit/s og maks segmentlengde 2500 m gir dette nettopp 64 byte = 512 bit-tider. Kortere rammer ville bli sendt ferdig før kollisjonsignalet rekker tilbake. Derfor må korte payloads <em>padres</em> opp til minst 46 byte. På moderne svitsjet full-dupleks Ethernet er kollisjoner ikke et problem, så minimumet er en historisk arv.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor er Ethernet både <em>connectionless</em> og <em>upålitelig</em> — er ikke det dårlig design?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Connectionless = ingen handshake mellom NIC-er før data sendes. Upålitelig = ingen ACK ved suksess, ingen NAK ved feil — feilrammer kastes bare. På moderne <em>kablet</em> Ethernet er bitfeilraten så lav at det å bygge pålitelighet inn i hvert hopp er bortkastet arbeid.</p>
+          <p><strong>Hvorfor:</strong> TCP fanger likevel opp den lille mengden feil som slipper gjennom, og gjør det <em>ende-til-ende én gang</em> i stedet for én gang per hopp. På trådløse lenker (WiFi) er feilraten mye høyere, og der gjør 802.11 faktisk det motsatte — har linklags-ACK og retransmisjon. Designvalget følger feilraten på mediet.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom en hub og en svitsj, og hvordan påvirker dette kollisjonsdomenet?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En <em>hub</em> er en ren elektrisk repeater — den gjentar alle bits ut på alle andre porter, slik at hele nettet er ett stort kollisjonsdomene. En <em>svitsj</em> er en lag-2-enhet som videresender selektivt basert på MAC-adresser — hver port er et eget kollisjonsdomene.</p>
+          <p><strong>Hvorfor det betyr noe:</strong> På en hub deler alle båndbredden, og to samtidige sendere kolliderer alltid. På en svitsj kan flere par snakke samtidig uten å forstyrre hverandre — en svitsj med 6 porter kan ha 3 uavhengige samtaler i gang. Det er denne segmenteringen, sammen med full-dupleks lenker, som fjernet behovet for CSMA/CD i moderne Ethernet.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar self-learning-algoritmen til en svitsj — hva gjør den når den får inn en ramme?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> (1) <strong>Lær:</strong> les <em>kilde</em>-MAC og noter porten rammen kom fra i forwarding-tabellen, med tidsstempel. (2) <strong>Slå opp</strong> destinasjons-MAC. (a) Hvis funnet og samme port som inngang → kast (mottaker har allerede hørt). (b) Hvis funnet på annen port → send ut <em>kun</em> der. (c) Hvis ikke funnet → <strong>flood</strong> ut på alle porter unntatt inngangsporten.</p>
+          <p><strong>Hvorfor:</strong> Svitsjen lærer kun fra <em>kilden</em>, fordi den er verifisert («rammen kom åpenbart fra denne porten»); destinasjonen er bare et håp. Når mottakeren svarer, lærer svitsjen også hvor han er, og videre kommunikasjon går målrettet uten flooding. <em>Aging</em> sletter gamle oppføringer slik at flyttede maskiner ikke feilsendes til. Det er dette som gjør svitsjer plug-and-play.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellene mellom en svitsj og en ruter?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <ul>
+            <li><strong>Lag:</strong> Svitsj = lag 2 (lenke), ruter = lag 3 (nettverk).</li>
+            <li><strong>Adresse:</strong> Svitsj ser på MAC-adresser, ruter ser på IP-adresser.</li>
+            <li><strong>Tabellen:</strong> Svitsjen lærer passivt via self-learning; ruteren bygger sin via aktive rutealgoritmer (OSPF, BGP).</li>
+            <li><strong>Oppsett:</strong> Svitsj = plug-and-play; ruter må konfigureres.</li>
+            <li><strong>Skopet:</strong> Svitsj innenfor ett LAN; ruter på tvers av subnett, hele internett.</li>
+          </ul>
+          <p><strong>Hvorfor:</strong> Begge er «store-and-forward», men opererer med ulike adresser og ulik horisont. Svitsjen er rask og dum men begrenset til et LAN. Ruteren er smart og fleksibel men har høyere prosesseringskostnad. Du trenger begge: svitsjen håndterer det lokale, ruteren binder LAN-ene sammen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>En student kobler en ny laptop til kablet Ethernet på campus og åpner google.com. Hvilke protokoller kjøres før første piksel vises?</div>
+        <div data-fc-back>
+          <p><strong>Svar (i rekkefølge):</strong></p>
+          <ol>
+            <li><strong>DHCP</strong> — laptopen broadcaster og får IP-adresse, nettmaske, default gateway, DNS-server.</li>
+            <li><strong>ARP</strong> — laptopen finner gatewayens MAC-adresse på det lokale LAN-et.</li>
+            <li><strong>DNS</strong> — slår opp <code>google.com</code> → IP-adresse (sendes til DNS-server via gateway).</li>
+            <li><strong>TCP</strong> — three-way handshake (SYN / SYN-ACK / ACK) mot Googles server.</li>
+            <li><strong>HTTP</strong> — <code>GET / HTTP/1.1</code> sendes; serveren returnerer HTML.</li>
+          </ol>
+          <p><strong>Hvorfor:</strong> Det som ser ut som én handling involverer faktisk syv samarbeidende protokoller (også IP og Ethernet under). Hver løser ett spesifikt problem. På grunn av lagdelingen vet ingen av dem at de andre finnes — det er det som gjør internett mulig.</p>
+        </div>
+      </li>
+    </ol>
   </div>
 </div>
 </section>
@@ -392,6 +646,7 @@
 </main>
 <footer><div class="container"><div class="ornament">&#10043; &#10043; &#10043;</div><p>NTNU · TTM4100 · Vår 2026</p></div></footer>
 <script src="../quiz.js"></script>
+<script src="../flashcards.js"></script>
 <script src="../chat-widget.js"></script>
 <script src="../nav-search.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>

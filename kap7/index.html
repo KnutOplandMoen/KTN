@@ -350,6 +350,62 @@
           <p><strong>Hvorfor nødvendig:</strong> 5G hadde tre offisielle mål — 10× høyere bitrate, 10× lavere latens, 100× mer kapasitet per km². MIMO/beamforming øker kapasiteten ved å gjenbruke samme frekvens i parallelle stråler i samme celle. Pico-celler øker kapasiteten ved tett <em>frekvensgjenbruk</em> — samme spekter brukes om igjen i hver lille celle. Begge er <em>nødvendige</em> fordi mmWave-fysikken ikke gir lang rekkevidde, så uten både smartere antenner og tettere utbygging vil ikke kapasitetsmålet kunne nås.</p>
         </div>
       </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan kan vi klassifisere trådløse nettverk langs to dimensjoner, og hvor passer WiFi, Bluetooth, mobilnett og MANET inn?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> To ja/nei-spørsmål gir fire familier: <em>(1) Finnes det en basestasjon?</em> og <em>(2) Trenger pakkene flere hopp for å nå målet?</em></p>
+          <p><strong>Med infrastruktur, ett hopp:</strong> klassisk WiFi og mobilnett — verten snakker direkte med basestasjon, som videresender til Internett.<br>
+             <strong>Med infrastruktur, flere hopp:</strong> mesh-nett — noen noder relayer trafikk gjennom andre for å nå basestasjonen.<br>
+             <strong>Uten infrastruktur, ett hopp:</strong> Bluetooth og ad hoc-WiFi — direkte mellom to noder, ingen vei ut til Internett.<br>
+             <strong>Uten infrastruktur, flere hopp:</strong> MANET, VANET (kjøretøy-til-kjøretøy) — pakker rutes gjennom flere ad hoc-noder.</p>
+          <p><strong>Hvorfor det er nyttig:</strong> Det aller meste vi møter i dagliglivet ligger i det øverste venstre hjørnet — ett hopp, med infrastruktur — fordi det er enklest. Hele resten av kapittelet handler om denne familien, mens mesh og MANET er nisjer (industrielle sensornettverk, militære feltnett, etc.). Klassifiseringen forklarer også hvorfor ad hoc-modus i WiFi finnes, men knapt brukes.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Sammenlign Bluetooth, WiFi-generasjonene (802.11b/g/n/ac/ax), 4G LTE og 5G langs dimensjonene hastighet og rekkevidde. Hva er det generelle kompromisset?</div>
+        <div data-fc-back>
+          <p><strong>Svar (omtrentlige tall):</strong></p>
+          <p><strong>Bluetooth:</strong> 2 Mbps, ~10 m — innendørs, peer-to-peer.<br>
+             <strong>802.11b:</strong> 11 Mbps, ~30 m. <strong>g:</strong> 54 Mbps, ~30 m. <strong>n (WiFi 4):</strong> 600 Mbps, ~70 m. <strong>ac (WiFi 5):</strong> 3,5 Gbps. <strong>ax (WiFi 6):</strong> 14 Gbps, optimalisert for høy tetthet.<br>
+             <strong>4G LTE:</strong> ~100 Mbps, flere km — mobilbredbånd.<br>
+             <strong>5G:</strong> ~10 Gbps, men bare 10–100 m på mmWave.</p>
+          <p><strong>Hvorfor kompromisset:</strong> Jo høyere hastighet, jo kortere rekkevidde — det er en gjennomgående regel. Høyere hastighet krever mer båndbredde, og mer båndbredde finnes bare på høyere frekvenser, som dempes raskere og blokkeres lettere. Konsekvensen er at 5G på mmWave krever <em>mange flere</em> basestasjoner per km² enn 4G, og at ekte 5G-dekning er begrenset til tett bebygde områder.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan håndterer 802.11 strømsparing for batteridrevne enheter, og hvilken rolle spiller beacon-rammene?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Noden sier til AP-en at den skal sove til neste beacon-ramme, og slår av radioen. AP-en bufrer alle pakker som ankommer for sovende noder i mellomtiden. Hvert beacon fra AP-en inneholder en <em>liste</em> over hvilke sovende noder som har ventende trafikk. Når noden våkner og sjekker beacon, vet den umiddelbart om den må holde seg våken (for å motta trafikk) eller kan sove videre.</p>
+          <p><strong>Hvorfor det betyr noe:</strong> WiFi-radioen er en av de største strømslukerne i en telefon eller IoT-sensor. Uten en sovemekanisme måtte radioen vært på hele tiden bare i tilfelle noe kommer. Det elegante er at AP-en gjør jobben med å buffre — sovekontrakten er fullstendig: noden lover å våkne til neste beacon, AP-en lover å holde på pakkene til da. Denne typen "wake-on-need" er hele grunnen til at en smart-sensor kan kjøre i flere år på et lite batteri.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan finner en LTE-telefon et nett å assosiere med når den slås på?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> (1) Hver basestasjon kringkaster et <em>primært synkroniseringssignal</em> hvert 5. ms på alle frekvenser den støtter — som en fyrlykt. (2) Telefonen leter etter slike signaler på tvers av spekteret. (3) Når den finner ett, leter den etter et <em>sekundært synkroniseringssignal</em> på samme frekvens, som forteller mer om basestasjonen — kanalbredde, konfigurasjon og hvilken operatør den tilhører. (4) Telefonen kan oppdage signaler fra flere basestasjoner og velger den som passer best (typisk hjem-operatøren, eller den med sterkest signal). (5) Etter valget kommer autentisering med MME/HSS, oppsett av tilstand og etablering av GTP-tunneler.</p>
+          <p><strong>Hvorfor to signaler:</strong> Det primære er kort og lett å detektere blindt — telefonen vet ikke ennå hva den ser etter. Det sekundære krever at man allerede har låst seg til en frekvens, og bærer mye mer informasjon. Først etter hele assosieringssekvensen — som er mye mer omfattende enn WiFi-assosiering — kan telefonen sende ekte data.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan håndterer LTE strømsparing, og hva er forskjellen på "lett" og "dyp" søvn?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Etter noen hundre millisekunder uten trafikk går radioen i <strong>lett søvn</strong> og våkner periodisk for å sjekke om det er noe innkommende. Etter 5–10 sekunder med inaktivitet går den i <strong>dyp søvn</strong>, og kan til og med flytte seg mellom celler mens den sover. Når den våkner etter dyp søvn, må hele assosieringen reetableres.</p>
+          <p><strong>Hvorfor to nivåer:</strong> Det er en avveining mellom strømforbruk og responstid. Lett søvn sparer en del strøm, men radioen er klar til å sende nesten umiddelbart. Dyp søvn sparer dramatisk mer strøm, men koster en merkbar oppstartsforsinkelse — det er derfor du av og til merker en liten "lag" første gang du gjør noe på telefonen etter at den har ligget urørt en stund. To-nivå-design er typisk i alle batteri-bevisste systemer (CPU C-states, disk spin-down) av samme grunn: én sovetilstand er aldri optimal for alle situasjoner.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva skjer egentlig når du tar med telefonen til utlandet og den "bare fungerer"? Hvordan håndterer mobilnettet roaming?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> SIM-kortet identifiserer deg globalt med IMSI og forteller hvilket nettverk som er hjemme. Det <em>besøkte</em> nettverket (f.eks. en operatør i Tokyo) setter deg på sin egen P-GW (eller ruter trafikken hjem først), og snakker med <em>din hjemoperatørs</em> HSS for å verifisere identiteten din og finne ut hvilke tjenester du har rett på. Trafikken din går ut på Internett via det besøkte nettets P-GW, mens autentisering, regler og avregning forhandles mellom operatørene i bakkanal.</p>
+          <p><strong>Hvorfor det er viktig:</strong> Roaming krever at to operatører som aldri har sett hverandre stoler nok på hverandre til å la deg bruke nettet — og avregne for det i ettertid. Mekanismen bygger på at HSS-en din alltid er <em>autoritativ kilde</em> for hvem du er og hva du har lov til. Det er nettopp dette skille mellom "hjem" og "besøkt" — kombinert med globale interoperatør-avtaler — som gjør at telefonen din får SMS, ringer ut og bruker data umiddelbart når du går av flyet.</p>
+        </div>
+      </li>
     </ol>
   </div>
 </div>
@@ -598,6 +654,7 @@
 <script src="../chat-widget.js"></script>
 <script src="../nav-search.js"></script>
 <script src="../quiz.js"></script>
+<script src="../flashcards.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 <script defer src="/_vercel/speed-insights/script.js"></script>
 </body>

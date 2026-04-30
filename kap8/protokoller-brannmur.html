@@ -128,6 +128,84 @@
 
   <p>I <strong>TLS 1.3</strong> (pensum: kap. 8.6) brukes ofte <strong>ephemeral Diffie–Hellman</strong> (f.eks. på elliptiske kurver) til å utlede den delte hemmeligheten, og integritet/kryptering i <strong>AEAD</strong>-modus — ikke nødvendigvis «krypter Pre-Master Secret med serverens RSA-nøkkel» som i eldre forklaringsmodeller. Stegene under illustrerer likevel <em>hva</em> handshake og records løser: autentisering av partene, avtale av sesjonsnøkler, beskyttet dataoverføring og trygg nedkobling.</p>
 
+  <figure>
+    <svg viewBox="0 0 760 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sekvensdiagram av TLS-håndtrykket mellom klient og server">
+      <defs>
+        <marker id="tlsArr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+          <path d="M0,0 L7,4.5 L0,9 z" fill="#1a1612"/>
+        </marker>
+      </defs>
+
+      <!-- Klient og server-bokser -->
+      <rect x="40" y="20" width="220" height="50" fill="#d9e6d4" stroke="#3d6b3a" stroke-width="2" rx="4"/>
+      <text x="150" y="44" text-anchor="middle" font-family="IBM Plex Sans" font-size="15" fill="#3d6b3a" font-weight="600">Klient (Alice)</text>
+      <text x="150" y="60" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">nettleser, K&#8314;_CA</text>
+
+      <rect x="500" y="20" width="220" height="50" fill="#e8d4cd" stroke="#b04428" stroke-width="2" rx="4"/>
+      <text x="610" y="44" text-anchor="middle" font-family="IBM Plex Sans" font-size="15" fill="#b04428" font-weight="600">Server (Bob)</text>
+      <text x="610" y="60" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">sertifikat, K&#8314;_B / K&#8315;_B</text>
+
+      <!-- Tidslinjer -->
+      <line x1="150" y1="70" x2="150" y2="540" stroke="#6b6257" stroke-width="1.5" stroke-dasharray="3,4"/>
+      <line x1="610" y1="70" x2="610" y2="540" stroke="#6b6257" stroke-width="1.5" stroke-dasharray="3,4"/>
+
+      <!-- Fase-bånd -->
+      <rect x="20" y="85" width="720" height="200" fill="none" stroke="#b8a98a" stroke-width="1" stroke-dasharray="2,3" rx="3"/>
+      <text x="30" y="100" font-family="IBM Plex Mono" font-size="10" fill="#8a7c5c" font-weight="600">FASE 1 · HÅNDTRYKK</text>
+
+      <rect x="20" y="295" width="720" height="80" fill="none" stroke="#b8a98a" stroke-width="1" stroke-dasharray="2,3" rx="3"/>
+      <text x="30" y="310" font-family="IBM Plex Mono" font-size="10" fill="#8a7c5c" font-weight="600">FASE 2 · NØKKELUTLEDNING</text>
+
+      <rect x="20" y="385" width="720" height="100" fill="none" stroke="#b8a98a" stroke-width="1" stroke-dasharray="2,3" rx="3"/>
+      <text x="30" y="400" font-family="IBM Plex Mono" font-size="10" fill="#8a7c5c" font-weight="600">FASE 3 · DATAOVERFØRING</text>
+
+      <rect x="20" y="495" width="720" height="50" fill="none" stroke="#b8a98a" stroke-width="1" stroke-dasharray="2,3" rx="3"/>
+      <text x="30" y="510" font-family="IBM Plex Mono" font-size="10" fill="#8a7c5c" font-weight="600">FASE 4 · NEDKOBLING</text>
+
+      <!-- Melding 1: ClientHello -->
+      <line x1="150" y1="125" x2="608" y2="125" stroke="#1a1612" stroke-width="1.75" marker-end="url(#tlsArr)"/>
+      <text x="380" y="119" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#1a1612" font-weight="600">ClientHello</text>
+      <text x="380" y="138" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">nonce_A, cipher suites</text>
+
+      <!-- Melding 2: ServerHello + Certificate -->
+      <line x1="610" y1="175" x2="152" y2="175" stroke="#1a1612" stroke-width="1.75" marker-end="url(#tlsArr)"/>
+      <text x="380" y="169" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#1a1612" font-weight="600">ServerHello + Certificate</text>
+      <text x="380" y="188" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">nonce_B, valgt cipher, sertifikat(K&#8314;_B)</text>
+
+      <!-- Klient-side note: verifisering -->
+      <rect x="40" y="200" width="220" height="44" fill="#f4ecdc" stroke="#b8a98a" stroke-width="1" rx="3"/>
+      <text x="150" y="217" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#3d6b3a">Verifiserer sertifikat med</text>
+      <text x="150" y="232" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">CA-ens K&#8314; → henter K&#8314;_B</text>
+
+      <!-- Melding 3: Pre-Master Secret -->
+      <line x1="150" y1="265" x2="608" y2="265" stroke="#1a1612" stroke-width="1.75" marker-end="url(#tlsArr)"/>
+      <text x="380" y="259" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#1a1612" font-weight="600">K&#8314;_B(PMS)</text>
+      <text x="380" y="278" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">Pre-Master Secret kryptert med Bobs offentlige nøkkel</text>
+
+      <!-- Fase 2: nøkkelutledning på begge sider -->
+      <rect x="40" y="320" width="220" height="44" fill="#f4ecdc" stroke="#b8a98a" stroke-width="1" rx="3"/>
+      <text x="150" y="337" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#3d6b3a">Utleder MS → 4 nøkler</text>
+      <text x="150" y="352" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#3d6b3a">E_A, E_B, M_A, M_B</text>
+
+      <rect x="500" y="320" width="220" height="44" fill="#f4ecdc" stroke="#b8a98a" stroke-width="1" rx="3"/>
+      <text x="610" y="337" text-anchor="middle" font-family="IBM Plex Sans" font-size="11" fill="#b04428">Utleder MS → 4 nøkler</text>
+      <text x="610" y="352" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#b04428">E_A, E_B, M_A, M_B</text>
+
+      <!-- Fase 3: Krypterte records (begge retninger) -->
+      <line x1="150" y1="425" x2="608" y2="425" stroke="#3d6b3a" stroke-width="1.75" marker-end="url(#tlsArr)"/>
+      <text x="380" y="419" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#3d6b3a" font-weight="600">Record: E_A( data | MAC_M_A(seq#, data) )</text>
+
+      <line x1="610" y1="460" x2="152" y2="460" stroke="#b04428" stroke-width="1.75" marker-end="url(#tlsArr)"/>
+      <text x="380" y="454" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#b04428" font-weight="600">Record: E_B( data | MAC_M_B(seq#, data) )</text>
+      <text x="380" y="478" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6b6257">retnings-spesifikke nøkler · seq# stopper replay</text>
+
+      <!-- Fase 4: TLS close -->
+      <line x1="150" y1="525" x2="608" y2="525" stroke="#1a1612" stroke-width="1.75" stroke-dasharray="4,3" marker-end="url(#tlsArr)"/>
+      <text x="380" y="519" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#1a1612" font-weight="600">close_notify (autentisert)</text>
+    </svg>
+    <figcaption>TLS-håndtrykket i fire faser: <strong>(1)</strong> partene utveksler nonces og serverens sertifikat, klienten genererer Pre-Master Secret og sender den kryptert med serverens offentlige nøkkel. <strong>(2)</strong> Begge utleder samme master secret og fire retnings-spesifikke nøkler. <strong>(3)</strong> Applikasjonsdata sendes som records — kryptert og MAC-beskyttet med sekvensnummer. <strong>(4)</strong> Forbindelsen lukkes med en autentisert close_notify som hindrer truncation-angrep.</figcaption>
+  </figure>
+
   <div class="stepper" id="tlsStepper">
     <div class="s-label">Interaktiv gjennomgang — TLS-fasene</div>
     <div class="stage">

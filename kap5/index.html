@@ -174,6 +174,203 @@
 </div>
 </section>
 
+<!-- ============ FLASHCARDS ============ -->
+<section id="flashcards" class="flashcards-section">
+<div class="container">
+  <div class="section-badge">Flashcards</div>
+  <h2>Rask <em>repetisjon</em></h2>
+  <p class="section-intro">Åpne spørsmål i tilfeldig rekkefølge. Klikk kortet for å snu — bruk <strong>&larr; / &rarr;</strong> for å bla, <strong>mellomrom</strong> for å snu, <strong>R</strong> for å shuffle.</p>
+
+  <div class="flashcards" data-flashcards>
+    <div class="fc-stage">
+      <article class="fc-card" tabindex="0" role="button" aria-label="Flashcard — klikk for å snu">
+        <div class="fc-face fc-front">
+          <div class="fc-label">Spørsmål</div>
+          <p class="fc-text" data-fc-front-display aria-live="polite">&nbsp;</p>
+          <div class="fc-hint">Klikk eller mellomrom for å vise svar</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-label">Svar</div>
+          <div class="fc-text" data-fc-back-display aria-live="polite">&nbsp;</div>
+        </div>
+      </article>
+    </div>
+
+    <div class="fc-controls">
+      <button class="fc-btn fc-prev" type="button" aria-label="Forrige kort" title="Forrige (←)">&larr;</button>
+      <div class="fc-progress">
+        <span class="fc-counter">1 / 1</span>
+        <div class="fc-bar"><div class="fc-bar-fill"></div></div>
+      </div>
+      <button class="fc-btn fc-next" type="button" aria-label="Neste kort" title="Neste (→)">&rarr;</button>
+      <button class="fc-btn fc-shuffle" type="button" aria-label="Shuffle bunken" title="Shuffle (R)">&#8635;</button>
+    </div>
+
+    <ol class="fc-deck" hidden>
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen på dataplanet og kontrollplanet i nettverkslaget?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Dataplanet flytter pakker fra inngang til utgang ved å slå opp i en ferdig forwarding-tabell — det skjer i nanosekunder. Kontrollplanet bygger den tabellen ved at rutere snakker sammen og blir enige om gode ruter — det skjer på sekund- til minutt-skala.</p>
+          <p><strong>Hvorfor:</strong> Skillet er essensielt fordi de to oppgavene har helt ulike tidskrav. En stor ruter sender milliarder av pakker per sekund — den har ikke tid til å regne ut ruter for hver pakke. Derfor er beslutningen forskutert: kontrollplanet "tenker" sjelden og lenge, dataplanet "handler" ofte og raskt. Postsorterer-analogien: dataplanet er sortereren som leser adressen og legger brevet i riktig binge; kontrollplanet er bakromsjobben som bestemte hvilken binge som går hvor.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom <em>forwarding</em> og <em>routing</em>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <em>Forwarding</em> er dataplan-jobben — å flytte én pakke fra én inngangsport til riktig utgangsport, lokalt på én ruter. <em>Routing</em> er kontrollplan-jobben — å beregne hele veien fra kilde til destinasjon gjennom flere rutere.</p>
+          <p><strong>Hvorfor:</strong> På norsk sier vi ofte "ruting" om begge, men i nettverksteori er skillet viktig. Forwarding er en lokal, mekanisk handling som tar et oppslag i en tabell. Routing er en distribuert, samarbeidsbasert beregning som krever protokoller mellom rutere. Forwarding skjer "live" når pakken passerer; routing skjer på forhånd og fyller tabellen som forwarding bruker.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er per-ruter kontroll vs. logisk sentralisert kontroll (SDN)?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> I per-ruter kontroll kjører hver ruter sin egen rutingalgoritme og snakker med sine naboer for å bygge sin egen forwarding-tabell — ingen sjef. I logisk sentralisert kontroll (SDN) beregner én sentral kontroller alle forwarding-tabellene og dytter dem ut til ruterne, som da bare gjør det de blir bedt om.</p>
+          <p><strong>Hvorfor:</strong> De to filosofiene gir helt ulike trade-offs. Per-ruter kontroll er robust (ingen single point of failure) og er det som ligger til grunn for dagens internett. SDN gir bedre global oversikt og enklere håndtering av komplekse policyer, men krever en pålitelig kontroller. SDN dominerer i datasentre der én organisasjon eier alt; per-ruter dominerer på det åpne internettet der ingen organisasjon kan kontrollere alle ruterne.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er en forwarding-tabell, og hvem fyller den ut?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Forwarding-tabellen er en lokal tabell inne i en ruter som mapper destinasjon (typisk et IP-prefiks) til en utgangsport. Det er kontrollplanet som fyller den ut, basert på rutingalgoritmen som kjører.</p>
+          <p><strong>Hvorfor:</strong> Tabellen er det som gjør dataplan-jobben rask. Når en pakke ankommer, leser ruteren bare destinasjonsadressen, slår opp i tabellen, og sender pakken ut på riktig port — ingen beregning, bare oppslag. Hvis tabellen er tom, utdatert eller inkonsistent med naboruterne, kan pakker droppes eller havne i løkker. Det er nettopp derfor stabil og rask konvergens i kontrollplanet er så viktig.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvor "lever" de to planene — på samme ruter eller på forskjellige?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> I tradisjonell per-ruter kontroll lever begge plan side om side <em>inne i samme ruter</em>: kontrollplanet er typisk programvare på rutens CPU, mens dataplanet er spesialisert hardware (ASIC-er) som gjør oppslag.</p>
+          <p><strong>Hvorfor:</strong> Det er en vanlig misforståelse å tro at kontrollplanet er noe "et annet sted". Begge plan jobber sammen i samme boks, bare på helt ulike tidsskalaer og med helt ulike implementasjoner. (I SDN-arkitekturer er det annerledes: dataplanet ligger på rutere, mens kontrollplanet er flyttet ut til en sentral kontroller — men det er unntaket, ikke regelen, på dagens internett.)</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor trenger nettverkslaget overhodet et eget kontrollplan?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Fordi tusenvis av rutere må ta konsistente videresendingsbeslutninger uten en sentral koordinator — ellers havner pakker i løkker, blindveier eller blir droppet.</p>
+          <p><strong>Hvorfor:</strong> En pakke fra Trondheim til Tokyo kan passere over hundre rutere, og hver ruter må vite hvilken utgang som leder mot Tokyo. Hvis bare én ruter "gjetter" feil, går pakken i loop eller forsvinner. Kontrollplanet er mekanismen som sørger for at alle rutere er enige om nettverkets form, slik at hver lokale beslutning til sammen danner en gyldig ende-til-ende-vei.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilken tidsskala jobber dataplanet og kontrollplanet på, og hvorfor er forskjellen så stor?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Dataplanet jobber i nanosekunder — milliarder av oppslag per sekund. Kontrollplanet jobber typisk på sekund- til minutt-skala.</p>
+          <p><strong>Hvorfor:</strong> Forskjellen kommer av oppgavenes natur. Dataplanet gjør én enkel ting (oppslag + send ut), mens kontrollplanet må snakke med naboer, vente på svar, kjøre algoritmer, og oppdatere tabeller når topologien endres. Skillet er bevisst: ved å holde det "tunge" arbeidet ute av pakkebanen, kan moderne rutere håndtere ekstreme datavolum uten å stoppe opp.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er hovedmålet til en rutingprotokoll?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Å bestemme gode ruter (paths) fra sendende verter til mottakende verter, gjennom nettverket av rutere.</p>
+          <p><strong>Hvorfor:</strong> Hvert ord i definisjonen er bevisst. <em>"Gode"</em> — ikke nødvendigvis perfekte, men tilstrekkelige etter en valgt kostnadsmetrikk. <em>"Sendende verter til mottakende"</em> — ende-til-ende, ikke bare nabo-til-nabo. <em>"Gjennom nettverket av rutere"</em> — rutene består av ruter-hopp, og protokollen må fungere uten global oversikt fra start. Å oppfylle dette i et nettverk som hele tiden endrer seg, er en av de klassiske "topp 10"-utfordringene innen datanettverk.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva betyr egentlig <em>"en god rute"</em>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Det avhenger av hva man optimerer for. Vanlige tolkninger er <em>lavest kostnad</em> (antall hopp, båndbredde, eller pengeleieavtaler mellom ISP-er), <em>raskest</em> (lavest forsinkelse), eller <em>minst overbelastet</em> (unngå lenker med kø).</p>
+          <p><strong>Hvorfor:</strong> "God" er ikke entydig, fordi forskjellige operatører har ulike prioriteter. En ISP som betaler for transit-trafikk vil minimere kost; en spillplattform vil minimere forsinkelse; en strømmetjeneste vil unngå overbelastede lenker. Hver rutingprotokoll baker inn et bestemt syn på "godhet" gjennom kostnadsmetrikken sin — og to ulike protokoller kan derfor finne helt forskjellige "beste" stier mellom samme par.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar klassifiseringsaksen <em>global vs. desentralisert</em> rutinginformasjon.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <em>Global</em> betyr at hver ruter kjenner hele nettverkets topologi (alle rutere, alle lenker, alle kostnader) og kan beregne beste sti alene — dette er ideen bak link-state-algoritmer. <em>Desentralisert</em> betyr at ingen har hele bildet; hver ruter kjenner bare sine direkte naboer og bygger gradvis opp kunnskap gjennom utveksling med dem — dette er ideen bak distance-vector-algoritmer.</p>
+          <p><strong>Hvorfor:</strong> Aksen påvirker både hvor mye kommunikasjon som trengs og hvor raskt nettverket konvergerer ved endringer. Global informasjon krever at endringer flooder ut til alle, men gir rask konvergens. Desentralisert informasjon krever bare nabolags-prat, men endringer "bølger" gjennom nettverket og kan ta lengre tid å nå alle.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar klassifiseringsaksen <em>statisk vs. dynamisk</em> ruting.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <em>Statiske</em> ruter endres sjelden — typisk når en administrator manuelt konfigurerer noe. <em>Dynamiske</em> ruter oppdateres fortløpende, enten med jevne mellomrom eller som respons på at en lenke endrer kostnad eller forsvinner.</p>
+          <p><strong>Hvorfor:</strong> Internett endrer seg for ofte til at manuell konfigurasjon henger med — lenker går ned, kommer opp, ny kapasitet føyes til. Dynamiske algoritmer reagerer på slike hendelser uten menneskelig inngripen og holder forwarding-tabellene oppdatert. Statisk ruting brukes fortsatt i små eller stabile miljøer der enkelhet og forutsigbarhet er viktigere enn tilpasningsevne.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor regnes ruting som et vanskelig problem?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Fordi nettverket ikke står stille — lenker går ned og kommer opp, blir overbelastet, får ny kapasitet, og rutere kommer og går. Algoritmen må håndtere disse endringene <em>uten</em> at alt stopper opp mens den tenker.</p>
+          <p><strong>Hvorfor:</strong> Statiske systemer er enkle å løse; dynamiske distribuerte systemer er det ikke. Hver ruter må samtidig (1) reagere på lokale endringer, (2) formidle dem til andre, og (3) garantere at den ikke produserer løkker eller midlertidige inkonsistenser i tabellene. Dette må fungere skalerbart for tusenvis av rutere uten en sentral klokke. Det er kombinasjonen av distribusjon, dynamikk og skala som gjør ruting til et evig forskningsfelt.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er ICMP, og hva brukes det til?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> ICMP (Internet Control Message Protocol) er nettverkets signalspråk — protokollen verter og rutere bruker for å utveksle nettverks-nivå-informasjon. De to viktigste oppgavene er <em>feilrapportering</em> (f.eks. "destinasjon utilgjengelig") og <em>echo request/reply</em> (som <code>ping</code> bruker).</p>
+          <p><strong>Hvorfor:</strong> IP er en "best-effort"-protokoll uten innebygd feedback — den prøver å levere pakker, men gir ikke beskjed om det går galt. ICMP fyller dette hullet: når en ruter må droppe en pakke, eller en host vil sjekke om en annen lever, gir ICMP det nødvendige tilbakemeldingsspråket. Uten ICMP ville en avsender sittet og ventet for alltid på pakker som aldri kommer fram.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvor i protokollstakken ligger ICMP?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> ICMP regnes som del av nettverkslaget, men ICMP-meldinger transporteres <em>inni</em> IP-datagram. Strengt tatt ligger ICMP altså "oppå" IP, selv om begge tilhører nettverkslaget.</p>
+          <p><strong>Hvorfor:</strong> Detaljen forvirrer ofte fordi den bryter den vanlige lag-modellen litt. ICMP trenger leveringstjenestene IP tilbyr (kunne sendes til en gitt IP-adresse), så den bruker IP som transportør. Men i innhold er ICMP-meldinger nettverks-nivå-informasjon — de handler om nettverket selv, ikke om applikasjonsdata. Tenk på ICMP som en liten hjelpeprotokoll som "snylter" på IP for å komme fram.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke felter inneholder en ICMP-melding?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <em>Type</em> (kategori melding), <em>code</em> (underkategori med mer detaljer), og <em>de første 8 bytene av IP-datagrammet som forårsaket feilen</em>.</p>
+          <p><strong>Hvorfor:</strong> Type og code identifiserer hva slags ICMP-melding dette er — f.eks. type 3 + code 1 = "host unreachable". De første 8 bytene av det opprinnelige datagrammet er med slik at avsenderen kan identifisere hvilken pakke meldingen gjelder. Disse bytene inneholder typisk port-numre fra transportlaget — så en applikasjon kan koble feilen til riktig socket.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke ICMP type/code-verdier brukes av <code>ping</code>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Echo request er <em>type 8, code 0</em>. Echo reply er <em>type 0, code 0</em>. Ping sender en echo request og venter på en echo reply.</p>
+          <p><strong>Hvorfor:</strong> Ping er den enkleste og mest brukte ICMP-applikasjonen. Avsenderen sender en echo request; mottakeren svarer med echo reply om den lever; ved å måle tiden imellom får avsenderen rundtrippstida (RTT). Det er en "er du der?" / "ja!"-utveksling. Hele mekanismen er innebygd direkte i ICMP — ingen porter, ingen tilkoblinger, bare én pakke ut og én tilbake.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva betyr ICMP type 3, og hvilke vanlige codes finnes?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Type 3 er "destination unreachable". Vanlige codes: <em>0</em> = nettverk utilgjengelig, <em>1</em> = host utilgjengelig, <em>2</em> = protokoll utilgjengelig, <em>3</em> = port utilgjengelig.</p>
+          <p><strong>Hvorfor:</strong> Type 3 er feilmeldings-kategorien som forteller en avsender at en pakke ikke kom fram. Granulariteten i code-feltet betyr at avsenderen kan reagere ulikt på ulike feil: "host unreachable" kan være midlertidig, mens "port unreachable" betyr typisk at det ikke er noen tjeneste som lytter — som er nyttig informasjon både for feilsøking og for traceroute-trikset.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er ICMP type 11, og når sendes den?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Type 11 er "TTL expired". En ruter sender denne meldingen tilbake til avsenderen når den har dekrementert TTL-feltet i IP-headeren til 0 og må forkaste pakken.</p>
+          <p><strong>Hvorfor:</strong> TTL (Time To Live) er innebygd i IP for å hindre at pakker lever evig — hver gang en pakke passerer en ruter, dekrementeres TTL med 1, og hvis det treffer 0 må pakken kastes. Uten denne mekanismen kunne en pakke gå i en rutingløkke for alltid og spise ressurser. ICMP type 11 er hvordan avsenderen får beskjed om at pakken døde av "alderdom" underveis. Det er denne meldingen <code>traceroute</code> utnytter genialt for å avsløre hvert hopp på ruten.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan klarer <code>traceroute</code> å avsløre hver enkelt ruter på ruten til en destinasjon?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Traceroute sender pakker med stigende TTL — først TTL=1, så TTL=2, osv. Pakken med TTL=1 dør på første ruter, som sender ICMP "TTL expired" tilbake (med sin egen IP). Pakken med TTL=2 dør på andre ruter, og slik bygges hopp-listen opp.</p>
+          <p><strong>Hvorfor:</strong> Trikset utnytter en mekanisme som egentlig ble laget for å hindre uendelige løkker. Ved bevisst å gi pakkene en TTL som er for liten, tvinges hver ruter på ruten til å "avsløre" seg selv via en ICMP-melding. Avsenderen registrerer både ruterens IP og rundtripps-tiden (RTT). Ingen ruter "vet" at de hjelper traceroute — de gjør bare det ICMP-protokollen krever.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan vet <code>traceroute</code> at den har nådd destinasjonen og bør stoppe?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Traceroute sender UDP-segmenter til en usannsynlig høy portnummer. Underveis svarer rutere med "TTL expired" (type 11). Når pakken endelig når destinasjonen, er det ingen tjeneste som lytter på den porten, så destinasjonen svarer i stedet med "destination port unreachable" (type 3, code 3) — det er signalet om at man er fremme.</p>
+          <p><strong>Hvorfor:</strong> Trikset trenger to forskjellige slutt-signaler. Underveis brukes type 11 til å si "ikke fremme enda — her er hvilken ruter som droppet meg". Ved målet brukes type 3 code 3 til å si "denne pakken kom faktisk fram, men det var ingen tjeneste som ventet". En usannsynlig høy port garanterer at ingen ekte applikasjon lytter, slik at man får port-unreachable-svaret som er det entydige "fremme"-signalet. To helt vanlige ICMP-mekanismer kombineres for å tvinge fram et resultat ingen hadde tenkt seg.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</div>
+</section>
+
 <!-- ============ QUIZ ============ -->
 <section id="quiz">
 <div class="container">
@@ -417,6 +614,7 @@
 <script src="../chat-widget.js"></script>
 <script src="../nav-search.js"></script>
 <script src="../quiz.js"></script>
+<script src="../flashcards.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 <script defer src="/_vercel/speed-insights/script.js"></script>
 </body>

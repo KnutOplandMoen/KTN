@@ -200,6 +200,22 @@
       </li>
 
       <li data-card>
+        <div data-fc-front>Hva definerer en <em>applikasjonsprotokoll</em> — og hva er forskjellen på en åpen og en proprietær protokoll?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En applikasjonsprotokoll definerer fire ting: (1) <em>meldingstyper</em> som utveksles (f.eks. forespørsel og svar), (2) <em>meldingssyntaks</em> — hvilke felt finnes og hvordan er de avgrenset, (3) <em>meldingssemantikk</em> — hva betyr verdiene i feltene, og (4) <em>regler</em> for når og hvordan meldinger sendes og hvordan man svarer.</p>
+          <p><strong>Åpen vs proprietær:</strong> Åpne protokoller (HTTP, SMTP) er definert i offentlige RFC-er — hvem som helst kan lese og implementere dem, og det er nettopp derfor enhver nettleser kan snakke med enhver webserver. Proprietære protokoller (klassisk eksempel: Skype) er kontrollert av én leverandør og fungerer typisk bare i deres eget økosystem. Åpenhet er hovedgrunnen til at Internetts protokollpark har kunnet vokse organisk.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er TLS, og hva tilbyr det utover vanlig TCP? Hva er forskjellen på HTTP og HTTPS?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> TLS (Transport Layer Security) er et lag oppå TCP som gir <em>kryptering</em>, <em>dataintegritet</em> og <em>endepunktsautentisering</em>. Det implementeres som biblioteker i applikasjonslaget — apper kaller TLS-funksjoner, som i sin tur snakker med TCP. Klartekst inn i en TLS-socket kommer ut igjen i klartekst på den andre siden, men over nettet har det vandret kryptert. <strong>HTTPS = HTTP over TLS</strong>, og kjører typisk på port 443 i stedet for 80.</p>
+          <p><strong>Hvorfor det trengs:</strong> Vanlige TCP-sockets er ukrypterte. Sender du et passord over en åpen TCP-socket, vandrer det i klartekst og hvem som helst på veien kan lese det. TLS løser tre problemer på én gang: avlytting (kryptering), tukling underveis (integritet via MAC), og at du kanskje ikke snakker med den du tror (sertifikat-basert autentisering av tjeneren).</p>
+        </div>
+      </li>
+
+      <li data-card>
         <div data-fc-front>Hvilke fire dimensjoner styrer hva en applikasjon trenger fra transportlaget?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> (1) <em>Datapålitelighet</em> — tåler appen tap? (2) <em>Tidskrav</em> — må data komme frem innen en viss tid? (3) <em>Gjennomstrømning</em> — trenger appen en minimumshastighet? (4) <em>Sikkerhet</em> — skal data krypteres, integritetssjekkes, autentiseres?</p>
@@ -302,10 +318,26 @@
       </li>
 
       <li data-card>
+        <div data-fc-front>Hvordan komprimeres video, og hvorfor må klienten ha et avspillingsbuffer?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Video komprimeres ved å utnytte to typer redundans: <em>romlig</em> (innen ett bilde — store ensfargede flater lagres som farge + antall piksler) og <em>tidsmessig</em> (mellom bilder — bilde <em>i+1</em> lagres som forskjell fra <em>i</em>). Resultatet kan være CBR (constant bit rate, fast hastighet) eller VBR (variable bit rate, varierer med scenens kompleksitet). MPEG-4 dominerer Internett.</p>
+          <p><strong>Hvorfor buffer:</strong> Båndbredden mellom tjener og klient varierer med trengsel underveis, mens avspillingen er <em>strikt</em> — bilder må komme i rekkefølge og til rett tid (<em>continuous playout constraint</em>). Klienten begynner å laste ned før den begynner å spille av, og bygger opp et forsprang. Når nettet midlertidig blir tregt, tærer avspillingen på bufferet i stedet for å stoppe. «Buffering…» dukker opp først når bufferet er tomt og nettet samtidig ikke leverer raskt nok.</p>
+        </div>
+      </li>
+
+      <li data-card>
         <div data-fc-front>Sammenlign CDN-strategiene «enter deep» og «bring home». Når velger man hvilken?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> <em>Enter deep</em> (Akamai-modellen): plasser CDN-tjenere helt inne i mange aksessnett, så nær brukerne som mulig — Akamai hadde rundt 240 000 tjenere i 120+ land i 2015. <em>Bring home</em> (Limelight-modellen): et mindre antall større klynger plassert i POP-er nær — men ikke inni — aksessnettverkene.</p>
           <p><strong>Når hva:</strong> Enter deep gir minimal latens og minst trafikk over Internett-kjernen, men er driftsmessig komplekst (tusenvis av lokasjoner). Velg det for latenskritisk innhold som live-video. Bring home er enklere å drifte og kostnadsstyre, men gir litt høyere latens. Velg det når noe forsinkelse er akseptabelt og driftsenkelhet teller mer. DNS-omdirigering (CNAME til CDN-domenet) er det som styrer hver bruker til riktig node uansett strategi.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan skiller Netflix og YouTube seg som CDN-arkitektur, og hva betyr <em>OTT</em>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>Netflix</strong> kjører applikasjonslogikken (kontoer, betalinger, anbefalinger) i AWS, men leverer videoen fra sitt eget CDN, <em>Open Connect</em>, som følger en «enter deep»-strategi: dedikerte OCA-servere plassert direkte i ISP-enes nettverk. Strategien er <em>push</em> — Netflix forhåndsplasserer innhold aktivt. <strong>YouTube</strong> bruker Googles eget CDN med en kombinasjon av store datasenterklynger og mindre lokasjoner, og er mer <em>pull-basert</em>: ikke alt forhåndsplasseres, populært innhold cacher seg ut etter etterspørsel.</p>
+          <p><strong>OTT (Over The Top):</strong> Innholdsleverandøren bygger sin egen distribusjonsoverbygning <em>oppå</em> Internett, uten å eie de underliggende linjene. Internett gir bare host-til-host-transport som tjeneste — all videolagring, server-utvelgelse, CDN-koreografering og DASH-logikk skjer på applikasjonslaget hos endesystemene leverandøren kontrollerer. Begge tjenestene er OTT og bruker DASH+HTTP for selve strømmingen.</p>
         </div>
       </li>
 
@@ -338,6 +370,22 @@
         <div data-fc-back>
           <p><strong>Svar:</strong> I <em>iterativ</em> oppslag svarer hver navneserver med «jeg vet ikke, men spør denne i stedet» — den lokale navneserveren gjør selv hopperingen: rot → TLD → autoritativ, og samler svaret. I <em>rekursiv</em> oppslag spør den lokale serveren rotserveren og sier «finn ut av dette for meg»; rotserveren spør TLD som spør autoritativ, og svaret bobler tilbake gjennom hele kjeden.</p>
           <p><strong>Hvorfor det blir en miks:</strong> Rekursivt er enkelt på klientsiden, men legger tung last på de øverste lagene. Iterativt fordeler arbeidet, men gjør den lokale serveren mer kompleks. I praksis er det vanligvis rekursivt mellom deg og din lokale navneserver, og iterativt videre opp i hierarkiet — det balanserer enkelhet ved klienten mot skalerbarhet for rot-/TLD-serverne.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er DNS-caching, og hva styrer TTL? Hvorfor kontaktes rotserverne så sjelden?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Når en navneserver lærer en mapping, lagrer den den i minnet sitt for fremtidige forespørsler. Hver resource record har en <em>TTL</em> (time to live) som sier hvor lenge svaret er gyldig — etter TTL utløper må mappingen hentes på nytt. Lokale navneservere har stort sett alltid TLD-servernes adresser i cachen, så iterative oppslag kan hoppe rett til TLD og videre derfra.</p>
+          <p><strong>Konsekvensen:</strong> Rot-serverne blir dermed «kontakt-av-siste-utvei» — viktig at de finnes, men sjelden faktisk forespurt. Bakdelen er at endringer ikke forplanter seg umiddelbart: hvis du flytter en tjeneste til ny IP, vil cachede svar med gammel IP fortsatt brukes til TTL utløper. Det er ikke en feil, det er TTL-en som gjør jobben sin — du må bare planlegge for det ved å sette lav TTL i forkant av en flytting.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilken transportprotokoll og port bruker DNS, og hvorfor det valget?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> DNS bruker stort sett <strong>UDP på port 53</strong>. Hvert spørsmål er kort nok til å passe i én UDP-pakke, og spørsmål-svar-mønsteret er idempotent — hvis svaret ikke kommer, prøver klienten bare på nytt. Både spørsmål og svar har samme meldingsformat: en header med en 16-bits identifikator og noen flagg, etterfulgt av seksjoner for spørsmål, svar, autoritative poster og tilleggsinformasjon.</p>
+          <p><strong>Hvorfor UDP og ikke TCP:</strong> DNS skjer milliarder av ganger om dagen. TCPs trefoldige håndtrykk og forbindelsestilstand ville lagt på en RTT og betydelig overhead på hvert oppslag — uakseptabelt når lavest mulig latens er hele poenget med å cache mye, spørre lite, og gjenta ved tap. ID-feltet i headeren lar serveren matche svar mot spørsmål når mange er underveis samtidig.</p>
         </div>
       </li>
 
@@ -608,6 +656,7 @@
 <script src="../chat-widget.js"></script>
 <script src="../nav-search.js"></script>
 <script src="../quiz.js"></script>
+<script src="../flashcards.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 <script defer src="/_vercel/speed-insights/script.js"></script>
 </body>
