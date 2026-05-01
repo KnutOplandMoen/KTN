@@ -422,10 +422,10 @@
     <div class="exam-q__body">
       <p class="q-text">For å lage en digital signatur av en lang melding kombineres en hashfunksjon med offentlig nøkkel-kryptografi. Hva er den korrekte prosessen for at <em>Alice</em> skal signere en melding M til <em>Bob</em>?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Alice krypterer hele M med Bobs offentlige nøkkel; resultatet er signaturen</li>
-        <li><span class="opt-label">B</span> Alice beregner H(M) og krypterer H(M) med sin <strong>private</strong> nøkkel; signaturen er resultatet, og Alice sender (M, signatur)</li>
-        <li><span class="opt-label">C</span> Alice krypterer H(M) med Bobs offentlige nøkkel</li>
-        <li><span class="opt-label">D</span> Alice deler en symmetrisk nøkkel med Bob og bruker denne til å signere</li>
+        <li><span class="opt-label">A</span> Alice krypterer hele M med Bobs offentlige nøkkel; det krypterte resultatet er signaturen</li>
+        <li><span class="opt-label">B</span> Alice krypterer H(M) med sin <strong>private</strong> nøkkel; signaturen sendes sammen med M til Bob</li>
+        <li><span class="opt-label">C</span> Alice krypterer H(M) med Bobs offentlige nøkkel og sender den krypterte hashen som signatur</li>
+        <li><span class="opt-label">D</span> Alice avtaler en symmetrisk nøkkel med Bob og bruker MAC av M som digital signatur</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -455,10 +455,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er hovedformålet med en <strong>playout-buffer</strong> hos mottakeren i en VoIP- eller streaming-applikasjon?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Å kryptere de mottatte lydpakkene</li>
-        <li><span class="opt-label">B</span> Å kompensere for jitter (variasjon i nettverksforsinkelse) ved å holde tilbake pakkene i en kort buffer før avspilling</li>
-        <li><span class="opt-label">C</span> Å øke totalt overføringsvolum for høyere kvalitet</li>
-        <li><span class="opt-label">D</span> Å redusere RTT mellom sender og mottaker</li>
+        <li><span class="opt-label">A</span> Å dekryptere de mottatte lydpakkene før avspilling og verifisere integriteten deres</li>
+        <li><span class="opt-label">B</span> Å kompensere for jitter ved å holde pakkene tilbake en kort tid før de spilles av</li>
+        <li><span class="opt-label">C</span> Å øke totalt overføringsvolum og dermed lyd- eller bildekvaliteten hos mottakeren</li>
+        <li><span class="opt-label">D</span> Å redusere ende-til-ende RTT mellom sender og mottaker for raskere respons</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
