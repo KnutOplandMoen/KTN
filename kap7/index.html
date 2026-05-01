@@ -387,7 +387,7 @@
         <div data-fc-front>Hvordan håndterer LTE strømsparing, og hva er forskjellen på "lett" og "dyp" søvn?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> Etter noen hundre millisekunder uten trafikk går radioen i <strong>lett søvn</strong> og våkner periodisk for å sjekke om det er noe innkommende. Etter 5–10 sekunder med inaktivitet går den i <strong>dyp søvn</strong>, og kan til og med flytte seg mellom celler mens den sover. Når den våkner etter dyp søvn, må hele assosieringen reetableres.</p>
-          <p><strong>Hvorfor to nivåer:</strong> Det er en avveining mellom strømforbruk og responstid. Lett søvn sparer en del strøm, men radioen er klar til å sende nesten umiddelbart. Dyp søvn sparer dramatisk mer strøm, men koster en merkbar oppstartsforsinkelse — det er derfor du av og til merker en liten "lag" første gang du gjør noe på telefonen etter at den har ligget urørt en stund. To-nivå-design er typisk i alle batteri-bevisste systemer (CPU C-states, disk spin-down) av samme grunn: én sovetilstand er aldri optimal for alle situasjoner.</p>
+          <p><strong>Hvorfor to nivåer:</strong> Det er en avveining mellom strømforbruk og responstid. Lett søvn sparer en del strøm, men radioen er klar til å sende nesten umiddelbart. Dyp søvn sparer dramatisk mer strøm, men koster en merkbar oppstartsforsinkelse — det er derfor du av og til merker en liten "lag" første gang du gjør noe på telefonen etter at den har ligget urørt en stund.</p>
         </div>
       </li>
 
@@ -489,6 +489,224 @@
         <div data-fc-back>
           <p><strong>Svar:</strong> 5G NR (New Radio) bruker nye modulasjonsskjemaer, nye frekvensbånd (særlig FR2/mmWave) og en helt ny radio-protokollstabel som ikke deler bits-format med LTE. En 4G-telefon kan ikke snakke med en 5G-basestasjon, og en 5G-telefon må ha både gammel og ny radio for å kunne falle tilbake på 4G. Operatørene driver derfor begge nettverkene parallelt.</p>
           <p><strong>Hvorfor og hva det betyr:</strong> Bakoverkompatibilitet ville krevd at 5G arvet 4Gs begrensninger — særlig den faste tids-/frekvensstrukturen som ikke skalerer godt til mmWave med dynamisk beamforming. Ved å bryte med arven kunne 5G NR designes mer fleksibelt fra grunnen av. I praksis velger telefonen automatisk mellom 4G og 5G avhengig av signalforhold og hva den skal gjøre — du merker ofte byttet bare som en endring i signal-ikonet. Innenfor kjernen finnes også en ny arkitektur (5G Core, 5GC) som tar SDN-/microservice-tankegangen lenger enn EPC.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <em>eMBB</em>, og hva slags applikasjoner er det laget for?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> eMBB (Enhanced Mobile Broadband) er den første av 5Gs tre offisielle tjenestestandarder. Den fokuserer på <em>høyere båndbredde</em> for opp- og nedlastingshastigheter, med en moderat reduksjon i latens i forhold til 4G LTE.</p>
+          <p><strong>Bruksområder:</strong> rik mediastreaming — mobile augmented reality og virtual reality, 4K-video og 360°-video. eMBB er det de fleste forbrukere ser når de bruker "5G" på telefonen i dag, og det er denne smaken som først ble rullet ut i 5G NR-deployeringer.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <em>URLLC</em>, og hva er det viktigste tekniske målet?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> URLLC (Ultra Reliable Low-Latency Communications) er 5G-standarden rettet mot ekstremt latenssensitive applikasjoner. Målet er <strong>1 ms latens</strong>.</p>
+          <p><strong>Bruksområder:</strong> fabrikkautomasjon, autonom kjøring, fjernstyring av roboter — scenarier der en pakke som kommer 50 ms for sent er farlig eller ubrukelig. Teknologiene som muliggjør URLLC er fortsatt under standardisering, så ekte URLLC-tjenester er foreløpig sjeldne i kommersielle nett.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <em>mMTC</em>, og hvorfor er det viktig for IoT?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> mMTC (Massive Machine Type Communications) er 5Gs smalbåndede aksesstype for sensing, måling og overvåkningsapplikasjoner. Designprioriteten er å <em>senke barrieren</em> for å koble svært mange små IoT-enheter til nettverket.</p>
+          <p><strong>Hvorfor:</strong> En IoT-sensor sender lite data, men den må være billig og strømgjerrig. mMTC-teknologi senker både latens og strømkrav slik at IoT-enheter kan brukes mer pervasivt enn med 4G LTE. Dette er en helt annen optimaliseringsakse enn eMBB (høy hastighet) og URLLC (lav latens) — derfor finnes alle tre som separate standarder under 5G-paraplyen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan skiller <em>5G Core (5GC)</em> seg fra 4Gs <em>EPC</em>, og hva er <strong>AMF</strong> og <strong>SMF</strong>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> 5GC er designet for fullstendig kontroll-/dataplan-separasjon, og består av <em>virtualiserte programvarefunksjoner</em> (NFV) i stedet for de mer monolittiske EPC-elementene. Den dekomponerer 4Gs MME i to:</p>
+          <p><strong>AMF</strong> (Access and Mobility Management Function): mottar all tilkoblings- og sesjonsinformasjon fra UE, men håndterer kun tilkoblings- og mobilitetsoppgaver.<br>
+             <strong>SMF</strong> (Session Management Function): håndterer sesjonsstyring og IP-adressestyring, og spiller DHCP-rollen.</p>
+          <p><strong>Hvorfor:</strong> Skillet gir operatører fleksibilitet til å skalere de to funksjonene uavhengig og tilpasse seg de svært forskjellige profilene til eMBB/URLLC/mMTC. 5GC inkluderer også <em>network slicing</em> og <em>distribuerte servere/cacher</em> ute mot kanten av nettet for å redusere latens.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <strong>IPX</strong> (Internet Protocol Packet eXchange Network), og hvorfor finnes det?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> IPX er et <em>forvaltet nettverk</em> spesifikt for sammenkobling av mobiloperatører — analogt med Internet eXchange Points (IXP) for ISP-peering. Mobiloperatører kan kommunisere med hverandre enten via det offentlige Internett eller via IPX.</p>
+          <p><strong>Hvorfor:</strong> Roaming og inter-operatør-trafikk har strengere krav til kvalitet, sikkerhet og oppgjør enn vanlig Internett-trafikk. IPX gir et kontrollert miljø der operatører kan utveksle abonnent-autentiseringsdata (mot HSS), samtaler og data uten å måtte stole på det åpne Internettet. Det er denne infrastrukturen — sammen med global IMSI-identifikasjon og HSS — som gjør at telefonen din "bare fungerer" når du går av flyet i Tokyo.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <em>TEID</em> (Tunnel Endpoint Identifier), og hva har den med GTP å gjøre?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Hver GTP-tunnel mellom to endepunkter har en unik TEID. Når basestasjonen mottar en datapakke fra UE-en, kapsler den pakken med GTP — inkludert TEID-en — og sender den i et UDP-segment til S-GW. Mottakeren bruker TEID-en til å vite hvilken tunnel pakken tilhører, dekapsler den, og prosesserer eller videresender IP-pakken inni.</p>
+          <p><strong>Hvorfor:</strong> En operatør kan ha mange samtidige tunneler mellom samme par av noder — typisk én per UE eller per tjeneste. TEID-en er et kompakt navn som identifiserer hvilken tunnel pakken tilhører, og er nøkkelen til at endepunktene kan oppdateres ved mobilitet uten å forvirre datastrømmene.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke 802.11-standarder bruker <em>MIMO</em>, og hva gjør MIMO på AP-en?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> 802.11n, 802.11ac og 802.11ax bruker MIMO (Multiple-Input Multiple-Output) — to eller flere antenner på både sender- og mottakersiden, som sender/mottar forskjellige signaler. 802.11ac og 802.11ax kan i tillegg sende til <em>flere stasjoner samtidig</em>, og bruker "smarte" antenner til å <strong>beamforme</strong> signaler i retning av mottakeren.</p>
+          <p><strong>Hvorfor:</strong> Beamforming reduserer interferens og øker effektiv rekkevidde ved en gitt datarate. Parallelle datastrømmer (spatial multiplexing) gir høyere total kapasitet i samme frekvensbånd. Det er hovedgrunnen til at WiFi 4/5/6 oppnår ratene de gjør (600 Mbps → 14 Gbps) til tross for at det fysiske spekteret ikke er dramatisk større enn for 802.11g.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <em>paging</em> i et 4G LTE-nett, og når brukes det?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Når en mobil er i <em>dyp søvn</em> (Idle state), våkner radioen så sjelden at basestasjonene ikke lenger sporer hvilken celle den er i — den kan til og med ha flyttet seg mellom celler mens den sov. Når innkommende trafikk dukker opp, må MME-en finne enheten igjen via en <strong>paging-melding</strong>: MME-en ber alle basestasjonene i nærheten av den siste kjente cellen kringkaste paging-meldingen som en kontrollplan-melding på radiogrensesnittet.</p>
+          <p><strong>Hva skjer videre:</strong> Mobilen som ser sin egen identifikator i en paging-melding, "våkner helt opp", reetablerer en ny dataplan-tilkobling til en basestasjon, og er deretter klar til å motta innkommende trafikk. Det er denne mekanismen som gjør at telefonen din kan ringe selv om den har ligget urørt i lommen lenge.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilken rolle spiller <em>CRC</em>-feltet i en 802.11-ramme, og hvorfor er det enda viktigere her enn i Ethernet?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> 802.11-rammen inkluderer en <strong>32-bits CRC (Cyclic Redundancy Check)</strong> som lar mottakeren oppdage bitfeil i den mottatte rammen. Hvis CRC-en ikke stemmer, forkastes rammen, og avsenderen vil måtte retransmittere fordi ingen ACK kommer.</p>
+          <p><strong>Hvorfor enda viktigere enn i Ethernet:</strong> Bitfeil er mye vanligere i trådløse linker enn i kabel — signaltap, fading og interferens gjør at en del bits regelmessig blir tolket feil. På Ethernet er bitfeil såpass sjeldne at CRC-en mest fungerer som en sikkerhetsnett. På WiFi er CRC kombinert med link-lags-ACK og retransmisjon en aktiv del av den daglige driften: uten CRC ville korrupte rammer levert ødelagte IP-pakker oppover stacken med potensielt store konsekvenser.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor er <em>kanalene 1, 6 og 11</em> så spesielle i 2,4 GHz WiFi?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> 802.11 i 2,4 GHz-båndet definerer 11 <em>delvis overlappende</em> kanaler innenfor en ~85 MHz frekvensbredde. To kanaler er ikke-overlappende hvis og bare hvis de er minst fire kanaler fra hverandre. Settet <strong>{1, 6, 11}</strong> er det <em>eneste</em> settet med tre ikke-overlappende kanaler.</p>
+          <p><strong>Hvorfor det betyr noe:</strong> En administrator kan installere tre AP-er på samme fysiske sted, tildele kanalene 1, 6 og 11, og koble dem sammen via en svitsj — og dermed oppnå ~3× den maksimale transmisjonsraten fordi de ikke krangler om luft. Alle andre kanalvalg vil delvis overlappe og få ytelsen til å falle. Det er derfor i en blokkleilighet med 10+ AP-er er det fortsatt {1, 6, 11} de fleste velger automatisk.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan bestemmer <em>rate adaptation</em>-algoritmen i 802.11 konkret når den skal øke eller senke hastigheten?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En typisk implementasjon bruker ACK-mottak som "probe":</p>
+          <p>• Hvis senderen sender <strong>2 rammer på rad uten å få ACK</strong> (en implisitt indikasjon på bitfeil), <em>faller den ned</em> til neste lavere modulasjonshastighet.<br>
+             • Hvis <strong>10 rammer på rad blir bekreftet</strong>, eller en timer siden siste tilbakefall utløper, <em>øker</em> hastigheten til neste høyere trinn.</p>
+          <p><strong>Hvorfor:</strong> Mekanismen er en "probing"-strategi som ligner TCPs congestion control: dytt gradvis oppover når alt går bra, falt fort tilbake når noe svikter. Resultatet er at hastigheten følger SNR ganske presist — du ser den falle smidig når du går vekk fra ruteren, og stige igjen når du nærmer deg.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <em>forward error correction (FEC)</em> i LTE MAC-laget, og hvorfor brukes det i tillegg til ARQ?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> LTE MAC-laget legger inn <em>redundante bits</em> i den sendte rammen. Hvis noen få bits kommer feil fram på den andre siden, kan mottakeren <strong>rekonstruere</strong> de korrekte bitsene fra redundansen — uten å måtte be om retransmisjon. Mengden redundans kan tilpasses kanalforholdene (mer redundans → mer robust, men lavere effektiv datarate).</p>
+          <p><strong>Hvorfor i tillegg til ARQ (på RLC):</strong> Retransmisjoner via ARQ koster RTT-er — minst noen millisekunder per gang. FEC kan rette små feil uten å måtte vente på en retransmisjon i det hele tatt, og er derfor viktig for lav-latens-tjenester. Strategien blir altså: bruk FEC til å fikse hyppige små feil "gratis", og fall tilbake på ARQ kun når feilen er for stor til at FEC klarer den.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan kan kapasiteten i en 5G-celle uttrykkes som en formel, og hvor kommer 100×-løftet over 4G fra?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Den enkle modellen er:</p>
+          <p style="margin-left:24px"><strong>kapasitet = celletetthet × tilgjengelig spekter × spektral effektivitet</strong></p>
+          <p>der celletetthet er i celler/km², spekteret er i Hz, og spektral effektivitet i bps/Hz/celle. Resultatet er bps/km².</p>
+          <p><strong>Hvor 100× kommer fra:</strong> Alle tre faktorene øker i 5G:<br>
+             • <em>Celletetthet</em> opp fordi mmWave krever pico-celler hvert 10–100 m.<br>
+             • <em>Tilgjengelig spekter</em> opp fordi FR2 strekker seg fra 24 til 52 GHz (28 GHz båndbredde), mot 4Gs ~2 GHz.<br>
+             • <em>Spektral effektivitet</em> opp via massiv MIMO og beamforming, som lar samme frekvens brukes parallelt til 10–20 brukere samtidig.<br>
+             Multipliser dem, og du har omtrent 100× — derfor 100× kapasitet per km² mot 4G.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva inneholder <em>frame control field</em> i en 802.11-ramme, og hva brukes feltene til?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Frame control-feltet er kort men inneholder mange små subfelter, blant annet:</p>
+          <p>• <strong>Type og subtype</strong> — skiller mellom forskjellige rammetyper: assosiering, RTS, CTS, ACK, og data.<br>
+             • <strong>To AP / From AP</strong> — definerer hva de fire adressefeltene betyr (forskjellig i ad hoc kontra infrastruktur, og forskjellig avhengig av om en stasjon eller en AP sender).<br>
+             • <strong>WEP</strong> — indikerer om kryptering er på (WEP er den gamle krypteringsstandarden, erstattet av WPA2/WPA3 i praksis).<br>
+             • Også: <em>power-management-bit</em> (sove-/våken-tilstand), more frag, retry, og protokollversjon.</p>
+          <p><strong>Hvorfor det betyr noe:</strong> Frame control-feltet bærer den metadataen som lar mottakeren tolke resten av rammen riktig — særlig adressefeltene, hvor betydningen avhenger av to/from-bitene. Uten dette feltet ville en mottaker ikke vite om en gitt ramme er en kontrollramme (RTS/CTS/ACK) eller en datapakke.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom <em>SSID</em> og <em>BSSID</em> i WiFi, og hvor møter du SSID-en?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>SSID</strong> (Service Set Identifier) er et menneskelesbart ett- eller toordsnavn som administratoren tildeler AP-en — det du ser i lista over "tilgjengelige WiFi" på telefonen din. <strong>BSSID</strong> er AP-ens 6-byte MAC-adresse, som identifiserer den unikt på linklaget.</p>
+          <p><strong>Hvor SSID kringkastes:</strong> Hver beacon-ramme fra AP-en inneholder SSID-en (og BSSID-en) — så når enheten din skanner, ser den både navnet og MAC-adressen. SSID-en er ikke garantert å være unik — flere AP-er i samme bygg kan dele SSID for å danne et "logisk" stort nettverk hvor enheten roamer mellom dem (men hver enkelt AP har fortsatt sin egen BSSID).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor må stasjonen sende hele rammen ferdig selv om en kollisjon faktisk skjer i 802.11?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Fordi 802.11 ikke kan oppdage kollisjoner mens den sender (CSMA/CA, ikke CD). Når en stasjon først har begynt å sende en ramme, har den ingen mulighet til å vite at en kollisjon skjer — så den må sende rammen i sin helhet før den vet om det gikk bra (via ACK).</p>
+          <p><strong>Konsekvensen:</strong> En kollisjon som involverer en lang dataramme kaster bort kanalkapasitet i hele rammens varighet, ikke bare en kort kollisjons-jam-periode som i Ethernet. Det er en av hovedgrunnene til at 802.11 satser så hardt på å <em>unngå</em> kollisjoner i utgangspunktet — via DIFS, backoff og RTS/CTS — i stedet for å håndtere dem etter at de skjer.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvor ofte sender en typisk WiFi-AP <em>beacon-rammer</em>, og hvor lite strøm kan en sovende node bruke som resultat?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En AP sender beacon ca. <strong>hvert 100 ms</strong> (ti ganger per sekund). En sovende node våkner nettopp før neste beacon, mottar den, sjekker om den har ventende trafikk, og kan gå tilbake i søvn hvis ikke. Selve oppvåkningen tar bare ~250 mikrosekunder.</p>
+          <p><strong>Resultatet:</strong> Med 100 ms mellom beacons og 250 µs aktiv tid per oppvåkning kan en node uten ventende trafikk være sovende <strong>~99 % av tiden</strong>. Det er denne arkitekturen som gjør at IoT-sensorer på WiFi kan kjøre i flere år på et lite batteri — radioen, som er den klart største strømslukeren, holdes av nesten alltid.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom 2,4 GHz- og 5 GHz-båndene i WiFi når det gjelder rekkevidde og fading?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> 5 GHz har <em>kortere transmisjonsdistanse</em> for en gitt sendingseffekt enn 2,4 GHz, og er <em>mer utsatt for flerveispropagering</em> (multipath fading). 2,4 GHz har bedre rekkevidde og bedre penetrasjon gjennom vegger.</p>
+          <p><strong>Hvorfor:</strong> Høyere frekvens betyr kortere bølgelengde, og kortere bølgelengde absorberes raskere av materialer og diffrakterer dårligere rundt hindringer. Til gjengjeld er 5 GHz-båndet mindre overfylt — flere ikke-overlappende kanaler, mindre interferens fra mikrobølgeovner og babymonitorer (som hovedsakelig bruker 2,4 GHz). Moderne dual-band-AP-er sender på begge: kort rekkevidde og høy hastighet på 5 GHz, lengre rekkevidde og lavere hastighet på 2,4 GHz.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor er <em>SIFS kortere enn DIFS</em> i 802.11, og hvilken garanti gir det?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> SIFS (Short Inter-Frame Spacing) brukes mellom en datapakke og dens ACK; DIFS (Distributed Inter-Frame Space) er den lengre ventetiden andre noder må respektere før de starter en helt ny transmisjon. Fordi SIFS &lt; DIFS, vil en mottaker som skal svare med ACK <em>alltid</em> få sende først.</p>
+          <p><strong>Garantien:</strong> Ingen ny node kan "smyge inn" en transmisjon mellom dataramme og ACK — de venter fortsatt på sin DIFS, mens ACK-en allerede er på lufta etter SIFS. På denne måten beskytter SIFS hele DATA→ACK-utvekslingen som en atomisk enhet, selv på et delt og konkurransebasert medium. Det samme prinsippet brukes for RTS→CTS→DATA→ACK-sekvensen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <em>opportunistic scheduling</em> i LTE radio access network?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Basestasjonen velger hvilken UE som får sende/motta i en gitt tidsluke basert på <em>kanalforhold</em> i øyeblikket. En bruker med god SNR får tildelt slot fordi sendingen vil være effektiv (høy modulasjonsrate, få bitfeil); en bruker med dårlig SNR utsettes til kanalen er bedre, eller sender med en mer robust modulasjon.</p>
+          <p><strong>Hvorfor:</strong> Det maksimerer total throughput i cellen — i stedet for å sende til alle "rettferdig", utnytter basestasjonen at radiokanalen varierer per bruker og over tid. Operatører kan også bake inn andre faktorer i scheduleringen: brukerprioritet, kontraktsnivå (sølv/gull/platina), eller QoS-krav per tunnel. Dette er hele filosofien bak sentralisert tildeling kontra WiFi-stilen "alle konkurrerer likt".</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor er <em>mmWave-signaler så sårbare</em>, og hvilke fysiske faktorer blokkerer dem mest?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> mmWave (24–52 GHz) har svært kort bølgelengde — millimeter-skala — og absorberes derfor raskt av nesten alt materielt:</p>
+          <p>• <strong>Bygninger og vegger</strong> blokkerer signalet effektivt.<br>
+             • <strong>Trær og løv</strong> demper det betydelig (nær urban infrastruktur er dette en reell faktor).<br>
+             • <strong>Atmosfæriske forhold</strong> som regn og snø reduserer rekkevidden ytterligere.<br>
+             • Til og med en <strong>menneskekropp</strong> som passerer mellom sender og mottaker kan blokkere signalet.</p>
+          <p><strong>Konsekvensen:</strong> mmWave egner seg dårlig til utendørs bruk med variabelt vær, og krever line-of-sight til pico-cellen. Det er derfor "ekte 5G"-dekning i praksis er begrenset til tett bebygde områder med mange basestasjoner og lite vegetasjon mellom dem.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er typisk hastighet og rekkevidde for <em>4G LTE</em>, og hvordan sammenligner det seg med WiFi 6?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> 4G LTE leverer typisk rundt <strong>~100 Mbps</strong> til enhetene i praksis (med toppmål høyere ved gode forhold), og rekkevidden fra hver basestasjon er <strong>flere kilometer</strong>. WiFi 6 (802.11ax) tilbyr opptil <strong>14 Gbps</strong> i ideelle forhold, men bare innenfor ~70 m, og i praksis vesentlig mindre.</p>
+          <p><strong>Det fundamentale kompromisset:</strong> 4G prioriterer <em>dekning og mobilitet</em> — én basestasjon dekker mange km² med moderat hastighet for hundrevis av enheter. WiFi 6 prioriterer <em>lokal hastighet</em> — én AP dekker et enkelt rom eller kontor med ekstrem båndbredde. Begge er nødvendige; mobilen din veksler automatisk mellom dem avhengig av hvor du er og hva du gjør.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvor stor kan en 802.11-ramme være, og hvor mye plass tar adressefeltene?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Payload-feltet i en 802.11-ramme kan være opptil <strong>2 312 bytes</strong>, men er i praksis nesten alltid &lt; 1 500 bytes — fordi den bærer en IP-pakke, og Ethernet-MTU-en på ~1 500 bytes sprer seg gjennom hele stacken. Hvert av de fire adressefeltene er <strong>6 bytes</strong> (samme som en MAC-adresse), så bare adressefeltene utgjør <strong>24 bytes</strong> av rammen.</p>
+          <p><strong>Hvorfor det er greit å huske:</strong> 24 bytes adresse-overhead er mye sammenlignet med Ethernets 12 bytes (to MAC-er). Det er en av flere grunner til at WiFis nyttelast-til-overhead-forhold er dårligere enn Ethernets — i tillegg kommer link-lags-ACK, sequence number, duration field og frame control, som alle koster bits.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvor ofte tildeles tidsluker per UE i LTE, og hvor lange er hver luke?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> LTE deler radiokanalen i <strong>0,5 ms tidsluker</strong> over flere frekvenser (typisk 12 i en konfigurasjon på 1,4 MHz, mer ved bredere bånd). Slot-tildeling per UE kan gjøres så ofte som <strong>én gang per millisekund</strong> — altså praktisk talt kontinuerlig.</p>
+          <p><strong>Hvorfor det betyr noe:</strong> Den fine tildelingsgranulariteten lar basestasjonen tilpasse seg raske endringer i trafikkmønster og kanalforhold. En UE som strømmer video kan få mange luker på rad; en som bare sender en kort melding kan få én og deretter slippe taket. Det er det som gjør sentralisert OFDM-scheduling så fleksibel sammenlignet med WiFis "alle konkurrerer like mye"-tilnærming.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva skjer med kontroll- vs. dataplan-trafikk når en mobil er <em>roaming</em> i et annet land?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> SIM-kortet identifiserer fortsatt hvilket nett som er hjemme via IMSI-en. Det <em>besøkte</em> nettverkets MME ser tilkoblingsforespørselen og kontakter <strong>HSS-en i hjemoperatørens nett</strong> for å autentisere SIM-en og hente tjenesterettigheter. Dette går typisk over IPX-nettet mellom operatører.</p>
+          <p><strong>Dataplan:</strong> Det besøkte nettet plasserer deg på sin egen S-GW. P-GW-en (utgangsporten til Internett) kan enten være i det besøkte nettet eller hjemme hos operatøren din — det er en operatørbeslutning. Hjemmeruting gjør at hjemme-baserte tjenester fungerer som vanlig, mens lokal utgang gir lavere latens for vanlig surfing.</p>
         </div>
       </li>
 
