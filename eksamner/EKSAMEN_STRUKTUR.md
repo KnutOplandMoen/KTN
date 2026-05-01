@@ -90,15 +90,20 @@ Husk også å lese pensum.md for å dobbelsjekke hva som er pensum
 5. **Solid fasit** — ikke bare svar, men *hvorfor* og pensum-referanse
 6. **Realistisk poengtildeling** — signal til studenten om forventet svarlengde
 7. **Variert oppgaveform** — ikke for mange av samme type i ett sett
-8. **Koble-oppgaver:** formulér oppgaver og svarbank klart; ved distraktorer skal det fortsatt finnes én entydig riktig matching per rad; i fasit: tabell med «Oppgave → riktig bokstav» pluss kort forklaring ved behov
-9. **Sant/Usant-blokk:** unngå tvetydige påstander; hver påstand skal kunne vurderes uten kontekst fra de andre (med mindre det er eksplisitt en serie om samme scenario)
+8. **Multiple choice — balanserte alternativer:**
+   - Alle fire alternativer (A–D) skal være **omtrent like lange** (innen ~30 % av hverandre i tegn/ord). Et alternativ som er markant lengre enn de andre er en kjent «tell» — studenter krysser av det lengste når de gjetter, fordi forfattere ofte legger ekstra presisjon i det riktige svaret.
+   - **Ingen distraktorer som er åpenbart feil** — feil alternativer skal være plausible og krever at studenten faktisk kan stoffet for å avvise dem. Unngå useriøse svar, åpenbart selvmotsigende formuleringer, eller alternativer som bare en som ikke har lest noe av pensum ville velge.
+   - Unngå at det riktige alternativet skiller seg ut på andre måter enn innhold: samme grammatiske form, samme detaljnivå, samme stilnivå. Hvis tre alternativer er korte tekniske termer og det fjerde er en lang setning med forklaring, er det en designfeil — kort ned forklaringen eller utvid de andre.
+   - Plasser riktig svar tilfeldig fordelt over A/B/C/D på tvers av eksamenen, ikke konsentrert på ett sted.
+9. **Koble-oppgaver:** formulér oppgaver og svarbank klart; ved distraktorer skal det fortsatt finnes én entydig riktig matching per rad; i fasit: tabell med «Oppgave → riktig bokstav» pluss kort forklaring ved behov
+10. **Sant/Usant-blokk:** unngå tvetydige påstander; hver påstand skal kunne vurderes uten kontekst fra de andre (med mindre det er eksplisitt en serie om samme scenario)
 
 ## 7. Hva som IKKE inkluderes
 
 - Kopier av spørsmål fra V23/V24/V25 PDF-ene
 - Oppgaver om stoff utenfor pensum (RSA, BitTorrent, CDMA, Bluetooth, VLAN, SDN, mobilitetsstyring)
 - Eksamen-modus med tidtaker eller scoring
-- Multiple choice uten forklaring i fasiten
+- Multiple choice eller andre typer auto retting uten forklaring i fasiten
 
 ## 8. Mappestruktur
 

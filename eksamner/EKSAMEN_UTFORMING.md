@@ -81,6 +81,11 @@ Brukes øverst i hver del-seksjon:
 
 ## 4. Komponent: Del I-spørsmål (multiple choice)
 
+> **Innholdskrav for alternativene** (se også `EKSAMEN_STRUKTUR.md` §6):
+> - Alle fire alternativer skal være **omtrent like lange** — et markant lengre riktig svar er en gratis vink til den som gjetter.
+> - Ingen distraktorer skal være åpenbart feil for noen som ikke har lest pensum. Alle feil alternativer skal være plausible.
+> - Hold samme grammatiske form og detaljnivå på tvers av A–D.
+
 ```html
 <article class="exam-q">
   <header class="exam-q__head">
