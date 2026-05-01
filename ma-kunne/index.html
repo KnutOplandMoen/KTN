@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Må kunne — TTM4100</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" href="../style.css">
+<style>
+  .mk-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 28px 0 36px;
+    font-size: 15px;
+  }
+  .mk-table th, .mk-table td {
+    text-align: left;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+  }
+  .mk-table th {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-faded);
+    border-bottom: 2px solid var(--line);
+  }
+  .mk-table td.src {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--rust);
+    white-space: nowrap;
+  }
+  .mk-item {
+    border-left: 4px solid var(--rust);
+    background: var(--paper-dark);
+    padding: 22px 26px;
+    margin: 22px 0;
+    border-radius: 0 2px 2px 0;
+  }
+  .mk-item.blue { border-left-color: var(--blue); }
+  .mk-item.green { border-left-color: var(--green); }
+  .mk-item.ochre { border-left-color: var(--ochre); }
+  .mk-item .mk-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .mk-item h3 {
+    margin: 0;
+    font-size: 22px;
+    line-height: 1.25;
+  }
+  .mk-item .mk-src {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--rust);
+    text-transform: uppercase;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    padding: 4px 10px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .mk-item .mk-must {
+    font-family: var(--sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--rust-dark);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .mk-item .mk-why {
+    font-style: italic;
+    color: var(--ink-soft);
+    border-top: 1px dashed var(--line-soft);
+    margin-top: 12px;
+    padding-top: 12px;
+  }
+  .mk-item .mk-why strong { font-style: normal; color: var(--rust-dark); }
+  .mk-item ul, .mk-item ol { margin-left: 20px; }
+  .mk-item li { margin-bottom: 6px; }
+  .mk-item code { font-size: 0.85em; }
+
+  .freq-pill {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 2px 8px;
+    border-radius: 2px;
+    background: var(--rust);
+    color: var(--paper);
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .freq-pill.med { background: var(--ochre); color: var(--ink); }
+  .freq-pill.lav { background: var(--ink-faded); }
+
+  .checklist {
+    counter-reset: chk;
+    list-style: none;
+    margin-left: 0;
+    padding-left: 0;
+  }
+  .checklist li {
+    counter-increment: chk;
+    padding: 10px 0 10px 44px;
+    position: relative;
+    border-bottom: 1px dotted var(--line-soft);
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  .checklist li::before {
+    content: counter(chk, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--rust);
+    font-weight: 500;
+  }
+
+  .topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 24px 0 36px;
+  }
+  .topic-card {
+    border: 1px solid var(--line);
+    background: var(--paper);
+    padding: 18px 20px;
+    border-radius: 4px;
+  }
+  .topic-card .tc-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--rust);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .topic-card .tc-title {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.3;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+  .topic-card .tc-meta {
+    font-size: 12px;
+    color: var(--ink-faded);
+    font-style: italic;
+  }
+
+  .legend {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin: 12px 0 32px;
+    font-size: 13px;
+    color: var(--ink-faded);
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .freq-pill { margin: 0; }
+
+  @media (max-width: 640px) {
+    .mk-item { padding: 18px; }
+    .mk-table th, .mk-table td { padding: 10px 8px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../" class="brand">TTM4100</a>
+    <a href="../" class="nav-back">&larr; Alle kapitler</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
+  </div>
+</nav>
+
+<main data-chapter="Må kunne — TTM4100">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Eksamensforberedelse · TTM4100</div>
+  <h1>Må <em>kunne</em></h1>
+  <p class="lede">Tema og oppgavetyper som har gått igjen på de tre siste eksamenene (Eks 1, 2 og 3) — det du absolutt bør sitte med på ryggmargen før du går inn i eksamenslokalet. Wireshark-spørsmål er <em>ikke</em> med i år, så de er deprioritert her.</p>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">01</span><a href="#flashcards">Flashcards</a></li>
+    <li><span class="toc-num">02</span><a href="#metode">Slik er listen laget</a></li>
+    <li><span class="toc-num">03</span><a href="#gjentar-seg">Tema som går igjen</a></li>
+    <li><span class="toc-num">04</span><a href="#ma-kunne">Må kunne — punkt for punkt</a></li>
+    <li><span class="toc-num">05</span><a href="#formler">Formler &amp; one-liners</a></li>
+    <li><span class="toc-num">06</span><a href="#sjekkliste">15-min sjekkliste</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ============ FLASHCARDS ============ -->
+<section id="flashcards" class="flashcards-section">
+<div class="container">
+  <div class="section-badge">Flashcards · må kunne</div>
+  <h2>Drill det <em>essensielle</em></h2>
+  <p class="section-intro">Disse korta dekker akkurat de tingene som har dukket opp på flere eksamener. Klikk for å snu — bruk <strong>&larr; / &rarr;</strong> for å bla, <strong>mellomrom</strong> for å snu, <strong>R</strong> for å shuffle.</p>
+
+  <div class="flashcards" data-flashcards>
+    <div class="fc-stage">
+      <article class="fc-card" tabindex="0" role="button" aria-label="Flashcard — klikk for å snu">
+        <div class="fc-face fc-front">
+          <div class="fc-label">Spørsmål</div>
+          <p class="fc-text" data-fc-front-display aria-live="polite">&nbsp;</p>
+          <div class="fc-hint">Klikk eller mellomrom for å vise svar</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-label">Svar</div>
+          <div class="fc-text" data-fc-back-display aria-live="polite">&nbsp;</div>
+        </div>
+      </article>
+    </div>
+
+    <div class="fc-controls">
+      <button class="fc-btn fc-prev" type="button" aria-label="Forrige kort" title="Forrige (←)">&larr;</button>
+      <div class="fc-progress">
+        <span class="fc-counter">1 / 1</span>
+        <div class="fc-bar"><div class="fc-bar-fill"></div></div>
+      </div>
+      <button class="fc-btn fc-next" type="button" aria-label="Neste kort" title="Neste (→)">&rarr;</button>
+      <button class="fc-btn fc-shuffle" type="button" aria-label="Shuffle bunken" title="Shuffle (R)">&#8635;</button>
+    </div>
+
+    <ol class="fc-deck" hidden>
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom <em>ruting</em> og <em>videresending</em>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <em>Videresending</em> (forwarding) er den lokale handlingen i én ruter — å flytte en pakke fra inn-lenke til riktig ut-lenke ved oppslag i videresendingstabellen. <em>Ruting</em> er den globale prosessen som bestemmer ende-til-ende-stiene som pakkene skal følge gjennom nettverket.</p>
+          <p><strong>Hvorfor:</strong> Forwarding skjer per pakke, i nanosekunder, basert på en allerede-utfyllt tabell. Routing kjører i bakgrunnen via protokoller (OSPF, BGP) og fyller tabellen. Ett ord hver: <em>lokal</em> vs <em>global</em>.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke tjenester gir <strong>UDP</strong> applikasjonen — og hvilke gir den <em>ikke</em>?</div>
+        <div data-fc-back>
+          <p><strong>Gir:</strong> Best effort-levering (datagrammer kan tapes, omrokkeres, dupliseres) og portbasert multipleksing. Lite header-overhead, ingen oppkobling.</p>
+          <p><strong>Gir IKKE:</strong> Pålitelighet, flytkontroll, overbelastningskontroll, gjennomstrømnings­garanti, sanntidslevering.</p>
+          <p><strong>Hvorfor det testes:</strong> Klassisk multiple choice — sjekk av med «best effort» og kryss av alt som <em>ikke</em> er garantier (ingen flow control, ingen congestion control, ingen real-time, ingen throughput-garanti).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke tjenester gir <strong>TCP</strong> som UDP ikke gir?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Pålitelig, in-order bytestrøm (gjenoverføring ved tap), <em>flytkontroll</em> (mottakers vindu hindrer overfylt mottaksbuffer) og <em>overbelastningskontroll</em> (tilpasser sendetempo til nettverkets kapasitet).</p>
+          <p><strong>Hvorfor:</strong> TCP gir <em>ikke</em> båndbreddegaranti eller sanntidsgaranti — det er en typisk feilkrysslapp på eksamen. Pass på forskjellen mellom flow control (mellom to endepunkter) og congestion control (mot nettverket).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar <em>flytkontroll</em> i TCP når mottaker leser saktere enn avsender sender.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Mottaker annonserer fritt buffer-rom i feltet <code>rwnd</code> i hvert ACK. Avsender holder utestående usendte data ≤ <code>rwnd</code>, slik at mottaksbufferet aldri renner over. Hvis applikasjonen henger etter (f.eks. 600 Mbps lese-rate, 1 Gbps sender), krymper <code>rwnd</code> til 0 og avsender stopper.</p>
+          <p><strong>Hvorfor:</strong> Forveksles ofte med congestion control. Nøkkelsetningen: «mottaker tømmer bufferet sitt for sakte» → flytkontroll.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er ende-til-ende-forsinkelsen for én pakke gjennom én store-and-forward-svitsj med rater <code>R₁</code> og <code>R₂</code>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <code>L/R₁ + L/R₂</code> — pakken må fullstendig mottas av svitsjen før den kan begynne å sendes ut.</p>
+          <p><strong>Hvorfor:</strong> Standard formel som sjeldent kommer alene — ofte utvidet til <code>(N+P−1)·L/R</code> for P pakker gjennom N like rutere (pipelining).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvor mange symmetriske nøkler trengs hvis N personer skal kommunisere parvis?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <code>N(N−1)/2</code>.</p>
+          <p><strong>Hvorfor:</strong> Hvert par må dele én unik nøkkel. Antall par er kombinasjonen «N velg 2» = N(N−1)/2. Dette er motivasjonen for offentlig nøkkel: med PKI trenger N personer bare 2N nøkler totalt (én privat + én offentlig per person).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <strong>NAT</strong>, og hva endres på vei ut av et NAT-grensesnitt?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> NAT bytter ut <em>kilde-IP</em> (privat, f.eks. 10.0.0.1) og <em>kildeport</em> med ruterens offentlige IP og en ny port valgt av NAT-en. Destinasjons-IP og -port er uendret. På vei inn gjøres motsatt oversettelse.</p>
+          <p><strong>Hvorfor:</strong> På eksamen får du gjerne en NAT-tabell og skal fylle inn (kilde-IP, kilde-port, dest-IP, dest-port) på utsiden av NAT (punkt D). Husk: bare kildesiden endres på utgående retning.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Gitt IP <code>192.168.1.108</code> og maske <code>/30</code>, hva er subnett-adressen?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <code>192.168.1.108</code>. /30 = maske 255.255.255.252. AND med 108 = 01101100, og 252 = 11111100 → 01101100 = 108. Så hele oktetten beholdes.</p>
+          <p><strong>Hvorfor:</strong> «Subnett-adresse» er IP AND maske. Tren på /28, /29, /30 — kommer i flere varianter på eksamen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Du har <code>208.27.1.0/22</code> og må lage minst 12 subnett. Hvor mange brukbare verter per subnett?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <code>62</code>. /22 har 10 vertsbits. For å få ≥12 subnett trengs 4 nett-bits (2⁴=16 ≥ 12), så maska blir /26 og hver verts­del har 6 bits → 2⁶ − 2 = 62 brukbare adresser (trekk fra nettverk- og broadcast­adresse).</p>
+          <p><strong>Hvorfor:</strong> Klassisk subnetting-oppgave. Husk «−2»-regelen for «brukbare verter».</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er broadcast-adressen til <code>172.18.16.0/21</code>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <code>172.18.23.255</code>. /21 betyr at de tre nett-bitsene i tredje oktett er fastlåst. Området starter på 16 (00010|000) og rekker 8 verdier i tredje oktett (16–23). Broadcast = siste adresse → 172.18.23.255.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilket felt finnes <strong>kun i IPv6</strong>-headeren?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <em>Flow label</em>. IPv4 har <em>ikke</em> flow label. (TTL/hop limit, version, source/dest finnes i begge — IPv6 har bare lengre adresser.)</p>
+          <p><strong>Annet IPv6 fjernet:</strong> Header checksum, fragmenteringsfelt, header length og options finnes <em>ikke</em> i IPv6-headeren.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>3 fakta om <strong>ICMP</strong> du må kunne.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <ol>
+            <li>ICMP brukes av <em>verter og rutere</em> for å utveksle nettverksnivå-informasjon (feil/diagnose).</li>
+            <li>ICMP-meldinger bæres direkte i <em>IP-datagrammer</em> — <em>ikke</em> i UDP/TCP og <em>ikke</em> på «port 86».</li>
+            <li>«TTL expired»-meldinger brukes av <code>traceroute</code>.</li>
+          </ol>
+          <p><strong>Vanlig felle:</strong> ICMP er <em>ikke</em> en transportprotokoll.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>3 fakta om <strong>DHCP</strong> du må kunne.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <ol>
+            <li>4-stegs prosess: <em>Discover → Offer → Request → ACK</em>.</li>
+            <li>Bruker <strong>UDP</strong> som transport — <em>ikke</em> TCP.</li>
+            <li>Kan tildele IP, subnett-maske, default gateway <em>og</em> DNS-server.</li>
+          </ol>
+          <p><strong>Felle:</strong> «DHCP brukes til å rute datapakker» er <em>feil</em>. DHCP = konfigurasjon, ikke ruting.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva betyr Internetts <strong>«best effort»</strong>-tjenestemodell?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Ingen garantier — verken levering, leveringstid, rekkefølge eller minimum båndbredde. Nettet gjør sitt beste, men kan droppe, omrokkere eller forsinke pakker uten å si fra.</p>
+          <p><strong>Hvorfor:</strong> All «kvalitet» (pålitelighet, ordning) må bygges på toppen — det er det TCP gjør.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hovedformålet med en <strong>brannmur</strong>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Å <em>blokkere uautorisert tilgang</em> til/fra nettet (filtrering på pakkenivå basert på regler).</p>
+          <p><strong>Felle:</strong> «Krypterer data» er feil — det er TLS/IPsec sin jobb. «Tilbyr VPN» er en bonus, ikke hovedformålet.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Cæsar-cipher med k=7: kod ordet «<em>Protect</em>».</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Skift hver bokstav 7 plasser fram. P→W, r→y, o→v, t→a, e→l, c→j, t→a → <strong>«Wyvalja»</strong>.</p>
+          <p><strong>Hvorfor:</strong> Sett opp et alfabet (A=0, B=1, …) og bruk <em>(x + 7) mod 26</em>. Vis utregningen på besvarelsen — det gir delpoeng selv ved regnefeil.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <strong>RTS/CTS</strong> for, og hvilket problem løser det?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> RTS (Request To Send) fra avsender og CTS (Clear To Send) fra mottaker reserverer kanalen før selve datarammen sendes. Når naboer hører CTS, holder de seg stille.</p>
+          <p><strong>Problem:</strong> <em>Skjult terminal</em>. To avsendere som ikke hører hverandre, kan begge sende til samme mottaker og skape kollisjon. CTS treffer alle innen mottakers rekkevidde og forhindrer dette.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Klassifiser: TDM, FDM, CDMA, ALOHA, CSMA/CD, token ring.</div>
+        <div data-fc-back>
+          <p><strong>Kanalpartisjonering:</strong> TDM, FDM, CDMA (FDMA).</p>
+          <p><strong>Tilfeldig tilgang:</strong> ALOHA (pure + slotted), CSMA, CSMA/CD, CSMA/CA, Ethernet.</p>
+          <p><strong>Taking turns:</strong> Token ring, FDDI, Bluetooth (polling).</p>
+          <p><strong>Hvorfor:</strong> Tre-veis klassifisering kommer som drag-and-drop på Del I.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen <em>pure</em> og <em>slotted</em> ALOHA?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Pure ALOHA — send hver gang du har data, ingen synkronisering. Slotted ALOHA — start sending kun ved begynnelsen av et tids-slot. Maks effektivitet: pure ≈ 18 %, slotted ≈ 37 % (≈ 1/(2e) vs 1/e).</p>
+          <p><strong>Hvorfor:</strong> Slotted halverer kollisjons-vinduet → dobler effektiviteten.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Svitsj vs ruter — på hvilket lag, og hvilke adresser?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <em>Svitsj</em> opererer på lenkelaget (lag 2) og videresender basert på <em>MAC-adresser</em>. <em>Ruter</em> opererer på nettverkslaget (lag 3) og videresender basert på <em>IP-adresser</em>.</p>
+          <p><strong>Felle:</strong> «Svitsjer kobler sammen ulike nett, rutere kobler enheter innen ett nett» — <em>feil</em>, det er motsatt.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>2D-paritet: hva kan den oppdage og rette?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Kan <em>oppdage og rette</em> én bitfeil (rad og kolonne med feil paritet peker rett på bitten). Kan <em>oppdage</em>, men <em>ikke rette</em>, mange to-bits feil. Generelt: ikke alle to-bits feil oppdages.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva angir Trudy (angriper) kan gjøre i en kommunikasjonskanal?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <em>Avlytte</em> (sniffing) kontroll- og datameldinger, <em>endre</em> innhold, <em>sette inn</em> nye meldinger, og <em>slette</em> meldinger. Dvs. alt — derfor trengs kryptografi (konfidensialitet) <em>og</em> integritetsmekanismer (hash/MAC).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor brukes ofte <strong>HTTP-streaming over TCP</strong> framfor UDP-streaming?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> (1) Mange brannmurer blokkerer UDP, men slipper HTTP/TCP gjennom. (2) UDP har ingen retransmisjon eller ordning — gir høyere feilrate. (3) HTTP gjenbruker eksisterende web-infrastruktur (CDN, caching).</p>
+          <p><strong>Hvorfor likevel UDP iblant:</strong> sanntid (VoIP, spill) der lavere latency er viktigere enn pålitelighet.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Beregn <strong>Internet checksum</strong> over to 16-bits ord — hva er stegene?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <ol>
+            <li>Summer ordene som vanlig binær addisjon.</li>
+            <li>Hvis det er <em>carry</em> ut av 16. bit, legg den tilbake nederst (carry-wrap / 1's complement-sum).</li>
+            <li>Ta <em>1's complement</em> (snu alle bits) — det er checksum.</li>
+          </ol>
+          <p><strong>Hvorfor:</strong> Brukes i TCP/UDP/IP-headere. Mottaker summerer alt inkludert checksum og skal få bare 1-ere.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva får klienten tilbake i en <strong>DNS Resource Record</strong>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En RR har formatet <code>(Name, Value, Type, TTL)</code>:</p>
+          <ul>
+            <li><strong>A</strong>: Name = hostname, Value = IPv4.</li>
+            <li><strong>AAAA</strong>: IPv6-adresse.</li>
+            <li><strong>NS</strong>: Name = domene, Value = autoritativ navneserver.</li>
+            <li><strong>CNAME</strong>: Name = alias, Value = kanonisk hostname.</li>
+            <li><strong>MX</strong>: Name = domene, Value = mail-server.</li>
+          </ul>
+          <p><strong>Transport:</strong> Kjører primært over UDP (port 53), men kan bruke TCP for store svar / sone­overføring.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Antall <strong>TCP-sockets</strong> på en webserver med 5 aktive forbindelser på port 80?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>6 sockets</strong> — én lyttende «welcoming socket» som <code>accept()</code> kjører på, pluss én ny socket per aktive klient (5 stk).</p>
+          <p><strong>Hvorfor:</strong> Hver TCP-forbindelse identifiseres unikt av 4-tuple (kilde-IP, kilde-port, dest-IP, dest-port). Selv om alle bruker server-port 80, har de ulik klient-IP/port og får hver sin socket.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er typisk hovedfordel med <strong>web-cache</strong> i et institusjonsnett?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> (1) Lavere forsinkelse for klienten (cache er nær). (2) Lavere båndbreddebruk på lenken inn til institusjonen. (3) Selv ikke-cachede objekter får lavere snitt-forsinkelse fordi <em>opplinken</em> er mindre overbelastet.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>«CSMA uten CD» — hvilke pakker kommer fram med propageringstid 0,2?</div>
+        <div data-fc-back>
+          <p><strong>Metode:</strong> Tegn tidslinje. En node sender hvis kanalen <em>virker</em> ledig — men signalet bruker 0,2 t.u. på å nå naboene. Pakker som starter innen 0,2 etter en annen → <strong>kollisjon</strong>. Pakker som starter mens naboens transmisjon allerede har nådd dem → utsettes (etter t=5).</p>
+          <p><strong>Felle:</strong> Selv ren CSMA (uten CD) kan kollidere — propageringsforsinkelse er årsaken. Tegn alltid linjene 0,2 lange.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Med fire noder A–B–C–D og ACK i hver retning: hva er max rate fra C til A?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>0,25 meldinger/slot</strong> (én melding hver fjerde slot). Stien er C→B (slot 1), B→A (slot 2), A→B ACK (slot 3), B→C ACK (slot 4). Først da kan C sende neste.</p>
+          <p><strong>Uten ACK:</strong> 0,5 meldinger/slot (C→B, B→A, så kan ny C→B starte → 1 hver 2. slot).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Fire noder A–B–C–D: hva er kombinert rate for <em>A→B og D→C</em> (uten ACK)?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>2 meldinger/slot kombinert</strong> — begge sendinger kan skje samtidig.</p>
+          <p><strong>Hvorfor:</strong> A når bare B, D når bare C. B hører ikke D, C hører ikke A → ingen interferens. Hver flyt klarer 1 melding/slot, totalt 2.</p>
+          <p><strong>Sammenlign:</strong> A→B + C→D gir bare <strong>1 msg/slot</strong>, fordi når C sender hører B også C (B er nabo til C) og kolliderer med As signal. Må veksle.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Klient-server filfordeling: 10 Gbit fil, 100 peers, server 1 Gbps, hver peer 200 Mbps. Minimum tid?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>1000 s</strong>. Formel: <code>D = max(N·F/u_s, F/d_min)</code>.</p>
+          <ul>
+            <li>Server-sending: <code>100 · 10 Gbit / 1 Gbps = 1000 s</code>.</li>
+            <li>Tregeste peer-nedlasting: <code>10 Gbit / 200 Mbps = 50 s</code>.</li>
+          </ul>
+          <p>Maksen er 1000 s — server er flaskehalsen. (Eks 2 Q1.2.5).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar <strong>protokollkjeden</strong> når du kobler PC i Ethernet og sender e-post fra Outlook.</div>
+        <div data-fc-back>
+          <p><strong>Svar (rekkefølge):</strong></p>
+          <ol>
+            <li>Lenkelag opp + <strong>DHCP</strong> (UDP) → får IP, default gateway, DNS-server.</li>
+            <li><strong>ARP</strong> for å finne MAC til default gateway.</li>
+            <li><strong>DNS</strong> (UDP) for å slå opp mail-server.</li>
+            <li><strong>SMTP</strong> (TCP, port 25/587) til NTNU mail-server, som videre bruker SMTP til mottakers domene.</li>
+            <li>Mottaker leser via <strong>HTTPS</strong> (web-mail) eller <strong>IMAP</strong> (klient).</li>
+          </ol>
+          <p><strong>Hvorfor:</strong> Eks 3 hadde dette som 15-poengsoppgave. Husk å nevne lag og protokoll for hvert steg.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Symmetrisk vs offentlig nøkkel — kort forskjell.</div>
+        <div data-fc-back>
+          <p><strong>Symmetrisk:</strong> Én delt hemmelig nøkkel brukes til både kryptering og dekryptering (AES, DES). Rask, men nøkkeldistribusjon er problemet.</p>
+          <p><strong>Offentlig nøkkel:</strong> Nøkkelpar (offentlig + privat). Kryptér med offentlig, dekrypter med privat (RSA). Løser nøkkeldistribusjon, men er ~1000× tregere.</p>
+          <p><strong>I praksis:</strong> Bruk public key for å utveksle en symmetrisk session key (TLS-handshake), så symmetric for selve dataene.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</div>
+</section>
+
+<!-- ============ METODE ============ -->
+<section id="metode">
+<div class="container">
+  <h2>Slik er listen <em>laget</em></h2>
+  <p class="section-intro">Tre tidligere eksamener (Eks 1, Eks 2, Eks 3) ble lest gjennom og krysslest. Tema som dukket opp i to eller tre av settene er markert som «høy frekvens». Ett sett alene er «medium». Eksamen­sinfoen sier at det <em>ikke</em> blir Wireshark-spørsmål denne gangen — den biten er deprioritert.</p>
+
+  <div class="callout callout-blue">
+    <span class="label">Kildemerking</span>
+    <p>Hvert «må kunne»-punkt under viser hvilke eksamener temaet er hentet fra. <code>Eks1·Q1.3.4</code> betyr eksamen 1, oppgave 1.3.4. Filene ligger i <code>eksamen-prep/</code>.</p>
+  </div>
+
+  <div class="legend">
+    <span><span class="freq-pill">Høy</span> 2–3 eksamener</span>
+    <span><span class="freq-pill med">Med</span> 1 eksamen, men sentralt</span>
+    <span><span class="freq-pill lav">Lav</span> Periferi — øv hvis tid</span>
+  </div>
+</div>
+</section>
+
+<!-- ============ TEMA SOM GÅR IGJEN ============ -->
+<section id="gjentar-seg">
+<div class="container">
+  <h2>Tema som <em>går igjen</em></h2>
+  <p class="section-intro">Disse er hentet fra alle tre eksamenene — de utgjør grunnstammen i pensum.</p>
+
+  <table class="mk-table">
+    <thead>
+      <tr><th style="width: 26%">Tema</th><th>Hva som testes</th><th style="width: 22%">Funnet i</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Internett-arkitektur</strong></td><td>«Nuts and bolts» vs tjenesteplattform, network of networks, kapsling, lagdeling</td><td class="src">Eks1·Q1.1.1, Eks1·Q1.1.4, Eks1·Q1.1.6, Eks2·Q1.1.4, Eks3·P2/Q2</td></tr>
+      <tr><td><strong>Forsinkelse og ytelse</strong></td><td>L/R-formel, store-and-forward, (N+P−1)L/R, flaskehals, link-utilisering, FIFO-køforsinkelse</td><td class="src">Eks1·Q1.1.5–9, Eks2·Q1.1.2–5, Eks2·Q1.3.4, Eks3·P2/Q2</td></tr>
+      <tr><td><strong>Pakke- vs linjesvitsj</strong></td><td>Garantier, delay-variasjon, ressursutnyttelse</td><td class="src">Eks2·Q1.1.1</td></tr>
+      <tr><td><strong>UDP vs TCP-tjenester</strong></td><td>Best effort, flow control, congestion control — hva UDP og TCP <em>gjør og ikke gjør</em></td><td class="src">Eks1·Q1.2.1, Eks1·Q1.2.2, Eks2·Q1.2.4, Eks3·P1/Q3, Eks3·P1/Q13</td></tr>
+      <tr><td><strong>Sockets (UDP &amp; TCP)</strong></td><td>SOCK_STREAM/SOCK_DGRAM, accept(), antall sockets ved N klienter</td><td class="src">Eks1·Q1.2.6, Eks1·Q1.2.7, Eks2·Q1.2.3, Eks3·P2/Q4</td></tr>
+      <tr><td><strong>HTTP / web cache</strong></td><td>GET-formål, caching-fordeler, port 80, persistent</td><td class="src">Eks1·Q1.2.3, Eks1·Q1.2.4, Eks2·Q1.2.2</td></tr>
+      <tr><td><strong>HTTP vs SMTP</strong></td><td>Push/pull, port 80 vs 25, persistent connection</td><td class="src">Eks1·Q1.2.5</td></tr>
+      <tr><td><strong>DNS</strong></td><td>UDP/TCP, RR-format, hva klienten får</td><td class="src">Eks2·Q6, Eks3·P1/Q2</td></tr>
+      <tr><td><strong>Internet checksum</strong></td><td>16-bits addisjon med carry-wrap</td><td class="src">Eks1·Q1.2.8</td></tr>
+      <tr><td><strong>TCP cwnd / slow start</strong></td><td>Identifisere intervaller for slow start vs AIMD i graf, flytkontroll-scenario</td><td class="src">Eks1·Q1.2.9, Eks2·Q2</td></tr>
+      <tr><td><strong>Subnetting / CIDR</strong></td><td>Maskeoperasjon, gyldige adresser i /29, antall brukbare verter, broadcast i /21</td><td class="src">Eks1·Q1.3.4, Eks2·Q1.3.1, Eks2·Q4, Eks3·P1/Q5, Eks3·P1/Q12</td></tr>
+      <tr><td><strong>Longest prefix match</strong></td><td>Velge ut-port fra forwarding-tabell</td><td class="src">Eks1·Q1.3.3</td></tr>
+      <tr><td><strong>NAT</strong></td><td>Lese tabell, fylle inn IP/port på utsiden</td><td class="src">Eks1·Q1.3.10</td></tr>
+      <tr><td><strong>ICMP</strong></td><td>Bæres i IP, brukes til feil/diagnose, traceroute</td><td class="src">Eks1·Q1.3.6, Eks2·Q1.3.3</td></tr>
+      <tr><td><strong>DHCP</strong></td><td>UDP, 4-stegs prosess, dynamisk IP + DNS + GW</td><td class="src">Eks2·Q1.3.2, Eks3·P1/Q4(5)</td></tr>
+      <tr><td><strong>IPv4 vs IPv6</strong></td><td>Flow label kun i IPv6, fjernet checksum/options</td><td class="src">Eks1·Q1.3.5</td></tr>
+      <tr><td><strong>Best effort</strong></td><td>Ingen garantier — kryss av alle «ikke garantert»</td><td class="src">Eks1·Q1.3.7</td></tr>
+      <tr><td><strong>Svitsj vs ruter</strong></td><td>Lag 2 vs lag 3, MAC vs IP</td><td class="src">Eks2·Q1.4.1, Eks3·P1/Q4(2,4,7,9)</td></tr>
+      <tr><td><strong>Multiple access (klassif.)</strong></td><td>Channel partitioning vs random access vs taking turns</td><td class="src">Eks3·P1/Q6</td></tr>
+      <tr><td><strong>CSMA tidslinje</strong></td><td>Bestemme hvilke pakker som lykkes ved gitt propageringstid</td><td class="src">Eks1·Q1.4.3, Eks1·Q1.4.4, Eks3·P2/Q7</td></tr>
+      <tr><td><strong>Pure / slotted ALOHA</strong></td><td>Effektivitet (~18% vs ~37%), synkronisering</td><td class="src">Eks1·Q1.4.2, Eks2·Q1.4.5</td></tr>
+      <tr><td><strong>2D-paritet</strong></td><td>Detekter/rett 1-bit, detekter (ofte) 2-bit</td><td class="src">Eks1·Q1.4.5, Eks2·Q1.4.2</td></tr>
+      <tr><td><strong>RTS/CTS, skjult terminal</strong></td><td>Hva CTS gjør, hidden node-problemet</td><td class="src">Eks1·Q1.4.6, Eks2·Q1.4.4</td></tr>
+      <tr><td><strong>4-noder topologi (A–B–C–D)</strong></td><td>Max rate C→A, A→B + D→C, A→B + C→D, og samme med ACK</td><td class="src">Eks1·Q1.4.7, Eks2·Q5</td></tr>
+      <tr><td><strong>SNR / BER / modulasjon</strong></td><td>Lavere SNR → høyere BER, høyere bitrate-modulasjon → høyere BER ved samme SNR</td><td class="src">Eks2·Q1.4.3</td></tr>
+      <tr><td><strong>Sikkerhet — ønskede egenskaper</strong></td><td>Konfidensialitet, integritet, autentisering, operasjonell sikkerhet (ikke «høy båndbredde»)</td><td class="src">Eks1·Q1.4.8, Eks2·Q1.5.1</td></tr>
+      <tr><td><strong>Symmetriske nøkler</strong></td><td>N(N−1)/2 ved N personer parvis</td><td class="src">Eks1·Q1.4.9, Eks2·Q1.5.2</td></tr>
+      <tr><td><strong>Trudy: avlytte/endre/slette/sette inn</strong></td><td>Hvilke handlinger en aktiv angriper kan ta</td><td class="src">Eks1·Q1.4.10, Eks2·Q1.5.5</td></tr>
+      <tr><td><strong>Meldingsintegritet</strong></td><td>Hash vs checksum, hvorfor hash er bedre</td><td class="src">Eks2·Q1.5.3</td></tr>
+      <tr><td><strong>HTTP- vs UDP-streaming</strong></td><td>Brannmur, retransmisjon, ordning</td><td class="src">Eks2·Q1.5.4, Eks3·P1/Q1</td></tr>
+      <tr><td><strong>Cæsar-cipher</strong></td><td>Beskrivelse + kode/dekode med gitt k</td><td class="src">Eks3·P2/Q5</td></tr>
+      <tr><td><strong>Symmetrisk vs offentlig nøkkel</strong></td><td>Én delt vs nøkkelpar — bruk og forskjell</td><td class="src">Eks3·P2/Q6</td></tr>
+      <tr><td><strong>Brannmur</strong></td><td>Hovedformål: blokkere uautorisert tilgang</td><td class="src">Eks3·P1/Q14</td></tr>
+      <tr><td><strong>Stor «protokollkjede»-oppgave</strong></td><td>Fra plug-in → DHCP → DNS → SMTP → IMAP/HTTP. Lag og protokoller per steg</td><td class="src">Eks3·P2/Q3</td></tr>
+    </tbody>
+  </table>
+</div>
+</section>
+
+<!-- ============ MÅ KUNNE ============ -->
+<section id="ma-kunne">
+<div class="container">
+  <h2>Må kunne — <em>punkt for punkt</em></h2>
+  <p class="section-intro">Hvert punkt har: <strong>(1)</strong> hva du må få til, <strong>(2)</strong> hvorfor det testes, og <strong>(3)</strong> hvilke eksamener du finner det i.</p>
+
+  <h3>Kapittel 1 — Intro og ytelse</h3>
+
+  <div class="mk-item">
+    <div class="mk-head">
+      <h3>Ruting vs videresending<span class="freq-pill">Høy</span></h3>
+      <span class="mk-src">Eks2·Q1.3.5 · Eks3·P2/Q1</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Forklare på én setning hver: <em>videresending</em> = lokal handling i én ruter (input-port → output-port via tabell). <em>Ruting</em> = global, distribuert prosess som beregner stiene og fyller tabellen.</p>
+    <div class="mk-why"><strong>Hvorfor:</strong> Klassisk forveksling. Eksamen tester med dropdown / fyll-inn der eneste forskjell er ordenes plassering. Husk: «forwarding er <em>local</em>, routing er <em>global</em>».</div>
+  </div>
+
+  <div class="mk-item">
+    <div class="mk-head">
+      <h3>Beregne ende-til-ende-forsinkelse<span class="freq-pill">Høy</span></h3>
+      <span class="mk-src">Eks1·Q1.1.5, Q1.1.8 · Eks2·Q1.1.2, Q1.1.3, Q1.1.5</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <ul>
+      <li><code>d_trans = L / R</code> per link.</li>
+      <li>Én svitsj store-and-forward: <code>L/R₁ + L/R₂</code>.</li>
+      <li>P pakker, N rutere, samme R, back-to-back: <strong>(N + P − 1) · L/R</strong>.</li>
+      <li>Cut-through (sender etter første X byte): <code>X/R</code> + <code>L/R</code> over resten — pass på enheter.</li>
+      <li>Ende-til-ende inkludert propagering: legg til <code>d_prop</code> per hopp.</li>
+    </ul>
+    <div class="mk-why"><strong>Hvorfor:</strong> Kommer i nesten enhver Del I. Felle: glemme byte→bit (×8), eller blande maks gjennomstrømning med ende-til-ende-forsinkelse.</div>
+  </div>
+
+  <div class="mk-item">
+    <div class="mk-head">
+      <h3>Flaskehals og maks gjennomstrømning<span class="freq-pill">Høy</span></h3>
+      <span class="mk-src">Eks1·Q1.1.7, Q1.1.9</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Identifisere den minste raten på stien. Hvis K TCP-økter deler en lenke med rate R, får hver økt <code>R/K</code> (fair share). Sjekk så om aksesslenken (Rs eller Rc) er lavere — da er <em>den</em> flaskehalsen.</p>
+    <p>Link-utilisering = faktisk rate / linkrate, oppgitt som desimal (0,xx).</p>
+    <div class="mk-why"><strong>Hvorfor:</strong> Eks 1 hadde tre slike rett etter hverandre. Tegn alltid en liten skisse og merk ratene før du regner.</div>
+  </div>
+
+  <h3>Kapittel 2–3 — Applikasjon og transport</h3>
+
+  <div class="mk-item green">
+    <div class="mk-head">
+      <h3>UDP- og TCP-tjenester (kryssliste)<span class="freq-pill">Høy</span></h3>
+      <span class="mk-src">Eks1·Q1.2.1, Q1.2.2 · Eks3·P1/Q13</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>For et «check all that apply»-spørsmål, internaliser denne tabellen:</p>
+    <ul>
+      <li><strong>UDP gir:</strong> Best effort, multipleksing via porter.</li>
+      <li><strong>UDP gir IKKE:</strong> Pålitelighet, flytkontroll, congestion control, throughput-garanti, real-time-garanti.</li>
+      <li><strong>TCP gir:</strong> Pålitelig in-order bytestrøm, flow control, congestion control.</li>
+      <li><strong>TCP gir IKKE:</strong> Throughput-garanti, real-time-garanti.</li>
+    </ul>
+    <div class="mk-why"><strong>Hvorfor:</strong> 6 av 6 alternativer kan markeres feil hvis du ikke er nøye. Husk: <em>throughput-garanti</em> finnes i ingen av dem.</div>
+  </div>
+
+  <div class="mk-item green">
+    <div class="mk-head">
+      <h3>Flow control vs congestion control<span class="freq-pill">Høy</span></h3>
+      <span class="mk-src">Eks2·Q2 · Eks3·P1/Q3</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p><em>Flow control:</em> mellom <strong>avsender og mottaker</strong>. Beskytter mottakers buffer. Styres av <code>rwnd</code>-feltet i ACK.</p>
+    <p><em>Congestion control:</em> mellom <strong>avsender og nettverket</strong>. Beskytter rutere fra overbelastning. Styres av <code>cwnd</code> (slow start, AIMD).</p>
+    <p>Klassisk eksempel-spørsmål: <em>«A sender 1 Gbps inn, B leser 600 Mbps ut — hva skjer?»</em> Svar: rwnd → 0, sender stopper. Det er <em>flow control</em>, ikke congestion.</p>
+    <div class="mk-why"><strong>Hvorfor:</strong> Eks 2 hadde dette som åpen 6-poengsoppgave. Eks 3 hadde sann/usann «de er det samme» (svar: nei).</div>
+  </div>
+
+  <div class="mk-item green">
+    <div class="mk-head">
+      <h3>Sockets — antall og typer<span class="freq-pill">Høy</span></h3>
+      <span class="mk-src">Eks1·Q1.2.6, Q1.2.7 · Eks2·Q1.2.3 · Eks3·P2/Q4</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <ul>
+      <li><strong>UDP:</strong> <code>SOCK_DGRAM</code>. Ingen <code>accept()</code>. Én socket på server kan ta i mot fra mange klienter — applikasjonen må selv sette dest-IP/port på hver send.</li>
+      <li><strong>TCP:</strong> <code>SOCK_STREAM</code>. Server har én lyttende socket; <code>accept()</code> skaper en ny server-socket per klient.</li>
+      <li><strong>5 klienter på TCP-port 80:</strong> 1 lyttende + 5 forbindelses-sockets = <strong>6</strong>. Hver forbindelse identifiseres av 4-tuple.</li>
+      <li><strong>3 klienter sender UDP til samme server-port:</strong> Server trenger bare <strong>1</strong> socket.</li>
+    </ul>
+    <div class="mk-why"><strong>Hvorfor:</strong> Eks 3 hadde dette som åpen 5-poengsoppgave; Eks 1 hadde flervalg på samme tema.</div>
+  </div>
+
+  <div class="mk-item green">
+    <div class="mk-head">
+      <h3>Klient-server filfordeling<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks2·Q1.2.5</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Minimum tid for å distribuere fil av størrelse <code>F</code> til <code>N</code> klienter:</p>
+    <p style="text-align:center; font-family: var(--mono); font-size: 16px;"><code>D<sub>cs</sub> = max(N·F / u<sub>s</sub>, &nbsp; F / d<sub>min</sub>)</code></p>
+    <ul>
+      <li><code>u<sub>s</sub></code>: server-opplastningsrate.</li>
+      <li><code>d<sub>min</sub></code>: minste nedlastningsrate blant klientene.</li>
+      <li>Eksempel: F=10 Gbit, N=100, u<sub>s</sub>=1 Gbps, d<sub>i</sub>=200 Mbps. → max(100·10/1, 10/0,2) = max(1000, 50) = <strong>1000 s</strong>.</li>
+    </ul>
+    <div class="mk-why"><strong>Hvorfor:</strong> Server er som regel flaskehalsen i klient-server. P2P-formelen er mer kompleks (kommer sjelden), så fokuser på client-server.</div>
+  </div>
+
+  <div class="mk-item">
+    <div class="mk-head">
+      <h3>HTTP, GET og web-cache<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks1·Q1.2.3, Q1.2.4, Q1.2.5 · Eks2·Q1.2.2</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <ul>
+      <li>HTTP GET = klient ber server om et objekt. Port 80.</li>
+      <li>Web-cache: lavere forsinkelse for klient, lavere båndbredde inn til institusjon, og lavere snitt-forsinkelse også for ikke-cachede objekter (mindre belastning på opplinken).</li>
+      <li>HTTP-only egenskaper vs SMTP: client pull, port 80, persistent. SMTP: client push (mellom mailservere), port 25, CRLF.CRLF for slutt.</li>
+    </ul>
+  </div>
+
+  <div class="mk-item">
+    <div class="mk-head">
+      <h3>Internet checksum<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks1·Q1.2.8</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Steg: (1) summer 16-bits ord, (2) carry tilbake (carry-wrap), (3) ta 1's complement.</p>
+    <div class="mk-why"><strong>Hvorfor:</strong> Mottaker validerer ved å summere alt + checksum og sjekke at alle bits = 1.</div>
+  </div>
+
+  <div class="mk-item">
+    <div class="mk-head">
+      <h3>TCP cwnd-graf — slow start vs AIMD<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks1·Q1.2.9</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Slow start: cwnd dobles per RTT (eksponensiell). AIMD: cwnd øker med 1 MSS per RTT (lineær). Etter timeout: cwnd → 1, slow start fra start. Etter triple dup ACK: cwnd halveres, fortsett AIMD (fast recovery).</p>
+  </div>
+
+  <div class="mk-item">
+    <div class="mk-head">
+      <h3>DNS-format og transport<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks2·Q6 · Eks3·P1/Q2</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>RR = (Name, Value, Type, TTL). Type A → IPv4, NS → autoritativ navneserver, CNAME → alias, MX → mailserver. Klienten kan få: IP-adresse, mail-server, alias, autoritative servere, TTL.</p>
+    <p>Transport: UDP (oftest, port 53) — kan også bruke TCP for store svar / sone­overføring.</p>
+  </div>
+
+  <h3>Kapittel 4–5 — Nettverkslag</h3>
+
+  <div class="mk-item blue">
+    <div class="mk-head">
+      <h3>Subnetting til punkt og prikke<span class="freq-pill">Høy</span></h3>
+      <span class="mk-src">Eks1·Q1.3.4 · Eks2·Q1.3.1, Q4 · Eks3·P1/Q5, P1/Q12</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <ul>
+      <li><strong>Subnett-adresse:</strong> IP AND maske (binær).</li>
+      <li><strong>Brukbare verter i /x:</strong> 2^(32−x) − 2 (minus nett- og broadcast-adresse).</li>
+      <li><strong>Splitt /22 i ≥12 subnett:</strong> trenger 4 nett-bits → /26, gir 2^6−2 = 62 verter per subnett.</li>
+      <li><strong>Broadcast for /21:</strong> sett alle vertsbits = 1, f.eks. 172.18.16.0/21 → 172.18.23.255.</li>
+      <li><strong>Adresser som <em>ikke</em> kan brukes i et /29:</strong> nettadresse, broadcast, adresser utenfor range, adresser med feil prefiks.</li>
+    </ul>
+    <div class="mk-why"><strong>Hvorfor:</strong> Subnetting kommer i 100 % av disse eksamenene. Tren med /28, /29, /30 i hodet — det er det vanligste.</div>
+  </div>
+
+  <div class="mk-item blue">
+    <div class="mk-head">
+      <h3>Longest prefix matching<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks1·Q1.3.3</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>For hver dest-IP: finn alle prefiks i tabellen som matcher → velg det <em>lengste</em>. Det gir ut-porten.</p>
+    <p>Tips: konverter dest-IP og prefiks til binær side om side, sammenlign topp-bits.</p>
+  </div>
+
+  <div class="mk-item blue">
+    <div class="mk-head">
+      <h3>NAT-tabell-utfylling<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks1·Q1.3.10</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>På utgående pakke (LAN → WAN): kilde-IP/port → byttes til ruterens offentlige IP og NAT-port. Dest-IP/port: uendret.</p>
+    <p>På innkommende pakke (WAN → LAN): omvendt — ruteren slår opp NAT-port i tabell og bytter dest til intern IP/port.</p>
+  </div>
+
+  <div class="mk-item blue">
+    <div class="mk-head">
+      <h3>ICMP-fakta (sann/usann)<span class="freq-pill">Høy</span></h3>
+      <span class="mk-src">Eks1·Q1.3.6 · Eks2·Q1.3.3</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <ul>
+      <li>Sann: brukt av host og rutere for nettverksnivå-info.</li>
+      <li>Sann: bæres direkte i IP-datagram (ikke i UDP/TCP, ikke port 86).</li>
+      <li>Sann: TTL-expired brukes av traceroute.</li>
+      <li>Usann: «ICMP er en transportprotokoll».</li>
+    </ul>
+  </div>
+
+  <div class="mk-item blue">
+    <div class="mk-head">
+      <h3>DHCP-fakta<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks2·Q1.3.2 · Eks3·P1/Q4(5)</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>UDP, ikke TCP. 4 steg (Discover/Offer/Request/ACK). Tildeler IP, subnettmaske, gateway, DNS. Brukes <em>ikke</em> til å rute datapakker.</p>
+  </div>
+
+  <div class="mk-item blue">
+    <div class="mk-head">
+      <h3>IPv4 vs IPv6 — hva er nytt og hva er fjernet<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks1·Q1.3.5</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <ul>
+      <li>Nytt i IPv6: <em>flow label</em>, 128-bits adresser.</li>
+      <li>Fjernet: header checksum, header length, fragmenteringsfelt, options.</li>
+      <li>I begge: TTL/hop limit, version, source/dest, upper-layer-protocol/next-header.</li>
+    </ul>
+  </div>
+
+  <div class="mk-item blue">
+    <div class="mk-head">
+      <h3>Best effort — hva som <em>ikke</em> garanteres<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks1·Q1.3.7</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Ingen garantert levering, ingen leveringstid, ingen rekkefølge, ingen minimumsbåndbredde. Markér «no guarantees at all» når den er listet.</p>
+  </div>
+
+  <div class="mk-item blue">
+    <div class="mk-head">
+      <h3>FIFO-køforsinkelse<span class="freq-pill lav">Lav</span></h3>
+      <span class="mk-src">Eks2·Q1.3.4</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Køforsinkelse = (start-tid for transmisjon) − (ankomsttid). Regn snitt over de aktuelle pakkene.</p>
+  </div>
+
+  <h3>Kapittel 6–7 — Lenkelag og trådløst</h3>
+
+  <div class="mk-item ochre">
+    <div class="mk-head">
+      <h3>Svitsj vs ruter<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks2·Q1.4.1 · Eks3·P1/Q4(2,4,7,9)</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Svitsj: lag 2, MAC, lokal LAN. Ruter: lag 3, IP, mellom nett. ARP brukes til å finne MAC for første hopp.</p>
+    <p>Sant/usant-feller: «svitsj kobler nett, ruter kobler enheter» → <em>feil</em>. «Aksessrutere bruker hele IP-adressen» → <em>sant</em>. «Kjernrutere bruker bare nett-delen» → <em>sant</em>.</p>
+  </div>
+
+  <div class="mk-item ochre">
+    <div class="mk-head">
+      <h3>CSMA-tidslinje<span class="freq-pill">Høy</span></h3>
+      <span class="mk-src">Eks1·Q1.4.3, Q1.4.4 · Eks3·P2/Q7</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <ol>
+      <li>Tegn ankomster på en tidslinje.</li>
+      <li>For hver pakke, sjekk om kanalen <em>oppfattes</em> ledig (signal nådd hit).</li>
+      <li>Med propageringstid 0,2 t.u.: pakker som starter innen 0,2 etter en annen → <strong>kollisjon</strong>.</li>
+      <li>CSMA uten CD: kolliderende pakker «brenner» hele slot. CSMA/CD: stopp ved deteksjon (men det går 0,2 ekstra før alle hører kollisjonen).</li>
+      <li>Pakker som senses busy → utsettes til etter t=5 (regneoppgave).</li>
+    </ol>
+    <div class="mk-why"><strong>Hvorfor:</strong> Eksakt samme oppgaveform, bare ulike t-verdier, gjentas mellom årene. Få den i ryggmargen.</div>
+  </div>
+
+  <div class="mk-item ochre">
+    <div class="mk-head">
+      <h3>Fire-noder topologi: max rate-oppgaven<span class="freq-pill">Høy</span></h3>
+      <span class="mk-src">Eks1·Q1.4.7 · Eks2·Q5</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Topologi A — B — C — D der bare nabonoder hører hverandre. Hør-relasjonen: A→{B}, B→{A,C}, C→{B,D}, D→{C}. Lær disse fire svarene utenat:</p>
+    <ul>
+      <li><strong>C → A (uten ACK):</strong> <strong>0,5 msg/slot</strong> — relé via B; C→B og B→A i to slot, så ny C→B kan starte ⇒ 1 melding hver 2. slot.</li>
+      <li><strong>A→B + D→C (uten ACK):</strong> <strong>2 msg/slot kombinert</strong> — begge kan sende samtidig. B hører A (men ikke D, fordi D bare når C). C hører D (men ikke A, fordi A bare når B). Ingen interferens.</li>
+      <li><strong>A→B + C→D (uten ACK):</strong> <strong>1 msg/slot kombinert</strong> — kan ikke sendes samtidig: når C sender, hører <em>B</em> også C (B er i Cs rekkevidde) og kolliderer med A→B. Må veksle, så hver flyt får 0,5 og total = 1.</li>
+      <li><strong>C → A med ACK:</strong> <strong>0,25 msg/slot</strong> — C→B, B→A, A→B ack, B→C ack. 4 slot per ende-til-ende melding.</li>
+      <li><strong>Generelt med ACK:</strong> halverer ratene fra «uten ACK»-tilfellene over.</li>
+    </ul>
+    <div class="mk-why"><strong>Hvorfor:</strong> 12 poeng på Eks 2. Tegn topologien og tell slot — sjelden poeng for «riktig svar uten begrunnelse».</div>
+  </div>
+
+  <div class="mk-item ochre">
+    <div class="mk-head">
+      <h3>Pure / slotted ALOHA-effektivitet<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks1·Q1.4.2 · Eks2·Q1.4.5</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Pure ALOHA: maks ~18 % (1/(2e)). Slotted: maks ~37 % (1/e). Slotted krever synkroniserte tidsluker — pakker starter bare på slot-grenser.</p>
+  </div>
+
+  <div class="mk-item ochre">
+    <div class="mk-head">
+      <h3>2D-paritet<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks1·Q1.4.5 · Eks2·Q1.4.2</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Detekter <em>og</em> rett 1-bit feil. Detekter (men ikke rett) mange 2-bit feil — men ikke alle. Even parity: legg til en bit slik at antall 1-ere er like.</p>
+  </div>
+
+  <div class="mk-item ochre">
+    <div class="mk-head">
+      <h3>RTS/CTS &amp; skjult terminal<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks1·Q1.4.6 · Eks2·Q1.4.4</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>RTS sendes av sender, CTS av mottaker. Naboer som hører CTS holder seg stille. Løser <em>skjult terminal</em>: når to sendere ikke hører hverandre men deler mottaker.</p>
+    <p>Sant: hidden node-problemet eksisterer fortsatt fysisk; RTS/CTS reduserer effekten. Usant: «løser exposed node-problemet helt».</p>
+  </div>
+
+  <div class="mk-item ochre">
+    <div class="mk-head">
+      <h3>SNR / BER / modulasjon<span class="freq-pill lav">Lav</span></h3>
+      <span class="mk-src">Eks2·Q1.4.3</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Lavere SNR → høyere BER (gitt modulasjon). Ved samme SNR: høyere bitrate-modulasjon → høyere BER (mer informasjon per symbol = mer sårbart for støy).</p>
+  </div>
+
+  <h3>Kapittel 8–9 — Sikkerhet og multimedia</h3>
+
+  <div class="mk-item">
+    <div class="mk-head">
+      <h3>Ønskede sikkerhetsegenskaper<span class="freq-pill">Høy</span></h3>
+      <span class="mk-src">Eks1·Q1.4.8 · Eks2·Q1.5.1</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p><em>Konfidensialitet</em>, <em>integritet</em> (meldingen ikke endret), <em>autentisering</em>, <em>operasjonell sikkerhet</em>.</p>
+    <p>Ikke kryss av: «høy båndbredde» eller «nettverksstabilitet» — det er ikke sikkerhetsegenskaper.</p>
+  </div>
+
+  <div class="mk-item">
+    <div class="mk-head">
+      <h3>Antall symmetriske nøkler — N(N−1)/2<span class="freq-pill">Høy</span></h3>
+      <span class="mk-src">Eks1·Q1.4.9 · Eks2·Q1.5.2</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>N personer parvis: <code>N(N−1)/2</code> unike nøkler.</p>
+    <div class="mk-why"><strong>Hvorfor:</strong> Spørsmålet er nesten ordrett kopi mellom Eks 1 og Eks 2. Pugg formelen.</div>
+  </div>
+
+  <div class="mk-item">
+    <div class="mk-head">
+      <h3>Trudy: hva angriperen kan gjøre<span class="freq-pill">Høy</span></h3>
+      <span class="mk-src">Eks1·Q1.4.10 · Eks2·Q1.5.5</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Avlytte (sniffe) kontroll- og data-meldinger; ta opp; modifisere; sette inn nye; slette. <em>Alle</em> alternativene som lister angrepshandlinger er som regel sanne.</p>
+  </div>
+
+  <div class="mk-item">
+    <div class="mk-head">
+      <h3>Meldingsintegritet (hash vs checksum)<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks2·Q1.5.3</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Meldingsintegritet = mottaker kan oppdage at meldingen er endret. Både hash og checksum kan brukes, men hash er kryptografisk sterkere (vanskelig å konstruere kollisjoner). Trenger <em>ikke</em> være TCP — kan brukes over UDP.</p>
+  </div>
+
+  <div class="mk-item">
+    <div class="mk-head">
+      <h3>HTTP-streaming over UDP-streaming<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks2·Q1.5.4 · Eks3·P1/Q1</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <ul>
+      <li>Brannmurer slipper ofte HTTP/TCP, blokkerer UDP.</li>
+      <li>UDP gir høyere feilrate (ingen retransmisjon, ingen ordning).</li>
+      <li>HTTP/TCP gjenbruker eksisterende infrastruktur (CDN, caching, lastbalansering).</li>
+    </ul>
+    <p>Multimedia: distribuere innhold geografisk via CDN er bedre enn én sentral server.</p>
+  </div>
+
+  <div class="mk-item">
+    <div class="mk-head">
+      <h3>Cæsar-cipher med gitt k<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks3·P2/Q5</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <ol>
+      <li>Beskriv: hver bokstav skiftes <em>k</em> plasser i alfabetet (mod 26).</li>
+      <li>Kode med k=7: «Protect your information» → vis utregning bokstav for bokstav.</li>
+      <li>Dekode: trekk fra k (eller skift 26−k forover).</li>
+    </ol>
+    <div class="mk-why"><strong>Hvorfor:</strong> 15 poeng på Eks 3. Skriv alfabetet på arket og vis utregningen — det gir delpoeng selv ved sluttfeil.</div>
+  </div>
+
+  <div class="mk-item">
+    <div class="mk-head">
+      <h3>Symmetrisk vs offentlig nøkkel<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks3·P2/Q6</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p><em>Symmetrisk:</em> én nøkkel for begge retninger; rask; problem = nøkkel­distribusjon.</p>
+    <p><em>Offentlig nøkkel:</em> nøkkelpar (offentlig/privat); kryptér med offentlig, dekrypter med privat; løser distribusjon, men er tregere.</p>
+    <p>I praksis: PKI brukes for å utveksle en symmetrisk session key (slik TLS gjør).</p>
+  </div>
+
+  <div class="mk-item">
+    <div class="mk-head">
+      <h3>Brannmur — hovedformål<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks3·P1/Q14</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Blokkere uautorisert tilgang. <em>Ikke</em> «kryptere data» (det er TLS/IPsec). <em>Ikke</em> «overvåke ytelse» (det er andre verktøy).</p>
+  </div>
+
+  <h3>Den «store oppgaven» — protokollkjede</h3>
+
+  <div class="mk-item green">
+    <div class="mk-head">
+      <h3>Fra plug-in til mottatt e-post<span class="freq-pill">Høy</span></h3>
+      <span class="mk-src">Eks3·P2/Q3 (15 poeng)</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <ol>
+      <li><strong>Lenkelaget opp</strong> — Ethernet-link aktiveres.</li>
+      <li><strong>DHCP</strong> (UDP) — får IP, subnett-maske, default gateway, DNS-server.</li>
+      <li><strong>ARP</strong> — finne MAC til default gateway.</li>
+      <li><strong>DNS</strong> (UDP, kan TCP) — slå opp IP til mottakers mail-server.</li>
+      <li><strong>TCP-handshake</strong> til SMTP-server (port 25/587).</li>
+      <li><strong>SMTP</strong> — Outlook → NTNU mail-server → mottakers domene mail-server.</li>
+      <li><strong>Mottaker</strong> leser via <strong>HTTPS</strong> (web-mail) eller <strong>IMAP</strong> (klient).</li>
+    </ol>
+    <div class="mk-why"><strong>Hvorfor:</strong> Tester at du kobler protokoller til lag og ser helheten. Nevn alltid laget hver protokoll tilhører — det gir poeng.</div>
+  </div>
+
+  <h3>Drag-and-drop / koble-typer (Del I)</h3>
+
+  <div class="mk-item ochre">
+    <div class="mk-head">
+      <h3>Drag-and-drop minimum<span class="freq-pill lav">Lav</span></h3>
+      <span class="mk-src">Eks3·P1/Q8, Q9</span>
+    </div>
+    <div class="mk-must">Må kunne (rask repetisjon)</div>
+    <p><strong>Header-rekkefølge i ramme:</strong> ytterst link (MAC) → nett (IP) → transport (TCP/UDP) → app-data innerst. Tilsvarer kapsling lag for lag.</p>
+    <p><strong>Aksessnett ↔ hastighet:</strong> Ethernet kablet 100 Mbps–1 Gbps · 4G LTE trådløst titalls Mbps · fiber kablet opptil hundrevis Mbps–Gbps · kabel kablet titalls Mbps.</p>
+  </div>
+
+  <div class="mk-item ochre">
+    <div class="mk-head">
+      <h3>Multiple access ↔ klasse<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks3·P1/Q6</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <ul>
+      <li><strong>Channel partitioning:</strong> CDMA, FDMA, TDM.</li>
+      <li><strong>Random access:</strong> Slotted ALOHA, Ethernet CSMA/CD.</li>
+      <li><strong>Taking turns:</strong> Bluetooth, FDDI, token ring.</li>
+    </ul>
+  </div>
+
+  <div class="mk-item ochre">
+    <div class="mk-head">
+      <h3>TCP-klient socket-kall<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks3·P1/Q10</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <ol>
+      <li><strong>Lag socket:</strong> <code>socket(AF_INET, SOCK_STREAM)</code>.</li>
+      <li><strong>Identifiser server:</strong> <code>connect()</code> binder socket til server-IP/port.</li>
+      <li><strong>Send:</strong> trenger ikke spesifisere dest etter <code>connect()</code> — bruk samme socket.</li>
+    </ol>
+    <p>UDP-varianten: <code>SOCK_DGRAM</code>, ingen connect, applikasjonen må sette dest i hver send.</p>
+  </div>
+</div>
+</section>
+
+<!-- ============ FORMLER ============ -->
+<section id="formler">
+<div class="container">
+  <div class="section-badge">Formler &amp; one-liners</div>
+  <h2>Tall og <em>formler</em> du må ha klart</h2>
+  <p class="section-intro">Skriv disse på arket før du blar opp i selve oppgavene — så har du dem tilgjengelig.</p>
+
+  <table class="mk-table">
+    <thead>
+      <tr><th style="width: 40%">Hva</th><th>Formel / svar</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Overføringsforsinkelse (én lenke)</td><td><code>L / R</code></td></tr>
+      <tr><td>Store-and-forward over <em>N</em> hopp, samme R</td><td><code>N · L / R</code></td></tr>
+      <tr><td>Pipelining: <em>P</em> pakker, <em>N</em> rutere, samme R</td><td><strong><code>(N + P − 1) · L / R</code></strong></td></tr>
+      <tr><td>Brukbare verter i et /<em>x</em>-subnett</td><td><code>2<sup>(32−x)</sup> − 2</code></td></tr>
+      <tr><td>Symmetriske nøkler, <em>N</em> personer parvis</td><td><strong><code>N(N−1)/2</code></strong></td></tr>
+      <tr><td>Offentlig-nøkkel-par for <em>N</em> personer</td><td><code>N</code> par (<code>2N</code> nøkler totalt)</td></tr>
+      <tr><td>Slotted ALOHA maks effektivitet</td><td><code>1/e ≈ 0,37</code> (~37 %)</td></tr>
+      <tr><td>Pure ALOHA maks effektivitet</td><td><code>1/(2e) ≈ 0,18</code> (~18 %)</td></tr>
+      <tr><td>TCP-sockets på server med <em>K</em> aktive forbindelser</td><td><code>K + 1</code> (1 lyttende + K aktive)</td></tr>
+      <tr><td>Klient-server filfordeling, min. tid</td><td><code>max(N·F/u<sub>s</sub>, &nbsp; F/d<sub>min</sub>)</code></td></tr>
+      <tr><td>HTTP / SMTP / DNS — porter</td><td><code>80</code> / <code>25</code> (også 587) / <code>53</code></td></tr>
+      <tr><td>DHCP — porter (server / klient)</td><td><code>67</code> / <code>68</code></td></tr>
+      <tr><td>4-noder C→A uten / med ACK</td><td><strong>0,5</strong> / <strong>0,25</strong> msg/slot</td></tr>
+      <tr><td>4-noder A→B + D→C kombinert</td><td><strong>2</strong> msg/slot</td></tr>
+      <tr><td>4-noder A→B + C→D kombinert</td><td><strong>1</strong> msg/slot</td></tr>
+    </tbody>
+  </table>
+</div>
+</section>
+
+<!-- ============ SJEKKLISTE ============ -->
+<section id="sjekkliste">
+<div class="container">
+  <div class="section-badge">15-min sjekkliste</div>
+  <h2>Rett før du går <em>inn</em></h2>
+  <p class="section-intro">Hvis du bare har et kvarter igjen — pugg disse.</p>
+
+  <ol class="checklist">
+    <li><strong>Forsinkelser:</strong> <code>d_trans = L/R</code>; én svitsj S&amp;F = <code>L/R₁ + L/R₂</code>; P pakker, N rutere = <code>(N+P−1)·L/R</code>. Husk byte → bit.</li>
+    <li><strong>UDP vs TCP:</strong> UDP = best effort + porter, ingenting mer. TCP = pålitelig + flow control + congestion control. <em>Ingen</em> har throughput-garanti eller real-time.</li>
+    <li><strong>Flow vs congestion:</strong> flow = mottakers buffer (rwnd). Congestion = nettverkets kapasitet (cwnd). Ulike problemer.</li>
+    <li><strong>Ruting vs forwarding:</strong> ruting = global (finne stier). Forwarding = lokal (én ruter, tabell-oppslag).</li>
+    <li><strong>Subnetting:</strong> IP AND maske → nett-adresse. Brukbare verter = 2^(32−x) − 2.</li>
+    <li><strong>Longest prefix:</strong> velg lengste matchende prefiks i tabell.</li>
+    <li><strong>NAT:</strong> bytter <em>kilde</em> IP/port på vei ut; uendret dest. Tabell-oppslag på vei inn.</li>
+    <li><strong>ICMP:</strong> i IP, brukt til feil/diagnose, traceroute via TTL. Ikke transport.</li>
+    <li><strong>DHCP:</strong> UDP, 4 steg, gir IP+maske+GW+DNS.</li>
+    <li><strong>IPv6 unik ting:</strong> flow label.</li>
+    <li><strong>CSMA-tidslinje:</strong> propagering 0,2 → kollisjoner mellom pakker som starter < 0,2 fra hverandre.</li>
+    <li><strong>4-noder A–B–C–D:</strong> C→A = 0,5 (uten ACK), 0,25 (med ACK). A→B + D→C = <strong>2</strong>. A→B + C→D = <strong>1</strong>.</li>
+    <li><strong>Klient-server filfordeling:</strong> <code>max(N·F/u<sub>s</sub>, F/d<sub>min</sub>)</code> — server er nesten alltid flaskehals.</li>
+    <li><strong>Pure ALOHA:</strong> 18 %. Slotted: 37 %. Slotted krever synk.</li>
+    <li><strong>Sikkerhet:</strong> konfidensialitet, integritet, autentisering, opsec — <em>ikke</em> båndbredde.</li>
+    <li><strong>Symmetriske nøkler:</strong> <code>N(N−1)/2</code>.</li>
+    <li><strong>Brannmur:</strong> blokkere uautorisert tilgang.</li>
+    <li><strong>Cæsar k=7:</strong> hver bokstav 7 plasser fram, mod 26. Vis utregningen.</li>
+    <li><strong>Protokollkjede:</strong> Ethernet → DHCP → ARP → DNS → SMTP → IMAP/HTTPS. Lag-merking gir poeng.</li>
+  </ol>
+
+  <div class="callout callout-green">
+    <span class="label">Eksamensinfo</span>
+    <p>Det blir <strong>ikke</strong> Wireshark-spørsmål denne eksamen (jf. <code>eks_info.md</code>). Bruk derfor ikke tid på SSL-spor­tolking — prioriter alt over.</p>
+  </div>
+</div>
+</section>
+
+</main>
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Vår 2026</p>
+  </div>
+</footer>
+<script src="../chat-widget.js"></script>
+<script src="../nav-search.js"></script>
+<script src="../flashcards.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>
