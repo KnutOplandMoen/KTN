@@ -313,10 +313,10 @@
     <div class="exam-q__body">
       <p class="q-text">I en distance-vector-rutingalgoritme: hva er årsaken til "count-to-infinity"-problemet?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Det finnes for mange rutere i nettverket</li>
-        <li><span class="opt-label">B</span> Etter at en link bryter, kan rutere annonsere lave kostnader til hverandre basert på utdatert informasjon, og kostnaden vokser sakte uten en konvergens</li>
-        <li><span class="opt-label">C</span> Algoritmen bruker uendelig store tall som en del av Bellman-Ford-iterasjonen</li>
-        <li><span class="opt-label">D</span> TCP-pakker kan ikke bære distance-vector-meldinger</li>
+        <li><span class="opt-label">A</span> Antallet rutere i nettet overgår en hard grense satt av Bellman-Ford-algoritmen</li>
+        <li><span class="opt-label">B</span> Når en link bryter, kan rutere annonsere utdaterte lave kostnader til hverandre, og kostnaden vokser sakte uten konvergens</li>
+        <li><span class="opt-label">C</span> Algoritmen krever at hver ruter holder en uendelig stor tabell over alle mulige destinasjoner</li>
+        <li><span class="opt-label">D</span> Distance-vector-meldinger fraktes over TCP, og overflyt i sekvensnumrene gir uendelig venting</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -367,10 +367,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er den viktigste forskjellen mellom en svitsj (Layer 2) og en ruter (Layer 3)?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Svitsjer er raskere fordi de er hardware, rutere er alltid software</li>
-        <li><span class="opt-label">B</span> Svitsjer videresender basert på MAC-adresser innenfor ett LAN; rutere videresender basert på IP-adresser mellom ulike subnett</li>
-        <li><span class="opt-label">C</span> Svitsjer dropper alltid broadcast-trafikk</li>
-        <li><span class="opt-label">D</span> Rutere bruker ARP, mens svitsjer bruker DNS</li>
+        <li><span class="opt-label">A</span> Svitsjer er alltid implementert i hardware, mens rutere alltid er ren software på en CPU</li>
+        <li><span class="opt-label">B</span> Svitsjer videresender på MAC-adresser innenfor ett LAN; rutere videresender på IP mellom subnett</li>
+        <li><span class="opt-label">C</span> Svitsjer dropper all broadcast-trafikk for å hindre løkker, mens rutere slipper den gjennom</li>
+        <li><span class="opt-label">D</span> Rutere bruker ARP for adresseoppslag, mens svitsjer bruker DNS for det samme formålet</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -395,10 +395,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hvilken påstand om signalstyrke i et trådløst 802.11-nettverk er riktig?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Signalstyrken faller eksakt lineært med avstanden</li>
-        <li><span class="opt-label">B</span> Signalstyrken faller med (minst) kvadratet av avstanden i fritt rom — i bygninger ofte enda raskere på grunn av hindringer</li>
-        <li><span class="opt-label">C</span> Signalstyrken er konstant så lenge man er innenfor BSS-en</li>
-        <li><span class="opt-label">D</span> Signalstyrken faller raskere ved lavere frekvenser</li>
+        <li><span class="opt-label">A</span> Signalstyrken faller eksakt lineært med avstanden fra aksesspunktet, uavhengig av miljø</li>
+        <li><span class="opt-label">B</span> Signalstyrken faller minst med kvadratet av avstanden i fritt rom, og raskere i bygninger</li>
+        <li><span class="opt-label">C</span> Signalstyrken er praktisk talt konstant så lenge stasjonen er innenfor sitt eget BSS-område</li>
+        <li><span class="opt-label">D</span> Signalstyrken faller vesentlig raskere ved lavere frekvenser enn ved høyere frekvenser</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>

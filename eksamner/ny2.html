@@ -127,10 +127,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hvilken påstand om HTTP/1.1 med <strong>persistent connections</strong> og <strong>pipelining</strong> er riktig?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Hver enkelt objektnedlasting krever en ny TCP-handshake</li>
-        <li><span class="opt-label">B</span> Klienten kan sende flere forespørsler etter hverandre uten å vente på svar mellom hver</li>
-        <li><span class="opt-label">C</span> Server og klient bruker UDP i stedet for TCP for å redusere latency</li>
-        <li><span class="opt-label">D</span> HTTP/1.1 krever én separat TCP-forbindelse per HTTP-objekt</li>
+        <li><span class="opt-label">A</span> Hver objektnedlasting krever en ny TCP-handshake før dataoverføring</li>
+        <li><span class="opt-label">B</span> Klienten kan sende flere forespørsler i strøm uten å vente på svar mellom hver</li>
+        <li><span class="opt-label">C</span> Server og klient bytter til UDP for å redusere latency under sidehenting</li>
+        <li><span class="opt-label">D</span> Det kreves én separat TCP-forbindelse per HTTP-objekt som hentes</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -208,10 +208,10 @@
     <div class="exam-q__body">
       <p class="q-text">I TCP «classic» metningskontroll: hva skjer med <code>cwnd</code> (congestion window) når senderen er i <em>slow start</em>-fasen og mottar én ACK?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> cwnd halveres</li>
-        <li><span class="opt-label">B</span> cwnd økes med 1 MSS (effektivt fordobling per RTT)</li>
-        <li><span class="opt-label">C</span> cwnd økes med 1 MSS per RTT</li>
-        <li><span class="opt-label">D</span> cwnd holdes konstant</li>
+        <li><span class="opt-label">A</span> cwnd halveres umiddelbart, som ved tap</li>
+        <li><span class="opt-label">B</span> cwnd økes med 1 MSS per ACK (fordobling per RTT)</li>
+        <li><span class="opt-label">C</span> cwnd økes med 1 MSS per RTT (lineær vekst)</li>
+        <li><span class="opt-label">D</span> cwnd holdes konstant inntil neste timeout</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -371,10 +371,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hvorfor brukes CSMA/CA (Collision Avoidance) i 802.11 WiFi i stedet for CSMA/CD (Collision Detection) som i Ethernet?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> WiFi er kryptert og kan ikke ha kollisjoner</li>
-        <li><span class="opt-label">B</span> WiFi-stasjoner kan ikke samtidig sende og lytte (half-duplex), og signalet er sterkest hos senderen — kollisjoner kan derfor ikke pålitelig detekteres mens man sender</li>
-        <li><span class="opt-label">C</span> WiFi har høyere båndbredde, så kollisjoner skjer aldri</li>
-        <li><span class="opt-label">D</span> CSMA/CD er bare lov å bruke i kabelnettverk på grunn av juridiske begrensninger</li>
+        <li><span class="opt-label">A</span> WiFi krypterer alle rammer på lenkelaget, og kollisjoner kan dermed ikke oppstå</li>
+        <li><span class="opt-label">B</span> WiFi-stasjoner er half-duplex og senderens eget signal overdøver mottakelsen — kollisjoner kan ikke detekteres mens man sender</li>
+        <li><span class="opt-label">C</span> WiFi har vesentlig høyere båndbredde enn Ethernet, så kollisjoner blir statistisk umulige</li>
+        <li><span class="opt-label">D</span> CSMA/CD er reservert for kabelnettverk gjennom juridiske og regulatoriske krav fra ITU</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -399,10 +399,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er hovedformålet med et X.509-sertifikat utstedt av en Certificate Authority (CA) i TLS?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Å kryptere all trafikk mellom klient og server</li>
-        <li><span class="opt-label">B</span> Å garantere at en bestemt offentlig nøkkel virkelig tilhører den entiteten (f.eks. domenenavnet) den hevder å tilhøre</li>
-        <li><span class="opt-label">C</span> Å lagre passord trygt på serveren</li>
-        <li><span class="opt-label">D</span> Å forkorte TLS-handshakens varighet</li>
+        <li><span class="opt-label">A</span> Å kryptere all trafikk som utveksles mellom klienten og serveren</li>
+        <li><span class="opt-label">B</span> Å bekrefte at en offentlig nøkkel virkelig tilhører entiteten (f.eks. domenet) som oppgis</li>
+        <li><span class="opt-label">C</span> Å lagre brukerpassord på serveren i en kryptert og hashet form</li>
+        <li><span class="opt-label">D</span> Å forkorte TLS-handshakens varighet ved å hoppe over runde-turer</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
