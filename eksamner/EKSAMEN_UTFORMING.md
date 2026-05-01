@@ -112,7 +112,7 @@ Brukes øverst i hver del-seksjon:
 
 Én oppgave = flere nummererte påstander. Studenten skal for **hver** påstand velge **Sant** eller **Usant**. På nett brukes **radioknapper** (`<input type="radio">`): ett `name` per påstand (slik at Sant og Usant er gjensidig utelukkende innen samme rad), og felles `name`-prefiks for oppgaven (f.eks. `tf-q3-1` … `tf-q3-5`) for å unngå kollisjon med andre spørsmål på siden.
 
-**Tilgjengelighet:** pakk hver rad i `<fieldset>` med `<legend>` som er synlig eller assosiert med påstandsteksten (`aria-labelledby`). Radioene er da «klikkbare» både som knapp og etikett.
+**Tilgjengelighet:** bruk `<div role="radiogroup" aria-labelledby="…">` med en separat `<div>` (med matchende `id`) som påstandstekst. Vi bruker bevisst <em>ikke</em> `<fieldset>`/`<legend>` her: legend deltar ikke pålitelig i flex/grid-layouts (browseren plasserer den spesielt), så side-ved-side-layouten med Sant/Usant-pillene blir ødelagt.
 
 **Eksempel (5 påstander, 5 poeng totalt):**
 
@@ -127,22 +127,22 @@ Brukes øverst i hver del-seksjon:
     <p class="q-text">Avgjør om påstandene er sanne eller usanne.</p>
     <ul class="exam-q__tf">
       <li>
-        <fieldset class="exam-q__tf-field">
-          <legend class="exam-q__tf-legend"><span class="tf-num">1.</span> Pakkesvitsjing bruker dedikerte kretser mellom hver par av verter.</legend>
+        <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-ex1-s1-label">
+          <div class="exam-q__tf-legend" id="tf-ex1-s1-label"><span class="tf-num">1.</span> Pakkesvitsjing bruker dedikerte kretser mellom hver par av verter.</div>
           <div class="exam-q__tf-choices" role="presentation">
             <label class="exam-q__tf-label"><input type="radio" name="tf-ex1-s1" value="true"> Sant</label>
             <label class="exam-q__tf-label"><input type="radio" name="tf-ex1-s1" value="false"> Usant</label>
           </div>
-        </fieldset>
+        </div>
       </li>
       <li>
-        <fieldset class="exam-q__tf-field">
-          <legend class="exam-q__tf-legend"><span class="tf-num">2.</span> Ende-til-ende-forsinkelse er summen av behandlings-, kø-, overførings- og propagasjonsforsinkelser.</legend>
+        <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-ex1-s2-label">
+          <div class="exam-q__tf-legend" id="tf-ex1-s2-label"><span class="tf-num">2.</span> Ende-til-ende-forsinkelse er summen av behandlings-, kø-, overførings- og propagasjonsforsinkelser.</div>
           <div class="exam-q__tf-choices" role="presentation">
             <label class="exam-q__tf-label"><input type="radio" name="tf-ex1-s2" value="true"> Sant</label>
             <label class="exam-q__tf-label"><input type="radio" name="tf-ex1-s2" value="false"> Usant</label>
           </div>
-        </fieldset>
+        </div>
       </li>
       <!-- … tilsvarende for påstand 3–5 … -->
     </ul>
@@ -162,7 +162,7 @@ Brukes øverst i hver del-seksjon:
 </article>
 ```
 
-**Variant uten fieldset (kortere):** én `<p>` per påstand og `role="radiogroup"` med `aria-label` på et omsluttende `<div>` — men `fieldset`/`legend` er ofte enklest for skjermleser.
+`exam-quiz.js` setter automatisk opp instant feedback: ved klikk på Sant eller Usant fargelegges raden grønn (riktig) eller rust (feil), de andre radioene i raden låses, og fasiten åpnes når alle radene er besvart. Riktige svar leses fra `<ol>`-en i `.fasit-body` (første `<strong>` per `<li>` skal være «Sant» eller «Usant»).
 
 ---
 

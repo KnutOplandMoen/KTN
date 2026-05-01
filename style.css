@@ -2154,14 +2154,27 @@ footer p {
   margin: 0 0 16px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 6px;
 }
+.exam-q__tf > li {
+  margin: 0;
+}
+/* Bruk div + role="radiogroup" i stedet for fieldset/legend
+   for å unngå at legend ikke deltar i flex/grid-layout. */
 .exam-q__tf-field {
   margin: 0;
-  padding: 12px 14px;
+  padding: 10px 14px;
   border: 1px solid var(--line-soft);
+  border-left: 3px solid var(--line);
   border-radius: 3px;
   background: var(--paper);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 16px;
+  /* Reset i tilfelle elementet er en fieldset */
+  min-width: 0;
 }
 .exam-q__tf-legend {
   font-family: var(--sans);
@@ -2169,6 +2182,12 @@ footer p {
   line-height: 1.45;
   color: var(--ink-soft);
   padding: 0;
+  margin: 0;
+  flex: 1 1 320px;
+  /* Reset i tilfelle elementet er en legend */
+  float: none;
+  width: auto;
+  display: block;
 }
 .exam-q__tf-legend .tf-num {
   font-family: var(--mono);
@@ -2177,30 +2196,82 @@ footer p {
   margin-right: 6px;
 }
 .exam-q__tf-choices {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 18px;
-  margin-top: 10px;
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  flex: 0 0 auto;
 }
 .exam-q__tf-label {
   font-family: var(--sans);
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   cursor: pointer;
-  padding: 6px 12px;
+  padding: 5px 14px;
+  min-width: 72px;
+  justify-content: center;
   border: 1px solid var(--line-soft);
-  border-radius: 3px;
+  border-radius: 999px;
   background: var(--paper-dark);
-  transition: background 0.12s, border-color 0.12s;
+  color: var(--ink-soft);
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+  user-select: none;
 }
 .exam-q__tf-label:hover {
   background: #fff9ee;
-  border-color: rgba(176, 68, 40, 0.35);
+  border-color: rgba(176, 68, 40, 0.45);
+  color: var(--ink);
 }
 .exam-q__tf-label input {
   accent-color: var(--rust);
+  margin: 0;
+}
+.exam-q__tf-label:has(input:checked) {
+  background: var(--paper);
+  border-color: var(--rust);
+  color: var(--rust);
+}
+
+/* Quiz-tilstander for Sant/Usant (instant feedback) */
+.exam-q__tf-field.is-correct {
+  border-left-color: var(--green);
+  background: #f1f7f0;
+}
+.exam-q__tf-field.is-wrong {
+  border-left-color: var(--rust);
+  background: #fbeae6;
+}
+.exam-q__tf-field.is-answered .exam-q__tf-label {
+  cursor: default;
+  pointer-events: none;
+}
+.exam-q__tf-field.is-correct .exam-q__tf-label:has(input:checked) {
+  border-color: var(--green);
+  background: #eaf3e8;
+  color: var(--green);
+}
+.exam-q__tf-field.is-wrong .exam-q__tf-label:has(input:checked) {
+  border-color: var(--rust);
+  background: #f8d9d2;
+  color: var(--rust);
+}
+.exam-q__tf-field.is-correct .exam-q__tf-status,
+.exam-q__tf-field.is-wrong .exam-q__tf-status {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 700;
+  flex-basis: 100%;
+}
+.exam-q__tf-field.is-correct .exam-q__tf-status {
+  color: var(--green);
+}
+.exam-q__tf-field.is-wrong .exam-q__tf-status {
+  color: var(--rust);
 }
 
 /* Koble-oppgave (svarbank + tabell med select) */

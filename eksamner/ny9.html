@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Øvingseksamen 9 — TTM4100</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Alle eksamener</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
+  </div>
+</nav>
+
+<main data-chapter="Øvingseksamen 9 — TTM4100">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Øvingseksamen · TTM4100</div>
+  <h1>Øvingseksamen <em>9</em></h1>
+  <p class="lede">Del I: 13 oppgaver (42 poeng) — inkluderer flervalg, én Sant/Usant-blokk og én koble-oppgave. Del II: 5 åpne oppgaver (58 poeng). Totalt 100 poeng.</p>
+
+  <div class="learn-box">
+    <span class="label">Temaer i dette settet</span>
+    <ul>
+      <li>Statistisk multipleksing og lagdeling (kap. 1)</li>
+      <li>IMAP vs. POP3 og DNS-record-typer (kap. 2)</li>
+      <li>MSS/MTU og Nagles algoritme (kap. 3)</li>
+      <li>ARP-request og default route (kap. 4)</li>
+      <li>Spanning Tree Protocol og link-layer-påstander (kap. 6)</li>
+      <li>Beacon frames og BSSID (kap. 7)</li>
+      <li>Koble: kryptografiske mekanismer mot bruksområder (kap. 8)</li>
+      <li>DASH-manifest, sliding window-throughput, VLSM-subnetting og switch-læring</li>
+    </ul>
+  </div>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">I</span><a href="#del1">Del I — Automatisk rettede (42p)</a></li>
+    <li><span class="toc-num">II</span><a href="#del2">Del II — Åpne oppgaver (58p)</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ==================== DEL I ==================== -->
+<section id="del1">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del I — Automatisk rettede spørsmål</h2>
+    <span class="del-points">13 oppgaver · 42 poeng totalt (3 poeng per flervalg + Sant/Usant-blokk 5p + matching 4p)</span>
+  </div>
+  <p class="section-intro">Klikk på alternativet du mener er riktig — du får umiddelbart vite om du svarte riktig, og forklaringen åpner seg automatisk. For Sant/Usant-blokken får du tilbakemelding per rad og fasiten åpner seg når alle radene er besvart. For koble-oppgaven svarer du for hver rad og åpner fasiten manuelt.</p>
+
+  <!-- Q1 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 1</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er hovedfordelen med <strong>statistisk multipleksing</strong> (slik den brukes i pakkesvitsjede nett) sammenlignet med kretsesvitsjet TDM?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Hver bruker får dedikert båndbredde garantert til enhver tid</li>
+        <li><span class="opt-label">B</span> Brukerne deler kapasiteten dynamisk — siden ikke alle sender samtidig, kan flere brukere støttes på samme link uten at hver enkelt får dedikert tidsslott</li>
+        <li><span class="opt-label">C</span> Den eliminerer behovet for header-informasjon i hver pakke</li>
+        <li><span class="opt-label">D</span> Den fjerner all kø-forsinkelse</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Statistisk multipleksing utnytter at brukere er <em>bursty</em> — de sender bare en brøkdel av tiden. I pakkesvitsjing får ingen et fast tidsslott; pakkene konkurrerer om linken når noen har data å sende. Hvis sannsynligheten for at en bruker er aktiv er liten, kan langt flere brukere deles om samme link enn med TDM (der hver bruker «eier» et tomt slott uansett om hen har data å sende).</p>
+          <p>Avveiningen: ingen båndbreddegaranti, og under høy last vokser kø-forsinkelsen — TDM derimot gir forutsigbar, men sløst, forsinkelse uansett last.</p>
+          <p>A er typisk for kretsesvitsjing. C/D er feil — pakker har headere, og kø-forsinkelse er en sentral del av modellen.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Pakkesvitsjing og statistisk multipleksing</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q2 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 2</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En applikasjon på en HTTP-klient sender data nedover protokollstakken. I hvilken rekkefølge legges header-feltene til (TCP/IP-modellens lag fra topp til bunn)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Ethernet-header → IP-header → TCP-header → HTTP-data</li>
+        <li><span class="opt-label">B</span> HTTP-data → TCP-header → IP-header → Ethernet-header</li>
+        <li><span class="opt-label">C</span> IP-header → TCP-header → HTTP-data → Ethernet-header</li>
+        <li><span class="opt-label">D</span> HTTP-data → IP-header → TCP-header → Ethernet-header</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Innkapsling skjer fra topp og nedover: applikasjonsdata pakkes inn av transportlaget (TCP eller UDP), som igjen pakkes inn av nettverkslaget (IP), og til slutt av lenkelaget (Ethernet/WiFi).</p>
+          <p>På mottaker-siden skjer det motsatte (de-innkapsling): hvert lag stripper sin egen header og leverer payload videre opp.</p>
+          <p>Merk at mens IP-headeren er den samme hele veien fra kilde til endelig destinasjon, byttes Ethernet-headeren ut ved hver hop (ny kilde- og destinasjons-MAC).</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Lagdeling og innkapsling</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q3 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 3</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er den viktigste praktiske forskjellen mellom <strong>IMAP</strong> og <strong>POP3</strong> for henting av e-post?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> POP3 er kryptert, IMAP er ikke</li>
+        <li><span class="opt-label">B</span> IMAP holder e-posten på serveren med mappestruktur og synkroniserer flere klienter — POP3 laster typisk ned all e-post til én klient og fjerner den fra serveren</li>
+        <li><span class="opt-label">C</span> POP3 brukes av webmail, IMAP av desktop-klienter</li>
+        <li><span class="opt-label">D</span> IMAP er en mekanisme for å sende e-post, POP3 for å motta</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>POP3 (Post Office Protocol) ble designet for klienter med periodisk tilkobling: «last ned alt og slett fra serveren». Mappestruktur og status (lest/ulest) lagres lokalt — bytter du klient eller enhet, mister du oversikten.</p>
+          <p>IMAP (Internet Message Access Protocol) lar e-posten leve på serveren, med mappestruktur, flagg (lest/ulest, viktig osv.), og synkroniserer flere klienter mot samme tilstand. Slik fungerer dagens telefon + laptop + webmail-modell.</p>
+          <p>Begge er <em>henting</em> (pull) — sending skjer alltid via SMTP. Begge kan brukes med TLS (POP3S/IMAPS).</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — E-postprotokoller</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q4 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 4</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken DNS-recordtype peker fra et domenenavn til <em>navnet</em> på e-postserveren som mottar post for domenet?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> A — adresserekord</li>
+        <li><span class="opt-label">B</span> MX — Mail eXchange</li>
+        <li><span class="opt-label">C</span> NS — Name Server</li>
+        <li><span class="opt-label">D</span> CNAME — Canonical Name</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B — MX</span>
+          <p>MX-recorden gir hostnavnet på e-postserveren for et domene, sammen med en preferanseverdi (lavere = høyere prioritet). En sendende SMTP-server gjør først et MX-oppslag for å finne riktig server, så et A-oppslag for å oversette server-navnet til en IP.</p>
+          <p>De andre typene: <strong>A</strong> peker fra navn til IPv4-adresse (AAAA for IPv6); <strong>NS</strong> peker fra et domene til den autoritative DNS-serveren for dette domenet; <strong>CNAME</strong> er et alias som peker fra ett navn til et annet navn (f.eks. www.example.com → example.com).</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — DNS-records</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q5 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 5</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er sammenhengen mellom <strong>MSS</strong> (Maximum Segment Size) og <strong>MTU</strong> (Maximum Transmission Unit) på en typisk Ethernet-link med standard headere?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> MSS = MTU. Begrepene er synonyme</li>
+        <li><span class="opt-label">B</span> MSS = MTU − størrelsen på IP-headeren − størrelsen på TCP-headeren. På Ethernet med MTU 1500 byte og standard 20+20 headere blir MSS typisk 1460 byte</li>
+        <li><span class="opt-label">C</span> MSS = MTU + størrelsen på Ethernet-headeren</li>
+        <li><span class="opt-label">D</span> MSS er TCP-vinduets bredde, MTU er rammens lengde</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>MTU er hvor stor en lenkelagsramme kan være på lenkelagsnivå (1500 byte for vanlig Ethernet). En IP-pakke som passer inn må derfor være ≤ 1500 byte inkludert IP-header. Trekker man fra IP-headeren (20 byte for IPv4 uten options) og TCP-headeren (20 byte uten options) gjenstår 1460 byte for selve TCP-payload — det er <strong>MSS</strong>.</p>
+          <p>MSS forhandles under TCP 3-veis handshake (i SYN-pakken). Ved IPv6 (40 byte header) eller IP-options/TCP-options blir MSS lavere.</p>
+          <p>MSS handler altså om hvor mye <em>data per segment</em>, ikke om hvor mye data kan være underveis (det er TCP-vinduet rwnd/cwnd).</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — TCP-segmentstørrelse</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q6 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 6</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er hovedformålet med <strong>Nagles algoritme</strong> i TCP?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Å estimere RTT mer presist</li>
+        <li><span class="opt-label">B</span> Å samle små data-skriv fra applikasjonen og sende dem som færre, større segmenter, slik at andelen header-overhead på linken reduseres</li>
+        <li><span class="opt-label">C</span> Å øke cwnd raskere etter et tap</li>
+        <li><span class="opt-label">D</span> Å fjerne behovet for ACK-er</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Nagles algoritme adresserer «small-packet problem»: hvis en applikasjon (typisk telnet/SSH) sender 1 byte om gangen, blir hver pakke 41 byte (1 byte payload + 20 IP + 20 TCP). 97 % av båndbredden er header-overhead.</p>
+          <p>Regelen: hvis det allerede finnes uakknowledget data underveis og det nye dataet er mindre enn ett MSS, skal senderen vente — enten til en ACK ankommer (slik at neste segment kan inneholde mer data) eller til det er nok data til å fylle ett MSS.</p>
+          <p>Algoritmen kan slås av med <code>TCP_NODELAY</code>-socket-opsjonen — nyttig for interaktive applikasjoner som spill og sanntid der latens er viktigere enn effektiv pakke-utnyttelse.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — Nagles algoritme</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q7 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 7</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · 6</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En vert ønsker å sende en IP-pakke til en annen vert på samme subnett. Hvilken destinasjons-MAC bruker den i en <strong>ARP-request</strong> for å finne mottakerens MAC-adresse?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Mottakerens egen MAC-adresse — den fås fra DNS</li>
+        <li><span class="opt-label">B</span> Standard gateway sin MAC</li>
+        <li><span class="opt-label">C</span> Broadcast-adressen <code>ff:ff:ff:ff:ff:ff</code> — alle på subnettet hører requesten, men kun mottakeren svarer med en ARP-reply (unicast)</li>
+        <li><span class="opt-label">D</span> Multicast-adressen <code>01:00:5e:00:00:01</code></li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C</span>
+          <p>ARP-request er en lag-2-broadcast, fordi senderen ikke vet hvilken MAC som tilhører mål-IP-en — alle stasjoner på subnettet må kunne se requesten og avgjøre om den gjelder dem.</p>
+          <p>ARP-reply derimot sendes som unicast direkte tilbake til den som spurte (kilden av requesten). Etter ARP-utvekslingen mellomlagrer begge parter mappingen i ARP-cachen i typisk 1–20 minutter.</p>
+          <p>DNS gir IP fra navn — <em>ikke</em> MAC fra IP. Standard gateway brukes hvis destinasjons-IP er på et annet subnett — ikke i denne situasjonen.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — ARP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q8 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 8</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva representerer <code>0.0.0.0/0</code> i en forwarding-tabell?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Et reservert internt nettverk som ikke skal videresendes</li>
+        <li><span class="opt-label">B</span> Standard rute («default route») — matcher alle destinasjoner som ingen andre, mer spesifikke prefiks dekker. Pakker uten annen match sendes hit (typisk til ISP-en)</li>
+        <li><span class="opt-label">C</span> Loopback-adressen 127.0.0.1</li>
+        <li><span class="opt-label">D</span> En broadcast-adresse</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Prefikset 0.0.0.0/0 har 0 bits maske og dekker dermed alle mulige IPv4-adresser. På grunn av <em>longest prefix match</em>-regelen brukes den kun når ingen andre, mer spesifikke ruter matcher.</p>
+          <p>I praksis settes en default route i en hjemmeruter for å peke til ISP-ens neste-hop. Verter har sin egen «default gateway» som er det samme i konsept.</p>
+          <p>Loopback er <code>127.0.0.0/8</code>; broadcast for et subnett er den siste adressen i subnettet (eller <code>255.255.255.255</code> for begrenset broadcast).</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — Forwarding og default route</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q9 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 9</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvorfor bruker bedrifter ofte <strong>Spanning Tree Protocol</strong> (STP) på switchene sine?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> For å kryptere trafikk mellom switcher</li>
+        <li><span class="opt-label">B</span> For å unngå at fysisk redundante forbindelser mellom switcher skaper uendelige loops for broadcast og ukjente unicast-rammer — STP «slår av» (blokkerer) overflødige lenker logisk og lar én loopfri vei stå igjen</li>
+        <li><span class="opt-label">C</span> For å optimalisere DHCP-svartider</li>
+        <li><span class="opt-label">D</span> For å kunne vekte trafikk basert på QoS-klasse</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Switcher videresender broadcast og ukjent unicast (flooding) ut alle porter unntatt mottaksporten. Hvis to switcher er koblet sammen med to lenker (eller via en tredje switch i en ring), vil broadcast-rammer sirkulere uendelig — en <em>broadcast storm</em> — og ARP/DHCP-trafikk lammer hele nettet.</p>
+          <p>STP bygger logisk et tre med én rot-switch. Lenker som ikke er en del av treet, settes i blokkert tilstand (lytter, men videresender ikke data). Hvis en aktiv lenke faller ut, regner STP ut treet på nytt og åpner en blokkert lenke som ny vei. Slik får man både redundans og loopfri topologi.</p>
+          <p>Moderne varianter: RSTP (Rapid STP, raskere konvergens) og MSTP (per-VLAN-tre).</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — Spanning Tree</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q10: Sant/Usant-blokk -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 10</span>
+      <span class="exam-q__points">5 poeng</span>
+      <span class="exam-q__topic">Kap. 6 · 7</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Avgjør om hver av påstandene under er <strong>sann</strong> eller <strong>usann</strong>. 1 poeng per riktig svar.</p>
+      <ul class="exam-q__tf">
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-ex9-s1-label">
+            <div class="exam-q__tf-legend" id="tf-ex9-s1-label"><span class="tf-num">1.</span> En switch lærer hvilken MAC-adresse som tilhører hver port ved å lese kilde-MAC i innkommende rammer.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-ex9-s1" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-ex9-s1" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-ex9-s2-label">
+            <div class="exam-q__tf-legend" id="tf-ex9-s2-label"><span class="tf-num">2.</span> Hvis switchen ikke har destinasjons-MAC i sin tabell, kaster den rammen.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-ex9-s2" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-ex9-s2" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-ex9-s3-label">
+            <div class="exam-q__tf-legend" id="tf-ex9-s3-label"><span class="tf-num">3.</span> 802.11-rammer bruker positive ACK-er fra mottaker — i motsetning til Ethernet, der ACK-mekanismen ligger i transportlaget.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-ex9-s3" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-ex9-s3" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-ex9-s4-label">
+            <div class="exam-q__tf-legend" id="tf-ex9-s4-label"><span class="tf-num">4.</span> En 802.11-ramme inneholder fire MAC-adresser i full versjon (kilde, destinasjon, sender og mottaker), siden trafikken kan gå via en AP og en distribusjonsbro.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-ex9-s4" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-ex9-s4" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-ex9-s5-label">
+            <div class="exam-q__tf-legend" id="tf-ex9-s5-label"><span class="tf-num">5.</span> Når en ramme sendes til broadcast-MAC <code>ff:ff:ff:ff:ff:ff</code>, vil en standard ruter videresende den til naborutere på alle sine grensesnitt.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-ex9-s5" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-ex9-s5" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><span class="fasit-correct">Riktige svar</span></p>
+          <ol>
+            <li><strong>Sant</strong> — switchen ser kilde-MAC og porten den ankom på, og oppdaterer (eller refresher) en oppføring i sin lærings-tabell. Slik bygges tabellen automatisk uten konfigurasjon.</li>
+            <li><strong>Usant</strong> — uten match flooder switchen rammen ut alle porter unntatt mottaksporten. Det er nettopp dette som driver «ukjent unicast»-trafikk og gjør at en ARP-request kan reise gjennom nettet.</li>
+            <li><strong>Sant</strong> — i 802.11 sender mottakeren en ACK på lenkelagsnivå direkte etter en mottatt ramme (innen kort SIFS-intervall). Dette er fordi trådløst medium har høy feilrate; å vente på TCP-ACK ville være altfor sent. Ethernet (CSMA/CD med kollisjonsdeteksjon) har ikke L2-ACK.</li>
+            <li><strong>Sant</strong> — 802.11-rammeformatet kan ha opptil 4 adressefelt, brukt i ulike kombinasjoner styrt av To-DS/From-DS-flaggene. I infrastrukturmodus med trafikk via AP brukes 3, mens en WDS-bro mellom to AP-er bruker alle 4.</li>
+            <li><strong>Usant</strong> — rutere videresender ikke L2-broadcast. Broadcast i lenkelaget er begrenset til ett subnett — det er en av forskjellene mellom switch (videresender broadcast) og ruter (terminerer broadcast). DHCP, ARP osv. bryter ikke ut av sitt eget subnett uten en eksplisitt relay.</li>
+          </ol>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — Switch og ARP</a> · <a href="../kap7/innhold.html">Kap. 7 — 802.11-rammeformat</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q11 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 11</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 7</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er en <strong>beacon-ramme</strong> i 802.11, og hvilken rolle spiller <strong>BSSID</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Beacon er en kontrollramme klienten sender for å koble seg til AP-et; BSSID er dens IP-adresse</li>
+        <li><span class="opt-label">B</span> Beacon-rammer sendes periodisk av AP-et og inneholder bl.a. SSID, kanalnummer, støttede rater og <strong>BSSID</strong> — som er APets MAC-adresse og fungerer som unik identifikator for selve cellen (BSS)</li>
+        <li><span class="opt-label">C</span> Beacon er en kollisjons-jamming-ramme; BSSID er en sekvensteller</li>
+        <li><span class="opt-label">D</span> Beacon brukes kun for QoS; BSSID er valgfri</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>AP-et kringkaster beacon-rammer med jevne mellomrom (typisk hvert 100 ms = TBTT) som annonserer cellens eksistens. Beacons inneholder SSID (tekstnavnet du ser i nettverkslisten), BSSID (APets MAC-adresse — unik per celle), kanalnummer, hvilke 802.11-standarder som støttes, sikkerhetsinformasjon (WPA2/WPA3) og mer.</p>
+          <p>Beacon-rammer brukes til <em>passiv scanning</em>: en klient lytter på hver kanal etter beacons fra ulike AP-er og lager en oversikt. Alternativet er <em>aktiv scanning</em>: klienten sender Probe Request og venter på Probe Response.</p>
+          <p>SSID kan være delt mellom flere AP-er (samme nettverk, flere celler), men BSSID er alltid unik per AP/celle.</p>
+          <p class="ref">Pensum: <a href="../kap7/innhold.html">Kap. 7 — 802.11 association og beacons</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q12: Matching -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 12</span>
+      <span class="exam-q__points">4 poeng</span>
+      <span class="exam-q__topic">Kap. 8</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Koble hver kryptografiske mekanisme til <em>den primære sikkerhetstjenesten</em> den leverer. Velg én bokstav per rad. 1 poeng per riktig kobling.</p>
+
+      <div class="exam-q__match-bank" aria-label="Svarbank">
+        <div class="exam-q__match-bank-title">Selectable Items</div>
+        <ol class="exam-q__match-bank-list" type="a">
+          <li>Konfidensialitet — innholdet kan ikke leses av andre enn autorisert mottaker.</li>
+          <li>Meldingsintegritet og opprinnelsesautentisering med ikke-fornektelse — bare innehaveren av en bestemt privat nøkkel kan ha produsert verdien.</li>
+          <li>Meldingsintegritet og autentisering basert på en delt hemmelighet — to parter med samme nøkkel kan verifisere meldingen, men hverken kan bevise overfor en tredjepart hvem som var avsender.</li>
+          <li>Etablering av en delt hemmelig nøkkel mellom to parter over en åpen kanal, uten at de har delt noe på forhånd.</li>
+          <li>Bekreftelse av at en oppgitt offentlig nøkkel virkelig tilhører den oppgitte identiteten.</li>
+        </ol>
+      </div>
+
+      <table class="exam-q__match-table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Mekanisme</th>
+            <th scope="col">Ditt valg</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>AES i CBC-modus</td>
+            <td>
+              <label class="sr-only" for="m-q12-1">Kobling for AES-CBC</label>
+              <select id="m-q12-1" class="exam-q__match-select" name="m-q12-1">
+                <option value="">—</option>
+                <option value="a">a</option>
+                <option value="b">b</option>
+                <option value="c">c</option>
+                <option value="d">d</option>
+                <option value="e">e</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>HMAC-SHA256</td>
+            <td>
+              <label class="sr-only" for="m-q12-2">Kobling for HMAC-SHA256</label>
+              <select id="m-q12-2" class="exam-q__match-select" name="m-q12-2">
+                <option value="">—</option>
+                <option value="a">a</option>
+                <option value="b">b</option>
+                <option value="c">c</option>
+                <option value="d">d</option>
+                <option value="e">e</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Digital signatur (asymmetrisk)</td>
+            <td>
+              <label class="sr-only" for="m-q12-3">Kobling for digital signatur</label>
+              <select id="m-q12-3" class="exam-q__match-select" name="m-q12-3">
+                <option value="">—</option>
+                <option value="a">a</option>
+                <option value="b">b</option>
+                <option value="c">c</option>
+                <option value="d">d</option>
+                <option value="e">e</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>Diffie-Hellman nøkkelutveksling</td>
+            <td>
+              <label class="sr-only" for="m-q12-4">Kobling for Diffie-Hellman</label>
+              <select id="m-q12-4" class="exam-q__match-select" name="m-q12-4">
+                <option value="">—</option>
+                <option value="a">a</option>
+                <option value="b">b</option>
+                <option value="c">c</option>
+                <option value="d">d</option>
+                <option value="e">e</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.9em;color:var(--ink-60,#666);margin-top:0.5em">Merk: Banken har 5 alternativer, men du skal kun bruke 4 — én linje er en distraktor.</p>
+
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktige koblinger</span>
+          <table>
+            <thead><tr><th>Oppgave</th><th>Riktig</th></tr></thead>
+            <tbody>
+              <tr><td>1 AES-CBC</td><td><strong>a</strong> — konfidensialitet</td></tr>
+              <tr><td>2 HMAC-SHA256</td><td><strong>c</strong> — integritet med delt nøkkel (symmetrisk)</td></tr>
+              <tr><td>3 Digital signatur</td><td><strong>b</strong> — integritet/autentisering med ikke-fornektelse (asymmetrisk)</td></tr>
+              <tr><td>4 Diffie-Hellman</td><td><strong>d</strong> — nøkkeletablering over åpen kanal</td></tr>
+            </tbody>
+          </table>
+          <p>Distraktor: <strong>e</strong> — verifisering at offentlig nøkkel hører til en identitet — leveres av <em>sertifikater</em> signert av en CA (PKI), ikke av noen av mekanismene listet her.</p>
+          <p>Forskjellen mellom <strong>HMAC</strong> (c) og <strong>digital signatur</strong> (b): HMAC bruker en delt hemmelig nøkkel — derfor kan begge parter ha laget HMAC-en og det er ikke ikke-fornektelig. Digital signatur bruker privat nøkkel hos signereren og offentlig nøkkel for verifisering — kun signereren kan ha produsert signaturen.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8 — Sikkerhetstjenester</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q13 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 13</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 9</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">I DASH (Dynamic Adaptive Streaming over HTTP), hva er rollen til <strong>manifestet</strong> (MPD-filen) som klienten først laster ned?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Det er den første videoblokken som spilles av</li>
+        <li><span class="opt-label">B</span> Det er en XML-fil som lister hvilke kvalitetsvarianter (bitrater, oppløsninger) som er tilgjengelige, og hvor de tilsvarende segmentene ligger (URL-er, tidsoffsets) — slik at klienten kan velge varianten som passer best for tilgjengelig båndbredde</li>
+        <li><span class="opt-label">C</span> Det er en signaturfil som verifiserer at videoen ikke er endret</li>
+        <li><span class="opt-label">D</span> Det er en lyspakkeformat-spesifikasjon klientens dekoder må ha</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Manifestet (Media Presentation Description) er en XML/JSON-fil som beskriver alle tilgjengelige <em>representasjoner</em> av samme innhold. Eksempel: 240p ved 200 kbps, 480p ved 800 kbps, 720p ved 2,5 Mbps, 1080p ved 5 Mbps. For hver representasjon listes URL-er for «segments» (typisk 2–10 sekunder med video).</p>
+          <p>Klienten leser manifestet, måler hvor raskt den klarer å hente segmenter, og velger neste segment fra den representasjonen som er passe — høyere kvalitet hvis det går bra, lavere ved kø-bygging eller buffer-underflow. Slik realiseres «adaptive» i Adaptive Streaming.</p>
+          <p>Manifestet er <em>ikke</em> selve mediet (video-segmenter er separate filer), ikke en signatur, og ikke en kodek-spesifikasjon.</p>
+          <p class="ref">Pensum: <a href="../kap9/innhold.html">Kap. 9 — DASH</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+
+<!-- ==================== DEL II ==================== -->
+<section id="del2">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del II — Åpne oppgaver</h2>
+    <span class="del-points">5 oppgaver · 58 poeng totalt</span>
+  </div>
+  <p class="section-intro">Skriftlige svar — vis utregning og begrunnelse. Klikk «Vis fasit» for å sammenligne med modellbesvarelsen etter at du har skrevet ditt eget svar.</p>
+
+  <!-- Oppgave 1 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 1</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · 2</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En nettbutikk har en nettside som består av <strong>1 HTML-dokument (50 kB)</strong> og <strong>20 mindre objekter</strong> à 10 kB. Klienten har RTT 60 ms til serveren og en lokal aksesslink på 100 Mbps. DNS-oppslaget tar én RTT (60 ms) — anta at det ikke er cachet. Ignorer kø og prosesseringsforsinkelser; transmisjonstid på serversiden er neglisjerbar.</p>
+      <p class="q-text">a) Beregn omtrentlig samlet ende-til-ende-tid for å laste hele siden med <strong>non-persistent HTTP/1.0 uten parallellforbindelser</strong>. (4p)</p>
+      <p class="q-text">b) Beregn samme tid med <strong>persistent HTTP/1.1 med pipelining</strong> (én TCP-forbindelse, alle objekter pipelines). (3p)</p>
+      <p class="q-text">c) Hvor stor andel av hele tiden går til <em>RTT-overhead</em> (TCP-handshake og forespørselsturer) i hvert tilfelle? Hva er den praktiske lærdommen? (3p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>Forberedelse:</strong></p>
+          <p>Total datamengde: 50 + 20·10 = 250 kB = 2 Mbit. På 100 Mbps tar transmisjonen 2/100 = 0,02 s = <strong>20 ms</strong>. Det er den teoretisk minste tiden — alt annet er overhead.</p>
+
+          <p><strong>a) Non-persistent uten parallellforbindelser:</strong></p>
+          <ul>
+            <li>1 RTT for DNS = 60 ms</li>
+            <li>For HTML: 1 RTT for TCP-handshake + 1 RTT for forespørsel/svar = 2 RTT = 120 ms</li>
+            <li>For hver av de 20 små objektene: 2 RTT (handshake + request) = 20 × 120 = 2 400 ms</li>
+            <li>Pluss transmisjonstid for selve dataene: 20 ms</li>
+          </ul>
+          <p>Total: 60 + 120 + 2 400 + 20 ≈ <strong>2,6 sekunder</strong>.</p>
+
+          <p><strong>b) Persistent med pipelining:</strong></p>
+          <ul>
+            <li>1 RTT for DNS = 60 ms</li>
+            <li>1 RTT for TCP-handshake = 60 ms</li>
+            <li>1 RTT for HTML-request → svar = 60 ms</li>
+            <li>1 RTT for å pipeline alle 20 forespørsler i parallell og motta første respons = 60 ms (deretter strømmer resten kontinuerlig)</li>
+            <li>Pluss transmisjonstid: 20 ms</li>
+          </ul>
+          <p>Total: 60 + 60 + 60 + 60 + 20 ≈ <strong>260 ms</strong>.</p>
+
+          <p><strong>c) Andel RTT-overhead:</strong></p>
+          <p>Non-persistent: 2580 av 2600 ms ≈ <strong>99 %</strong> er RTT-overhead. Selve dataoverføringen tar bare 20 ms.</p>
+          <p>Persistent + pipelining: 240 av 260 ms ≈ <strong>92 %</strong> er fortsatt RTT-overhead — men hele forsinkelsen er redusert med en faktor 10×.</p>
+          <p><strong>Lærdom:</strong> for små objekter dominerer RTT, ikke båndbredde. HTTP/1.1 persistent connections + pipelining (eller HTTP/2 multiplexing) er derfor enormt mye viktigere enn å oppgradere linkkapasitet for sider med mange små ressurser. Av samme grunn bruker moderne sider sprite-bilder, bundling og connection-reuse.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — Persistent vs. non-persistent HTTP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 2 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 2</span>
+      <span class="exam-q__points">12 poeng</span>
+      <span class="exam-q__topic">Kap. 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En TCP-sender starter en ny forbindelse med <code>cwnd = 1 MSS</code> og <code>ssthresh = 16 MSS</code>. Det er ingen rwnd-begrensning og ingen forsinket ACK; én ACK per segment. Følgende skjer i de neste rundene (én RTT per runde):</p>
+      <ul>
+        <li>Slow start fra cwnd = 1 MSS</li>
+        <li>I runden hvor cwnd skulle blitt 16, mottar senderen <strong>3 dupliserte ACK-er</strong> for et tap.</li>
+        <li>TCP Reno (med fast retransmit + fast recovery) brukes.</li>
+      </ul>
+      <p class="q-text">a) Tegn (eller list i tabell) hvordan cwnd utvikler seg fra runde 1 til og med runden etter tapet. Marker hvilke runder som er slow start, og hvor fast retransmit utløses. (5p)</p>
+      <p class="q-text">b) Etter fast recovery fortsetter forbindelsen i fasen «kongestionsunngåelse». Hva blir cwnd og ssthresh umiddelbart etter at fast recovery er fullført? (3p)</p>
+      <p class="q-text">c) Etter ytterligere 4 runder uten tap, hva er cwnd da? (2p)</p>
+      <p class="q-text">d) Forklar i én setning hva som ville vært annerledes med TCP Tahoe (eldre variant) i samme situasjon. (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) cwnd-utvikling:</strong></p>
+          <table>
+            <thead><tr><th>Runde</th><th>cwnd ved start</th><th>Fase</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>1</td><td>Slow start</td></tr>
+              <tr><td>2</td><td>2</td><td>Slow start</td></tr>
+              <tr><td>3</td><td>4</td><td>Slow start</td></tr>
+              <tr><td>4</td><td>8</td><td>Slow start</td></tr>
+              <tr><td>5</td><td>16</td><td>Når ssthresh — overgang. 3 dup ACK ankommer → fast retransmit</td></tr>
+            </tbody>
+          </table>
+          <p>I slow start dobles cwnd hver RTT (én økning av cwnd per ACK). Etter fire RTT-er har cwnd nådd 16. Tapet detekteres via 3 dupliserte ACK-er.</p>
+
+          <p><strong>b) Etter fast recovery (TCP Reno):</strong></p>
+          <p>Ved 3 dup-ACK halverer Reno cwnd og setter ssthresh til den nye verdien:</p>
+          <ul>
+            <li><strong>ssthresh</strong> = cwnd / 2 = 16 / 2 = <strong>8 MSS</strong></li>
+            <li><strong>cwnd</strong> = ssthresh = <strong>8 MSS</strong> (Reno hopper til kongestionsunngåelse — ikke tilbake til 1)</li>
+          </ul>
+
+          <p><strong>c) Etter 4 runder med kongestionsunngåelse:</strong></p>
+          <p>I AIMD-fasen øker cwnd lineært med 1 MSS per RTT. cwnd: 8 → 9 → 10 → 11 → <strong>12 MSS</strong>.</p>
+
+          <p><strong>d) TCP Tahoe-variant:</strong></p>
+          <p>Tahoe responderer på 3 dup ACK ved å sette cwnd helt tilbake til <strong>1 MSS</strong> og starte slow start på nytt (med ssthresh = 8). Reno er mer aggressiv ved å bli i AIMD-fasen — gir høyere gjennomstrømning ved enkelt-tap. Ved timeout (ikke 3 dup ACK) går derimot også Reno tilbake til cwnd = 1.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — TCP Reno, fast retransmit og fast recovery</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 3 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 3</span>
+      <span class="exam-q__points">14 poeng</span>
+      <span class="exam-q__topic">Kap. 4</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En bedrift har fått tildelt nettverket <code>192.168.50.0/24</code> og skal dele det opp i 4 subnett med følgende krav til <em>brukbare host-adresser</em>:</p>
+      <ul>
+        <li>Sub-A: opp til 100 hosts (kontornett 1)</li>
+        <li>Sub-B: opp til 50 hosts (kontornett 2)</li>
+        <li>Sub-C: opp til 20 hosts (gjestenett)</li>
+        <li>Sub-D: opp til 10 hosts (servernett)</li>
+      </ul>
+      <p class="q-text">a) Forklar hvorfor det <em>ikke</em> går å bruke subnetting med fast lengde (FLSM) her, og hvorfor VLSM trengs. (3p)</p>
+      <p class="q-text">b) Tildel passende prefiks (CIDR-lengde) for hvert av subnettene. Hvor mange host-bits trengs minimum? (3p)</p>
+      <p class="q-text">c) Tildel ikke-overlappende adresseområder for de fire subnettene innenfor 192.168.50.0/24, slik at allokeringen er <em>kompakt</em> (start fra .0 og bruk så lite plass som mulig). For hvert subnett: nettverksadresse, broadcast-adresse, første og siste brukbare host. (6p)</p>
+      <p class="q-text">d) Hvor mange adresser i /24-blokken er igjen ubrukt etter VLSM-allokeringen? (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Hvorfor VLSM:</strong></p>
+          <p>FLSM ville krevd at alle subnett har samme størrelse. Sub-A trenger plass til 100 hosts → minimum /25 (128 adresser, 126 brukbare). Hvis alle 4 subnett skal være /25, trengs 4 × 128 = 512 adresser — men /24 har bare 256 totalt. Det er fysisk umulig.</p>
+          <p>VLSM (Variable Length Subnet Masks) tillater ulik størrelse per subnett, slik at små subnett ikke sløser med adresser. Det er i praksis nødvendig for alle realistiske bedriftsnettverk.</p>
+
+          <p><strong>b) Nødvendige prefiks:</strong></p>
+          <p>Husk: <em>brukbare hosts</em> = 2<sup>h</sup> − 2 (trekk fra nettverks- og broadcast-adressen).</p>
+          <table>
+            <thead><tr><th>Subnett</th><th>Hosts påkrevd</th><th>Host-bits</th><th>Prefiks</th><th>Total adresser</th><th>Brukbare</th></tr></thead>
+            <tbody>
+              <tr><td>Sub-A</td><td>100</td><td>7 (2<sup>7</sup>−2 = 126 ≥ 100)</td><td>/25</td><td>128</td><td>126</td></tr>
+              <tr><td>Sub-B</td><td>50</td><td>6 (2<sup>6</sup>−2 = 62 ≥ 50)</td><td>/26</td><td>64</td><td>62</td></tr>
+              <tr><td>Sub-C</td><td>20</td><td>5 (2<sup>5</sup>−2 = 30 ≥ 20)</td><td>/27</td><td>32</td><td>30</td></tr>
+              <tr><td>Sub-D</td><td>10</td><td>4 (2<sup>4</sup>−2 = 14 ≥ 10)</td><td>/28</td><td>16</td><td>14</td></tr>
+            </tbody>
+          </table>
+
+          <p><strong>c) Kompakt VLSM-allokering (alltid det største subnettet først):</strong></p>
+          <table>
+            <thead><tr><th>Subnett</th><th>Prefiks</th><th>Nettverksadresse</th><th>Første host</th><th>Siste host</th><th>Broadcast</th></tr></thead>
+            <tbody>
+              <tr><td>Sub-A</td><td>/25</td><td>192.168.50.0</td><td>192.168.50.1</td><td>192.168.50.126</td><td>192.168.50.127</td></tr>
+              <tr><td>Sub-B</td><td>/26</td><td>192.168.50.128</td><td>192.168.50.129</td><td>192.168.50.190</td><td>192.168.50.191</td></tr>
+              <tr><td>Sub-C</td><td>/27</td><td>192.168.50.192</td><td>192.168.50.193</td><td>192.168.50.222</td><td>192.168.50.223</td></tr>
+              <tr><td>Sub-D</td><td>/28</td><td>192.168.50.224</td><td>192.168.50.225</td><td>192.168.50.238</td><td>192.168.50.239</td></tr>
+            </tbody>
+          </table>
+          <p>Sjekk: hver blokk er på riktig grense (multiplum av blokkstørrelsen): 0 (mod 128), 128 (mod 64), 192 (mod 32), 224 (mod 16). Alle gyldige.</p>
+
+          <p><strong>d) Ubrukte adresser:</strong></p>
+          <p>Brukt: 128 + 64 + 32 + 16 = <strong>240 adresser</strong>. Igjen: 256 − 240 = <strong>16 adresser</strong> (192.168.50.240 – .255 — én ledig /28-blokk). Dette utgjør reserve, f.eks. for fremtidig utvidelse eller et lite point-to-point-nett.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — VLSM og subnetting</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 4 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 4</span>
+      <span class="exam-q__points">12 poeng</span>
+      <span class="exam-q__topic">Kap. 6</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En læringskapabel switch <strong>S</strong> har 4 porter (1, 2, 3, 4). Hver port er koblet til én vert: A på port 1, B på port 2, C på port 3, D på port 4. Switchens MAC-tabell er <em>tom</em> ved start. Følgende rammer sendes i rekkefølge:</p>
+      <ol>
+        <li>A → B (kilde-MAC = a, dest-MAC = b)</li>
+        <li>B → A (kilde-MAC = b, dest-MAC = a)</li>
+        <li>C → A (kilde-MAC = c, dest-MAC = a)</li>
+        <li>D → broadcast (kilde-MAC = d, dest-MAC = ff:ff:ff:ff:ff:ff)</li>
+        <li>A → C (kilde-MAC = a, dest-MAC = c)</li>
+      </ol>
+      <p class="q-text">a) For hver av de 5 rammene: hvilke porter videresender switchen rammen ut, og hvordan ser MAC-tabellen ut etter at rammen er behandlet? (8p)</p>
+      <p class="q-text">b) Forklar prinsippet bak «flooding» av rammer med ukjent destinasjon. Hva er fordelen, og hvilken risiko skaper det i et nett med loops? (4p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Trinn-for-trinn-analyse:</strong></p>
+          <p><strong>Ramme 1 — A → B:</strong> Switchen lærer at <em>a</em> er på port 1 (fra kilde-MAC). Dest-MAC <em>b</em> er ukjent → <strong>flooder</strong> ut alle porter unntatt port 1, dvs. ut port 2, 3, 4.</p>
+          <p>Tabell etter: { a: 1 }</p>
+
+          <p><strong>Ramme 2 — B → A:</strong> Lærer <em>b</em> på port 2. Dest <em>a</em> er kjent (port 1) → videresender kun ut <strong>port 1</strong>.</p>
+          <p>Tabell etter: { a: 1, b: 2 }</p>
+
+          <p><strong>Ramme 3 — C → A:</strong> Lærer <em>c</em> på port 3. Dest <em>a</em> kjent → ut <strong>port 1</strong>.</p>
+          <p>Tabell etter: { a: 1, b: 2, c: 3 }</p>
+
+          <p><strong>Ramme 4 — D → broadcast:</strong> Lærer <em>d</em> på port 4. Broadcast → flooder ut alle porter unntatt mottaksport, dvs. ut <strong>port 1, 2, 3</strong>.</p>
+          <p>Tabell etter: { a: 1, b: 2, c: 3, d: 4 }</p>
+
+          <p><strong>Ramme 5 — A → C:</strong> Kilde <em>a</em> bekreftes/oppdateres på port 1. Dest <em>c</em> kjent → ut <strong>port 3</strong>. Ingen flooding.</p>
+          <p>Tabell etter: { a: 1, b: 2, c: 3, d: 4 }</p>
+
+          <p><strong>b) Flooding-prinsippet:</strong></p>
+          <p>Når switchen ikke vet hvor en MAC-adresse er, tar den ingen sjanser: den sender rammen ut alle porter (unntatt mottaksporten). Riktig vert mottar rammen og svarer; svar-rammen lar switchen lære den manglende mappingen.</p>
+          <p><strong>Fordel:</strong> ingen statisk konfigurasjon trengs. Switchen lærer topologien automatisk og driftsklar fra første ramme.</p>
+          <p><strong>Risiko ved loops:</strong> hvis det finnes flere fysiske veier mellom switcher (loop), kommer en flooded ramme tilbake og blir floodet på nytt — den sirkulerer og fyller hele nettet. Dette kalles en <em>broadcast storm</em> og kan lamme nettet på sekunder. Det er problemet Spanning Tree Protocol (STP) er designet for å hindre.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — Switch-læring og flooding</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 5 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 5</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 8</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Symmetrisk og asymmetrisk kryptografi har ulike styrker. I praksis kombineres de — for eksempel i TLS.</p>
+      <p class="q-text">a) Sammenlign symmetrisk og asymmetrisk kryptering på (i) ytelse/hastighet, (ii) hvor mange nøkler som trengs blant <em>n</em> kommuniserende parter, og (iii) hvordan nøkler i utgangspunktet kan deles trygt. (5p)</p>
+      <p class="q-text">b) Forklar hvorfor TLS bruker asymmetrisk kryptografi <em>under handshake</em>, men symmetrisk kryptografi <em>under selve dataoverføringen</em>. Hva blir det beste fra begge verdener? (3p)</p>
+      <p class="q-text">c) Hva er en «session key», og hvorfor er det god praksis å bruke en ny én per TLS-økt i stedet for å gjenbruke samme nøkkel? (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Sammenligning:</strong></p>
+          <table>
+            <thead><tr><th>Aspekt</th><th>Symmetrisk (f.eks. AES)</th><th>Asymmetrisk (f.eks. RSA, ECC, DH)</th></tr></thead>
+            <tbody>
+              <tr><td>(i) Ytelse</td><td>Svært rask — typisk 100–1000× raskere enn asymmetrisk per byte. Kan kjøres i hardware ved gigabit-rater.</td><td>Treg — krever tunge matematiske operasjoner (modulær eksponentiering, elliptisk-kurve-multiplikasjon). Egnet for små data (nøkkelutveksling, signaturer på hash).</td></tr>
+              <tr><td>(ii) Antall nøkler</td><td>n parter trenger n(n−1)/2 = O(n²) parnøkler hvis alle skal kunne kommunisere. Ved 100 parter: 4 950 nøkler.</td><td>Hver part har ett nøkkelpar (privat + offentlig). n parter krever n nøkkelpar — O(n).</td></tr>
+              <tr><td>(iii) Nøkkeldeling</td><td>Vanskelig å distribuere uten en allerede sikker kanal — krever forhåndsavtale eller kurer.</td><td>Den offentlige nøkkelen kan deles fritt. Ekthet bekreftes via PKI/sertifikater.</td></tr>
+            </tbody>
+          </table>
+
+          <p><strong>b) Beste fra begge verdener:</strong></p>
+          <p>I TLS-handshake bruker partene asymmetrisk kryptografi (typisk Diffie-Hellman + serverens RSA/ECDSA-sertifikat) til å:</p>
+          <ul>
+            <li>Verifisere serverens identitet (sertifikatet er signert av en CA)</li>
+            <li>Etablere en delt hemmelig <em>sesjonsnøkkel</em> over en åpen kanal</li>
+          </ul>
+          <p>Når sesjonsnøkkelen er på plass, går partene over til <strong>symmetrisk kryptering</strong> (f.eks. AES-GCM) for selve datatrafikken. Slik utnyttes asymmetrisk for det den er god til (autentisering + nøkkeletablering uten forhåndsdelt hemmelighet) og symmetrisk for det den er god til (rask massekryptering).</p>
+
+          <p><strong>c) Sesjonsnøkkel og hvorfor ikke gjenbruk:</strong></p>
+          <p>En sesjonsnøkkel er en tilfeldig generert symmetrisk nøkkel som kun brukes for én økt. Fordelen ved å ikke gjenbruke: hvis nøkkelen lekker eller knekkes senere, er bare én økt kompromittert — ikke alle tidligere/fremtidige. Med Diffie-Hellman gir dette dessuten <em>forward secrecy</em>: en angriper som har lagret krypterte øktdata og senere får tak i serverens private nøkkel, kan likevel ikke dekryptere de gamle øktene.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8 — Symmetrisk vs. asymmetrisk</a> · <a href="../kap8/protokoller-brannmur.html">Kap. 8 — TLS</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Vår 2026</p>
+  </div>
+</footer>
+<script src="../chat-widget.js"></script>
+<script src="../nav-search.js"></script>
+<script src="exam-quiz.js" defer></script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>

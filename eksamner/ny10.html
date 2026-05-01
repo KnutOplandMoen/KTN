@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Øvingseksamen 10 — TTM4100</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Alle eksamener</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
+  </div>
+</nav>
+
+<main data-chapter="Øvingseksamen 10 — TTM4100">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Øvingseksamen · TTM4100</div>
+  <h1>Øvingseksamen <em>10</em></h1>
+  <p class="lede">Del I: 13 oppgaver (42 poeng) — flervalg, én Sant/Usant-blokk og én koble-oppgave. Del II: 5 åpne oppgaver (58 poeng). Totalt 100 poeng.</p>
+
+  <div class="learn-box">
+    <span class="label">Temaer i dette settet</span>
+    <ul>
+      <li>Forsinkelseskomponenter og pakkesvitsjing/kretsesvitsjing (kap. 1)</li>
+      <li>FTP control vs data, HTTP statuskoder (kap. 2)</li>
+      <li>Karn's algoritme, sliding window (kap. 3)</li>
+      <li>NAT-oversettelse og ICMP echo (kap. 4 og 5)</li>
+      <li>Sant/Usant-blokk om WiFi (kap. 7)</li>
+      <li>WiFi passiv vs aktiv scanning og 4-veis handshake (kap. 7 og 8)</li>
+      <li>Koble: sikkerhetstjenester mot konkrete protokoll-funksjoner (kap. 8)</li>
+      <li>RTP-felt og åpne oppgaver: sliding window-throughput, NAT-tabell, Vigenère, DASH-tilpasning</li>
+    </ul>
+  </div>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">I</span><a href="#del1">Del I — Automatisk rettede (42p)</a></li>
+    <li><span class="toc-num">II</span><a href="#del2">Del II — Åpne oppgaver (58p)</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ==================== DEL I ==================== -->
+<section id="del1">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del I — Automatisk rettede spørsmål</h2>
+    <span class="del-points">13 oppgaver · 42 poeng totalt (3p per flervalg + Sant/Usant-blokk 5p + matching 4p)</span>
+  </div>
+  <p class="section-intro">Klikk på alternativet du mener er riktig — du får umiddelbart tilbakemelding. For Sant/Usant-blokken får du tilbakemelding per rad og fasiten åpner seg når alle radene er besvart. For koble-oppgaven svarer du for hver rad og åpner fasiten manuelt.</p>
+
+  <!-- Q1 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 1</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En pakke skal sendes over en lenke som er fysisk 4 000 km lang. Lenkens kapasitet er 100 Mbps og signalets hastighet i mediet er 2 × 10⁸ m/s. Pakken er 1 250 byte. Hva er omtrent <strong>propagasjonsforsinkelsen</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 0,1 ms</li>
+        <li><span class="opt-label">B</span> 20 ms</li>
+        <li><span class="opt-label">C</span> 100 ms</li>
+        <li><span class="opt-label">D</span> 200 ms</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B — 20 ms</span>
+          <p>Propagasjonsforsinkelse = avstand / signalhastighet = (4 000 km) / (2 × 10⁸ m/s) = (4 × 10⁶ m) / (2 × 10⁸ m/s) = 0,02 s = <strong>20 ms</strong>.</p>
+          <p>Til sammenligning er transmisjonsforsinkelsen for selve pakken: (1 250 × 8) / (100 × 10⁶) = 10 000 / 10⁸ = 100 µs = 0,1 ms — bare en brøkdel av propagasjonsforsinkelsen. Over lange avstander er det propagasjonen som dominerer, ikke pakkestørrelsen.</p>
+          <p>Dette er grunnen til at RTT for transatlantiske forbindelser ligger på ~70–100 ms uavhengig av båndbredden.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Forsinkelsesbegreper</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q2 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 2</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken egenskap er karakteristisk for <strong>kretsesvitsjing</strong> (FDM/TDM) men IKKE for pakkesvitsjing?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Pakker har headere</li>
+        <li><span class="opt-label">B</span> Hver tilkobling får tildelt fast kapasitet hele kallets varighet — selv når den ikke har data å sende</li>
+        <li><span class="opt-label">C</span> Trafikken kan kø-bygges hos rutere</li>
+        <li><span class="opt-label">D</span> Veivalg gjøres per pakke uavhengig av tidligere pakker</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>I kretsesvitsjede nett (klassisk telefoni) reserveres ressurser ved oppringningstidspunktet. TDM gir hver samtale en egen tidsslott i en repetert ramme, FDM en egen frekvensbånd. Kapasiteten er din uansett om du faktisk snakker — derfor er kretsesvitsjing dårlig egnet for «bursty» datatrafikk.</p>
+          <p>A er feil — pakkesvitsjede pakker har headere. C og D beskriver pakkesvitsjede nett (kø-bygging og uavhengig forwarding per pakke).</p>
+          <p>Avveining: kretsesvitsjing gir garantert ytelse men sløser ressurser; pakkesvitsjing gir effektiv utnyttelse via statistisk multipleksing men krever kø-bygging og kan miste pakker.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Krets- vs. pakkesvitsjing</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q3 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 3</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">FTP bruker to TCP-forbindelser samtidig — én for kommandoer og én for selve filoverføringen. Hvilke porter brukes typisk i <em>aktiv modus</em>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Kontrollkanal på port 21, dataforbindelse på port 20</li>
+        <li><span class="opt-label">B</span> Begge på port 80</li>
+        <li><span class="opt-label">C</span> Kontrollkanal på port 25, dataforbindelse på port 110</li>
+        <li><span class="opt-label">D</span> Bare én forbindelse på port 21</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A</span>
+          <p>FTP er <em>out-of-band</em>: kontrollmeldinger (USER, PASS, RETR, STOR, QUIT) går på port 21, mens selve filinnholdet flyttes via en separat TCP-forbindelse på port 20.</p>
+          <p>I <strong>aktiv modus</strong> ber klienten om at serveren oppretter dataforbindelsen tilbake til klienten — dette skaper problemer med NAT/brannmur. I <strong>passiv modus (PASV)</strong> ber serveren klienten om å åpne dataforbindelsen til en port serveren har lyttet på — dette fungerer bedre med moderne NAT.</p>
+          <p>HTTP er motsatt: <em>in-band</em>, all kontroll og data går på samme TCP-forbindelse. Det gir én færre forbindelse å håndtere, men gjør at f.eks. avbrutte forespørsler er vanskeligere å håndtere kontrollert.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — FTP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q4 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 4</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Klienten får svaret <code>HTTP/1.1 301 Moved Permanently</code> med en <code>Location</code>-header pekende til en ny URL. Hva betyr dette, og hva gjør moderne nettlesere?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Serveren melder feil — klienten må be brukeren om autentisering</li>
+        <li><span class="opt-label">B</span> Ressursen er flyttet permanent. Klienten følger automatisk redirecten ved å gjøre en ny forespørsel mot Location-URL-en, og kan oppdatere lenker/cache slik at fremtidige forespørsler går rett til den nye adressen</li>
+        <li><span class="opt-label">C</span> Ressursen er midlertidig utilgjengelig; klienten skal vente 30 sekunder og prøve igjen</li>
+        <li><span class="opt-label">D</span> Det er en statisk feil i HTTP-protokollen som ikke har semantisk betydning</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>HTTP-statuskoder grupperes i klasser: 2xx = suksess, 3xx = redirect, 4xx = klientfeil, 5xx = serverfeil.</p>
+          <ul>
+            <li><strong>301 Moved Permanently</strong>: ressursen har fått ny permanent URL. Søkemotorer skal oppdatere indeksen sin; nettlesere kan oppdatere bokmerker.</li>
+            <li><strong>302 Found</strong> (eller 307): midlertidig redirect. Klienten følger den, men oppdaterer ikke noe.</li>
+            <li>Andre vanlige: 200 OK, 304 Not Modified (conditional GET), 404 Not Found, 500 Internal Server Error.</li>
+          </ul>
+          <p>Når en stor nettside bytter domene, returnerer den 301 fra det gamle domenet til det nye — slik beholdes søkemotor-rangeringen og brukerne sendes automatisk til riktig sted.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — HTTP-statuskoder</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q5 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 5</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">TCPs RTT-estimering bruker <strong>Karns algoritme</strong>. Hva er hovedinnholdet i denne regelen?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Senderen skal multiplisere alle RTT-målinger med 1,5 for sikkerhets skyld</li>
+        <li><span class="opt-label">B</span> Senderen skal <em>ikke</em> bruke RTT-målinger fra retransmitterte segmenter til å oppdatere SampleRTT, fordi det er tvetydig om ACK-en svarer på det opprinnelige eller det retransmitterte segmentet. I tillegg dobles timeout-verdien ved hver retransmisjon (exponential backoff)</li>
+        <li><span class="opt-label">C</span> Senderen skal alltid bruke samme timeout (1 sekund)</li>
+        <li><span class="opt-label">D</span> Senderen skal sende dobbelt så mange segmenter når RTT øker</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Hvis et segment retransmitteres og en ACK ankommer, vet senderen ikke om ACK-en svarer på det første eller det retransmitterte segmentet. RTT-målingen blir tvetydig — å bruke den kan gi feil estimat (for kort hvis vi tror den svarer på den siste; for lang hvis vi tror den svarer på den første).</p>
+          <p>Karns regel (1987): <em>ignorer</em> RTT-målinger fra retransmitterte segmenter. I stedet, ved hver retransmisjon, dobles RTO (timeout-verdien). Dette er en klassisk <em>exponential backoff</em>-strategi som gir et nett under last «pusterom» til å gjenopprette seg.</p>
+          <p>Når et nytt segment ikke trenger retransmisjon, gjenopptas vanlig RTT-måling og oppdatering av EstimatedRTT/DevRTT.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — RTT-estimering og Karns algoritme</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q6 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 6</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken av påstandene om <strong>sliding window</strong> er korrekt?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Sliding window kreves bare ved feilrekkefølge — ikke for ytelse</li>
+        <li><span class="opt-label">B</span> Sliding window lar senderen ha flere ukvitterte segmenter underveis samtidig — nødvendig for å fylle nett med store båndbredde-forsinkelses-produkter (BDP) der enkelt-pakke-stop-and-wait gir veldig lav gjennomstrømning</li>
+        <li><span class="opt-label">C</span> Sliding window dobler antall ACK-er per segment</li>
+        <li><span class="opt-label">D</span> Sliding window er en feilrettingskode</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Med stop-and-wait (vindusstørrelse 1) er gjennomstrømningen begrenset til (1 segment) / RTT. Over en lenke med 100 Mbps og RTT 100 ms blir BDP = 100 Mbps × 0,1 s = 10 Mbit = 1,25 MB. Med MSS = 1 460 byte ville stop-and-wait gitt: 1 460 / 0,1 = 14,6 kB/s ≈ 117 kbps — under 0,2 % av kapasiteten.</p>
+          <p>Med sliding window kan senderen ha mange segmenter underveis samtidig. Optimal vindusstørrelse er rundt BDP / MSS ≈ 850 segmenter for å fylle linken. ACK-er ankommer kontinuerlig og lar nye segmenter sendes uten å vente på en hel RTT.</p>
+          <p>Både GBN og SR er sliding-window-protokoller; TCP er det også (med rwnd og cwnd som kontrollerer størrelsen).</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — Sliding window og BDP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q7 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 7</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En NAT-ruter har offentlig IP <code>83.5.10.20</code>. To interne hoster A (10.0.0.5:5000) og B (10.0.0.6:5000) sender begge ut samtidige UDP-pakker mot samme eksterne mottaker (94.1.1.1:80). Hvordan skiller NAT-ruteren mellom svarpakkene tilbake fra serveren?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Den oversetter ingen header-felt — pakkene blir bare videresendt</li>
+        <li><span class="opt-label">B</span> Den endrer kilde-IP til sin egen offentlige IP for begge, og endrer i tillegg <strong>kilde-port</strong> til to ulike verdier (f.eks. 60001 og 60002). Når svar ankommer, sjekkes destinasjons-port mot NAT-tabellen for å oversette tilbake</li>
+        <li><span class="opt-label">C</span> Den bruker MAC-adressen til å skille forbindelsene</li>
+        <li><span class="opt-label">D</span> Den krever at A og B avtaler ulike kilde-porter på forhånd</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Klassisk «port address translation» (PAT, en form for NAT). NAT-ruteren bygger opp en oversettelsestabell med oppføringer av typen:</p>
+          <table>
+            <thead><tr><th>Offentlig (utside)</th><th>Privat (innside)</th></tr></thead>
+            <tbody>
+              <tr><td>83.5.10.20:60001 → 94.1.1.1:80</td><td>10.0.0.5:5000 → 94.1.1.1:80</td></tr>
+              <tr><td>83.5.10.20:60002 → 94.1.1.1:80</td><td>10.0.0.6:5000 → 94.1.1.1:80</td></tr>
+            </tbody>
+          </table>
+          <p>Når en svarpakke kommer inn med destinasjons-port 60001, slår NAT-ruteren opp i tabellen og oversetter dest. til 10.0.0.5:5000 før videresending.</p>
+          <p>Slik kan flere hundre interne hoster dele én offentlig IP — NAT er hovedgrunnen til at det fortsatt fungerer å bruke IPv4 selv med adresseknapphet, men det gjør innkommende forbindelser komplisert (NAT-traversal kreves for P2P).</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — NAT</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q8 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 8</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 5</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva slags ICMP-meldinger brukes av kommandoen <code>ping</code>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Type 11 (Time Exceeded) og type 3 (Destination Unreachable)</li>
+        <li><span class="opt-label">B</span> Type 8 (Echo Request) sendt fra avsenderen, og type 0 (Echo Reply) sendt fra mottakeren</li>
+        <li><span class="opt-label">C</span> Type 5 (Redirect) i begge retninger</li>
+        <li><span class="opt-label">D</span> Det brukes UDP, ikke ICMP</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Ping er den enkleste diagnostiske bruken av ICMP: avsenderen sender en Echo Request (type 8), mottakeren svarer med Echo Reply (type 0). RTT måles som tiden fra request til reply.</p>
+          <p>Pakketap detekteres ved at en forventet reply uteblir (timeout). Tradisjonelt sender ping én pakke per sekund og rapporterer min/avg/max/jitter samt prosent tapt.</p>
+          <p>Type 11 (Time Exceeded) brukes av <code>traceroute</code>, type 3 av rutere/serverne for å rapportere uleverbare pakker. ICMP er sin egen lag-3-protokoll (parallelt med IP-payload), og den bruker ikke UDP eller TCP.</p>
+          <p class="ref">Pensum: <a href="../kap5/innhold.html">Kap. 5 — ICMP og ping</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q9 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 9</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">ARP-tabeller utløper. Hva er hovedgrunnen til at oppføringer i ARP-cachen har en <strong>tidsavløp</strong> (typisk minutter)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Det er en ren ytelsesoptimalisering for å spare RAM</li>
+        <li><span class="opt-label">B</span> En vert kan flyttes til et annet subnett, eller MAC-adressen kan endres (f.eks. nytt nettverkskort, virtuell IP overført til en annen vert). En gammel cache-oppføring vil i så fall sende rammen til feil sted; tidsavløp tvinger fram en ny ARP-request og dermed oppdatert mapping</li>
+        <li><span class="opt-label">C</span> ARP-meldinger kan ikke leses mer enn én gang av samme vert</li>
+        <li><span class="opt-label">D</span> Sikkerhetsregelverk krever at oppføringer aldri varer mer enn 100 ms</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>ARP-tabellen er en cache av nylig observerte IP-til-MAC-mappinger. Hvis topologien endres — en server flyttes mellom rack, en VM får ny vert, eller HSRP/VRRP overfører en virtuell IP fra én ruter til en annen — vil cachen være feil. Et tidsavløp (typisk 1–20 minutter) tvinger fram en ny ARP-utveksling og dermed oppdatert mapping.</p>
+          <p>Mange systemer bruker også <em>gratuitous ARP</em>: en vert som tar over en virtuell IP, sender en ARP-melding om sin egen IP-MAC-mapping uten å være spurt — slik at andre verter oppdaterer cachen umiddelbart i stedet for å vente på timeout.</p>
+          <p>Caching i seg selv finnes for å unngå én ARP-broadcast per pakke (ytelse + støy), men <em>tidsavløpet</em> handler om korrekthet over tid.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — ARP og ARP-cache</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q10: Sant/Usant-blokk -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 10</span>
+      <span class="exam-q__points">5 poeng</span>
+      <span class="exam-q__topic">Kap. 7</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Avgjør om hver av påstandene under er <strong>sann</strong> eller <strong>usann</strong>. 1 poeng per riktig svar.</p>
+      <ul class="exam-q__tf">
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-ex10-s1-label">
+            <div class="exam-q__tf-legend" id="tf-ex10-s1-label"><span class="tf-num">1.</span> CSMA/CA i 802.11 oppdager kollisjoner mens overføringen pågår, akkurat som CSMA/CD i Ethernet.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-ex10-s1" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-ex10-s1" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-ex10-s2-label">
+            <div class="exam-q__tf-legend" id="tf-ex10-s2-label"><span class="tf-num">2.</span> En klient som beveger seg mellom to AP-er med samme SSID (men ulik BSSID) i samme ESS, vil typisk gjennomføre re-association uten at IP-laget merker en endring.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-ex10-s2" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-ex10-s2" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-ex10-s3-label">
+            <div class="exam-q__tf-legend" id="tf-ex10-s3-label"><span class="tf-num">3.</span> Datarate-valget i 802.11 er statisk satt ved oppkobling og endres ikke under sesjonen.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-ex10-s3" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-ex10-s3" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-ex10-s4-label">
+            <div class="exam-q__tf-legend" id="tf-ex10-s4-label"><span class="tf-num">4.</span> En klient som har slått av WiFi-radioen og går inn i strømsparemodus, kan likevel motta innkommende rammer fordi AP-et buffrer dem og leverer ved oppvåkning.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-ex10-s4" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-ex10-s4" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-ex10-s5-label">
+            <div class="exam-q__tf-legend" id="tf-ex10-s5-label"><span class="tf-num">5.</span> WPA3 fjerner det offline ordbokangrepet som var mulig på WPA2 via «Simultaneous Authentication of Equals» (SAE) i stedet for det gamle 4-veis handshake med PSK.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-ex10-s5" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-ex10-s5" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><span class="fasit-correct">Riktige svar</span></p>
+          <ol>
+            <li><strong>Usant</strong> — radio-mottakeren i 802.11-utstyr kan i praksis ikke høre andres signaler mens den selv sender (hennes egen utgang er flere størrelsesordener sterkere). CSMA/CA prøver i stedet å <em>unngå</em> kollisjoner via tilfeldig backoff og positive ACK — vi vet at det var en kollisjon kun retroaktivt, ved at ACK uteblir.</li>
+            <li><strong>Sant</strong> — innenfor samme Extended Service Set deler AP-ene samme SSID og bruker samme broadcast-domene (eller bro) i bakgrunnen. Klienten beholder IP og forbindelser — kun lenkelaget bytter AP. Ved bytte mellom ulike subnett trengs derimot DHCP og ofte mobile IP-mekanismer.</li>
+            <li><strong>Usant</strong> — moderne 802.11 bruker <em>rate adaptation</em>: stasjoner og AP-er endrer datarate dynamisk basert på signalkvalitet og pakketap. Lengre fra AP-et brukes lavere, mer robust modulasjon (men lavere bitrate); tett ved AP-et brukes høy modulasjon (mer bit per symbol).</li>
+            <li><strong>Sant</strong> — klienter signaliserer Power Save-modus i en flag i sendte rammer. AP-et buffrer da innkommende rammer for klienten og varsler i beacons (TIM-feltet) at det er ventende data. Klienten våkner periodisk, sjekker beacon, og henter dataen. Slik forlenges batterilevetiden uten å miste innkommende trafikk.</li>
+            <li><strong>Sant</strong> — SAE (Dragonfly) erstatter PSK-baserte 4-veis handshake i WPA3-Personal. Ved SAE er det ikke lenger mulig å fange handshake-rammene og bryte passordet offline med en GPU-rig. Hvert forsøk krever interaksjon med AP-et og kan dermed begrenses gjennom rate-limiting. WPA3 introduserer også Forward Secrecy og 192-bit-suite for enterprise.</li>
+          </ol>
+          <p class="ref">Pensum: <a href="../kap7/innhold.html">Kap. 7 — 802.11, mobilitet, rate adaptation, WPA3</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q11 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 11</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 7</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er forskjellen mellom <strong>passiv</strong> og <strong>aktiv</strong> scanning i 802.11?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Passiv scanning: klienten lytter på hver kanal etter beacons fra AP-er. Aktiv scanning: klienten sender Probe Request på hver kanal og venter på Probe Response — raskere men røper klientens tilstedeværelse</li>
+        <li><span class="opt-label">B</span> Passiv betyr at klienten kun bruker LTE; aktiv betyr WiFi</li>
+        <li><span class="opt-label">C</span> Passiv brukes kun for nedlasting; aktiv kun for opplasting</li>
+        <li><span class="opt-label">D</span> Begrepene er synonyme</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A</span>
+          <p>Begge metodene brukes for å oppdage tilgjengelige AP-er rundt seg.</p>
+          <ul>
+            <li><strong>Passiv:</strong> klienten hopper mellom kanaler og lytter etter beacon-rammer. Tregere — må vente på beacon (typisk hvert 100 ms) — men sender ingenting. Brukes for å unngå å avsløre at en enhet leter etter et bestemt SSID, eller når regulatoriske restriksjoner forbyr aktiv sending (DFS-kanaler).</li>
+            <li><strong>Aktiv:</strong> klienten sender Probe Request (kan inkludere et spesifikt SSID, eller wildcard for «alle»). AP-er som hører requesten svarer raskt med Probe Response. Raskere oppdaging, og brukes som standard.</li>
+          </ul>
+          <p>Aktiv scanning kan lekke informasjon om hvilke nettverk en enhet tidligere har koblet seg til (preferred network list) — derfor forsøker iOS/Android å begrense dette.</p>
+          <p class="ref">Pensum: <a href="../kap7/innhold.html">Kap. 7 — 802.11 scanning og association</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q12: Matching -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 12</span>
+      <span class="exam-q__points">4 poeng</span>
+      <span class="exam-q__topic">Kap. 8</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Koble hver protokoll-funksjon eller -faktum til <em>den primære sikkerhetstjenesten</em> den representerer. Velg én bokstav per rad. 1 poeng per riktig kobling.</p>
+
+      <div class="exam-q__match-bank" aria-label="Svarbank">
+        <div class="exam-q__match-bank-title">Selectable Items (sikkerhetstjenester)</div>
+        <ol class="exam-q__match-bank-list" type="a">
+          <li>Konfidensialitet (data kan ikke leses av uvedkommende)</li>
+          <li>Integritet (data har ikke blitt endret underveis)</li>
+          <li>Autentisering (motparten er den de utgir seg for å være)</li>
+          <li>Tilgjengelighet (tjenesten er oppe og når kan brukes)</li>
+          <li>Ikke-fornektelse (avsender kan ikke senere benekte å ha sendt meldingen)</li>
+        </ol>
+      </div>
+
+      <table class="exam-q__match-table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Funksjon / faktum</th>
+            <th scope="col">Ditt valg</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>TLS verifiserer serverens X.509-sertifikat under handshake</td>
+            <td>
+              <label class="sr-only" for="m-q12b-1">Kobling for sertifikatverifisering</label>
+              <select id="m-q12b-1" class="exam-q__match-select" name="m-q12b-1">
+                <option value="">—</option>
+                <option value="a">a</option>
+                <option value="b">b</option>
+                <option value="c">c</option>
+                <option value="d">d</option>
+                <option value="e">e</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>AES-GCM krypterer alle TLS Record-meldinger med øktnøkkelen</td>
+            <td>
+              <label class="sr-only" for="m-q12b-2">Kobling for AES-GCM Record-kryptering</label>
+              <select id="m-q12b-2" class="exam-q__match-select" name="m-q12b-2">
+                <option value="">—</option>
+                <option value="a">a</option>
+                <option value="b">b</option>
+                <option value="c">c</option>
+                <option value="d">d</option>
+                <option value="e">e</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>En signert kontrakt levert digitalt — mottaker vil senere kunne bevise overfor en uavhengig tredjepart at avsender faktisk signerte</td>
+            <td>
+              <label class="sr-only" for="m-q12b-3">Kobling for digital signatur av kontrakt</label>
+              <select id="m-q12b-3" class="exam-q__match-select" name="m-q12b-3">
+                <option value="">—</option>
+                <option value="a">a</option>
+                <option value="b">b</option>
+                <option value="c">c</option>
+                <option value="d">d</option>
+                <option value="e">e</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>HMAC-feltet i en ESP-pakke (IPSec) regnes ut over hele payloaden</td>
+            <td>
+              <label class="sr-only" for="m-q12b-4">Kobling for HMAC i ESP</label>
+              <select id="m-q12b-4" class="exam-q__match-select" name="m-q12b-4">
+                <option value="">—</option>
+                <option value="a">a</option>
+                <option value="b">b</option>
+                <option value="c">c</option>
+                <option value="d">d</option>
+                <option value="e">e</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.9em;color:var(--ink-60,#666);margin-top:0.5em">Banken har 5 alternativer; du skal kun bruke 4. Ett av alternativene er en distraktor (passer ikke til noen rad).</p>
+
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktige koblinger</span>
+          <table>
+            <thead><tr><th>Oppgave</th><th>Riktig</th></tr></thead>
+            <tbody>
+              <tr><td>1 Sertifikatverifisering</td><td><strong>c</strong> — Autentisering</td></tr>
+              <tr><td>2 AES-GCM Record-kryptering</td><td><strong>a</strong> — Konfidensialitet (GCM gir også integritet, men hovedformålet med kryptering av selve innholdet er konfidensialitet)</td></tr>
+              <tr><td>3 Signert kontrakt</td><td><strong>e</strong> — Ikke-fornektelse</td></tr>
+              <tr><td>4 HMAC over ESP-payload</td><td><strong>b</strong> — Integritet</td></tr>
+            </tbody>
+          </table>
+          <p>Distraktor: <strong>d</strong> — Tilgjengelighet (CIA-triadens A) leveres ikke av kryptografiske mekanismer alene. Den oppnås gjennom redundans, DDoS-mottiltak, lastbalansering osv. — utenfor det de fire eksemplene dekker.</p>
+          <p>Merk særlig forskjellen mellom <em>autentisering</em> (oppgave 1: «Hvem er du?» — bekreftet via sertifikatet) og <em>integritet</em> (oppgave 4: «Er meldingen uforandret?» — bekreftet via HMAC).</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8 — Sikkerhetsmål og mekanismer</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q13 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 13</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 9</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket av RTP-feltene brukes av mottakeren til å <em>spille av</em> samples i riktig rekkefølge og med korrekte tidsintervaller?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> SSRC (Synchronization Source Identifier)</li>
+        <li><span class="opt-label">B</span> Payload Type</li>
+        <li><span class="opt-label">C</span> Timestamp — angir samplingsøyeblikk for første sample i pakken; mottakeren bruker det til å plassere samples i riktig avspillings-tidspunkt og kompensere for jitter</li>
+        <li><span class="opt-label">D</span> Sequence Number</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — Timestamp</span>
+          <p>Mens sekvensnummer brukes for å oppdage tap og rekkefølge, gir <strong>timestamp</strong> selve sampling-klokken. Mottakeren bruker timestamp + en lokal jitter-buffer for å spille av samples i riktig <em>tidspunkt</em>. To pakker som ankommer 50 ms fra hverandre fra nettet, men har timestamps 20 ms fra hverandre, skal spilles av med 20 ms mellomrom — slik glattes jitter ut.</p>
+          <p>Andre felt: <strong>SSRC</strong> identifiserer kilden (én verdi per RTP-stream); <strong>Payload Type</strong> sier hvilken kodek som er brukt (Opus, G.711 osv.); <strong>Sequence Number</strong> brukes til å oppdage tap og duplikater.</p>
+          <p class="ref">Pensum: <a href="../kap9/innhold.html">Kap. 9 — RTP-headerformat</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+
+<!-- ==================== DEL II ==================== -->
+<section id="del2">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del II — Åpne oppgaver</h2>
+    <span class="del-points">5 oppgaver · 58 poeng totalt</span>
+  </div>
+  <p class="section-intro">Skriftlige svar — vis utregning og begrunnelse. Klikk «Vis fasit» for å sammenligne med modellbesvarelsen etter at du har skrevet ditt eget svar.</p>
+
+  <!-- Oppgave 1 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 1</span>
+      <span class="exam-q__points">8 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En klient (C) sender data til en server (S) over to lenker i serie:</p>
+      <ul>
+        <li>C ↔ ruter R: 200 Mbps, propagasjonsforsinkelse 2 ms</li>
+        <li>R ↔ S: 50 Mbps, propagasjonsforsinkelse 8 ms</li>
+        <li>Pakkestørrelse 1 250 byte. Ignorer kø og prosessering.</li>
+      </ul>
+      <p class="q-text">a) Beregn one-way-forsinkelsen for én pakke fra C til S. (4p)</p>
+      <p class="q-text">b) C sender en stor fil ved hjelp av sliding window. Hvilken av de to lenkene er flaskehalsen, og hvilken maksimal gjennomstrømning kan oppnås på lang sikt? (2p)</p>
+      <p class="q-text">c) Hvor mange bits «får plass» samtidig på lenken R ↔ S (BDP)? Hvilken praktisk konsekvens har dette for valg av TCP-vindu? (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) One-way-forsinkelse C → S:</strong></p>
+          <p>Pakkestørrelse: 1 250 byte = 10 000 bits.</p>
+          <ul>
+            <li>Transmisjon på C–R: 10 000 / (200 × 10⁶) = 50 µs = 0,05 ms</li>
+            <li>Propagasjon på C–R: 2 ms</li>
+            <li>Transmisjon på R–S: 10 000 / (50 × 10⁶) = 200 µs = 0,2 ms</li>
+            <li>Propagasjon på R–S: 8 ms</li>
+          </ul>
+          <p>Total: 0,05 + 2 + 0,2 + 8 = <strong>10,25 ms</strong>.</p>
+
+          <p><strong>b) Flaskehals:</strong></p>
+          <p>Den langsomste lenken setter taket på lang sikt. Her er R ↔ S med 50 Mbps flaskehalsen. Maksimal vedvarende gjennomstrømning: <strong>50 Mbps</strong>.</p>
+
+          <p><strong>c) BDP for R–S:</strong></p>
+          <p>RTT på R–S-segmentet: 2 × 8 ms = 16 ms. Men for end-to-end TCP er RTT = 2 × 10,25 ≈ 20,5 ms.</p>
+          <p>BDP (med flaskehals 50 Mbps og full e2e RTT): 50 × 10⁶ × 0,0205 ≈ 1,025 × 10⁶ bits ≈ <strong>128 kB</strong>.</p>
+          <p>Konsekvens: TCP-vinduet (rwnd × cwnd) må være minst ~128 kB for å holde flaskehalsen mettet. Standard-rwnd uten window scaling er 64 kB — det halverer maksimal oppnåelig throughput. Derfor er TCP window scaling (RFC 1323) viktig på moderne lenker.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Forsinkelse</a> · <a href="../kap3/innhold.html">Kap. 3 — BDP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 2 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 2</span>
+      <span class="exam-q__points">12 poeng</span>
+      <span class="exam-q__topic">Kap. 3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En sender bruker <strong>Go-Back-N</strong> med vindusstørrelse N over en lenke med RTT 100 ms og kapasitet 10 Mbps. Pakkestørrelse 1 000 byte. Tap-rate ≈ 0 (ideelt nett).</p>
+      <p class="q-text">a) Hva er minste N som kreves for å fylle linken (omtrentlig BDP-utregning)? (3p)</p>
+      <p class="q-text">b) Med N = 10 (lavere enn b) krever): hvilken effektiv gjennomstrømning oppnås? Hvor mye tid bruker senderen på å vente per syklus? (4p)</p>
+      <p class="q-text">c) Tenk deg at p = 1 % av pakkene faktisk går tapt. Beskriv konsekvensen for Go-Back-N <em>kontra</em> Selective Repeat: hvilke pakker må retransmitteres i hvert tilfelle hvis pakke n går tapt midt i et vindu? (5p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Minste N for full utnyttelse:</strong></p>
+          <p>BDP = 10 × 10⁶ × 0,1 = 10⁶ bits = 125 000 byte. Pakkestørrelse 1 000 byte → ≈ <strong>125 pakker</strong> må være underveis samtidig for å fylle linken. Senderens vindu N må derfor være ≥ 125.</p>
+
+          <p><strong>b) Med N = 10:</strong></p>
+          <p>Senderen sender 10 pakker, og må deretter vente på første ACK før neste vindu kan begynne (sliding-effekten gir kontinuerlig sending så lenge ACK-er kommer like raskt som pakker sendes ut).</p>
+          <p>Transmisjonstid for 10 pakker: 10 × (8 000 / 10⁷) = 8 ms. Etter 8 ms har senderen sendt hele vinduet og må vente på ACK fra første pakke, som ankommer ca. RTT = 100 ms etter pakken ble sendt — dvs. ca. 100 ms etter senderen begynte. Senderen er altså aktiv 8 ms av 100 ms = 8 % av tiden.</p>
+          <p>Effektiv gjennomstrømning: 10 pakker × 8 000 bits / 100 ms = 800 kbps — kun <strong>8 % av kapasiteten</strong>.</p>
+          <p>Vente-tid per syklus: ≈ 92 ms.</p>
+
+          <p><strong>c) Konsekvens av tap (pakke n tapt midt i vinduet):</strong></p>
+          <p><strong>Go-Back-N:</strong> Mottakeren forkaster <em>alle</em> pakker etter n (ute av rekkefølge). Etter timeout retransmitterer senderen pakke n og <strong>alle</strong> påfølgende pakker som var i vinduet (n, n+1, n+2, …). Enkel mottaker (én buffer-posisjon), men sløsete på lenker med tap.</p>
+          <p><strong>Selective Repeat:</strong> Mottakeren buffrer pakker etter n i mottaksvinduet. Når n retransmitteres og ankommer, leveres alle bufrede pakker i riktig rekkefølge til applikasjonen. Senderen retransmitterer <em>kun</em> pakke n. Mer komplisert mottaker (større buffer, individuelle ACK-er), men mye mer effektiv ved tap.</p>
+          <p>TCP er nærmere SR enn GBN: med SACK-opsjonen kan mottakeren rapportere hvilke spesifikke segmenter som mangler, og senderen retransmitterer kun disse.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — GBN og SR</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 3 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 3</span>
+      <span class="exam-q__points">15 poeng</span>
+      <span class="exam-q__topic">Kap. 4</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En NAT-ruter har offentlig IP <code>89.10.20.30</code> og betjener et internt nett <code>192.168.1.0/24</code>. NAT-tabellen er tom ved start. Følgende interne pakker skal sendes ut, i denne rekkefølgen:</p>
+      <ol>
+        <li>Vert <strong>X</strong> (192.168.1.10:5500) → 142.250.74.110:443 (HTTPS)</li>
+        <li>Vert <strong>Y</strong> (192.168.1.20:5500) → 142.250.74.110:443 (HTTPS) — samme mål-IP og samme kilde-port som X tilfeldigvis</li>
+        <li>Vert <strong>X</strong> (192.168.1.10:5501) → 188.40.150.100:80 (HTTP)</li>
+      </ol>
+      <p class="q-text">NAT-ruteren tildeler offentlige porter sekvensielt fra 50000.</p>
+      <p class="q-text">a) Fyll inn NAT-tabellen etter at alle 3 pakker har gått ut. Hvilken oversettelse skjer for hver pakke (kilde-IP/port før vs. etter NAT)? (8p)</p>
+      <p class="q-text">b) Et svar fra <code>142.250.74.110:443</code> ankommer NAT-ruteren med destinasjon <code>89.10.20.30:50001</code>. Hvilken intern vert blir mottaker? Beskriv stegene NAT-ruteren utfører. (3p)</p>
+      <p class="q-text">c) Hva ville skjedd hvis serveren <code>188.40.150.100</code> selv prøvde å initiere en forbindelse <em>inn</em> til <code>X</code>? Hva er den vanligste mekanismen for å løse problemet med innkommende forbindelser bak NAT? (4p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) NAT-tabell etter de 3 pakkene:</strong></p>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>Internt (kilde-IP:port → dest)</th><th>Eksternt etter NAT (kilde-IP:port → dest)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td><td>192.168.1.10:5500 → 142.250.74.110:443</td><td>89.10.20.30:<strong>50000</strong> → 142.250.74.110:443</td>
+              </tr>
+              <tr>
+                <td>2</td><td>192.168.1.20:5500 → 142.250.74.110:443</td><td>89.10.20.30:<strong>50001</strong> → 142.250.74.110:443</td>
+              </tr>
+              <tr>
+                <td>3</td><td>192.168.1.10:5501 → 188.40.150.100:80</td><td>89.10.20.30:<strong>50002</strong> → 188.40.150.100:80</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>Selv om X og Y har <em>samme</em> interne kilde-port (5500), gir NAT-ruteren dem ulike eksterne porter (50000 og 50001) — det er nettopp poenget med port translation.</p>
+
+          <p><strong>b) Svarpakke til 89.10.20.30:50001:</strong></p>
+          <ol>
+            <li>NAT-ruteren slår opp i sin tabell: «Hvem hadde ekstern port 50001?» — finner Y (192.168.1.20:5500).</li>
+            <li>Endrer destinasjons-IP fra 89.10.20.30 til 192.168.1.20, og destinasjons-port fra 50001 til 5500.</li>
+            <li>Videresender pakken på interne grensesnitt mot Y.</li>
+          </ol>
+          <p>Y mottar pakken som om den kom direkte til seg fra serveren — usynlig at NAT skjedde.</p>
+
+          <p><strong>c) Innkommende forbindelser bak NAT:</strong></p>
+          <p>Hvis serveren prøver å initiere en TCP/UDP-forbindelse inn til X uten at det allerede finnes en NAT-oppføring, vil pakken ankomme NAT-ruteren <em>uten</em> match i tabellen — ruteren vet ikke hvilken intern host den hører hjemme på, og kaster eller blokkerer pakken. Dette gjør P2P-applikasjoner og innkommende serverforbindelser vanskelige.</p>
+          <p>Vanlige løsninger:</p>
+          <ul>
+            <li><strong>Port forwarding (statisk NAT):</strong> manuell konfigurasjon på ruteren — ekstern port 8080 mappes alltid til intern host:port. Brukes for hjemmekjørte servere.</li>
+            <li><strong>UPnP / NAT-PMP / PCP:</strong> applikasjoner ber dynamisk ruteren om å åpne et port-mapping.</li>
+            <li><strong>NAT-traversal (STUN/TURN/ICE):</strong> brukes av WebRTC, VoIP og spill — partene utveksler sine eksterne IP/port via en hjelpe-server, og prøver «hole punching» for å etablere direkte forbindelser.</li>
+            <li><strong>IPv6:</strong> i prinsippet trengs ikke NAT i det hele tatt fordi adresserommet er stort nok.</li>
+          </ul>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — NAT</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 4 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 4</span>
+      <span class="exam-q__points">13 poeng</span>
+      <span class="exam-q__topic">Kap. 8</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) Krypter klarteksten <code>HEI</code> med en <strong>Caesar-chiffer</strong> som skifter bokstavene 7 plasser fram i alfabetet (A→H, B→I, …). Bruk det norske alfabetet uten Æ, Ø, Å — altså 26 bokstaver A–Z. Vis utregningen for hver bokstav. (3p)</p>
+      <p class="q-text">b) Krypter klarteksten <code>HEMMELIG</code> med en <strong>Vigenère-chiffer</strong> og nøkkelen <code>NETT</code>. Vis utregningen for hver bokstav (A=0, B=1, …). (4p)</p>
+      <p class="q-text">c) Forklar hvordan Vigenère er sterkere enn Caesar mot frekvensanalyse. Hva er likevel Vigenère's svakhet, og hvilken metode (Kasiski-test eller indeks for sammenfall) kan en angriper bruke? (4p)</p>
+      <p class="q-text">d) Forklar Kerckhoffs prinsipp og hvorfor moderne kryptering tar utgangspunkt i det. (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Caesar med skift 7, klartekst HEI:</strong></p>
+          <table>
+            <thead><tr><th>Bokstav</th><th>Posisjon</th><th>+7 mod 26</th><th>Chiffer</th></tr></thead>
+            <tbody>
+              <tr><td>H</td><td>7</td><td>14</td><td><strong>O</strong></td></tr>
+              <tr><td>E</td><td>4</td><td>11</td><td><strong>L</strong></td></tr>
+              <tr><td>I</td><td>8</td><td>15</td><td><strong>P</strong></td></tr>
+            </tbody>
+          </table>
+          <p>Resultat: <code>HEI</code> → <code><strong>OLP</strong></code>.</p>
+
+          <p><strong>b) Vigenère med nøkkel NETT, klartekst HEMMELIG:</strong></p>
+          <p>Nøkkelen N=13, E=4, T=19, T=19, gjentas: NETTNETT.</p>
+          <table>
+            <thead><tr><th>Klartekst</th><th>Pos</th><th>Nøkkel</th><th>Skift</th><th>Sum mod 26</th><th>Chiffer</th></tr></thead>
+            <tbody>
+              <tr><td>H</td><td>7</td><td>N</td><td>13</td><td>20</td><td><strong>U</strong></td></tr>
+              <tr><td>E</td><td>4</td><td>E</td><td>4</td><td>8</td><td><strong>I</strong></td></tr>
+              <tr><td>M</td><td>12</td><td>T</td><td>19</td><td>31 mod 26 = 5</td><td><strong>F</strong></td></tr>
+              <tr><td>M</td><td>12</td><td>T</td><td>19</td><td>31 mod 26 = 5</td><td><strong>F</strong></td></tr>
+              <tr><td>E</td><td>4</td><td>N</td><td>13</td><td>17</td><td><strong>R</strong></td></tr>
+              <tr><td>L</td><td>11</td><td>E</td><td>4</td><td>15</td><td><strong>P</strong></td></tr>
+              <tr><td>I</td><td>8</td><td>T</td><td>19</td><td>27 mod 26 = 1</td><td><strong>B</strong></td></tr>
+              <tr><td>G</td><td>6</td><td>T</td><td>19</td><td>25</td><td><strong>Z</strong></td></tr>
+            </tbody>
+          </table>
+          <p>Resultat: <code>HEMMELIG</code> → <code><strong>UIFFRPBZ</strong></code>.</p>
+
+          <p><strong>c) Hvorfor Vigenère er sterkere — og hvor svakheten ligger:</strong></p>
+          <p>I Caesar er hver bokstav skiftet med samme verdi, så bokstavfrekvenser i chifferet matcher klartekstens frekvenser eksakt (bare flyttet). Frekvensanalyse løser Caesar trivielt: norsk har «E» som vanligste bokstav, finner bokstaven du ser oftest, regner ut skiftet, ferdig.</p>
+          <p>I Vigenère har samme klartekstbokstav ulike chifferbokstaver avhengig av posisjonen i nøkkelen. Det glatter ut frekvensfordelingen. Men: så snart angriperen finner <em>nøkkellengden</em> k, blir hver k-te bokstav i chifferet kryptert med samme skift — altså redusert til Caesar. Frekvensanalyse anvendes da på hver «strøm» for seg.</p>
+          <p>Metoder for å finne k:</p>
+          <ul>
+            <li><strong>Kasiski-test:</strong> let etter gjentatte bokstavmønstre i chifferet. Avstandene mellom gjentakelsene er ofte multipler av nøkkellengden.</li>
+            <li><strong>Indeks for sammenfall (IC):</strong> for hver mulig k, splitt chifferet i k strømmer og beregn IC. For riktig k vil IC ligge rundt verdien for ren språk-IC; for feil k er den lavere (mer uniform).</li>
+          </ul>
+
+          <p><strong>d) Kerckhoffs prinsipp:</strong></p>
+          <p>«Et kryptosystem skal være sikkert selv om alt om systemet, unntatt nøkkelen, er kjent for angriperen.» Med andre ord: sikkerheten hviler kun på nøkkelens hemmelighet, ikke på algoritmens. Moderne kryptografi følger dette strengt: AES, RSA, SHA-256 osv. er offentlig spesifisert og dekket av tiår med kryptanalyse — den eneste hemmeligheten er nøkkelen.</p>
+          <p>«Security through obscurity» (skjul algoritmen) er motsatsen og regnes som dårlig praksis: fungerer kanskje på kort sikt, men kollapser så snart algoritmen lekker (omvendt utvikling, insider, nyhetsoppslag).</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8 — Klassiske chiffer og Kerckhoffs prinsipp</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 5 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 5</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 9</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En klient ser en DASH-stream der manifestet annonserer fire bitratevarianter: 400 kbps, 1 Mbps, 2,5 Mbps og 5 Mbps. Hvert segment varer 4 sekunder.</p>
+      <p class="q-text">a) Forklar prinsippet bak klientens valg av bitrate-variant fra ett segment til neste. Hvilke målinger gjør klienten, og hvordan brukes de? (4p)</p>
+      <p class="q-text">b) Klientens målte gjennomsnittlige nedlastingsbåndbredde over de siste segmentene er 3 Mbps. Hvilken variant er fornuftig å velge for neste segment, og hvorfor velger man typisk litt under den målte verdien? (3p)</p>
+      <p class="q-text">c) Klientens buffer er fylt til 30 sekunder med video. Plutselig synker tilgjengelig båndbredde til 700 kbps. Hva er klientens beste umiddelbare strategi: bytte ned bitratevariant umiddelbart, eller fortsette med samme variant en stund? Begrunn med hva som skjer med bufferen og brukeropplevelsen. (3p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Prinsippet bak ABR (Adaptive Bitrate):</strong></p>
+          <p>Klienten ber om segmenter via HTTP-GET, og måler hvor lang tid hver nedlasting tok. Estimert tilgjengelig båndbredde = (segmentstørrelse i bits) / (nedlastingstid). Glatting med eksponentielt vektet snitt eller tilsvarende reduserer effekten av enkelt-«bumps».</p>
+          <p>I tillegg overvåker klienten <em>buffer-fylling</em>: hvor mange sekunder med video er klar til avspilling? Lavt buffer-nivå = fare for stalling, høyt nivå = trygt å satse på høyere kvalitet.</p>
+          <p>Beslutningsregelen kombinerer båndbredde-estimat (vil neste segment kunne lastes ned i tide?) og buffer-nivå (har vi margin til å eksperimentere?). Klassiske algoritmer er BBA (Buffer-Based Adaptation), MPC (Model Predictive Control) og Pensieve (RL-basert).</p>
+
+          <p><strong>b) Velge variant under 3 Mbps:</strong></p>
+          <p>Den nest høyeste varianten (2,5 Mbps) er fornuftig. Velger man 5 Mbps, vil nedlastingen ta lenger tid enn segmentets 4 sekunder, og bufferen tappes. Velger man 2,5 Mbps, har man margin: nedlastingen tar 4 × (2,5 / 3) ≈ 3,3 sekunder per 4-sekund-segment, så bufferen vokser sakte.</p>
+          <p>Marginen tjener flere formål: (1) variansen i båndbredden — momentane dropp er vanlige; (2) andre HTTP-objekter som konkurrerer om båndbredden; (3) ACK- og protokolloverhead som ikke er regnet inn i de nominelle bitratevariantene.</p>
+
+          <p><strong>c) Strategi ved plutselig båndbreddefall:</strong></p>
+          <p>Med 30 sekunder buffer kan klienten <em>fortsette på samme bitrate i kort tid</em> mens den observerer om båndbreddefallet er stabilt eller midlertidig. Buffer-nivået vil tappes med ca. 1 sek per sek for hver sek mens nedlasting går saktere enn forbruk.</p>
+          <p>Hvis fallet vedvarer, må klienten bytte til 400 kbps (under 700 kbps med margin). Hvis klienten venter for lenge, risikerer den buffer-tørke og rebuffering — det er den verste opplevelsen for brukeren (verre enn lavere kvalitet).</p>
+          <p>Dette er kjernen i ABR-tradeoffet: <em>kvalitet</em> vs. <em>kontinuitet</em>. En 30-sekunders buffer gir tid til å «test ride» problemet, men ikke uendelig tid. Smart algoritmer (MPC) modellerer både fremtidig båndbredde og buffer-nivå og optimaliserer en kostnadsfunksjon som inkluderer både opplevd kvalitet og rebuffering-tid.</p>
+          <p class="ref">Pensum: <a href="../kap9/innhold.html">Kap. 9 — DASH og adaptiv bitrate</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Vår 2026</p>
+  </div>
+</footer>
+<script src="../chat-widget.js"></script>
+<script src="../nav-search.js"></script>
+<script src="exam-quiz.js" defer></script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>
