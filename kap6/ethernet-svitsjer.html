@@ -56,10 +56,6 @@
       En MAC-adresse er 48 bit lang, typisk skrevet i heksadesimal med bindestreker: <code>1A-2F-BB-76-09-AD</code>. Den er (i teorien) unik for hvert nettverkskort i verden — produsentene får tildelt adresseblokker fra IEEE, og brenner adressen inn i ROM-en på kortet. En god analogi: <em>IP-adressen er som en postadresse</em> (endrer seg om du flytter), <em>MAC-adressen er som et personnummer</em> (følger deg).
     </p>
 
-    <div class="margin-note">
-      På moderne WiFi er MAC-adressen ofte dynamisk — iPhone og Android bruker privat, tilfeldig MAC-adresse per nettverk for å hindre sporing. Den «innbrente» adressen er ikke alltid det du ser.
-    </div>
-
     <h3>Hvorfor trenger vi begge?</h3>
     <p>
       Kunne vi ikke bare brukt IP hele veien? I teorien, men det bryter lagdelingen. Lenkelaget må kunne fungere uten å vite noe om IP — på en Ethernet-lenke kan det godt være at pakken inni er AppleTalk eller IPX istedenfor IP. Lenkelaget trenger sin egen adressetype. Og MAC-adressen har en praktisk egenskap IP ikke har: den er portabel. Du kan flytte et nettverkskort mellom subnet uten å endre MAC, men IP-en må byttes.
@@ -229,9 +225,9 @@
     </div>
 
     <div class="reveal" data-reveal>
-      <div class="q">Hvis en angriper sender falske ARP-reply-meldinger på et LAN og hevder å ha IP-adressen til default gateway-routeren, hva skjer?</div>
+      <div class="q">A vil sende et IP-datagram til en server med IP utenfor sitt eget subnett. Hvilken MAC-adresse legger A i destinasjonsfeltet på Ethernet-rammen?</div>
       <button>Vis svar</button>
-      <div class="answer">Dette er <em>ARP-spoofing</em> (eller ARP-poisoning) — en klassisk Man-in-the-Middle-angrep. Ofrenes ARP-tabeller blir forgiftet med angriperens MAC-adresse, og alle pakker til «routeren» sendes i stedet til angriperen, som kan lese dem og eventuelt videresende dem til den ekte routeren. ARP har ingen autentisering — det var ikke en del av designet på 70-tallet. Derfor blir ARP-spoofing brukt både av angripere og av sikkerhetsforskere.</div>
+      <div class="answer">A bruker MAC-adressen til <strong>default gateway-routeren</strong> (funnet via ARP), <em>ikke</em> serverens MAC. IP-datagrammet inni har fortsatt serverens IP som destinasjon. Routeren mottar rammen, pakker ut datagrammet, og pakker det inn på nytt med ny destinasjons-MAC for neste hopp. IP-adressene er uendret hele veien; MAC-adressene byttes ved hvert hopp.</div>
     </div>
   </div>
 </section>

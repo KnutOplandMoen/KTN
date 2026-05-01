@@ -314,7 +314,7 @@
         <div data-fc-front>Hva er ARP, og hvordan fungerer en ARP-utveksling?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> ARP (Address Resolution Protocol) finner MAC-adressen til en gitt IP <em>på samme LAN</em>. Avsenderen broadcaster en ARP-query («Hvem har IP 192.168.1.5?») til <code>FF-FF-FF-FF-FF-FF</code>. Verten med den IP-en svarer unicast med en ARP-reply som inneholder sin MAC. Resultatet caches typisk i 20 minutter.</p>
-          <p><strong>Hvorfor:</strong> Når A skal sende et datagram, kjenner den IP-en til mottakeren (f.eks. fra DNS), men ikke MAC-en. Uten MAC-en kan ikke en Ethernet-ramme adresseres. ARP er den minimale broen mellom IP og MAC. Cachen unngår at hver eneste ramme krever en ny utveksling. ARP har ingen autentisering — derfor er <em>ARP-spoofing</em> et klassisk Man-in-the-Middle-angrep.</p>
+          <p><strong>Hvorfor:</strong> Når A skal sende et datagram, kjenner den IP-en til mottakeren (f.eks. fra DNS), men ikke MAC-en. Uten MAC-en kan ikke en Ethernet-ramme adresseres. ARP er den minimale broen mellom IP og MAC. Cachen unngår at hver eneste ramme krever en ny utveksling.</p>
         </div>
       </li>
 
@@ -433,7 +433,7 @@
         <div data-fc-front>Hvordan er en MAC-adresse strukturert, og hva er broadcast-adressen?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> En MAC-adresse er <strong>48 bit</strong> (6 byte), typisk skrevet i heksadesimal med bindestreker eller koloner, f.eks. <code>1A-2F-BB-76-09-AD</code>. De første 24 bitene er en <em>OUI</em> (Organizationally Unique Identifier) tildelt av IEEE til produsenten; de siste 24 bitene er produsentens egen sekvensnummer. Adressen <code>FF-FF-FF-FF-FF-FF</code> er <strong>broadcast</strong> — leveres til alle noder på lokal lenke.</p>
-          <p><strong>Hvorfor:</strong> OUI-systemet sikrer at MAC-adresser er <em>globalt unike</em> uten et sentralt register — produsenten bare teller seg oppover i sitt tildelte rom. Adressen er innbrent i ROM på NIC-en (selv om moderne WiFi-OS-er bruker tilfeldig MAC per nettverk for å hindre sporing). Broadcast-adressen brukes blant annet av ARP-queries og DHCP-discover.</p>
+          <p><strong>Hvorfor:</strong> OUI-systemet sikrer at MAC-adresser er <em>globalt unike</em> uten et sentralt register — produsenten bare teller seg oppover i sitt tildelte rom. Adressen er innbrent i ROM på NIC-en. Broadcast-adressen brukes blant annet av ARP-queries og DHCP-discover.</p>
         </div>
       </li>
 
@@ -462,26 +462,323 @@
       </li>
 
       <li data-card>
-        <div data-fc-front>Hva er Spanning Tree Protocol (STP), og hvilket problem løser det?</div>
-        <div data-fc-back>
-          <p><strong>Svar:</strong> STP hindrer lag-2-løkker i Ethernet-nett med <em>redundante</em> lenker. Uten STP ville broadcast-rammer (f.eks. ARP-queries) sirkulere i en evig sløyfe — en <strong>broadcast storm</strong>. STP velger en rot-svitsj, beregner korteste sti fra alle svitsjer til roten, og <em>blokkerer logisk</em> alle lenker som ikke ligger på dette treet.</p>
-          <p><strong>Hvorfor:</strong> Redundans er ønsket for feiltoleranse — men en svitsjet topologi uten løkker er ikke alltid mulig fysisk. STP løser dilemmaet ved å aktivere en sløyfe-fri delgraf logisk, mens fysiske backup-lenker står klare til å overta hvis primærlenken faller. Uten STP ville ett feilkoblet kabel ta ned hele LAN-et på sekunder.</p>
-        </div>
-      </li>
-
-      <li data-card>
-        <div data-fc-front>Hva er ARP-spoofing, og hvorfor er ARP sårbar for det?</div>
-        <div data-fc-back>
-          <p><strong>Svar:</strong> ARP-spoofing (eller ARP-poisoning) er et Man-in-the-Middle-angrep der en angriper sender falske ARP-replies på LAN-et og hevder å ha en annens IP-adresse — typisk default gatewayens IP. Ofrenes ARP-cacher blir forgiftet med angriperens MAC, og all trafikk til «routeren» sendes i stedet til angriperen.</p>
-          <p><strong>Hvorfor det er mulig:</strong> ARP har <em>ingen autentisering</em>. Det var ikke en del av designet på 70-tallet, og enhver node kan sende et ARP-svar uten at noen verifiserer det. Forsvar handler om monitorering (statiske ARP-oppføringer på kritiske gatewayer, dynamic ARP inspection på svitsjer) — ikke om å fikse selve protokollen, som forblir uendret.</p>
-        </div>
-      </li>
-
-      <li data-card>
         <div data-fc-front>Hva får en nykoblet vert fra en DHCP-server, og hvorfor er det nødvendig?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong> DHCP gir verten fire ting: (1) en <em>IP-adresse</em>, (2) <em>nettmasken</em> (subnett-prefiks), (3) IP-en til <em>default gateway</em> (første-hopp-router), og (4) IP-en til en <em>DNS-server</em>.</p>
           <p><strong>Hvorfor:</strong> Uten en IP-adresse kan ikke verten engang lage IP-pakker. Uten nettmasken vet ikke verten om en gitt destinasjon er på samme LAN (send direkte) eller på et annet (send til gateway). Uten gateway-IP-en kan ingenting forlate LAN-et. Uten DNS-IP-en kan ingen domenenavn slås opp. DHCP-utvekslingen skjer som broadcast (verten kjenner ingen MAC-adresser ennå) og er det aller første som skjer når laptopen plugges i.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er CDMA, og hvordan skiller det seg fra TDM og FDM?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> CDMA (Code Division Multiple Access) er den tredje kanalpartisjoneringsprotokollen sammen med TDM og FDM. Mens TDM deler kanalen i <em>tid</em> og FDM i <em>frekvens</em>, gir CDMA hver node en unik <strong>kode</strong>. Alle noder kan sende samtidig på samme frekvens; mottakeren bruker senderens kode til å trekke ut riktig signal fra summen.</p>
+          <p><strong>Hvorfor:</strong> Med ortogonale koder summerer andres bidrag seg til (omtrent) null hos en mottaker som korrelerer på riktig kode. Brukt i mobilnett (3G) og opprinnelig militær teknologi (anti-jamming). Du trenger bare grunnprinsippet: dimensjonen som deles er <em>kode</em>, ikke tid eller frekvens.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilken klasse av multiple access-protokoll tilhører TDM, FDM og CDMA?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Alle tre er <strong>kanalpartisjoneringsprotokoller</strong> (Klasse 1). De gir hver node sin egen del av kanalen — i tid (TDM), frekvens (FDM) eller kode (CDMA).</p>
+          <p><strong>Hvorfor det er felles:</strong> Ingen kollisjoner og garantert båndbredde, men sløsing ved lav last fordi en node ikke kan bruke andres tildelte del. Egnet når trafikken er jevn og forutsigbar — typisk mobilnett og satellitt.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilken klasse av multiple access-protokoll tilhører ALOHA, slotted ALOHA, CSMA og CSMA/CD?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Alle fire er <strong>random access-protokoller</strong> (Klasse 2). De sender uten å reservere kanalen på forhånd og håndterer kollisjoner i etterkant.</p>
+          <p><strong>Hvorfor det er felles:</strong> Effektivt ved lav last (én ensom node bruker hele R), men kollapser ved høy last fordi kollisjonsraten øker. Slotted ALOHA topper på 1/e ≈ 37 %, pure ALOHA på 1/(2e) ≈ 18 %. CSMA/CD legger til lytting og kollisjonsdeteksjon for å redusere bortkastet sendetid.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilken klasse av multiple access-protokoll tilhører polling og token passing?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Begge er <strong>«ta tur»-protokoller</strong> (Klasse 3). En koordineringsmekanisme bestemmer hvem som får sende — enten en master-node som inviterer (polling), eller et token som sirkulerer mellom nodene.</p>
+          <p><strong>Hvorfor det er felles:</strong> Klassen kombinerer fordeler fra de to andre: ingen kollisjoner og en aktiv node får hele R. Ulempen er overhead (polling-meldinger / token-rundtid) og et single point of failure (mister man master-noden eller tokenet, stopper alt). Bluetooth bruker polling; gammel Token Ring og FDDI brukte token passing.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er DOCSIS, og hva er CMTS?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>DOCSIS</strong> (Data-Over-Cable Service Interface Specification) er lenkelagsprotokollen i kabelnett-aksess. <strong>CMTS</strong> (Cable Modem Termination System) er sentralenheten ved hodeenden som koordinerer trafikken fra alle kabelmodemer i området.</p>
+          <p><strong>Hvorfor:</strong> Et kabelnett er en case som bruker <em>flere</em> MAC-protokollklasser samtidig — FDM for å skille opp- og nedstrøms-kanaler, TDM-lignende mini-slots i hver opp-strøms-kanal, og random access for forespørsler om mini-slots. Det illustrerer at virkelige systemer ofte hybrid-kombinerer klassene.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan kombinerer DOCSIS flere multiple access-klasser?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <ul>
+            <li><strong>FDM</strong> — opp- og nedstrøm bruker hver sine frekvensbånd, og hvert bånd er en egen broadcast-kanal.</li>
+            <li><strong>TDM-lignende mini-slots</strong> — hver opp-strøms-kanal er delt i tidsluker som CMTS eksplisitt allokerer til kabelmodemer (annonseres i en MAP-melding på nedstrøm).</li>
+            <li><strong>Random access</strong> — for å be om en mini-slot, sender modemet en mini-slot-request i et eget sett dedikerte tids-slots; disse kan kollidere.</li>
+            <li><strong>Sentralisert allokering</strong> — CMTS tildeler mini-slots, så ingen kollisjoner i selve datatrafikken.</li>
+          </ul>
+          <p><strong>Hvorfor:</strong> Nedstrøm har bare én sender (CMTS) — ingen multiple access-problem. Oppstrøm har mange sendere — derfor mini-slot-request-mekanismen med eksplisitt allokering for å eliminere kollisjoner i datatrafikken.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>I DOCSIS, hvordan oppdager et kabelmodem at en mini-slot-request kolliderte?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Modemet kan verken gjøre carrier sense eller kollisjonsdeteksjon på opp-strøms-kanalen. Det <em>infererer</em> en kollisjon ved fravær av svar — hvis CMTS ikke allokerer en mini-slot i den neste MAP-meldingen som svar på forespørselen, antar modemet at requesten kolliderte.</p>
+          <p><strong>Hvorfor:</strong> Etter inferert kollisjon brukes <em>binær eksponentiell backoff</em> (samme prinsipp som Ethernet) for å spre retransmisjonene i tid. Dette ligner mer på ren ALOHA enn på CSMA/CD, fordi modemet ikke kan høre andre senderes signaler på opp-strøms-kanalen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er Internet-checksum, hvor brukes den, og hvordan er den forskjellig fra CRC?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Internet-checksum behandler dataene som en sekvens av 16-bits heltall, summerer dem, og tar 1-komplementet. Den brukes i <strong>TCP, UDP og IP</strong> (transportlaget og nettverkslaget). CRC brukes på <strong>lenkelaget</strong> (Ethernet, WiFi).</p>
+          <p><strong>Hvorfor forskjell:</strong> Transportlaget kjører i programvare i operativsystemet — checksum er enkel og rask å regne ut i SW. Lenkelaget kjører i dedikert maskinvare på NIC-en, hvor mer komplekse CRC-operasjoner går lynraskt med bare et skiftregister og noen XOR-porter. CRC fanger flere feiltyper (særlig burst-feil) enn checksum, men er overkill for SW-implementasjon.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er Forward Error Correction (FEC), og når foretrekkes det fremfor retransmisjon?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> FEC er feilretting i mottaker — sender legger til nok redundans (f.eks. via Hamming-koder eller 2D-paritet) til at mottakeren kan rette enkelte feil <em>uten</em> å be om retransmisjon. To-dimensjonal paritet er det enkleste eksemplet (kan rette én bit).</p>
+          <p><strong>Når foretrekkes FEC:</strong> Når propageringsforsinkelsen er stor (lange dyp-rom-lenker eller satellitt) — å vente på en NAK + retransmisjon tar for lang tid. Også for sanntidsapplikasjoner som ikke tåler retransmisjonsforsinkelse. Brukes i lyd-CDer og strømming. Ulempen er ekstra båndbredde-overhead også når det ikke er feil.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>List opp tre feildeteksjons-strategier som brukes i nettverk, og deres styrker.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <ol>
+            <li><strong>Paritetsbit (1D eller 2D)</strong> — én eller flere ekstra bits, fanger alle odde antall feil. 2D-paritet kan også <em>rette</em> en enkeltbitfeil. Enkel men relativt svak.</li>
+            <li><strong>Internet-checksum</strong> — sum av 16-bits ord, tar 1-komplementet. Svakere enn CRC, men raskt å regne i SW. Brukes mest på transport- og nettverkslaget (TCP, UDP, IP).</li>
+            <li><strong>CRC (Cyclic Redundancy Check)</strong> — modulo-2-polynomdivisjon. Fanger alle bursts ≤ r bit, alle odde antall feil, og lange bursts med sannsynlighet 1 − 0.5ʳ. Implementert i HW på NIC-en. Standard på Ethernet (CRC-32).</li>
+          </ol>
+          <p><strong>Hvorfor flere alternativer:</strong> Sterkere deteksjon koster mer regnetid og flere overhead-bits. Lavfeilrate-lenker bruker raske/svake metoder; krevende lenker bruker mer robuste.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er de fire ønskede egenskapene til en multiple access-protokoll?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <ol>
+            <li>Når <em>kun én</em> node har data å sende, får den hele kanalkapasiteten R.</li>
+            <li>Når M noder har data, får hver i snitt R/M (rettferdig deling).</li>
+            <li>Desentralisert — ingen master-node som er enkeltfeilpunkt.</li>
+            <li>Enkel og billig å implementere.</li>
+          </ol>
+          <p><strong>Hvorfor:</strong> <em>Ingen</em> reell protokoll oppfyller alle fire samtidig — de tre klassene representerer forskjellige kompromisser. TDM/FDM mister 1; slotted ALOHA mister 2; polling mister 3; alle reelle systemer betaler en pris et sted.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke av de fire MAC-egenskapene oppfyller slotted ALOHA, og hvilke oppfyller token passing?</div>
+        <div data-fc-back>
+          <p><strong>Slotted ALOHA:</strong></p>
+          <ul>
+            <li>✓ Egenskap 1 — én aktiv node får hele R</li>
+            <li>✗ Egenskap 2 — kollisjoner gjør at maks effektivitet er 1/e ≈ 37 %, ikke ekte R/M</li>
+            <li>✓ Egenskap 3 — desentralisert, ingen master</li>
+            <li>✓ Egenskap 4 — meget enkel</li>
+          </ul>
+          <p><strong>Token passing:</strong></p>
+          <ul>
+            <li>~ Egenskap 1 — en aktiv node får R, men venter på tokenet</li>
+            <li>✓ Egenskap 2 — rettferdig deling</li>
+            <li>✓ Egenskap 3 — desentralisert (ingen master)</li>
+            <li>✗ Egenskap 4 — ikke enkel: token-tap krever gjenopprettingsmekanisme</li>
+          </ul>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Sammenlign størrelsen på MAC-, IPv4- og IPv6-adresserommene.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <ul>
+            <li><strong>MAC:</strong> 48 bit → 2⁴⁸ ≈ 2.8 × 10¹⁴ adresser</li>
+            <li><strong>IPv4:</strong> 32 bit → 2³² ≈ 4.3 × 10⁹ adresser</li>
+            <li><strong>IPv6:</strong> 128 bit → 2¹²⁸ ≈ 3.4 × 10³⁸ adresser</li>
+          </ul>
+          <p><strong>Hvorfor:</strong> MAC ble designet med rikelig margin (en NIC per dings) men er flat — ingen aggregering. IPv4 er hierarkisk, men i praksis tom — derav NAT og IPv6. IPv6-rommet er astronomisk stort og går aldri tom i praksis.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Etter den 5. kollisjonen i CSMA/CD: hva er P(K = 4), og hvor lenge venter noden i sekunder på 10 Mbps Ethernet?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Etter m kollisjoner velges K uniformt fra {0, 1, …, 2ᵐ − 1}. Med m = 5 er settet {0, …, 31} — 32 mulige verdier — så <strong>P(K = 4) = 1/32</strong>.</p>
+          <p>Ventetiden er K · 512 bit-tider = 4 · 512 = 2048 bit-tider. På 10 Mbps tilsvarer 1 bit 0.1 µs (= 10⁻⁷ s), så ventetiden blir <strong>2048 · 0.1 µs = 204.8 µs</strong> ≈ 0.2 ms.</p>
+          <p><strong>Hvorfor formelen:</strong> 512 bit-tider tilsvarer rundturs-propagering i et maks Ethernet-segment — slik at en ny ramme ikke kan kollidere med en pågående.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvis alle lenker tilbød pålitelig levering på lenkenivå, ville TCPs pålitelighetstjeneste vært overflødig?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Nei. Selv med pålitelige lenker kan datagrammer fortsatt gå tapt eller bli korrupte <em>i ruterne</em> — for eksempel ved bufferoverflyt (kø-tap), feil i ruterminne, eller andre hendelser <em>mellom</em> lenkene. Pålitelighet på lenkenivå garanterer kun at hvert <em>hopp</em> leverer rett, ikke at <em>ende-til-ende</em>-leveransen er rett.</p>
+          <p><strong>Hvorfor:</strong> Dette er den klassiske «end-to-end»-argumentasjonen. Pålitelighet trengs der den brukes — hos endepunktene. TCP gir ende-til-ende-garantier som ingen sum av lenkelagsgarantier kan matche.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er ARP-tabellens TTL, og hvorfor finnes den?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Hver oppføring i ARP-tabellen har en <strong>TTL</strong> (Time-To-Live), typisk 20 minutter. Når TTL utløper, slettes oppføringen og må læres på nytt ved neste behov.</p>
+          <p><strong>Hvorfor:</strong> En verts MAC-adresse kan endres (nytt nettverkskort, virtualisert vert, en annen vert som arver IP-en). Hvis ARP-cachen aldri oppdateres, vil rammer feilsendes til en gammel adresse for alltid. TTL gjør at systemet selv-helbreder etter endringer, uten manuell konfigurasjon. Det er prisen for plug-and-play.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er den «sårbare perioden» i ALOHA, og hvorfor er den dobbelt så lang i pure som i slotted?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Den sårbare perioden er tidsvinduet hvor en annen nodes start vil kollidere med din ramme. I <strong>slotted ALOHA</strong> er den 1 slot (T) — en kollisjon kan bare skje hvis en annen node sender i samme slot. I <strong>pure ALOHA</strong> er den 2T — din ramme kan kollidere med en annen som startet inntil T sekunder før (slutten av deres ramme overlapper med starten av din), og med en annen som starter inntil T sekunder etter (starten deres overlapper med slutten av din).</p>
+          <p><strong>Hvorfor det forklarer effektiviteten:</strong> Dobbelt så lang sårbar periode → dobbelt så stor kollisjonssannsynlighet → halvparten av effektiviteten: 1/(2e) i pure mot 1/e i slotted.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen på filtering og forwarding i en svitsj?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <ul>
+            <li><strong>Filtering</strong> — å bestemme om en ramme skal kastes eller videreføres. Brukes når svitsjen ser at destinasjonen er på samme port som rammen kom inn på (mottakeren har allerede hørt rammen).</li>
+            <li><strong>Forwarding</strong> — å bestemme hvilken port rammen skal sendes ut på, og legge den i riktig output-buffer.</li>
+          </ul>
+          <p><strong>Hvorfor begrepene:</strong> Begge skjer ved oppslag i samme svitsjtabell, men beskriver to ulike utfall. Filtering hindrer unødvendig trafikk på segmenter som ikke trenger å se rammen — det er en del av grunnen til at svitsjer er bedre enn hubber.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Når en svitsj mottar en ramme på port x — hvilke tre tilfeller kan oppstå basert på destinasjons-MAC?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <ol>
+            <li><strong>Ingen oppføring</strong> for destinasjon → svitsjen <em>flooder</em> rammen ut på alle porter unntatt port x.</li>
+            <li><strong>Oppføring peker på samme port x</strong> → svitsjen <em>filtrerer</em> (kaster) rammen, fordi mottakeren allerede har hørt den.</li>
+            <li><strong>Oppføring peker på en annen port y</strong> → svitsjen <em>videresender</em> rammen ut på port y.</li>
+          </ol>
+          <p><strong>Hvorfor flooding er trygt:</strong> Selv om floodede rammer skaper unødvendig trafikk midlertidig, er de selvbegrensende. Mottakeren svarer, og da lærer svitsjen hvor mottakeren ligger — fremtidig kommunikasjon blir målrettet.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er aging i en svitsjtabell, og hvorfor er det viktig?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Aging er at hver tabelloppføring har et tidsstempel og slettes etter en periode uten trafikk fra MAC-en (typisk noen minutter). Når en ramme kommer fra en kjent MAC, oppdateres tidsstempelet.</p>
+          <p><strong>Hvorfor:</strong> Verter flyttes mellom porter (laptop kobles til en annen kontakt, server byttes ut, kabel kobles om). Uten aging ville en flyttet vert få trafikk sendt til feil port for alltid. Aging gjør svitsjen selvtilpassende — en del av plug-and-play-egenskapen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>På et delt LAN sender A en unicast-ramme til B. Vil C's adapter prosessere rammen? Hva endres ved broadcast?</div>
+        <div data-fc-back>
+          <p><strong>Unicast (dst-MAC = B):</strong> C's adapter mottar bitsekvensen fysisk, men sjekker destinasjons-MAC, ser at det ikke er sin egen, og kaster rammen i HW. Ingenting passes opp til nettverkslaget. C's CPU forstyrres ikke.</p>
+          <p><strong>Broadcast (dst-MAC = FF-FF-FF-FF-FF-FF):</strong> C's adapter aksepterer rammen og sender innholdet opp til nettverkslaget — som så avgjør hva som skal skje med datagrammet (typisk DHCP eller ARP).</p>
+          <p><strong>Hvorfor:</strong> Adressefiltrering i HW er nettopp poenget med MAC-adresser — å spare CPU-en for å bli forstyrret av all trafikken på et delt medium.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Kan samme MAC-adresse opptre i to forskjellige ARP-tabeller på samme ruter?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Nei, ikke i normal drift. Hvert ARP-modul tilhører ett spesifikt grensesnitt (subnett) og har bare oppføringer for verter på sin egen lenke. En vert har én NIC per LAN, så MAC-en sees kun i ett av subnettene ruteren er koblet til.</p>
+          <p><strong>Et unntak:</strong> Hvis en vert har <em>flere</em> NIC-er (én per subnett), har den forskjellige MAC-er per NIC — så fortsatt ingen overlapp. Hvis adressen <em>er</em> duplisert i to tabeller, er det en feil (MAC-konflikt eller cache-forgiftning).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>En NIC-produsent får ett OUI-block (24 bit reservert OUI, 24 bit fritt). Hvor mange år rekker det hvis de produserer 1 million adaptere per år?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Ett OUI-block gir 2²⁴ = 16 777 216 unike adresser. Med 1 000 000 adaptere/år rekker det:</p>
+          <p style="text-align:center"><code>2²⁴ / 10⁶ ≈ 16.78 år</code></p>
+          <p><strong>Hvorfor det betyr noe:</strong> Store produsenter (Intel, Apple, Samsung) bruker opp et OUI-block raskt og får tildelt flere fra IEEE. Eksemplet illustrerer hvorfor MAC-adresserommet (selv om det er stort: 2⁴⁸) må administreres.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor sendes ARP-query som broadcast, men ARP-reply som unicast?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En ARP-query må nå alle for å finne den ene som har den etterspurte IP-en — derfor broadcast (FF-FF-FF-FF-FF-FF). Men i query-en står spørrerens egen MAC-adresse, så den som svarer vet nøyaktig hvor svaret skal — derfor unicast.</p>
+          <p><strong>Hvorfor:</strong> Broadcasting er dyrt — alle adaptere må prosessere rammen og kanskje vekke CPU-en. Bruk det bare når man <em>må</em>. Etter at en node er funnet via ARP, kan all videre kommunikasjon gå unicast.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor har en svitsj output-buffere, og hva betyr det for forsinkelse?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Flere innkommende rammer kan være på vei til samme utgangsport samtidig (eller raskere enn portens linehastighet kan ta unna). Svitsjen lagrer dem i en output-buffer per port til de kan sendes. Dette er <em>store-and-forward</em>-prinsippet, akkurat som i en ruter.</p>
+          <p><strong>Konsekvens for forsinkelse:</strong> En ramme kan oppleve køforsinkelse i svitsjen om porten er travel. Hvis bufferet blir fullt, dropper svitsjen rammer (akkurat som en ruter). Tap på grunn av køoverflyt skjer derfor også på lenkelaget, ikke bare i ruterne.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor sies svitsjer å være «plug-and-play», mens rutere ikke er det?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En svitsj trenger ingen konfigurasjon — den lærer opp tabellen sin selv ved å observere kilde-MAC i innkommende rammer (self-learning). Plugg den inn, og den fungerer.</p>
+          <p><strong>Rutere må konfigureres</strong> fordi: hvert grensesnitt trenger en IP-adresse i riktig subnett, det må settes opp en rutealgoritme (OSPF, BGP) eller statiske ruter, og IP-tildeling for hosts (DHCP) må ofte settes opp. IP-adresser er ikke innbrent — de må styres.</p>
+          <p><strong>Hvorfor:</strong> Svitsjer er enkle og raske, men begrenset til ett LAN. Rutere er kraftigere, men koster mer i konfigurasjons- og prosesseringstid. Praksis: bruk svitsjer innenfor en bygning, rutere mellom subnett.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva betyr Ethernet-navngivningen «100BASE-T» og «1000BASE-LX»?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <ul>
+            <li><strong>100 / 1000</strong> — datarate i Mbit/s (100 Mbit/s, 1 Gbit/s, osv.).</li>
+            <li><strong>BASE</strong> — baseband-overføring (kun Ethernet-trafikk på mediet, ingen frekvensmultipleksing).</li>
+            <li><strong>T</strong> — twisted-pair kobber.</li>
+            <li><strong>LX, FX, SX</strong> — fiberbaserte varianter (X = optisk fiber).</li>
+          </ul>
+          <p><strong>Hvorfor:</strong> Alle 802.3-Ethernet-standarder deler samme rammeformat og MAC-protokoll, men har ulik datarate og ulikt fysisk medium. Selv om standardene heter forskjellige ting, ser rammen din lik ut på 10BASE-T (10 Mbit/s) og 10GBASE-T (10 Gbit/s).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er innholdet i Ethernets 8-byte preamble, og hva gjør den siste byten spesielt?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> De første 7 bytene er <code>10101010</code> hver — en jevn vekslende bit-strøm som lar mottakerens klokke synkronisere seg med senderens. Den 8. byten er <code>10101011</code> — siste to bit «11» er <em>start frame delimiter</em> (SFD) som markerer at rammen begynner.</p>
+          <p><strong>Hvorfor:</strong> Senderens og mottakerens klokker drifter litt fra hverandre. Ved å først sende et forutsigbart mønster gir senderen mottakeren tid til å låse seg på riktig bit-tid. SFD signaliserer at preamblen er over og at neste byte er destinasjons-MAC.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva sier formelen for CSMA/CD-effektivitet, og hva betyr den intuitivt?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Effektivitet ≈ <code>1 / (1 + 5 · d_prop / d_trans)</code>, der d_prop er propageringstiden mellom de fjerneste nodene og d_trans er sendetiden for en maks-størrelse ramme.</p>
+          <p><strong>Intuisjon:</strong></p>
+          <ul>
+            <li>Hvis d_prop → 0 (kort kabel) → effektiviteten → 1. Kollisjoner detekteres umiddelbart, ingen tid sløses.</li>
+            <li>Hvis d_trans → ∞ (store rammer) → effektiviteten → 1. Når en node først har kanalen, holder den den lenge.</li>
+            <li>Lange kabler eller små rammer reduserer effektiviteten.</li>
+          </ul>
+          <p>Dette er <em>mye</em> bedre enn slotted ALOHAs 37 % — derfor brukes CSMA/CD når kabellengden tillater kollisjonsdeteksjon i tide.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva betyr det at en svitsj er «transparent», og hva er konsekvensen?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Transparent betyr at vertene ikke vet at svitsjen er der — de adresserer rammer direkte til andre verters MAC, ikke til svitsjen. Svitsjen videresender bare basert på destinasjons-MAC; den har ingen egen MAC-adresse på portene som hostene ser.</p>
+          <p><strong>Konsekvens:</strong> Du kan plugge en svitsj inn i et eksisterende nett uten å konfigurere noe på vertene. Svitsjen er usynlig for IP-laget. Sammenlign med en ruter: ruteren har en egen IP-adresse på hvert grensesnitt, og hostene må kjenne den (default gateway).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor er det <em>ingen</em> protokoll som oppfyller alle fire MAC-egenskaper samtidig?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Hver klasse må gi opp minst én egenskap:</p>
+          <ul>
+            <li><strong>Kanalpartisjonering</strong> (TDM/FDM/CDMA) gir opp egenskap 1 — én aktiv node får bare R/N, ikke R.</li>
+            <li><strong>Random access</strong> (ALOHA, CSMA/CD) gir opp egenskap 2 — kollisjoner gjør at M aktive noder ikke deler R/M rettferdig.</li>
+            <li><strong>Polling</strong> gir opp egenskap 3 — krever en master, som er enkeltfeilpunkt.</li>
+            <li><strong>Token passing</strong> gir opp egenskap 4 — token-tap krever ekstra gjenopprettingsmekanismer.</li>
+          </ul>
+          <p><strong>Hvorfor:</strong> Det er en grunnleggende kompromiss-situasjon. Hvilken klasse du velger avhenger av lasten du forventer og hvor robust du trenger systemet.</p>
         </div>
       </li>
     </ol>
@@ -660,16 +957,7 @@
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 19 · Vanskelig</div>
-    <div class="q-text">Hva er Spanning Tree Protocol (STP), og hvilket problem løser det?</div>
-    <div class="quiz-reveal">
-      <button class="reveal-btn">Se svar</button>
-      <div class="answer">STP hindrer lag-2-løkker i Ethernet-nett med redundante lenker. Uten STP ville broadcast-frames sendes rundt i en evig sløyfe (broadcast storm). STP velger en rot-svitsj, beregner korteste sti fra alle svitsjer til roten, og blokkerer logisk alle lenker som ikke tilhører dette treet. Blokkerte lenker kan aktiveres igjen hvis primærlenken feiler.</div>
-    </div>
-  </div>
-
-  <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 20 · Lett</div>
+    <div class="q-label">Spørsmål 19 · Lett</div>
     <div class="q-text">Hva inneholder en Ethernet-ramme?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
@@ -678,7 +966,7 @@
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 21 · Middels</div>
+    <div class="q-label">Spørsmål 20 · Middels</div>
     <div class="q-text">Hva er Ethernet MTU?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
@@ -687,11 +975,236 @@
   </div>
 
   <div class="quiz" data-quiz>
-    <div class="q-label">Spørsmål 22 · Vanskelig</div>
+    <div class="q-label">Spørsmål 21 · Vanskelig</div>
     <div class="q-text">Hva er fordelen med retransmisjon i lenkelaget?</div>
     <div class="quiz-reveal">
       <button class="reveal-btn">Se svar</button>
       <div class="answer">Lenkelagsretransmisjon kan skjule enkelte feil fra transportlaget og forbedre opplevd ytelse.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 22 · Lett</div>
+    <div class="q-text">Hvilken klasse multiple access-protokoll tilhører CSMA/CD og slotted ALOHA?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Begge er random access-protokoller (Klasse 2). De sender uten reservasjon på forhånd og håndterer kollisjoner i etterkant.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 23 · Lett</div>
+    <div class="q-text">Hvilken klasse multiple access-protokoll tilhører TDM, FDM og CDMA?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Alle tre er kanalpartisjoneringsprotokoller (Klasse 1). De gir hver node sin egen del av kanalen — i tid (TDM), frekvens (FDM) eller kode (CDMA).</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 24 · Lett</div>
+    <div class="q-text">Hvilken klasse multiple access-protokoll tilhører polling og token passing?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Begge er «ta tur»-protokoller (Klasse 3). En koordineringsmekanisme bestemmer hvem som får sende: en master-node ved polling, eller et token som sirkulerer ved token passing.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 25 · Middels</div>
+    <div class="q-text">Hva er CDMAs grunnprinsipp, og hvordan skiller det seg fra TDM/FDM?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">CDMA gir hver node en unik kode. Alle sender samtidig på samme frekvens; mottakeren bruker korrelasjon med riktig kode for å trekke ut signalet til den senderen den vil høre på. Dimensjonen som deles er «kode», ikke tid eller frekvens.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 26 · Vanskelig</div>
+    <div class="q-text">Hvordan kombinerer DOCSIS flere multiple access-klasser i ett kabelnett?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">DOCSIS bruker FDM for å skille opp- og nedstrøms-kanaler, TDM-lignende mini-slots i hver opp-strøms-kanal som CMTS sentralt allokerer via MAP-meldinger på nedstrøm, og random access (med binær eksponentiell backoff) for å sende mini-slot-requests.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 27 · Middels</div>
+    <div class="q-text">I DOCSIS — hvordan oppdager et kabelmodem at en mini-slot-request kolliderte?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Modemet kan ikke gjøre carrier sense eller kollisjonsdeteksjon på opp-strøms-kanalen. Det infererer en kollisjon ved fravær av svar — hvis CMTS ikke allokerer en mini-slot i neste MAP-melding, antas requesten å ha kollidert, og modemet bruker binær eksponentiell backoff før retransmisjon.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 28 · Middels</div>
+    <div class="q-text">Hvor brukes Internet-checksum, og hva brukes på lenkelaget istedenfor?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Internet-checksum brukes i TCP, UDP og IP — implementeres i programvare. Lenkelaget bruker CRC, som er mer robust mot bursts og implementeres i maskinvare på NIC-en. Begrunnelse: SW må være enkelt og raskt; HW kan kjøre tyngre regning lynraskt.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 29 · Vanskelig</div>
+    <div class="q-text">Hva er Forward Error Correction (FEC), og når er det å foretrekke fremfor retransmisjon?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">FEC legger til nok redundans til at mottakeren kan rette feil uten å be om retransmisjon. Foretrekkes når propageringsforsinkelsen er stor (satellitt, dyp-rom) eller når sanntidsapplikasjoner ikke tåler retransmisjonsforsinkelse. Ulempen er konstant båndbredde-overhead også når det ikke er feil.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 30 · Vanskelig</div>
+    <div class="q-text">Etter 5 kollisjoner i CSMA/CD: hva er P(K = 4), og hvor lenge venter noden i mikrosekunder på 10 Mbps Ethernet?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">K velges uniformt fra {0, ..., 2⁵ − 1} = {0, ..., 31}, så P(K = 4) = 1/32. På 10 Mbps tar 1 bit 0.1 µs, så ventetiden = 4 · 512 · 0.1 µs = 204.8 µs.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 31 · Middels</div>
+    <div class="q-text">Sammenlign størrelsen på MAC-, IPv4- og IPv6-adresserommene.</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">MAC: 48 bit (2⁴⁸ ≈ 2.8·10¹⁴). IPv4: 32 bit (2³² ≈ 4.3·10⁹). IPv6: 128 bit (2¹²⁸ ≈ 3.4·10³⁸). MAC er flat (ingen aggregering); IPv4 er hierarkisk men i praksis tom; IPv6 er astronomisk stor.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 32 · Middels</div>
+    <div class="q-text">Hvis alle lenker hadde pålitelig levering på lenkenivå, ville TCPs pålitelighet vært overflødig?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Nei. Pålitelighet på lenkenivå dekker ikke tap mellom lenkene — for eksempel bufferoverflyt i ruterne, feil i ruterminne, eller andre hendelser i ruteren. Bare ende-til-ende-pålitelighet (TCP) gir ekte garantier mellom endepunktene. Dette er den klassiske «end-to-end»-argumentasjonen.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 33 · Lett</div>
+    <div class="q-text">Hvilke tre tilfeller kan en svitsj havne i når den slår opp en destinasjons-MAC i tabellen sin?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">(1) Ingen oppføring → flood (send ut på alle porter unntatt inngangen). (2) Oppføring peker på samme port som inngang → kast (filtrer). (3) Oppføring peker på en annen port → videresend kun dit.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 34 · Lett</div>
+    <div class="q-text">Hvorfor sendes ARP-query som broadcast, men ARP-reply som unicast?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Spørsmålet må nå alle for å finne den ene som har IP-en (broadcast). Svaret kjenner spørrerens MAC fra query-en, så det sendes direkte (unicast) for å unngå å belaste hele LAN-et. Broadcast brukes bare når man må.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 35 · Vanskelig</div>
+    <div class="q-text">Hva er den «sårbare perioden» i pure ALOHA, og hvorfor er den 2T?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Sårbar periode = tidsvinduet hvor en annens transmisjon vil overlappe din. I pure ALOHA er den 2T fordi en annen kan ha startet inntil T før (slutten overlapper med start av din) eller starte inntil T etter (start overlapper med slutten av din). I slotted ALOHA er sårbar periode bare T → halvparten av kollisjonssannsynligheten → dobbelt så høy effektivitet.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 36 · Middels</div>
+    <div class="q-text">Hva er aging i en svitsjtabell?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Tabelloppføringer slettes etter en periode uten trafikk fra MAC-en. Dette håndterer at verter flyttes mellom porter — uten aging ville flyttede verter få trafikk feilsendt for alltid.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 37 · Lett</div>
+    <div class="q-text">Hva får en nykoblet vert fra en DHCP-server?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">IP-adresse, nettmaske (subnett-prefiks), IP-en til default gateway-router, og IP-en til en DNS-server. Uten disse kan ikke verten lage IP-pakker, vite om destinasjon er lokal eller ekstern, nå utenfor LAN-et, eller slå opp domenenavn.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 38 · Vanskelig</div>
+    <div class="q-text">Hva er de fire ønskede egenskapene til en multiple access-protokoll?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">(1) Én aktiv node får hele R. (2) M aktive noder deler rettferdig R/M hver. (3) Desentralisert (ingen master). (4) Enkel å implementere. Ingen reell protokoll oppfyller alle fire — hver klasse er et kompromiss som gir opp minst én.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 39 · Middels</div>
+    <div class="q-text">Hva er forskjellen på filtering og forwarding i en svitsj?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Filtering avgjør om en ramme skal kastes (når mottakeren er på samme port-segment som senderen). Forwarding avgjør hvilken port den skal sendes ut på når mottakeren er på et annet segment. Begge skjer ved oppslag i samme svitsjtabell, men beskriver to ulike utfall.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 40 · Vanskelig</div>
+    <div class="q-text">En NIC-produsent får ett OUI-block (24 bit). Hvor mange år rekker det med 1 million produserte adaptere per år?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">2²⁴ = 16 777 216 unike adresser. 16 777 216 / 1 000 000 ≈ 16.78 år. Store produsenter må derfor få tildelt flere OUI-blokker over tid.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 41 · Middels</div>
+    <div class="q-text">På et delt LAN sender A til B med dst-MAC = B. Vil C's adapter prosessere rammen?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Nei. C's adapter mottar rammen fysisk, men ser at dst-MAC ikke er sin egen og kaster den i HW. Datagrammet passes ikke opp. Hvis A bruker broadcast (FF-FF-FF-FF-FF-FF), aksepterer C-adapteren rammen og leverer datagrammet til nettverkslaget.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 42 · Lett</div>
+    <div class="q-text">Hva er ARP-tabellens TTL, og hvorfor finnes den?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Hver oppføring har en TTL (typisk 20 minutter). Etter utløp slettes oppføringen og må læres på nytt. TTL gjør at systemet selv-helbreder etter endringer (nytt NIC, virtualisert vert, MAC som arves) uten manuell konfigurasjon.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 43 · Middels</div>
+    <div class="q-text">Hva sier formelen for CSMA/CD-effektivitet, og hva forteller den oss?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Effektivitet ≈ 1 / (1 + 5·d_prop/d_trans). Den nærmer seg 1 når propageringen er kort (kollisjoner detekteres umiddelbart) eller når rammene er store (lang sendetid bruker mer av kanalen produktivt). Lange kabler eller små rammer reduserer effektiviteten.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 44 · Lett</div>
+    <div class="q-text">Hva betyr Ethernet-navnet «100BASE-T»?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">100 = 100 Mbit/s. BASE = baseband-overføring. T = twisted-pair kobber. Andre fysiske medium-suffiks: LX/FX/SX = fiber. Alle 802.3-standarder deler samme rammeformat selv om det fysiske mediet og hastigheten varierer.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 45 · Middels</div>
+    <div class="q-text">Hva er innholdet i Ethernets 8-byte preamble?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">7 byte med mønsteret 10101010 (synkroniserer mottakerens klokke med senderens) + 1 byte 10101011 hvor de siste to bitene «11» er Start Frame Delimiter (SFD) og signaliserer at selve rammen begynner.</div>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <div class="q-label">Spørsmål 46 · Lett</div>
+    <div class="q-text">Hvorfor sies en svitsj å være «transparent»?</div>
+    <div class="quiz-reveal">
+      <button class="reveal-btn">Se svar</button>
+      <div class="answer">Vertene vet ikke at svitsjen er der — de adresserer rammer direkte til andre verters MAC, ikke til svitsjen. Svitsjens porter har ikke MAC-adresser som hostene ser. Du kan plugge en svitsj inn i et eksisterende LAN uten å konfigurere noe på vertene.</div>
     </div>
   </div>
 </div>

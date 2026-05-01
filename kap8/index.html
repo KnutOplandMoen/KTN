@@ -622,99 +622,408 @@
       </li>
 
       <li data-card>
-        <div data-fc-front>Hva er <strong>forward secrecy</strong>, og hvorfor er ephemeral Diffie-Hellman avgjørende for å oppnå det?</div>
+        <div data-fc-front>Hvorfor sender begge parter i TLS-håndtrykket en HMAC over <em>alle</em> håndtrykksmeldinger på slutten (steg 5–6)?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> Forward secrecy (også kalt <em>perfect forward secrecy, PFS</em>) betyr at kompromittering av en parts <em>langtids private nøkkel</em> i framtiden <strong>ikke</strong> skal gjøre det mulig å dekryptere gamle, lagrede økter. Hver økt skal være kryptografisk isolert fra de andre.</p>
-          <p><strong>Hvorfor ephemeral DH:</strong> I tradisjonell RSA-basert TLS sendte klienten en sesjonsnøkkel kryptert med serverens offentlige nøkkel. Hvis Trudy lagret den krypterte trafikken og senere stjal serverens private nøkkel, kunne hun dekryptere alle gamle økter. Med <em>ephemeral</em> Diffie-Hellman (DHE/ECDHE) genererer hver part nye, kortvarige DH-parametere for <em>hver</em> økt, og kaster dem etterpå — sesjonsnøkkelen utledes uten at den langsiktige nøkkelen krypterer den. TLS 1.3 krever forward secrecy; legacy RSA-key-exchange er fjernet.</p>
-          <p><strong>Praktisk betydning:</strong> Statlige aktører som lagrer kryptert trafikk for senere dekryptering blir maktesløse. «Harvest now, decrypt later» mister verdi.</p>
+          <p><strong>Svar:</strong> ClientHello (med liste over støttede cipher suites), ServerHello, sertifikat og PMS sendes alle <em>før</em> kryptering er etablert. På slutten sender klienten en HMAC over alle håndtrykksmeldinger den har sett, og serveren tilsvarende. Begge regner ut forventet HMAC og avbryter hvis det ikke stemmer.</p>
+          <p><strong>Hvorfor:</strong> Uten dette kunne Trudy som <em>woman-in-the-middle</em> fjerne sterke algoritmer fra ClientHello og tvinge fram en svak cipher suite (<em>downgrade attack</em>). Siden HMAC bruker M-nøkkel som bare partene kjenner, oppdager begge enhver tukling med håndtrykket.</p>
         </div>
       </li>
 
       <li data-card>
-        <div data-fc-front>Hva er forskjellen mellom <em>autentisering</em> og <em>autorisasjon</em>? Begrepene blandes ofte.</div>
+        <div data-fc-front>Hva er forskjellen mellom <em>connection replay</em> og <em>segment replay</em> i TLS, og hvilken mekanisme stopper hver?</div>
         <div data-fc-back>
           <p><strong>Svar:</strong></p>
-          <p><strong>Autentisering (authentication):</strong> beviser <em>hvem du er</em>. «Er denne brukeren virkelig Alice?» Verifiseres med passord, sertifikat, biometri eller besittelse av en privat nøkkel.</p>
-          <p><strong>Autorisasjon (authorization):</strong> avgjør <em>hva du har lov til</em>. «Har Alice lov til å lese denne filen?» Verifiseres mot en tilgangskontroll-policy etter at autentiseringen er fullført.</p>
-          <p><strong>Hvorfor det er en av de fire sikkerhetsegenskapene:</strong> Autentisering er nevnt eksplisitt i kap. 8.1 som én av de fire egenskapene. Autorisasjon er <em>ikke</em> i listen — den er en applikasjonsbeslutning som forutsetter at autentisering først er gjort. Eksempel: TLS-sertifikater autentiserer at du snakker med banken; banken bestemmer selv om du har autorisasjon til å overføre 10 000 kr. Kryptografi løser autentisering; tilgangsmodeller løser autorisasjon.</p>
+          <p><strong>Segment replay (record-nivå):</strong> Trudy fanger en gyldig record og spiller den av senere i samme økt. Stoppes av <em>sekvensnummer</em> i HMAC-beregningen.</p>
+          <p><strong>Connection replay (hel økt):</strong> Trudy fanger hele TLS-økten og spiller den av neste dag som om hun var Bob. Stoppes av <em>nonces</em> i ClientHello/ServerHello — siden Alice sender ny nonce hver økt blir Master Secret forskjellig, og gamle records vil feile MAC-sjekk.</p>
+          <p><strong>Hvorfor begge trengs:</strong> Sekvensnummer alene holder ikke for hele økter (de teller fra 0 hver gang). Nonces alene holder ikke <em>innen</em> en økt. Til sammen dekker de begge angrep.</p>
         </div>
       </li>
 
       <li data-card>
-        <div data-fc-front>Hva er <strong>Diffie-Hellman</strong> nøkkelutveksling — på et intuitivt nivå? Hvordan kan to parter dele en hemmelighet over en kanal Trudy lytter på?</div>
+        <div data-fc-front>Hva er <em>Pre-Master Secret (PMS)</em>, og hvordan utledes Master Secret (MS) fra den?</div>
         <div data-fc-back>
-          <p><strong>Svar (intuisjon, uten matematikk):</strong> Tenk på malingsblanding. Alice og Bob enes offentlig om en felles «basemaling» (gul). Hver av dem velger en <em>privat farge</em> (Alice: rød, Bob: blå) — disse holder de hemmelige.</p>
-          <p>1. Alice blander gul + rød → <em>orange</em>, og sender orange til Bob.<br>
-          2. Bob blander gul + blå → <em>grønn</em>, og sender grønn til Alice.<br>
-          3. Alice blander mottatt grønn + sin røde → en spesiell <em>brun</em>.<br>
-          4. Bob blander mottatt orange + sin blå → samme brune.</p>
-          <p>De har nå samme hemmelige farge (brun), uten å ha sendt den. Trudy ser bare gul, orange og grønn — å «skille» en blandet farge i komponentene er praktisk umulig.</p>
-          <p><strong>Hvorfor det fungerer matematisk:</strong> I stedet for maling brukes <em>modulær eksponentiering</em>: g, g<sup>a</sup> mod p, g<sup>b</sup> mod p sendes; den felles hemmeligheten g<sup>ab</sup> mod p kan beregnes av begge, men det <em>diskrete logaritmeproblemet</em> gjør at Trudy ikke kan finne a eller b fra det hun ser. DH (1976) løste det 2000 år gamle nøkkeldistribusjonsproblemet, og er grunnlaget for moderne TLS-håndtrykk.</p>
+          <p><strong>Svar:</strong> Klienten genererer en tilfeldig PMS, krypterer den med serverens offentlige nøkkel og sender EMS = K<sub>A</sub><sup>+</sup>(PMS). Begge parter kombinerer PMS med klient-nonce og server-nonce gjennom en standardisert <em>key derivation function</em> (KDF) for å få <strong>Master Secret</strong>. MS deles så opp i fire nøkler: E<sub>A</sub>, E<sub>B</sub>, M<sub>A</sub>, M<sub>B</sub>.</p>
+          <p><strong>Hvorfor PMS i mellom:</strong> Public-key-kryptering brukes bare på den korte PMS-en (rask). Selve MS regnes lokalt — den krysser aldri linjen. Nonces sikrer at MS er forskjellig hver økt, selv om PMS skulle gjenbrukes.</p>
         </div>
       </li>
 
       <li data-card>
-        <div data-fc-front>I sikker e-post: hvorfor <em>signere først, deretter kryptere</em> (sign-then-encrypt) i stedet for omvendt?</div>
+        <div data-fc-front>Hvordan kan en tilstandsløs brannmur tillate at <em>interne klienter</em> kobler ut til Internett, men hindre at <em>eksterne klienter</em> kobler inn? (TCP ACK-bit-trikset.)</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> Alice (1) beregner H(m), (2) signerer med K<sub>A</sub><sup>-</sup>, og (3) krypterer både meldingen og signaturen sammen med en symmetrisk sesjonsnøkkel — som så pakkes inn i Bobs offentlige nøkkel. Bob gjør operasjonene i omvendt rekkefølge: dekrypterer K<sub>S</sub>, dekrypterer meldingen + signaturen, og verifiserer signaturen.</p>
-          <p><strong>Hvorfor signere først:</strong></p>
-          <p>1. <em>Konfidensialitet for signaturen selv:</em> Hvis vi krypterte først og signerte chifferteksten, ville en tredjepart som ser signaturen kunne <em>knytte avsender til en kryptert melding</em> — selv om innholdet er hemmelig. Pakkesporing kombinert med signaturen avslører «Alice sendte noe til Bob på dette tidspunktet».</p>
-          <p>2. <em>Stripping-angrep:</em> Hvis chifferteksten er signert, kan Trudy ta av Alices signatur, signere chifferteksten på nytt med <em>sin egen</em> nøkkel og sende videre — det ser ut som Trudy sendte den krypterte meldingen til Bob. Sign-then-encrypt unngår dette fordi signaturen ligger inne i chifferteksten.</p>
-          <p>3. <em>Semantikk:</em> Alice signerer noe hun forstår (klarteksten), ikke en uleselig chiffertekst — viktig hvis signaturen senere brukes som juridisk bevis.</p>
+          <p><strong>Svar:</strong> Det <em>første</em> TCP-segmentet i en forbindelse har <strong>ACK = 0</strong> (bare SYN). Alle senere segmenter, inkludert SYN-ACK fra serveren, har <strong>ACK = 1</strong>. Brannmuren konfigureres til å droppe alle innkommende TCP-segmenter med ACK=0.</p>
+          <p><strong>Resultat:</strong> Eksterne kan aldri åpne TCP-forbindelser inn (de starter med ACK=0). Svar på forbindelser åpnet innefra slipper gjennom (ACK=1).</p>
+          <p><strong>Begrensning:</strong> En angriper som <em>fabrikkerer</em> en pakke med ACK=1 (uten ekte forbindelse) slipper gjennom. Det er nettopp dette som motiverer <em>stateful</em> filtre.</p>
         </div>
       </li>
 
       <li data-card>
-        <div data-fc-front>Hvorfor må IV i CBC være <strong>uforutsigbar</strong>, og ikke bare <em>unik</em>? (Hva gikk galt i SSL/TLS før 1.1?)</div>
+        <div data-fc-front>Hva er et <strong>smurf-angrep</strong>, og hvordan kan en brannmur stoppe det?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> En <em>unik</em> IV (f.eks. en teller som inkrementeres) hindrer at samme klartekstmelding gir samme chiffertekst to ganger. Men det er ikke nok: hvis Trudy kan <em>forutsi</em> neste IV før Alice krypterer, og hvis hun har en chosen-plaintext-mulighet (f.eks. via webside-injeksjon), kan hun knekke deler av en hemmelig melding.</p>
-          <p><strong>Konkret angrep (BEAST, 2011):</strong> SSL 3.0 og TLS 1.0 brukte forrige <em>chiffertekstblokk</em> som IV for neste record (forutsigbart!). En angriper med JavaScript-injeksjon i nettleseren kunne XOR-e en gjettet sesjonscookie med kjent IV og se om gjettingen var riktig — og knekte cookien byte for byte.</p>
-          <p><strong>Hvorfor «uforutsigbar» fikser det:</strong> Hvis IV er <em>kryptografisk tilfeldig</em>, kan ikke angriperen predikere den før hun må forplikte seg til klarteksten. TLS 1.1 (2006) byttet til eksplisitt random IV i hver record. TLS 1.2 anbefaler det samme, og TLS 1.3 har gått helt over til AEAD-modus (AES-GCM) hvor problemet ikke oppstår. Lærdommen: «aldri brukt to ganger» og «umulig å gjette» er <em>ulike</em> krav.</p>
+          <p><strong>Svar:</strong> Et smurf-angrep er et refleksjons-DoS-angrep. Angriperen sender en ICMP echo request (ping) til en <em>broadcast-adresse</em> (f.eks. 130.207.255.255) med <em>offerets IP forfalsket</em> som kilde. Alle verter på subnettet svarer offeret samtidig — én pakke kan generere hundrevis av svar mot offeret.</p>
+          <p><strong>Brannmur-regel:</strong> Drop alle ICMP-pakker med broadcast-destinasjon. Standard ACL-regel.</p>
+          <p><strong>Hvorfor det rammer tilgjengeligheten:</strong> Offeret oversvømmes med ICMP-svar det aldri ba om. Båndbreddeflom forsterket av reflektorer — ingen kryptografi involvert.</p>
         </div>
       </li>
 
       <li data-card>
-        <div data-fc-front>Hvorfor er 3DES med tre 56-bits nøkler ikke 168 bit, men effektivt ca. 112 bit? (Meet-in-the-middle-angrepet.)</div>
+        <div data-fc-front>Hva er hovedforskjellene mellom <strong>TLS 1.3</strong> (2018) og <strong>TLS 1.2</strong> (2008)?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> 3DES krypterer som C = E<sub>K3</sub>(D<sub>K2</sub>(E<sub>K1</sub>(m))) — naivt 56·3 = 168 bit nøkkel. Men hvis Trudy har <em>ett</em> klartekst-chiffertekst-par (m, c), kan hun gjøre et <strong>meet-in-the-middle-angrep</strong>:</p>
-          <p>1. Beregn E<sub>K1</sub>(m) for alle 2<sup>56</sup> mulige K1, lagre i en tabell.<br>
-          2. Beregn D<sub>K3</sub>(D<sub>K2</sub>(c)) for alle 2<sup>112</sup> mulige (K2, K3)-par, og slå opp i tabellen.<br>
-          3. Et treff gir kandidat for hele (K1, K2, K3).</p>
-          <p>Total kostnad ≈ 2<sup>112</sup> operasjoner og 2<sup>56</sup> minne — ikke 2<sup>168</sup>. Det er fortsatt utenfor rekkevidde i dag, men <em>vesentlig</em> svakere enn pålydende.</p>
-          <p><strong>Hvorfor det betyr noe:</strong> Det illustrerer en generell lærdom: <em>doblet eller tredoblet kryptering gir ikke automatisk doblet/tredoblet nøkkelstyrke</em>. Designere må analysere algoritmen som helhet. Det er en av flere grunner til at AES (med ett, robust design og 128/192/256-bits nøkler) erstattet 3DES — og at 3DES er foreldet i moderne protokoller.</p>
+          <p><strong>Svar:</strong></p>
+          <p>1. <strong>Færre cipher suites:</strong> 5 valg mot 37 i 1.2 — bare moderne, sikre kombinasjoner.<br>
+          2. <strong>Krever Diffie-Hellman</strong> for nøkkelutveksling — RSA-nøkkelutveksling er fjernet.<br>
+          3. <strong>AEAD-modus</strong>: kryptering og integritet i én operasjon (f.eks. AES-GCM, ChaCha20-Poly1305).<br>
+          4. <strong>HMAC bruker SHA-256 eller SHA-384.</strong></p>
+          <p><strong>Hvorfor:</strong> TLS 1.2 hadde for mange svake legacy-valg. Krymping av cipher-suite-listen og krav om AEAD eliminerer hele klasser av angrep ved konstruksjon.</p>
         </div>
       </li>
 
       <li data-card>
-        <div data-fc-front>Hva er <strong>defense in depth</strong>, og hvorfor er det grunnprinsippet i moderne nettverkssikkerhet?</div>
+        <div data-fc-front>Hvor er K<sub>HSS-M</sub> lagret i 4G, og hvem har tilgang til den?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> «Forsvar i dybden» er prinsippet om å <em>ikke stole på et enkelt sikkerhetstiltak</em>. I stedet bygges flere uavhengige forsvarsmekanismer i lag, slik at en angriper som bryter ett lag fortsatt møter de neste. Et typisk oppsett:</p>
-          <p>• <strong>Perimeter:</strong> brannmur (ACL) + IDS (intrusion detection)<br>
-          • <strong>Transport:</strong> TLS / IPsec for kryptering og integritet<br>
-          • <strong>Applikasjon:</strong> autentisering, MAC over data, input-validering<br>
-          • <strong>Endepunkt:</strong> antivirus, oppdaterte OS, full disk-kryptering<br>
-          • <strong>Drift:</strong> logging, oppdagelse, regelmessige patching</p>
-          <p><strong>Hvorfor:</strong> Hvert tiltak har <em>kjente begrensninger</em>. Brannmurer kan ikke inspisere kryptert trafikk. TLS hindrer ikke et XSS-angrep på applikasjonsnivå. Sertifikater hjelper ikke hvis en CA er kompromittert. Når lagene er uavhengige, må en angriper bryte alle samtidig — sannsynligheten reduseres multiplikativt. Som listen i pensum sier: brannmur er <em>ett</em> forsvarslag, ikke en magisk løsning. Samme logikk gjelder hele kapittel 8.</p>
+          <p><strong>Svar:</strong> K<sub>HSS-M</sub> er den forhåndsdelte hemmelige nøkkelen mellom én bestemt mobil og dens hjemmenett. Den finnes på <em>nøyaktig to steder</em>:</p>
+          <p>• På <strong>SIM-kortet</strong> (lagret av operatøren ved utstedelse).<br>
+          • I <strong>HSS</strong> (Home Subscriber Server) i hjemmenettet, sammen med kundens IMSI.</p>
+          <p>Verken basestasjonen, MME i besøkt nett eller noen annen part kjenner K<sub>HSS-M</sub>.</p>
+          <p><strong>Hvorfor:</strong> Ved å holde nøkkelen ute av besøkt operatør kan ikke en kompromittert utenlandsk operatør utstede falske godkjenninger eller dekryptere brukerdata.</p>
         </div>
       </li>
 
       <li data-card>
-        <div data-fc-front>Hva slags hash-egenskap brytes når kollisjoner blir funnet? Hva er forskjellen på <strong>preimage-resistens</strong>, <strong>second-preimage-resistens</strong> og <strong>kollisjonsresistens</strong>?</div>
+        <div data-fc-front>Hva inneholder et SIM-kort, og hvilken rolle spiller det i 4G-autentisering?</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> En kryptografisk hashfunksjon H må oppfylle tre relaterte, men ulike egenskaper:</p>
-          <p><strong>Preimage-resistens:</strong> Gitt en hashverdi y, er det praktisk umulig å finne <em>noen</em> melding m slik at H(m) = y. (Enveisegenskapen.)</p>
-          <p><strong>Second-preimage-resistens:</strong> Gitt en kjent melding m₁, er det praktisk umulig å finne en annen melding m₂ ≠ m₁ med H(m₁) = H(m₂).</p>
-          <p><strong>Kollisjonsresistens:</strong> Det er praktisk umulig å finne <em>noe par</em> (m₁, m₂) med H(m₁) = H(m₂). Dette er det <em>svakeste</em> kravet — Trudy får velge begge meldingene fritt.</p>
-          <p><strong>Hvorfor det er viktig:</strong> Når en hashfunksjon erklæres «brutt», er det som regel kollisjonsresistensen som har falt — ikke nødvendigvis preimage. SHA-1 fikk demonstrert kollisjon i 2017 (Google «SHAttered»), men preimage-resistens holder fortsatt. Likevel er kollisjoner nok til å undergrave <em>digitale signaturer</em>: Trudy kan lage to dokumenter med samme hash, få ett signert, og deretter «bytte ut» med det andre. Derfor er SHA-1 fjernet fra alle moderne sertifikater. SHA-256 er anbefalt; MD5 falt for kollisjoner alt på 2000-tallet.</p>
+          <p><strong>Svar:</strong> Et SIM-kort inneholder:</p>
+          <p>• <strong>IMSI</strong> — globalt unik abonnent-identifikator.<br>
+          • <strong>K<sub>HSS-M</sub></strong> — forhåndsdelt hemmelig nøkkel mot hjemmenettets HSS.<br>
+          • Liten prosessor som kan gjøre kryptografiske beregninger uten å eksponere K<sub>HSS-M</sub>.</p>
+          <p><strong>Hvorfor SIM-kort:</strong> Identiteten er fysisk knyttet til chipen — bytter du telefon, flytter du SIM-kortet. K<sub>HSS-M</sub> forlater aldri SIM-kortet, så selv malware på mobilen kan ikke lekke nøkkelen.</p>
         </div>
       </li>
 
       <li data-card>
-        <div data-fc-front>Hvorfor er offentlig nøkkelkryptografi <em>tregt</em>? Og når i en typisk sikker protokoll betaler man denne kostnaden?</div>
+        <div data-fc-front>Sammenlikn rollen til AS, AP, eNode-B, MME og HSS.</div>
         <div data-fc-back>
-          <p><strong>Svar:</strong> RSA og DH bygger på <em>modulær eksponentiering</em> med veldig store tall (2048–4096 bits). Hver kryptering/signatur involverer mange multiplikasjoner og modulo-operasjoner på heltall som ikke får plass i en CPU-register. Til sammenligning kjører AES på 128-bits blokker som passer rett inn i moderne SIMD-registre, ofte med dedikerte AES-NI-instruksjoner. Resultat: AES er typisk <strong>~1000× raskere</strong> enn RSA per byte.</p>
-          <p><strong>Når man betaler kostnaden:</strong> Public-key brukes <em>én gang per økt</em> til to ting: (1) <em>autentisering</em> via sertifikatverifisering, (2) <em>nøkkelutveksling</em> via RSA-encryption eller (helst) DH. Etter at en symmetrisk sesjonsnøkkel er etablert, brukes <em>bare</em> AES (eller en strømchiffer) til selve dataene. Mønsteret går igjen i alt — TLS, IPsec, sikker e-post, WPA3.</p>
-          <p><strong>Praktisk konsekvens:</strong> En TLS-håndtrykk koster mer CPU enn å laste hele nettsiden etterpå. Derfor satser moderne servere mye på TLS-sesjonsgjenoppretting (resumption) og 0-RTT i TLS 1.3 — for å unngå nye håndtrykk når mulig.</p>
+          <p><strong>Svar:</strong></p>
+          <p>• <strong>AS (Authentication Server, WiFi):</strong> Sentral autentiserings-server (typisk RADIUS).<br>
+          • <strong>AP (Access Point, WiFi):</strong> Radioenhet; videresender autentiseringstrafikk.<br>
+          • <strong>eNode-B (4G):</strong> Basestasjon; videresender autentiseringstrafikk.<br>
+          • <strong>MME (4G besøkt nett):</strong> Tar autentiseringsbeslutningen ut fra HSS-data.<br>
+          • <strong>HSS (4G hjemmenett):</strong> Endelig autoritet; kjenner alle K<sub>HSS-M</sub>.</p>
+          <p><strong>Mapping:</strong> AS i WiFi spiller samme logiske rolle som MME+HSS gjør sammen i 4G. AP og eNode-B har samme rolle (radio + relay).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er K<sub>M-AP</sub> og K<sub>BS-M</sub>, og hvor brukes de?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>• <strong>K<sub>M-AP</sub> (WiFi):</strong> Symmetrisk sesjonsnøkkel mellom mobil og access point. Brukes til AES-kryptering av frames over 802.11-linken. Utledes lokalt av begge fra passord, nonces og MAC-adresser.<br>
+          • <strong>K<sub>BS-M</sub> (4G):</strong> Symmetrisk sesjonsnøkkel mellom mobil og base station. Brukes til AES-kryptering av frames over 4G-linken. Utledes fra K<sub>HSS-M</sub> og verdier i autentiseringen.</p>
+          <p><strong>Felles prinsipp:</strong> Det forhåndsdelte hemmelige (passord/K<sub>HSS-M</sub>) brukes <em>aldri</em> direkte til kryptering — det utledes en kortvarig, økt-spesifikk nøkkel. Lekker økt-nøkkelen, lekker bare én økts trafikk.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvor i protokollstabelen «bor» TLS, og hvilken portnummer bruker HTTPS?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> TLS er ikke et eget OSI-lag, men et <strong>sublag</strong> mellom TCP og applikasjonen. Applikasjonen skriver til en <em>TLS-socket</em>; TLS krypterer og leverer dataene til TCP som vanlige TCP-segmenter. <strong>HTTPS bruker TCP-port 443</strong> (mot 80 for HTTP).</p>
+          <p><strong>Hvorfor det er praktisk:</strong> Plasseringen er protokoll-agnostisk — HTTPS, IMAPS, SMTPS, FTPS bruker alle samme TLS-sublag. TCP og IP under bryr seg ikke om innholdet er kryptert.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <strong>gjensidig autentisering</strong>, og hvorfor må også <em>nettverket</em> autentisere seg overfor mobilen i 4G/5G og WPA3?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Vanligvis tenker vi på autentisering som «nettverket sjekker at brukeren er ekte». Men i trådløse nett må også <em>mobilen</em> sjekke at nettverket er ekte. Hvis ikke kan en angriper sette opp en falsk basestasjon (en <em>rogue base station</em>) som lurer mobilen til å koble seg til, fanger opp identitet og sporer bevegelser.</p>
+          <p><strong>Hvordan oppnås det:</strong> I 4G verifiserer mobilen <em>auth_token</em> (fra HSS, signert med K<sub>HSS-M</sub>). I WPA3 verifiserer mobilen HMAC fra AS (basert på passordet). Bare ekte nettverk har den hemmelige nøkkelen som trengs — falsk basestasjon kan ikke fabrikkere disse.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er en <strong>IMSI-catcher</strong> (Stingray), og hvorfor er 4G LTE sårbar?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En IMSI-catcher er en falsk basestasjon som utgir seg for å være et legitimt mobilnett. Mobiler i nærheten kobler seg til (de velger sterkeste signal) og gir fra seg sin IMSI. I 4G LTE sendes IMSI <em>i klartekst</em> ved første tilkobling — IMSI-catcheren kan dermed logge identiteter og spore bevegelser.</p>
+          <p><strong>Hvorfor 5G fikser det:</strong> I 5G krypteres IMSI med public-key-kryptografi før den sendes — bare hjemmenettets HSS har den private nøkkelen som kan dekryptere. Falske basestasjoner ser bare en kryptert verdi.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>«IOU 100.99 BOB» og «IOU 900.19 BOB» har <em>identisk</em> 16-bits checksum. Hva er poenget?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Eksempelet (fra boken) viser at TCP-checksum er ubrukelig som integritetsbeskyttelse. En angriper kan trivielt endre beløpet uten å endre checksum.</p>
+          <p><strong>Hvorfor:</strong> TCP-checksum er en enkel sum av byte-grupper, designet for <em>tilfeldige</em> bitfeil i overføring. Den oppdager ikke ondsinnet manipulasjon. En kryptografisk hashfunksjon (SHA-256) er <em>kollisjonsresistent</em> — det er praktisk umulig å konstruere to meldinger med samme hash. Derfor må MAC og digitale signaturer bruke kryptografisk hash, ikke checksum.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke størrelser har AES-blokker og AES-nøkler?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>• <strong>Blokkstørrelse:</strong> Alltid <strong>128 bit</strong>, uansett nøkkellengde.<br>
+          • <strong>Nøkkellengder:</strong> <strong>128, 192 eller 256 bit.</strong></p>
+          <p><strong>Eksamenstips:</strong> Det er <em>nøkkellengden</em> som varierer, ikke blokkstørrelsen. AES krypterer alltid 128-bits blokker; nøkkelen avgjør hvor mange runder substitusjon/permutasjon som gjøres internt. Brute force på AES-128 tar ~149 billioner år hvis DES-56 tar 1 sekund.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke felt har en TLS-record, og hvilke er kryptert?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>• <strong>Type-felt</strong> (klartekst): handshake, applikasjonsdata eller close_notify.<br>
+          • <strong>Versjon-felt</strong> (klartekst): TLS-versjon.<br>
+          • <strong>Lengde-felt</strong> (klartekst): bytes i data + MAC.<br>
+          • <strong>Data-felt</strong> (kryptert med E<sub>A</sub> eller E<sub>B</sub>).<br>
+          • <strong>HMAC-felt</strong> (kryptert sammen med data, beregnet over data + sekvensnummer + faste felt med M<sub>A</sub>/M<sub>B</sub>).</p>
+          <p><strong>Hvorfor lengden er i klartekst:</strong> TCP gir en byte-strøm uten meldingsgrenser. TLS bruker lengden til å plukke ut én record om gangen før den dekrypteres.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilken kryptering bruker WPA2 (802.11i)?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> WPA2 bruker <strong>CCMP</strong> (Counter Mode CBC-MAC Protocol) basert på <strong>AES</strong>. CCMP gir både konfidensialitet og integritet i samme operasjon.</p>
+          <p><strong>Hvorfor det erstattet WEP:</strong> WEP brukte RC4 med dårlig IV-håndtering — knekkes på minutter. AES-CCMP regnes kryptografisk solid den dag i dag. Svakheten ved WPA2 er <em>4-veis-håndtrykket</em>, som tillater offline ordbokangrep mot fanget trafikk hvis passordet er svakt — det WPA3 SAE løser.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forkortelsen «MAC» betyr to forskjellige ting i nettverkspensum. Hva er forskjellen?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p><strong>MAC i kap. 8:</strong> <em>Message Authentication Code</em> — kort kryptografisk verdi som beviser meldingsintegritet og avsenderautentisering (delt nøkkel).</p>
+          <p><strong>MAC i kap. 6:</strong> <em>Medium Access Control</em> — protokollen og adressen som styrer hvem som sender på et delt medium (f.eks. 802.11 MAC-adresser).</p>
+          <p><strong>Eksamenstips:</strong> Les konteksten — snakker vi om kryptografi/integritet (kap. 8) eller delt medium/adressering (kap. 6)?</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen på <em>hjemmenett</em> og <em>besøkt nett</em> i 4G LTE?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>• <strong>Hjemmenett:</strong> Operatøren du har abonnement hos. Inneholder HSS med din K<sub>HSS-M</sub>. Forblir siste autoritet selv når du roamer.<br>
+          • <strong>Besøkt nett:</strong> Operatørnettet du faktisk er koblet til akkurat nå (f.eks. en utenlandsk operatør). Inneholder MME og basestasjoner. Får aldri direkte tilgang til K<sub>HSS-M</sub>.</p>
+          <p><strong>5G-endring:</strong> Selve autentiseringsbeslutningen flyttes tilbake til hjemmenettet — enda mindre tillit til besøkt operatør.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilken algoritme dominerer symmetrisk kryptering i moderne nettverksprotokoller?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>AES</strong> (Advanced Encryption Standard) er den dominerende symmetriske krypteringsalgoritmen i:</p>
+          <p>• <strong>TLS</strong> (HTTPS) — AES-GCM, AES-CBC.<br>
+          • <strong>WPA2/WPA3</strong> (WiFi) — AES-CCMP.<br>
+          • <strong>IPsec</strong> (VPN).<br>
+          • <strong>4G/5G</strong> — AES for trafikkryptering.</p>
+          <p><strong>Hvorfor:</strong> Rask (AES-NI-instruksjoner i moderne CPU-er), godt analysert, NIST-standardisert siden 2001. AES brukes til <em>selve dataene</em>; public-key (RSA, DH) bare til å utveksle AES-nøkkelen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva inneholder typisk et X.509-sertifikat?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>• <strong>Eierens identitet</strong> (Common Name, ofte domenenavn).<br>
+          • <strong>Eierens offentlige nøkkel</strong> og hvilken algoritme den er for.<br>
+          • <strong>Utstedende CA</strong> og dens identitet.<br>
+          • <strong>Gyldighetsperiode</strong> (utstedelsesdato + utløpsdato).<br>
+          • <strong>Serienummer</strong> (unikt hos CA).<br>
+          • <strong>CA-ens digitale signatur</strong> over alt over.</p>
+          <p><strong>Hvorfor signaturen er det avgjørende:</strong> Hvem som helst kan lage et dokument som påstår «ntnu.no har offentlig nøkkel X». CA-ens signatur (gjort med CA-ens private nøkkel) er det som binder identitet til nøkkel og kan ikke forfalskes.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva betyr <strong>non-repudiation</strong> (ikke-benektbarhet), og hvilken mekanisme gir den?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Non-repudiation betyr at avsenderen <em>ikke i ettertid kan benekte</em> å ha sendt en melding. Hvis Bob signerer med K<sub>B</sub><sup>-</sup>, kan Alice bevise i en domstol at Bob må ha signert — bare Bob har den private nøkkelen som kunne lage signaturen.</p>
+          <p><strong>Hvorfor MAC ikke gir det:</strong> En MAC krever at <em>begge parter</em> kjenner K<sub>S</sub>. Hvis Bob hevder «det var Alice som lagde MAC-en», kan domstolen ikke avgjøre — begge kunne ha lagd den. Bare digital signatur (privat-/offentlig-nøkkelpar) gir non-repudiation.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor brukes ikke ren public-key-kryptering på hele e-postmeldingen?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Public-key (RSA) er ~1000× tregere enn AES per byte. Lange meldinger må også deles opp i RSA-blokker (typisk 2048 bit), noe som blir upraktisk.</p>
+          <p><strong>Hybridkryptering løser det:</strong></p>
+          <p>1. Generer tilfeldig sesjonsnøkkel K<sub>S</sub>.<br>
+          2. Krypter selve meldingen med K<sub>S</sub> (rask AES).<br>
+          3. Krypter <em>bare</em> K<sub>S</sub> med Bobs offentlige nøkkel.</p>
+          <p>Mønsteret går igjen i TLS, IPsec, sikker e-post og WPA3.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke fakta beviser en gyldig digital signatur for mottakeren?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Når Alice verifiserer K<sub>B</sub><sup>+</sup>(K<sub>B</sub><sup>-</sup>(H(m))) = H(m), vet hun:</p>
+          <p>1. <strong>Bob signerte:</strong> Bare K<sub>B</sub><sup>-</sup> kunne lage signaturen, og bare Bob har den.<br>
+          2. <strong>Bob signerte akkurat <em>m</em>:</strong> Hvis m endres, blir H(m) annerledes, og verifikasjonen feiler.<br>
+          3. <strong>Non-repudiation:</strong> Alice kan vise m og signaturen til en domstol som bevis.</p>
+          <p><strong>Hvorfor det er kompakt:</strong> Én operasjon (verifikasjon med offentlig nøkkel) gir tre ulike sikkerhetsegenskaper — autentisering av avsender, integritet av melding, og uforfalskbarhet.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan oppdager mottakeren manipulering av en TLS-record?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Hver TLS-record har en HMAC beregnet over (data + sekvensnummer) med M<sub>A</sub> eller M<sub>B</sub>. Mottakeren:</p>
+          <p>1. Dekrypterer recorden med E<sub>A</sub>/E<sub>B</sub>.<br>
+          2. Beregner forventet HMAC selv (har samme M-nøkkel og kjenner sekvensnummeret).<br>
+          3. Sammenligner med HMAC-en i recorden.</p>
+          <p>Avvik → recorden er manipulert eller en bit er korrupt → forbindelsen lukkes.</p>
+          <p><strong>Hvorfor det virker:</strong> Trudy uten M-nøkkelen kan ikke fabrikkere en gyldig HMAC. Sekvensnummer hindrer henne i å spille av en eldre gyldig record.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor er <em>tunnel-modus</em> dominerende i et VPN, og ikke transport-modus?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> I et VPN mellom firmakontorer ønsker man å skjule <em>både innholdet og strukturen</em> i den interne trafikken — også de interne IP-adressene. Tunnel-modus pakker hele det opprinnelige IP-datagrammet (inkludert intern header) inn i en kryptert payload, og setter på en <em>ny</em> ytre header med gateway-rutere som adresser.</p>
+          <p>Transport-modus krypterer bare payloaden — den opprinnelige IP-headeren er fortsatt synlig. Egnet for host-to-host, men avslører nettverksstruktur.</p>
+          <p><strong>Praksis:</strong> Nesten all VPN-bruk er tunnel-modus mellom gateway-rutere.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva tracker en stateful brannmurs <em>connection table</em>, og hvordan oppdateres den?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Tabellen har én linje per aktiv TCP-forbindelse: kilde-IP, dest-IP, kilde-port, dest-port. Oppdateres ved:</p>
+          <p>• <strong>SYN observert</strong> → ny linje legges til.<br>
+          • <strong>FIN observert</strong> → linjen markeres for sletting.<br>
+          • <strong>Inaktivitet &gt; timeout</strong> (typisk 60 s) → linjen slettes.</p>
+          <p><strong>Hvorfor:</strong> For hver innkommende pakke sjekker brannmuren om den hører til en kjent forbindelse. En pakke med ACK=1 fra en server slipper bare gjennom hvis tabellen viser at intern klient nylig åpnet en forbindelse mot den serveren — fabrikkerte ACK-pakker fanges opp.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom <strong>SHA-1</strong> og <strong>SHA-256</strong>, og hvilken er anbefalt i dag?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>• <strong>SHA-1:</strong> 160-bits hash. <em>Foreldet</em> — kollisjoner ble demonstrert i 2017.<br>
+          • <strong>SHA-256:</strong> 256-bits hash. Del av SHA-2-familien. <strong>Anbefalt standard</strong> i dag.<br>
+          • <strong>MD5:</strong> 128-bits hash. Foreldet — kollisjoner kjent på 2000-tallet.</p>
+          <p><strong>Hvorfor lengden betyr noe:</strong> Lengre hash gir større nøkkelrom, men også viktigere er at konstruksjonen ikke er knekt — selv 256 bit hjelper lite hvis algoritmen har strukturelle svakheter.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke to grunnleggende roller spiller offentlig nøkkelkryptografi i en typisk sikker protokoll?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Public-key brukes ikke til selve dataene, men til to ting:</p>
+          <p>1. <strong>Autentisering via sertifikatverifisering</strong> — du verifiserer CA-signaturen på serverens sertifikat med CA-ens forhåndsinstallerte offentlige nøkkel og <em>vet</em> at den offentlige nøkkelen tilhører serveren.<br>
+          2. <strong>Nøkkelutveksling</strong> — krypter en symmetrisk sesjonsnøkkel med serverens offentlige nøkkel, eller utled en felles nøkkel via DH.</p>
+          <p>Etter dette: bare AES brukes til selve dataene. Mønsteret går igjen i TLS, IPsec, sikker e-post og WPA3.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor lærer ikke MME den hemmelige nøkkelen K<sub>HSS-M</sub> i 4G-autentisering?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> MME er bare en <em>middleman</em>. HSS bruker K<sub>HSS-M</sub> til å forhåndsberegne to verdier:</p>
+          <p>• <strong>auth_token</strong> (sendes til mobilen via MME) — mobilen verifiserer det med sin egen K<sub>HSS-M</sub>.<br>
+          • <strong>xres<sub>HSS</sub></strong> (sendes til MME) — MME holder dette og venter på mobilens svar res<sub>M</sub>. MME sammenligner res<sub>M</sub> med xres<sub>HSS</sub> uten å trenge K<sub>HSS-M</sub>.</p>
+          <p><strong>Hvorfor:</strong> Selv om en besøkt operatør blir kompromittert, kan ikke angriperen utstede falske godkjenninger — de mangler K<sub>HSS-M</sub>. Minimal tillit til besøkt operatør.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan beviser <em>auth_token</em> til mobilen at «nettverket er ekte»?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> HSS bruker K<sub>HSS-M</sub> til å lage auth_token (f.eks. ved å kryptere mobilens IMSI eller en utfordring med K<sub>HSS-M</sub>). Når mobilen mottar auth_token, verifiserer den med <em>sin egen</em> K<sub>HSS-M</sub>. Stemmer resultatet, vet mobilen at avsenderen kjenner K<sub>HSS-M</sub> — og siden bare HSS har den, må forespørselen ha gått gjennom det ekte hjemmenettet.</p>
+          <p><strong>Hvorfor det stopper falske basestasjoner:</strong> En IMSI-catcher uten K<sub>HSS-M</sub> kan ikke generere et gyldig auth_token. Mobilen vil ikke akseptere meldingen, og kobler seg ikke videre.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er fundamentalforskjellen mellom <strong>sikker e-post</strong> (PGP-stil) og <strong>TLS</strong>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p><strong>Sikker e-post:</strong> Beskytter selve meldingsinnholdet <em>end-to-end</em> mellom Alice og Bob. Meldingen kan lagres på e-postserveren i kryptert form.</p>
+          <p><strong>TLS:</strong> Beskytter trafikken under <em>transport</em> mellom klient og server. Når meldingen ligger hos serveren, er den dekryptert.</p>
+          <p><strong>Hvorfor begge eksisterer:</strong> TLS sikrer at «ingen mellom klient og server» kan lese — men serveren selv kan. End-to-end-kryptering sikrer at heller ikke serveren kan lese, til en kostnad av mer komplisert nøkkelhåndtering.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er en konkret begrensning ved brannmurer som kryptering ikke kan løse?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En brannmur som ser TLS-trafikk på port 443 ser bare <em>at det er TLS</em> — ikke <em>hva</em> som faktisk sendes. Den kan ikke:</p>
+          <p>• Inspisere innhold for malware.<br>
+          • Skille en legitim webside fra command-and-control-tilbakemelding fra et infisert system.<br>
+          • Filtrere på applikasjonsdata (f.eks. URL-er innen HTTPS).</p>
+          <p><strong>Hvorfor:</strong> Personvern-egenskapen ved kryptering blir en blindsone for brannmuren. Bedrifter løser det med TLS-inspeksjon (egne CA-sertifikater installert i klientene), men det bryter end-to-end-prinsippet.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor utleder mobilen og AP-en (eller AS) samme symmetriske nøkkel <em>separat</em>, i stedet for å sende den?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> I WPA3-håndtrykket sendes K<sub>M-AP</sub> aldri over lufta. I stedet:</p>
+          <p>1. AS sender Nonce<sub>AS</sub> i klartekst.<br>
+          2. Mobilen genererer Nonce<sub>M</sub> og beregner K<sub>M-AP</sub> = KDF(passord, Nonce<sub>AS</sub>, Nonce<sub>M</sub>, MAC-adresser) lokalt.<br>
+          3. AS gjør samme beregning lokalt.</p>
+          <p>Begge ender opp med samme nøkkel uten at den krysset luften.</p>
+          <p><strong>Hvorfor:</strong> Hvis K<sub>M-AP</sub> ble sendt, måtte den vært kryptert med en allerede etablert nøkkel — som vi ikke har. Lokal utledning unngår problemet.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor signerer Bob bare hashen H(m) i stedet for hele meldingen?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Public-key-operasjoner er ~1000× tregere enn symmetrisk per byte. Å signere lange meldinger direkte ville:</p>
+          <p>• Tatt lang tid.<br>
+          • Krevd at meldingen deles opp i RSA-blokker (typisk 2048 bit).<br>
+          • Gjort verifisering tilsvarende treg.</p>
+          <p><strong>Løsning:</strong> H(m) er kort (256 bit for SHA-256), uavhengig av meldingens lengde. Bob signerer bare H(m) → én rask RSA-operasjon. Kollisjonsresistensen i hashfunksjonen sikrer at signaturen er bundet til <em>akkurat denne</em> meldingen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva kan mottakeren verifisere når Alice (a) bare krypterer, (b) bare signerer, (c) gjør begge?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p><strong>(a) Krypterer m med K<sub>B</sub><sup>+</sup> (eller K<sub>S</sub>):</strong> Konfidensialitet — bare Bob kan lese. <em>Ikke</em> hvem avsenderen er.</p>
+          <p><strong>(b) Signerer H(m) med K<sub>A</sub><sup>-</sup>:</strong> Integritet + at Alice signerte. <em>Ikke</em> konfidensialitet — meldingen sendes i klartekst.</p>
+          <p><strong>(c) Gjør begge (hybrid + signatur):</strong> Konfidensialitet + integritet + autentisering — alle tre.</p>
+          <p><strong>Hvorfor:</strong> Boken bygger sikkerhet trinnvis — start med ett mål, vis svakheten, legg til neste mekanisme. Gir en mal for å analysere enhver protokoll: hvilken egenskap dekker hver byggekloss?</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <em>master secret</em> i TLS, og hvor mange nøkler utledes fra den?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Master Secret (MS) er den felles hemmeligheten Alice og Bob har etter TLS-håndtrykket. Fra MS utledes <strong>fire</strong> nøkler:</p>
+          <p>• <strong>E<sub>A</sub></strong> — kryptering A→B<br>
+          • <strong>E<sub>B</sub></strong> — kryptering B→A<br>
+          • <strong>M<sub>A</sub></strong> — MAC A→B<br>
+          • <strong>M<sub>B</sub></strong> — MAC B→A</p>
+          <p><strong>Hvorfor fire:</strong> Aldri bruk samme nøkkel til to ulike formål eller retninger. Forskjellig per retning hindrer reflection attacks; forskjellig kryptering vs MAC isolerer skadeomfang hvis én algoritme blir svekket.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <strong>WPA1, WPA2 og WPA3</strong> i et nøtteskall, og hvilken hovedsvakhet løser hver generasjon?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>• <strong>WPA1 (TKIP):</strong> Mellomløsning som la til meldingsintegritet på toppen av WEPs RC4. Fortsatt svakt; brukes ikke i dag.<br>
+          • <strong>WPA2 (802.11i, CCMP/AES):</strong> Sterk kryptering. Industristandard i mer enn et tiår. Svakhet: 4-veis-håndtrykket tillater offline ordbokangrep mot svake passord.<br>
+          • <strong>WPA3 (SAE):</strong> Erstatter håndtrykket — passordet kan ikke gjettes offline. Hver gjettings-runde krever ny aktiv handshake mot AP-et.</p>
+          <p><strong>Lærdom:</strong> Sterk kryptering hjelper lite hvis nøkkelutvekslingen lekker.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilken sikkerhetsegenskap angriper et DoS-angrep, og hvilke tre kryptografiske egenskaper rammer det <em>ikke</em>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> DoS-angrep angriper <strong>tilgjengelighet</strong> (A i CIA-triaden). Det rammer <em>ikke</em> konfidensialitet, integritet eller autentisering — datene som passerer er fremdeles uforandret og uleste.</p>
+          <p><strong>Hvorfor:</strong> Kryptografi løser ikke tilgjengelighet. Forsvar er driftsmessige: brannmurer, oppstrøms-filtrering, lastfordeling, SYN cookies. DDoS er særlig vanskelig fordi trafikken kommer fra mange ekte IP-adresser samtidig.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor er offentlig nøkkelkryptografi <em>tregt</em>? Når i en sikker protokoll betaler man denne kostnaden?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> RSA og DH bygger på <em>modulær eksponentiering</em> med veldig store tall (2048–4096 bits). Hver kryptering/signatur involverer mange multiplikasjoner og modulo-operasjoner på heltall som ikke får plass i én CPU-register. Til sammenligning kjører AES på 128-bits blokker som passer rett inn i moderne CPU-registre. Resultat: AES er typisk <strong>~1000× raskere</strong> enn RSA per byte.</p>
+          <p><strong>Når man betaler kostnaden:</strong> Public-key brukes <em>én gang per økt</em> til (1) autentisering via sertifikatverifisering og (2) nøkkelutveksling. Etter at en symmetrisk sesjonsnøkkel er etablert, brukes <em>bare</em> AES til selve dataene. Mønsteret går igjen i TLS, IPsec, sikker e-post og WPA3.</p>
         </div>
       </li>
     </ol>
