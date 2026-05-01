@@ -211,7 +211,7 @@
     <li><span class="toc-num">02</span><a href="#metode">Slik er listen laget</a></li>
     <li><span class="toc-num">03</span><a href="#gjentar-seg">Tema som går igjen</a></li>
     <li><span class="toc-num">04</span><a href="#ma-kunne">Må kunne — punkt for punkt</a></li>
-    <li><span class="toc-num">05</span><a href="#formler">Formler &amp; one-liners</a></li>
+    <li><span class="toc-num">05</span><a href="#formler">Formler, porter &amp; tabeller</a></li>
     <li><span class="toc-num">06</span><a href="#sjekkliste">15-min sjekkliste</a></li>
   </ol>
 </div>
@@ -536,6 +536,75 @@
             <li>Mottaker leser via <strong>HTTPS</strong> (web-mail) eller <strong>IMAP</strong> (klient).</li>
           </ol>
           <p><strong>Hvorfor:</strong> Eks 3 hadde dette som 15-poengsoppgave. Husk å nevne lag og protokoll for hvert steg.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilken transport bruker DNS, DHCP, SMTP, HTTP, HTTPS?</div>
+        <div data-fc-back>
+          <ul>
+            <li><strong>DNS:</strong> primært UDP (53), TCP for store svar / soneoverføring.</li>
+            <li><strong>DHCP:</strong> UDP (67/68).</li>
+            <li><strong>SMTP:</strong> TCP (25, eller 465/587 for submit).</li>
+            <li><strong>HTTP:</strong> TCP (80).</li>
+            <li><strong>HTTPS:</strong> TCP (443) — HTTP over TLS.</li>
+            <li><strong>POP3 / IMAP:</strong> TCP (110 / 143).</li>
+            <li><strong>SSH / FTP / Telnet:</strong> TCP (22 / 21 / 23).</li>
+          </ul>
+          <p><strong>Tommel-fingerregel:</strong> alt som krever pålitelighet (e-post, web, fil, pålogging) bruker TCP. UDP brukes der pålitelighet ikke er strengt nødvendig (DNS-spørringer, DHCP-konfigurasjon, sanntid).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilket lag tilhører ARP, ICMP, IP, TCP, HTTP?</div>
+        <div data-fc-back>
+          <ul>
+            <li><strong>HTTP:</strong> applikasjonslag.</li>
+            <li><strong>TCP / UDP:</strong> transportlag.</li>
+            <li><strong>IP / ICMP:</strong> nettverkslag (ICMP bæres i IP, men er likevel nettverkslag).</li>
+            <li><strong>ARP:</strong> teknisk lenkelag — brukes for å koble IP-adresse til MAC-adresse.</li>
+            <li><strong>Ethernet, Wi-Fi (802.11):</strong> lenkelag.</li>
+          </ul>
+          <p><strong>Felle:</strong> ICMP er <em>ikke</em> transport (selv om mange tror det).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Privat vs offentlig IP — hvilke blokker er privat?</div>
+        <div data-fc-back>
+          <ul>
+            <li><code>10.0.0.0/8</code> — klasse A privat (16 millioner adresser).</li>
+            <li><code>172.16.0.0/12</code> — klasse B privat.</li>
+            <li><code>192.168.0.0/16</code> — klasse C privat (typisk hjemmenett).</li>
+            <li><code>127.0.0.0/8</code> — loopback (alltid 127.0.0.1).</li>
+            <li><code>169.254.0.0/16</code> — link-local (når DHCP feiler).</li>
+          </ul>
+          <p><strong>Hvorfor:</strong> Privat-blokker rutes ikke på offentlig internett — de krever NAT for å nå ut.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Subnett-maskering — hva er masken til /28? Hvor mange brukbare verter?</div>
+        <div data-fc-back>
+          <p><strong>/28-maske:</strong> <code>255.255.255.240</code> (siste oktett er <code>11110000</code>).</p>
+          <p><strong>Brukbare verter:</strong> 2⁴ − 2 = <strong>14</strong>.</p>
+          <p><strong>Generelt for /x:</strong> verts-bits = 32 − x. Brukbare = 2^(32−x) − 2 (trekk fra nett-adresse og broadcast-adresse).</p>
+          <p><strong>Tabell å pugge:</strong> /24=254, /25=126, /26=62, /27=30, /28=14, /29=6, /30=2.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>HTTP-metoder &amp; statuskoder — kjenner du forskjell på 3xx, 4xx, 5xx?</div>
+        <div data-fc-back>
+          <p><strong>Metoder:</strong> GET (hent), POST (send/skap), PUT (last opp), DELETE (slett), HEAD (bare headere).</p>
+          <p><strong>Statuskode-klasser:</strong></p>
+          <ul>
+            <li><strong>1xx</strong> — informasjon.</li>
+            <li><strong>2xx</strong> — suksess (200 OK).</li>
+            <li><strong>3xx</strong> — omdirigering (301 Moved, 304 Not Modified).</li>
+            <li><strong>4xx</strong> — klientfeil (400 Bad Request, 404 Not Found).</li>
+            <li><strong>5xx</strong> — serverfeil (500, 503).</li>
+          </ul>
         </div>
       </li>
 
@@ -1095,9 +1164,9 @@
 <!-- ============ FORMLER ============ -->
 <section id="formler">
 <div class="container">
-  <div class="section-badge">Formler &amp; one-liners</div>
-  <h2>Tall og <em>formler</em> du må ha klart</h2>
-  <p class="section-intro">Skriv disse på arket før du blar opp i selve oppgavene — så har du dem tilgjengelig.</p>
+  <div class="section-badge">Formler, porter &amp; tabeller</div>
+  <h2>Tall og <em>fakta</em> du må ha klart</h2>
+  <p class="section-intro">Eksamen tester ofte én protokoll/maske/tabellrad — men spørsmålet kan like gjerne treffe naborutene. Pugg disse helhetlig så du ikke står og leter etter «port for IMAP» midt i flervalg.</p>
 
   <table class="mk-table">
     <thead>
@@ -1114,13 +1183,120 @@
       <tr><td>Pure ALOHA maks effektivitet</td><td><code>1/(2e) ≈ 0,18</code> (~18 %)</td></tr>
       <tr><td>TCP-sockets på server med <em>K</em> aktive forbindelser</td><td><code>K + 1</code> (1 lyttende + K aktive)</td></tr>
       <tr><td>Klient-server filfordeling, min. tid</td><td><code>max(N·F/u<sub>s</sub>, &nbsp; F/d<sub>min</sub>)</code></td></tr>
-      <tr><td>HTTP / SMTP / DNS — porter</td><td><code>80</code> / <code>25</code> (også 587) / <code>53</code></td></tr>
-      <tr><td>DHCP — porter (server / klient)</td><td><code>67</code> / <code>68</code></td></tr>
       <tr><td>4-noder C→A uten / med ACK</td><td><strong>0,5</strong> / <strong>0,25</strong> msg/slot</td></tr>
       <tr><td>4-noder A→B + D→C kombinert</td><td><strong>2</strong> msg/slot</td></tr>
       <tr><td>4-noder A→B + C→D kombinert</td><td><strong>1</strong> msg/slot</td></tr>
     </tbody>
   </table>
+
+  <h3 style="margin-top: 36px;">Portnumre — alle de vanlige</h3>
+  <p class="section-intro">Når én portoppgave kommer, kan en hvilken som helst dukke opp. Pugg disse:</p>
+  <table class="mk-table">
+    <thead>
+      <tr><th style="width: 18%">Port</th><th>Protokoll</th><th>Transport</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>20 / 21</code></td><td>FTP (data / kontroll)</td><td>TCP</td></tr>
+      <tr><td><code>22</code></td><td>SSH</td><td>TCP</td></tr>
+      <tr><td><code>23</code></td><td>Telnet</td><td>TCP</td></tr>
+      <tr><td><code>25</code></td><td>SMTP</td><td>TCP</td></tr>
+      <tr><td><code>53</code></td><td>DNS</td><td>UDP (TCP for store svar / soneoverføring)</td></tr>
+      <tr><td><code>67 / 68</code></td><td>DHCP (server / klient)</td><td>UDP</td></tr>
+      <tr><td><code>80</code></td><td>HTTP</td><td>TCP</td></tr>
+      <tr><td><code>110</code></td><td>POP3</td><td>TCP</td></tr>
+      <tr><td><code>143</code></td><td>IMAP</td><td>TCP</td></tr>
+      <tr><td><code>161 / 162</code></td><td>SNMP</td><td>UDP</td></tr>
+      <tr><td><code>443</code></td><td>HTTPS (HTTP over TLS)</td><td>TCP</td></tr>
+      <tr><td><code>465 / 587</code></td><td>SMTP submit (TLS / STARTTLS)</td><td>TCP</td></tr>
+      <tr><td><code>993</code></td><td>IMAPS</td><td>TCP</td></tr>
+      <tr><td><code>995</code></td><td>POP3S</td><td>TCP</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin-top: 36px;">Subnett-maske ↔ /x</h3>
+  <p class="section-intro">Standardspørsmål: «hva er masken til /x» eller «hvor mange verter passer i et /x».</p>
+  <table class="mk-table">
+    <thead>
+      <tr><th>Prefiks</th><th>Maske</th><th>Bloksstørrelse</th><th>Brukbare verter</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>/24</code></td><td><code>255.255.255.0</code></td><td>256</td><td>254</td></tr>
+      <tr><td><code>/25</code></td><td><code>255.255.255.128</code></td><td>128</td><td>126</td></tr>
+      <tr><td><code>/26</code></td><td><code>255.255.255.192</code></td><td>64</td><td>62</td></tr>
+      <tr><td><code>/27</code></td><td><code>255.255.255.224</code></td><td>32</td><td>30</td></tr>
+      <tr><td><code>/28</code></td><td><code>255.255.255.240</code></td><td>16</td><td>14</td></tr>
+      <tr><td><code>/29</code></td><td><code>255.255.255.248</code></td><td>8</td><td>6</td></tr>
+      <tr><td><code>/30</code></td><td><code>255.255.255.252</code></td><td>4</td><td>2</td></tr>
+      <tr><td><code>/31</code></td><td><code>255.255.255.254</code></td><td>2</td><td>2 (point-to-point)</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin-top: 36px;">DNS Resource Record-typer</h3>
+  <p class="section-intro">Hvis A-typen er på eksamen kan det like godt være CNAME eller MX.</p>
+  <table class="mk-table">
+    <thead>
+      <tr><th style="width: 14%">Type</th><th>Hva «Name» peker på</th><th>Hva «Value» er</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>A</code></td><td>Hostname</td><td>IPv4-adresse</td></tr>
+      <tr><td><code>AAAA</code></td><td>Hostname</td><td>IPv6-adresse</td></tr>
+      <tr><td><code>NS</code></td><td>Domene</td><td>Autoritativ navneserver</td></tr>
+      <tr><td><code>CNAME</code></td><td>Alias-hostname</td><td>Kanonisk hostname</td></tr>
+      <tr><td><code>MX</code></td><td>Domene</td><td>Mailserver-hostname (med prioritet)</td></tr>
+      <tr><td><code>PTR</code></td><td>IP (revers)</td><td>Hostname</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin-top: 36px;">HTTP-metoder &amp; statuskode-klasser</h3>
+  <table class="mk-table">
+    <thead>
+      <tr><th style="width: 18%">Metode / kode</th><th>Bruk</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>GET</code></td><td>Hent objekt fra server</td></tr>
+      <tr><td><code>POST</code></td><td>Send data til server (skjema, opplasting)</td></tr>
+      <tr><td><code>PUT</code></td><td>Last opp objekt til gitt URL</td></tr>
+      <tr><td><code>DELETE</code></td><td>Slett objekt</td></tr>
+      <tr><td><code>HEAD</code></td><td>Som GET, men bare headere — ikke kropp</td></tr>
+      <tr><td><code>1xx</code></td><td>Informasjon (sjeldent)</td></tr>
+      <tr><td><code>2xx</code></td><td>Suksess (200 OK)</td></tr>
+      <tr><td><code>3xx</code></td><td>Omdirigering (301, 304 Not Modified)</td></tr>
+      <tr><td><code>4xx</code></td><td>Klientfeil (400 Bad Request, 404 Not Found)</td></tr>
+      <tr><td><code>5xx</code></td><td>Serverfeil (500, 503)</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin-top: 36px;">IP-adresser &amp; spesielle prefiks</h3>
+  <table class="mk-table">
+    <thead>
+      <tr><th style="width: 32%">Adresse / blokk</th><th>Betydning</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>10.0.0.0/8</code></td><td>Privat (klasse A)</td></tr>
+      <tr><td><code>172.16.0.0/12</code></td><td>Privat (klasse B)</td></tr>
+      <tr><td><code>192.168.0.0/16</code></td><td>Privat (klasse C)</td></tr>
+      <tr><td><code>127.0.0.0/8</code></td><td>Loopback (typisk 127.0.0.1)</td></tr>
+      <tr><td><code>169.254.0.0/16</code></td><td>Link-local (DHCP feilet)</td></tr>
+      <tr><td><code>224.0.0.0/4</code></td><td>Multicast</td></tr>
+      <tr><td><code>255.255.255.255</code></td><td>Limited broadcast (alle på lokalt nett)</td></tr>
+      <tr><td><code>0.0.0.0</code></td><td>«Denne maskinen» / default route</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin-top: 36px;">Lag og protokoller — komplett oppslag</h3>
+  <table class="mk-table">
+    <thead>
+      <tr><th style="width: 22%">Lag</th><th>Hovedoppgave</th><th>Typiske protokoller</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Applikasjon</strong></td><td>Tjenester for brukerprogrammer</td><td>HTTP(S), SMTP, IMAP, POP3, DNS, FTP, SSH, DHCP</td></tr>
+      <tr><td><strong>Transport</strong></td><td>End-to-end mellom prosesser</td><td>TCP, UDP</td></tr>
+      <tr><td><strong>Nettverk</strong></td><td>Pakker fra host til host</td><td>IP (v4/v6), ICMP, OSPF, BGP, ARP*</td></tr>
+      <tr><td><strong>Lenke</strong></td><td>Frame mellom direkte naboer</td><td>Ethernet, Wi-Fi (802.11), PPP</td></tr>
+      <tr><td><strong>Fysisk</strong></td><td>Bits over et medium</td><td>Kobber, fiber, radio</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size: 13px; color: var(--ink-faded); font-style: italic;">* ARP er teknisk på lenkelaget men brukes til å oversette mellom IP og MAC.</p>
 </div>
 </section>
 
