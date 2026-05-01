@@ -21,18 +21,24 @@ Sidene skal gi studentene mulighet til å øve på eksamensliknende oppgaver med
 
 ### Spørsmålstyper som brukes
 - **Multiple choice** — fire alternativer (A, B, C, D)
-- **Sant/Usant** — to alternativer med forklaring
+- **Sant/Usant (enkelt)** — én påstand med to alternativer og forklaring i fasit
+- **Sant/Usant-blokk** — én oppgave med **flere påstander** (typisk 4–6, ofte 5). For hver påstand skal studenten velge **Sant** eller **Usant**. På nettsiden gjøres dette med **klikkbare valg** (radioknapper per påstand — se `EKSAMEN_UTFORMING.md`). Fasiten lister riktig svar per nummer og kort begrunnelse der det trengs.
+- **Koble (matching)** — koble elementer i en **oppgaveliste** (nummerert 1, 2, 3 …) til riktig linje i en **svarbank** merket **a, b, c, …** (som i lærebok/eksamen: «Match Items» / «Selectable Items»). Eksempler: aksessnett mot typiske hastigheter; lag i TCP/IP-modellen mot beskrivelse; klienthandlinger mot socket-kall. Svarbanken kan ha **flere linjer enn oppgaver** (ekstra «distraktor»-alternativer som ikke skal brukes). Se HTML-mal i `EKSAMEN_UTFORMING.md`.
 
 ### Interaksjon
 Hvert spørsmål har en **«Vis fasit»**-knapp (native HTML `<details>/<summary>`).
-Studenten svarer på egenhånd (mentalt eller på papir), deretter åpner de fasiten og ser:
-- Riktig alternativ tydelig merket med grønn `RIKTIG SVAR: X`
-- Kort begrunnelse (1–3 setninger)
+Studenten svarer på egenhånd (ev. ved å klikke Sant/Usant eller velge bokstav i nedtrekksliste på nett), deretter åpner de fasiten og ser:
+- For **flervalg:** riktig alternativ tydelig merket med grønn `Riktig svar: X` (eller tilsvarende)
+- For **Sant/Usant-blokk:** for hver nummererte påstand — **Sant** eller **Usant** pluss kort begrunnelse der det hjelper
+- For **Koble:** tabell eller liste som viser **riktig bokstav** (a, b, c, …) for hver oppgave, med kort forklaring ved behov
+- Kort begrunnelse (1–3 setninger) der det gir verdi
 - Referanse til pensum-kapittel
 
 ### Poengnivåer
-- 2–3 poeng per spørsmål
-- Ca. 12-17 spørsmål per eksamen
+- 2–3 poeng per **vanlig** flervalgsoppgave
+- **Sant/Usant-blokk:** typisk **1 poeng per påstand** (summer til én poengsum i header, f.eks. «5 poeng» for fem påstander), eller samlet poeng for hele blokken — vær konsekvent innen én eksamen
+- **Koble:** typisk **1 poeng per riktig kobling** når det er like mange par som oppgaver, eller **3–5 poeng samlet** for en tabell med flere rader — angi i oppgavetekst/header hvordan poeng fordeles
+- Ca. 12–17 **oppgaver** per eksamen (én «oppgave» kan være én T/F-blokk eller én koble-tabell)
 
 ## 4. Del II — Åpne oppgaver (~60 poeng)
 
@@ -84,6 +90,8 @@ Husk også å lese pensum.md for å dobbelsjekke hva som er pensum
 5. **Solid fasit** — ikke bare svar, men *hvorfor* og pensum-referanse
 6. **Realistisk poengtildeling** — signal til studenten om forventet svarlengde
 7. **Variert oppgaveform** — ikke for mange av samme type i ett sett
+8. **Koble-oppgaver:** formulér oppgaver og svarbank klart; ved distraktorer skal det fortsatt finnes én entydig riktig matching per rad; i fasit: tabell med «Oppgave → riktig bokstav» pluss kort forklaring ved behov
+9. **Sant/Usant-blokk:** unngå tvetydige påstander; hver påstand skal kunne vurderes uten kontekst fra de andre (med mindre det er eksplisitt en serie om samme scenario)
 
 ## 7. Hva som IKKE inkluderes
 
