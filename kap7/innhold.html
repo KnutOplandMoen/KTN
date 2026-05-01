@@ -308,6 +308,68 @@
     <p><strong>4.</strong> Hvis senderen ikke får ACK, dobler den backoff-vinduet og prøver igjen. Dette er <em>eksponentiell backoff</em>, samme idé som i Ethernet.</p>
   </div>
 
+  <p class="section-intro" style="margin-top:12px;margin-bottom:10px">Figuren bruker <strong>to nivåer</strong>. <strong>Øverste rad</strong> i hver del er <em>den delte radiokanalen</em> — det som faktisk skjer i lufta, og som alle noder i rekkevidde kan sanse. Du ser hele tiden fra <strong>én stasjon som vil sende</strong> (tenk «oss» / laptopen din). I del B er <strong>den nederste raden</strong> bare den stasjonens <em>interne</em> backoff-teller i WiFi-brikken — den er ikke et radiosignal andre hører.</p>
+
+  <figure class="csmaca-timeline-figure">
+    <svg viewBox="0 0 780 318" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="csmacaFigTitleNo">
+      <title id="csmacaFigTitleNo">CSMA/CA: radiokanalen og vår stasjon som sender; deretter backoff med frysing</title>
+      <defs>
+        <marker id="csmacaArrNo" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#6b6257"/></marker>
+      </defs>
+      <text x="40" y="22" font-family="Newsreader, Georgia, serif" font-size="15" font-weight="600" fill="#1a1612">A · Vellykket sending</text>
+      <text x="40" y="40" font-family="Newsreader, Georgia, serif" font-size="12" fill="#6b6257">Vi er <tspan font-weight="600" fill="#1a1612">senderen</tspan>. Etter DIFS legger vi ut DATA på lufta; <tspan font-weight="600" fill="#1a1612">mottakeren</tspan> (f.eks. AP) svarer med ACK etter SIFS.</text>
+      <text x="40" y="70" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6257">Radiokanal (delt — alle merker det samme)</text>
+      <line x1="40" y1="90" x2="740" y2="90" stroke="#c9c0ae" stroke-width="1"/>
+      <rect x="40" y="76" width="52" height="28" fill="#f4f1ea" stroke="#a39886" stroke-width="1"/>
+      <text x="66" y="94" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b6257">ledig</text>
+      <rect x="92" y="76" width="58" height="28" fill="#dbeadc" stroke="#5a7a5a" stroke-width="1"/>
+      <text x="121" y="94" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="600" fill="#1a1612">DIFS</text>
+      <rect x="150" y="76" width="248" height="28" fill="#e8c4b8" stroke="#b04428" stroke-width="1.2"/>
+      <text x="274" y="90" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="600" fill="#1a1612">DATA</text>
+      <text x="274" y="100" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#8a4030">fra oss</text>
+      <rect x="398" y="76" width="36" height="28" fill="#eef2e6" stroke="#7a8a6a" stroke-width="1"/>
+      <text x="416" y="94" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" font-weight="600" fill="#1a1612">SIFS</text>
+      <rect x="434" y="76" width="72" height="28" fill="#c5d4e8" stroke="#2d4a7a" stroke-width="1.2"/>
+      <text x="470" y="90" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="600" fill="#2d4a7a">ACK</text>
+      <text x="470" y="100" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#2d4a7a">mottaker</text>
+      <rect x="506" y="76" width="234" height="28" fill="#f4f1ea" stroke="#a39886" stroke-width="1"/>
+      <text x="623" y="94" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b6257">ledig …</text>
+
+      <text x="40" y="152" font-family="Newsreader, Georgia, serif" font-size="15" font-weight="600" fill="#1a1612">B · Vi vil sende, men andre har kanalen</text>
+      <text x="40" y="170" font-family="Newsreader, Georgia, serif" font-size="12" fill="#6b6257">Grå = <tspan font-style="italic">andre</tspan> på lufta. Etter hver slik ramme må <tspan font-weight="600" fill="#1a1612">alle</tspan> vente <tspan font-weight="600" fill="#1a1612">DIFS</tspan> med ledig kanal før nedtelling i slotter kan fortsette. Telleren går ned ett hakk per ledig slot og <tspan font-weight="600" fill="#1a1612">fryser</tspan> straks noen sender. Treffer telleren 0: sender vi <tspan font-weight="600" fill="#1a1612">umiddelbart</tspan> — ingen ny DIFS etter siste slot før egen DATA.</text>
+      <text x="40" y="200" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6257">Radiokanal (delt)</text>
+      <line x1="40" y1="220" x2="720" y2="220" stroke="#c9c0ae" stroke-width="1"/>
+      <rect x="40" y="206" width="98" height="28" fill="#d8d4ce" stroke="#6b6257" stroke-width="1"/>
+      <text x="89" y="224" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1612">annen</text>
+      <rect x="138" y="206" width="30" height="28" fill="#dbeadc" stroke="#5a7a5a" stroke-width="1"/>
+      <text x="153" y="224" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" font-weight="600" fill="#1a1612">DIFS</text>
+      <rect x="168" y="206" width="90" height="28" fill="#f4f1ea" stroke="#a39886" stroke-width="1"/>
+      <text x="213" y="224" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#5a7a5a">ledig (slots)</text>
+      <rect x="258" y="206" width="70" height="28" fill="#d8d4ce" stroke="#6b6257" stroke-width="1"/>
+      <text x="293" y="224" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1612">annen</text>
+      <rect x="328" y="206" width="30" height="28" fill="#dbeadc" stroke="#5a7a5a" stroke-width="1"/>
+      <text x="343" y="224" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" font-weight="600" fill="#1a1612">DIFS</text>
+      <rect x="358" y="206" width="120" height="28" fill="#f4f1ea" stroke="#a39886" stroke-width="1"/>
+      <text x="418" y="224" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#5a7a5a">ledig (slots)</text>
+      <rect x="478" y="206" width="242" height="28" fill="#e8c4b8" stroke="#b04428" stroke-width="1.2"/>
+      <text x="599" y="224" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="#1a1612">DATA (oss)</text>
+
+      <text x="40" y="254" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6257">Vår teller (hos oss)</text>
+      <text x="168" y="248" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b6257">etter DIFS</text>
+      <text x="168" y="260" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1612">7 → 6 → 5</text>
+      <text x="258" y="254" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="#b04428">‖ frys ‖</text>
+      <text x="358" y="248" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b6257">etter DIFS</text>
+      <text x="358" y="260" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1612">4 → … → 0</text>
+      <line x1="172" y1="266" x2="252" y2="266" stroke="#5a7a5a" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <line x1="362" y1="266" x2="472" y2="266" stroke="#5a7a5a" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <path d="M 472 266 L 486 266" stroke="#6b6257" stroke-width="1" marker-end="url(#csmacaArrNo)"/>
+      <text x="490" y="270" font-family="Newsreader, Georgia, serif" font-size="11" fill="#1a1612">0 → send direkte</text>
+
+      <text x="40" y="298" font-family="Newsreader, Georgia, serif" font-size="11" fill="#6b6257">SIFS er kortere enn DIFS, derfor kan mottakers ACK ut på lufta før andre noder rekker å starte etter egen DIFS.</text>
+    </svg>
+    <figcaption><strong>Les figuren slik:</strong> Øverste rad = fysisk radiokanal; du følger <em>én egen stasjon</em>. <strong>Del A</strong> er en vanlig didaktisk forenkling («lenge ledig kanal → DIFS → send»); i full 802.11 DCF brukes ofte også backoff etter forrige ramme — greit å vite ved siden av en mer formell tekst. I A: DATA etter DIFS, ACK fra <em>mottakeren</em>. I B: <em>DIFS</em> etter hver annen senders ramme, deretter slot-telling; telleren <em>fryser</em> under andres sending. Når telleren treffer 0, starter overføringen <em>med én gang</em> (ikke ny DIFS mellom siste ledige slot og egen DATA). Uten ACK dobles backoff-vinduet (steg 4 over).</figcaption>
+  </figure>
+
   <p>Legg merke til at ACK-en er viktig her. På kabel kan vi vanligvis stole på at en sendt ramme også blir mottatt korrekt — Ethernet har ingen link-lags-ACK. På trådløst er det altfor mange ting som kan gå galt (signalfading, skjulte terminaler, interferens), så hver ramme må bekreftes eksplisitt.</p>
 
   <h3>RTS/CTS — den valgfrie reservasjonsmekanismen</h3>

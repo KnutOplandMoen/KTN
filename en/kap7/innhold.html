@@ -302,6 +302,68 @@
     <p><strong>4.</strong> If the sender does not receive an ACK, it doubles the backoff window and tries again. This is <em>exponential backoff</em>, the same idea as in Ethernet.</p>
   </div>
 
+  <p class="section-intro" style="margin-top:12px;margin-bottom:10px">The figure uses <strong>two levels</strong>. The <strong>top row</strong> in each part is the <em>shared radio channel</em> — what actually happens on the air for every station in range to sense. You always follow <strong>one station that wants to transmit</strong> (think “us” / your laptop). In part B, the <strong>bottom row</strong> is only that station’s <em>internal</em> backoff counter in the Wi-Fi chip — it is not a separate radio signal others hear.</p>
+
+  <figure class="csmaca-timeline-figure">
+    <svg viewBox="0 0 780 318" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="csmacaFigTitleEn">
+      <title id="csmacaFigTitleEn">CSMA/CA: the radio channel and our station transmitting; then backoff with freezing</title>
+      <defs>
+        <marker id="csmacaArrEn" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#6b6257"/></marker>
+      </defs>
+      <text x="40" y="22" font-family="Newsreader, Georgia, serif" font-size="15" font-weight="600" fill="#1a1612">A · Successful transmission</text>
+      <text x="40" y="40" font-family="Newsreader, Georgia, serif" font-size="12" fill="#6b6257">We are the <tspan font-weight="600" fill="#1a1612">sender</tspan>. After DIFS we place DATA on the air; the <tspan font-weight="600" fill="#1a1612">receiver</tspan> (e.g. the AP) replies with ACK after SIFS.</text>
+      <text x="40" y="70" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6257">Radio channel (shared — everyone senses the same)</text>
+      <line x1="40" y1="90" x2="740" y2="90" stroke="#c9c0ae" stroke-width="1"/>
+      <rect x="40" y="76" width="52" height="28" fill="#f4f1ea" stroke="#a39886" stroke-width="1"/>
+      <text x="66" y="94" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b6257">idle</text>
+      <rect x="92" y="76" width="58" height="28" fill="#dbeadc" stroke="#5a7a5a" stroke-width="1"/>
+      <text x="121" y="94" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="600" fill="#1a1612">DIFS</text>
+      <rect x="150" y="76" width="248" height="28" fill="#e8c4b8" stroke="#b04428" stroke-width="1.2"/>
+      <text x="274" y="90" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="600" fill="#1a1612">DATA</text>
+      <text x="274" y="100" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#8a4030">from us</text>
+      <rect x="398" y="76" width="36" height="28" fill="#eef2e6" stroke="#7a8a6a" stroke-width="1"/>
+      <text x="416" y="94" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" font-weight="600" fill="#1a1612">SIFS</text>
+      <rect x="434" y="76" width="72" height="28" fill="#c5d4e8" stroke="#2d4a7a" stroke-width="1.2"/>
+      <text x="470" y="90" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="600" fill="#2d4a7a">ACK</text>
+      <text x="470" y="100" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" fill="#2d4a7a">receiver</text>
+      <rect x="506" y="76" width="234" height="28" fill="#f4f1ea" stroke="#a39886" stroke-width="1"/>
+      <text x="623" y="94" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b6257">idle …</text>
+
+      <text x="40" y="152" font-family="Newsreader, Georgia, serif" font-size="15" font-weight="600" fill="#1a1612">B · We want to send, but others have the channel</text>
+      <text x="40" y="170" font-family="Newsreader, Georgia, serif" font-size="12" fill="#6b6257">Grey = <tspan font-style="italic">others</tspan> on the air. After each such frame, <tspan font-weight="600" fill="#1a1612">everyone</tspan> must sense the channel idle for <tspan font-weight="600" fill="#1a1612">DIFS</tspan> before the slot countdown can continue. The counter decrements one step per idle slot and <tspan font-weight="600" fill="#1a1612">freezes</tspan> as soon as anyone transmits. When the counter hits 0, we transmit <tspan font-weight="600" fill="#1a1612">immediately</tspan> — no extra DIFS after the last slot before our DATA.</text>
+      <text x="40" y="200" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6257">Radio channel (shared)</text>
+      <line x1="40" y1="220" x2="720" y2="220" stroke="#c9c0ae" stroke-width="1"/>
+      <rect x="40" y="206" width="98" height="28" fill="#d8d4ce" stroke="#6b6257" stroke-width="1"/>
+      <text x="89" y="224" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1612">other</text>
+      <rect x="138" y="206" width="30" height="28" fill="#dbeadc" stroke="#5a7a5a" stroke-width="1"/>
+      <text x="153" y="224" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" font-weight="600" fill="#1a1612">DIFS</text>
+      <rect x="168" y="206" width="90" height="28" fill="#f4f1ea" stroke="#a39886" stroke-width="1"/>
+      <text x="213" y="224" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#5a7a5a">idle (slots)</text>
+      <rect x="258" y="206" width="70" height="28" fill="#d8d4ce" stroke="#6b6257" stroke-width="1"/>
+      <text x="293" y="224" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1612">other</text>
+      <rect x="328" y="206" width="30" height="28" fill="#dbeadc" stroke="#5a7a5a" stroke-width="1"/>
+      <text x="343" y="224" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" font-weight="600" fill="#1a1612">DIFS</text>
+      <rect x="358" y="206" width="120" height="28" fill="#f4f1ea" stroke="#a39886" stroke-width="1"/>
+      <text x="418" y="224" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#5a7a5a">idle (slots)</text>
+      <rect x="478" y="206" width="242" height="28" fill="#e8c4b8" stroke="#b04428" stroke-width="1.2"/>
+      <text x="599" y="224" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="#1a1612">DATA (us)</text>
+
+      <text x="40" y="254" font-family="IBM Plex Mono, monospace" font-size="10" fill="#6b6257">Our counter (local)</text>
+      <text x="168" y="248" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b6257">after DIFS</text>
+      <text x="168" y="260" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1612">7 → 6 → 5</text>
+      <text x="258" y="254" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="#b04428">‖ freeze ‖</text>
+      <text x="358" y="248" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6b6257">after DIFS</text>
+      <text x="358" y="260" font-family="IBM Plex Mono, monospace" font-size="10" fill="#1a1612">4 → … → 0</text>
+      <line x1="172" y1="266" x2="252" y2="266" stroke="#5a7a5a" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <line x1="362" y1="266" x2="472" y2="266" stroke="#5a7a5a" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <path d="M 472 266 L 486 266" stroke="#6b6257" stroke-width="1" marker-end="url(#csmacaArrEn)"/>
+      <text x="490" y="270" font-family="Newsreader, Georgia, serif" font-size="11" fill="#1a1612">0 → send immediately</text>
+
+      <text x="40" y="298" font-family="Newsreader, Georgia, serif" font-size="11" fill="#6b6257">SIFS is shorter than DIFS, so the receiver’s ACK can go on the air before other nodes start after their own DIFS.</text>
+    </svg>
+    <figcaption><strong>How to read this:</strong> Top row = physical radio channel; you follow <em>one station of your own</em>. <strong>Part A</strong> is a common teaching simplification (“long idle channel → DIFS → send”); full 802.11 DCF often also uses backoff after the previous frame — worth noting next to a formal description. In A: DATA after DIFS, ACK from the <em>receiver</em>. In B: <em>DIFS</em> after each other station’s frame, then slot counting; the counter <em>freezes</em> while others transmit. When the counter hits 0, transmission starts <em>immediately</em> (no new DIFS between the last idle slot and your DATA). With no ACK, the backoff window doubles (step 4 above).</figcaption>
+  </figure>
+
   <p>Note that the ACK is important here. On cable, we can usually trust that a sent frame is also received correctly — Ethernet has no link-layer ACK. On wireless, there are far too many things that can go wrong (signal fading, hidden terminals, interference), so each frame must be confirmed explicitly.</p>
 
   <h3>RTS/CTS — the optional reservation mechanism</h3>
