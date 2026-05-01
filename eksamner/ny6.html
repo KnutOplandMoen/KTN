@@ -72,10 +72,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hvilken oppgave hører <strong>til transportlaget</strong> og ikke til de andre lagene?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Velge ut beste rute mellom kilde- og destinasjons-IP</li>
+        <li><span class="opt-label">A</span> Velge ut beste rute mellom kilde- og destinasjons-IP basert på dynamisk oppdaterte forwarding-tabeller</li>
         <li><span class="opt-label">B</span> Multipleksere/demultipleksere data mellom flere applikasjonsprosesser via portnumre</li>
-        <li><span class="opt-label">C</span> Kapsle inn data i Ethernet-rammer med MAC-adresser</li>
-        <li><span class="opt-label">D</span> Oversette domenenavn til IP-adresser</li>
+        <li><span class="opt-label">C</span> Kapsle inn data i Ethernet-rammer med MAC-adresser og håndtere kollisjonsdeteksjon på lenken</li>
+        <li><span class="opt-label">D</span> Oversette menneskelesbare domenenavn til numeriske IP-adresser via et hierarkisk navnesystem</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -186,10 +186,10 @@
     <div class="exam-q__body">
       <p class="q-text">TCPs timeout beregnes som <code>TimeoutInterval = EstimatedRTT + 4 · DevRTT</code>. Hva er rollen til <code>DevRTT</code>?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Antall ACK-er som er mottatt siden oppstart</li>
+        <li><span class="opt-label">A</span> Et eksponentielt glidende gjennomsnitt av antall ACK-er mottatt per tidsenhet siden forbindelsen ble opprettet</li>
         <li><span class="opt-label">B</span> Et estimat for variasjonen (avviket) i RTT — det gir senderen en sikkerhetsmargin slik at små variasjoner ikke utløser unødvendige retransmisjoner</li>
-        <li><span class="opt-label">C</span> Forsinkelsen mellom mottatt segment og sendt ACK</li>
-        <li><span class="opt-label">D</span> Maksimum tillatt RTT i nettverket</li>
+        <li><span class="opt-label">C</span> Forsinkelsen mellom at et segment er mottatt og at den tilhørende ACK-en faktisk legges ut på lenken av mottakeren</li>
+        <li><span class="opt-label">D</span> Den maksimalt tillatte RTT-en i nettverket før forbindelsen anses som tapt og må re-etableres</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -242,10 +242,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er det presise skillet mellom <strong>routing</strong> og <strong>forwarding</strong> i nettverkslaget?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Routing skjer i TCP, forwarding i IP</li>
+        <li><span class="opt-label">A</span> Routing er en oppgave for transportlaget (TCP), mens forwarding utføres av nettverkslaget (IP) i hver enkelt ruter</li>
         <li><span class="opt-label">B</span> Routing er nettverksomspennende, langsom prosess som bygger forwarding-tabellene; forwarding er den lokale, raske oppslagsoperasjonen i hver pakke</li>
-        <li><span class="opt-label">C</span> Routing er bare for IPv6, forwarding er for IPv4</li>
-        <li><span class="opt-label">D</span> De er synonymer — to navn for samme operasjon</li>
+        <li><span class="opt-label">C</span> Routing brukes utelukkende i IPv6-nettverk, mens forwarding er en operasjon som er reservert for IPv4-trafikk</li>
+        <li><span class="opt-label">D</span> Begrepene er synonymer — to ulike navn på nøyaktig samme operasjon i nettverkslaget</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -269,10 +269,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hvilken egenskap ved IPv6-headeren skiller den klart fra IPv4-headeren?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> IPv6 har et innebygd checksum-felt; IPv4 har ikke</li>
+        <li><span class="opt-label">A</span> IPv6 har et obligatorisk innebygd checksum-felt for hele headeren, mens IPv4 mangler dette og overlater integritet til lavere lag</li>
         <li><span class="opt-label">B</span> IPv6-headeren har <em>fast</em> lengde (40 byte) og inneholder ikke fragmenteringsfelter — fragmentering gjøres bare av endesystemer, ikke av rutere</li>
-        <li><span class="opt-label">C</span> IPv6 bruker desimalnotasjon, IPv4 hex</li>
-        <li><span class="opt-label">D</span> IPv6 har TTL-feltet, IPv4 har ikke</li>
+        <li><span class="opt-label">C</span> IPv6 representerer adresser i ren desimalnotasjon med punktum som skilletegn, mens IPv4 alltid skrives på heksadesimal form</li>
+        <li><span class="opt-label">D</span> Bare IPv6 inkluderer et TTL-felt for å begrense pakkers levetid; IPv4 har ikke noen tilsvarende mekanisme i sin header</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -298,9 +298,9 @@
       <p class="q-text">Hva er hovedformålet med en <strong>ICMP Redirect</strong>-melding?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Be senderen sende en pakke direkte til en bedre neste-hop-ruter ved fremtidige sendinger</li>
-        <li><span class="opt-label">B</span> Krypterer destinasjonsadressen for å skjule den</li>
-        <li><span class="opt-label">C</span> Endre TCP-portnummer for en ny forbindelse</li>
-        <li><span class="opt-label">D</span> Stoppe all trafikk på en lenke i 30 sekunder</li>
+        <li><span class="opt-label">B</span> Kryptere destinasjonsadressen i pakkens header for å skjule den underveis gjennom mellomliggende rutere</li>
+        <li><span class="opt-label">C</span> Pålegge senderen å bytte TCP-portnummer ved oppretting av en ny forbindelse mot samme tjener</li>
+        <li><span class="opt-label">D</span> Midlertidig stoppe all trafikk på en overbelastet lenke i 30 sekunder for å la køene tømmes</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -379,10 +379,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er hovedoppgaven til <strong>4-veis handshake</strong> i WPA2-PSK?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Tildele klienten en IP-adresse</li>
+        <li><span class="opt-label">A</span> Tildele klienten en gyldig IP-adresse i rett subnett, sammen med subnettmaske og standard gateway, uten å bruke DHCP</li>
         <li><span class="opt-label">B</span> Etablere en sesjonsspesifikk krypteringsnøkkel mellom klient og AP basert på den delte PSK-en, uten at PSK-en sendes over luften</li>
-        <li><span class="opt-label">C</span> Forhandle hvilken WiFi-kanal som skal brukes</li>
-        <li><span class="opt-label">D</span> Måle signalstyrken og rapportere den til AP</li>
+        <li><span class="opt-label">C</span> Forhandle hvilken WiFi-kanal og senderstyrke klient og AP skal bruke for å unngå interferens med naboaksesspunkter</li>
+        <li><span class="opt-label">D</span> La klienten måle signalstyrke (RSSI) og støynivå på kanalen og rapportere disse verdiene til AP-en periodisk</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -406,10 +406,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er en <strong>application-layer gateway</strong> (også kalt application proxy) i sammenheng med brannmurer?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> En enkel pakkefilter som bare ser på IP og portnumre</li>
+        <li><span class="opt-label">A</span> En enkel statsløs pakkefilter som tar beslutninger utelukkende basert på IP-adresser og TCP/UDP-portnumre i hver enkelt pakke</li>
         <li><span class="opt-label">B</span> En proxy-tjener som inspiserer hele applikasjonens nyttelast (f.eks. HTTP-innhold) og kan filtrere basert på applikasjonsspesifikke regler</li>
-        <li><span class="opt-label">C</span> En NAT-tabell som oversetter porter</li>
-        <li><span class="opt-label">D</span> En DNS-server med ekstra logging</li>
+        <li><span class="opt-label">C</span> En NAT-tabell som oversetter mellom interne private porter og eksterne offentlige porter for utgående trafikk fra LAN-et</li>
+        <li><span class="opt-label">D</span> En autoritativ DNS-server med ekstra logging av oppslag, brukt til å oppdage skadevare som kontakter mistenkelige domener</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -433,10 +433,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hvilket sett av krav skiller en <strong>interaktiv (konversasjonell) sanntidsapplikasjon</strong> som videosamtale klart fra <strong>lagret videostreaming</strong> som Netflix?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Konversasjonell tåler høyere ende-til-ende-forsinkelse fordi brukeren venter</li>
-        <li><span class="opt-label">B</span> Streaming krever en helt annen transportprotokoll enn UDP</li>
-        <li><span class="opt-label">C</span> Konversasjonell krever <em>lav</em> ende-til-ende-forsinkelse (typisk &lt; 150–200 ms hver vei) og kan ikke benytte stor mottakerbuffer; streaming kan tolerere mange sekunders oppstartsforsinkelse og bygger stor klient-buffer</li>
-        <li><span class="opt-label">D</span> Streaming krever lavere bitrate enn konversasjonell</li>
+        <li><span class="opt-label">A</span> Konversasjonelle applikasjoner tåler vesentlig høyere ende-til-ende-forsinkelse, fordi brukeren venter aktivt og tilpasser seg, mens streaming krever helt jitter-fri levering</li>
+        <li><span class="opt-label">B</span> Streaming krever en helt annen transportprotokoll enn UDP for å fungere, typisk en pålitelig forbindelse som garanterer at ingen rammer noensinne forkastes underveis</li>
+        <li><span class="opt-label">C</span> Konversasjonell krever <em>lav</em> ende-til-ende-forsinkelse (typisk &lt; 150–200 ms hver vei) og kan ikke benytte stor mottakerbuffer; streaming kan tolerere mange sekunders oppstartsforsinkelse</li>
+        <li><span class="opt-label">D</span> Streaming krever en betydelig lavere bitrate enn konversasjonell sanntidskommunikasjon, fordi videoen er forhåndskodet og kan komprimeres mer aggressivt enn live-trafikk</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>

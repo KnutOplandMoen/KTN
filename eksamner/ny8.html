@@ -72,10 +72,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er den korrekte definisjonen av <strong>RTT</strong> (Round-Trip Time)?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Tiden det tar for én pakke å nå destinasjonen</li>
+        <li><span class="opt-label">A</span> Tiden det tar for én pakke å nå destinasjonen — såkalt one-way delay målt i applikasjonen</li>
         <li><span class="opt-label">B</span> Tiden mellom at en pakke sendes og en korresponderende kvittering returnerer til senderen — tur-retur-tiden</li>
-        <li><span class="opt-label">C</span> Lenkens fysiske avstand delt på lyshastigheten</li>
-        <li><span class="opt-label">D</span> Variasjonen i forsinkelse over tid</li>
+        <li><span class="opt-label">C</span> Lenkens fysiske avstand delt på lyshastigheten i mediet — den rene propagasjonsforsinkelsen</li>
+        <li><span class="opt-label">D</span> Variasjonen i forsinkelse over tid, målt som standardavvik mellom etterfølgende pakker</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -127,10 +127,10 @@
     <div class="exam-q__body">
       <p class="q-text">DNS-svar har et <strong>TTL</strong>-felt (Time to Live) som indikerer hvor lenge et svar kan caches. Hvilket konkret kompromiss styrer valg av TTL-verdi?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Lav TTL gir bedre sikkerhet mot DNS-spoofing</li>
+        <li><span class="opt-label">A</span> Lav TTL gir bedre sikkerhet mot DNS-spoofing fordi resolveren da må kontakte autoritativ server oftere og verifisere svarene på nytt</li>
         <li><span class="opt-label">B</span> Høy TTL → mindre DNS-trafikk og raskere oppslag, men endringer i records (f.eks. ny IP) tar lenger tid å spre seg ut til brukerne</li>
-        <li><span class="opt-label">C</span> TTL-verdien styrer kun retten til å bruke domenet, ikke caching</li>
-        <li><span class="opt-label">D</span> TTL er et eldre felt som ikke lenger brukes</li>
+        <li><span class="opt-label">C</span> TTL-verdien styrer kun hvor lenge eieren har retten til å bruke domenet hos registraren, og påvirker ikke hvordan resolverne cacher svar</li>
+        <li><span class="opt-label">D</span> TTL er et eldre felt fra tidlig DNS som i moderne implementasjoner ignoreres av resolverne, og caching styres i stedet av lokale policyer</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -155,10 +155,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hvilken funksjon har <strong>timeren</strong> i rdt 3.0 (Stop-and-Wait med alternating bit)?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Mottakeren bruker timeren til å vente på flere pakker før den ACK-er</li>
-        <li><span class="opt-label">B</span> Timeren er en ren rate-begrenser hos senderen</li>
+        <li><span class="opt-label">A</span> Mottakeren bruker timeren til å vente på flere pakker før den ACK-er, slik at den kan kvittere flere segmenter samtidig og spare båndbredde</li>
+        <li><span class="opt-label">B</span> Timeren er en ren rate-begrenser hos senderen som sikrer at pakker sendes med jevne mellomrom uavhengig av ACK-flyten</li>
         <li><span class="opt-label">C</span> Senderen retransmitterer pakken når timeren utløper, siden den ikke kan skille mellom tap av data og tap av ACK</li>
-        <li><span class="opt-label">D</span> Mottakeren bruker timeren til å beregne sin egen NAK</li>
+        <li><span class="opt-label">D</span> Mottakeren bruker timeren til å beregne sin egen NAK-respons og varsle senderen om manglende segmenter ved tap</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -182,10 +182,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hvilken kombinasjon av felter bruker <strong>TCP</strong> for å demultiplekse innkommende segmenter til riktig socket?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Bare destinasjons-port</li>
-        <li><span class="opt-label">B</span> Kilde-IP og destinasjon-IP</li>
+        <li><span class="opt-label">A</span> Bare destinasjons-port — kjernen finner riktig socket via porttabellen på destinasjonsverten</li>
+        <li><span class="opt-label">B</span> Kilde-IP og destinasjon-IP brukes sammen som nøkkel i socket-oppslaget</li>
         <li><span class="opt-label">C</span> 4-tuppelet (kilde-IP, kilde-port, destinasjons-IP, destinasjons-port)</li>
-        <li><span class="opt-label">D</span> 4-tuppelet kombinert med MAC-adressen</li>
+        <li><span class="opt-label">D</span> 4-tuppelet kombinert med MAC-adressen til mottakerens nettverkskort</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -270,10 +270,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er forskjellen i bruk mellom ICMP type 3 (Destination Unreachable) og type 11 (Time Exceeded)?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Type 3 sendes når TTL utløper, type 11 når destinasjonen ikke eksisterer</li>
+        <li><span class="opt-label">A</span> Type 3 sendes når TTL utløper på en ruter underveis, og type 11 sendes når en pakke ankommer en destinasjon som ikke eksisterer eller har en lukket port</li>
         <li><span class="opt-label">B</span> Type 3 sendes når et endesystem (vert eller ruter) ikke kan levere pakken til destinasjonen (ukjent vert, lukket port, blokkert nett); type 11 sendes når TTL går til null på en ruter underveis</li>
-        <li><span class="opt-label">C</span> Begge sendes ved samme situasjon — de er duplikater</li>
-        <li><span class="opt-label">D</span> Type 3 brukes kun av ping, type 11 kun av traceroute</li>
+        <li><span class="opt-label">C</span> Begge meldingene sendes i nøyaktig samme situasjon og inneholder samme informasjon — de er duplikater bevart av historiske grunner i ICMP-spesifikasjonen</li>
+        <li><span class="opt-label">D</span> Type 3 brukes utelukkende av ping for å rapportere uoppnåelige verter, mens type 11 brukes utelukkende av traceroute for å kartlegge ruterne underveis</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -357,10 +357,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hvilken påstand om 802.11-frekvensbåndene 2.4 GHz og 5 GHz er korrekt?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> 2.4 GHz har generelt høyere maksrate, mens 5 GHz har lengre rekkevidde</li>
+        <li><span class="opt-label">A</span> 2.4 GHz har generelt høyere maksrate fordi det har bredere kanaler tilgjengelig, mens 5 GHz har lengre rekkevidde fordi høyere frekvenser bærer signalet bedre gjennom vegger</li>
         <li><span class="opt-label">B</span> 2.4 GHz har lengre rekkevidde og bedre vegg-penetrasjon, men mer interferens og lavere maksrate; 5 GHz har høyere maksrate og mer tilgjengelig spektrum, men kortere rekkevidde</li>
-        <li><span class="opt-label">C</span> Båndene er identiske og brukes om hverandre</li>
-        <li><span class="opt-label">D</span> 5 GHz er kun for innendørs bruk i alle land</li>
+        <li><span class="opt-label">C</span> Båndene er fysisk identiske og brukes om hverandre av AP-er, og forskjellen er kun et formelt valg av kanalnummer ved oppsett av nettverket</li>
+        <li><span class="opt-label">D</span> 5 GHz er ved internasjonal regulering forbeholdt innendørs bruk i alle land og kan ikke brukes utendørs uten spesiell lisens fra myndighetene</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -393,10 +393,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er hovedformålet med en <strong>nonce</strong> i en kryptografisk autentiseringsprotokoll?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Et synonym for hash-verdi</li>
+        <li><span class="opt-label">A</span> Et synonym for hash-verdi som identifiserer en autentiseringsmelding entydig på tvers av sesjoner</li>
         <li><span class="opt-label">B</span> En tilfeldig engangsverdi som motvirker at en angriper kan «spille av» tidligere fanget kommunikasjon — hindrer replay-angrep</li>
-        <li><span class="opt-label">C</span> Et lengre passord enn vanlig</li>
-        <li><span class="opt-label">D</span> En bredbåndsmåling sendt til AP-et</li>
+        <li><span class="opt-label">C</span> Et ekstra langt og tilfeldig generert passord som brukes i stedet for vanlige passord for å motstå ordbok-angrep</li>
+        <li><span class="opt-label">D</span> En bredbåndsmåling sendt fra klienten til AP-et som brukes til å forhandle frem en passende krypteringsnøkkel</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -421,9 +421,9 @@
       <p class="q-text">Hva er forskjellen mellom <strong>site-to-site VPN</strong> og <strong>remote-access VPN</strong>?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Site-to-site forbinder to faste nettverk via en kryptert tunnel mellom to gateways; remote-access lar én individuell bruker logge seg inn til et nettverk fra en hvilken som helst plass</li>
-        <li><span class="opt-label">B</span> Site-to-site bruker IPSec, remote-access bruker SSL — alltid</li>
-        <li><span class="opt-label">C</span> Site-to-site er kryptert, remote-access er ikke</li>
-        <li><span class="opt-label">D</span> De er ulike navn for samme oppsett</li>
+        <li><span class="opt-label">B</span> Site-to-site bruker alltid IPSec på nettverkslaget, mens remote-access alltid bruker SSL/TLS på applikasjonslaget — denne protokollskillet er en del av VPN-standarden og kan ikke fravikes</li>
+        <li><span class="opt-label">C</span> Site-to-site krypterer all trafikk mellom gatewayene, mens remote-access er en ukryptert tunnel som kun gir ruting inn til det interne nettet uten konfidensialitetsbeskyttelse</li>
+        <li><span class="opt-label">D</span> De er ulike navn for samme oppsett som har oppstått fordi ulike leverandører har valgt forskjellig terminologi for den samme grunnleggende VPN-arkitekturen</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -448,10 +448,10 @@
     <div class="exam-q__body">
       <p class="q-text">Standard telefoni bruker PCM med 8 kHz sampling. Hvilket grunnleggende prinsipp begrunner at dette er tilstrekkelig for menneskelig tale?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Shannon-Hartley-teoremet</li>
+        <li><span class="opt-label">A</span> Shannon-Hartley-teoremet om maksimal kanalkapasitet ved gitt båndbredde og signal-til-støy-forhold</li>
         <li><span class="opt-label">B</span> Nyquist-prinsippet: et signal med båndbredde B kan rekonstrueres fullstendig med samplingrate ≥ 2B</li>
-        <li><span class="opt-label">C</span> Heisenbergs uskarphetsprinsipp</li>
-        <li><span class="opt-label">D</span> Reed-Solomon-koding</li>
+        <li><span class="opt-label">C</span> Heisenbergs uskarphetsprinsipp anvendt på tids- og frekvensoppløsning i diskrete signaler</li>
+        <li><span class="opt-label">D</span> Reed-Solomon-koding som korrigerer feil i digitaliserte lydprøver ved hjelp av redundans</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>

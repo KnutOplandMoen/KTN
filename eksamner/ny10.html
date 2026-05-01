@@ -100,10 +100,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hvilken egenskap er karakteristisk for <strong>kretsesvitsjing</strong> (FDM/TDM) men IKKE for pakkesvitsjing?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Pakker har headere</li>
-        <li><span class="opt-label">B</span> Hver tilkobling får tildelt fast kapasitet hele kallets varighet — selv når den ikke har data å sende</li>
-        <li><span class="opt-label">C</span> Trafikken kan kø-bygges hos rutere</li>
-        <li><span class="opt-label">D</span> Veivalg gjøres per pakke uavhengig av tidligere pakker</li>
+        <li><span class="opt-label">A</span> Hver pakke bærer en header med avsender- og mottaker-adresse for uavhengig forwarding</li>
+        <li><span class="opt-label">B</span> Hver tilkobling får tildelt fast kapasitet hele kallets varighet — også når den er stille</li>
+        <li><span class="opt-label">C</span> Trafikken kan bygge kø hos rutere når flere strømmer konkurrerer om samme utgående lenke</li>
+        <li><span class="opt-label">D</span> Veivalg gjøres per pakke uavhengig av tidligere pakker i samme strøm</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -156,10 +156,10 @@
     <div class="exam-q__body">
       <p class="q-text">Klienten får svaret <code>HTTP/1.1 301 Moved Permanently</code> med en <code>Location</code>-header pekende til en ny URL. Hva betyr dette, og hva gjør moderne nettlesere?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Serveren melder feil — klienten må be brukeren om autentisering</li>
-        <li><span class="opt-label">B</span> Ressursen er flyttet permanent. Klienten følger automatisk redirecten ved å gjøre en ny forespørsel mot Location-URL-en, og kan oppdatere lenker/cache slik at fremtidige forespørsler går rett til den nye adressen</li>
-        <li><span class="opt-label">C</span> Ressursen er midlertidig utilgjengelig; klienten skal vente 30 sekunder og prøve igjen</li>
-        <li><span class="opt-label">D</span> Det er en statisk feil i HTTP-protokollen som ikke har semantisk betydning</li>
+        <li><span class="opt-label">A</span> Serveren melder en autentiseringsfeil — klienten må be brukeren om brukernavn og passord før forespørselen kan gjentas mot samme URL</li>
+        <li><span class="opt-label">B</span> Ressursen er flyttet permanent. Klienten følger redirecten automatisk mot Location-URL-en, og kan oppdatere lenker og cache slik at framtidige forespørsler går rett til den nye adressen</li>
+        <li><span class="opt-label">C</span> Ressursen er midlertidig utilgjengelig på grunn av serverlast; klienten skal vente i minst 30 sekunder og prøve igjen mot samme URL uten å oppdatere bokmerker</li>
+        <li><span class="opt-label">D</span> Statuskoden er reservert for framtidig bruk i HTTP/2 og har ingen semantisk betydning som klienten skal håndtere i dag</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -188,10 +188,10 @@
     <div class="exam-q__body">
       <p class="q-text">TCPs RTT-estimering bruker <strong>Karns algoritme</strong>. Hva er hovedinnholdet i denne regelen?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Senderen skal multiplisere alle RTT-målinger med 1,5 for sikkerhets skyld</li>
-        <li><span class="opt-label">B</span> Senderen skal <em>ikke</em> bruke RTT-målinger fra retransmitterte segmenter til å oppdatere SampleRTT, fordi det er tvetydig om ACK-en svarer på det opprinnelige eller det retransmitterte segmentet. I tillegg dobles timeout-verdien ved hver retransmisjon (exponential backoff)</li>
-        <li><span class="opt-label">C</span> Senderen skal alltid bruke samme timeout (1 sekund)</li>
-        <li><span class="opt-label">D</span> Senderen skal sende dobbelt så mange segmenter når RTT øker</li>
+        <li><span class="opt-label">A</span> Senderen skal multiplisere alle RTT-målinger med 1,5 for å gi en konservativ sikkerhetsmargin mot uventet kø-vekst i nettet, og bruke produktet som timeout</li>
+        <li><span class="opt-label">B</span> Senderen skal <em>ikke</em> oppdatere SampleRTT med målinger fra retransmitterte segmenter, siden det er tvetydig hvilket segment ACK-en svarer på. I tillegg dobles timeout ved hver retransmisjon (exponential backoff)</li>
+        <li><span class="opt-label">C</span> Senderen skal alltid bruke en fast timeout på 1 sekund uavhengig av målte RTT-verdier, og ignorere variasjoner i nettforsinkelsen mellom segmenter</li>
+        <li><span class="opt-label">D</span> Senderen skal sende dobbelt så mange segmenter per RTT når målt RTT øker, for å kompensere for redusert gjennomstrømning og fylle vinduet</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -216,10 +216,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hvilken av påstandene om <strong>sliding window</strong> er korrekt?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Sliding window kreves bare ved feilrekkefølge — ikke for ytelse</li>
-        <li><span class="opt-label">B</span> Sliding window lar senderen ha flere ukvitterte segmenter underveis samtidig — nødvendig for å fylle nett med store båndbredde-forsinkelses-produkter (BDP) der enkelt-pakke-stop-and-wait gir veldig lav gjennomstrømning</li>
-        <li><span class="opt-label">C</span> Sliding window dobler antall ACK-er per segment</li>
-        <li><span class="opt-label">D</span> Sliding window er en feilrettingskode</li>
+        <li><span class="opt-label">A</span> Sliding window er bare nødvendig når pakker ankommer i feil rekkefølge — for ren ytelse holder det å bruke stop-and-wait med korte timeouts</li>
+        <li><span class="opt-label">B</span> Sliding window lar senderen ha flere ukvitterte segmenter underveis samtidig — nødvendig for å fylle nett med stor båndbredde-forsinkelse (BDP), der stop-and-wait gir svært lav gjennomstrømning</li>
+        <li><span class="opt-label">C</span> Sliding window dobler antall ACK-er per segment slik at senderen får raskere tilbakemelding ved tap i nettet</li>
+        <li><span class="opt-label">D</span> Sliding window er en feilrettingskode som rekonstruerer tapte pakker uten retransmisjon</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -244,10 +244,10 @@
     <div class="exam-q__body">
       <p class="q-text">En NAT-ruter har offentlig IP <code>83.5.10.20</code>. To interne hoster A (10.0.0.5:5000) og B (10.0.0.6:5000) sender begge ut samtidige UDP-pakker mot samme eksterne mottaker (94.1.1.1:80). Hvordan skiller NAT-ruteren mellom svarpakkene tilbake fra serveren?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Den oversetter ingen header-felt — pakkene blir bare videresendt</li>
-        <li><span class="opt-label">B</span> Den endrer kilde-IP til sin egen offentlige IP for begge, og endrer i tillegg <strong>kilde-port</strong> til to ulike verdier (f.eks. 60001 og 60002). Når svar ankommer, sjekkes destinasjons-port mot NAT-tabellen for å oversette tilbake</li>
-        <li><span class="opt-label">C</span> Den bruker MAC-adressen til å skille forbindelsene</li>
-        <li><span class="opt-label">D</span> Den krever at A og B avtaler ulike kilde-porter på forhånd</li>
+        <li><span class="opt-label">A</span> Den oversetter ingen header-felt — pakkene videresendes med sine private kilde-IP-er, og serveren svarer direkte til 10.0.0.5 og 10.0.0.6</li>
+        <li><span class="opt-label">B</span> Den endrer kilde-IP til sin egen offentlige IP for begge, og setter ulike <strong>kilde-porter</strong> (f.eks. 60001 og 60002). Når svar ankommer, slås destinasjons-port opp i NAT-tabellen for å oversette tilbake</li>
+        <li><span class="opt-label">C</span> Den bruker MAC-adressen til de interne hostene som ekstra nøkkel i NAT-tabellen for å skille de to forbindelsene fra hverandre</li>
+        <li><span class="opt-label">D</span> Den krever at A og B på forhånd avtaler ulike kilde-porter via DHCP, slik at NAT-ruteren kan slippe å holde en oversettelsestabell</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -307,10 +307,10 @@
     <div class="exam-q__body">
       <p class="q-text">ARP-tabeller utløper. Hva er hovedgrunnen til at oppføringer i ARP-cachen har en <strong>tidsavløp</strong> (typisk minutter)?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Det er en ren ytelsesoptimalisering for å spare RAM</li>
-        <li><span class="opt-label">B</span> En vert kan flyttes til et annet subnett, eller MAC-adressen kan endres (f.eks. nytt nettverkskort, virtuell IP overført til en annen vert). En gammel cache-oppføring vil i så fall sende rammen til feil sted; tidsavløp tvinger fram en ny ARP-request og dermed oppdatert mapping</li>
-        <li><span class="opt-label">C</span> ARP-meldinger kan ikke leses mer enn én gang av samme vert</li>
-        <li><span class="opt-label">D</span> Sikkerhetsregelverk krever at oppføringer aldri varer mer enn 100 ms</li>
+        <li><span class="opt-label">A</span> Det er en ren ytelsesoptimalisering for å spare RAM, slik at ARP-tabellen ikke vokser ubegrenset på switcher og rutere med svært mange tilkoblede verter i lokalnettet</li>
+        <li><span class="opt-label">B</span> En vert kan flyttes, eller MAC-adressen endres (nytt nettverkskort, virtuell IP overført). En gammel oppføring vil da sende rammer til feil sted; tidsavløpet tvinger fram ny ARP-request og oppdatert mapping</li>
+        <li><span class="opt-label">C</span> ARP-protokollen tillater ikke at samme IP-til-MAC-mapping brukes mer enn én gang av samme vert, fordi sekvensnumrene i ARP-headeren da ville kollidere mot hverandre</li>
+        <li><span class="opt-label">D</span> IEEE 802-standarden krever at ARP-oppføringer aldri varer mer enn 100 ms av hensyn til sikkerhet mot ARP-spoofing- og MAC-flooding-angrep i lokalnettet</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -408,10 +408,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er forskjellen mellom <strong>passiv</strong> og <strong>aktiv</strong> scanning i 802.11?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Passiv scanning: klienten lytter på hver kanal etter beacons fra AP-er. Aktiv scanning: klienten sender Probe Request på hver kanal og venter på Probe Response — raskere men røper klientens tilstedeværelse</li>
-        <li><span class="opt-label">B</span> Passiv betyr at klienten kun bruker LTE; aktiv betyr WiFi</li>
-        <li><span class="opt-label">C</span> Passiv brukes kun for nedlasting; aktiv kun for opplasting</li>
-        <li><span class="opt-label">D</span> Begrepene er synonyme</li>
+        <li><span class="opt-label">A</span> Passiv: klienten lytter på hver kanal etter beacons fra AP-er. Aktiv: klienten sender Probe Request og venter på Probe Response — raskere, men røper klientens tilstedeværelse</li>
+        <li><span class="opt-label">B</span> Passiv scanning brukes kun på lisensierte mobilbånd som LTE; aktiv scanning er forbeholdt ulisensierte WiFi-bånd og krever Probe Request med autentisering</li>
+        <li><span class="opt-label">C</span> Passiv scanning brukes kun under nedlasting fra AP-en, mens aktiv scanning utføres kun under opplasting og krever en åpen TCP-forbindelse</li>
+        <li><span class="opt-label">D</span> Begrepene er synonyme i 802.11-standarden og refererer begge til kanalvalg under association med en AP</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -554,10 +554,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hvilket av RTP-feltene brukes av mottakeren til å <em>spille av</em> samples i riktig rekkefølge og med korrekte tidsintervaller?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> SSRC (Synchronization Source Identifier)</li>
-        <li><span class="opt-label">B</span> Payload Type</li>
-        <li><span class="opt-label">C</span> Timestamp — angir samplingsøyeblikk for første sample i pakken; mottakeren bruker det til å plassere samples i riktig avspillings-tidspunkt og kompensere for jitter</li>
-        <li><span class="opt-label">D</span> Sequence Number</li>
+        <li><span class="opt-label">A</span> SSRC — angir hvilket nettverksgrensesnitt pakken kom inn på; mottakeren bruker det til å bestemme avspillingsrekkefølge mellom flere samtidige strømmer</li>
+        <li><span class="opt-label">B</span> Payload Type — angir antall byte i payloaden, slik at mottakeren vet når neste sample begynner i en pakke som inneholder flere etter hverandre</li>
+        <li><span class="opt-label">C</span> Timestamp — angir samplingsøyeblikket for første sample i pakken; mottakeren bruker det til å plassere samples på riktig avspillingstidspunkt og kompensere for jitter</li>
+        <li><span class="opt-label">D</span> Sequence Number — fungerer som tidsstempel målt i mikrosekunder fra sesjonens start, og setter samples i riktig avspillingsorden</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>

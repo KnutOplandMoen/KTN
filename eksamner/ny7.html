@@ -99,10 +99,10 @@
     <div class="exam-q__body">
       <p class="q-text">HTTP/2 introduserte <strong>multipleksing</strong> over én forbindelse. Hva betyr dette i praksis sammenlignet med HTTP/1.1?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> En klient kan åpne hundrevis av TCP-forbindelser uten ekstra overhead</li>
-        <li><span class="opt-label">B</span> Flere request/response-strømmer kan flettes parallelt på én TCP-forbindelse, slik at ingen forespørsel blir blokkert av en treg forgjenger på applikasjonsnivå</li>
-        <li><span class="opt-label">C</span> All trafikk komprimeres med deflate i datalag</li>
-        <li><span class="opt-label">D</span> Klienten har ikke lenger lov til å sende mer enn én forespørsel per side</li>
+        <li><span class="opt-label">A</span> En klient kan åpne hundrevis av parallelle TCP-forbindelser mot serveren uten å pådra seg ekstra overhead i form av handshake eller bufferminne</li>
+        <li><span class="opt-label">B</span> Flere request/response-strømmer kan flettes parallelt på én TCP-forbindelse, slik at ingen forespørsel blokkeres av en treg forgjenger på applikasjonsnivå</li>
+        <li><span class="opt-label">C</span> All HTTP-trafikk komprimeres automatisk med deflate-algoritmen på lenkenivå før den når transportlaget</li>
+        <li><span class="opt-label">D</span> Klienten har ikke lenger lov til å sende mer enn én forespørsel per nettside, og må derfor samle alle ressurser i én pakke</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -126,10 +126,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er rollen til en <strong>local DNS server</strong> (lokal DNS-resolver)?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Den er autoritativ for alle domener brukeren har besøkt</li>
+        <li><span class="opt-label">A</span> Den lagrer en autoritativ kopi av sonefilene for alle domener som brukerne i nettverket tidligere har besøkt</li>
         <li><span class="opt-label">B</span> Den fungerer som mellomledd: tar imot DNS-spørringer fra klienter, slår opp via TLD- og autoritative servere, cacher svar og returnerer dem</li>
-        <li><span class="opt-label">C</span> Den eier selve rotsonen i DNS-hierarkiet</li>
-        <li><span class="opt-label">D</span> Den krypterer all DNS-trafikk over HTTP</li>
+        <li><span class="opt-label">C</span> Den eier selve rotsonen i DNS-hierarkiet og er ansvarlig for å delegere alle TLD-er videre til regionale operatører</li>
+        <li><span class="opt-label">D</span> Den krypterer all DNS-trafikk ved å tunnellere oppslagene gjennom HTTPS til en sentral global resolver</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -153,10 +153,10 @@
     <div class="exam-q__body">
       <p class="q-text">To TCP-forbindelser deler samme flaskehals-link. Hvis begge bruker «classic» AIMD-metningskontroll, hvilken oppførsel forventer vi i steady state?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Den første forbindelsen som koblet opp får all kapasiteten</li>
+        <li><span class="opt-label">A</span> Den første forbindelsen som koblet opp får all kapasiteten, ettersom AIMD reserverer ressurser i kronologisk rekkefølge</li>
         <li><span class="opt-label">B</span> De to forbindelsene konvergerer mot å dele kapasiteten relativt likt — TCP er omtrentlig rettferdig for forbindelser med lik RTT</li>
-        <li><span class="opt-label">C</span> Forbindelsen med høyest cwnd til enhver tid får all kapasitet</li>
-        <li><span class="opt-label">D</span> Tilfeldig — det er ingen mekanisme som styrer fordelingen</li>
+        <li><span class="opt-label">C</span> Forbindelsen med høyest cwnd til enhver tid får all tilgjengelig kapasitet på flaskehalsen, mens den andre stenges ute helt til den første taper en pakke</li>
+        <li><span class="opt-label">D</span> Tilfeldig — det finnes ingen mekanisme i TCP som styrer fordelingen, og resultatet avhenger utelukkende av jitter i nettverket</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -180,10 +180,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva betyr det at TCP bruker <strong>kumulative ACK-er</strong>?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> ACK-feltet bekrefter alle byte opp til (men ikke inkludert) ACK-nummeret — én ACK kan kvittere mange segmenter på en gang</li>
-        <li><span class="opt-label">B</span> Mottakeren må sende én ACK per byte i segmentet</li>
-        <li><span class="opt-label">C</span> ACK-en bekrefter bare det aller siste segmentet, ikke noen tidligere</li>
-        <li><span class="opt-label">D</span> Mottakeren ACK-er bare når senderen ber om det</li>
+        <li><span class="opt-label">A</span> ACK-feltet bekrefter alle byte opp til (men ikke inkludert) ACK-nummeret — én ACK kan dermed kvittere mange segmenter samtidig</li>
+        <li><span class="opt-label">B</span> Mottakeren må sende én separat ACK for hver enkelt byte i segmentet, slik at senderen får full byte-for-byte oversikt over leveransen</li>
+        <li><span class="opt-label">C</span> ACK-en bekrefter bare det aller siste segmentet i en sending, og alle tidligere segmenter må kvitteres individuelt med egne ACK-er</li>
+        <li><span class="opt-label">D</span> Mottakeren sender kun ACK når senderen eksplisitt etterspør det via et POLL-flagg satt i TCP-segmenthodet</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -348,10 +348,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er hensikten med <strong>power management</strong> (sleep mode) i 802.11?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Stenge nettverket nattestid for sikkerhet</li>
+        <li><span class="opt-label">A</span> Stenge nettverket automatisk nattestid for å forhindre uautorisert tilgang og redusere strømforbruket i AP-et</li>
         <li><span class="opt-label">B</span> La en batteridrevet enhet slå av radioen midlertidig mens AP-et buffrer eventuelle innkommende rammer for den</li>
-        <li><span class="opt-label">C</span> Redusere AP-ets sendeeffekt for å spare strøm i AP-et</li>
-        <li><span class="opt-label">D</span> Tvinge alle klienter til å bytte til 5 GHz</li>
+        <li><span class="opt-label">C</span> Redusere AP-ets sendeeffekt dynamisk slik at strømforbruket på selve aksesspunktet holdes lavest mulig over tid</li>
+        <li><span class="opt-label">D</span> Tvinge alle tilkoblede klienter over på 5 GHz-båndet, ettersom denne radioen bruker mindre strøm enn 2,4 GHz-radioen</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -408,9 +408,9 @@
       <p class="q-text">TLS består bl.a. av to delprotokoller: <strong>Handshake Protocol</strong> og <strong>Record Protocol</strong>. Hva er deres respektive roller?</p>
       <ul class="exam-q__opts">
         <li><span class="opt-label">A</span> Handshake forhandler kryptografiske parametere og nøkler; Record kapsler inn og krypterer/integritetssikrer applikasjonsdata under sesjonen</li>
-        <li><span class="opt-label">B</span> Handshake kapsler inn applikasjonsdata; Record forhandler nøkler</li>
-        <li><span class="opt-label">C</span> Begge to gjør det samme — bare ulik versjonering</li>
-        <li><span class="opt-label">D</span> Handshake brukes kun for HTTP, Record brukes for SMTP</li>
+        <li><span class="opt-label">B</span> Handshake kapsler inn og krypterer applikasjonsdataene fortløpende, mens Record kjøres først for å forhandle nøkler og chiffer-suite</li>
+        <li><span class="opt-label">C</span> Begge to utfører nøyaktig samme oppgave i TLS-stakken — de er kun atskilt fordi de har ulik versjonering og historikk</li>
+        <li><span class="opt-label">D</span> Handshake brukes kun for HTTP-trafikk over TLS, mens Record-protokollen er reservert for SMTP og andre e-postprotokoller</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -434,10 +434,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hvorfor velger moderne videostreaming-tjenester som Netflix og YouTube å bruke <strong>HTTP over TCP</strong> (DASH/HLS) i stedet for klassisk RTP/UDP-streaming?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Fordi UDP ikke er tilgjengelig på Internett</li>
+        <li><span class="opt-label">A</span> Fordi UDP ikke lenger er tilgjengelig som transportprotokoll på det offentlige Internett, og store ISP-er har faset ut støtten på rutenivå til fordel for TCP-baserte tjenester</li>
         <li><span class="opt-label">B</span> Fordi HTTP-trafikk lett passerer brannmurer/NAT, kan caches i ordinære HTTP-CDN-er, og lar klienten enkelt tilpasse kvalitet med korte chunks — TCPs retransmisjon er akseptabel når klienten har sekunders buffer</li>
-        <li><span class="opt-label">C</span> Fordi RTP er en proprietær Microsoft-protokoll</li>
-        <li><span class="opt-label">D</span> Fordi TCP gir lavere ende-til-ende-forsinkelse enn UDP</li>
+        <li><span class="opt-label">C</span> Fordi RTP er en proprietær protokoll utviklet og lisensiert av Microsoft, slik at andre aktører som Netflix og YouTube ikke har lov til å implementere den i sine streaming-klienter</li>
+        <li><span class="opt-label">D</span> Fordi TCP med sin metningskontroll og kumulative ACK-er gir vesentlig lavere ende-til-ende-forsinkelse enn UDP, særlig over lange ruter med høy pakketapsrate</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>

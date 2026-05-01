@@ -72,10 +72,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er hovedfordelen med <strong>statistisk multipleksing</strong> (slik den brukes i pakkesvitsjede nett) sammenlignet med kretsesvitsjet TDM?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Hver bruker får dedikert båndbredde garantert til enhver tid</li>
+        <li><span class="opt-label">A</span> Hver bruker får dedikert båndbredde garantert til enhver tid, akkurat som i et kretsesvitsjet TDM-system, men med kortere tidsslott og dermed lavere overhead per bruker</li>
         <li><span class="opt-label">B</span> Brukerne deler kapasiteten dynamisk — siden ikke alle sender samtidig, kan flere brukere støttes på samme link uten at hver enkelt får dedikert tidsslott</li>
-        <li><span class="opt-label">C</span> Den eliminerer behovet for header-informasjon i hver pakke</li>
-        <li><span class="opt-label">D</span> Den fjerner all kø-forsinkelse</li>
+        <li><span class="opt-label">C</span> Den eliminerer behovet for header-informasjon i hver pakke fordi tidsslottet i seg selv identifiserer både avsender og mottaker, noe som gir bedre utnyttelse av båndbredden</li>
+        <li><span class="opt-label">D</span> Den fjerner all kø-forsinkelse fordi pakker fra ulike brukere alltid kan sendes parallelt over linken uten å vente på hverandre i en utgangskø</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -128,10 +128,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er den viktigste praktiske forskjellen mellom <strong>IMAP</strong> og <strong>POP3</strong> for henting av e-post?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> POP3 er kryptert, IMAP er ikke</li>
+        <li><span class="opt-label">A</span> POP3 bruker innebygd TLS-kryptering på port 995 og er den eneste sikre standarden, mens IMAP alltid sender meldinger og passord i klartekst</li>
         <li><span class="opt-label">B</span> IMAP holder e-posten på serveren med mappestruktur og synkroniserer flere klienter — POP3 laster typisk ned all e-post til én klient og fjerner den fra serveren</li>
-        <li><span class="opt-label">C</span> POP3 brukes av webmail, IMAP av desktop-klienter</li>
-        <li><span class="opt-label">D</span> IMAP er en mekanisme for å sende e-post, POP3 for å motta</li>
+        <li><span class="opt-label">C</span> POP3 brukes utelukkende av webmail-grensesnitt i nettleseren, mens IMAP er reservert for desktop-klienter med egen lokal lagring av meldingene</li>
+        <li><span class="opt-label">D</span> IMAP er en push-mekanisme for å sende e-post fra klient til server, mens POP3 er protokollen som leverer post mellom mailservere på Internett</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -183,10 +183,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er sammenhengen mellom <strong>MSS</strong> (Maximum Segment Size) og <strong>MTU</strong> (Maximum Transmission Unit) på en typisk Ethernet-link med standard headere?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> MSS = MTU. Begrepene er synonyme</li>
+        <li><span class="opt-label">A</span> MSS = MTU. Begrepene er synonyme — begge angir den maksimale mengden brukerdata som passer inn i én Ethernet-ramme på 1500 byte</li>
         <li><span class="opt-label">B</span> MSS = MTU − størrelsen på IP-headeren − størrelsen på TCP-headeren. På Ethernet med MTU 1500 byte og standard 20+20 headere blir MSS typisk 1460 byte</li>
-        <li><span class="opt-label">C</span> MSS = MTU + størrelsen på Ethernet-headeren</li>
-        <li><span class="opt-label">D</span> MSS er TCP-vinduets bredde, MTU er rammens lengde</li>
+        <li><span class="opt-label">C</span> MSS = MTU + størrelsen på Ethernet-headeren (14 byte) + FCS (4 byte), siden MSS angir den totale rammelengden inkludert lenkelagets overhead</li>
+        <li><span class="opt-label">D</span> MSS er bredden på TCPs glidevindu (rwnd) målt i byte, mens MTU angir lenkelagrammens fysiske lengde — de to størrelsene er uavhengige</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -211,10 +211,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er hovedformålet med <strong>Nagles algoritme</strong> i TCP?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Å estimere RTT mer presist</li>
+        <li><span class="opt-label">A</span> Å estimere RTT mer presist ved å filtrere ut målinger fra retransmitterte segmenter, slik at SRTT og RTO ikke får skjevhet etter tap</li>
         <li><span class="opt-label">B</span> Å samle små data-skriv fra applikasjonen og sende dem som færre, større segmenter, slik at andelen header-overhead på linken reduseres</li>
-        <li><span class="opt-label">C</span> Å øke cwnd raskere etter et tap</li>
-        <li><span class="opt-label">D</span> Å fjerne behovet for ACK-er</li>
+        <li><span class="opt-label">C</span> Å øke cwnd raskere etter et tap, ved å hoppe over slow-start og gjenoppta sending direkte ved den siste cwnd-verdien fra før tapet</li>
+        <li><span class="opt-label">D</span> Å fjerne behovet for ACK-er på korte segmenter ved å bruke kumulative kvitteringer fra mottakeren bare hver hundrede pakke</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -239,10 +239,10 @@
     <div class="exam-q__body">
       <p class="q-text">En vert ønsker å sende en IP-pakke til en annen vert på samme subnett. Hvilken destinasjons-MAC bruker den i en <strong>ARP-request</strong> for å finne mottakerens MAC-adresse?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Mottakerens egen MAC-adresse — den fås fra DNS</li>
-        <li><span class="opt-label">B</span> Standard gateway sin MAC</li>
+        <li><span class="opt-label">A</span> Mottakerens egen MAC-adresse — den fås ved et DNS-oppslag av typen MAC-record, som returnerer lenkelagsadressen direkte fra navnetjeneren</li>
+        <li><span class="opt-label">B</span> Standard gateway sin MAC, fordi all lokal trafikk innen subnettet alltid må gå innom default-gateway før den når den endelige mottakeren</li>
         <li><span class="opt-label">C</span> Broadcast-adressen <code>ff:ff:ff:ff:ff:ff</code> — alle på subnettet hører requesten, men kun mottakeren svarer med en ARP-reply (unicast)</li>
-        <li><span class="opt-label">D</span> Multicast-adressen <code>01:00:5e:00:00:01</code></li>
+        <li><span class="opt-label">D</span> Multicast-adressen <code>01:00:5e:00:00:01</code>, som er reservert i 802.3 for ARP-trafikk og kun lyttes av enheter som har aktivert ARP-modulen</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -267,10 +267,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva representerer <code>0.0.0.0/0</code> i en forwarding-tabell?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Et reservert internt nettverk som ikke skal videresendes</li>
+        <li><span class="opt-label">A</span> Et reservert internt nettverk (RFC 1918) som ikke skal videresendes ut av rutere, og som typisk filtreres bort av en kant-ruter før pakkene når Internett</li>
         <li><span class="opt-label">B</span> Standard rute («default route») — matcher alle destinasjoner som ingen andre, mer spesifikke prefiks dekker. Pakker uten annen match sendes hit (typisk til ISP-en)</li>
-        <li><span class="opt-label">C</span> Loopback-adressen 127.0.0.1</li>
-        <li><span class="opt-label">D</span> En broadcast-adresse</li>
+        <li><span class="opt-label">C</span> Loopback-prefikset som dekker hele 127.0.0.0/8 og brukes av rutere til intern testing av forwarding-pipelinen uten at pakker faktisk sendes ut</li>
+        <li><span class="opt-label">D</span> En begrenset broadcast-adresse som ruteren bruker for å sende ARP-requests og DHCP-discover-pakker ut alle sine grensesnitt samtidig</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -295,10 +295,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hvorfor bruker bedrifter ofte <strong>Spanning Tree Protocol</strong> (STP) på switchene sine?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> For å kryptere trafikk mellom switcher</li>
-        <li><span class="opt-label">B</span> For å unngå at fysisk redundante forbindelser mellom switcher skaper uendelige loops for broadcast og ukjente unicast-rammer — STP «slår av» (blokkerer) overflødige lenker logisk og lar én loopfri vei stå igjen</li>
-        <li><span class="opt-label">C</span> For å optimalisere DHCP-svartider</li>
-        <li><span class="opt-label">D</span> For å kunne vekte trafikk basert på QoS-klasse</li>
+        <li><span class="opt-label">A</span> For å kryptere all trafikk mellom switcher med en delt nøkkel som forhandles via BPDU-meldinger, slik at bare autoriserte switcher i samme spanning-tre kan lese rammene</li>
+        <li><span class="opt-label">B</span> For å hindre at fysisk redundante forbindelser mellom switcher skaper uendelige loops for broadcast og ukjente unicast-rammer — STP blokkerer overflødige lenker logisk og lar én loopfri vei stå igjen</li>
+        <li><span class="opt-label">C</span> For å optimalisere DHCP-svartider ved at switchene velger den korteste veien til DHCP-serveren og cacher tildelte adresser i en delt tabell mellom seg</li>
+        <li><span class="opt-label">D</span> For å kunne vekte trafikk basert på QoS-klasse, slik at sanntidstrafikk får prioritet over best-effort-trafikk når flere VLAN deler samme uplink-port</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -396,10 +396,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er en <strong>beacon-ramme</strong> i 802.11, og hvilken rolle spiller <strong>BSSID</strong>?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Beacon er en kontrollramme klienten sender for å koble seg til AP-et; BSSID er dens IP-adresse</li>
-        <li><span class="opt-label">B</span> Beacon-rammer sendes periodisk av AP-et og inneholder bl.a. SSID, kanalnummer, støttede rater og <strong>BSSID</strong> — som er APets MAC-adresse og fungerer som unik identifikator for selve cellen (BSS)</li>
-        <li><span class="opt-label">C</span> Beacon er en kollisjons-jamming-ramme; BSSID er en sekvensteller</li>
-        <li><span class="opt-label">D</span> Beacon brukes kun for QoS; BSSID er valgfri</li>
+        <li><span class="opt-label">A</span> Beacon er en kontrollramme klienten sender mot AP-et i assosieringsfasen for å reservere et tidsslott; BSSID er klientens IPv4-adresse i nettverket</li>
+        <li><span class="opt-label">B</span> Beacon-rammer sendes periodisk av AP-et og inneholder bl.a. SSID, kanalnummer, støttede rater og <strong>BSSID</strong> — APets MAC-adresse, som identifiserer selve cellen (BSS) unikt</li>
+        <li><span class="opt-label">C</span> Beacon er en kollisjons-jamming-ramme som AP-et sender for å avbryte pågående overføringer; BSSID er en 16-bits sekvensteller for ramme-rekkefølge</li>
+        <li><span class="opt-label">D</span> Beacon brukes kun for å annonsere QoS-parametre i 802.11e og er valgfri i åpne nett; BSSID er en valgfri tekststreng som kan settes likt SSID</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -539,10 +539,10 @@
     <div class="exam-q__body">
       <p class="q-text">I DASH (Dynamic Adaptive Streaming over HTTP), hva er rollen til <strong>manifestet</strong> (MPD-filen) som klienten først laster ned?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Det er den første videoblokken som spilles av</li>
-        <li><span class="opt-label">B</span> Det er en XML-fil som lister hvilke kvalitetsvarianter (bitrater, oppløsninger) som er tilgjengelige, og hvor de tilsvarende segmentene ligger (URL-er, tidsoffsets) — slik at klienten kan velge varianten som passer best for tilgjengelig båndbredde</li>
-        <li><span class="opt-label">C</span> Det er en signaturfil som verifiserer at videoen ikke er endret</li>
-        <li><span class="opt-label">D</span> Det er en lyspakkeformat-spesifikasjon klientens dekoder må ha</li>
+        <li><span class="opt-label">A</span> Det er den første videoblokken som spilles av — en kort intro-snutt i lavest mulig bitrate som gir umiddelbar avspilling mens resten av strømmen lastes ned i bakgrunnen i full kvalitet</li>
+        <li><span class="opt-label">B</span> Det er en XML-fil som lister hvilke kvalitetsvarianter (bitrater, oppløsninger) som er tilgjengelige og hvor de tilsvarende segmentene ligger — slik at klienten kan velge varianten som passer for båndbredden</li>
+        <li><span class="opt-label">C</span> Det er en signaturfil som verifiserer at videoen ikke er endret underveis i nettet, ved at klienten beregner SHA-256 over hvert segment og sammenligner med en signatur fra serveren</li>
+        <li><span class="opt-label">D</span> Det er en spesifikasjon av lyd- og videokodek-parametre som klientens dekoder må laste inn før avspilling, inkludert profil, level og fargerom for å konfigurere maskinvareakselereringen</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>

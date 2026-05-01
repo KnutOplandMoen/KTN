@@ -100,10 +100,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hvordan brukes cookies typisk i en nettløsning?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> For å la HTTP unngå TCP-handshake på senere forespørsler</li>
-        <li><span class="opt-label">B</span> For å gjøre HTTP til en tilstandsfull protokoll: serveren utsteder en unik ID som klienten sender med i hver påfølgende forespørsel</li>
-        <li><span class="opt-label">C</span> For å erstatte DNS-oppslaget</li>
-        <li><span class="opt-label">D</span> For å kryptere brukernavn og passord før de sendes over nettet</li>
+        <li><span class="opt-label">A</span> For å la HTTP unngå nye TCP-handshakes mellom klient og server ved senere forespørsler</li>
+        <li><span class="opt-label">B</span> For at HTTP skal kunne holde tilstand: serveren gir en unik ID som klienten returnerer ved hvert kall</li>
+        <li><span class="opt-label">C</span> For å erstatte DNS-oppslag og slik gjøre lasting av nettsider raskere på klienten</li>
+        <li><span class="opt-label">D</span> For å kryptere brukernavn og passord før de sendes over nettet til serveren</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -154,10 +154,10 @@
     <div class="exam-q__body">
       <p class="q-text">TCP estimerer RTT med <code>EstimatedRTT = (1 − α) · EstimatedRTT + α · SampleRTT</code>. Hva er hovedformålet med formelen?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Garantere at hver enkelt RTT-måling er nøyaktig</li>
-        <li><span class="opt-label">B</span> Glatte ut tilfeldige variasjoner og gi en stabil verdi som timeoutverdi (RTO) kan bygges på</li>
-        <li><span class="opt-label">C</span> Eliminere helt RTT-er på lange linker</li>
-        <li><span class="opt-label">D</span> Tillate sender å overstige rwnd</li>
+        <li><span class="opt-label">A</span> Garantere at hver enkelt RTT-måling er millisekundnøyaktig, slik at TCP kan reagere på enhver forsinkelse</li>
+        <li><span class="opt-label">B</span> Glatte ut tilfeldige variasjoner og gi en stabil verdi som timeoutverdien (RTO) kan bygges på</li>
+        <li><span class="opt-label">C</span> Eliminere helt RTT-bidraget på lange linker ved å trekke fra propageringsforsinkelsen i α-leddet</li>
+        <li><span class="opt-label">D</span> Tillate sender å overstige rwnd når den estimerte RTT-en er stabil over flere målinger</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -181,10 +181,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er en <strong>fast retransmit</strong> i TCP?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Sender venter på en lang RTO før retransmisjon</li>
-        <li><span class="opt-label">B</span> Sender retransmitterer det manglende segmentet etter å ha mottatt 3 duplicate ACKs uten å vente på timeout</li>
-        <li><span class="opt-label">C</span> Sender øker cwnd raskere enn vanlig slow start tillater</li>
-        <li><span class="opt-label">D</span> Mottakeren sender et negativ-ACK direkte til sender</li>
+        <li><span class="opt-label">A</span> Sender venter på en bevisst forkortet RTO og retransmitterer alle utestående segmenter samtidig for å gjenopprette flyten raskt</li>
+        <li><span class="opt-label">B</span> Sender retransmitterer det manglende segmentet etter 3 duplicate ACKs uten å vente på timeout</li>
+        <li><span class="opt-label">C</span> Sender øker cwnd raskere enn vanlig slow start tillater ved å doble vinduet for hver mottatte ACK</li>
+        <li><span class="opt-label">D</span> Mottakeren sender et eksplisitt negativ-ACK (NAK) direkte til sender med sekvensnummeret som mangler</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -293,10 +293,10 @@
     <div class="exam-q__body">
       <p class="q-text">CRC (Cyclic Redundancy Check) brukes i lenkelaget for feildeteksjon. Hvilken påstand er riktig om CRC?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> CRC kan rette opp alle feil som oppdages</li>
-        <li><span class="opt-label">B</span> CRC oppdager alle enkeltbitsfeil og typisk lange burst-feil opp til en gitt lengde, men kan ikke rette opp dem</li>
-        <li><span class="opt-label">C</span> CRC krypterer payload</li>
-        <li><span class="opt-label">D</span> CRC brukes kun i transportlaget, ikke i lenkelaget</li>
+        <li><span class="opt-label">A</span> CRC kan rette opp alle feil som oppdages, så lenge generatorpolynomet er lengre enn feilburst-en</li>
+        <li><span class="opt-label">B</span> CRC oppdager alle enkeltbitsfeil og typisk burst-feil opp til en gitt lengde, men kan ikke rette opp feilene</li>
+        <li><span class="opt-label">C</span> CRC krypterer payload med en nøkkel utledet av generatorpolynomet og motvirker dermed avlytting</li>
+        <li><span class="opt-label">D</span> CRC brukes kun i transportlaget (TCP/UDP-checksum), aldri i lenkelagsrammer som Ethernet eller WiFi</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -354,10 +354,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er forskjellen mellom <strong>transport mode</strong> og <strong>tunnel mode</strong> i IPSec?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Transport mode er kryptert, tunnel mode er ikke</li>
-        <li><span class="opt-label">B</span> Transport mode beskytter kun payload (originale IP-headere bevares); tunnel mode innkapsler hele original IP-pakken inni en ny IP-pakke (vanlig i VPN)</li>
-        <li><span class="opt-label">C</span> Transport mode brukes bare i kontorer, tunnel mode i hjemmet</li>
-        <li><span class="opt-label">D</span> Tunnel mode bruker UDP, transport mode bruker TCP</li>
+        <li><span class="opt-label">A</span> Transport mode bruker AES-kryptering ende-til-ende, mens tunnel mode kun gir integritetsbeskyttelse uten konfidensialitet av nyttelasten</li>
+        <li><span class="opt-label">B</span> Transport mode beskytter kun payload (originale IP-headere bevares); tunnel mode innkapsler hele IP-pakken inni en ny IP-pakke (vanlig i VPN)</li>
+        <li><span class="opt-label">C</span> Transport mode brukes utelukkende mellom rutere i kjernenettet, mens tunnel mode kun aktiveres når en sluttbruker kobler seg på fra hjemmenett</li>
+        <li><span class="opt-label">D</span> Tunnel mode kapsler IPSec inn i UDP for NAT-traversering, mens transport mode alltid kjører over TCP for pålitelig nøkkelutveksling</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -408,10 +408,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er hovedfunksjonen til RTP (Real-time Transport Protocol)?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Garantere pålitelig levering av lyd- og videopakker, akkurat som TCP</li>
-        <li><span class="opt-label">B</span> Tillegge headerfelt som sekvensnummer, tidsstempel og payload-type for sanntidsstrømmer (kjører typisk over UDP)</li>
-        <li><span class="opt-label">C</span> Erstatte IP for sanntidsapplikasjoner</li>
-        <li><span class="opt-label">D</span> Kryptere lyd- og videostrømmer ende-til-ende</li>
+        <li><span class="opt-label">A</span> Garantere pålitelig levering av lyd- og videopakker ved å legge til retransmisjon og flytkontroll, akkurat som TCP gjør for filoverføring</li>
+        <li><span class="opt-label">B</span> Tilføre headerfelt som sekvensnummer, tidsstempel og payload-type for sanntidsstrømmer (kjører typisk over UDP)</li>
+        <li><span class="opt-label">C</span> Erstatte IP for sanntidsapplikasjoner med en egen pakkeformat optimalisert for lav jitter på operatørnettverk</li>
+        <li><span class="opt-label">D</span> Kryptere lyd- og videostrømmer ende-til-ende ved hjelp av en innebygd nøkkelutveksling før mediet sendes</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -441,10 +441,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hvorfor brukes UDP — og ikke TCP — typisk for VoIP-trafikk?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> UDP gir bedre kryptering enn TCP</li>
-        <li><span class="opt-label">B</span> UDP er den eneste protokollen som garanterer levering</li>
+        <li><span class="opt-label">A</span> UDP gir innebygd ende-til-ende-kryptering av nyttelasten, mens TCP sender alle lydpakker i klartekst over nettet</li>
+        <li><span class="opt-label">B</span> UDP er den eneste transportprotokollen som garanterer pålitelig levering av sanntidsmedia uten tap eller duplikater</li>
         <li><span class="opt-label">C</span> UDP unngår retransmisjoner og congestion-relaterte forsinkelser; en sterkt forsinket lydpakke er ubrukelig uansett</li>
-        <li><span class="opt-label">D</span> UDP har større headere som gir bedre kvalitet</li>
+        <li><span class="opt-label">D</span> UDP har større headere som reserverer mer plass til kvalitetsmetadata og dermed gir bedre lydopplevelse</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>

@@ -72,10 +72,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er forskjellen mellom <strong>throughput</strong> og <strong>goodput</strong>?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Throughput er gjennomsnitt over tid; goodput er øyeblikksverdi</li>
-        <li><span class="opt-label">B</span> Throughput regnes i bits, goodput i byte</li>
-        <li><span class="opt-label">C</span> Goodput er nyttig applikasjonsdata levert per tidsenhet, mens throughput inkluderer alle overførte bits (også protokolloverhead og retransmisjoner)</li>
-        <li><span class="opt-label">D</span> Begrepene betyr nøyaktig det samme — det er kun ulik terminologi i ulike lærebøker</li>
+        <li><span class="opt-label">A</span> Throughput er gjennomsnitt over hele overføringen, mens goodput er målt øyeblikksverdi</li>
+        <li><span class="opt-label">B</span> Throughput regnes alltid i bits per sekund, mens goodput regnes i byte per sekund</li>
+        <li><span class="opt-label">C</span> Goodput er nyttig applikasjonsdata per tidsenhet; throughput inkluderer også overhead</li>
+        <li><span class="opt-label">D</span> Begrepene betyr i praksis det samme — det er kun ulik terminologi mellom lærebøker</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -213,10 +213,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva styrer i hovedsak verdien av <strong>MSS</strong> (Maximum Segment Size) i TCP?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Mottakerens annonserte rwnd-verdi</li>
-        <li><span class="opt-label">B</span> Senderens applikasjonsbuffer</li>
+        <li><span class="opt-label">A</span> Mottakerens annonserte rwnd-verdi i SYN-ACK, ofte skalert med Window Scale-opsjonen</li>
+        <li><span class="opt-label">B</span> Størrelsen på senderens applikasjonsbuffer slik den er satt med <code>SO_SNDBUF</code> i sokkelen</li>
         <li><span class="opt-label">C</span> MTU på de underliggende lenkene — typisk satt slik at TCP-segmentet pluss IP-header passer i én ramme</li>
-        <li><span class="opt-label">D</span> Antall samtidige TCP-forbindelser senderen har</li>
+        <li><span class="opt-label">D</span> Antall samtidige TCP-forbindelser senderen har, delt likt mellom dem av kjernens scheduler</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -240,10 +240,10 @@
     <div class="exam-q__body">
       <p class="q-text">I utviklingen av rdt-protokollene (rdt 1.0 → 3.0): hva var hovedmotivasjonen for å innføre <strong>sekvensnummer</strong> (rdt 2.1)?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Tillate flere parallelle forbindelser samtidig</li>
+        <li><span class="opt-label">A</span> Tillate flere parallelle forbindelser samtidig ved å skille pakkene fra hver enkelt strøm</li>
         <li><span class="opt-label">B</span> Skille mellom en ny pakke og en duplikatpakke etter at en ACK gikk tapt eller ble korrupt</li>
-        <li><span class="opt-label">C</span> Krypterer datafeltet for å beskytte mot avlytting</li>
-        <li><span class="opt-label">D</span> Redusere overhead ved å fjerne checksum-feltet</li>
+        <li><span class="opt-label">C</span> Kryptere datafeltet med en strømchiffer for å beskytte nyttelasten mot passiv avlytting</li>
+        <li><span class="opt-label">D</span> Redusere overhead ved å fjerne checksum-feltet og overlate feilkontroll til lenkelaget</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -326,10 +326,10 @@
     <div class="exam-q__body">
       <p class="q-text">En klient sender en TCP-SYN til port 9999 på en server, men ingen tjeneste lytter på den porten. Hvilken type ICMP-melding genereres typisk i retur?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> ICMP Echo Reply</li>
-        <li><span class="opt-label">B</span> ICMP Time Exceeded</li>
+        <li><span class="opt-label">A</span> ICMP Echo Reply (type 0 / kode 0) — sendes som svar når en vert mottar et Echo Request fra ping</li>
+        <li><span class="opt-label">B</span> ICMP Time Exceeded (type 11 / kode 0) — sendes når TTL-feltet i IP-headeren dekrementeres til 0 i en ruter</li>
         <li><span class="opt-label">C</span> ICMP Destination Unreachable (Port Unreachable, type 3 / kode 3)</li>
-        <li><span class="opt-label">D</span> ICMP Redirect</li>
+        <li><span class="opt-label">D</span> ICMP Redirect (type 5 / kode 1) — sendes av en ruter for å be senderen velge en bedre neste-hop</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -358,10 +358,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva betyr destinasjons-MAC-adressen <code>FF:FF:FF:FF:FF:FF</code> i en Ethernet-ramme?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Reservert for kommunikasjon mellom switcher (kun internt)</li>
+        <li><span class="opt-label">A</span> Reservert for intern signalering mellom switcher i et Spanning Tree-domene og prosesseres ikke av endeverter</li>
         <li><span class="opt-label">B</span> Broadcast — rammen skal mottas og prosesseres av alle stasjoner i samme broadcastdomene</li>
-        <li><span class="opt-label">C</span> En ulovlig adresse som forkastes av alle gode adapter</li>
-        <li><span class="opt-label">D</span> Standard kilde-adresse for ARP-svar</li>
+        <li><span class="opt-label">C</span> En ulovlig adresse som umiddelbart forkastes av alle adaptere som overholder IEEE 802.3-standarden</li>
+        <li><span class="opt-label">D</span> Standard kilde-adresse som settes i ARP-svar når avsenderen ennå ikke har fått tildelt en MAC</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
@@ -385,10 +385,10 @@
     <div class="exam-q__body">
       <p class="q-text">Hva er hovedformålet med <strong>beacon-rammer</strong> som et 802.11-aksesspunkt sender periodisk?</p>
       <ul class="exam-q__opts">
-        <li><span class="opt-label">A</span> Kryptere all trafikk i nettverket</li>
+        <li><span class="opt-label">A</span> Kryptere all trafikk i nettverket med en delt sesjonsnøkkel som roteres for hvert intervall</li>
         <li><span class="opt-label">B</span> Annonsere AP-ets eksistens, SSID og parametre slik at klienter kan oppdage og synkronisere seg med nettverket</li>
-        <li><span class="opt-label">C</span> Tildele IP-adresser direkte til nye klienter</li>
-        <li><span class="opt-label">D</span> Reservere mediet for én bestemt klient i 100 ms av gangen</li>
+        <li><span class="opt-label">C</span> Tildele IP-adresser direkte til nye klienter uten at en separat DHCP-server er nødvendig på lenken</li>
+        <li><span class="opt-label">D</span> Reservere mediet for én bestemt klient i 100 ms av gangen ved å sette NAV-feltet i alle nabostasjoner</li>
       </ul>
       <details class="fasit-details">
         <summary>Vis fasit</summary>
