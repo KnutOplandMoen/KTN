@@ -319,6 +319,185 @@
           <p><strong>Hvorfor det er nyttig:</strong> Ping forteller bare totalen; traceroute viser <em>hvor</em> langs ruten forsinkelsen oppstår. Hvis pakkene henger på en bestemt ruter, peker traceroute rett på flaskehalsen. Begge bruker ICMP, så noen brannmurer blokkerer dem — derav "* * *"-linjene noen ganger.</p>
         </div>
       </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom <em>ruting</em> og <em>videresending</em> (forwarding)?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <em>Videresending</em> er den <strong>lokale</strong> handlingen i én ruter — å flytte en innkommende pakke fra inngangslenken til riktig utgangslenke ved å slå opp i videresendingstabellen. <em>Ruting</em> er den <strong>globale</strong> prosessen som beregner stiene pakkene tar fra kilde til mål gjennom hele nettverket — det er ruting-algoritmer som fyller ut videresendingstabellene.</p>
+          <p><strong>Hvorfor skillet:</strong> Tenk på videresending som "hva ruteren gjør med <em>denne</em> pakken akkurat nå" og ruting som "hvordan rutere snakker sammen for å bli enige om <em>alle</em> stiene i nettet". Videresending skjer på nanosekunder per pakke i hver ruter; ruting kjører i bakgrunnen og oppdateres når topologien endres. Dette skillet er en av de hyppigste eksamensformuleringene — pugg én setning om hver.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Nevn de fire komponentene i nodal-forsinkelsen, og hva hver av dem avhenger av.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <code>d_nodal = d_proc + d_queue + d_trans + d_prop</code></p>
+          <p>1. <strong>d_proc</strong> (prosessering): tid til å sjekke header og bestemme utport. Typisk µs.<br>
+             2. <strong>d_queue</strong> (kø): tid pakken venter bak andre pakker i bufferet. Avhenger av momentan trafikk — eneste fundamentalt uforutsigbare komponent.<br>
+             3. <strong>d_trans</strong> (transmisjon): <code>L/R</code> — tid for å skyve alle bits ut på linken. Avhenger av pakkestørrelse og linkhastighet.<br>
+             4. <strong>d_prop</strong> (propagering): <code>d/v</code> — tid signalet bruker gjennom mediet. Avhenger av fysisk avstand (~2·10⁸ m/s i fiber).</p>
+          <p><strong>Hvorfor:</strong> På eksamen settes ofte d_proc og d_queue til null, og du må summere d_trans + d_prop per hopp. Den vanligste fellen er å blande d_trans (linkhastighet) og d_prop (avstand) — to helt uavhengige fysiske størrelser, som karavanen gjennom bommen vs. veien videre.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>P pakker skal sendes back-to-back over N like linker (kapasitet R, pakkelengde L). Hva blir minimum ende-til-ende-tid (kun transmisjon)?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <code>(N + P − 1) · L/R</code></p>
+          <p><strong>Hvorfor formelen ser slik ut:</strong> Den <em>første</em> pakken må gjennom alle N linker — det koster <code>N · L/R</code>. Mens den reiser, fyller de resterende <code>P − 1</code> pakkene "rørledningen" og kommer ut én L/R-periode etter hverandre. Total: <code>N·L/R + (P−1)·L/R = (N+P−1)·L/R</code>.</p>
+          <p><em>Intuisjon:</em> Som en samlebåndlinje — det første emnet trenger hele lengden å komme ut, men deretter ramler det ut ett emne per "transmisjonstid". Dette er <strong>pipelining</strong>-prinsippet, og det forklarer hvorfor det å sende mange små pakker går nesten like raskt som én stor pakke når P ≫ N.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>En 1000-bits pakke sendes over 3 linker (25/200/50 Mbps), hver med 100 µs propagering. Kø og prosessering er 0. Hva er total ende-til-ende-forsinkelse?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Sum av d_trans + d_prop over alle hopp.</p>
+          <p>d_trans: 1000/25·10⁶ = 40 µs &nbsp;+&nbsp; 1000/200·10⁶ = 5 µs &nbsp;+&nbsp; 1000/50·10⁶ = 20 µs &nbsp;<strong>= 65 µs</strong>.<br>
+             d_prop totalt: 3 × 100 µs <strong>= 300 µs</strong>.<br>
+             <strong>Total: 365 µs.</strong></p>
+          <p><strong>Hvorfor:</strong> <code>d_e2e = Σ (d_trans_i + d_prop_i)</code>. Hver ruter må re-transmittere hele pakken (store-and-forward), så transmisjonsforsinkelsen legges på <em>en gang per link</em>. Vanligste regnefeil: glemme byte→bit-konvertering, eller forveksle linkhastighet (R) med propageringshastighet (≈ 2·10⁸ m/s). Eks-stil: dette er nesten ord for ord eks1 Q1.1.8.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Nevn fire vanlige aksessnett-teknologier, typiske hastighetsorden, og én karakteristisk egenskap ved hver.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p><strong>DSL</strong> (kobber, telefonlinje) — 5–35 Mbps ned, ofte <em>asymmetrisk</em>; hastigheten faller med avstand til sentralen.<br>
+             <strong>Kabel/HFC</strong> (koaks + fiber) — opptil ~1 Gbps ned; <em>delt medium</em> mellom naboer i samme segment.<br>
+             <strong>FTTH</strong> (fiber til hjemmet) — 1–10 Gbps; dedikert fiber, raskest tilgjengelig.<br>
+             <strong>4G/5G</strong> (mobilradio) — 100 Mbps – 10 Gbps; bredt dekningsområde via basestasjoner.</p>
+          <p><strong>Hvorfor det er viktig:</strong> Aksessnettet er den <em>siste mila</em> og oftest <strong>flaskehalsen</strong> — kjernen er fiber med enorm kapasitet, så det er sjelden der det stopper opp. DSL er asymmetrisk fordi brukertrafikk historisk er nedlastingstung. At kabel er delt forklarer hvorfor hjemmehastigheten kan falle på kveldstid når naboene strømmer.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom et virus, en orm og et botnett?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Et <strong>virus</strong> sprer seg ved at brukeren <em>aktivt åpner</em> en infisert fil (vedlegg, makro, kjørbar fil). En <strong>orm</strong> sprer seg <em>selv</em> uten brukerinteraksjon — ved å utnytte sårbarheter i nettverkstjenester. Et <strong>botnett</strong> er et nettverk av kompromitterte maskiner ("bots") som fjernkontrolleres av en angriper.</p>
+          <p><strong>Hvorfor skillet betyr noe:</strong> En orm kan infisere tusenvis av maskiner på minutter fordi den ikke trenger menneskelig hjelp; viruset er begrenset av hvor raskt brukerne klikker. Botnettet er <em>resultatet</em> av infeksjonen — et arsenal som typisk brukes til DDoS-angrep, spam eller cryptomining. Forsvar mot ormer: patching og brannmurer som blokkerer sårbare porter. Forsvar mot virus: ikke åpne ukjente vedlegg, antivirus.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom en "nuts-and-bolts"-beskrivelse av Internett og en tjenestebeskrivelse?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> "Nuts-and-bolts" beskriver Internett <strong>fysisk og strukturelt</strong>: milliarder av endesystemer (hosts) koblet sammen via kommunikasjonslinker og pakkesvitsjer (rutere, lenkesvitsjer), styrt av protokoller som TCP og IP. Tjenestebeskrivelsen beskriver Internett <strong>funksjonelt</strong>: en infrastruktur som tilbyr tjenester (HTTP, e-post, video, sosiale medier) til distribuerte applikasjoner.</p>
+          <p><strong>Hvorfor begge er gyldige:</strong> Som å beskrive en bil — du kan snakke om motoren, hjulene og girkassen (nuts-and-bolts) eller om at den frakter deg fra A til B (tjeneste). Begge er sanne, men adresserer ulike spørsmål. På eksamen tester de hvilke valg som faller i hver kategori (eks1 Q1.1.1) — pugg signalordene: <em>"billions of devices and packet switches"</em> = nuts-and-bolts, <em>"platform for applications"</em> = tjeneste.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilket fysisk medium har høyeste transmisjonshastighet og lavest bitfeilrate i praksis? Hva er forskjellen på guidede og ikke-guidede medier?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>Fiberoptisk kabel</strong> har høyest hastighet og lavest BER — lyspulser i glass, enorm båndbredde, lav demping og immun mot elektromagnetisk støy.</p>
+          <p><strong>Guidede medier</strong> (signalet følger en fysisk leder): tvunnet par (UTP/Cat6), koaksialkabel, fiber.<br>
+             <strong>Ikke-guidede medier</strong> (signalet sprer seg fritt): WiFi/Bluetooth (jordbølger), 4G/5G (mikrobølger), satellitt.</p>
+          <p><strong>Hvorfor fiber vinner på lange strekk:</strong> Lav demping gjør at signalet bærer langt uten forsterkere; enorm kapasitet (THz-skalaen); og elektromagnetisk støy fra omgivelsene påvirker ikke lyset i en glassfiber. Derfor er undersjøiske kabler mellom kontinenter nesten utelukkende fiber. Trådløse medier er praktiske men taper kapasitet og er sårbare for vegger, vær og andre sendere.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>En fil på 1400 KB sendes over et linjesvitsjet nett. Setup-tid er 300 ms, og ende-til-ende-kretsen passerer 5 linker à 1 Mbps. Hvor lang tid tar overføringen minst?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> setup + L/R = 300 ms + 11,2 s ≈ <strong>11,5 s</strong>.<br>
+             1400·10³ bytes · 8 = 1,12·10⁷ bits. d_trans = 1,12·10⁷ / 10⁶ = 11,2 s. Pluss 300 ms setup.</p>
+          <p><strong>Hvorfor L/R er uavhengig av antall linker:</strong> I et linjesvitsjet nett er det en <em>dedikert ende-til-ende-krets</em> med samme kapasitet hele veien. Bitsene flyter kontinuerlig som i en pipeline — du venter ikke på "store-and-forward" i hver svitsj fordi det ikke er pakkesvitsjer å vente i. Total transmisjonstid avhenger bare av filstørrelse og linkhastighet, ikke antall hopp.</p>
+          <p>Dette står i <strong>kontrast til pakkesvitsjet nett</strong> der hver hop legger til L/R (totalt N·L/R for én pakke over N linker). Forveksling av disse to scenarioene er en av de hyppigste konseptuelle fellene.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor brukes lagdeling i nettverksarkitektur? Nevn minst to konkrete fordeler.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>1. <strong>Modulær design</strong>: hvert lag har én oppgave og kan implementeres uavhengig.<br>
+             2. <strong>Lett å vedlikeholde og videreutvikle</strong>: en endring i ett lag (ny lenketeknologi, ny applikasjon) krever ikke endringer i andre lag.<br>
+             3. <strong>Abstraksjon</strong>: applikasjoner trenger ikke vite noe om rutere, lenker eller fysiske medier — bare snakke gjennom socket-grensesnittet.<br>
+             4. <strong>Akkommoderer fremtidige endringer</strong>: nye protokoller (HTTP/3 over QUIC, IPv6) kan rulles ut innen ett lag uten å rive ut alt.</p>
+          <p><strong>Hvorfor det er kraftig:</strong> Internett ble designet på 70-tallet og er fortsatt i drift fordi protokollene er <em>løst koblet</em>. Du kan bytte WiFi mot Ethernet uten at TCP merker det. Du kan oppgradere fra HTTP/1.1 til HTTP/2 uten at IP endres. Uten lagdeling ville hele systemet vært monolittisk og umulig å utvikle inkrementelt.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan deler FDM og TDM kapasiteten i et linjesvitsjet nett?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>FDM (Frequency Division Multiplexing)</strong> deler frekvensbåndet i smale bånd. Hver samtale får sitt eget frekvensbånd — alle sender samtidig, men på ulike frekvenser. <strong>TDM (Time Division Multiplexing)</strong> deler tiden i rammer med faste tidsluker. Hver samtale får én tidsluke per ramme — alle deler samme frekvens, men sender i tur.</p>
+          <p><strong>Analogi:</strong> FDM er som å gi alle sin egen kjørefil på motorveien (alle kan kjøre samtidig). TDM er som lyskryss der hver bil får sin tur (alle deler veien, men i tur).</p>
+          <p><strong>Hvorfor det er en sentral kontrast:</strong> Begge gir <em>dedikert</em> kapasitet per samtale (linjesvitsjing) — bare på ulike akser, frekvens vs tid. FDM krever mer sofistikert analog hardware (filtre per bånd) enn TDM. Begge er fundamentalt forskjellige fra pakkesvitsjingens dynamiske, statistiske deling.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>En server sender til to klienter over separate TCP-økter som deler en flaskehalslinke R₁ = 200 Mbps. De siste linkene har R₂ = R₃ = 25 Mbps. Hva blir maks gjennomstrømning per økt?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>25 Mbps per økt.</strong></p>
+          <p><strong>Hvorfor:</strong> TCP fordeler R₁ rettferdig — hver økt får 100 Mbps på den delte linken. Men hver økt må deretter passere en 25 Mbps-link, som er <em>flaskehalsen</em> for den enkelte økten. Gjennomstrømning per økt = min(fair share, flaskehals) = min(100, 25) = 25 Mbps.</p>
+          <p><strong>Generelt prinsipp:</strong> En kjede er ikke sterkere enn det svakeste leddet. Selv om TCP gir hver økt rom for 100 Mbps på fellesdelen, kan ikke pakkene presses raskere gjennom den siste 25 Mbps-linken. Når du regner maks throughput per økt over flere linker: finn min av (fair share på hver delt link) og (kapasitet på hver dedikerte link). Dette er nesten ord for ord eks1 Q1.1.7.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er lenkeutnyttelse, og hvordan beregnes den når flere TCP-økter deler en lenke?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Lenkeutnyttelse = (faktisk trafikk gjennom lenken) / (lenkens kapasitet) — et tall mellom 0 og 1.</p>
+          <p><strong>Eksempel (eks1 Q1.1.9):</strong> R = 1 Gbps (delt mellom 4 økter), R_S = 200 Mbps (per server-link), R_C = 300 Mbps (per klient-link). Hver økt er begrenset av min(R_S, fair share R/4, R_C) = min(200, 250, 300) = <strong>200 Mbps</strong>. Klient-linken bærer altså 200 Mbps av sin 300 Mbps-kapasitet → utnyttelse = 200/300 ≈ <strong>0,67</strong>.</p>
+          <p><strong>Hvorfor det er nyttig:</strong> Lav utnyttelse = ledig kapasitet (kø vokser ikke); høy utnyttelse (>~0,7) = køene blir lange og ustabile (jf. trafikk-intensitet La/R). Internett-rutere designes for å holde utnyttelsen et godt stykke under 1.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Pakker ankommer en FIFO-kø ved t = 0, 1, 2, 3, … og sendes ut ved t = 1, 2, 4, 5. Hvordan finner du gjennomsnittlig <em>køforsinkelse</em> for disse fire pakkene?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Køforsinkelse for hver pakke = (start sending) − (ankomst). Snitt over alle pakkene.</p>
+          <p>Pakke 1: ankom 0, sendt 1 → 1.<br>
+             Pakke 2: ankom 1, sendt 2 → 1.<br>
+             Pakke 3: ankom 2, sendt 4 → 2.<br>
+             Pakke 4: ankom 3, sendt 5 → 2.<br>
+             <strong>Snitt = (1+1+2+2)/4 = 1,5</strong> tidsenheter.</p>
+          <p><strong>Hvorfor:</strong> Køforsinkelsen er den eneste av de fire forsinkelseskomponentene som <em>akkumuleres</em> bak andre pakker. Når ankomstraten kortvarig overstiger serviceraten, vokser køen og pakker venter lenger. På eksamen får du gjerne en figur eller tabell — bare regn (sendt-tid − ankomst-tid) for hver pakke og ta snittet.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke fire fundamentale årsaker er det til at en pakke kan gå tapt i nettverket?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>1. <strong>Bitfeil oppdaget av en ruter</strong> — sjekksum/CRC feiler, pakken forkastes.<br>
+             2. <strong>Bufferoverflyt</strong> — køen i ruteren er full når pakken ankommer, så den droppes.<br>
+             3. <strong>Lenke- eller node-feil</strong> — kabel kuttes, ruter dør, link mister forbindelse.<br>
+             4. <strong>Kollisjon i delt medium</strong> (Ethernet/WiFi) — to noder sender samtidig, signalet ødelegges.</p>
+          <p><strong>Hvorfor disse fire dekker alt:</strong> De følger naturlig av Internetts <em>best effort</em>-modell — det er ingen garanti om levering. <strong>TCP</strong> retransmitterer for å bøte på alle disse mekanismene; <strong>UDP</strong> gjør det ikke. Derfor må applikasjoner som bruker UDP (DNS, video) håndtere tap selv eller akseptere det.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er et <em>man-in-the-middle</em>-angrep, og hvordan beskytter man seg mot det?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En angriper plasserer seg <strong>mellom</strong> to kommuniserende parter og kan lese, endre eller sette inn meldinger uten at partene merker det med én gang. Kombineres ofte med pakkesniffing (lytte) og IP-spoofing (utgi seg for noen andre).</p>
+          <p><strong>Hvorfor det er farlig:</strong> På et delt medium (åpent WiFi) eller via ARP-spoofing på lokalnett er det relativt enkelt å plassere seg "i midten". Uten kryptering ser angriperen alt; uten autentisering kan den endre alt og forfalske server-identitet.</p>
+          <p><strong>Forsvar:</strong> <strong>Kryptering (TLS/HTTPS)</strong> sikrer at lytting ikke avslører innhold. <strong>Digitale sertifikater (PKI)</strong> gir autentisering, så angriperen ikke kan utgi seg for å være serveren. Med begge på plass kan angriperen blokkere trafikk, men ikke lese eller endre den troverdig.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er pakkesniffing, og hvor er det spesielt enkelt å gjøre?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En passiv mottaker som kopierer all trafikk som passerer dens nettverkskort. Sniffing er fundamentalt <em>passivt</em> — angriperen sender ingenting selv, bare lytter.</p>
+          <p><strong>Hvor det er enkelt:</strong> På <strong>delte medier</strong> der alle ser alle pakkene — åpent WiFi (radio er fundamentalt delt), gamle Ethernet-hubber, eller ARP-spoofet lokalnett. På moderne svitsjet Ethernet er det vanskeligere fordi svitsjen kun sender pakker til riktig port.</p>
+          <p><strong>Hvorfor det er farlig:</strong> Uten kryptering kan en sniffer fange passord, e-poster, sesjons-cookies, kredittkortnummer — alt i klartekst. Det er nesten umulig å oppdage en passiv sniffer (den sender ingenting), så <strong>preventiv kryptering</strong> (TLS/HTTPS, WPA3 på WiFi) er eneste reelle forsvar.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom store-and-forward og cut-through-svitsjing? Hvor lang tid tar overføringen ende-til-ende når svitsjen kan begynne å sende videre etter å ha mottatt 80 bytes av en 3000-bytes pakke, med linker på 1000 byte/s?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>Store-and-forward:</strong> svitsjen mottar hele pakken før den begynner å sende videre. <strong>Cut-through:</strong> svitsjen kan begynne å sende videre <em>så snart den har lest nok av headeren til å bestemme utport</em>.</p>
+          <p><strong>Beregning:</strong> Først venter svitsjen på de første 80 bytes: 80/1000 = 0,08 s. Deretter sender svitsjen videre samtidig som den fortsetter å motta. Total ende-til-ende-tid = 3000/1000 + 80/1000 = <strong>3,08 s</strong>. (Bare én "innledende venting" på 80 bytes — ikke hele pakken som med store-and-forward.)</p>
+          <p><strong>Hvorfor cut-through er raskere:</strong> Du sparer (L − header)/R i ventetid per hopp. Brukes i moderne datasenter-svitsjer der lav latens er kritisk. <strong>Ulempen:</strong> hvis pakken har bitfeil oppdages det først helt på slutten — svitsjen har da allerede sendt halve pakken videre og kan ikke "ta tilbake" det den allerede har transmittert.</p>
+        </div>
+      </li>
     </ol>
   </div>
 </div>
