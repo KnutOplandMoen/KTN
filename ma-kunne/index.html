@@ -200,7 +200,7 @@
 <div class="container">
   <div class="eyebrow">Eksamensforberedelse · TTM4100</div>
   <h1>Må <em>kunne</em></h1>
-  <p class="lede">Tema og oppgavetyper som har gått igjen på de tre siste eksamenene (Eks 1, 2 og 3) — det du absolutt bør sitte med på ryggmargen før du går inn i eksamenslokalet. Wireshark-spørsmål er <em>ikke</em> med i år, så de er deprioritert her.</p>
+  <p class="lede">Tema og oppgavetyper som har gått igjen på de fire siste eksamenene (Eks 1–4) — det du absolutt bør sitte med på ryggmargen før du går inn i eksamenslokalet. Wireshark-spørsmål er <em>ikke</em> med i år, så de er deprioritert her.</p>
 </div>
 </header>
 
@@ -1147,7 +1147,226 @@
         </div>
       </li>
 
-      <!-- ====== ▲ END DRILL-VARIASJONER ▲ ====== -->
+      <!-- ============ ▼ EKS 4 (aug 2021) ▼ ============ -->
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen på <strong>ServerSocket</strong> og <strong>ConnectionSocket</strong> (TCP)?</div>
+        <div data-fc-back>
+          <p><strong>ServerSocket:</strong> Den åpne lytte-porten (åpen for alle) som klienter sender oppkoblings­forespørsel til.</p>
+          <p><strong>ConnectionSocket:</strong> En ny socket som <em>serveren</em> oppretter for én spesifikk TCP-forbindelse. Brukes under hele forbindelsens varighet for kommunikasjon med <em>én</em> klient.</p>
+          <p><strong>Felle:</strong> «Server-socket bruker UDP, connection-socket bruker TCP» — feil, begge er TCP. Skillet er <em>lytte</em> vs <em>per-forbindelse</em>.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er hovedoppgaven til <strong>DNS</strong>, og hvilke <em>to</em> fundamentale komponenter består den av?</div>
+        <div data-fc-back>
+          <p><strong>Hovedoppgave:</strong> Directory service som oversetter <em>hostnames</em> (mennesker) til <em>IP-adresser</em> (rutere).</p>
+          <p><strong>To komponenter:</strong></p>
+          <ol>
+            <li>En <em>distribuert database</em> implementert som et hierarki av DNS-tjenere.</li>
+            <li>En <em>applikasjonslags-protokoll</em> som lar hosts spørre databasen.</li>
+          </ol>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Gi en kort oversikt over <strong>DNS-server-hierarkiet</strong> (3 nivåer).</div>
+        <div data-fc-back>
+          <ol>
+            <li><strong>Root-tjenere:</strong> 13 stk på Internett, hver er egentlig et nett av replikerte tjenere (sikkerhet, redundans).</li>
+            <li><strong>Top-Level Domain (TLD)-tjenere:</strong> Ansvar for toppdomener — com, org, net, edu, gov, no, uk, fr m.fl.</li>
+            <li><strong>Autoritative DNS-tjenere:</strong> Hver organisasjon med offentlig nettsted/mail må ha autoritative records som mapper hostnames til IP. Drives selv (typisk primary + secondary backup) eller hos tjenesteleverandør.</li>
+          </ol>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Du setter opp en ny web-tjener med eget domenenavn. Hvordan kommer informasjonen <em>inn i DNS</em>?</div>
+        <div data-fc-back>
+          <ol>
+            <li>Bruk en <strong>registrar</strong> som først sjekker at domenet er ledig.</li>
+            <li>Du oppgir navn + IP til <em>primary</em> og <em>secondary</em> autoritative DNS-tjenere.</li>
+            <li>Registraren legger inn nødvendig info i de relevante TLD-tjenerne (én NS-record + én A-record per autoritativ tjener).</li>
+            <li>Du legger selv inn <strong>A-record</strong> for web-tjeneren og <strong>MX-record</strong> for mail-tjeneren i dine egne autoritative DNS-tjenere.</li>
+          </ol>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>1400 KB fil sendes over et <strong>linjesvitsjet</strong> nett. Oppsett tar 300 ms. 5 lenker, hver 1 Mbps. Minimum tid?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>11,5 sekunder</strong>.</p>
+          <p><strong>Regn:</strong> Ende-til-ende-kretsen er en dedikert «leiet linje» — overføringen tar samme tid uansett antall lenker så lenge raten er den samme: <code>1400·1024·8 / 1·10⁶ ≈ 11,2 s</code>. (Skikkelig 1400·8/1 = 11,2 s ved 1 KB = 1000 byte.)</p>
+          <p>Pluss 300 ms oppsettstid: 0,3 + 11,2 = <strong>11,5 s</strong>.</p>
+          <p><strong>Felle:</strong> Linjesvitsj ≠ pakkesvitsj — du legger <em>ikke</em> til L/R per lenke (ingen store-and-forward).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Inneholder et <strong>TCP-segment</strong> IP-adresser som en del av nyttelasten?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>Nei</strong>.</p>
+          <p><strong>Hvorfor:</strong> Nyttelasten i et TCP-segment kommer fra <em>applikasjonslaget</em>. IP-adresser legges til i <em>nettverkslaget</em>, der TCP-segmentet selv er nyttelasten.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Er det forskjell på hvordan <strong>sjekksum</strong> er implementert i TCP- vs UDP-segmenter?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>Nei</strong> — samme type sjekksum (Internet checksum: 1's-complement-sum over 16-bit ord) brukes i begge.</p>
+          <p><strong>Felle:</strong> «UDP har valgfri sjekksum, TCP har påkrevd» — det er <em>bruken</em>, ikke <em>algoritmen</em>, som er forskjellig.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Gi minst ett <strong>bruksområde</strong> der UDP er bedre enn TCP.</div>
+        <div data-fc-back>
+          <ul>
+            <li><strong>Sanntidsapplikasjoner</strong> (VoIP, video) — tap-tolerante, men retransmisjon kommer for sent. FEC kan brukes istedet.</li>
+            <li><strong>Korte engangsmeldinger</strong> der oppkobling er overkill (DNS-spørringer).</li>
+            <li>Lavere overhead, ingen oppkoblingsforsinkelse.</li>
+          </ul>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar <strong>TCP 3-veis håndtrykk</strong>: tre steg, sekvens-/ACK-numre.</div>
+        <div data-fc-back>
+          <ol>
+            <li><strong>SYN</strong> (klient→server): SYN-bit = 1, sekvensnr = tilfeldig <em>A</em>.</li>
+            <li><strong>SYN-ACK</strong> (server→klient): Server allokerer buffere/variabler. SYN = 1, ACK-nr = <em>A+1</em>, eget sekvensnr = tilfeldig <em>B</em>.</li>
+            <li><strong>ACK</strong> (klient→server): Klient allokerer også buffere. SYN = 0, sekvensnr = <em>A+1</em>, ACK-nr = <em>B+1</em>.</li>
+          </ol>
+          <p><strong>Mnemonisk:</strong> Server allokerer ressurser ved steg 2 (mot SYN-flooding flytter SYN-cookies dette til etter steg 3).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <strong>flytkontroll</strong> i TCP, og hvorfor trengs den?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Mottaker styrer avsenderens sendetempo for å unngå at mottakerens buffer renner over.</p>
+          <p><strong>Hvordan i TCP:</strong> Tellingsbasert byte-vindu. Avsender holder oversikt over sendte men ikke-bekreftede bytes. ACK-er er <em>kumulative</em>. Mottaker rapporterer ledig buffer i <code>rwnd</code>-feltet.</p>
+          <p><strong>Vs congestion control:</strong> Flow control = mottakerens problem. Congestion control = nettverkets problem.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Nevn minst <em>to</em> ulike måter datapakker kan forsvinne på vei gjennom et pakkesvitsjet nett.</div>
+        <div data-fc-back>
+          <ol>
+            <li><strong>Bitfeil</strong> oppdages i ruter/svitsj → pakken kastes for å spare ressurser.</li>
+            <li><strong>Bufferoverflyt</strong> ved høy last → ankommende pakker droppes.</li>
+            <li><strong>Lenke-/nodefeil</strong> — brutte fiber, defekte rutere/svitsjer/repeatere/forsterkere.</li>
+            <li><strong>Kollisjon</strong> i delt media (klassisk Ethernet, WiFi).</li>
+          </ol>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar prosedyren for <strong>CRC-kode</strong> hos avsender — gitt datastreng D og generator G.</div>
+        <div data-fc-back>
+          <ol>
+            <li>Legg til <code>length(G) − 1</code> nuller bak D. Eks: D=101010, G=1011 (length 4) → <code>101010<strong>000</strong></code>.</li>
+            <li>Utfør <em>modulo-2-divisjon</em> (XOR) av D+nuller med G.</li>
+            <li>Resultatet av divisjonen brukes ikke. <em>Resten</em> (length G−1) = CRC-koden.</li>
+            <li>Send D etterfulgt av CRC istedenfor de tilføyde nullene. Eks: <code>101010<strong>001</strong></code>.</li>
+          </ol>
+          <p><strong>Mottaker:</strong> Deler hele streng (D + CRC) med G. Rest = 0 ⇒ feilfri overføring.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar virkemåten til en <strong>linklags-svitsj</strong>. Hvordan skiller den seg fra en ruter?</div>
+        <div data-fc-back>
+          <p><strong>Virkemåte:</strong></p>
+          <ul>
+            <li>Videresender (eller filtrerer/dropper) rammer basert på MAC-adresser.</li>
+            <li>Bruker <em>switch-tabell</em>: ukjent MAC → broadcast (alle utganger unntatt inn-porten). MAC peker mot inn-port → drop. Ellers → riktig port.</li>
+            <li><strong>Self-learning:</strong> Fyller tabellen med kilde-MAC fra mottatte rammer. Oppføringer slettes etter timeout.</li>
+            <li>Plug-and-play / self-configuring.</li>
+          </ul>
+          <p><strong>Forskjell fra ruter:</strong> Svitsj opererer kun innenfor ett subnett, er <em>transparent</em> for hosts (har ikke egen IP/MAC), bruker MAC-adresser. Ruter har egen IP-adresse, opererer på lag 3, kobler ulike subnett.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <strong>ARP</strong>, og hvorfor er den nødvendig?</div>
+        <div data-fc-back>
+          <p><strong>ARP = Address Resolution Protocol.</strong> Oversetter mellom <em>IP-adresser</em> (lag 3) og <em>linklags-adresser</em> (i praksis ofte Ethernet-MAC) lokalt i et subnett.</p>
+          <p><strong>Hvorfor nødvendig:</strong> For at en host skal kunne sende en Ethernet-ramme til en annen host (eller default gateway), må den kjenne mottakerens MAC. ARP fyller hullet mellom IP og MAC.</p>
+          <p><strong>Lagring:</strong> ARP-tabeller ligger i minne hos hver vert og hver ruter; oppføringer har timeout.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen på <strong>infrastructure mode</strong> og <strong>ad hoc mode</strong> i 802.11?</div>
+        <div data-fc-back>
+          <p><strong>Infrastructure:</strong> Hosts er tilknyttet en basestasjon (AP) som kobler til kablet nett. AP gir DHCP, DNS, ruting osv.</p>
+          <p><strong>Ad hoc:</strong> Ingen infrastruktur — hosts kommuniserer direkte. Hostene må <em>selv</em> stå for ruting, adressetildeling, DNS-lignende navneoppslag.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor kan ikke <strong>CSMA/CD</strong> brukes i 802.11 (WiFi)?</div>
+        <div data-fc-back>
+          <ol>
+            <li>Kollisjons-deteksjon krever samtidig sending og mottak. På WiFi er mottatt signal mye svakere enn eget sendt signal — kostbart å bygge maskinvare som kan oppdage kollisjoner.</li>
+            <li>Selv med simultan tx/rx ville ikke alle kollisjoner oppdages — pga. <em>skjult terminal</em>-problemet og signal-fading.</li>
+          </ol>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Siden CSMA/CD ikke brukes i 802.11 — hvordan vet en avsender at en dataramme er <em>vellykket mottatt</em>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Mottakeren sender en eksplisitt <strong>ACK-ramme</strong> tilbake for hver mottatt dataramme. Hvis avsender ikke får ACK innen timeout, antas rammen tapt og retransmitteres.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hovedforskjell <strong>CSMA/CD vs CSMA/CA</strong> — og hva betyr «CA»?</div>
+        <div data-fc-back>
+          <ul>
+            <li><strong>CSMA/CD:</strong> Begynner å sende straks kanalen er ledig. Avbryter ved oppdaget kollisjon (CD = Collision Detection).</li>
+            <li><strong>CSMA/CA:</strong> Bruker en tilfeldig <em>back-off-teller</em> som telles ned før sending → reduserer sannsynligheten for kollisjon. Etter vellykket sending er det også et minimum «space» (IFS) som gir prioritert tilgang for ACK + andre korte kontroll-rammer (RTS/CTS).</li>
+          </ul>
+          <p><strong>CA = Collision Avoidance</strong>. Oppnås <em>ikke fullt ut</em> — to stasjoner kan fortsatt kollidere — men prosedyren gjør det mye mindre sannsynlig enn i Ethernet.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>I moderne kryptografi: er <em>algoritmen</em> hemmelig eller kjent? Og <em>nøkkelen</em>?</div>
+        <div data-fc-back>
+          <p><strong>Algoritmen:</strong> alltid antatt offentlig kjent. Sikkerheten ligger i å beskytte <em>nøkkelen</em>.</p>
+          <p><strong>Symmetrisk:</strong> én nøkkel, delt mellom partene → konfidensialitet.</p>
+          <p><strong>Offentlig nøkkel:</strong> nøkkelpar (privat + offentlig) → konfidensialitet, meldingsintegritet, <em>digital signatur</em>.</p>
+          <p><strong>Historisk unntak:</strong> Symmetriske algoritmer var ofte hemmelige før (og er det fortsatt for noen militære bruksområder).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvordan kan public-key-kryptografi brukes <em>direkte</em> for digital signatur — og hva trengs i tillegg for at det virker?</div>
+        <div data-fc-back>
+          <p><strong>Prinsipp:</strong> Avsender krypterer meldingen (eller en setning) med sin <em>private</em> nøkkel. Hvem som helst kan så bruke avsenders <em>offentlige</em> nøkkel for å verifisere at innholdet stemmer — og siden bare innehaveren av privatnøkkelen kunne lage krypteringen, er signaturen gyldig.</p>
+          <p><strong>Krever:</strong> Du må vite med sikkerhet at den offentlige nøkkelen <em>faktisk tilhører</em> personen du verifiserer. Derfor trengs en <strong>betrodd tredjepart</strong> som utsteder et <em>sertifikat</em> som binder offentlig nøkkel til identitet.</p>
+          <p><strong>For store meldinger:</strong> Signer hash-en av meldingen, ikke hele meldingen (effektivt).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Tre kategorier av <strong>brannmurer</strong>: hva er forskjellen?</div>
+        <div data-fc-back>
+          <ul>
+            <li><strong>Traditional packet filters:</strong> Filter på alle ruter-innganger til organisasjonens nett. Beslutninger tas <em>per pakke isolert</em> — typisk på adresser + porter, evt. TCP ACK-bit. Implementeres som ACL.</li>
+            <li><strong>Stateful packet filters:</strong> Som over, men sporer i tillegg <em>forbindelser</em> (connection table) for mer effektiv og sikker filtrering.</li>
+            <li><strong>Application gateways:</strong> Applikasjons­spesifikke tjenere som <em>all</em> trafikk for den applikasjonen må gjennom. Ser på applikasjonsdata i tillegg til pakkefiltre — kan kreve brukernavn/passord før tilgang gis. Trenger én gateway per applikasjon (kan kjøre på samme host).</li>
+          </ul>
+          <p><strong>Nøkkelen:</strong> per-pakke → per-forbindelse → per-applikasjon (med applikasjons­dataforståelse).</p>
+        </div>
+      </li>
+
+      <!-- ====== ▲ END EKS 4 ▲ ====== -->
     </ol>
   </div>
 </div>
@@ -1157,7 +1376,7 @@
 <section id="metode">
 <div class="container">
   <h2>Slik er listen <em>laget</em></h2>
-  <p class="section-intro">Tre tidligere eksamener (Eks 1, Eks 2, Eks 3) ble lest gjennom og krysslest. Tema som dukket opp i to eller tre av settene er markert som «høy frekvens». Ett sett alene er «medium». Eksamen­sinfoen sier at det <em>ikke</em> blir Wireshark-spørsmål denne gangen — den biten er deprioritert.</p>
+  <p class="section-intro">Fire tidligere eksamener (Eks 1, Eks 2, Eks 3, Eks 4) ble lest gjennom og krysslest. Tema som dukket opp i flere av settene er markert som «høy frekvens». Ett sett alene er «medium». Eksamen­sinfoen sier at det <em>ikke</em> blir Wireshark-spørsmål denne gangen — den biten er deprioritert.</p>
 
   <div class="callout callout-blue">
     <span class="label">Kildemerking</span>
@@ -1165,7 +1384,7 @@
   </div>
 
   <div class="legend">
-    <span><span class="freq-pill">Høy</span> 2–3 eksamener</span>
+    <span><span class="freq-pill">Høy</span> 2–4 eksamener</span>
     <span><span class="freq-pill med">Med</span> 1 eksamen, men sentralt</span>
     <span><span class="freq-pill lav">Lav</span> Periferi — øv hvis tid</span>
   </div>
@@ -1176,23 +1395,28 @@
 <section id="gjentar-seg">
 <div class="container">
   <h2>Tema som <em>går igjen</em></h2>
-  <p class="section-intro">Disse er hentet fra alle tre eksamenene — de utgjør grunnstammen i pensum.</p>
+  <p class="section-intro">Disse er hentet fra alle fire eksamenene — de utgjør grunnstammen i pensum.</p>
 
   <table class="mk-table">
     <thead>
       <tr><th style="width: 26%">Tema</th><th>Hva som testes</th><th style="width: 22%">Funnet i</th></tr>
     </thead>
     <tbody>
-      <tr><td><strong>Internett-arkitektur</strong></td><td>«Nuts and bolts» vs tjenesteplattform, network of networks, kapsling, lagdeling</td><td class="src">Eks1·Q1.1.1, Eks1·Q1.1.4, Eks1·Q1.1.6, Eks2·Q1.1.4, Eks3·P2/Q2</td></tr>
-      <tr><td><strong>Forsinkelse og ytelse</strong></td><td>L/R-formel, store-and-forward, (N+P−1)L/R, flaskehals, link-utilisering, FIFO-køforsinkelse</td><td class="src">Eks1·Q1.1.5–9, Eks2·Q1.1.2–5, Eks2·Q1.3.4, Eks3·P2/Q2</td></tr>
-      <tr><td><strong>Pakke- vs linjesvitsj</strong></td><td>Garantier, delay-variasjon, ressursutnyttelse</td><td class="src">Eks2·Q1.1.1</td></tr>
-      <tr><td><strong>UDP vs TCP-tjenester</strong></td><td>Best effort, flow control, congestion control — hva UDP og TCP <em>gjør og ikke gjør</em></td><td class="src">Eks1·Q1.2.1, Eks1·Q1.2.2, Eks2·Q1.2.4, Eks3·P1/Q3, Eks3·P1/Q13</td></tr>
-      <tr><td><strong>Sockets (UDP &amp; TCP)</strong></td><td>SOCK_STREAM/SOCK_DGRAM, accept(), antall sockets ved N klienter</td><td class="src">Eks1·Q1.2.6, Eks1·Q1.2.7, Eks2·Q1.2.3, Eks3·P2/Q4</td></tr>
+      <tr><td><strong>Internett-arkitektur</strong></td><td>«Nuts and bolts» vs tjenesteplattform, network of networks, kapsling, lagdeling</td><td class="src">Eks1·Q1.1.1, Eks1·Q1.1.4, Eks1·Q1.1.6, Eks2·Q1.1.4, Eks3·P2/Q2, Eks4·Q2.1a</td></tr>
+      <tr><td><strong>Forsinkelse og ytelse</strong></td><td>L/R-formel, store-and-forward, (N+P−1)L/R, flaskehals, link-utilisering, FIFO-køforsinkelse</td><td class="src">Eks1·Q1.1.5–9, Eks2·Q1.1.2–5, Eks2·Q1.3.4, Eks3·P2/Q2, Eks4·Q1.3</td></tr>
+      <tr><td><strong>Pakke- vs linjesvitsj</strong></td><td>Garantier, delay-variasjon, ressursutnyttelse, kretskobling-oppsettstid</td><td class="src">Eks2·Q1.1.1, Eks4·Q1.3</td></tr>
+      <tr><td><strong>UDP vs TCP-tjenester</strong></td><td>Best effort, flow control, congestion control — hva UDP og TCP <em>gjør og ikke gjør</em>; UDP-fordeler (sanntid, FEC, ingen oppkobling)</td><td class="src">Eks1·Q1.2.1, Eks1·Q1.2.2, Eks2·Q1.2.4, Eks3·P1/Q3, Eks3·P1/Q13, Eks4·Q2.1c</td></tr>
+      <tr><td><strong>Sockets (UDP &amp; TCP)</strong></td><td>SOCK_STREAM/SOCK_DGRAM, accept(), antall sockets ved N klienter, ServerSocket vs ConnectionSocket</td><td class="src">Eks1·Q1.2.6, Eks1·Q1.2.7, Eks2·Q1.2.3, Eks3·P2/Q4, Eks4·Q1.1</td></tr>
       <tr><td><strong>HTTP / web cache</strong></td><td>GET-formål, caching-fordeler, port 80, persistent</td><td class="src">Eks1·Q1.2.3, Eks1·Q1.2.4, Eks2·Q1.2.2</td></tr>
       <tr><td><strong>HTTP vs SMTP</strong></td><td>Push/pull, port 80 vs 25, persistent connection</td><td class="src">Eks1·Q1.2.5</td></tr>
-      <tr><td><strong>DNS</strong></td><td>UDP/TCP, RR-format, hva klienten får</td><td class="src">Eks2·Q6, Eks3·P1/Q2</td></tr>
+      <tr><td><strong>DNS</strong></td><td>UDP/TCP, RR-format, hva klienten får, hovedoppgave (directory + protokoll)</td><td class="src">Eks2·Q6, Eks3·P1/Q2, Eks4·Q1.2a</td></tr>
+      <tr><td><strong>DNS-hierarki &amp; registrering</strong></td><td>Root → TLD → autoritative servere; registrar-prosess for nytt domene</td><td class="src">Eks4·Q1.2b, Eks4·Q1.2c</td></tr>
+      <tr><td><strong>TCP-handshake</strong></td><td>3-veis (SYN → SYN-ACK → ACK), buffere allokeres på server før klient</td><td class="src">Eks4·Q2.2a</td></tr>
+      <tr><td><strong>TCP/UDP-sjekksum</strong></td><td>Samme type sjekksum i begge — 1's complement over 16-bit ord</td><td class="src">Eks1·Q1.2.8, Eks4·Q2.1b</td></tr>
+      <tr><td><strong>Pakketap i nettet</strong></td><td>Bitfeil, bufferoverflyt, lenke-/nodefeil, kollisjon i delt media</td><td class="src">Eks4·Q2.3</td></tr>
+      <tr><td><strong>CRC</strong></td><td>Modulo-2-divisjon, legg til G−1 nuller, rest = CRC</td><td class="src">Eks4·Q3.1</td></tr>
       <tr><td><strong>Internet checksum</strong></td><td>16-bits addisjon med carry-wrap</td><td class="src">Eks1·Q1.2.8</td></tr>
-      <tr><td><strong>TCP cwnd / slow start</strong></td><td>Identifisere intervaller for slow start vs AIMD i graf, flytkontroll-scenario</td><td class="src">Eks1·Q1.2.9, Eks2·Q2</td></tr>
+      <tr><td><strong>TCP cwnd / slow start</strong></td><td>Identifisere intervaller for slow start vs AIMD i graf, flytkontroll-scenario</td><td class="src">Eks1·Q1.2.9, Eks2·Q2, Eks4·Q2.2b</td></tr>
       <tr><td><strong>Subnetting / CIDR</strong></td><td>Maskeoperasjon, gyldige adresser i /29, antall brukbare verter, broadcast i /21</td><td class="src">Eks1·Q1.3.4, Eks2·Q1.3.1, Eks2·Q4, Eks3·P1/Q5, Eks3·P1/Q12</td></tr>
       <tr><td><strong>Longest prefix match</strong></td><td>Velge ut-port fra forwarding-tabell</td><td class="src">Eks1·Q1.3.3</td></tr>
       <tr><td><strong>NAT</strong></td><td>Lese tabell, fylle inn IP/port på utsiden</td><td class="src">Eks1·Q1.3.10</td></tr>
@@ -1200,9 +1424,12 @@
       <tr><td><strong>DHCP</strong></td><td>UDP, 4-stegs prosess, dynamisk IP + DNS + GW</td><td class="src">Eks2·Q1.3.2, Eks3·P1/Q4(5)</td></tr>
       <tr><td><strong>IPv4 vs IPv6</strong></td><td>Flow label kun i IPv6, fjernet checksum/options</td><td class="src">Eks1·Q1.3.5</td></tr>
       <tr><td><strong>Best effort</strong></td><td>Ingen garantier — kryss av alle «ikke garantert»</td><td class="src">Eks1·Q1.3.7</td></tr>
-      <tr><td><strong>Svitsj vs ruter</strong></td><td>Lag 2 vs lag 3, MAC vs IP</td><td class="src">Eks2·Q1.4.1, Eks3·P1/Q4(2,4,7,9)</td></tr>
+      <tr><td><strong>Svitsj vs ruter</strong></td><td>Lag 2 vs lag 3, MAC vs IP, switch-tabell, self-learning, plug-and-play</td><td class="src">Eks2·Q1.4.1, Eks3·P1/Q4(2,4,7,9), Eks4·Q3.2</td></tr>
+      <tr><td><strong>ARP</strong></td><td>Oversetter IP ↔ MAC lokalt i et subnett; ARP-tabeller i hosts og rutere</td><td class="src">Eks4·Q3.3</td></tr>
       <tr><td><strong>Multiple access (klassif.)</strong></td><td>Channel partitioning vs random access vs taking turns</td><td class="src">Eks3·P1/Q6</td></tr>
       <tr><td><strong>CSMA tidslinje</strong></td><td>Bestemme hvilke pakker som lykkes ved gitt propageringstid</td><td class="src">Eks1·Q1.4.3, Eks1·Q1.4.4, Eks3·P2/Q7</td></tr>
+      <tr><td><strong>CSMA/CD vs CSMA/CA</strong></td><td>Backoff-counter, IFS, hvorfor CD ikke fungerer i WiFi, eksplisitt ACK</td><td class="src">Eks4·Q4.2, Eks4·Q4.3</td></tr>
+      <tr><td><strong>Infrastructure vs ad hoc (802.11)</strong></td><td>Med basestasjon vs uten — ad hoc krever ruting/DNS/adressering selv</td><td class="src">Eks4·Q4.1</td></tr>
       <tr><td><strong>Pure / slotted ALOHA</strong></td><td>Effektivitet (~18% vs ~37%), synkronisering</td><td class="src">Eks1·Q1.4.2, Eks2·Q1.4.5</td></tr>
       <tr><td><strong>2D-paritet</strong></td><td>Detekter/rett 1-bit, detekter (ofte) 2-bit</td><td class="src">Eks1·Q1.4.5, Eks2·Q1.4.2</td></tr>
       <tr><td><strong>RTS/CTS, skjult terminal</strong></td><td>Hva CTS gjør, hidden node-problemet</td><td class="src">Eks1·Q1.4.6, Eks2·Q1.4.4</td></tr>
@@ -1214,8 +1441,9 @@
       <tr><td><strong>Meldingsintegritet</strong></td><td>Hash vs checksum, hvorfor hash er bedre</td><td class="src">Eks2·Q1.5.3</td></tr>
       <tr><td><strong>HTTP- vs UDP-streaming</strong></td><td>Brannmur, retransmisjon, ordning</td><td class="src">Eks2·Q1.5.4, Eks3·P1/Q1</td></tr>
       <tr><td><strong>Cæsar-cipher</strong></td><td>Beskrivelse + kode/dekode med gitt k</td><td class="src">Eks3·P2/Q5</td></tr>
-      <tr><td><strong>Symmetrisk vs offentlig nøkkel</strong></td><td>Én delt vs nøkkelpar — bruk og forskjell</td><td class="src">Eks3·P2/Q6</td></tr>
-      <tr><td><strong>Brannmur</strong></td><td>Hovedformål: blokkere uautorisert tilgang</td><td class="src">Eks3·P1/Q14</td></tr>
+      <tr><td><strong>Symmetrisk vs offentlig nøkkel</strong></td><td>Én delt vs nøkkelpar — bruk og forskjell; algoritme er kjent, nøkkel er hemmelig</td><td class="src">Eks3·P2/Q6, Eks4·Q5.1</td></tr>
+      <tr><td><strong>Digital signatur</strong></td><td>Krypter med privat nøkkel, verifiser med offentlig; trenger sertifikat (TTP)</td><td class="src">Eks4·Q5.2</td></tr>
+      <tr><td><strong>Brannmur</strong></td><td>Hovedformål: blokkere uautorisert tilgang; tre kategorier (traditional / stateful / application gateway)</td><td class="src">Eks3·P1/Q14, Eks4·Q5.3</td></tr>
       <tr><td><strong>Stor «protokollkjede»-oppgave</strong></td><td>Fra plug-in → DHCP → DNS → SMTP → IMAP/HTTP. Lag og protokoller per steg</td><td class="src">Eks3·P2/Q3</td></tr>
     </tbody>
   </table>
@@ -1272,7 +1500,7 @@
   <div class="mk-item green">
     <div class="mk-head">
       <h3>UDP- og TCP-tjenester (kryssliste)<span class="freq-pill">Høy</span></h3>
-      <span class="mk-src">Eks1·Q1.2.1, Q1.2.2 · Eks3·P1/Q13</span>
+      <span class="mk-src">Eks1·Q1.2.1, Q1.2.2 · Eks3·P1/Q13 · Eks4·Q2.1c</span>
     </div>
     <div class="mk-must">Må kunne</div>
     <p>For et «check all that apply»-spørsmål, internaliser denne tabellen:</p>
@@ -1282,7 +1510,8 @@
       <li><strong>TCP gir:</strong> Pålitelig in-order bytestrøm, flow control, congestion control.</li>
       <li><strong>TCP gir IKKE:</strong> Throughput-garanti, real-time-garanti.</li>
     </ul>
-    <div class="mk-why"><strong>Hvorfor:</strong> 6 av 6 alternativer kan markeres feil hvis du ikke er nøye. Husk: <em>throughput-garanti</em> finnes i ingen av dem.</div>
+    <p><strong>Når UDP er bedre enn TCP:</strong> Sanntid (VoIP, video) der retransmisjon er for sent, små engangsmeldinger som DNS (slipper oppkobling), eller når FEC erstatter retransmisjon. Mindre overhead, ingen oppkoblingsforsinkelse.</p>
+    <div class="mk-why"><strong>Hvorfor:</strong> 6 av 6 alternativer kan markeres feil hvis du ikke er nøye. Husk: <em>throughput-garanti</em> finnes i ingen av dem. Eks 4 spør hvilke <em>fordeler</em> UDP har — bruk listen over.</div>
   </div>
 
   <div class="mk-item green">
@@ -1300,7 +1529,7 @@
   <div class="mk-item green">
     <div class="mk-head">
       <h3>Sockets — antall og typer<span class="freq-pill">Høy</span></h3>
-      <span class="mk-src">Eks1·Q1.2.6, Q1.2.7 · Eks2·Q1.2.3 · Eks3·P2/Q4</span>
+      <span class="mk-src">Eks1·Q1.2.6, Q1.2.7 · Eks2·Q1.2.3 · Eks3·P2/Q4 · Eks4·Q1.1</span>
     </div>
     <div class="mk-must">Må kunne</div>
     <ul>
@@ -1308,8 +1537,9 @@
       <li><strong>TCP:</strong> <code>SOCK_STREAM</code>. Server har én lyttende socket; <code>accept()</code> skaper en ny server-socket per klient.</li>
       <li><strong>5 klienter på TCP-port 80:</strong> 1 lyttende + 5 forbindelses-sockets = <strong>6</strong>. Hver forbindelse identifiseres av 4-tuple.</li>
       <li><strong>3 klienter sender UDP til samme server-port:</strong> Server trenger bare <strong>1</strong> socket.</li>
+      <li><strong>ServerSocket vs ConnectionSocket (TCP):</strong> ServerSocket = den åpne lytte-porten man sender oppkoblings­forespørsel til. ConnectionSocket = ny socket serveren oppretter for én spesifikk TCP-forbindelse, brukt under hele forbindelsens varighet.</li>
     </ul>
-    <div class="mk-why"><strong>Hvorfor:</strong> Eks 3 hadde dette som åpen 5-poengsoppgave; Eks 1 hadde flervalg på samme tema.</div>
+    <div class="mk-why"><strong>Hvorfor:</strong> Eks 3 hadde dette som åpen 5-poengsoppgave; Eks 1 hadde flervalg på samme tema; Eks 4 spør spesifikt etter ServerSocket vs ConnectionSocket-skillet.</div>
   </div>
 
   <div class="mk-item green">
@@ -1344,11 +1574,12 @@
   <div class="mk-item">
     <div class="mk-head">
       <h3>Internet checksum<span class="freq-pill med">Med</span></h3>
-      <span class="mk-src">Eks1·Q1.2.8</span>
+      <span class="mk-src">Eks1·Q1.2.8 · Eks4·Q2.1b</span>
     </div>
     <div class="mk-must">Må kunne</div>
     <p>Steg: (1) summer 16-bits ord, (2) carry tilbake (carry-wrap), (3) ta 1's complement.</p>
-    <div class="mk-why"><strong>Hvorfor:</strong> Mottaker validerer ved å summere alt + checksum og sjekke at alle bits = 1.</div>
+    <p><strong>TCP vs UDP:</strong> Samme type sjekksum i både TCP- og UDP-segmenter — ingen forskjell.</p>
+    <div class="mk-why"><strong>Hvorfor:</strong> Mottaker validerer ved å summere alt + checksum og sjekke at alle bits = 1. Eks 4 spør «er det forskjell mellom TCP- og UDP-sjekksum?» — svar: nei.</div>
   </div>
 
   <div class="mk-item">
@@ -1363,11 +1594,71 @@
   <div class="mk-item">
     <div class="mk-head">
       <h3>DNS-format og transport<span class="freq-pill med">Med</span></h3>
-      <span class="mk-src">Eks2·Q6 · Eks3·P1/Q2</span>
+      <span class="mk-src">Eks2·Q6 · Eks3·P1/Q2 · Eks4·Q1.2a</span>
     </div>
     <div class="mk-must">Må kunne</div>
     <p>RR = (Name, Value, Type, TTL). Type A → IPv4, NS → autoritativ navneserver, CNAME → alias, MX → mailserver. Klienten kan få: IP-adresse, mail-server, alias, autoritative servere, TTL.</p>
     <p>Transport: UDP (oftest, port 53) — kan også bruke TCP for store svar / sone­overføring.</p>
+    <p><strong>DNS-hovedoppgave:</strong> «Directory service» som oversetter hostnames til IP-adresser. To fundamentale komponenter: <em>(1)</em> en distribuert database implementert i et hierarki av DNS-tjenere, og <em>(2)</em> en applikasjons­lags-protokoll som lar hosts spørre databasen.</p>
+  </div>
+
+  <div class="mk-item green">
+    <div class="mk-head">
+      <h3>DNS-server-hierarki<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks4·Q1.2b</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Tre klasser DNS-tjenere — kort oversikt:</p>
+    <ol>
+      <li><strong>Root-DNS-tjenere:</strong> 13 stk på Internett (men hver er egentlig et nett av replikerte tjenere for redundans/sikkerhet).</li>
+      <li><strong>Top-Level Domain (TLD)-tjenere:</strong> Ansvarlig for toppdomenene (com, org, net, edu, gov, no, uk, fr …).</li>
+      <li><strong>Autoritative DNS-tjenere:</strong> Hver organisasjon med offentlige hosts (web/mail) må ha autoritative DNS-records som mapper hostnames til IP. Drives selv eller hos tjenesteleverandør (typisk primary + secondary backup).</li>
+    </ol>
+    <div class="mk-why"><strong>Hvorfor:</strong> Eks 4 spør om kort oversikt over hierarkiet — de tre nivåene utenat gir nesten full pott.</div>
+  </div>
+
+  <div class="mk-item green">
+    <div class="mk-head">
+      <h3>Sette opp ny web-tjener i DNS<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks4·Q1.2c</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <ol>
+      <li>Bruk en <strong>registrar</strong>. Den sjekker at domenet er unikt (ikke i bruk).</li>
+      <li>Oppgi navn og IP til <em>primary</em> og <em>secondary</em> autoritative DNS-tjenere.</li>
+      <li>Registraren legger info inn i relevante TLD-tjenere (én NS-record + én A-record per autoritativ tjener).</li>
+      <li>Du legger selv inn <strong>A-record</strong> for web-tjeneren og <strong>MX-record</strong> for mail-tjeneren i dine autoritative DNS-tjenere.</li>
+    </ol>
+    <div class="mk-why"><strong>Hvorfor:</strong> Selv om man ikke trenger å huske RR-typer for full pott på Eks 4, gir det stødigere svar — A og MX dukker opp i annen DNS-oppgave.</div>
+  </div>
+
+  <div class="mk-item green">
+    <div class="mk-head">
+      <h3>TCP 3-veis håndtrykk<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks4·Q2.2a</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <ol>
+      <li><strong>SYN (klient → server):</strong> SYN-bit = 1, sekvensnummer = tilfeldig <em>A</em>.</li>
+      <li><strong>SYN-ACK (server → klient):</strong> Server allokerer buffere/variabler. Sender SYN = 1, ACK-nummer = <em>A+1</em>, eget sekvensnummer = tilfeldig <em>B</em>.</li>
+      <li><strong>ACK (klient → server):</strong> Klient allokerer også buffere. SYN-bit = 0, sekvensnummer = <em>A+1</em>, ACK-nummer = <em>B+1</em>.</li>
+    </ol>
+    <div class="mk-why"><strong>Hvorfor:</strong> Eks 4 ber om kort oversikt — nevn de tre stegene, ressurs­allokering på begge sider, og at ACK-nummer = mottatt sekvens + 1. Alt annet er bonus.</div>
+  </div>
+
+  <div class="mk-item green">
+    <div class="mk-head">
+      <h3>Hvorfor pakker forsvinner i nettet<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks4·Q2.3</span>
+    </div>
+    <div class="mk-must">Må kunne (minst 2 av 4)</div>
+    <ol>
+      <li><strong>Bitfeil:</strong> Pakken kastes i ruter/svitsj hvis sjekksum/CRC oppdager ikke-korrigerbare feil (sparer ressurser).</li>
+      <li><strong>Bufferoverflyt:</strong> Ved høy last kan køer renne over → ankommende pakker droppes.</li>
+      <li><strong>Lenke- eller nodefeil:</strong> Brutte fiber, defekte rutere/svitsjer/repeatere/forsterkere.</li>
+      <li><strong>Kollisjoner i delt media:</strong> WiFi, klassisk Ethernet eller andre delte medier — pakkene kan kollidere og gå tapt.</li>
+    </ol>
+    <div class="mk-why"><strong>Hvorfor:</strong> Lett 2-poengs spørsmål. Bare nevn to forskjellige mekanismer — ulike hovedklasser (feil, kø, fysisk, kollisjon).</div>
   </div>
 
   <h3>Kapittel 4–5 — Nettverkslag</h3>
@@ -1466,12 +1757,47 @@
 
   <div class="mk-item ochre">
     <div class="mk-head">
-      <h3>Svitsj vs ruter<span class="freq-pill med">Med</span></h3>
-      <span class="mk-src">Eks2·Q1.4.1 · Eks3·P1/Q4(2,4,7,9)</span>
+      <h3>Svitsj vs ruter<span class="freq-pill">Høy</span></h3>
+      <span class="mk-src">Eks2·Q1.4.1 · Eks3·P1/Q4(2,4,7,9) · Eks4·Q3.2</span>
     </div>
     <div class="mk-must">Må kunne</div>
     <p>Svitsj: lag 2, MAC, lokal LAN. Ruter: lag 3, IP, mellom nett. ARP brukes til å finne MAC for første hopp.</p>
     <p>Sant/usant-feller: «svitsj kobler nett, ruter kobler enheter» → <em>feil</em>. «Aksessrutere bruker hele IP-adressen» → <em>sant</em>. «Kjernrutere bruker bare nett-delen» → <em>sant</em>.</p>
+    <p><strong>Linklags-svitsj — virkemåte (Eks 4):</strong></p>
+    <ul>
+      <li>Videresender (eller filtrerer) innkommende rammer basert på MAC-adresser.</li>
+      <li>Bruker en <strong>switch-tabell</strong>: hvis MAC ikke er i tabellen → broadcast (alle utganger unntatt der den kom fra). Hvis MAC peker mot samme port den kom fra → <em>drop</em>. Ellers → send til riktig port.</li>
+      <li><strong>Self-learning:</strong> Tabellen oppdateres med kilde-MAC-adresser fra rammer som mottas. Oppføringer slettes etter en timeout — så info holdes dynamisk.</li>
+      <li>Opererer kun innenfor ett subnett. <strong>Transparent</strong> for hosts/servere — har <em>verken</em> MAC- eller IP-adresse selv (i motsetning til ruteren).</li>
+      <li><strong>Plug-and-play / self-configuring</strong> — krever ingen manuell konfigurasjon.</li>
+    </ul>
+  </div>
+
+  <div class="mk-item ochre">
+    <div class="mk-head">
+      <h3>ARP<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks4·Q3.3</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p><strong>ARP = Address Resolution Protocol.</strong> Oversetter mellom <em>IP-adresser</em> (lag 3) og <em>linklags-adresser</em> (vanligvis Ethernet-MAC) lokalt i et subnett.</p>
+    <p>ARP-tabeller ligger i minne hos hver vert og hver ruter — slik at neste pakke til samme IP slipper ny ARP-spørring. Oppføringer har en timeout slik at de holdes friske.</p>
+    <div class="mk-why"><strong>Hvorfor:</strong> Når en host vet IP-en til neste hopp (default gateway eller en host i samme subnett) <em>må</em> den også vite MAC-en før Ethernet-rammen kan sendes. Uten ARP ville lag-3-til-lag-2-overgangen vært umulig.</div>
+  </div>
+
+  <div class="mk-item ochre">
+    <div class="mk-head">
+      <h3>CRC — beregne fra D og G<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks4·Q3.1</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <ol>
+      <li>Legg til <code>length(G) − 1</code> nuller bak datastrengen <em>D</em> (plassholder for CRC-koden). Eks: D=101010, G=1011 → <code>101010<strong>000</strong></code>.</li>
+      <li>Utfør <em>modulo-2-divisjon</em> (XOR-divisjon) med generator <em>G</em>.</li>
+      <li>Resultatet av divisjonen brukes ikke. <em>Resten</em> = CRC-koden.</li>
+      <li>Send <em>D</em> etterfulgt av CRC-koden istedenfor de tilføyde nullene. Eks: <code>101010<strong>001</strong></code>.</li>
+    </ol>
+    <p>Mottaker deler hele streng (D + CRC) med G — rest = 0 betyr feilfri overføring.</p>
+    <div class="mk-why"><strong>Hvorfor:</strong> Du må kunne forklare prosedyren <em>verbalt</em>; konkrete beregninger er sjeldne, men en G med length 4 og D = 6–8 bits er klassisk.</div>
   </div>
 
   <div class="mk-item ochre">
@@ -1533,6 +1859,38 @@
     <div class="mk-must">Må kunne</div>
     <p>RTS sendes av sender, CTS av mottaker. Naboer som hører CTS holder seg stille. Løser <em>skjult terminal</em>: når to sendere ikke hører hverandre men deler mottaker.</p>
     <p>Sant: hidden node-problemet eksisterer fortsatt fysisk; RTS/CTS reduserer effekten. Usant: «løser exposed node-problemet helt».</p>
+  </div>
+
+  <div class="mk-item ochre">
+    <div class="mk-head">
+      <h3>802.11: Infrastructure mode vs ad hoc mode<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks4·Q4.1</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p><strong>Infrastructure mode:</strong> Hosts er tilknyttet en <em>basestasjon</em> (AP) som kobler videre til kablet nett. AP gir DNS, DHCP, ruting via fast infrastruktur.</p>
+    <p><strong>Ad hoc mode:</strong> <em>Ingen infrastruktur</em>. Hosts kommuniserer direkte med hverandre. Hosts må selv stå for ruting, adressetildeling, DNS-lignende navneoppslag, m.m.</p>
+    <div class="mk-why"><strong>Hvorfor:</strong> Eks 4 ber om kort forklaring av forskjellen — én setning hver er nok. Husk: ad hoc krever at hosts selv overtar tjenester som AP normalt gir.</div>
+  </div>
+
+  <div class="mk-item ochre">
+    <div class="mk-head">
+      <h3>CSMA/CD vs CSMA/CA &amp; WiFi-ACK<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks4·Q4.2, Q4.3</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p><strong>Hvorfor CSMA/CD ikke kan brukes i 802.11:</strong></p>
+    <ol>
+      <li>Kollisjons-deteksjon krever at man kan sende og motta samtidig. På 802.11-adapteren er det mottatte signalet svært svakt sammenlignet med eget sendt signal — det er kostbart å bygge maskinvare som kan oppdage kollisjon.</li>
+      <li>Selv med samtidig send/motta ville ikke alle kollisjoner oppdages — pga. <em>skjult terminal-problem</em> og fading.</li>
+    </ol>
+    <p><strong>Hovedforskjell CSMA/CD vs CSMA/CA:</strong></p>
+    <ul>
+      <li>CD (Ethernet): begynner å sende straks kanalen er ledig. Avbryter ved oppdaget kollisjon.</li>
+      <li>CA (WiFi): bruker en <em>random back-off-teller</em> som telles ned før sending — reduserer kollisjons­sannsynlighet. Etter vellykket sending er det også et minimum «space» (IFS) som gir ACK-rammer (og korte kontroll­rammer som RTS/CTS) prioritert tilgang.</li>
+      <li><strong>CA = Collision Avoidance</strong> — oppnås <em>ikke fullt ut</em> (rammer fra to stasjoner kan fortsatt kollidere), men er mye mindre sannsynlig enn i Ethernet.</li>
+    </ul>
+    <p><strong>Ingen kollisjons-deteksjon → eksplisitt ACK:</strong> Mottaker sender en <em>ACK-ramme</em> tilbake for hver mottatt dataramme. Hvis avsender ikke får ACK → antas tap, retransmitter.</p>
+    <div class="mk-why"><strong>Hvorfor:</strong> Eks 4 har tre delspørsmål rundt dette — pugg punktene over så du kan svare alle tre direkte. RTS/CTS hører hjemme her som del av CA.</div>
   </div>
 
   <div class="mk-item ochre">
@@ -1615,21 +1973,40 @@
   <div class="mk-item">
     <div class="mk-head">
       <h3>Symmetrisk vs offentlig nøkkel<span class="freq-pill med">Med</span></h3>
-      <span class="mk-src">Eks3·P2/Q6</span>
+      <span class="mk-src">Eks3·P2/Q6 · Eks4·Q5.1</span>
     </div>
     <div class="mk-must">Må kunne</div>
     <p><em>Symmetrisk:</em> én nøkkel for begge retninger; rask; problem = nøkkel­distribusjon.</p>
     <p><em>Offentlig nøkkel:</em> nøkkelpar (offentlig/privat); kryptér med offentlig, dekrypter med privat; løser distribusjon, men er tregere.</p>
     <p>I praksis: PKI brukes for å utveksle en symmetrisk session key (slik TLS gjør).</p>
+    <p><strong>Algoritmer er kjent — nøkler er hemmelige:</strong> I moderne kryptografi antas algoritmen alltid å være offentlig kjent. Sikkerheten ligger i å beskytte nøklene. (Historisk var symmetriske algoritmer ofte hemmelige; for noen militære bruksområder gjelder det fortsatt.) Begge systemer kan brukes for konfidensialitet; offentlig nøkkel kan også brukes for <em>meldingsintegritet</em> og <em>digitale signaturer</em>.</p>
   </div>
 
   <div class="mk-item">
     <div class="mk-head">
-      <h3>Brannmur — hovedformål<span class="freq-pill med">Med</span></h3>
-      <span class="mk-src">Eks3·P1/Q14</span>
+      <h3>Digital signatur (med public key)<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks4·Q5.2</span>
     </div>
     <div class="mk-must">Må kunne</div>
-    <p>Blokkere uautorisert tilgang. <em>Ikke</em> «kryptere data» (det er TLS/IPsec). <em>Ikke</em> «overvåke ytelse» (det er andre verktøy).</p>
+    <p><strong>Enkleste prinsipp:</strong> Avsender krypterer meldingen (eller en setning) med <em>privat</em> nøkkel. Hvem som helst kan så bruke den tilhørende <em>offentlige</em> nøkkelen til å dekryptere — og siden bare innehaveren av privatnøkkelen kunne ha laget krypteringen, er signaturens gyldighet bekreftet.</p>
+    <p><strong>Minimum tillegg som kreves:</strong> En <em>betrodd tredjepart</em> (TTP) som utsteder et <em>sertifikat</em> som binder den offentlige nøkkelen til en spesifikk person/organisasjon. Uten dette vet du ikke hvem nøkkelen tilhører.</p>
+    <p><strong>I praksis:</strong> For store meldinger signerer man <em>hash-en</em> (mer effektivt enn å kryptere hele meldingen).</p>
+  </div>
+
+  <div class="mk-item">
+    <div class="mk-head">
+      <h3>Brannmur — hovedformål &amp; tre kategorier<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks3·P1/Q14 · Eks4·Q5.3</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p><strong>Hovedformål:</strong> Blokkere uautorisert tilgang. <em>Ikke</em> «kryptere data» (det er TLS/IPsec). <em>Ikke</em> «overvåke ytelse» (det er andre verktøy).</p>
+    <p><strong>Tre kategorier (Eks 4):</strong></p>
+    <ul>
+      <li><strong>Traditional packet filters:</strong> Filter på alle ruter-innganger til organisasjonens nett, basert på en regelpolicy. Beslutninger tas <em>per pakke isolert</em> — typisk på adresser + portnumre, kan inkludere TCP ACK-bit. Implementeres som en access control list (ACL).</li>
+      <li><strong>Stateful packet filters:</strong> Som over, men sporer i tillegg <em>forbindelser</em> (en connection table) for mer effektiv og sikker filtrering. Kombinerer ACL + tilstandstabell.</li>
+      <li><strong>Application gateways:</strong> Applikasjons­spesifikke tjenere som <em>all</em> trafikk for den applikasjonen må gå igjennom. Beslutninger basert på applikasjonsdata i tillegg til pakkefilter — kan f.eks. kreve brukernavn/passord. Trenger én gateway per applikasjon (men kan kjøre på samme host).</li>
+    </ul>
+    <div class="mk-why"><strong>Hvorfor:</strong> Eks 4 ber om kort forklaring av <em>alle tre</em> med fokus på forskjellene. Nøkkelen: pakkefilter ser per-pakke, stateful ser forbindelse, app gateway ser <em>innholdet</em> per applikasjon.</div>
   </div>
 
   <h3>Den «store oppgaven» — protokollkjede</h3>
@@ -1859,6 +2236,13 @@
     <li><strong>Brannmur:</strong> blokkere uautorisert tilgang.</li>
     <li><strong>Cæsar k=7:</strong> hver bokstav 7 plasser fram, mod 26. Vis utregningen.</li>
     <li><strong>Protokollkjede:</strong> Ethernet → DHCP → ARP → DNS → SMTP → IMAP/HTTPS. Lag-merking gir poeng.</li>
+    <li><strong>TCP 3-veis handshake:</strong> SYN (seq=A) → SYN-ACK (seq=B, ack=A+1, server allokerer buffere) → ACK (ack=B+1, klient allokerer).</li>
+    <li><strong>DNS-hierarki:</strong> Root (13) → TLD (com/no/uk…) → autoritative (per organisasjon).</li>
+    <li><strong>Linklags-svitsj:</strong> Self-learning, plug-and-play, transparent (ingen IP/MAC selv), bare innenfor subnett.</li>
+    <li><strong>ARP:</strong> IP ↔ MAC i lokalt subnett. ARP-tabell i hver host og ruter.</li>
+    <li><strong>WiFi vs Ethernet:</strong> CSMA/CA (ikke CD) pga. signal-asymmetri + skjult terminal. Bruker eksplisitt ACK + back-off-teller.</li>
+    <li><strong>Brannmur-typer:</strong> traditional (per pakke) / stateful (sporer forbindelse) / application gateway (per app, sjekker innhold).</li>
+    <li><strong>Digital signatur:</strong> Krypter med privat nøkkel, verifiser med offentlig + sertifikat fra TTP.</li>
   </ol>
 
   <div class="callout callout-green">

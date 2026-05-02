@@ -2,57 +2,69 @@
 
 > **Viktig beskjed:** Det blir **ingen Wireshark-spørsmål** på årets eksamen. Hopp over Wireshark-oppgavene i [eks2.md](eks2.md) (Q3) hvis tiden er knapp.
 
-Dette dokumentet er bygget fra [eks1.md](eks1.md), [eks2.md](eks2.md) og [eks3.md](eks3.md). Temaer som dukker opp på **2 eller 3** av eksamenene er markert med ★ — de er høyest prioritert.
+Dette dokumentet er bygget fra [eks1.md](eks1.md), [eks2.md](eks2.md), [eks3.md](eks3.md) og [eks_4.md](eks_4.md). Temaer som dukker opp på **2 eller flere** av eksamenene er markert med ★ — de er høyest prioritert.
 
 ---
 
-## 1. Temaer som går igjen (frekvens på tvers av eks1/eks2/eks3)
+## 1. Temaer som går igjen (frekvens på tvers av eks1/eks2/eks3/eks4)
 
-| Tema | eks1 | eks2 | eks3 | Prioritet |
-|---|:---:|:---:|:---:|:---:|
-| Ruting vs videresending | x | | x | ★★ |
-| Overførings-/utbredelses-/ende-til-ende-forsinkelse | x | x | x | ★★★ |
-| Pakke- vs kretskobling, store-and-forward | x | x | | ★★ |
-| Kapsling og lagdeling | x | x | x | ★★★ |
-| HTTP / web-cache | x | x | | ★★ |
-| HTTP vs SMTP (sammenligning) | x | | | ★ |
-| E-post-kjede (DHCP→DNS→SMTP→IMAP/HTTP, NTNU-scenario) | | | x | ★ (15 poeng på eks3) |
-| DNS (UDP/TCP, RR-format) | | x | x | ★★ |
-| UDP vs TCP-tjenester | x | x | x | ★★★ |
-| Sockets (TCP `SOCK_STREAM` vs UDP `SOCK_DGRAM`, `accept`, `connect`) | x | x | x | ★★★ |
-| TCP flytkontroll | | x | | ★ |
-| TCP slow start / cwnd-graf | x | | | ★ |
-| Internet checksum | x | | | ★ |
-| Subnetting + CIDR (subnet-adresse, broadcast, brukbare verter) | x | x | x | ★★★ |
-| Lengste prefiks-match | x | | | ★ |
-| NAT-tabell-lesing | x | | | ★ |
-| ICMP (sann/usann) | x | x | | ★★ |
-| DHCP (UDP, 4-stegs, oppstart) | | x | x | ★★ |
-| IPv4 vs IPv6 header-felt | x | | | ★ |
-| Best effort-tjenestemodell | x | | x | ★★ |
-| FIFO køforsinkelse | | x | | ★ |
-| Svitsj (lag 2) vs ruter (lag 3) | | x | | ★ |
-| Multiple access-klassifisering (partition / random / taking turns) | | | x | ★ |
-| CSMA / CSMA/CD tidslinje (t=0..5, prop=0.2) | x | | x | ★★ |
-| Pure ALOHA vs slotted ALOHA | | x | | ★ |
-| 2D-paritet | x | x | | ★★ |
-| RTS/CTS, skjult terminal, CSMA/CA | x | x | | ★★ |
-| 4-noder A-B-C-D wireless (rate, kombinert flow, ACK-variant) | x | x | | ★★ |
-| SNR vs BER vs modulasjon | | x | | ★ |
-| Sikkerhetsegenskaper (konfidensialitet, integritet, …) | x | x | | ★★ |
-| Symmetriske nøkler: N(N−1)/2 | x | x | | ★★ |
-| Trudy: lytte / endre / slette / sette inn | x | x | | ★★ |
-| Meldingintegritet (hash vs checksum) | | x | | ★ |
-| HTTP-streaming vs UDP, CDN | | x | x | ★★ |
-| Cæsar-chiffer (kode/dekode med gitt k) | | | x | ★ |
-| Symmetrisk vs offentlig nøkkel | | | x | ★ |
-| Brannmur — hovedformål | | | x | ★ |
+| Tema | eks1 | eks2 | eks3 | eks4 | Prioritet |
+|---|:---:|:---:|:---:|:---:|:---:|
+| Ruting vs videresending | x | | x | | ★★ |
+| Overførings-/utbredelses-/ende-til-ende-forsinkelse | x | x | x | x | ★★★★ |
+| Pakke- vs kretskobling, store-and-forward | x | x | | x | ★★★ |
+| Kapsling og lagdeling | x | x | x | x | ★★★★ |
+| HTTP / web-cache | x | x | | | ★★ |
+| HTTP vs SMTP (sammenligning) | x | | | | ★ |
+| E-post-kjede (DHCP→DNS→SMTP→IMAP/HTTP, NTNU-scenario) | | | x | | ★ (15 poeng på eks3) |
+| DNS (UDP/TCP, RR-format) | | x | x | x | ★★★ |
+| **DNS-hierarki + registrering** (root/TLD/auth) | | | | x | ★ |
+| UDP vs TCP-tjenester | x | x | x | x | ★★★★ |
+| **UDP-fordeler / bruksområder** | | | | x | ★ |
+| Sockets (TCP `SOCK_STREAM` vs UDP `SOCK_DGRAM`, `accept`, `connect`) | x | x | x | x | ★★★★ |
+| **ServerSocket vs ConnectionSocket** | | | | x | ★ |
+| **TCP 3-veis håndtrykk** (SYN/SYN-ACK/ACK) | | | | x | ★ |
+| TCP flytkontroll | | x | | x | ★★ |
+| TCP slow start / cwnd-graf | x | | | | ★ |
+| Internet checksum (TCP/UDP samme) | x | | | x | ★★ |
+| **Pakketap i nettet** (4 årsaker) | | | | x | ★ |
+| **CRC-beregning** | | | | x | ★ |
+| Subnetting + CIDR (subnet-adresse, broadcast, brukbare verter) | x | x | x | | ★★★ |
+| Lengste prefiks-match | x | | | | ★ |
+| NAT-tabell-lesing | x | | | | ★ |
+| ICMP (sann/usann) | x | x | | | ★★ |
+| DHCP (UDP, 4-stegs, oppstart) | | x | x | | ★★ |
+| IPv4 vs IPv6 header-felt | x | | | | ★ |
+| Best effort-tjenestemodell | x | | x | | ★★ |
+| FIFO køforsinkelse | | x | | | ★ |
+| Svitsj (lag 2) vs ruter (lag 3) | | x | x | x | ★★★ |
+| **Linklags-svitsj — virkemåte (self-learning)** | | | | x | ★ |
+| **ARP — formål og virkemåte** | | | | x | ★ |
+| Multiple access-klassifisering (partition / random / taking turns) | | | x | | ★ |
+| CSMA / CSMA/CD tidslinje (t=0..5, prop=0.2) | x | | x | | ★★ |
+| **CSMA/CD vs CSMA/CA + WiFi ACK** | | | | x | ★ |
+| **Infrastructure vs ad hoc (802.11)** | | | | x | ★ |
+| Pure ALOHA vs slotted ALOHA | | x | | | ★ |
+| 2D-paritet | x | x | | | ★★ |
+| RTS/CTS, skjult terminal, CSMA/CA | x | x | | x | ★★★ |
+| 4-noder A-B-C-D wireless (rate, kombinert flow, ACK-variant) | x | x | | | ★★ |
+| SNR vs BER vs modulasjon | | x | | | ★ |
+| Sikkerhetsegenskaper (konfidensialitet, integritet, …) | x | x | | | ★★ |
+| Symmetriske nøkler: N(N−1)/2 | x | x | | | ★★ |
+| Trudy: lytte / endre / slette / sette inn | x | x | | | ★★ |
+| Meldingintegritet (hash vs checksum) | | x | | | ★ |
+| HTTP-streaming vs UDP, CDN | | x | x | | ★★ |
+| Cæsar-chiffer (kode/dekode med gitt k) | | | x | | ★ |
+| Symmetrisk vs offentlig nøkkel | | | x | x | ★★ |
+| **Digital signatur (med public key + sertifikat)** | | | | x | ★ |
+| Brannmur — hovedformål | | | x | x | ★★ |
+| **Tre brannmur-kategorier** (traditional / stateful / app gateway) | | | | x | ★ |
 
 ---
 
 ## 2. Oppgaver du «bare må kunne» (sortert etter sannsynlighet)
 
-### Aller høyest sannsynlighet (★★★ — har vært på alle tre eksamener)
+### Aller høyest sannsynlighet (★★★+ — har vært på 3 eller alle 4 eksamener)
 
 - [ ] **Forsinkelsesregning**
   - Overføringsforsinkelse: `d_trans = L / R`
@@ -78,7 +90,7 @@ Dette dokumentet er bygget fra [eks1.md](eks1.md), [eks2.md](eks2.md) og [eks3.m
 
 - [ ] **Kapsling og lagdeling**: koble rammehoder H1/H2/H3 til riktig lag (fysisk → lenke → nettverk → transport → applikasjon); forklare hva «encapsulation» betyr (legg til header på data fra lag over)
 
-### Veldig høy sannsynlighet (★★ — på 2 av 3 eksamener)
+### Veldig høy sannsynlighet (★★ — på 2 av 4 eksamener)
 
 - [ ] **Ruting vs videresending** (1 setning hver — videresending er *lokal*, ruting er *global* banevalg)
 
@@ -118,7 +130,7 @@ Dette dokumentet er bygget fra [eks1.md](eks1.md), [eks2.md](eks2.md) og [eks3.m
 
 - [ ] **HTTP-streaming foretrekkes over UDP-streaming**: brannmurer blokkerer ofte UDP, HTTP gir pålitelighet via TCP
 
-### Middels sannsynlighet (★ — på 1 av 3 eksamener)
+### Middels sannsynlighet (★ — på 1 av 4 eksamener)
 
 > **Les denne seksjonen kritisk:** Disse oppgavene har dukket opp én gang. De er sortert under i to grupper — *fundamentale konsepter* (verdt å forstå uansett, gjenbrukes i andre tema) og *spesifikk/niche* (lavere prioritet — pugg svaret hvis du har overskudd, ellers hopp).
 
@@ -139,12 +151,33 @@ Dette dokumentet er bygget fra [eks1.md](eks1.md), [eks2.md](eks2.md) og [eks3.m
 
 **Spesifikk/niche (pugg som flashcards hvis tid, ellers hopp):**
 
-- [ ] **Internet checksum**: legg sammen 16-bits ord, wrap carry tilbake, ta ones' complement
+- [ ] **Internet checksum**: legg sammen 16-bits ord, wrap carry tilbake, ta ones' complement. **TCP og UDP bruker samme algoritme.**
 - [ ] **IPv4 vs IPv6 header**: **flow label** finnes kun i IPv6; IPv4 har checksum, header length, options som IPv6 ikke har
 - [ ] **FIFO køforsinkelse**: gitt ankomst- og slot-starter, regne snitt køforsinkelse for valgte pakker
 - [ ] **Klient-server filfordeling**: minste tid = `max(N·F/u_s, F/d_min)` (eks2 Q1.2.5: 10 Gbit, 100 peers, u_s=1Gbps, d_i=200Mbps → max(1000s, 50s) = **1000s**)
 - [ ] **Pure ALOHA vs slotted ALOHA**: slotted dobler effektiviteten (~37% vs ~18%); slotted krever synkronisering, pure gjør det ikke
 - [ ] **SNR vs BER vs modulasjon**: lavere SNR → høyere BER; for samme SNR gir høyere bitrate-modulasjon høyere BER
+
+**Eks4-spesifikt (nytt på 4. eksamen, ikke sett ellers):**
+
+- [ ] **TCP 3-veis håndtrykk**: SYN (seq=A) → SYN-ACK (seq=B, ack=A+1, server allokerer buffere) → ACK (ack=B+1, klient allokerer)
+- [ ] **DNS-hovedoppgave + 2 komponenter**: directory service (hostnames → IP). To komponenter = (1) distribuert database i hierarki av DNS-tjenere, (2) applikasjons­lags-protokoll
+- [ ] **DNS-hierarki**: Root (13) → TLD (com/no/uk…) → autoritative (per organisasjon, primary + secondary)
+- [ ] **DNS-registrering**: registrar sjekker unikhet → du oppgir primary+secondary autoritative DNS → registrar legger NS+A i TLD → du legger A (web) og MX (mail) i autoritativ tjener
+- [ ] **ServerSocket vs ConnectionSocket** (TCP): lytte-port for alle vs ny socket per spesifikk forbindelse
+- [ ] **Linjesvitsjet nett**: oppsetts­tid + L/R (delay over én lenke, ikke per lenke fordi det er en dedikert ende-til-ende-krets)
+- [ ] **TCP-segment har IKKE IP-adresser i payload**: payload kommer fra applikasjonslaget; IP legges til i nettverkslaget der TCP-segmentet selv er payload
+- [ ] **Pakketap i nettet — 4 mekanismer**: bitfeil oppdaget i ruter, bufferoverflyt ved kø, lenke/node-feil, kollisjon i delt media
+- [ ] **CRC**: legg til length(G)−1 nuller bak D, modulo-2-divisjon med G, rest = CRC. Send D + CRC. Mottaker deler hele med G, rest=0 ⇒ ok
+- [ ] **Linklags-svitsj virkemåte**: switch-tabell, self-learning fra kilde-MAC, ukjent → broadcast, samme port → drop, plug-and-play, transparent (ingen IP/MAC selv), bare innen subnett
+- [ ] **ARP**: oversetter IP ↔ MAC i lokalt subnett. ARP-tabell i hver host og ruter
+- [ ] **Infrastructure vs ad hoc (802.11)**: med basestasjon (gir DNS/DHCP/ruting) vs uten — ad hoc krever at hostene gjør det selv
+- [ ] **Hvorfor ikke CSMA/CD i WiFi**: (1) signal-asymmetri (mottatt << sendt) → kostbart å oppdage kollisjon, (2) skjult terminal + fading
+- [ ] **WiFi eksplisitt ACK**: hver vellykket dataramme får eksplisitt ACK tilbake; manglende ACK ⇒ retransmisjon
+- [ ] **CSMA/CD vs CSMA/CA**: CD = send straks ledig + avbryt ved kollisjon. CA = random back-off-teller før sending + IFS (gir prioritet til ACK/RTS/CTS). CA ≠ unngår kollisjoner fullt ut, men reduserer dem
+- [ ] **Symmetrisk vs offentlig nøkkel — algoritme/nøkkel**: algoritme alltid kjent (i moderne crypto); sikkerhet ligger i nøkkelen. Offentlig kan brukes til konfidensialitet, integritet OG digital signatur
+- [ ] **Digital signatur prinsipp**: Krypter med privat nøkkel, verifiser med offentlig. Krever betrodd tredjepart (sertifikat) som binder offentlig nøkkel til identitet. For store meldinger: signer hash istedet
+- [ ] **Tre brannmur-kategorier**: (1) traditional packet filter (per pakke, ACL på adresse+port), (2) stateful packet filter (sporer forbindelse via connection table), (3) application gateway (per applikasjon, ser på applikasjonsdata)
 
 ---
 
@@ -177,4 +210,4 @@ Dette dokumentet er bygget fra [eks1.md](eks1.md), [eks2.md](eks2.md) og [eks3.m
 
 ---
 
-*Kilde: [eks1.md](eks1.md), [eks2.md](eks2.md), [eks3.md](eks3.md). Se også [MÅ_KUNNE_OVERSIKT.md](MÅ_KUNNE_OVERSIKT.md) for utvidet versjon.*
+*Kilde: [eks1.md](eks1.md), [eks2.md](eks2.md), [eks3.md](eks3.md), [eks_4.md](eks_4.md). Se også [MÅ_KUNNE_OVERSIKT.md](MÅ_KUNNE_OVERSIKT.md) for utvidet versjon.*
