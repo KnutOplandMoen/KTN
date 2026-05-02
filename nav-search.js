@@ -10,7 +10,9 @@
     'kap7/innhold.html',
     'kap8/kryptografi.html', 'kap8/protokoller-brannmur.html',
     'kap9/innhold.html',
-    'reisen/index.html'
+    'reisen/index.html',
+    'ma-kunne/index.html',
+    'eksamen-prep/index.html'
   ];
 
   var input = document.getElementById('nav-search');

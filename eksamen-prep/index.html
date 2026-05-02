@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hva kommer på neste eksamen? — TTM4100</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" href="../style.css">
+<style>
+  /* Probability pills */
+  .prob {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 3px 10px;
+    border-radius: 2px;
+    color: var(--paper);
+    background: var(--rust);
+    margin-left: 8px;
+    vertical-align: 2px;
+    white-space: nowrap;
+  }
+  .prob.h  { background: #8a3420; }
+  .prob.m  { background: var(--ochre); color: var(--ink); }
+  .prob.l  { background: var(--ink-faded); }
+  .prob.x  { background: var(--ink); }
+
+  /* Source line under headers */
+  .sources {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--rust);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: -6px 0 14px;
+  }
+
+  /* Prediction card — looks like .mk-item but tuned for argumentation */
+  .pred {
+    border-left: 4px solid var(--rust);
+    background: var(--paper-dark);
+    padding: 22px 26px;
+    margin: 22px 0 26px;
+    border-radius: 0 2px 2px 0;
+  }
+  .pred.blue   { border-left-color: var(--blue); }
+  .pred.green  { border-left-color: var(--green); }
+  .pred.ochre  { border-left-color: var(--ochre); }
+  .pred.gray   { border-left-color: var(--ink-faded); }
+  .pred .pred-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .pred h3 { margin: 0; font-size: 22px; line-height: 1.25; }
+  .pred .why {
+    font-style: italic;
+    color: var(--ink-soft);
+    border-top: 1px dashed var(--line-soft);
+    margin-top: 12px;
+    padding-top: 12px;
+  }
+  .pred .why strong { font-style: normal; color: var(--rust-dark); }
+  .pred ul, .pred ol { margin-left: 22px; }
+  .pred li { margin-bottom: 6px; }
+
+  /* Frequency / odds table */
+  .odds-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0 36px;
+    font-size: 14px;
+  }
+  .odds-table th,
+  .odds-table td {
+    text-align: left;
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+  }
+  .odds-table th {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-faded);
+    border-bottom: 2px solid var(--line);
+  }
+  .odds-table td.center,
+  .odds-table th.center { text-align: center; }
+  .odds-table td.score {
+    font-family: var(--mono);
+    font-weight: 600;
+    color: var(--rust);
+    text-align: center;
+    white-space: nowrap;
+  }
+  .odds-table tr:hover td { background: rgba(176, 68, 40, 0.04); }
+
+  /* Distribution bar */
+  .dist {
+    display: flex;
+    height: 32px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin: 18px 0 8px;
+    border: 1px solid var(--line);
+  }
+  .dist .seg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+  .dist .seg.kap2 { background: var(--rust); }
+  .dist .seg.kap3 { background: var(--rust-dark); }
+  .dist .seg.kap4 { background: var(--blue); }
+  .dist .seg.kap6 { background: var(--ochre); color: var(--ink); }
+  .dist .seg.kap7 { background: var(--green); }
+  .dist .seg.kap8 { background: #6e4f2a; }
+  .dist .seg.kap1 { background: var(--ink-faded); }
+  .dist-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 18px;
+    font-size: 13px;
+    color: var(--ink-faded);
+    margin: 8px 0 24px;
+  }
+  .dist-key span { display: inline-flex; align-items: center; gap: 6px; }
+  .dist-key span::before {
+    content: '';
+    width: 12px; height: 12px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+  .dist-key .k1::before { background: var(--ink-faded); }
+  .dist-key .k2::before { background: var(--rust); }
+  .dist-key .k3::before { background: var(--rust-dark); }
+  .dist-key .k4::before { background: var(--blue); }
+  .dist-key .k6::before { background: var(--ochre); }
+  .dist-key .k7::before { background: var(--green); }
+  .dist-key .k8::before { background: #6e4f2a; }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 12px 0 36px;
+    font-size: 13px;
+    color: var(--ink-faded);
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 8px; }
+  .legend .prob { margin-left: 0; }
+
+  /* Two-column part split for Del I / Del II */
+  .parts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin: 28px 0 12px;
+  }
+  .part-col h3 { margin-top: 0; }
+  @media (max-width: 720px) {
+    .parts-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Subtle grouping label */
+  .group-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin: 36px 0 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  /* "Bet" / inline highlight */
+  .bet {
+    background: rgba(176,68,40,0.10);
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-weight: 600;
+  }
+
+  @media (max-width: 640px) {
+    .pred { padding: 18px 18px; }
+    .pred h3 { font-size: 19px; }
+    .odds-table th, .odds-table td { font-size: 13px; padding: 9px 8px; }
+  }
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../" class="brand">TTM4100</a>
+    <a href="../" class="nav-back">&larr; Alle kapitler</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
+  </div>
+</nav>
+
+<main data-chapter="Hva kommer på eksamen — TTM4100">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Eksamensanalyse · våren 2026</div>
+  <h1>Hva kommer på <em>neste eksamen</em>?</h1>
+  <p class="lede">En drøfting av hvilke oppgavetyper som er mest sannsynlige basert på fire tidligere eksamener (V23, V24, V25, aug-21), de fem øvingene fra dette semesteret, og pensum­avgrensningen i Kurose &amp; Ross 8. utg.</p>
+  <div class="legend">
+    <span><span class="prob h">Veldig høy</span> dukker opp tilnærmet hver gang</span>
+    <span><span class="prob">Sannsynlig</span> 2–3 av 4 eksamener</span>
+    <span><span class="prob m">Mulig</span> 1 av 4 + støttet av øving</span>
+    <span><span class="prob l">Lav</span> nedprioriter hvis lite tid</span>
+  </div>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">01</span><a href="#metode">Metode</a></li>
+    <li><span class="toc-num">02</span><a href="#topp">Topp 10 vedd</a></li>
+    <li><span class="toc-num">03</span><a href="#del1">Del I — flervalg</a></li>
+    <li><span class="toc-num">04</span><a href="#del2">Del II — åpne</a></li>
+    <li><span class="toc-num">05</span><a href="#kapittel">Per kapittel</a></li>
+    <li><span class="toc-num">06</span><a href="#unngas">Hva som <em>ikke</em> kommer</a></li>
+    <li><span class="toc-num">07</span><a href="#strategi">Eksamensstrategi</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ============ METODE ============ -->
+<section id="metode">
+<div class="container">
+  <div class="section-badge">Metode &amp; datagrunnlag</div>
+  <h2>Slik er <em>spådommen</em> bygget</h2>
+  <p class="section-intro">Dette er ikke et orakel. Det er en frekvens­analyse — hvilke tema dukker opp på flere eksamener, hvilke ble vektet i øvingene dette semesteret, og hva pensum eksplisitt fremhever. Tema som krysser alle tre kilder, er nesten umulige å unngå.</p>
+
+  <div class="pred">
+    <h3>Tre datakilder</h3>
+    <ol>
+      <li><strong>Fire tidligere eksamener</strong> — analysert i <a href="eks_info.md">eks_info.md</a> og <a href="MÅ_KUNNE_OVERSIKT.md">MÅ_KUNNE_OVERSIKT.md</a> (eks1 = V23, eks2 = V24, eks3 = V25, eks_4 = aug-21 LF). Hvert tema fikk en frekvens­rangering ★ (1/4) → ★★★★ (alle 4).</li>
+      <li><strong>Fem semester­øvinger</strong> (<a href="oving_1.md">oving 1</a>–<a href="oving_5.md">5</a>) — fagstaben sender ofte øvinger som ligger nær eksamens­oppgaver i tema og format. Det som er gjentatt på øvingen <em>etter</em> at det har vært på eksamen før, er en sterk indikator.</li>
+      <li><strong>Pensum­avgrensningen</strong> (<a href="../pensum.md">pensum.md</a>) — kapitler som er fullstendig pensum får mer plass enn delkapitler. Spesielt kapittel 5 (kun 5.1, 5.2-intro, 5.6) og kapittel 8 (utvalg) har <em>begrensede</em> oppgavetyper.</li>
+    </ol>
+    <div class="why"><strong>Eksplisitt unntak fra eks_info.md:</strong> Det blir <em>ikke</em> Wireshark-spørsmål på årets eksamen. Det betyr at trace-lesing (sekvensnumre, klient/server fra spor) ikke er kandidat — disse poengene må omfordeles til annet stoff, så <em>noen andre tema må få ekstra plass</em>.</div>
+  </div>
+
+  <h3>Hvor i pensum dukker poengene opp historisk?</h3>
+  <p>Fordelingen under er omtrentlig — noen oppgaver krysser flere kapitler (f.eks. e-post-scenario rører kap 2 + 4 + 6). Tallene viser hvor «tyngdepunktet» typisk ligger.</p>
+  <div class="dist" aria-label="Estimert poengfordeling per kapittel">
+    <div class="seg kap1" style="flex: 10">10 %</div>
+    <div class="seg kap2" style="flex: 18">18 %</div>
+    <div class="seg kap3" style="flex: 14">14 %</div>
+    <div class="seg kap4" style="flex: 20">20 %</div>
+    <div class="seg kap6" style="flex: 14">14 %</div>
+    <div class="seg kap7" style="flex: 12">12 %</div>
+    <div class="seg kap8" style="flex: 12">12 %</div>
+  </div>
+  <div class="dist-key">
+    <span class="k1">Kap 1 — intro/forsinkelse</span>
+    <span class="k2">Kap 2 — applikasjon</span>
+    <span class="k3">Kap 3 — transport</span>
+    <span class="k4">Kap 4 — nettverkslag</span>
+    <span class="k6">Kap 6 — lenkelag</span>
+    <span class="k7">Kap 7 — trådløst</span>
+    <span class="k8">Kap 8/9 — sikkerhet/multimedia</span>
+  </div>
+  <p class="margin-note"><strong>Observasjon:</strong> Kapittel 4 (IP/subnetting/NAT/DHCP) har konsekvent vært det største enkeltkapitlet på eksamen — én subnetting-oppgave alene veier ofte 12–17 poeng, og kombineres ofte med ICMP/DHCP-flervalg.</p>
+</div>
+</section>
+
+<!-- ============ TOPP 10 VEDD ============ -->
+<section id="topp">
+<div class="container">
+  <div class="section-badge">Topp ti</div>
+  <h2>Vedd som er <em>nesten gratis</em></h2>
+  <p class="section-intro">Disse ti tema har vært på 3 eller 4 av 4 eksamener — kombinert med tilstedeværelse på øvingene gjør de nær 100 % sannsynlige. Hver av dem alene kan låse opp 5–15 poeng.</p>
+
+  <table class="odds-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Tema</th>
+        <th>Eksamen­frekvens</th>
+        <th>Øving</th>
+        <th class="center">Estimert sjanse</th>
+        <th class="center">Verdi</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>UDP- vs TCP-tjenester</strong> (best effort, pålitelighet, flyt-/overbelastningskontroll)</td>
+        <td>4 / 4</td>
+        <td>Ø1 T8</td>
+        <td class="center"><span class="prob h">99 %</span></td>
+        <td class="score">5–8 p</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>Forsinkelses­regning</strong> (overføring, ende-til-ende, store-and-forward, P pakker × N rutere)</td>
+        <td>4 / 4</td>
+        <td>Ø1 T3</td>
+        <td class="center"><span class="prob h">98 %</span></td>
+        <td class="score">5–10 p</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>Sockets</strong> (TCP <code>accept()</code>, telle sockets, ServerSocket vs ConnectionSocket)</td>
+        <td>4 / 4</td>
+        <td>—</td>
+        <td class="center"><span class="prob h">95 %</span></td>
+        <td class="score">5–8 p</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>Kapsling og lagdeling</strong> (koble headere til lag, encapsulation-konsept)</td>
+        <td>4 / 4</td>
+        <td>—</td>
+        <td class="center"><span class="prob h">95 %</span></td>
+        <td class="score">3–5 p</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>Subnetting / CIDR</strong> (subnett-adresse, broadcast, brukbare verter, splitt /22)</td>
+        <td>3 / 4</td>
+        <td>Ø2 T5</td>
+        <td class="center"><span class="prob h">95 %</span></td>
+        <td class="score">10–17 p</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><strong>DNS</strong> (UDP/TCP, RR-format, hierarki, registrering)</td>
+        <td>3 / 4</td>
+        <td>Ø1 T5, Ø3 T3</td>
+        <td class="center"><span class="prob h">93 %</span></td>
+        <td class="score">5–10 p</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td><strong>Pakke- vs kretskobling</strong> + store-and-forward</td>
+        <td>3 / 4</td>
+        <td>Ø1 T1</td>
+        <td class="center"><span class="prob h">90 %</span></td>
+        <td class="score">3–5 p</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td><strong>Sikkerhetsegenskaper + N(N−1)/2 + Trudy</strong></td>
+        <td>2–3 / 4</td>
+        <td>Ø4 T1–5, Ø5 T1–5</td>
+        <td class="center"><span class="prob h">90 %</span></td>
+        <td class="score">5–8 p</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td><strong>Svitsj (lag 2) vs ruter (lag 3)</strong> + ARP</td>
+        <td>3 / 4</td>
+        <td>Ø3 T2</td>
+        <td class="center"><span class="prob">85 %</span></td>
+        <td class="score">3–6 p</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td><strong>RTS/CTS, skjult terminal, CSMA/CA</strong></td>
+        <td>3 / 4</td>
+        <td>Ø3 T7, T8</td>
+        <td class="center"><span class="prob">85 %</span></td>
+        <td class="score">5–8 p</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="margin-note"><strong>Hvis du klarer disse ti perfekt</strong>, har du <em>realistisk</em> sikret 50–80 poeng — godt over bestått. Alt annet er bonus.</p>
+</div>
+</section>
+
+<!-- ============ DEL I ============ -->
+<section id="del1">
+<div class="container">
+  <div class="section-badge">Del I · ~40 poeng</div>
+  <h2>Flervalg og påstander — hva <em>må</em> komme</h2>
+  <p class="section-intro">Del I består typisk av 12–17 oppgaver: flervalg (A–D), sant/usann-blokker (4–6 påstander) og koble-tabeller. Hver eksamen har en tydelig formel — tabellen under viser hvilke tema som så å si alltid får én oppgave hver.</p>
+
+  <div class="group-label">Sant/usann-blokker — typisk 5 påstander à 1 poeng</div>
+
+  <div class="pred green">
+    <div class="pred-head">
+      <h3>UDP/TCP-påstander <span class="prob h">99 %</span></h3>
+      <span class="sources">Eks1 · Eks2 · Eks3 · Eks4 · Ø1</span>
+    </div>
+    <p>Klassisk «cross all that apply». Påstandene rotere mellom: <em>«TCP gir sanntids­garanti»</em> (usann), <em>«UDP gir flytkontroll»</em> (usann), <em>«Bare TCP gir pålitelig overføring»</em> (sann i praksis), <em>«Mottakers <code>rwnd</code> begrenser sender»</em> (sann), <em>«TCP gir båndbredde­garanti»</em> (usann).</p>
+    <div class="why"><strong>Hvorfor sikkert:</strong> Øving 1 oppgave 8 tester nøyaktig dette med 4 alternativer (a–d). Det er rett ut av Kurose §3.1 som er kjernepensum.</div>
+  </div>
+
+  <div class="pred green">
+    <div class="pred-head">
+      <h3>ICMP-påstander <span class="prob">85 %</span></h3>
+      <span class="sources">Eks1 Q1.3.6 · Eks2 Q1.3.3</span>
+    </div>
+    <p>Påstandene blander sant og usann: ICMP bæres i IP-datagram (sann), brukes av host og rutere (sann), TTL-expired drives av <code>traceroute</code> (sann), <em>«ICMP er en transportprotokoll»</em> (usann), <em>«ICMP kjører på port 86»</em> (usann).</p>
+    <div class="why"><strong>Pensum-pekepinn:</strong> 5.6 ICMP er eksplisitt nevnt som det <em>eneste</em> seksjonen fra kapittel 5.6 som er pensum — fagstaben må derfor teste det.</div>
+  </div>
+
+  <div class="pred green">
+    <div class="pred-head">
+      <h3>DHCP-påstander <span class="prob">75 %</span></h3>
+      <span class="sources">Eks2 Q7 · Eks3 P1/Q4 · Ø2 T7</span>
+    </div>
+    <p>Faste feller å avsløre: <em>«DHCP bruker TCP»</em> (usann — UDP), <em>«DHCP brukes til å rute datapakker»</em> (usann — det er konfigurasjon), <em>«DHCP gir ut IP, mask, gateway og DNS»</em> (sann), 4-stegs prosessen (sann).</p>
+  </div>
+
+  <div class="pred green">
+    <div class="pred-head">
+      <h3>Sikkerhets-egenskaper <span class="prob h">90 %</span></h3>
+      <span class="sources">Eks1 · Eks2 · Ø4 T1, T2 · Ø5 T1, T2</span>
+    </div>
+    <p>Minst én oppgave krysser av ønskede egenskaper: konfidensialitet, integritet, autentisering, operasjonell sikkerhet. <em>«Public key cryptography»</em> er en distraktor (det er en teknikk, ikke en egenskap). <em>«Høy båndbredde»</em> er aldri en sikkerhetsegenskap.</p>
+    <div class="why"><strong>Sterkt signal:</strong> Øving 4 og øving 5 har <em>identisk</em> sett med oppgaver på dette tema — det er en eksplisitt repetisjons­dose fra fagstaben, og det skjer aldri uten grunn.</div>
+  </div>
+
+  <div class="group-label">Flervalg-oppgaver — typisk 2–3 poeng</div>
+
+  <div class="pred">
+    <div class="pred-head">
+      <h3>Forsinkelses­formel for én pakke <span class="prob h">95 %</span></h3>
+      <span class="sources">Eks1 Q1.1.4 · Ø1 T3</span>
+    </div>
+    <p>«Pakke L over 2 lenker via en svitsj med prosesserings­forsinkelse <code>d_proc</code>» — finn riktig <code>d_end-end</code>-formel blant 4 alternativer. Riktig svar: <code>L/R₁ + L/R₂ + d_s1/s_1 + d_s2/s_2 + d_proc</code>.</p>
+  </div>
+
+  <div class="pred">
+    <div class="pred-head">
+      <h3>Lengste prefiks-match / forwarding-tabell <span class="prob m">60 %</span></h3>
+      <span class="sources">Eks1 Q1.3.3 · Ø2 T4</span>
+    </div>
+    <p>Gitt 4 destinasjons-adresseintervaller og 4 alternative tabeller — velg riktig tabell. Lures lett av tabeller som matcher kantene men feiler på «otherwise»-regelen.</p>
+  </div>
+
+  <div class="pred">
+    <div class="pred-head">
+      <h3>2D-paritet — hvilken matrise er gyldig <span class="prob m">55 %</span></h3>
+      <span class="sources">Eks1 · Eks2 · Ø3 T1</span>
+    </div>
+    <p>Fire 2D-matriser med paritetsbit i siste rad og kolonne — bare én er konsekvent. Jobb radvis først, så kolonnevis. <em>Even parity</em> = antall enere i hver rad/kolonne skal være partall.</p>
+  </div>
+
+  <div class="pred">
+    <div class="pred-head">
+      <h3>IPv4 vs IPv6 header — hva er nytt <span class="prob m">55 %</span></h3>
+      <span class="sources">Eks1 Q1.3.5 · Ø2 T6</span>
+    </div>
+    <p>Riktig svar er nesten alltid <em>flow label</em>. Distraktorer: TTL/hop limit, version, source/dest finnes i begge.</p>
+  </div>
+
+  <div class="group-label">Koble-oppgaver — 3–5 poeng</div>
+
+  <div class="pred ochre">
+    <div class="pred-head">
+      <h3>Multiple access-klassifisering <span class="prob">70 %</span></h3>
+      <span class="sources">Eks3 · Ø3 (implicit)</span>
+    </div>
+    <p>Drag-and-drop typisk: koble TDM/FDM/CDMA/ALOHA/CSMA-CD/CSMA-CA/Token Ring til <em>kanalpartisjonering</em> / <em>tilfeldig tilgang</em> / <em>taking turns</em>. CDMA er pensum-grenseland (utelatt fra kap 7.2.1) — kan komme som distraktor.</p>
+  </div>
+
+  <div class="pred ochre">
+    <div class="pred-head">
+      <h3>Lag i protokollstakken vs protokoller <span class="prob m">60 %</span></h3>
+      <span class="sources">Eks2 Q3 (implicit) · Pensum-kjerne</span>
+    </div>
+    <p>Koble HTTP/SMTP/DNS → applikasjon, TCP/UDP → transport, IP/ICMP → nettverk, ARP/Ethernet/802.11 → lenke. Felle: ICMP regnes som nettverkslag (selv om mange tror transport).</p>
+  </div>
+</div>
+</section>
+
+<!-- ============ DEL II ============ -->
+<section id="del2">
+<div class="container">
+  <div class="section-badge">Del II · ~60 poeng</div>
+  <h2>Åpne oppgaver — hvor <em>poengene veier mest</em></h2>
+  <p class="section-intro">Del II har 4–6 åpne oppgaver. Det er her du kan vinne eller tape eksamen — én subnetting-oppgave er ofte 14–17 poeng alene. Mønsteret er klart: én stor regneoppgave, én scenario-/protokollkjede, én sikkerhets-/krypto-oppgave, og en blanding av kortere definisjons­spørsmål.</p>
+
+  <div class="parts-grid">
+    <div class="part-col">
+      <h3>Det som <em>alltid</em> er der</h3>
+      <ul>
+        <li><strong>Forsinkelse</strong> i en eller annen variant (5–8 p)</li>
+        <li><strong>Subnetting / CIDR</strong> med deloppgaver (10–17 p)</li>
+        <li><strong>Sikkerhet</strong> — symmetrisk/offentlig nøkkel + Trudy (5–10 p)</li>
+        <li><strong>Sockets</strong> som åpent definisjons­spørsmål (3–5 p)</li>
+      </ul>
+    </div>
+    <div class="part-col">
+      <h3>Det som <em>roterer</em></h3>
+      <ul>
+        <li>Stor scenario-oppgave (Eks 3 hadde 15-poengs e-post­kjede)</li>
+        <li>Cæsar-cipher kode/dekode (Eks 3 — 15 p)</li>
+        <li>CSMA/CSMA-CD-tidslinje (Eks 1 og 3)</li>
+        <li>4-noder trådløs A↔B↔C↔D (Eks 1, 2)</li>
+        <li>CRC-beregning (Eks 4 — Ø3 T5, T6 forsterker)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="pred blue">
+    <div class="pred-head">
+      <h3>Stor subnetting-oppgave <span class="prob h">95 %</span></h3>
+      <span class="sources">Eks1 · Eks2 · Eks3 · Ø2 T5</span>
+    </div>
+    <p>Forventet form: gitt en /22- eller /21-blokk og krav om <em>M</em> subnett med ulike størrelser. Skal levere:</p>
+    <ol>
+      <li>Antall verts­bits og maskens prefiks-lengde for hvert subnett.</li>
+      <li>Subnett-adresse (binær AND).</li>
+      <li>Broadcast-adresse (siste i blokken).</li>
+      <li>Antall <em>brukbare</em> verter = <code>2^(32−x) − 2</code>.</li>
+      <li>Identifiser ugyldige adresser (utenfor range, broadcast, network).</li>
+    </ol>
+    <div class="why"><strong>Bet:</strong> Sannsynlig variant denne gangen er <em>«splitt /22 i tre subnett der ett krever 1000 hosts og to krever 500 hosts»</em> — eks 2 oppgave 5 stilte nøyaktig dette spørsmålet. Variabel-leddes­tilling. Tren binær AND for /26, /27, /28, /29.</div>
+  </div>
+
+  <div class="pred blue">
+    <div class="pred-head">
+      <h3>Forsinkelse / gjennomstrømning — flerstegs <span class="prob h">90 %</span></h3>
+      <span class="sources">Eks1 · Eks2 · Eks3 · Eks4 · Ø1 T3</span>
+    </div>
+    <p>Tre tilbakevendende varianter:</p>
+    <ul>
+      <li><strong>P pakker over N rutere, lik R</strong> — minimum ende-til-ende = <code>(N + P − 1) · L/R</code> (pipelining-formel).</li>
+      <li><strong>Cut-through vs store-and-forward</strong> — ruteren starter sending etter <em>k</em> byte (hybrid forsinkelse).</li>
+      <li><strong>Filfordeling klient-server</strong> — <code>D = max(N·F/u_s, F/d_min)</code>. Eks 2 hadde dette med F=10 Gbit, N=100 → 1000 s.</li>
+    </ul>
+    <div class="why"><strong>Hvorfor en av disse:</strong> Det er ingen god kandidat blant øvingene som peker på en <em>ny</em> form, så fagstaben tyr til de tre kjente. Vekt: 5–10 poeng.</div>
+  </div>
+
+  <div class="pred blue">
+    <div class="pred-head">
+      <h3>Scenario-oppgave: «kobl PC-en, send e-post» <span class="prob">75 %</span></h3>
+      <span class="sources">Eks3 P2/Q3 (15 p)</span>
+    </div>
+    <p>Beskriv protokollkjeden steg for steg. Forventet svar:</p>
+    <ol>
+      <li>Lenkelag opp + <strong>DHCP</strong> (UDP, 4 steg) → IP, gateway, DNS.</li>
+      <li><strong>ARP</strong> for å finne MAC til default gateway.</li>
+      <li><strong>DNS</strong> (UDP, port 53) for å slå opp mailserver.</li>
+      <li><strong>SMTP</strong> (TCP) til avsenders mailserver, så server-til-server til mottakers domene.</li>
+      <li>Mottaker leser via <strong>HTTPS</strong> (webmail) eller <strong>IMAP/POP3</strong>.</li>
+    </ol>
+    <div class="why"><strong>Hvorfor sannsynlig igjen:</strong> Eks 3 var siste eksamen denne kom på, og det å «binde alle lag sammen» er nøyaktig den typen oppgave fagstaben elsker når Wireshark-spørsmål er fjernet. Det fyller hullet etter de manglende trace-poengene.</div>
+  </div>
+
+  <div class="pred blue">
+    <div class="pred-head">
+      <h3>Symmetrisk vs offentlig nøkkel — anvendelse <span class="prob h">90 %</span></h3>
+      <span class="sources">Eks3 · Eks4 · Ø4/Ø5 T3, T4</span>
+    </div>
+    <p>To-tre delspørsmål:</p>
+    <ol>
+      <li><strong>N(N−1)/2 vs 2N</strong>-utregning — for N=15 → 105 symmetriske nøkler, 30 (eller 15 par) offentlige nøkler.</li>
+      <li>Når brukes hva (rask vs treg, nøkkel­distribusjon­problem).</li>
+      <li>Eventuelt digital signatur eller sertifikat-prinsippet (Eks 4 hadde dette).</li>
+    </ol>
+    <div class="why"><strong>Veldig sterkt signal:</strong> Øving 4 og 5 dupliserer eksakt denne formuleringen — fagstaben har gitt deg svaret to ganger. Det dukker opp på eksamen.</div>
+  </div>
+
+  <div class="pred ochre">
+    <div class="pred-head">
+      <h3>CRC-beregning <span class="prob">70 %</span></h3>
+      <span class="sources">Eks4 Q3.1 · Ø3 T5, T6</span>
+    </div>
+    <p>Gitt generator <em>G</em> og data <em>D</em>: utfør modulo-2-divisjon, returner rest = CRC.</p>
+    <ol>
+      <li>Legg til <code>length(G) − 1</code> nuller bak D.</li>
+      <li>XOR-divisjon med G (skift G under leftmost 1, XOR, gjenta).</li>
+      <li>Resten er CRC. Send <code>D || CRC</code>.</li>
+    </ol>
+    <div class="why"><strong>Bet:</strong> Øving 3 har dette to ganger med ulike G-verdier. Fagstaben øver det opp <em>nettopp fordi</em> de planlegger å spørre om det — øving 3 oppgave 6 har også et ikke-trivielt G på 5 bit. Det blir testet.</div>
+  </div>
+
+  <div class="pred ochre">
+    <div class="pred-head">
+      <h3>CSMA / CSMA-CD-tidslinje <span class="prob">65 %</span></h3>
+      <span class="sources">Eks1 Q1.4.3-4 · Eks3 Q7</span>
+    </div>
+    <p>Gitt 6 ankomsttider og forplantningstid (typisk 0,2 t.u.) — avgjør hvilke pakker som lykkes før <em>t</em>=5. Forskjellen mellom CSMA uten CD (kollidende noder fortsetter) og CSMA/CD (avbryter umiddelbart, men siste bit bruker fortsatt 0,2 å nå alle).</p>
+  </div>
+
+  <div class="pred ochre">
+    <div class="pred-head">
+      <h3>4-noder trådløs A↔B↔C↔D <span class="prob m">50 %</span></h3>
+      <span class="sources">Eks1 Q1.4.7 · Eks2 Q5</span>
+    </div>
+    <p>Tre underspørsmål: maks rate C→A alene (0,5 msg/slot uten ACK, 0,25 med); A→B + D→C parallelt (2 msg/slot); A→B + C→D parallelt (1 msg/slot — interferens). ACK-varianten halverer ratene.</p>
+    <div class="why"><strong>Lavere sannsynlighet:</strong> Var ikke på Eks 3 eller Eks 4. Hvis den kommer, er den nesten ord-for-ord lik tidligere — så hvis du har 30 minutter til overs, pugg den.</div>
+  </div>
+
+  <div class="pred ochre">
+    <div class="pred-head">
+      <h3>Cæsar-cipher <span class="prob m">45 %</span></h3>
+      <span class="sources">Eks3 (15 p)</span>
+    </div>
+    <p>Kod og/eller dekod en kort setning med gitt <em>k</em>. Sett opp alfabetet (A=0, …, Z=25), bruk <code>(x + k) mod 26</code>. Vis utregningen.</p>
+    <div class="why"><strong>Risiko:</strong> Eks 3 brukte 15 poeng på dette. Hvis fagstaben gjentar den eksakte oppgaven, er det stor uttelling for liten innsats. Men det er <em>ikke</em> i øvingene denne gangen — det reduserer sannsynligheten noe.</div>
+  </div>
+</div>
+</section>
+
+<!-- ============ PER KAPITTEL ============ -->
+<section id="kapittel">
+<div class="container">
+  <div class="section-badge">Per kapittel</div>
+  <h2>Tema-prognose <em>kapittelvis</em></h2>
+  <p class="section-intro">For hvert pensum­kapittel: hva er den mest sannsynlige eksamens­oppgaven, hvor mye veier den, og hvilken øving peker på den?</p>
+
+  <h3>Kapittel 1 — Intro og forsinkelse</h3>
+  <div class="pred">
+    <div class="pred-head">
+      <h3>Pakke- vs kretskobling + forsinkelse <span class="prob h">95 %</span></h3>
+      <span class="sources">Ø1 T1, T3</span>
+    </div>
+    <p>Forventning: én flervalg om kretskobling vs pakkekobling (typisk: «kretskobling kan garantere båndbredde» = sann; «pakkekobling deler bedre ressurser» = sann), pluss én regnestykk om end-to-end-forsinkelse. Til sammen 5–8 poeng.</p>
+    <p><strong>Hva fra øving 1 peker hit:</strong> T1 (sant/usann om kretskobling), T3 (formel for total forsinkelse), T2 (lagdeling). Tre av åtte øvings­oppgaver er fra kap 1 — det forteller noe om vekten.</p>
+  </div>
+
+  <h3>Kapittel 2 — Applikasjonslaget</h3>
+  <div class="pred">
+    <div class="pred-head">
+      <h3>HTTP, web-cache, DNS-RR <span class="prob h">90 %</span></h3>
+      <span class="sources">Ø1 T4, T5</span>
+    </div>
+    <p>Tre faste oppgavetyper: (1) HTTP-flervalg om persistente forbindelser / hva en GET utløser, (2) DNS-spørsmål om RR-format <code>(Name, Value, Type, TTL)</code> og hierarkiet, (3) sockets-konsept (<code>accept()</code> som lager ny socket per klient).</p>
+    <p><strong>Tilleggs­bet:</strong> e-post-scenario (HTTP/SMTP/IMAP-kjede) — som diskutert i Del II har den ~75 % sannsynlighet å komme tilbake.</p>
+  </div>
+
+  <h3>Kapittel 3 — Transportlaget</h3>
+  <div class="pred">
+    <div class="pred-head">
+      <h3>UDP/TCP-tjenester + TCP-mekanikk <span class="prob h">95 %</span></h3>
+      <span class="sources">Ø1 T6, T7, T8</span>
+    </div>
+    <p>Helt sikre: UDP/TCP-påstander (Del I, 4–5 påstander), TCP-segmentnummer-aritmetikk (Ø1 T7 — «første segment seq=81, neste seq=121, hvor mange byte i første?» → 40 byte), og Internet checksum (Ø1 T6 — én operasjon).</p>
+    <p><strong>Mulig overraskelse:</strong> TCP 3-veis håndtrykk var ny på Eks 4 (aug-21) — den kommer kanskje tilbake i 2026 som «forklar SYN/SYN-ACK/ACK kort».</p>
+  </div>
+
+  <h3>Kapittel 4 — Nettverkslaget</h3>
+  <div class="pred blue">
+    <div class="pred-head">
+      <h3>Subnetting + DHCP + ICMP <span class="prob h">99 %</span></h3>
+      <span class="sources">Ø2 T2–T7</span>
+    </div>
+    <p>Det største poengkapitlet — forvent 18–25 poeng totalt:</p>
+    <ul>
+      <li><strong>Stor subnetting-oppgave</strong> (10–17 p) — se Del II.</li>
+      <li><strong>IP-binær-konvertering</strong> (Ø2 T2-formatet) — typisk 2 p flervalg.</li>
+      <li><strong>NAT eller longest prefix match</strong> — én av dem (Ø2 T4 stiller LPM).</li>
+      <li><strong>DHCP- og ICMP-påstander</strong> — som Del I.</li>
+      <li><strong>IPv4 vs IPv6</strong> — flow label-spørsmålet.</li>
+    </ul>
+    <p><strong>Bet:</strong> Øving 2 har <em>seks</em> oppgaver fra dette kapitlet — det er en glasklar peker på vekten.</p>
+  </div>
+
+  <h3>Kapittel 5 — Kontrollplanet (begrenset pensum)</h3>
+  <div class="pred gray">
+    <div class="pred-head">
+      <h3>Kun ICMP-spørsmål <span class="prob l">25 %</span></h3>
+      <span class="sources">Pensum: 5.1, 5.2-intro, 5.6</span>
+    </div>
+    <p>Pensum­avgrensningen er hard: 5.1 (intro, allerede dekket av kap 4), 5.2 <em>uten</em> 5.2.1/5.2.2 (rutingalgoritmer på et veldig overordnet nivå), og 5.6 ICMP. Det betyr at ruting-detaljer (Distance Vector, Link State) <em>ikke</em> er pensum.</p>
+    <p>Forvent <em>maks</em> én ICMP-påstand i en sant/usann-blokk — det er allerede dekket i kap 4-prognosen over.</p>
+  </div>
+
+  <h3>Kapittel 6 — Lenkelaget</h3>
+  <div class="pred ochre">
+    <div class="pred-head">
+      <h3>Svitsj/ARP/CRC/2D-paritet <span class="prob h">90 %</span></h3>
+      <span class="sources">Ø3 T1, T2, T3, T5, T6</span>
+    </div>
+    <ul>
+      <li><strong>2D-paritet</strong> — flervalg, hvilken matrise er gyldig (Ø3 T1).</li>
+      <li><strong>IP vs MAC + DNS vs ARP</strong> — to korte sant/usann (Ø3 T2, T3).</li>
+      <li><strong>CRC-beregning</strong> — to varianter i øvingen (Ø3 T5, T6) — sannsynlig at én form blir åpen oppgave.</li>
+      <li><strong>Linjesvitsj-virkemåte</strong> (self-learning, plug-and-play) — kom på Eks 4.</li>
+    </ul>
+  </div>
+
+  <h3>Kapittel 7 — Trådløst</h3>
+  <div class="pred ochre">
+    <div class="pred-head">
+      <h3>CSMA/CA + RTS/CTS + skjult terminal <span class="prob h">85 %</span></h3>
+      <span class="sources">Ø3 T4, T7, T8, T9, T10</span>
+    </div>
+    <ul>
+      <li><strong>CSMA/CD-påstander</strong> (Ø3 T4) — random backoff er nøkkelen.</li>
+      <li><strong>Skjult terminal + RTS/CTS</strong> — par i en sant/usann-blokk (Ø3 T7, T8).</li>
+      <li><strong>4G vs 5G</strong> (Ø3 T9) — middels sannsynlig som flervalg, men husk: 5G har høyere peak bitrate, høyere frekvenser (ikke lavere).</li>
+      <li><strong>SNR vs BER vs modulasjon</strong> (Ø3 T10) — typisk én sant/usann-påstand.</li>
+    </ul>
+    <p><strong>Mindre sannsynlig:</strong> 4-noder A↔B↔C↔D-oppgaven — den var på Eks 1 og 2, men ikke 3 eller 4. Likevel et godt vedd om man har tid.</p>
+  </div>
+
+  <h3>Kapittel 8 — Sikkerhet (utvalg)</h3>
+  <div class="pred green">
+    <div class="pred-head">
+      <h3>Krypto­egenskaper, nøkler, Trudy <span class="prob h">95 %</span></h3>
+      <span class="sources">Ø4 T1–T5 · Ø5 T1–T5</span>
+    </div>
+    <p>Pensum­avgrensningen er konkret: 8.1 (network security), 8.2 (kryptografi <em>uten</em> RSA-detaljer), 8.3 (integritet/digital signatur), 8.5.1 (sikker e-post), 8.6 (TLS), 8.7.1 (IPsec/VPN), 8.8 (Wi-Fi/4G-5G-sikkerhet), 8.9.1 (brannmurer).</p>
+    <p>Forvent 5–10 poeng spread over:</p>
+    <ul>
+      <li>Sant/usann om sikkerhets­egenskaper (Ø4/Ø5 T1, T2).</li>
+      <li>Symmetrisk vs offentlig nøkkel + N(N−1)/2 (Ø4/Ø5 T3, T4).</li>
+      <li>Trudys handlinger (avlytte, endre, slette, sette inn) — Ø4/Ø5 T5.</li>
+      <li>Brannmur — hovedformål (blokkere uautorisert tilgang, <em>ikke</em> kryptere).</li>
+    </ul>
+    <p><strong>Mulig stor oppgave:</strong> Cæsar-cipher (15 p på Eks 3) eller digital signatur-prosessen (ny på Eks 4). Cæsar har høyere odds for retur — det er det letteste å «gjenbruke».</p>
+  </div>
+
+  <h3>Kapittel 9 — Multimedia (7. utg., utvalg)</h3>
+  <div class="pred green">
+    <div class="pred-head">
+      <h3>Streaming + playout-buffer <span class="prob">75 %</span></h3>
+      <span class="sources">Ø4 T6, T7, T8 · Ø5 T6, T7, T8</span>
+    </div>
+    <p>Pensum: 9.1 (intro), 9.2 (stored video), 9.3 (VoIP), 9.4 + 9.4.1 RTP (men <em>ikke</em> 9.4.2 SIP).</p>
+    <ul>
+      <li><strong>Playout-buffer</strong> (Ø4/Ø5 T6, T7) — gitt at klient starter avspilling ved <em>t1+Δ</em> eller <em>t1+2Δ</em>, hvilke blokker ankommer i tide? Standard pensum­oppgave fra fig 9.x.</li>
+      <li><strong>HTTP-streaming vs UDP</strong> (Ø4/Ø5 T8) — TCP-pålitelighet og brannmur-passering vs lavere overhead.</li>
+    </ul>
+    <p><strong>Ikke pensum:</strong> SIP, mobilitet, CDN-detaljer utover «mange kopier geografisk spredt».</p>
+  </div>
+</div>
+</section>
+
+<!-- ============ HVA SOM IKKE KOMMER ============ -->
+<section id="unngas">
+<div class="container">
+  <div class="section-badge">Negative prediksjoner</div>
+  <h2>Hva kommer <em>ikke</em>?</h2>
+  <p class="section-intro">Like nyttig som å vite hva som kommer, er å vite hva du ikke skal bruke tid på. Disse er enten eksplisitt fjernet, ute av pensum, eller har historisk null-frekvens.</p>
+
+  <div class="pred gray">
+    <div class="pred-head">
+      <h3>Wireshark-spørsmål <span class="prob x">0 %</span></h3>
+      <span class="sources">eks_info.md · eksplisitt</span>
+    </div>
+    <p>Eksplisitt utelatt på årets eksamen. Det betyr at trace-lesing — sekvensnumre fra fanget pakke, klient/server fra IP/port-mønster — ikke er kandidat. Hopp <em>helt</em> over Eks 2 oppgave 3 om du møter den i øvingsmateriellet.</p>
+  </div>
+
+  <div class="pred gray">
+    <div class="pred-head">
+      <h3>RSA-utregning, BitTorrent, CDMA, Bluetooth, SDN <span class="prob x">0 %</span></h3>
+      <span class="sources">pensum.md · eksplisitt utelatt</span>
+    </div>
+    <p>Disse er fjernet fra pensum:</p>
+    <ul>
+      <li><strong>RSA-detaljer</strong> (s. 650–654 i Kurose 8. utg) — kan komme som <em>navn­dropp</em> men ikke regnes på.</li>
+      <li><strong>BitTorrent</strong> (kap 2.5, s. 170–173).</li>
+      <li><strong>CDMA</strong> (kap 7.2.1) — kan likevel komme som distraktor i koble-oppgave.</li>
+      <li><strong>Bluetooth</strong> (kap 7.3.6).</li>
+      <li><strong>SDN / Generalized Forwarding</strong> (kap 4.4).</li>
+      <li><strong>Middleboxes</strong> (kap 4.6).</li>
+      <li><strong>VLAN, Link Virtualization, Data Center Networking</strong> (kap 6.4.4–6.6).</li>
+      <li><strong>Mobilitets­håndtering</strong> (kap 7.5–7.7).</li>
+      <li><strong>SIP</strong> (kap 9.4.2).</li>
+      <li><strong>Distance Vector / Link State i detalj</strong> (kap 5.2.1–5.2.2).</li>
+      <li><strong>ECN og delay-based congestion control</strong> (kap 3.6.1, 3.7.2).</li>
+    </ul>
+  </div>
+
+  <div class="pred gray">
+    <div class="pred-head">
+      <h3>Detaljerte ruteralgoritmer (Dijkstra, Bellman-Ford) <span class="prob x">~3 %</span></h3>
+      <span class="sources">Pensum-grenseland</span>
+    </div>
+    <p>Selv om kapittel 5.2 er nevnt som pensum, er <em>kun introduksjonen</em> det — ikke 5.2.1 (link-state) eller 5.2.2 (distance-vector). Forvent maksimalt en konseptuell sant/usann-påstand om at «sentralisert ruting bruker komplett graf» (Ø2 T3 e/f) — ikke et regnestykke.</p>
+  </div>
+
+  <div class="pred gray">
+    <div class="pred-head">
+      <h3>Detaljert TCP-tilstandsdiagram <span class="prob l">15 %</span></h3>
+      <span class="sources">Ikke i øvingene · sjelden i eks</span>
+    </div>
+    <p>FIN-WAIT, TIME-WAIT-tilstandene er pensum men har ikke kommet på de fire siste eksamenene. Lavt vedd — lær 3-veis håndtrykket grundig, og kall det godt.</p>
+  </div>
+</div>
+</section>
+
+<!-- ============ STRATEGI ============ -->
+<section id="strategi">
+<div class="container">
+  <div class="section-badge">Strategi</div>
+  <h2>Hvordan <em>spille oddsen</em> — taktisk lesing</h2>
+  <p class="section-intro">Hvis du har 40 timer igjen til eksamen, allokér dem etter sannsynligheter, ikke etter pensum-volum. En grov fordeling som matcher prognosen over.</p>
+
+  <div class="pred">
+    <h3>Anbefalt tidsfordeling</h3>
+    <ul>
+      <li><strong>15 timer — Topp 10-temaene</strong> (drill flashcards i <a href="../ma-kunne/">må-kunne</a>, regn 5 subnetting-oppgaver fra hodet, gjør Ø1 T6/T7 raskt).</li>
+      <li><strong>8 timer — Kapittel 4 dypdykk</strong> (subnetting, NAT, longest prefix match, DHCP/ICMP-påstander).</li>
+      <li><strong>6 timer — Sikkerhet og kapittel 8/9</strong> (kryptotyper, Trudy, playout-buffer, Cæsar steg-for-steg).</li>
+      <li><strong>5 timer — Lenkelag og trådløst</strong> (CRC, 2D-paritet, RTS/CTS, CSMA-tidslinje).</li>
+      <li><strong>4 timer — Scenario-/protokollkjede</strong> (e-post-kjeden, ende-til-ende fra DHCP til IMAP).</li>
+      <li><strong>2 timer — Eksamensformat</strong> (les <a href="../eksamner/">øvingseksamenene</a> minst én gang under tidspress).</li>
+    </ul>
+    <div class="why"><strong>Hvorfor ikke jevnt over alle 9 kapitler:</strong> Kapittel 1 og 5 har samlet sett ~12 % av poengene. Å bruke 1/9 = 11 % av tiden på dem er nesten riktig, men kapittel 4 alene har ~20 % av poengene — det rettferdiggjør en større tids­bit.</div>
+  </div>
+
+  <div class="pred">
+    <h3>Eksamens-dagen (4 timer)</h3>
+    <ol>
+      <li><strong>Først 5 min:</strong> Skriv på kladd: <code>(N+P−1)·L/R</code>, <code>2^(32−x)−2</code>, <code>N(N−1)/2</code>, port 80/25/53/443, DNS-RR-format.</li>
+      <li><strong>30 min:</strong> Hele Del I i ett strekk — ikke heng på noen oppgave. Kryss av det du er sikker på, marker tvilstilfeller med <em>?</em>, gå videre.</li>
+      <li><strong>2,5 timer:</strong> Del II — start med subnetting (mest poeng per minutt), ta forsinkelses­regning og scenario-oppgave før de kreative oppgavene. Cæsar/CRC-oppgaver er <em>raske</em> hvis du har kontrollen — gjør dem nest sist.</li>
+      <li><strong>20 min:</strong> Tilbake til <em>?</em>-merkene fra Del I.</li>
+      <li><strong>10 min:</strong> Sjekk at alle ruter med tall er regnet, og at du har skrevet <em>begrunnelse</em> på åpne oppgaver (ofte halve poenget).</li>
+    </ol>
+  </div>
+
+  <div class="pred green">
+    <h3>Hvor du vinner mest tid</h3>
+    <ul>
+      <li><strong>Internaliser «UDP gir IKKE … TCP gir IKKE …»-listen.</strong> 5 påstander à 1 poeng på 30 sekunder.</li>
+      <li><strong>Ha subnetting-mønsteret automatisert.</strong> «/29 → maske 248 → 6 brukbare verter» skal komme uten utregning.</li>
+      <li><strong>Kjenn protokollkjeden DHCP → ARP → DNS → SMTP utenat.</strong> Det er 15 poeng som faller hvis fagstaben gjenbruker scenarioet fra Eks 3.</li>
+      <li><strong>Skriv begrunnelse alltid.</strong> Selv ved feil regnesvar gir delpoeng for riktig oppsett.</li>
+    </ul>
+  </div>
+
+  <p class="margin-note"><strong>Realistisk poengmål:</strong> Hvis du behersker Topp 10-tabellen + kap 4-blokken, ligger 60–70 poeng på bordet før du har sett de 30 % minst sannsynlige oppgavene. Eksamen handler ikke om å kunne <em>alt</em> — den handler om å treffe det som <em>blir</em> spurt om.</p>
+</div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10038; &#10038; &#10038;</div>
+    <p>Spådommen er statistisk — ikke garanti. Bruk den som studieguide, ikke som unnskyldning til å hoppe over pensum.</p>
+    <p style="margin-top: 12px; font-size: 14px;"><a href="../">&larr; Tilbake til forsiden</a> · <a href="../ma-kunne/">Må kunne</a> · <a href="../eksamner/">Øvingseksamener</a></p>
+  </div>
+</footer>
+
+<script src="../nav-search.js"></script>
+</body>
+</html>
