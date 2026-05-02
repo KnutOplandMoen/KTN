@@ -200,6 +200,94 @@
     .pred h3 { font-size: 19px; }
     .odds-table th, .odds-table td { font-size: 13px; padding: 9px 8px; }
   }
+
+  /* Prediksjons­eksamener — featured cards */
+  .pred-exams {
+    background: linear-gradient(180deg, var(--paper-dark) 0%, var(--paper) 100%);
+    border-top: 4px solid var(--rust);
+    border-bottom: 1px solid var(--line);
+    padding: 36px 0 28px;
+  }
+  .pred-exams .lead {
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 760px;
+    margin: 0 0 22px;
+  }
+  .pred-exam-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin: 18px 0 8px;
+  }
+  @media (max-width: 880px) {
+    .pred-exam-grid { grid-template-columns: 1fr; }
+  }
+  .pred-card {
+    display: block;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--rust);
+    background: var(--paper);
+    padding: 22px 24px;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 0 3px 3px 0;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-left-color 0.15s ease;
+  }
+  .pred-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.07);
+    text-decoration: none;
+  }
+  .pred-card.c1 { border-left-color: var(--rust); }
+  .pred-card.c2 { border-left-color: var(--blue); }
+  .pred-card.c3 { border-left-color: var(--ochre); }
+  .pred-card .pc-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--rust);
+  }
+  .pred-card.c2 .pc-num { color: var(--blue); }
+  .pred-card.c3 .pc-num { color: var(--rust-dark); }
+  .pred-card h3 {
+    margin: 6px 0 8px;
+    font-size: 21px;
+    line-height: 1.25;
+  }
+  .pred-card .pc-tagline {
+    font-style: italic;
+    color: var(--ink-faded);
+    margin: 0 0 12px;
+    font-size: 14px;
+  }
+  .pred-card .pc-cover {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin: 0 0 14px;
+  }
+  .pred-card .pc-cta {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--rust);
+    border-top: 1px dashed var(--line-soft);
+    padding-top: 10px;
+  }
+  .pred-card.c2 .pc-cta { color: var(--blue); }
+  .pred-card.c3 .pc-cta { color: var(--rust-dark); }
+  .pred-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-faded);
+    margin-top: 16px;
+  }
 </style>
 </head>
 <body>
@@ -230,9 +318,47 @@
 </div>
 </header>
 
+<!-- ============ PREDIKSJONS­EKSAMENER (featured) ============ -->
+<section id="prediksjoner" class="pred-exams">
+<div class="container">
+  <div class="section-badge">Tre prediksjons­eksamener</div>
+  <h2>Tren på <em>spådommen</em></h2>
+  <p class="lead">Tre nye eksamener bygget direkte på frekvens­analysen under. De er <strong>komplementære</strong> — hver dekker en ulik hypotese om hva fagstaben prioriterer i år. Sammen treffer de et bredere mål enn ett enkelt sett kunne ha gjort. Hver er ~100 poeng (Del I + Del II) med modellbesvarelser.</p>
+
+  <div class="pred-exam-grid">
+    <a href="../eksamner/prediksjon1.html" class="pred-card c1">
+      <div class="pc-num">Prediksjon 1 av 3</div>
+      <h3>Det sikre veddet</h3>
+      <p class="pc-tagline">«Hvis fagstaben følger sin formel.»</p>
+      <p class="pc-cover">Bygget av kun ★★★/★★★★-tema som har vært på 3 eller 4 av de fire siste eksamenene: UDP/TCP, forsinkelse, sockets, kapsling, subnetting, DNS, e-post-scenario, sikkerhet (N(N−1)/2), svitsj/ARP, RTS/CTS.</p>
+      <div class="pc-cta">Start &rarr;</div>
+    </a>
+
+    <a href="../eksamner/prediksjon2.html" class="pred-card c2">
+      <div class="pc-num">Prediksjon 2 av 3</div>
+      <h3>Wireshark-hullet</h3>
+      <p class="pc-tagline">«Hva fyller de 6–10 trace-poengene som er fjernet?»</p>
+      <p class="pc-cover">Vekt på eks_4-novelties (TCP 3-veis håndtrykk, ARP, DNS-hierarki, switch-tabell, digital signatur, brannmur-kategorier, CRC) og scenario-oppgaver som binder lagene sammen — der fagstaben tradisjonelt fyller hull.</p>
+      <div class="pc-cta">Start &rarr;</div>
+    </a>
+
+    <a href="../eksamner/prediksjon3.html" class="pred-card c3">
+      <div class="pc-num">Prediksjon 3 av 3</div>
+      <h3>Wildcard-pensum</h3>
+      <p class="pc-tagline">«Når noe uventet kommer, er det herfra.»</p>
+      <p class="pc-cover">Lavfrekvent men eksplisitt pensum: multimedia/playout-buffer/RTP, NAT-tabell, lengste prefiks-match som åpen oppgave, ALOHA-effektivitet, SNR vs BER, 4G/5G, IPv6 og kø-teori. Skadebegrensning når fagstaben overrasker.</p>
+      <div class="pc-cta">Start &rarr;</div>
+    </a>
+  </div>
+
+  <p class="pred-meta">Strategi: ta dem i rekkefølge 1 → 2 → 3 — fra høyeste sannsynlighet til lavest. Eller bruk dem som kjapp diagnose — der du faller, vet du hvor du må fokusere repetisjonen.</p>
+</div>
+</section>
+
 <nav class="chapter-toc">
 <div class="container">
   <ol class="chapter-toc-list">
+    <li><span class="toc-num">00</span><a href="#prediksjoner">Prediksjons­eksamener</a></li>
     <li><span class="toc-num">01</span><a href="#metode">Metode</a></li>
     <li><span class="toc-num">02</span><a href="#topp">Topp 10 vedd</a></li>
     <li><span class="toc-num">03</span><a href="#del1">Del I — flervalg</a></li>

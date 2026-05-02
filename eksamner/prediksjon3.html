@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prediksjon 3 — «Wildcard-pensum» — TTM4100</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Alle eksamener</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
+  </div>
+</nav>
+
+<main data-chapter="Prediksjon 3 — Wildcard-pensum">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Eksamensprediksjon 3 av 3 · våren 2026</div>
+  <h1>Prediksjon <em>3</em> — «Wildcard-pensum»</h1>
+  <p class="lede">Det kommer alltid <em>noe</em> uventet på eksamen. Dette settet vedder på de tema som er tydelig pensum (særlig fra øvingene 4 og 5 om multimedia, samt øving 3 om SNR/BER), men som har lav historisk frekvens på eksamen. Gjennomtenkt skadebegrensning hvis fagstaben vil overraske.</p>
+
+  <div class="learn-box">
+    <span class="label">Strategi for dette settet</span>
+    <ul>
+      <li><strong>Multimedia (kap. 9):</strong> playout-buffer, RTP, HTTP-streaming, CDN — øving 4 og 5 dupliserte dette to ganger; sterk indikasjon på at det <em>kan</em> bli prioritert.</li>
+      <li><strong>NAT, lengste prefiks-match, FIFO-kø:</strong> alle ★-tema som dukket opp én gang og lett kan gjenbrukes.</li>
+      <li><strong>SNR vs BER, 4G/5G, ALOHA:</strong> lavfrekvent men eksplisitt pensum — når noe annet faller ut, kommer dette inn.</li>
+    </ul>
+  </div>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">I</span><a href="#del1">Del I — Flervalg (42p)</a></li>
+    <li><span class="toc-num">II</span><a href="#del2">Del II — Åpne oppgaver (58p)</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ==================== DEL I ==================== -->
+<section id="del1">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del I — Automatisk rettede spørsmål</h2>
+    <span class="del-points">14 spørsmål · 3 poeng per spørsmål · 42 poeng totalt</span>
+  </div>
+  <p class="section-intro">Vekt på multimedia, NAT, ALOHA, IPv6, modulasjon — tema som kan overraske.</p>
+
+  <!-- Q1 — Pure vs slotted ALOHA -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 1</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6 · ALOHA</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er den maksimale teoretiske kanal-effektiviteten for <strong>slotted ALOHA</strong> sammenlignet med pure ALOHA?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Pure ALOHA: ~37 %, slotted ALOHA: ~18 %</li>
+        <li><span class="opt-label">B</span> Pure ALOHA: ~18 %, slotted ALOHA: ~37 %</li>
+        <li><span class="opt-label">C</span> Begge oppnår ~50 % under optimal trafikk</li>
+        <li><span class="opt-label">D</span> Slotted ALOHA er 10× mer effektiv enn pure ALOHA</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Pure ALOHA: 1/(2e) ≈ 18 %. Slotted ALOHA: 1/e ≈ 37 %. Synkronisering halverer kollisjons­vinduet — to pakker kolliderer kun hvis de starter i samme slot, ikke hvis én starter mens en annen sender.</p>
+          <p>Trade-off: slotted krever globalt klokke-synk; pure trenger ikke det.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6.3 — ALOHA</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q2 — NAT-tabell -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 2</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · NAT</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En PC bak en NAT-ruter har privat IP <code>192.168.1.50</code>. Den åpner en TCP-forbindelse til <code>203.0.113.10:80</code> fra kilde-port 5001. NAT-ruterens offentlige IP er <code>185.20.30.40</code>. Hva ser den eksterne webserveren som kilde-IP og kilde-port?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 192.168.1.50, port 5001</li>
+        <li><span class="opt-label">B</span> 185.20.30.40, port 5001 (uendret)</li>
+        <li><span class="opt-label">C</span> 185.20.30.40, en oversatt port (f.eks. 41023)</li>
+        <li><span class="opt-label">D</span> 203.0.113.10, port 80</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C</span>
+          <p>NAT-ruteren erstatter både kilde-IP <em>og</em> kilde-port. Den private IP-en er ikke synlig utenfor. Den oversatte porten lagres i en NAT-tabell sammen med (privat IP, privat port, dest IP, dest port), slik at svar-pakker kan rutes tilbake til riktig intern host.</p>
+          <p>Felle: B antar at kilde-port forblir uendret. Det er bare unntaksvis — hvis flere interne klienter tilfeldigvis bruker samme kilde-port, må NAT mappe om for å unngå kollisjon.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4.3 — NAT</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q3 — Lengste prefiks-match -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 3</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · Forwarding</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En ruter har følgende forwarding-tabell:</p>
+      <table>
+        <thead><tr><th>Destinasjons-prefiks</th><th>Utport</th></tr></thead>
+        <tbody>
+          <tr><td>10.0.0.0/8</td><td>1</td></tr>
+          <tr><td>10.20.0.0/16</td><td>2</td></tr>
+          <tr><td>10.20.30.0/24</td><td>3</td></tr>
+          <tr><td>0.0.0.0/0 (default)</td><td>4</td></tr>
+        </tbody>
+      </table>
+      <p class="q-text">Hvilken utport brukes for en pakke til <code>10.20.30.45</code>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Port 1</li>
+        <li><span class="opt-label">B</span> Port 2</li>
+        <li><span class="opt-label">C</span> Port 3</li>
+        <li><span class="opt-label">D</span> Port 4 (default)</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — Port 3</span>
+          <p>Adressen matcher tre prefikser: /8, /16 og /24. Lengste prefiks-match velger /24, dvs. port 3.</p>
+          <p>Default-ruten (/0) brukes bare hvis ingen andre prefikser matcher.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4.3 — Longest prefix match</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q4 — Playout-buffer -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 4</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 9 · Streaming</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er hovedformålet med en <strong>playout-buffer</strong> hos klienten i en video-streamingsapplikasjon?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Å øke nedlastingshastigheten ved å åpne flere TCP-forbindelser</li>
+        <li><span class="opt-label">B</span> Å absorbere variasjon i nettverks­forsinkelse (jitter) slik at avspilling skjer jevnt selv om pakker ankommer ujevnt</li>
+        <li><span class="opt-label">C</span> Å kryptere video-strømmen før visning</li>
+        <li><span class="opt-label">D</span> Å redusere den totale filstørrelsen via komprimering</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Pakker ankommer med varierende forsinkelse (jitter). Ved å samle opp et par sekunder med video først, kan klienten spille av jevnt — selv om enkelte pakker er litt sen­ankomne. Dette er forutsetningen for at HTTP- og DASH-streaming kan levere god kvalitet uten direkte sanntids­garantier fra nettverket.</p>
+          <p>Kostnaden er økt initial avspillings­forsinkelse: typisk 2–10 s buffring før første frame vises.</p>
+          <p class="ref">Pensum: <a href="../kap9/innhold.html">Kap. 9.2 — Streaming og playout-buffer</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q5 — HTTP-streaming over UDP -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 5</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 9 · Streaming</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvorfor er HTTP-basert streaming (over TCP) blitt mer utbredt enn UDP-basert streaming for video over Internett?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> UDP er tregere enn TCP for store pakker</li>
+        <li><span class="opt-label">B</span> Brannmurer blokkerer ofte UDP-trafikk men slipper gjennom HTTP; TCP gir også pålitelig levering uten at applikasjonen må implementere det</li>
+        <li><span class="opt-label">C</span> UDP kan ikke brukes for media i det hele tatt</li>
+        <li><span class="opt-label">D</span> HTTP-streaming er den eneste protokollen som støtter video­komprimering</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>To hovedgrunner: (1) Mange brannmurer er konfigurert til å blokkere UDP men tillate HTTP/HTTPS over port 80/443. (2) Med HTTP får streaming-applikasjoner pålitelig levering «gratis» — kombinert med playout-buffer er det god nok kvalitet for de fleste video­typer.</p>
+          <p>UDP brukes fortsatt der lav forsinkelse er kritisk (live-stream, VoIP, spill).</p>
+          <p class="ref">Pensum: <a href="../kap9/innhold.html">Kap. 9 — Streaming</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q6 — SNR vs BER -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 6</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 7 · Modulasjon</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket utsagn om sammenhengen mellom <strong>SNR</strong> (signal-til-støy), <strong>BER</strong> (bit error rate) og modulasjon er <strong>korrekt</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> For en gitt modulasjon gir lavere SNR lavere BER</li>
+        <li><span class="opt-label">B</span> For en gitt SNR gir en modulasjon med høyere bitrate lavere BER</li>
+        <li><span class="opt-label">C</span> For en gitt SNR gir en modulasjon med høyere bitrate høyere BER</li>
+        <li><span class="opt-label">D</span> SNR og BER er uavhengige størrelser</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C</span>
+          <p>Lavere SNR (mer støy relativt til signal) → flere feiltolkede bits → høyere BER. For en gitt SNR pakker høyere-rate modulasjoner inn flere bit per symbol; konstellasjons­punktene blir tettere; støy får lettere kastet et symbol til feil punkt → høyere BER.</p>
+          <p>Praktisk konsekvens: WiFi/4G/5G velger lavere modulasjon når SNR faller, for å holde BER lav.</p>
+          <p class="ref">Pensum: <a href="../kap7/innhold.html">Kap. 7.1 — Trådløse karakteristikker</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q7 — 4G vs 5G -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 7</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 7 · 5G</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket utsagn om 5G sammenlignet med 4G er <strong>korrekt</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 5G bruker lavere frekvensbånd enn 4G og dekker derfor lengre</li>
+        <li><span class="opt-label">B</span> 5G gir høyere peak-bitrate og bruker også høyere frekvensbånd (mmWave) som komplement til de lavere</li>
+        <li><span class="opt-label">C</span> 5G eliminerer behovet for basestasjoner</li>
+        <li><span class="opt-label">D</span> 5G er bare en omdøping av 4G uten reelle tekniske endringer</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>5G er designet for høyere peak-bitrate, lavere latens og MIMO-kapasitet. mmWave-bånd (24+ GHz) gir høy båndbredde men kort rekkevidde og dårlig vegg­penetrering — derfor brukes også sub-6 GHz-bånd. Kontroll/data-plan-separasjon er en annen viktig 5G-egenskap.</p>
+          <p class="ref">Pensum: <a href="../kap7/innhold.html">Kap. 7.4 — Mobilnett</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q8 — Cæsar -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 8</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8 · Krypto</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Cæsar-cipher kombinert med k=3 brukes på meldingen <code>HELP</code>. Hva blir chiffer­teksten?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> KHOS</li>
+        <li><span class="opt-label">B</span> JFNQ</li>
+        <li><span class="opt-label">C</span> ELHM</li>
+        <li><span class="opt-label">D</span> HELP (uendret)</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A — KHOS</span>
+          <p>(x + 3) mod 26: H(7)→K(10), E(4)→H(7), L(11)→O(14), P(15)→S(18). Resultat: <strong>KHOS</strong>.</p>
+          <p>Cæsar er svak: bare 25 mulige nøkler — brute force på sekunder. Bevarer dessuten bokstavfrekvensene.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.2 — Substitusjon</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q9 — Internet checksum -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 9</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · Checksum</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Internet-checksummen brukes av både UDP og TCP. To 16-bits-ord skal summeres: <code>1110 1010 1100 1010</code> og <code>0001 0101 0011 0101</code>. Hva blir checksummen (ones' complement av sum med wrap)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 1111 1111 1111 1111</li>
+        <li><span class="opt-label">B</span> 0000 0000 0000 0000</li>
+        <li><span class="opt-label">C</span> 1110 1010 1100 1010</li>
+        <li><span class="opt-label">D</span> 0001 0101 0011 0101</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>De to ordene er hverandres ones' complement (bit for bit invers). Summen blir alltid <code>1111 1111 1111 1111</code>. Checksum = ones' complement av summen = <code>0000 0000 0000 0000</code>.</p>
+          <p>Mottaker summerer alle ordene <em>inkludert</em> checksummen og forventer å få <code>1111 1111 1111 1111</code> (alle 1-er). Hvis så, ingen oppdaget feil.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3.3 — UDP-sjekksum</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q10 — Multiple access-klassifisering -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 10</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6 · MAC</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken av følgende protokoller hører til kategorien «<strong>tilfeldig tilgang</strong>» (random access)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> TDM (Time Division Multiplexing)</li>
+        <li><span class="opt-label">B</span> FDM (Frequency Division Multiplexing)</li>
+        <li><span class="opt-label">C</span> CSMA/CD (Ethernet)</li>
+        <li><span class="opt-label">D</span> Token Ring</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — CSMA/CD</span>
+          <p>Tre kategorier:</p>
+          <ul>
+            <li><strong>Kanalpartisjonering:</strong> TDM, FDM, CDMA (CDMA er ikke pensum, men kan komme som distraktor).</li>
+            <li><strong>Tilfeldig tilgang:</strong> Pure ALOHA, Slotted ALOHA, CSMA/CD, CSMA/CA.</li>
+            <li><strong>Taking turns:</strong> Token Ring, polling-baserte protokoller (Bluetooth — ikke pensum).</li>
+          </ul>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6.3 — Multiple access</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q11 — 2D-paritet -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 11</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6 · Feildeteksjon</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken egenskap ved 2D-paritet (med even parity i hver rad og kolonne) er <strong>korrekt</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 2D-paritet kan oppdage og korrigere alle 2-bits-feil</li>
+        <li><span class="opt-label">B</span> 2D-paritet kan oppdage og korrigere enkeltbit-feil ved å se hvilken rad og kolonne som har odd parity</li>
+        <li><span class="opt-label">C</span> 2D-paritet er teoretisk like sterkt som CRC-32</li>
+        <li><span class="opt-label">D</span> 2D-paritet kan ikke oppdage noen feil</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Ved enkeltbit-feil vil nøyaktig én rad og én kolonne vise feil paritet — krysningen identifiserer den feile bit-en, som så kan flippes. 2D-paritet kan oppdage de fleste 2-bits-feil men kan ikke alltid korrigere dem entydig (4 bit på et rektangel kan være «usynlige»). CRC er mye sterkere.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6.2.2 — 2D-paritet</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q12 — Trafikkintensitet -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 12</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Kø</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En lenke har rate R = 10 Mbps. Pakker med snittstørrelse L = 10 000 bits ankommer i snittrate a = 800 pakker/s. Hva er trafikk­intensiteten ρ, og hva sier den om kø-oppførselen?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> ρ = 0,08 — kø vokser uten begrensning</li>
+        <li><span class="opt-label">B</span> ρ = 0,8 — gjennomsnittlig kø er begrenset, men forsinkelsen øker raskt nær 1</li>
+        <li><span class="opt-label">C</span> ρ = 1,25 — kø er stabil</li>
+        <li><span class="opt-label">D</span> ρ = 8 — lenken har god margin</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B — ρ = 0,8</span>
+          <p>ρ = L·a/R = 10 000·800 / 10<sup>7</sup> = 8·10<sup>6</sup>/10<sup>7</sup> = <strong>0,8</strong>.</p>
+          <p>For ρ &lt; 1 er køen i prinsippet stabil; men gjennomsnittlig køforsinkelse går mot uendelig når ρ → 1. Ved ρ ≥ 1 vokser køen ubegrenset (eller pakker dropes når bufferen fylles).</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1.4 — Trafikkintensitet</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q13 — Brannmur formål -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 13</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8 · Brannmur</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er hovedformålet til en brannmur i et bedriftsnettverk?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Å kryptere all utgående trafikk automatisk</li>
+        <li><span class="opt-label">B</span> Å akselerere TCP-forbindelser ved å pre-allokere buffere</li>
+        <li><span class="opt-label">C</span> Å filtrere uautorisert inngående/utgående trafikk basert på regler — i praksis blokkere uønskede forbindelser</li>
+        <li><span class="opt-label">D</span> Å erstatte behovet for autentisering på sluttapplikasjoner</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C</span>
+          <p>Brannmurer beskytter mot uautorisert tilgang ved å filtrere trafikk basert på adresser, porter, flagg, forbindelsestilstand eller applikasjonsdata. De erstatter ikke kryptering eller autentisering — de er ett lag i et lagdelt forsvar.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.9 — Brannmurer</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q14 — Web-cache -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 14</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · HTTP</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er <em>ikke</em> en typisk fordel av å installere en web-cache (proxy) på en institusjons aksesslenke?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Lavere snitt-forsinkelse for klienter når mange ber om samme objekt</li>
+        <li><span class="opt-label">B</span> Mindre trafikk inn/ut av institusjonens aksesslenke</li>
+        <li><span class="opt-label">C</span> Reduserer behovet for kryptering på Internett-side</li>
+        <li><span class="opt-label">D</span> Avlaster opphavs­serveren utenfor institusjonen</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C</span>
+          <p>Cache reduserer latens og båndbredde-behov for objekter som er populære innad i institusjonen, og avlaster opphavs­serveren. Den har <em>ingenting</em> med kryptering å gjøre — og har faktisk ofte problemer med kryptert HTTPS-trafikk fordi cachen ikke kan se innholdet uten å bryte tilliten.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2.2 — HTTP og web-caching</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+
+<!-- ==================== DEL II ==================== -->
+<section id="del2">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del II — Åpne oppgaver</h2>
+    <span class="del-points">5 oppgaver · 58 poeng totalt</span>
+  </div>
+  <p class="section-intro">Vekt på multimedia, lengste prefiks-match, NAT, ALOHA og kø-teori.</p>
+
+  <!-- Oppgave 1 — Playout-buffer -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 1</span>
+      <span class="exam-q__points">12 poeng</span>
+      <span class="exam-q__topic">Kap. 9 · Multimedia</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En videoserver sender 7 video-blokker fortløpende. Blokk <em>i</em> sendes ved tidspunkt <code>t<sub>0</sub> + (i−1)·Δ</code>. Blokkene ankommer klienten med varierende forsinkelse (jitter). Klienten skal spille av blokk <em>i</em> ved tidspunkt <code>t<sub>start</sub> + (i−1)·Δ</code>.</p>
+      <p class="q-text">a) Forklar hvorfor klienten i de fleste tilfeller venter en periode før den starter avspilling, og hvordan dette knytter seg til jitter. (3p)</p>
+      <p class="q-text">b) Anta at klienten starter avspilling ved <code>t<sub>1</sub> + Δ</code>, der t<sub>1</sub> er ankomsttiden for første blokk. Hvis ankomsttidene for blokkene 1–7 er <code>t<sub>1</sub>, t<sub>1</sub>+0,5Δ, t<sub>1</sub>+2,5Δ, t<sub>1</sub>+2Δ, t<sub>1</sub>+3,5Δ, t<sub>1</sub>+5Δ, t<sub>1</sub>+5,5Δ</code> — hvilke blokker rekker frem i tide til avspilling? (4p)</p>
+      <p class="q-text">c) Anta i stedet at klienten venter til <code>t<sub>1</sub> + 2Δ</code> før den starter. Hvilke blokker rekker frem nå? Forklar trade-offen mellom playout-forsinkelse og hvor mange blokker som blir «tapt» (kommer for sent). (5p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Hvorfor vente?</strong></p>
+          <p>Pakker over Internett ankommer med varierende forsinkelse (jitter). Hvis avspilling startet umiddelbart, ville senere pakker som er forsinket bli «for sene» og resultere i hakking. En innledende ventetid lar klienten bygge opp en buffer av flere fremtidige blokker, slik at avspilling skjer jevnt selv ved variasjon.</p>
+          <p>Større initial buffer ⇒ flere blokker rekker frem i tide, men også høyere innledende forsinkelse for brukeren.</p>
+
+          <p><strong>b) Avspilling fra t<sub>1</sub> + Δ:</strong></p>
+          <p>Blokk <em>i</em> skal spilles av ved tid <code>t<sub>1</sub> + (i)·Δ</code> (fra og med i=1: t<sub>1</sub>+Δ for blokk 1, t<sub>1</sub>+2Δ for blokk 2, ...).</p>
+          <table>
+            <thead><tr><th>Blokk</th><th>Avspillings-tid</th><th>Ankomst-tid</th><th>I tide?</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>t<sub>1</sub>+Δ</td><td>t<sub>1</sub></td><td>Ja</td></tr>
+              <tr><td>2</td><td>t<sub>1</sub>+2Δ</td><td>t<sub>1</sub>+0,5Δ</td><td>Ja</td></tr>
+              <tr><td>3</td><td>t<sub>1</sub>+3Δ</td><td>t<sub>1</sub>+2,5Δ</td><td>Ja</td></tr>
+              <tr><td>4</td><td>t<sub>1</sub>+4Δ</td><td>t<sub>1</sub>+2Δ</td><td>Ja</td></tr>
+              <tr><td>5</td><td>t<sub>1</sub>+5Δ</td><td>t<sub>1</sub>+3,5Δ</td><td>Ja</td></tr>
+              <tr><td>6</td><td>t<sub>1</sub>+6Δ</td><td>t<sub>1</sub>+5Δ</td><td>Ja</td></tr>
+              <tr><td>7</td><td>t<sub>1</sub>+7Δ</td><td>t<sub>1</sub>+5,5Δ</td><td>Ja</td></tr>
+            </tbody>
+          </table>
+          <p>Alle blokkene rekker frem i tide.</p>
+          <p><em>(Merk: dette eksemplet er konstruert slik at jitter er liten relativt til ventetid Δ. Med en mer aggressiv jitter ville noen blokker bli forsinket.)</em></p>
+
+          <p><strong>c) Avspilling fra t<sub>1</sub> + 2Δ:</strong></p>
+          <p>Avspillings-tidene skifter med Δ ekstra: blokk i spilles ved <code>t<sub>1</sub> + (i+1)·Δ</code>. Alle blokker har nå Δ ekstra slack — alle rekker fortsatt fram, og marginen er større.</p>
+          <p><strong>Trade-off:</strong> Større playout-forsinkelse ⇒ mer robust mot jitter (færre eller ingen «tapte» blokker), men brukeren venter lenger på første frame. Dette er kjernen i playout-buffer-design — typisk sekunder ved live-streaming, lenger ved on-demand video.</p>
+          <p class="ref">Pensum: <a href="../kap9/innhold.html">Kap. 9.2 — Streaming og playout-buffer</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 2 — Lengste prefiks-match (åpen) -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 2</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · Forwarding</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En ruter har følgende forwarding-tabell:</p>
+      <table>
+        <thead><tr><th>Prefiks</th><th>Utport</th></tr></thead>
+        <tbody>
+          <tr><td>192.168.0.0/16</td><td>1</td></tr>
+          <tr><td>192.168.64.0/18</td><td>2</td></tr>
+          <tr><td>192.168.64.0/20</td><td>3</td></tr>
+          <tr><td>192.168.96.0/22</td><td>4</td></tr>
+          <tr><td>0.0.0.0/0 (default)</td><td>5</td></tr>
+        </tbody>
+      </table>
+      <p class="q-text">a) For hver av destinasjonene under, finn riktig utport ved hjelp av lengste prefiks-match. Vis arbeidsmetoden ved minst én av dem. (6p)</p>
+      <ul>
+        <li>192.168.64.10</li>
+        <li>192.168.96.50</li>
+        <li>192.168.200.5</li>
+        <li>10.0.0.1</li>
+      </ul>
+      <p class="q-text">b) Forklar hvorfor en ruter normalt bruker lengste prefiks-match og ikke første matchende prefiks. Hvilken type problem unngås? (4p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Forwarding:</strong></p>
+          <table>
+            <thead><tr><th>Adresse</th><th>Match-prefiks</th><th>Utport</th></tr></thead>
+            <tbody>
+              <tr><td>192.168.64.10</td><td>/16, /18, /20 — lengste = /20</td><td><strong>3</strong></td></tr>
+              <tr><td>192.168.96.50</td><td>/16, /18, /22 (96 er innenfor /18 64.0; sjekk /22 96.0 — match) — lengste = /22</td><td><strong>4</strong></td></tr>
+              <tr><td>192.168.200.5</td><td>/16 (200 er ikke innenfor 64.0/18 → 64–127, eller 96.0/22) — kun /16</td><td><strong>1</strong></td></tr>
+              <tr><td>10.0.0.1</td><td>Ingen prefiks unntatt default (/0)</td><td><strong>5</strong></td></tr>
+            </tbody>
+          </table>
+          <p><strong>Detaljert utregning for 192.168.64.10:</strong></p>
+          <ul>
+            <li><code>/16: 192.168.0.0</code>: andre oktett 168 = 168 ✓</li>
+            <li><code>/18: 192.168.64.0</code>: tredje oktett /18 betyr de to øverste bit i tredje oktett må matche 64 (binær 01...). 64 binært er 0100 0000, så øverste 2 bit = 01. 64 også 01 — ✓</li>
+            <li><code>/20: 192.168.64.0</code>: tredje oktett 4 øverste bit = 0100. 64 også 0100 — ✓</li>
+            <li><code>/22: 192.168.96.0</code>: tredje oktett 6 øverste bit må = 96 (binær 011000) = 0110 00. 64 = 0100 00 — ulik 0110 00 — ✗</li>
+          </ul>
+          <p>Lengste match: /20 → port 3.</p>
+
+          <p><strong>b) Hvorfor lengste prefiks-match?</strong></p>
+          <p>Lengste prefiks-match gir mest spesifikk rute først. Eksempel: en /22-rute mot en mindre kunde inne i en /16-blokk. Hadde ruteren brukt første-match, ville rekkefølgen i tabellen avgjøre — og da ville en mer generell /16 før den spesifikke /22 sende trafikk feil sted. Lengste prefiks-match unngår denne <strong>sortering-avhengigheten</strong> og gjør forwarding-tabellen rekkefølge-uavhengig.</p>
+          <p>Det er også grunnlaget for hvordan Internett støtter «hierarkisk» tildeling av adresser: ISP får /16, kunden får /22 inne i den, og forwarding finner alltid mest spesifikk vei.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4.3 — IP-forwarding</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 3 — NAT-tabell -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 3</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · NAT</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En NAT-ruter har offentlig IP <code>200.10.20.30</code> og fungerer som default gateway for et privat LAN <code>192.168.1.0/24</code>. To interne klienter åpner samtidig hver sin TCP-forbindelse mot samme webserver <code>198.51.100.7:80</code>:</p>
+      <ul>
+        <li>Klient A: <code>192.168.1.5:5000</code></li>
+        <li>Klient B: <code>192.168.1.6:5000</code> (samme kilde-port, tilfeldig)</li>
+      </ul>
+      <p class="q-text">a) Vis hvordan NAT-tabellen kan se ut etter at begge forbindelsene er opprettet. Forklar hvilken funksjon hver kolonne har. (4p)</p>
+      <p class="q-text">b) Webserveren sender et svar tilbake. Hvilken adresse/port-informasjon ser pakken (i) på vei mot NAT, og (ii) etter NAT, og hvordan vet NAT hvilken intern klient den skal til? (3p)</p>
+      <p class="q-text">c) Hvilke utfordringer skaper NAT for protokoller som har innbygde IP-adresser i applikasjons­data (f.eks. SIP, FTP)? (3p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) NAT-tabell:</strong></p>
+          <table>
+            <thead><tr><th>WAN-side (utside)</th><th>LAN-side (innside)</th><th>Dest (server)</th></tr></thead>
+            <tbody>
+              <tr><td>200.10.20.30 : 41000</td><td>192.168.1.5 : 5000</td><td>198.51.100.7 : 80</td></tr>
+              <tr><td>200.10.20.30 : 41001</td><td>192.168.1.6 : 5000</td><td>198.51.100.7 : 80</td></tr>
+            </tbody>
+          </table>
+          <p>NAT må endre kilde-port (41000, 41001) for å skille de to forbindelsene utad. WAN-siden viser hva ekstern verden ser; LAN-siden viser den faktiske private IP/port; dest holder destinasjonen for å kunne matche svar.</p>
+
+          <p><strong>b) Svar fra serveren:</strong></p>
+          <ul>
+            <li><strong>(i) På vei mot NAT:</strong> kilde = 198.51.100.7:80, dest = 200.10.20.30:41001 (eller 41000).</li>
+            <li><strong>(ii) Etter NAT (på LAN-side):</strong> kilde uendret = 198.51.100.7:80, dest = 192.168.1.6:5000 (eller 192.168.1.5:5000).</li>
+          </ul>
+          <p>NAT slår opp i tabellen ved å matche dest-IP+port på WAN-siden — finner unik LAN-side-oppføring og oversetter dest tilsvarende.</p>
+
+          <p><strong>c) Problemer med embedded IP/port:</strong></p>
+          <p>Protokoller som SIP, FTP (passiv mode), H.323 og noen P2P-protokoller legger IP-adresser eller port-numre <em>inne i</em> applikasjons­dataen — for at den andre siden skal kunne kontakte tilbake. Når NAT bare endrer headeren, blir den interne IP-en i payloaden ugyldig utenfor.</p>
+          <p>Løsninger:</p>
+          <ul>
+            <li><strong>Application-layer gateways (ALG):</strong> NAT-en parser kjente protokoller og endrer også payload.</li>
+            <li><strong>STUN / TURN / ICE:</strong> applikasjonen oppdager sin offentlige IP og bruker den i payload.</li>
+            <li><strong>UPnP IGD eller manuelle port-forwarding:</strong> klient kan be om en stabil mapping.</li>
+          </ul>
+          <p>NAT er en viktig grunn til at IPv6 er ønsket — alle endenoder kan da ha global rutbar adresse uten oversettelse.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4.3.4 — NAT</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 4 — CSMA-tidslinje -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 4</span>
+      <span class="exam-q__points">14 poeng</span>
+      <span class="exam-q__topic">Kap. 6 · CSMA</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">På en delt media (Ethernet-buss) finnes 4 noder. Forplantningstiden mellom ytterste noder er <strong>0,2 tidsenheter</strong>. Hver pakke krever <strong>1 tidsenhet</strong> for sending. Følgende sendinger er klar for å sendes:</p>
+      <ul>
+        <li>Node A klar til å sende ved t = 0,0</li>
+        <li>Node B klar til å sende ved t = 0,1</li>
+        <li>Node C klar til å sende ved t = 1,2</li>
+        <li>Node D klar til å sende ved t = 1,5</li>
+        <li>Node A klar igjen ved t = 3,0</li>
+        <li>Node C klar igjen ved t = 4,1</li>
+      </ul>
+      <p class="q-text">a) Anta <strong>ren CSMA</strong> uten kollisjons-deteksjon. Tegn opp tidslinjen og avgjør hvilke pakker som lykkes (uten kollisjon) før t = 5. Forklar hva som skjer ved kollisjon. (8p)</p>
+      <p class="q-text">b) Anta i stedet <strong>CSMA/CD</strong>. Hvilke pakker lykkes før t = 5? Hva er hovedforskjellen i hva som skjer ved kollisjon, og hvorfor gir det høyere effektivitet? (6p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Ren CSMA:</strong></p>
+          <p>Ved t=0 begynner A å sende. B sjekker kanalen ved t=0,1 — A's signal har ikke nådd B ennå (forplantning 0,2). B oppfatter kanalen som ledig og begynner også å sende. <strong>Kollisjon</strong> mellom A og B. I ren CSMA fortsetter begge å sende hele pakken sin (1 tidsenhet) selv om dataene er ødelagt. Begge er ferdig ved ca. t=1.</p>
+          <p>Ved t=1,2 er kanalen ledig — C sjekker, ser ledig, sender. D klar ved t=1,5 sjekker — har C's signal nådd D? Avhengig av geografi og 0,2 forplantning. Anta D er nær C: ja, kanal er opptatt → D venter. C lykkes, ferdig ved t=2,2.</p>
+          <p>D venter til kanal blir ledig ved t=2,2 (+ propagering). D sender deretter, ferdig ca. t=3,4.</p>
+          <p>A klar igjen ved t=3,0; sjekker kanalen — D's signal har nådd A: D opptar. A venter til D er ferdig (~t=3,4 + 0,2 propagering = 3,6). A sender, ferdig ca. t=4,6.</p>
+          <p>C klar igjen ved t=4,1; sjekker kanalen — A's sending opptar. C venter. A ferdig 4,6 + 0,2 propagering = 4,8. C starter, ferdig 5,8 — etter t=5.</p>
+          <p><strong>Lykkede sendinger før t=5:</strong> C (første), D, A (andre). A og B kolliderte. C (andre) blir ferdig akkurat etter t=5.</p>
+          <p>(Studenten får poeng for å vise riktig metode og resonere med propageringsforsinkelse.)</p>
+
+          <p><strong>b) CSMA/CD:</strong></p>
+          <p>Ved kollisjon mellom A og B ved t≈0,1 detekterer begge kollisjonen <em>raskt</em> (innen 0,2 tidsenheter), avbryter sendingen umiddelbart, og venter en random backoff. La oss si A backoff = 0,3, B backoff = 0,5.</p>
+          <p>Kanalen er ledig igjen tidlig — la oss si t≈0,3. A starter på nytt ved t=0,3+0,3 = 0,6. Lykkes, ferdig t=1,6.</p>
+          <p>B er klar etter sin backoff ved 0,3+0,5 = 0,8 — ser kanal opptatt (A sender), venter. Etter A ferdig (t=1,6), kanal blir ledig — men nå starter også C (klar t=1,2, har ventet) og D (klar t=1,5). Avhengig av detaljer kolliderer de igjen og må backoff på nytt.</p>
+          <p><strong>Forskjellen:</strong> ved kollisjon i CSMA/CD avbrytes sendingen umiddelbart i stedet for at hele pakken «sløses» bort. Ved kollisjon på t≈0,1 mellom A og B er kanalen ledig igjen ved t≈0,3 i stedet for t=1. Det betyr mer tid til vellykkede sendinger — høyere effektivitet, særlig under høy belastning.</p>
+          <p>(Eksakte tider avhenger av antatt backoff. Studenten skal vise resonnementet og demonstrere at CD reduserer kollisjons­kostnaden.)</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6.3 — CSMA/CD</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 5 — TLS short -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 5</span>
+      <span class="exam-q__points">12 poeng</span>
+      <span class="exam-q__topic">Kap. 8 · TLS · 9 · RTP</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) Forklar kort hvilke <em>tre</em> sikkerhets­tjenester TLS leverer til applikasjonen som bruker det. Hvorfor er TLS bygget over TCP og ikke over UDP i utgangspunktet? (4p)</p>
+      <p class="q-text">b) RTP (Real-time Transport Protocol) brukes typisk over UDP for sanntidsapplikasjoner som VoIP. Forklar hvilke <em>to</em> felt RTP-headeren tilfører som lag-3- og lag-4-headere ikke gir, og hvorfor disse er nødvendige for media-applikasjonen. (4p)</p>
+      <p class="q-text">c) En CDN (Content Distribution Network) plasserer kopier av populært innhold på mange geografisk spredte servere. Forklar to fordeler dette gir sammenlignet med å betjene alt fra én sentral server. (4p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) TLS-tjenester:</strong></p>
+          <ol>
+            <li><strong>Konfidensialitet:</strong> data krypteres med en symmetrisk sesjonsnøkkel.</li>
+            <li><strong>Integritet:</strong> hver melding inkluderer en MAC (Message Authentication Code) som mottaker verifiserer.</li>
+            <li><strong>Autentisering:</strong> server (og evt. klient) autentiseres via X.509-sertifikater fra en betrodd CA.</li>
+          </ol>
+          <p><strong>Hvorfor over TCP:</strong> TLS bygger på pålitelig, in-order levering — ellers ville krypterte/MAC-validerte meldinger måtte håndtere reordering og tap selv. UDP-varianten av TLS kalles <em>DTLS</em> og kompenserer for dette med ekstra mekanismer; den brukes blant annet i WebRTC og VPN-er.</p>
+
+          <p><strong>b) RTP-headerens to nøkkelfelt:</strong></p>
+          <ul>
+            <li><strong>Sekvensnummer:</strong> RTP teller pakker, slik at mottaker kan oppdage tap og rekke­følge­problemer (UDP gir ikke dette).</li>
+            <li><strong>Tidsstempel (timestamp):</strong> indikerer når mediaprøven ble laget hos avsender. Mottaker bruker dette til å spille av media på riktig tidspunkt — kritisk for både playout-buffer og synkronisering av flere strømmer (audio + video).</li>
+          </ul>
+          <p>Uten disse to feltene måtte applikasjonen selv legge til lignende informasjon i payload — RTP standardiserer det.</p>
+
+          <p><strong>c) CDN-fordeler:</strong></p>
+          <ol>
+            <li><strong>Lavere ende-til-ende-forsinkelse for klienten</strong> — klienten betjenes fra en kopi nær geografisk, ikke fra én sentral server tvers over jorda.</li>
+            <li><strong>Avlasting av opphavs­serveren og høyere total kapasitet</strong> — populært innhold (videoer, oppdateringer) serveres parallelt fra mange CDN-noder. Mindre risiko for overbelastning ved trafikktopper, og mindre båndbredde ut av opphavs­datasenter.</li>
+          </ol>
+          <p>(Andre gyldige svar: bedre robusthet ved nodefeil, lavere transit-kostnader for ISP-er, bedre kvalitet for video-streaming pga lavere RTT og mindre jitter.)</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.6 — TLS</a> · <a href="../kap9/innhold.html">Kap. 9.3 — RTP</a> · <a href="../kap2/innhold.html">Kap. 2 — CDN</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Vår 2026 · Prediksjon 3 av 3</p>
+    <p style="margin-top: 12px; font-size: 14px;"><a href="../eksamen-prep/">&larr; Tilbake til prediksjons­analysen</a></p>
+  </div>
+</footer>
+<script src="../chat-widget.js"></script>
+<script src="../nav-search.js"></script>
+<script src="exam-quiz.js" defer></script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>
