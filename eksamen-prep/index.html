@@ -240,6 +240,7 @@
     <li><span class="toc-num">05</span><a href="#kapittel">Per kapittel</a></li>
     <li><span class="toc-num">06</span><a href="#unngas">Hva som <em>ikke</em> kommer</a></li>
     <li><span class="toc-num">07</span><a href="#strategi">Eksamensstrategi</a></li>
+    <li><span class="toc-num">08</span><a href="#drill">Flashcards</a></li>
   </ol>
 </div>
 </nav>
@@ -844,6 +845,635 @@
   <p class="margin-note"><strong>Realistisk poengmål:</strong> Hvis du behersker Topp 10-tabellen + kap 4-blokken, ligger 60–70 poeng på bordet før du har sett de 30 % minst sannsynlige oppgavene. Eksamen handler ikke om å kunne <em>alt</em> — den handler om å treffe det som <em>blir</em> spurt om.</p>
 </div>
 </section>
+
+<!-- ============ FLASHCARDS — TOPP 10 DRILL ============ -->
+<section id="drill" class="flashcards-section">
+<div class="container">
+  <div class="section-badge">Drill · Topp 10-tema</div>
+  <h2>Drill det <em>høyt sannsynlige</em></h2>
+  <p class="section-intro">Cirka 50 kort som dekker alle Topp 10-tema fra prognosen over. Hvert kort er selvbærende — du skal kunne svare uten å bla tilbake. Klikk for å snu, <strong>&larr; / &rarr;</strong> for å bla, <strong>mellomrom</strong> for å snu, <strong>R</strong> for å shuffle.</p>
+
+  <div class="flashcards" data-flashcards>
+    <div class="fc-stage">
+      <article class="fc-card" tabindex="0" role="button" aria-label="Flashcard — klikk for å snu">
+        <div class="fc-face fc-front">
+          <div class="fc-label">Spørsmål</div>
+          <p class="fc-text" data-fc-front-display aria-live="polite">&nbsp;</p>
+          <div class="fc-hint">Klikk eller mellomrom for å vise svar</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-label">Svar</div>
+          <div class="fc-text" data-fc-back-display aria-live="polite">&nbsp;</div>
+        </div>
+      </article>
+    </div>
+
+    <div class="fc-controls">
+      <button class="fc-btn fc-prev" type="button" aria-label="Forrige kort" title="Forrige (←)">&larr;</button>
+      <div class="fc-progress">
+        <span class="fc-counter">1 / 1</span>
+        <div class="fc-bar"><div class="fc-bar-fill"></div></div>
+      </div>
+      <button class="fc-btn fc-next" type="button" aria-label="Neste kort" title="Neste (→)">&rarr;</button>
+      <button class="fc-btn fc-shuffle" type="button" aria-label="Shuffle bunken" title="Shuffle (R)">&#8635;</button>
+    </div>
+
+    <ol class="fc-deck" hidden>
+
+      <!-- ===== UDP vs TCP (1–6) ===== -->
+      <li data-card>
+        <div data-fc-front>Hvilke tjenester gir <strong>UDP</strong> applikasjonen?</div>
+        <div data-fc-back>
+          <p><strong>Gir:</strong> Best effort-levering (datagram kan tapes, omrokkeres, dupliseres) og portbasert multipleksing. Lite header (8 byte), ingen oppkobling.</p>
+          <p><strong>Gir IKKE:</strong> Pålitelighet, flytkontroll, overbelastningskontroll, gjennomstrømnings­garanti, sanntidslevering.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke tjenester gir <strong>TCP</strong> som UDP <em>ikke</em> gir?</div>
+        <div data-fc-back>
+          <p>Pålitelig, in-order bytestrøm (gjenoverføring ved tap), <em>flytkontroll</em> (mottakers <code>rwnd</code>) og <em>overbelastningskontroll</em> (<code>cwnd</code>, slow start, AIMD).</p>
+          <p>TCP gir derimot <em>ikke</em> båndbredde­garanti eller sanntids­garanti — det er en typisk feilkrysslapp på eksamen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forskjellen mellom <strong>flow control</strong> og <strong>congestion control</strong> i TCP?</div>
+        <div data-fc-back>
+          <p><strong>Flow control:</strong> mellom <em>sender og mottaker</em>. Beskytter mottakers buffer. Styres av <code>rwnd</code>-feltet i ACK.</p>
+          <p><strong>Congestion control:</strong> mellom <em>sender og nettverket</em>. Beskytter rutere fra overbelastning. Styres av <code>cwnd</code> (slow start, AIMD, fast recovery).</p>
+          <p><strong>Klassisk eksempel:</strong> «A sender 1 Gbps, B leser 600 Mbps» → rwnd → 0, sender stopper. Det er flow control, ikke congestion.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilken <strong>transportprotokoll</strong> bruker DNS, DHCP, SMTP, HTTP, HTTPS, IMAP?</div>
+        <div data-fc-back>
+          <ul>
+            <li><strong>DNS:</strong> primært UDP (port 53), TCP for store svar / soneoverføring.</li>
+            <li><strong>DHCP:</strong> UDP (port 67/68).</li>
+            <li><strong>SMTP:</strong> TCP (port 25, eller 465/587 for submit).</li>
+            <li><strong>HTTP:</strong> TCP (port 80).</li>
+            <li><strong>HTTPS:</strong> TCP (port 443) — HTTP over TLS.</li>
+            <li><strong>IMAP:</strong> TCP (port 143). POP3: TCP (110).</li>
+          </ul>
+          <p>Tommelfingerregel: pålitelighetskrevende = TCP, små/sanntid = UDP.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Nevn minst tre <strong>fordeler ved UDP over TCP</strong> i visse applikasjoner.</div>
+        <div data-fc-back>
+          <ol>
+            <li>Ingen oppkoblings­forsinkelse (ingen 3-veis håndtrykk).</li>
+            <li>Mindre header-overhead (8 byte vs 20 byte).</li>
+            <li>Ingen tilstand på server → kan håndtere flere klienter.</li>
+            <li>Ingen retransmisjon → bedre for sanntid (VoIP, spill) der gammel data er ubrukelig.</li>
+            <li>Applikasjonen styrer selv hva som skal skje ved tap.</li>
+          </ol>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>To segmenter sendes med TCP fra A til B. Første har <code>seq=81</code>, andre har <code>seq=121</code>. Hvor mange byte data var i første segment?</div>
+        <div data-fc-back>
+          <p><strong>40 byte.</strong></p>
+          <p>TCP-sekvensnumre teller byte. Andre segments seq = første seq + antall byte i første. <code>121 − 81 = 40</code>.</p>
+        </div>
+      </li>
+
+      <!-- ===== Forsinkelse (7–13) ===== -->
+      <li data-card>
+        <div data-fc-front>Formelen for <strong>overførings­forsinkelse</strong> for én pakke?</div>
+        <div data-fc-back>
+          <p><code>d_trans = L / R</code> — pakkestørrelsen i bits delt på link-raten i bits/s.</p>
+          <p><strong>Felle:</strong> hvis L er gitt i byte, gang med 8 først.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>En pakke på <strong>8000 bits</strong> sendes over en lenke med rate <strong>100 Mbps</strong>. Hva er overførings­forsinkelsen?</div>
+        <div data-fc-back>
+          <p><code>d_trans = 8000 / (100·10⁶) = 8·10⁻⁵ s = 80 µs</code>.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er forskjellen mellom <strong>overføringsforsinkelse</strong> og <strong>utbredelses­forsinkelse</strong> (propagation delay)?</div>
+        <div data-fc-back>
+          <p><strong>Overføring:</strong> tiden for å skyve <em>alle bits</em> ut på lenken — <code>L/R</code>. Avhenger av pakkestørrelse og linkrate.</p>
+          <p><strong>Utbredelse:</strong> tiden for én bit å reise fra én ende til den andre — <code>d/s</code> (lengde / propagasjonshastighet, typisk ~2·10⁸ m/s i fiber). Avhenger av <em>fysisk avstand</em>, ikke pakkestørrelse.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>To verter er koblet via én <strong>store-and-forward-svitsj</strong>. Begge lenker er 100 Mbps. Pakken er 10 000 bits. Total forsinkelse (uten kø, prosessering, propagering)?</div>
+        <div data-fc-back>
+          <p><code>L/R₁ + L/R₂ = 10 000/10⁸ + 10 000/10⁸ = 100 µs + 100 µs = <strong>200 µs</strong></code>.</p>
+          <p><strong>Hvorfor ikke <code>L/(R₁+R₂)</code>:</strong> svitsjen må motta hele pakken før den kan starte å sende videre — derfor adderes L/R per lenke.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front><strong>P pakker</strong> sendes back-to-back gjennom <strong>N store-and-forward-rutere</strong>. Alle lenker har rate R og hver pakke er L bits. Hva er minimum ende-til-ende-tid?</div>
+        <div data-fc-back>
+          <p><code>(N + P − 1) · L/R</code>.</p>
+          <p><strong>Intuisjon:</strong> Første pakke bruker <code>N·L/R</code> for å nå destinasjonen. Hver av de neste (P−1) pakkene ankommer én L/R senere — pipelining. <em>Spesialtilfeller:</em> P=1 → <code>N·L/R</code>; N=1 → <code>P·L/R</code>.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar hva en pakke møter på vei gjennom en ruter — de <strong>fire forsinkelses­komponentene</strong>.</div>
+        <div data-fc-back>
+          <ol>
+            <li><strong>Prosesserings­forsinkelse</strong> — tid å lese header, sjekke bitfeil, slå opp utport.</li>
+            <li><strong>Køforsinkelse</strong> — venting i ut-kø bak andre pakker. Variabel.</li>
+            <li><strong>Overførings­forsinkelse</strong> — <code>L/R</code> for å sende alle bits ut.</li>
+            <li><strong>Utbredelses­forsinkelse</strong> — <code>d/s</code> langs lenken.</li>
+          </ol>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Klient-server filfordeling: en fil på <strong>F = 10 Gbit</strong> sendes til <strong>N = 100</strong> klienter. Server uplink <code>u_s = 1 Gbps</code>, hver klient nedlasting <code>d_i = 200 Mbps</code>. Hva er minimum tid?</div>
+        <div data-fc-back>
+          <p><strong>1000 s.</strong></p>
+          <p>Formel: <code>D = max(N·F/u_s, F/d_min)</code></p>
+          <ul>
+            <li>Server-sending: <code>100·10/1 = 1000 s</code>.</li>
+            <li>Tregeste klient: <code>10/0,2 = 50 s</code>.</li>
+          </ul>
+          <p>Maks = 1000 s. Server er flaskehalsen.</p>
+        </div>
+      </li>
+
+      <!-- ===== Sockets (14–20) ===== -->
+      <li data-card>
+        <div data-fc-front>Hvilken <strong>socket-type</strong> brukes for TCP og hvilken for UDP?</div>
+        <div data-fc-back>
+          <ul>
+            <li><strong>TCP:</strong> <code>socket(AF_INET, SOCK_STREAM)</code> — bytestrøm, oppkobling.</li>
+            <li><strong>UDP:</strong> <code>socket(AF_INET, SOCK_DGRAM)</code> — datagram, ingen oppkobling.</li>
+          </ul>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva gjør <strong><code>accept()</code></strong> på en TCP-server-socket?</div>
+        <div data-fc-back>
+          <p>Blokkerer til en klient kobler opp, og returnerer <em>en ny socket</em> dedikert til den ene klient­forbindelsen. Den opprinnelige lytte­socketen fortsetter å ta i mot nye oppkoblinger.</p>
+          <p><strong>Konsekvens:</strong> server med <em>K</em> aktive TCP-forbindelser har <em>K + 1</em> sockets totalt (1 lyttende + K forbindelses-sockets).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>En webserver har <strong>5 aktive TCP-forbindelser</strong> på port 80. Hvor mange sockets bruker server­prosessen?</div>
+        <div data-fc-back>
+          <p><strong>6 sockets:</strong> 1 lyttende «welcoming socket» + 5 forbindelses-sockets (én per klient, opprettet av <code>accept()</code>).</p>
+          <p><strong>Hvorfor:</strong> hver TCP-forbindelse identifiseres unikt av 4-tuple (kilde-IP, kilde-port, dest-IP, dest-port). Selv om alle 5 deler server-port 80, har de ulik klient-IP/port.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>En UDP-server har port 25565. Tre klienter (B, C, D) sender hver sitt UDP-segment med dest-port 25565. Hvor mange sockets trenger serveren?</div>
+        <div data-fc-back>
+          <p><strong>1 socket.</strong></p>
+          <p>UDP multiplekser på (dest-IP, dest-port) alene — alle innkommende segmenter til samme port havner i samme socket. Applikasjonen ser kilde-IP/port via <code>recvfrom()</code> og må selv huske hvem som skrev hva.</p>
+          <p><strong>Felle:</strong> «Host A kan ikke vite at segmentene kom fra to forskjellige hoster» — <em>usann</em>, kilde-IP/port leveres til app-laget.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar forskjellen mellom <strong>ServerSocket</strong> og <strong>ConnectionSocket</strong> i TCP.</div>
+        <div data-fc-back>
+          <p><strong>ServerSocket:</strong> den åpne lytte-porten serveren bruker for å ta i mot nye oppkoblings­forespørsler. Lever hele server­ets levetid.</p>
+          <p><strong>ConnectionSocket:</strong> opprettes av <code>accept()</code> for én spesifikk TCP-forbindelse. Brukes til å sende/motta data under den forbindelsens levetid, og lukkes når forbindelsen er ferdig.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor må TCP-server gjøre <code>accept()</code> per klient, mens UDP-server bare har én socket?</div>
+        <div data-fc-back>
+          <p>TCP er <em>forbindelses­orientert</em> — hver klient har en egen tilstand (sekvensnumre, vinduer, buffere). Det modelleres med en egen socket.</p>
+          <p>UDP er <em>tilstandsløs</em> — hvert datagram håndteres uavhengig. Én socket holder unna for alle klienter.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva identifiserer en TCP-forbindelse <em>unikt</em>?</div>
+        <div data-fc-back>
+          <p>4-tuple: <code>(kilde-IP, kilde-port, dest-IP, dest-port)</code>.</p>
+          <p>Derfor kan tusen klienter til samme webserver dele server-port 80 uten konflikt — kilde-IP/port skiller dem.</p>
+        </div>
+      </li>
+
+      <!-- ===== Kapsling og lagdeling (21–24) ===== -->
+      <li data-card>
+        <div data-fc-front>Hva betyr <strong>encapsulation</strong> (kapsling) i protokollstakken?</div>
+        <div data-fc-back>
+          <p>Hvert lag legger sin egen <em>header</em> (og noen ganger trailer) rundt data fra laget over, og behandler hele resultatet som «payload» for sitt eget lag.</p>
+          <p>Application data → <em>+TCP-header</em> = segment → <em>+IP-header</em> = datagram → <em>+lenkelag-header/trailer</em> = ramme → bits på fysisk lenke.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Nevn de fem lagene i <strong>TCP/IP-modellen</strong> og en typisk protokoll i hvert.</div>
+        <div data-fc-back>
+          <ol>
+            <li><strong>Applikasjon:</strong> HTTP, SMTP, DNS, FTP.</li>
+            <li><strong>Transport:</strong> TCP, UDP.</li>
+            <li><strong>Nettverk:</strong> IP, ICMP.</li>
+            <li><strong>Lenke:</strong> Ethernet, Wi-Fi (802.11), ARP.</li>
+            <li><strong>Fysisk:</strong> kabling, signaler, modulasjon.</li>
+          </ol>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilket lag tilhører <strong>HTTP, TCP, UDP, IP, ICMP, ARP, Ethernet</strong>?</div>
+        <div data-fc-back>
+          <ul>
+            <li><strong>HTTP:</strong> applikasjonslag.</li>
+            <li><strong>TCP, UDP:</strong> transportlag.</li>
+            <li><strong>IP, ICMP:</strong> nettverkslag (ICMP bæres i IP, men er fortsatt nettverkslag — <em>ikke</em> transport).</li>
+            <li><strong>ARP:</strong> regnes som lenkelag — kobler IP til MAC.</li>
+            <li><strong>Ethernet, Wi-Fi:</strong> lenkelag.</li>
+          </ul>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvis et IP-datagram krysser <strong>5 rutere</strong> mellom kilde og destinasjon, over hvor mange <em>lenkelag-grensesnitt</em> reiser det?</div>
+        <div data-fc-back>
+          <p><strong>12 grensesnitt</strong> (én ut på kilde, to per ruter inn+ut, én inn på destinasjon = 1 + 5·2 + 1 = 12).</p>
+          <p>Felle: ramme-headeren byttes ut for hver lenke (ulik MAC), men IP-datagrammet er det samme hele veien.</p>
+        </div>
+      </li>
+
+      <!-- ===== Subnetting (25–32) ===== -->
+      <li data-card>
+        <div data-fc-front>Konvertér IP-adressen <strong>173.194.41.129</strong> til 32-bits binær.</div>
+        <div data-fc-back>
+          <p><code>10101101 11000010 00101001 10000001</code></p>
+          <p>173 = 128+32+8+4+1 = 10101101. 194 = 128+64+2 = 11000010. 41 = 32+8+1 = 00101001. 129 = 128+1 = 10000001.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Generell formel: hvor mange <strong>brukbare verter</strong> i et /x subnett?</div>
+        <div data-fc-back>
+          <p><code>2^(32−x) − 2</code></p>
+          <p>«−2» fordi nettverks­adressen (alle vertsbits = 0) og broadcast-adressen (alle vertsbits = 1) ikke kan tildeles en host.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Pugg verts­tabellen: <strong>brukbare verter</strong> i /24, /25, /26, /27, /28, /29, /30.</div>
+        <div data-fc-back>
+          <ul>
+            <li>/24 → 254</li>
+            <li>/25 → 126</li>
+            <li>/26 → 62</li>
+            <li>/27 → 30</li>
+            <li>/28 → 14</li>
+            <li>/29 → 6</li>
+            <li>/30 → 2</li>
+          </ul>
+          <p>Mønster: <code>2^(32−x) − 2</code>.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Gitt IP <code>192.168.2.108</code> og maske <code>/29</code>. Hva er <strong>subnett-adressen</strong>, og hva er <strong>broadcast-adressen</strong>?</div>
+        <div data-fc-back>
+          <p><strong>Subnett:</strong> 192.168.2.<strong>104</strong>. <strong>Broadcast:</strong> 192.168.2.<strong>111</strong>.</p>
+          <p>108 = 01101100. /29-maske siste oktett = 11111000 (= 248). AND → 01101000 = 104. Range 104–111: subnett 104, brukbare 105–110, broadcast 111.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <strong>broadcast-adressen</strong> til <code>172.18.16.0/21</code>?</div>
+        <div data-fc-back>
+          <p><strong>172.18.23.255</strong></p>
+          <p>/21 → 21 nett-bits → 11 vertsbits. Tredje oktett: 16 = 00010|000. Vertsbits = 3 LSB av 3. oktett + hele 4. oktett. Sett alle = 1 → 00010|111 = 23 i 3. oktett, 255 i siste.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Du har blokken <code>208.27.1.0/22</code> og må lage <strong>minst 12 subnett</strong>. Hvor mange brukbare verter får hvert subnett?</div>
+        <div data-fc-back>
+          <p><strong>62 verter per subnett.</strong></p>
+          <p>/22 har 10 verts­bits. For ≥12 subnett trengs <code>2⁴ = 16 ≥ 12</code> → 4 ekstra nettbits → /26. Verts­bits = 32 − 26 = 6. Brukbare = <code>2⁶ − 2 = 62</code>.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>I subnettet <code>223.1.3.0/29</code> — hvilke av disse adressene <em>kan ikke</em> tildeles en host? a) 223.1.3.6 &nbsp; b) 223.1.3.2 &nbsp; c) 223.1.3.16 &nbsp; d) 223.1.2.6 &nbsp; e) 223.1.3.7</div>
+        <div data-fc-back>
+          <p><strong>Ikke brukbare: c, d, e</strong> (og 223.1.3.0 hvis det var med).</p>
+          <ul>
+            <li><strong>c) 223.1.3.16:</strong> utenfor /29-blokken (dekker bare 0–7).</li>
+            <li><strong>d) 223.1.2.6:</strong> feil tredje oktett — annet subnett.</li>
+            <li><strong>e) 223.1.3.7:</strong> broadcast for blokken (siste adresse).</li>
+            <li><strong>a, b:</strong> brukbare host-adresser i 0–7 området.</li>
+          </ul>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Du har et router-grensesnitt med prefiks <code>129.241.56/21</code>. Subnett 1 trenger 1000 hosts; subnett 2 og 3 trenger hver 500 hosts. Foreslå tre adresser <em>a.b.c.d/x</em>.</div>
+        <div data-fc-back>
+          <p><strong>129.241.56.0/22, 129.241.60.0/23, 129.241.62.0/23</strong></p>
+          <ul>
+            <li>1000 hosts → trenger ≥10 verts­bits → /22 → 2¹⁰−2 = 1022 hosts. Range 56–59 (3. okt).</li>
+            <li>500 hosts → trenger ≥9 verts­bits → /23 → 2⁹−2 = 510 hosts. Første: 60–61. Andre: 62–63.</li>
+          </ul>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke <strong>private IP-blokker</strong> finnes (RFC 1918), og hva er <code>127.0.0.0/8</code>?</div>
+        <div data-fc-back>
+          <ul>
+            <li><code>10.0.0.0/8</code> — klasse A privat (16 mill. adresser).</li>
+            <li><code>172.16.0.0/12</code> — klasse B privat.</li>
+            <li><code>192.168.0.0/16</code> — klasse C privat (typisk hjemmenett).</li>
+            <li><code>127.0.0.0/8</code> — <strong>loopback</strong>, alltid 127.0.0.1 = «meg selv».</li>
+            <li><code>169.254.0.0/16</code> — link-local, brukes når DHCP feiler.</li>
+          </ul>
+        </div>
+      </li>
+
+      <!-- ===== DNS (33–37) ===== -->
+      <li data-card>
+        <div data-fc-front>Hva er <strong>hovedoppgaven</strong> til DNS, og hvilke <strong>to fundamentale komponenter</strong> består det av?</div>
+        <div data-fc-back>
+          <p><strong>Hovedoppgave:</strong> «directory service» — oversetter hostnames (f.eks. <code>www.ntnu.no</code>) til IP-adresser.</p>
+          <ol>
+            <li>En <em>distribuert database</em> implementert i et hierarki av DNS-tjenere.</li>
+            <li>En <em>applikasjons­lags-protokoll</em> som lar hosts spørre databasen (typisk over UDP port 53).</li>
+          </ol>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er formatet til en <strong>DNS Resource Record</strong> (RR), og hva betyr de viktigste typene?</div>
+        <div data-fc-back>
+          <p>Format: <code>(Name, Value, Type, TTL)</code>.</p>
+          <ul>
+            <li><strong>A:</strong> Name = hostname, Value = IPv4.</li>
+            <li><strong>AAAA:</strong> IPv6-adresse.</li>
+            <li><strong>NS:</strong> Name = domene, Value = autoritativ navneserver.</li>
+            <li><strong>CNAME:</strong> Name = alias, Value = kanonisk hostname.</li>
+            <li><strong>MX:</strong> Name = domene, Value = mailserver.</li>
+          </ul>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Beskriv de <strong>tre nivåene</strong> i DNS-hierarkiet.</div>
+        <div data-fc-back>
+          <ol>
+            <li><strong>Root-DNS-tjenere:</strong> 13 logiske tjenere på Internett (hver er egentlig et nett av replikerte servere for redundans/sikkerhet).</li>
+            <li><strong>Top-Level Domain (TLD):</strong> ansvarlig for toppdomene som <code>com</code>, <code>org</code>, <code>net</code>, <code>edu</code> samt landkoder som <code>no</code>, <code>uk</code>, <code>fr</code>.</li>
+            <li><strong>Autoritative DNS-tjenere:</strong> hver organisasjon med offentlige hosts har sine egne records (typisk primary + secondary).</li>
+          </ol>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva ville være <strong>problemet</strong> med å erstatte hierarkisk DNS med <em>én sentral server</em>?</div>
+        <div data-fc-back>
+          <ol>
+            <li><strong>Single point of failure:</strong> serveren faller, hele Internett påvirkes.</li>
+            <li><strong>Trafikk-overload:</strong> én server må håndtere alle DNS-queries globalt.</li>
+            <li><strong>Avstand:</strong> queries fra fjerne klienter får høy forsinkelse.</li>
+            <li><strong>Vedlikehold:</strong> upraktisk og feilutsatt å holde records for alle Internett-hosts.</li>
+          </ol>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Du setter opp en ny webserver med eget unikt domenenavn. Beskriv kort prosessen for å få info inn i DNS.</div>
+        <div data-fc-back>
+          <ol>
+            <li>Bruk en <strong>registrar</strong>. Registraren sjekker at domenet er unikt.</li>
+            <li>Oppgi navn og IP til <em>primary</em> og <em>secondary</em> autoritative DNS-tjenere.</li>
+            <li>Registraren legger en <strong>NS-record</strong> + <strong>A-record</strong> for hver autoritative tjener inn i relevant TLD-tjener.</li>
+            <li>Du legger selv en <strong>A-record</strong> for webserveren og en <strong>MX-record</strong> for mailserver i dine egne autoritative DNS-tjenere.</li>
+          </ol>
+        </div>
+      </li>
+
+      <!-- ===== Pakke vs kretskobling (38–40) ===== -->
+      <li data-card>
+        <div data-fc-front>Sant eller usant: <em>«Krets­svitsjede nett kan garantere ende-til-ende-bånd­bredde for varigheten av en samtale, mens pakke­svitsjede typisk ikke kan det.»</em></div>
+        <div data-fc-back>
+          <p><strong>Sant.</strong></p>
+          <p>Krets­svitsjing reserverer ressurser per forbindelse (TDM/FDM-slots). Pakke­svitsjing deler lenkene <em>statistisk</em> — pakker konkurrerer om kapasitet i kø, og det finnes ingen reservasjon.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva betyr <strong>store-and-forward</strong> i en pakke­svitsj eller ruter?</div>
+        <div data-fc-back>
+          <p>Svitsjen mottar <em>hele pakken</em> i en buffer før den kan begynne å sende den videre på neste lenke. Det innfører <code>L/R</code> ekstra forsinkelse per ruter.</p>
+          <p><strong>Alternativ:</strong> «cut-through» — start å sende ut etter at <em>headeren</em> er lest. Brukes i noen høy-ytelses-svitsjer, men ikke standard for IP-rutere.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>En fil på <strong>1400 KB</strong> sendes over et linje­svitsjet nett som krever <strong>300 ms</strong> oppsett. Stien går over 5 lenker à 1 Mbps. Hvor lang tid tar det minst?</div>
+        <div data-fc-back>
+          <p><strong>11,5 sekunder.</strong></p>
+          <p>Linjesvitsj: én dedikert krets ende-til-ende. Overførings­tid teller bare på sendersiden, ikke per lenke. <code>1400·1024·8 / 10⁶ ≈ 11,2 s</code> + 0,3 s oppsett = 11,5 s.</p>
+          <p>(Propagasjon ekskludert siden lenke­lengde ikke er gitt.)</p>
+        </div>
+      </li>
+
+      <!-- ===== Sikkerhet (41–48) ===== -->
+      <li data-card>
+        <div data-fc-front>Hvilke er <strong>ønskede egenskaper</strong> for sikker kommunikasjon?</div>
+        <div data-fc-back>
+          <ul>
+            <li><strong>Konfidensialitet</strong> (kun mottaker kan lese).</li>
+            <li><strong>Meldings­integritet</strong> (mottaker oppdager om innhold er endret).</li>
+            <li><strong>Endepunkt-autentisering</strong> (sender er den han utgir seg for).</li>
+            <li><strong>Operasjonell sikkerhet</strong> (tilgjengelighet, beskytte infra mot DoS osv.).</li>
+          </ul>
+          <p><strong>Felle:</strong> «Public key cryptography» er en <em>teknikk</em>, ikke en egenskap. «Høy båndbredde» er aldri en sikkerhets­egenskap.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>15 personer skal kommunisere parvis konfidensielt med <strong>symmetriske nøkler</strong>. Hvor mange unike nøkler trengs?</div>
+        <div data-fc-back>
+          <p><strong>105 nøkler.</strong></p>
+          <p>Formel: <code>N(N−1)/2</code>. For N=15: <code>15·14/2 = 105</code>.</p>
+          <p>Hvert par må dele én unik hemmelig nøkkel.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>15 personer bruker nå <strong>offentlig nøkkel</strong>-kryptografi parvis. Hvor mange nøkler er nødvendige?</div>
+        <div data-fc-back>
+          <p><strong>30 nøkler</strong> (ett par per person: én privat + én offentlig).</p>
+          <p>Det er motivasjonen for offentlig nøkkel: med PKI vokser nøkkel­volumet lineært (<em>2N</em>), ikke kvadratisk (<em>N(N−1)/2</em>).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke handlinger kan en angriper (<strong>Trudy</strong>) utføre på en kommunikasjons­kanal?</div>
+        <div data-fc-back>
+          <p>Alt — derfor trengs både kryptografi og integritets­mekanismer:</p>
+          <ul>
+            <li><strong>Sniffing</strong> — avlytte og lagre kontroll- og datameldinger.</li>
+            <li><strong>Sletting</strong> av meldinger.</li>
+            <li><strong>Modifikasjon</strong> av innhold.</li>
+            <li><strong>Innsetting</strong> av nye, fabrikkerte meldinger.</li>
+          </ul>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forskjell mellom <strong>symmetrisk</strong> og <strong>offentlig</strong> nøkkel-kryptografi?</div>
+        <div data-fc-back>
+          <p><strong>Symmetrisk:</strong> én delt hemmelig nøkkel for både kryptering og dekryptering (AES, DES). Rask, men nøkkel­distribusjon er problemet.</p>
+          <p><strong>Offentlig nøkkel:</strong> nøkkelpar (offentlig + privat). Krypter med offentlig, dekrypter med privat (RSA). Løser nøkkel­distribusjon, men er ~1000× tregere.</p>
+          <p><strong>I praksis:</strong> bruk offentlig nøkkel for å utveksle en symmetrisk session key (TLS-handshake), så symmetrisk for selve dataene.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <strong>hovedformålet</strong> med en brannmur?</div>
+        <div data-fc-back>
+          <p>Å <strong>blokkere uautorisert tilgang</strong> til/fra et nett ved å filtrere pakker basert på regler.</p>
+          <p><strong>Felle:</strong> «Krypterer data» er feil — det er TLS/IPsec sin jobb. «Tilbyr VPN» er en bonus, ikke hovedformålet.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Cæsar-cipher med <strong>k=7</strong>: kod ordet <em>«Protect»</em>.</div>
+        <div data-fc-back>
+          <p><strong>«Wyvalja»</strong></p>
+          <p>Skift hver bokstav 7 plasser fram (mod 26): P→W, r→y, o→v, t→a, e→l, c→j, t→a.</p>
+          <p>Formel: <code>(x + 7) mod 26</code> der A=0, B=1, …, Z=25.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <strong>meldings­integritet</strong>, og hvordan forsterkes den med en MAC?</div>
+        <div data-fc-back>
+          <p><strong>Meldings­integritet:</strong> mottaker kan oppdage om meldingen — kryptert eller ikke — er <em>endret i transit</em>.</p>
+          <p><strong>MAC (Message Authentication Code):</strong> kryptografisk hash av meldingen kombinert med en <em>delt hemmelig nøkkel</em>. Bare partene som kjenner nøkkelen kan lage en gyldig MAC, så endringer eller fabrikkering avsløres.</p>
+        </div>
+      </li>
+
+      <!-- ===== Svitsj/ruter/ARP (49–53) ===== -->
+      <li data-card>
+        <div data-fc-front>På hvilket lag opererer en <strong>svitsj</strong>, og hvilke adresser ser den på?</div>
+        <div data-fc-back>
+          <p><strong>Lag 2 (lenkelaget)</strong>. Videresender rammer basert på <em>MAC-adresser</em>.</p>
+          <p><strong>Felle:</strong> «Svitsjer kobler nett, rutere kobler enheter» — feil. Det er motsatt: svitsj kobler enheter <em>innen</em> et nett, ruter kobler ulike nett.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>På hvilket lag opererer en <strong>ruter</strong>, og hvilke adresser ser den på?</div>
+        <div data-fc-back>
+          <p><strong>Lag 3 (nettverkslaget)</strong>. Videresender datagram basert på <em>IP-adresser</em>, etter oppslag i forwarding-tabellen (lengste prefiks-match).</p>
+          <p>Ruter har sin egen MAC og IP per grensesnitt — i motsetning til svitsj som er <em>transparent</em> (har verken).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <strong>ARP</strong> (Address Resolution Protocol) og når brukes det?</div>
+        <div data-fc-back>
+          <p>ARP oversetter en <strong>IP-adresse til en MAC-adresse</strong> i samme lokale subnett.</p>
+          <p>Når en host vil sende til neste hopp (default gateway eller en host i samme subnett), må den vite MAC-en for å bygge Ethernet-rammen. ARP-tabellen i hver host/ruter bufrer mappingen med en timeout.</p>
+          <p><strong>Begrensning:</strong> ARP fungerer bare innen subnett — for IP utenfor subnettet ARP-er hosten gateway-IP.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forklar hvordan en <strong>linklags-svitsj</strong> bygger og bruker switch-tabellen sin (self-learning).</div>
+        <div data-fc-back>
+          <ul>
+            <li>Når en ramme ankommer, leses <em>kilde-MAC</em>. Svitsjen lagrer (kilde-MAC, inn-port, tidspunkt) — det er hvordan den lærer hvor folk er.</li>
+            <li>For dest-MAC: slå opp i tabell.
+              <ul>
+                <li>Ikke i tabell → <strong>broadcast</strong> til alle porter unntatt inngang.</li>
+                <li>I tabell, peker mot inngangsport → <strong>drop</strong> (mottaker er på samme segment).</li>
+                <li>I tabell, annen port → <strong>send dit</strong>.</li>
+              </ul>
+            </li>
+            <li>Oppføringer slettes etter timeout — så tabellen holdes dynamisk og <em>plug-and-play</em>.</li>
+          </ul>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Sant eller usant: <em>«Både IP- og MAC-adresser trengs for kommunikasjon over Internett, og IP kan endres mens MAC er konstant.»</em></div>
+        <div data-fc-back>
+          <p><strong>Sant.</strong></p>
+          <ul>
+            <li>IP-adresser brukes til ende-til-ende-ruting på lag 3.</li>
+            <li>MAC-adresser brukes til lokal levering på lag 2 — bare innen ett subnett.</li>
+            <li>IP kan endres når en enhet flytter til et annet nett (DHCP); MAC er fastbrent i NIC-en.</li>
+          </ul>
+        </div>
+      </li>
+
+      <!-- ===== Trådløst — RTS/CTS, hidden terminal, CSMA/CA (54–58) ===== -->
+      <li data-card>
+        <div data-fc-front>Hva er <strong>skjult terminal-problemet</strong> i trådløse nett?</div>
+        <div data-fc-back>
+          <p>To noder (A og C) kan ikke høre hverandre, men er begge innen rekkevidde av en tredje (B). Når A og C sender til B samtidig, ser de ingen «opptatt»-signal og kolliderer hos B — uten å vite det.</p>
+          <p>Standard CSMA hjelper ikke fordi den «lytter før send»-mekanikken bare ser sendinger fra naboer.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er <strong>RTS/CTS</strong> for, og hvilket problem løser det?</div>
+        <div data-fc-back>
+          <p><strong>RTS</strong> (Request To Send) sendes fra avsender til mottaker; <strong>CTS</strong> (Clear To Send) returnerer fra mottaker. Når naboer hører CTS, holder de seg stille i den varigheten.</p>
+          <p><strong>Problem som løses:</strong> skjult terminal — selv om to sendere ikke hører hverandre, hører de begge mottakerens CTS og avstår fra å sende samtidig.</p>
+          <p><strong>Felle:</strong> RTS/CTS eliminerer <em>ikke</em> alle kollisjoner (RTS-pakkene kan fortsatt kollidere), men dramatisk reduserer dem.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forskjell mellom <strong>CSMA/CD</strong> og <strong>CSMA/CA</strong>?</div>
+        <div data-fc-back>
+          <p><strong>CSMA/CD</strong> (kabelnett, Ethernet): «Carrier Sense, Collision Detection». Lytt før send; ved kollisjon — <em>avbryt</em> umiddelbart, send jam-signal, vent random backoff.</p>
+          <p><strong>CSMA/CA</strong> (WiFi 802.11): «Carrier Sense, Collision Avoidance». Random backoff-teller <em>før</em> sending pluss IFS-mellomrom som gir prioritet til ACK/RTS/CTS. Reduserer kollisjoner, men eliminerer dem ikke.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor brukes <strong>ikke CSMA/CD</strong> i WiFi?</div>
+        <div data-fc-back>
+          <ol>
+            <li><strong>Signal-asymmetri:</strong> mottatt signal hos sender er typisk &lt;&lt; eget sendt signal — kostbart å oppdage andres samtidige sending.</li>
+            <li><strong>Skjult terminal + fading:</strong> en kollisjon hos mottaker er ikke nødvendigvis synlig for sender.</li>
+          </ol>
+          <p>Derfor brukes CSMA/CA + eksplisitte ACK-er: hver vellykket dataramme bekreftes, og uteblitt ACK trigger retransmisjon.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Maksimal effektivitet: <strong>Pure ALOHA</strong> vs <strong>Slotted ALOHA</strong>?</div>
+        <div data-fc-back>
+          <p><strong>Pure ALOHA:</strong> ~18 % (<code>1/(2e)</code>) — sender hver gang du har data, ingen synkronisering.</p>
+          <p><strong>Slotted ALOHA:</strong> ~37 % (<code>1/e</code>) — start sending kun ved begynnelsen av et tids-slot.</p>
+          <p><strong>Hvorfor 2× bedre:</strong> Slotted halverer kollisjons-vinduet (kun overlapp i samme slot, ikke før+etter).</p>
+        </div>
+      </li>
+
+    </ol>
+  </div>
+</div>
+</section>
 </main>
 
 <footer>
@@ -855,5 +1485,6 @@
 </footer>
 
 <script src="../nav-search.js"></script>
+<script src="../flashcards.js"></script>
 </body>
 </html>
