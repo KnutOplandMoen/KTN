@@ -15,7 +15,8 @@ Dette dokumentet er bygget fra [eks1.md](eks1.md), [eks2.md](eks2.md) og [eks3.m
 | Pakke- vs kretskobling, store-and-forward | x | x | | ★★ |
 | Kapsling og lagdeling | x | x | x | ★★★ |
 | HTTP / web-cache | x | x | | ★★ |
-| HTTP vs SMTP, e-post-kjede (SMTP/IMAP) | x | | x | ★★ |
+| HTTP vs SMTP (sammenligning) | x | | | ★ |
+| E-post-kjede (DHCP→DNS→SMTP→IMAP/HTTP, NTNU-scenario) | | | x | ★ (15 poeng på eks3) |
 | DNS (UDP/TCP, RR-format) | | x | x | ★★ |
 | UDP vs TCP-tjenester | x | x | x | ★★★ |
 | Sockets (TCP `SOCK_STREAM` vs UDP `SOCK_DGRAM`, `accept`, `connect`) | x | x | x | ★★★ |
@@ -117,26 +118,33 @@ Dette dokumentet er bygget fra [eks1.md](eks1.md), [eks2.md](eks2.md) og [eks3.m
 
 - [ ] **HTTP-streaming foretrekkes over UDP-streaming**: brannmurer blokkerer ofte UDP, HTTP gir pålitelighet via TCP
 
-### Middels sannsynlighet (★ — på 1 av 3 eksamener, men «klassiske» oppgaver)
+### Middels sannsynlighet (★ — på 1 av 3 eksamener)
 
-- [ ] **Internet checksum**: legg sammen 16-bits ord, wrap carry tilbake, ta ones' complement
+> **Les denne seksjonen kritisk:** Disse oppgavene har dukket opp én gang. De er sortert under i to grupper — *fundamentale konsepter* (verdt å forstå uansett, gjenbrukes i andre tema) og *spesifikk/niche* (lavere prioritet — pugg svaret hvis du har overskudd, ellers hopp).
+
+**Fundamentale konsepter (lærebok-sentrale, kan komme i ny innpakning):**
+
+- [ ] **Svitsj (lag 2, MAC) vs ruter (lag 3, IP)** — fundamental skillelinje, dukker opp som påstander overalt
 - [ ] **TCP cwnd-graf**: identifisere intervaller med **slow start** (eksponentiell vekst fra 1 eller etter timeout) vs **AIMD/congestion avoidance** (lineær vekst etter triple dup ACK)
 - [ ] **TCP flytkontroll**: når app sender raskere enn mottaker leser → mottakers `rwnd` krymper → sender blir bremset
 - [ ] **Lengste prefiks-match**: gitt forwarding-tabell, finn korrekt utport per destinasjons-IP
 - [ ] **NAT-tabell**: fyll inn kilde/dest IP og port i de 4 punktene rundt NAT-ruteren
+- [ ] **Multiple access-klassifisering**:
+  - Channel partitioning: TDM, FDM, CDMA, FDMA
+  - Random access: Slotted ALOHA, Pure ALOHA, CSMA/CD (Ethernet), CSMA/CA (WiFi)
+  - Taking turns: Bluetooth (polling), FDDI/Token Ring
+- [ ] **Cæsar-chiffer med k=7**: «Protect your information» → shift hver bokstav 7 plasser frem (a→h, b→i, …); for dekoding shift 7 plasser tilbake. *Var 15 poeng på eks3 — hvis denne kommer på din eksamen er det stort utbytte for liten innsats*
+- [ ] **Symmetrisk vs offentlig nøkkel**: én delt hemmelig nøkkel vs **nøkkelpar** (offentlig + privat); offentlig krypterer, privat dekrypterer
+- [ ] **Brannmur**: hovedformål er **å blokkere uautorisert tilgang** (ikke å kryptere data)
+
+**Spesifikk/niche (pugg som flashcards hvis tid, ellers hopp):**
+
+- [ ] **Internet checksum**: legg sammen 16-bits ord, wrap carry tilbake, ta ones' complement
 - [ ] **IPv4 vs IPv6 header**: **flow label** finnes kun i IPv6; IPv4 har checksum, header length, options som IPv6 ikke har
 - [ ] **FIFO køforsinkelse**: gitt ankomst- og slot-starter, regne snitt køforsinkelse for valgte pakker
 - [ ] **Klient-server filfordeling**: minste tid = `max(N·F/u_s, F/d_min)` (eks2 Q1.2.5: 10 Gbit, 100 peers, u_s=1Gbps, d_i=200Mbps → max(1000s, 50s) = **1000s**)
 - [ ] **Pure ALOHA vs slotted ALOHA**: slotted dobler effektiviteten (~37% vs ~18%); slotted krever synkronisering, pure gjør det ikke
 - [ ] **SNR vs BER vs modulasjon**: lavere SNR → høyere BER; for samme SNR gir høyere bitrate-modulasjon høyere BER
-- [ ] **Multiple access-klassifisering**: 
-  - Channel partitioning: TDM, FDM, CDMA, FDMA
-  - Random access: Slotted ALOHA, Pure ALOHA, CSMA/CD (Ethernet), CSMA/CA (WiFi)
-  - Taking turns: Bluetooth (polling), FDDI/Token Ring
-- [ ] **Cæsar-chiffer med k=7**: «Protect your information» → shift hver bokstav 7 plasser frem (a→h, b→i, …); for dekoding shift 7 plasser tilbake
-- [ ] **Symmetrisk vs offentlig nøkkel**: én delt hemmelig nøkkel vs **nøkkelpar** (offentlig + privat); offentlig krypterer, privat dekrypterer
-- [ ] **Brannmur**: hovedformål er **å blokkere uautorisert tilgang** (ikke å kryptere data)
-- [ ] **Svitsj (lag 2, MAC) vs ruter (lag 3, IP)**
 
 ---
 
@@ -149,12 +157,10 @@ Dette dokumentet er bygget fra [eks1.md](eks1.md), [eks2.md](eks2.md) og [eks3.m
 | Pipelining: P pakker, N rutere | `(N + P − 1) · L / R` |
 | Brukbare verter i /x subnet | `2^(32−x) − 2` |
 | Symmetriske nøkler N personer parvis | `N(N−1)/2` |
-| Public-key par for N personer | `N` par (`2N` nøkler) |
 | Slotted ALOHA maks effektivitet | `1/e ≈ 0.37` |
 | Pure ALOHA maks effektivitet | `1/(2e) ≈ 0.18` |
 | Antall TCP-sockets på server med K åpne tilkoblinger | `K + 1` (1 lytte + K aktive) |
-| HTTP-port / SMTP-port / DNS-port | 80 / 25 / 53 |
-| DHCP-port (server / klient) | 67 / 68 |
+| HTTP-port / SMTP-port | 80 / 25 |
 
 ---
 
