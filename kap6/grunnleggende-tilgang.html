@@ -677,6 +677,92 @@
       Disse metodene unngår både kollisjoner og sløsing ved lav last. Ulempene er polling-overhead, forsinkelse, og — mest kritisk — et single point of failure: mister du master-noden eller mister du tokenet, så stopper alt opp. Bluetooth og gammel Token Ring bruker varianter av dette.
     </p>
 
+    <figure>
+      <svg viewBox="0 0 680 290" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="To «ta tur»-protokoller: polling med en master som spør hver slave etter tur, og token passing der en token sirkulerer i ring mellom nodene.">
+        <defs>
+          <marker id="ttArr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#1a1612"/>
+          </marker>
+        </defs>
+        <style>
+          .tl { font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; font-weight: 600; }
+          .cap { font-family: 'IBM Plex Mono', monospace; font-size: 11px; fill: #6b6257; }
+          .ttl { font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; font-weight: 700; fill: #1a1612; }
+        </style>
+
+        <!-- Panel A: Polling -->
+        <text x="170" y="22" text-anchor="middle" class="ttl">Polling</text>
+        <text x="170" y="38" text-anchor="middle" class="cap">master spør hver slave etter tur</text>
+
+        <!-- Slaves -->
+        <circle cx="70"  cy="100" r="22" fill="#e8e3d6" stroke="#1a1612" stroke-width="2"/>
+        <text x="70"  y="105" text-anchor="middle" class="tl">S1</text>
+        <circle cx="270" cy="100" r="22" fill="#e8e3d6" stroke="#1a1612" stroke-width="2"/>
+        <text x="270" y="105" text-anchor="middle" class="tl">S2</text>
+        <circle cx="270" cy="220" r="22" fill="#e8e3d6" stroke="#1a1612" stroke-width="2"/>
+        <text x="270" y="225" text-anchor="middle" class="tl">S3</text>
+        <circle cx="70"  cy="220" r="22" fill="#e8e3d6" stroke="#1a1612" stroke-width="2"/>
+        <text x="70"  y="225" text-anchor="middle" class="tl">S4</text>
+
+        <!-- Master -->
+        <circle cx="170" cy="160" r="30" fill="#b04428" stroke="#1a1612" stroke-width="2"/>
+        <text x="170" y="158" text-anchor="middle" class="tl" fill="#fff">M</text>
+        <text x="170" y="174" text-anchor="middle" class="cap" fill="#fff">master</text>
+
+        <!-- Polling arrows + sequence badges -->
+        <line x1="147" y1="140" x2="90"  y2="118" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ttArr)"/>
+        <circle cx="118" cy="129" r="10" fill="#b04428" stroke="#1a1612"/>
+        <text x="118" y="133" text-anchor="middle" class="cap" fill="#fff" font-weight="700">1</text>
+
+        <line x1="193" y1="140" x2="250" y2="118" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ttArr)"/>
+        <circle cx="222" cy="129" r="10" fill="#b04428" stroke="#1a1612"/>
+        <text x="222" y="133" text-anchor="middle" class="cap" fill="#fff" font-weight="700">2</text>
+
+        <line x1="193" y1="180" x2="250" y2="202" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ttArr)"/>
+        <circle cx="222" cy="191" r="10" fill="#b04428" stroke="#1a1612"/>
+        <text x="222" y="195" text-anchor="middle" class="cap" fill="#fff" font-weight="700">3</text>
+
+        <line x1="147" y1="180" x2="90"  y2="202" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ttArr)"/>
+        <circle cx="118" cy="191" r="10" fill="#b04428" stroke="#1a1612"/>
+        <text x="118" y="195" text-anchor="middle" class="cap" fill="#fff" font-weight="700">4</text>
+
+        <text x="170" y="262" text-anchor="middle" class="cap" font-style="italic">«Har du data? Vær så god.»</text>
+        <text x="170" y="278" text-anchor="middle" class="cap">faller M ut → alt stopper</text>
+
+        <!-- Divider -->
+        <line x1="340" y1="50" x2="340" y2="260" stroke="#a39886" stroke-width="1" stroke-dasharray="4,4"/>
+
+        <!-- Panel B: Token passing -->
+        <text x="510" y="22" text-anchor="middle" class="ttl">Token passing</text>
+        <text x="510" y="38" text-anchor="middle" class="cap">en token sirkulerer i ring</text>
+
+        <!-- Ring nodes -->
+        <circle cx="510" cy="100" r="24" fill="#3d6b3a" stroke="#1a1612" stroke-width="2"/>
+        <text x="510" y="105" text-anchor="middle" class="tl" fill="#fff">N1</text>
+        <circle cx="600" cy="160" r="24" fill="#e8e3d6" stroke="#1a1612" stroke-width="2"/>
+        <text x="600" y="165" text-anchor="middle" class="tl">N2</text>
+        <circle cx="510" cy="220" r="24" fill="#e8e3d6" stroke="#1a1612" stroke-width="2"/>
+        <text x="510" y="225" text-anchor="middle" class="tl">N3</text>
+        <circle cx="420" cy="160" r="24" fill="#e8e3d6" stroke="#1a1612" stroke-width="2"/>
+        <text x="420" y="165" text-anchor="middle" class="tl">N4</text>
+
+        <!-- Ring arrows (clockwise) -->
+        <path d="M 530 113 Q 580 118 583 144" fill="none" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ttArr)"/>
+        <path d="M 600 184 Q 600 210 530 211" fill="none" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ttArr)"/>
+        <path d="M 490 211 Q 420 210 420 184" fill="none" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ttArr)"/>
+        <path d="M 437 142 Q 440 118 490 113" fill="none" stroke="#1a1612" stroke-width="1.5" marker-end="url(#ttArr)"/>
+
+        <!-- Token (gold ribbon) on N1 -->
+        <rect x="486" y="60" width="48" height="16" rx="3" fill="#d4a82a" stroke="#1a1612" stroke-width="1.5"/>
+        <text x="510" y="72" text-anchor="middle" class="cap" font-weight="700" fill="#1a1612">TOKEN</text>
+        <line x1="510" y1="76" x2="510" y2="84" stroke="#1a1612" stroke-width="1.5"/>
+
+        <text x="510" y="262" text-anchor="middle" class="cap" font-style="italic">N1 har tokenet → bare N1 får sende</text>
+        <text x="510" y="278" text-anchor="middle" class="cap">tapes tokenet → alt stopper</text>
+      </svg>
+      <figcaption><strong>Figur 6.</strong> «Ta tur»-protokollene. <em>Polling</em> (venstre): master M sender en invitasjon til hver slave etter tur — slavene svarer aldri uten oppfordring. <em>Token passing</em> (høyre): en spesiell token-melding sirkulerer i ring; bare noden som holder tokenet har lov til å sende, og når den er ferdig sender den tokenet videre. Begge unngår kollisjoner, men har et felles svakt punkt: master eller token må være i live for at noen skal få sende.</figcaption>
+    </figure>
+
     <table>
       <thead>
         <tr><th>Protokoll</th><th>Lav last</th><th>Høy last</th><th>Eksempel</th></tr>
