@@ -126,7 +126,7 @@
   <h3>Fire faser i en TLS-forbindelse</h3>
   <p>Vi kan forstå TLS ved å bygge en forenklet «toy-TLS» (t-tls) og se hva hver fase trenger:</p>
 
-  <p>I <strong>TLS 1.3</strong> (pensum: kap. 8.6) brukes ofte <strong>ephemeral Diffie–Hellman</strong> (f.eks. på elliptiske kurver) til å utlede den delte hemmeligheten, og integritet/kryptering i <strong>AEAD</strong>-modus — ikke nødvendigvis «krypter Pre-Master Secret med serverens RSA-nøkkel» som i eldre forklaringsmodeller. Stegene under illustrerer likevel <em>hva</em> handshake og records løser: autentisering av partene, avtale av sesjonsnøkler, beskyttet dataoverføring og trygg nedkobling.</p>
+  <p>Læreboken (kap. 8.6) presenterer TLS i to nivåer. Først en forenklet «almost-TLS» (8.6.1) som viser de tre fasene <em>handshake → key derivation → data transfer</em>; deretter et mer fullstendig bilde (8.6.2) der nonces, algoritmeforhandling og handshake-beskyttelse er med. Pensum-modellen er den klassiske: klienten genererer en <strong>Pre-Master Secret</strong> og sender den kryptert med serverens offentlige RSA-nøkkel fra sertifikatet. (TLS 1.3 i den virkelige verden bruker som regel ephemeral Diffie–Hellman og AEAD i stedet — det er nevnt nederst som tilleggsinfo, men er ikke det 8.6 beskriver.)</p>
 
   <figure>
     <svg viewBox="0 0 760 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sekvensdiagram av TLS-håndtrykket mellom klient og server">
@@ -203,7 +203,7 @@
       <line x1="150" y1="525" x2="608" y2="525" stroke="#1a1612" stroke-width="1.75" stroke-dasharray="4,3" marker-end="url(#tlsArr)"/>
       <text x="380" y="519" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" fill="#1a1612" font-weight="600">close_notify (autentisert)</text>
     </svg>
-    <figcaption>TLS-håndtrykket i fire faser: <strong>(1)</strong> partene utveksler nonces og serverens sertifikat, klienten genererer Pre-Master Secret og sender den kryptert med serverens offentlige nøkkel. <strong>(2)</strong> Begge utleder samme master secret og fire retnings-spesifikke nøkler. <strong>(3)</strong> Applikasjonsdata sendes som records — kryptert og MAC-beskyttet med sekvensnummer. <strong>(4)</strong> Forbindelsen lukkes med en autentisert close_notify som hindrer truncation-angrep.</figcaption>
+    <figcaption>TLS-håndtrykket i fire faser: <strong>(1)</strong> partene utveksler nonces og serverens sertifikat, klienten genererer Pre-Master Secret og sender den kryptert med serverens offentlige nøkkel. <strong>(2)</strong> Begge utleder samme master secret og fire retnings-spesifikke nøkler — og avslutter håndtrykket ved å sende en HMAC over alle håndtrykksmeldingene, slik at nedgraderingsangrep oppdages. <strong>(3)</strong> Applikasjonsdata sendes som records — kryptert og MAC-beskyttet med sekvensnummer. <strong>(4)</strong> Forbindelsen lukkes med en autentisert close_notify som hindrer truncation-angrep.</figcaption>
   </figure>
 
   <div class="stepper" id="tlsStepper">
@@ -229,8 +229,20 @@
     <li><strong>M<sub>B</sub></strong> — MAC-nøkkel for data fra Bob til Alice</li>
   </ul>
 
+  <h3>Beskyttelse av selve håndtrykket</h3>
+  <p>Et siste, kritisk steg i håndtrykket: etter at MS er utledet sender <em>begge</em> parter en <strong>HMAC over alle håndtrykksmeldingene</strong> de har sendt og mottatt — beregnet med de nye HMAC-nøklene. Hvorfor? Den aller første meldingen (ClientHello) inneholder en liste over chiffer klienten støtter, og denne listen sendes i klartekst (ingen nøkler er avtalt enda). Trudy som mann-i-midten kunne strippe vekk de sterke algoritmene fra listen og tvinge partene til å velge en svak chiffer — et såkalt nedgraderingsangrep. Men når både klient og server etterpå sender en HMAC over <em>hele</em> håndtrykket, vil enhver slik manipulasjon gi forskjellige HMAC-er hos de to, og forbindelsen avbrytes.</p>
+
+  <h3>Hvorfor nonces? Connection replay attack</h3>
+  <p>Sekvensnumrene beskytter mot at enkeltpakker spilles av på nytt midt i en aktiv økt — men <em>ikke</em> mot at en hel økt spilles av på nytt en annen dag. Forestill deg at Trudy avlytter alle TLS-meldingene mellom Alice og Bob i dag. I morgen kobler hun seg mot Alice og spiller av nøyaktig den samme sekvensen av meldinger som Bob sendte. Uten nonces ville Alice utlede de samme sesjonsnøklene som i går, integritetssjekkene ville passere, og Alice (om hun er en e-handelsserver) ville registrert det samme kjøpet på nytt. Nonces løser dette: fordi klient og server velger nye, ferske nonces hver økt, blir master secret — og dermed alle sesjonsnøklene — forskjellige hver gang. De gamle records vil da feile integritetssjekken, og «connection replay»-angrepet stoppes.</p>
+
+  <div class="callout callout-blue">
+    <span class="label">Nonces vs. sekvensnumre</span>
+    <p><strong>Nonces</strong> beskytter mot replay av en <em>hel forbindelse</em> mellom økter.</p>
+    <p><strong>Sekvensnumre</strong> beskytter mot replay (eller omorganisering) av <em>enkeltpakker</em> innen samme aktive forbindelse.</p>
+  </div>
+
   <h3>Record-basert kryptering</h3>
-  <p>TCP gir en byte-strøm, men TLS kan ikke kryptere strømmen fortløpende — for da ville MAC-en først komme på slutten, og mottakeren ville ikke kunne sjekke integriteten før hele forbindelsen lukkes. Løsningen: TLS deler strømmen opp i <strong>records</strong>. Hver record inneholder data, en MAC for integritet, og en lengde. Hele recorden krypteres med sesjonsnøkkelen før den sendes til TCP.</p>
+  <p>TCP gir en byte-strøm, men TLS kan ikke kryptere strømmen fortløpende — for da ville MAC-en først komme på slutten, og mottakeren ville ikke kunne sjekke integriteten før hele forbindelsen lukkes. Løsningen: TLS deler strømmen opp i <strong>records</strong>. Hver record består av et <strong>type</strong>-felt (handshake-melding, applikasjonsdata, eller signal om at forbindelsen lukkes), et <strong>versjon</strong>-felt, et <strong>lengde</strong>-felt, selve <strong>dataene</strong> og en <strong>HMAC</strong>. Type, versjon og lengde sendes i klartekst — mottakeren trenger lengden for å plukke recordene ut av TCP-strømmen — mens data og HMAC krypteres med sesjonsnøkkelen før det hele gis til TCP.</p>
 
   <p>Et viktig poeng: MAC-en beregnes ikke bare over selve dataene i recorden — den inkluderer også et <strong>sekvensnummer</strong>. Selv om sekvensnummeret ikke sendes eksplisitt i recorden, holder begge parter en intern teller. Uten sekvensnumre kunne Trudy fange opp en record og spille den av på nytt (replay-angrep), eller omorganisere rekkefølgen på records uten at mottakeren oppdager det. Med sekvensnummeret i MAC-beregningen vil enhver slik manipulasjon føre til at MAC-verifiseringen feiler.</p>
 
@@ -489,10 +501,10 @@
 // TLS STEPPER
 (function(){
   var steps = [
-    {title:'Fase 1: Håndtrykk (handshake)', text:'Alice og Bob bruker sertifikater og asymmetrisk kryptografi til å autentisere server (og ofte klient). Deretter avtaler de en felles hemmelighet (master secret). I denne «toy-TLS»-modellen: Alice genererer en tilfeldig Pre-Master Secret og sender den kryptert med Bobs offentlige nøkkel fra sertifikatet — et pedagogisk mønster som viser nøkkelutveksling; i TLS 1.3 brukes vanligvis ephemeral DH og færre rundtur(er), men målet er det samme: en delt hemmelighet bare de to kjenner.'},
+    {title:'Fase 1: Håndtrykk (handshake)', text:'Klient og server utveksler nonces og en liste over støttede chiffer; serveren sender sitt sertifikat med offentlig nøkkel, som klienten verifiserer via en CA. Klienten genererer en tilfeldig Pre-Master Secret (PMS) og sender den kryptert med serverens offentlige nøkkel. Helt til slutt sender begge parter en HMAC over alle håndtrykksmeldingene (med de nylig utledede HMAC-nøklene) — slik oppdages forsøk på nedgraderingsangrep der en mann-i-midten har tuklet med chifferlisten.'},
     {title:'Fase 2: Nøkkelutledning (key derivation)', text:'Fra master secret utleder begge fire separate nøkler: to krypteringsnøkler (én per retning) og to MAC-nøkler (én per retning). Forskjellige nøkler per retning og formål er god kryptografisk praksis.'},
     {title:'Fase 3: Dataoverføring', text:'Data sendes som en serie «records». Hver record inneholder et datastykke, en MAC for integritetskontroll, og en lengde. Hele recorden krypteres med den retnings-spesifikke sesjonsnøkkelen og sendes som vanlige TCP-segmenter. Mottakeren dekrypterer, sjekker MAC, og leverer data til applikasjonen.'},
-    {title:'Fase 4: Nedkobling', text:'For å lukke forbindelsen trygt sender partene spesielle meldinger. Dette er viktig fordi en angriper ellers kunne tvinge forbindelsen lukket ved å sende en TCP FIN — uten at mottakeren vet om det er en ekte avslutning eller et angrep (truncation attack).'}
+    {title:'Fase 4: Nedkobling', text:'For å lukke forbindelsen trygt setter partene type-feltet i en TLS-record til «closure» og sender den kryptert/autentisert. Dette er viktig fordi en angriper ellers kunne tvinge forbindelsen lukket ved å sende en TCP FIN — uten at mottakeren vet om det er en ekte avslutning eller et angrep (truncation attack). Type-feltet sendes i klartekst, men er autentisert av record-ens HMAC.'}
   ];
   var i = 0;
   var title = document.getElementById('tlsTitle');
