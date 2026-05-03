@@ -53,9 +53,9 @@
 
   <div class="exam-del-header">
     <h2>Del I — Automatisk rettede spørsmål</h2>
-    <span class="del-points">14 spørsmål · 3 poeng per spørsmål · 42 poeng totalt</span>
+    <span class="del-points">14 flervalg (3p) + 1 sant/usant-blokk (5p) + 1 koble-oppgave (4p) · 51 poeng totalt</span>
   </div>
-  <p class="section-intro">Vekt på begreps-feller og konsepter som kobler lagene sammen.</p>
+  <p class="section-intro">Vekt på begreps-feller og konsepter som kobler lagene sammen. Blanding av flervalg, sant/usant og matching.</p>
 
   <!-- Q1 — TCP-segment payload (eks_4 2.1a, klassisk feller) -->
   <article class="exam-q">
@@ -431,6 +431,173 @@
           <p>MAC-adressene er <em>hopp-for-hopp</em>. På bærbarens WiFi-segment er kilde-MAC din PC og dest-MAC default gateway. Etter ruteren er kilde-MAC ruterens utgående grensesnitt og dest-MAC neste hopp. IP-adressene er ende-til-ende og endres <em>ikke</em> (utenom NAT) — TCP-portene heller ikke.</p>
           <p>Konseptet er sentralt for å forstå hvorfor ARP er nødvendig på hvert subnett.</p>
           <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — Lenkelag og adresser</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q15 — Sant/Usant-blokk -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 15</span>
+      <span class="exam-q__points">5 poeng</span>
+      <span class="exam-q__topic">Kap. 2–8 · Tverrsnitt</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Avgjør om hver av påstandene er <strong>sann</strong> eller <strong>usann</strong>. 1 poeng per riktig svar.</p>
+      <ul class="exam-q__tf">
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-p5-s1-label">
+            <div class="exam-q__tf-legend" id="tf-p5-s1-label"><span class="tf-num">1.</span> ARP-tabellen vedlikeholdes på hver vert <em>og</em> hver ruter — ikke bare på rutere.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p5-s1" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p5-s1" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-p5-s2-label">
+            <div class="exam-q__tf-legend" id="tf-p5-s2-label"><span class="tf-num">2.</span> ICMP-pakker kapsles i UDP-segmenter for å nå destinasjonen.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p5-s2" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p5-s2" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-p5-s3-label">
+            <div class="exam-q__tf-legend" id="tf-p5-s3-label"><span class="tf-num">3.</span> En applikasjon kan oppnå meldings­integritet uavhengig av om den underliggende transport­protokollen er TCP eller UDP.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p5-s3" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p5-s3" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-p5-s4-label">
+            <div class="exam-q__tf-legend" id="tf-p5-s4-label"><span class="tf-num">4.</span> En lenkelags-svitsj endrer kilde-MAC når den videresender en ramme videre i nettet.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p5-s4" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p5-s4" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-p5-s5-label">
+            <div class="exam-q__tf-legend" id="tf-p5-s5-label"><span class="tf-num">5.</span> Hvis en host slår opp <code>ntnu.no</code> og IP-en ligger utenfor lokalt subnett, må host-en utføre ARP for default gateway-IP-en (ikke for ntnu.nos IP).</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p5-s5" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p5-s5" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><span class="fasit-correct">Riktige svar</span></p>
+          <ol>
+            <li><strong>Sant</strong> — alle hosts som sender IP-pakker innenfor et subnett trenger en ARP-cache for å vite MAC-adressen til neste hopp. Rutere har én ARP-tabell per grensesnitt.</li>
+            <li><strong>Usant</strong> — ICMP bæres direkte i IP-datagrammet (protocol-felt = 1). Det er en del av nettverkslaget, ikke transport.</li>
+            <li><strong>Sant</strong> — meldingsintegritet (hash, MAC, HMAC) er en applikasjons-/sikkerhets­lag-mekanisme og er uavhengig av transport. RTP-pakker over UDP kan f.eks. integritets­beskyttes via SRTP.</li>
+            <li><strong>Usant</strong> — svitsj er transparent og endrer ingen adresser. Det er <em>ruteren</em> som bytter kilde-MAC ved hvert hopp.</li>
+            <li><strong>Sant</strong> — IP-adressen til ntnu.no ligger ikke i kafé-subnettet. Pakken må derfor til default gateway, og ARP slår opp gateway-IP-en til MAC. Lokal MAC for fjern-IP gir ikke mening.</li>
+          </ol>
+          <p class="ref">Pensum: <a href="../kap5/innhold.html">Kap. 5 — ICMP</a> · <a href="../kap6/innhold.html">Kap. 6 — ARP, svitsj</a> · <a href="../kap8/innhold.html">Kap. 8 — Integritet</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q16 — Koble: protokoll til lag -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 16</span>
+      <span class="exam-q__points">4 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Lagdeling</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Koble hver protokoll/mekanisme til <em>laget</em> der den hovedsakelig opererer. Velg én bokstav per rad. 1 poeng per riktig kobling.</p>
+
+      <div class="exam-q__match-bank" aria-label="Svarbank">
+        <div class="exam-q__match-bank-title">Selectable Items</div>
+        <ol class="exam-q__match-bank-list" type="a">
+          <li>Applikasjonslag</li>
+          <li>Transportlag</li>
+          <li>Nettverkslag</li>
+          <li>Lenkelag</li>
+          <li>Fysisk lag</li>
+        </ol>
+      </div>
+
+      <table class="exam-q__match-table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Protokoll / mekanisme</th>
+            <th scope="col">Ditt valg</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>SMTP</td>
+            <td>
+              <select class="exam-q__match-select" name="m-p5q16-1">
+                <option value="">—</option>
+                <option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option><option value="e">e</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>UDP</td>
+            <td>
+              <select class="exam-q__match-select" name="m-p5q16-2">
+                <option value="">—</option>
+                <option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option><option value="e">e</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>ICMP</td>
+            <td>
+              <select class="exam-q__match-select" name="m-p5q16-3">
+                <option value="">—</option>
+                <option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option><option value="e">e</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>ARP</td>
+            <td>
+              <select class="exam-q__match-select" name="m-p5q16-4">
+                <option value="">—</option>
+                <option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option><option value="e">e</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.9em;color:var(--ink-faded);margin-top:0.5em">Merk: én av de fem alternativene er en distraktor.</p>
+
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktige koblinger</span>
+          <table>
+            <thead><tr><th>Mekanisme</th><th>Lag</th></tr></thead>
+            <tbody>
+              <tr><td>1 SMTP</td><td><strong>a</strong> — applikasjonslag (port 25, push-protokoll)</td></tr>
+              <tr><td>2 UDP</td><td><strong>b</strong> — transportlag</td></tr>
+              <tr><td>3 ICMP</td><td><strong>c</strong> — nettverkslag (bæres i IP, protocol = 1)</td></tr>
+              <tr><td>4 ARP</td><td><strong>d</strong> — lenkelag (lokalt subnett, IP↔MAC)</td></tr>
+            </tbody>
+          </table>
+          <p>Distraktor: <strong>e</strong> — fysisk lag (overfører bits, ikke pakker). Felle: ARP er <em>nesten</em> nettverkslag fordi den jobber med IP-adresser, men siden den løser MAC og bare lever innen ett subnett, regnes den som lenkelag.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Lagdeling</a></p>
         </div>
       </details>
     </div>

@@ -53,9 +53,9 @@
 
   <div class="exam-del-header">
     <h2>Del I — Automatisk rettede spørsmål</h2>
-    <span class="del-points">14 spørsmål · 3 poeng per spørsmål · 42 poeng totalt</span>
+    <span class="del-points">14 flervalg (3p) + 1 sant/usant-blokk (5p) + 1 koble-oppgave (4p) · 51 poeng totalt</span>
   </div>
-  <p class="section-intro">Tema som er i pensum, men har vært stille på eksamen — overmodne for ny historie.</p>
+  <p class="section-intro">Tema som er i pensum, men har vært stille på eksamen — overmodne for ny historie. Avsluttes med sant/usant og koble-oppgave for ICMP-typer.</p>
 
   <!-- Q1 — HTTP conditional GET (304) -->
   <article class="exam-q">
@@ -434,6 +434,173 @@
           <p>Hvis bare én pakke (sekvensnr X) gikk tapt og resten kom frem, vil mottakeren sende ACK X for hver påfølgende pakke (siden ACK er kumulativ — den siste i orden er fortsatt X−1 → ACK X). Tre slike duplikater → høyt sannsynlig tap. TCP gjenoverfører X umiddelbart (fast retransmit), halverer cwnd, og fortsetter i AIMD (fast recovery i Reno).</p>
           <p>B er feil — det er hva timeout signaliserer.</p>
           <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3.7 — Fast retransmit</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q15 — Sant/Usant om sjeldne pensum-tema -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 15</span>
+      <span class="exam-q__points">5 poeng</span>
+      <span class="exam-q__topic">Kap. 2–9 · Pensum</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Avgjør om hver av påstandene er <strong>sann</strong> eller <strong>usann</strong>. 1 poeng per riktig svar.</p>
+      <ul class="exam-q__tf">
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-p7-s1-label">
+            <div class="exam-q__tf-legend" id="tf-p7-s1-label"><span class="tf-num">1.</span> En HTTP-server som mottar en GET med <code>If-Modified-Since</code>-header svarer alltid med 200 OK selv om innholdet ikke er endret.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p7-s1" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p7-s1" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-p7-s2-label">
+            <div class="exam-q__tf-legend" id="tf-p7-s2-label"><span class="tf-num">2.</span> Selective Repeat krever at mottakeren har buffer-plass for ut-av-orden-pakker innen mottaks­vinduet.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p7-s2" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p7-s2" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-p7-s3-label">
+            <div class="exam-q__tf-legend" id="tf-p7-s3-label"><span class="tf-num">3.</span> IPv4-fragmenter har <em>samme</em> Identifier-felt — det er Fragment Offset som avgjør rekkefølgen.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p7-s3" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p7-s3" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-p7-s4-label">
+            <div class="exam-q__tf-legend" id="tf-p7-s4-label"><span class="tf-num">4.</span> TLS 1.3 reduserer handshake-kostnaden til 1 RTT (eller 0 RTT ved gjenopptakelse) sammenlignet med TLS 1.2's 2 RTT.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p7-s4" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p7-s4" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-p7-s5-label">
+            <div class="exam-q__tf-legend" id="tf-p7-s5-label"><span class="tf-num">5.</span> POP3 lar brukeren bla mellom mapper på serveren og synkronisere status mellom flere klienter.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p7-s5" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p7-s5" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><span class="fasit-correct">Riktige svar</span></p>
+          <ol>
+            <li><strong>Usant</strong> — server svarer 304 Not Modified (uten kropp) hvis innholdet ikke har endret seg siden tidspunktet i If-Modified-Since.</li>
+            <li><strong>Sant</strong> — det er nettopp dette som skiller SR fra GBN. Mottaker bufrer ut-av-orden-pakker innen vinduet og leverer dem i orden når hullet fylles.</li>
+            <li><strong>Sant</strong> — alle fragmenter av samme original­datagram deler ID. Fragment Offset (i 8-byte-enheter) gir rekkefølgen, og MF-flag forteller om det er flere fragmenter.</li>
+            <li><strong>Sant</strong> — TLS 1.3 sender klient-nøkkel-share med ClientHello, så server kan svare med sertifikat + Finished i én runde. 0-RTT bruker PSK fra forrige sesjon.</li>
+            <li><strong>Usant</strong> — det er <em>IMAP</em> som har mappestruktur og synkronisering. POP3 laster ned og fjerner typisk fra server.</li>
+          </ol>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2.2–2.3</a> · <a href="../kap3/innhold.html">Kap. 3.4</a> · <a href="../kap4/innhold.html">Kap. 4.3</a> · <a href="../kap8/innhold.html">Kap. 8.6</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q16 — Koble: ICMP-type til situasjon -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 16</span>
+      <span class="exam-q__points">4 poeng</span>
+      <span class="exam-q__topic">Kap. 5.6 · ICMP</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Koble hver situasjon til ICMP-meldingen som typisk utløses. Velg én bokstav per rad. 1 poeng per riktig kobling.</p>
+
+      <div class="exam-q__match-bank" aria-label="Svarbank">
+        <div class="exam-q__match-bank-title">Selectable Items</div>
+        <ol class="exam-q__match-bank-list" type="a">
+          <li>Echo Request / Reply (type 8 / 0)</li>
+          <li>Time Exceeded (type 11)</li>
+          <li>Destination Unreachable, Port Unreachable (type 3, kode 3)</li>
+          <li>Destination Unreachable, Network Unreachable (type 3, kode 0)</li>
+          <li>Redirect (type 5)</li>
+        </ol>
+      </div>
+
+      <table class="exam-q__match-table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Situasjon</th>
+            <th scope="col">Ditt valg</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Du kjører <code>ping ntnu.no</code> og får svar tilbake fra server</td>
+            <td>
+              <select class="exam-q__match-select" name="m-p7q16-1">
+                <option value="">—</option>
+                <option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option><option value="e">e</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>En ruter forkaster pakken fordi TTL gikk til 0 underveis</td>
+            <td>
+              <select class="exam-q__match-select" name="m-p7q16-2">
+                <option value="">—</option>
+                <option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option><option value="e">e</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Traceroute (UDP-basert) når <em>destinasjons­hosten</em> på en lukket UDP-port</td>
+            <td>
+              <select class="exam-q__match-select" name="m-p7q16-3">
+                <option value="">—</option>
+                <option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option><option value="e">e</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>Pakke til et nettverk som ingen rute fører til (rute mangler i forwarding-tabell, ingen default)</td>
+            <td>
+              <select class="exam-q__match-select" name="m-p7q16-4">
+                <option value="">—</option>
+                <option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option><option value="e">e</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.9em;color:var(--ink-faded);margin-top:0.5em">Merk: én av de fem ICMP-typene er en distraktor.</p>
+
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktige koblinger</span>
+          <table>
+            <thead><tr><th>Situasjon</th><th>ICMP-type</th></tr></thead>
+            <tbody>
+              <tr><td>1 ping-svar</td><td><strong>a</strong> — Echo Request/Reply</td></tr>
+              <tr><td>2 TTL = 0</td><td><strong>b</strong> — Time Exceeded</td></tr>
+              <tr><td>3 traceroute treffer endepunkt</td><td><strong>c</strong> — Port Unreachable</td></tr>
+              <tr><td>4 Ingen rute</td><td><strong>d</strong> — Network Unreachable</td></tr>
+            </tbody>
+          </table>
+          <p>Distraktor: <strong>e</strong> — Redirect, som en ruter sender for å fortelle en host «du burde sende til en annen gateway for denne destinasjonen». Sjelden i moderne nett.</p>
+          <p class="ref">Pensum: <a href="../kap5/innhold.html">Kap. 5.6 — ICMP</a></p>
         </div>
       </details>
     </div>

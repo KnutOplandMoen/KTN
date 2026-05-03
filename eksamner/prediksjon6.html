@@ -53,9 +53,9 @@
 
   <div class="exam-del-header">
     <h2>Del I — Automatisk rettede spørsmål</h2>
-    <span class="del-points">14 spørsmål · 3 poeng per spørsmål · 42 poeng totalt</span>
+    <span class="del-points">14 flervalg (3p) + 1 sant/usant-blokk (5p) + 1 koble-oppgave (4p) · 51 poeng totalt</span>
   </div>
-  <p class="section-intro">Hver oppgave er ren tallregning — bruk papir og blyant.</p>
+  <p class="section-intro">Hver oppgave er ren tallregning — bruk papir og blyant. Avsluttes med en sant/usant-blokk om regnestykker som ofte misforstås, og en koble-oppgave for formler.</p>
 
   <!-- Q1 — Pipelining (N+P-1)L/R -->
   <article class="exam-q">
@@ -450,7 +450,7 @@ Rest = de tre siste bitene = 100
   </article>
 
   <!-- Q14 — Klient-server filfordeling -->
-  <article class="exam-q">
+  <article class="exam-q" id="p6-q14">
     <header class="exam-q__head">
       <span class="exam-q__num">Spørsmål 14</span>
       <span class="exam-q__points">3 poeng</span>
@@ -476,6 +476,173 @@ Rest = de tre siste bitene = 100
           <p>Maks = 25 s. Server-opplasting er flaskehals fordi den må sende fil-ekvivalenter til alle 50 klienter, mens nedlastings­kapasiteten per klient er rikelig.</p>
           <p>P2P ville løst dette mye raskere fordi peers bidrar med opplasting.</p>
           <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2.6 — Filfordeling</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q15 — Sant/Usant om vanlige regne-feller -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 15</span>
+      <span class="exam-q__points">5 poeng</span>
+      <span class="exam-q__topic">Kap. 1–6 · Regne-feller</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Avgjør om hver av påstandene er <strong>sann</strong> eller <strong>usann</strong>. 1 poeng per riktig svar.</p>
+      <ul class="exam-q__tf">
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-p6-s1-label">
+            <div class="exam-q__tf-legend" id="tf-p6-s1-label"><span class="tf-num">1.</span> I et linjesvitsjet nett er den minste tiden for å overføre en fil <code>oppsett + L/R</code>, der R er raten på <em>én</em> lenke — ikke <code>L/R</code> per lenke.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p6-s1" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p6-s1" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-p6-s2-label">
+            <div class="exam-q__tf-legend" id="tf-p6-s2-label"><span class="tf-num">2.</span> Et /29-subnett har 8 brukbare verts­adresser.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p6-s2" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p6-s2" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-p6-s3-label">
+            <div class="exam-q__tf-legend" id="tf-p6-s3-label"><span class="tf-num">3.</span> Maks gjennomstrømning ende-til-ende mellom tjener og klient er alltid <code>min(R<sub>1</sub>, R<sub>2</sub>, ...)</code> over alle lenker på stien — uavhengig av hvor mange økter som deler stien.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p6-s3" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p6-s3" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-p6-s4-label">
+            <div class="exam-q__tf-legend" id="tf-p6-s4-label"><span class="tf-num">4.</span> Pure ALOHA har omtrent halvparten av effektiviteten til slotted ALOHA fordi kollisjons­vinduet er dobbelt så langt.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p6-s4" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p6-s4" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-p6-s5-label">
+            <div class="exam-q__tf-legend" id="tf-p6-s5-label"><span class="tf-num">5.</span> En TCP-server som har 5 åpne klient­forbindelser bruker totalt 5 sockets.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p6-s5" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p6-s5" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><span class="fasit-correct">Riktige svar</span></p>
+          <ol>
+            <li><strong>Sant</strong> — i en linjesvitsjet krets «leies» en dedikert ende-til-ende-bane med konstant rate. Pakkesvitsjet legger derimot på L/R per lenke (store-and-forward).</li>
+            <li><strong>Usant</strong> — /29 har 2<sup>32−29</sup> − 2 = 8 − 2 = <strong>6</strong> brukbare verts­adresser. Trekk fra nettverks- og broadcast­adressene.</li>
+            <li><strong>Usant</strong> — flere økter <em>deler</em> flaskehalsen rettferdig. To økter på en flaskehals R deler typisk like mye → R/2 hver.</li>
+            <li><strong>Sant</strong> — pure ALOHA: 1/(2e) ≈ 0,18; slotted: 1/e ≈ 0,37. Synkronisering halverer kollisjons­vinduet.</li>
+            <li><strong>Usant</strong> — det er 5 forbindelses-sockets <em>pluss</em> 1 lyttende welcoming socket = 6 totalt.</li>
+          </ol>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1</a> · <a href="../kap2/innhold.html">Kap. 2</a> · <a href="../kap6/innhold.html">Kap. 6</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q16 — Koble: formel til scenario -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 16</span>
+      <span class="exam-q__points">4 poeng</span>
+      <span class="exam-q__topic">Kap. 1–8 · Formler</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Koble hvert beregnings-scenario til formelen som bør brukes. Velg én bokstav per rad. 1 poeng per riktig kobling.</p>
+
+      <div class="exam-q__match-bank" aria-label="Svarbank">
+        <div class="exam-q__match-bank-title">Selectable Items</div>
+        <ol class="exam-q__match-bank-list" type="a">
+          <li><code>(N + P − 1) · L/R</code></li>
+          <li><code>2<sup>32−x</sup> − 2</code></li>
+          <li><code>N(N−1)/2</code></li>
+          <li><code>max(F/u<sub>s</sub>, F/d<sub>min</sub>, NF/(u<sub>s</sub>+Σu<sub>i</sub>))</code></li>
+          <li><code>1/(2e)</code></li>
+        </ol>
+      </div>
+
+      <table class="exam-q__match-table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Scenario</th>
+            <th scope="col">Ditt valg</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>P pakker sendt back-to-back gjennom N rutere på lik rate</td>
+            <td>
+              <select class="exam-q__match-select" name="m-p6q16-1">
+                <option value="">—</option>
+                <option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option><option value="e">e</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Antall brukbare verts­adresser i et /x-subnett</td>
+            <td>
+              <select class="exam-q__match-select" name="m-p6q16-2">
+                <option value="">—</option>
+                <option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option><option value="e">e</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Antall symmetriske nøkler for parvis konfidensiell kommunikasjon i en gruppe på N personer</td>
+            <td>
+              <select class="exam-q__match-select" name="m-p6q16-3">
+                <option value="">—</option>
+                <option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option><option value="e">e</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>Minste distribusjons­tid i en P2P-arkitektur til N peers</td>
+            <td>
+              <select class="exam-q__match-select" name="m-p6q16-4">
+                <option value="">—</option>
+                <option value="a">a</option><option value="b">b</option><option value="c">c</option><option value="d">d</option><option value="e">e</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.9em;color:var(--ink-faded);margin-top:0.5em">Merk: én av de fem formlene er en distraktor.</p>
+
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktige koblinger</span>
+          <table>
+            <thead><tr><th>Scenario</th><th>Formel</th></tr></thead>
+            <tbody>
+              <tr><td>1 Pipelining</td><td><strong>a</strong> — (N+P−1)·L/R</td></tr>
+              <tr><td>2 /x brukbare verter</td><td><strong>b</strong> — 2<sup>32−x</sup>−2</td></tr>
+              <tr><td>3 Symmetriske nøkler</td><td><strong>c</strong> — N(N−1)/2</td></tr>
+              <tr><td>4 P2P-distribusjon</td><td><strong>d</strong> — max(...)</td></tr>
+            </tbody>
+          </table>
+          <p>Distraktor: <strong>e</strong> — 1/(2e) ≈ 0,18 er maksimal effektivitet for <em>pure ALOHA</em>. Slotted ALOHA er 1/e ≈ 0,37.</p>
+          <p class="ref">Pensum: oppsummert i <a href="../eksamen-prep/MÅ_KUNNE_OVERSIKT.md">Må-kunne-oversikten</a>.</p>
         </div>
       </details>
     </div>
