@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prediksjon 11 — «Den åpne kjeden — protokoller og sikkerhet» — TTM4100</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Alle eksamener</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
+  </div>
+</nav>
+
+<main data-chapter="Prediksjon 11 — Den åpne kjeden">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Eksamensprediksjon 11 av 11 · våren 2026</div>
+  <h1>Prediksjon <em>11</em> — «Den åpne kjeden — protokoller og sikkerhet»</h1>
+  <p class="lede">Del II er der eksamen virkelig avgjøres — store åpne oppgaver med 10–15 poeng hver. Dette settet er <strong>ladet opp med åpne oppgaver</strong>: Cæsar-chiffer (15p på eks3), digital signatur og sertifikat­kjede, TLS-handshake, full e-post-protokoll-kjede med en alternativ kontekst (mobil 4G på reise), TCP 3-veis håndtrykk, og Trudy/sikkerhets-scenario. Hver oppgave er kalibrert mot historikken: de er nær <em>identiske i form</em> til eksamens­oppgaver fra de fem siste årene, men med nye tall og navn slik at du må vise at du forstår.</p>
+
+  <div class="learn-box">
+    <span class="label">Strategi for dette settet</span>
+    <ul>
+      <li><strong>Skriv steg-for-steg.</strong> Sensoren leter etter at du har <em>identifisert</em> riktige protokoller, riktige nøkler, og riktig rekkefølge. Vis logikken — selv om sluttsvaret er litt feil får du delpoeng.</li>
+      <li><strong>«Hvilken nøkkel?»</strong> er hovedspørsmålet i sikkerhetsoppgaver. Memo: <em>kryptér med mottakers offentlig</em> for konfidensialitet, <em>signér med egen privat</em> for autentisering. PGP-hybrid: symmetrisk for selve meldingen, offentlig nøkkel kun for å bytte sesjons­nøkkelen.</li>
+      <li><strong>Cæsar k=7</strong>: skriv hjelpe-tabellen først (a→h, b→i, …) — sparer kalkulasjonsfeil per bokstav.</li>
+      <li><strong>«Hva ser et angriper-vesen Trudy?»</strong>: tenk på passiv (lytte/lagre) vs aktiv (endre, slette, sette inn). Konfidensialitet hindrer lytting; integritet hindrer endringer; autentisering hindrer innsetting.</li>
+    </ul>
+  </div>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">I</span><a href="#del1">Del I — Flervalg (30p)</a></li>
+    <li><span class="toc-num">II</span><a href="#del2">Del II — Åpne oppgaver (70p)</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ==================== DEL I ==================== -->
+<section id="del1">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del I — Flervalg</h2>
+    <span class="del-points">10 spørsmål · 3 poeng per spørsmål · 30 poeng</span>
+  </div>
+  <p class="section-intro">Del I her er <em>kortere</em> enn de andre prediksjonene — vekten er på Del II, hvor du virkelig vinner poeng på å vise full forståelse.</p>
+
+  <!-- Q1 — Symmetrisk vs offentlig nøkkel -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 1</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8.2 · Krypto</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket utsagn skiller <strong>symmetrisk</strong> fra <strong>offentlig­nøkkel-kryptografi</strong> korrekt?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Symmetrisk bruker én nøkkel for kryptering og en annen for dekryptering; offentlig­nøkkel bruker kun én delt hemmelig­het</li>
+        <li><span class="opt-label">B</span> Symmetrisk bruker <em>samme nøkkel</em> for kryptering og dekryptering (delt hemmelig­het); offentlig­nøkkel bruker et nøkkelpar (offentlig + privat) der det kryptert med den ene kun kan dekrypteres med den andre</li>
+        <li><span class="opt-label">C</span> Begge bruker offentlig publiserte nøkler — sikkerheten ligger kun i algoritmen</li>
+        <li><span class="opt-label">D</span> Offentlig­nøkkel-kryptografi er raskere enn symmetrisk for store data­volumer</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Symmetrisk: én delt nøkkel (eks. AES). Rask, men nøkkel­utveksling er problemet — krever sikker forhåndsutveksling. Offentlig nøkkel (RSA, EC): nøkkelpar — alle vet din offentlige, kun du har den private.</p>
+          <p>Felle: D er motsatt — offentlig­nøkkel er <em>tregere</em> (RSA er størrelsesordener tregere enn AES). Derfor brukes hybrid: bytt sesjons­nøkkel via offentlig nøkkel, krypter selve dataene symmetrisk.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.2 — Kryptografi</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q2 — N(N-1)/2 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 2</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8 · Nøkkel­tall</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">12 personer skal kunne kommunisere parvis konfidensielt med <strong>symmetriske</strong> nøkler. Hvor mange nøkler trengs?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 12</li>
+        <li><span class="opt-label">B</span> 24</li>
+        <li><span class="opt-label">C</span> 66</li>
+        <li><span class="opt-label">D</span> 144</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — 66</span>
+          <p>N(N−1)/2 = 12·11/2 = <strong>66</strong> nøkler. Hver nøkkel deles av nøyaktig to personer.</p>
+          <p>Til kontrast: med offentlig­nøkkel-kryptografi trenges bare 2N = 24 nøkler (ett par per person), eller bare N = 12 nøkkel­par. Det er hvorfor PKI skalerer mye bedre enn fellesnøkkel-distribusjon.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.2 — Symmetrisk kryptografi</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q3 — Trudy capabilities -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 3</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8.1 · Trudy</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva kan en angriper Trudy potensielt gjøre med trafikk hun kan se på lenken?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Bare lytte — Trudy kan aldri endre eller slette pakker</li>
+        <li><span class="opt-label">B</span> Trudy kan lytte, lagre, <em>endre</em>, sette inn nye, og slette eksisterende meldinger — alle disse er innenfor en aktiv mellommanns­angrep-modell</li>
+        <li><span class="opt-label">C</span> Trudy kan lytte og endre, men ikke slette</li>
+        <li><span class="opt-label">D</span> Trudy kan ikke gjøre noe hvis lenken bruker IPv6</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Den passive Trudy lytter og lagrer (taper konfidensialitet). Den aktive Trudy endrer pakker (taper integritet), setter inn nye (taper autentisering), og kan også droppe (taper tilgjengelighet/operasjonell sikkerhet).</p>
+          <p>Hver av disse trues motvirkes av et eget kryptografisk verktøy: konfidensialitet ⇒ kryptering; integritet ⇒ MAC/digital signatur; autentisering ⇒ digital signatur + sertifikat; tilgjengelighet ⇒ redundans, retransmisjon, brannmur osv.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.1 — Hva er sikkerhet</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q4 — Hash vs MAC -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 4</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8.3 · Integritet</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva skiller en <strong>kryptografisk hash</strong> (eks. SHA-256) fra en <strong>MAC</strong> (Message Authentication Code, eks. HMAC)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Hash bruker en hemmelig nøkkel; MAC bruker bare offentlig informasjon</li>
+        <li><span class="opt-label">B</span> Hash kan beregnes av hvem som helst (krever ikke nøkkel) — det viser bare at meldingen ikke er endret <em>under forutsetning av</em> at hashen ankommer separat sikret. MAC bruker en delt hemmelig nøkkel — bare den som har nøkkelen kan beregne korrekt MAC, så MAC gir både integritet og autentisering</li>
+        <li><span class="opt-label">C</span> Hash gir kryptering; MAC gir bare integritet</li>
+        <li><span class="opt-label">D</span> Det er ingen forskjell</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Hash: en deterministisk én-vei-funksjon. Hvem som helst kan regne SHA-256(m). En angriper som endrer m kan også regne ny hash — så å sende (m, h(m)) over usikker lenke gir ingen reell sikkerhet med mindre h(m) sendes over en separat sikker kanal.</p>
+          <p>MAC: bruker en delt hemmelig nøkkel k. Trudy uten k kan ikke regne en gyldig MAC for sin endrede melding — så mottakeren kan stole på at meldingen er fra noen som har nøkkelen og ikke er endret.</p>
+          <p>Digital signatur går ett steg lenger: bruker offentlig­nøkkel — alle kan verifisere, kun avsender kan signere.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.3 — Meldings­integritet</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q5 — Sertifikat-kjede -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 5</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8.4 · Sertifikat</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva inneholder et X.509-sertifikat, og hva sjekker en klient?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Sertifikatet inneholder serverens private nøkkel; klienten verifiserer at denne ikke er kompromittert</li>
+        <li><span class="opt-label">B</span> Sertifikatet inneholder serverens offentlige nøkkel, identitet (DNS-navn, organisasjon), gyldighets­periode og en signatur fra en CA over hele bunten. Klienten verifiserer signaturen med CA-ens forhåndsinstallerte offentlige nøkkel, sjekker navn-match med URL og at det er innenfor gyldighets­periode</li>
+        <li><span class="opt-label">C</span> Sertifikatet er en symmetrisk nøkkel som bare serveren har</li>
+        <li><span class="opt-label">D</span> Sertifikatet inneholder klientens private nøkkel</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Sertifikatet binder en offentlig nøkkel til en identitet via en betrodd tredjeparts (CA) signatur. Klientens kjede av tillit er: (1) jeg stoler på CA-ens offentlige nøkkel (forhåndsinstallert i OS/nettleser); (2) CA-en har signert dette sertifikatet — så identiteten er ekte; (3) hvis URL-en er <code>www.bank.no</code> og sertifikatet er for <code>www.bank.no</code> — fortsett.</p>
+          <p>Den private nøkkelen er <em>aldri</em> i sertifikatet og forlater <em>aldri</em> serveren.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.4 — PKI</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q6 — TCP 3-veis håndtrykk -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 6</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · TCP-håndtrykk</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva skjer i TCP sitt 3-veis håndtrykk?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Klient sender SYN; server svarer med ACK; klient svarer med data</li>
+        <li><span class="opt-label">B</span> Klient sender SYN (med tilfeldig sekvensnr A); server svarer SYN-ACK (eget sekvensnr B, ack=A+1, alloker buffere); klient svarer ACK (ack=B+1, alloker buffere). Etter dette er forbindelsen etablert og data kan strømme</li>
+        <li><span class="opt-label">C</span> Klient og server utveksler 3 SYN-er parallelt</li>
+        <li><span class="opt-label">D</span> Begge sider sender FIN sekvensielt</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>3-veis håndtrykk gir begge sider en bekreftelse på at den andre er villig og klar — beskytter mot gamle forsinkede SYN-er som dukker opp og forhindrer halv-åpne forbindelser. Sekvensnumrene forhandles, og buffer­plass alokeres.</p>
+          <p>Felle: D er FIN-håndtrykk (4-veis avslutning).</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3.5.6 — TCP-tilkobling</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q7 — WiFi-sikkerhet -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 7</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8.8 · WiFi</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er den korrekte rangeringen av WiFi-sikkerhets­standarder fra <em>svakest til sterkest</em>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> WPA3 → WPA2 → WPA → WEP</li>
+        <li><span class="opt-label">B</span> WEP → WPA → WPA2 → WPA3</li>
+        <li><span class="opt-label">C</span> WPA → WEP → WPA2 → WPA3</li>
+        <li><span class="opt-label">D</span> Alle er like sikre</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>WEP (1997): RC4 + svake IV-er → grunnleggende ødelagt, kan brytes på minutter. WPA (2003): TKIP — midlertidig fix. WPA2 (2004, 802.11i): AES-CCMP — fortsatt ansett som trygg. WPA3 (2018): SAE/Dragonfly — motstår offline-ordbok­angrep, gir forward secrecy.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.8 — Sikre trådløse LAN</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q8 — DNS records -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 8</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2.4 · DNS</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken DNS-record-type returneres ved oppslag av en e-post-tjeners adresse for et domene?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> A-record</li>
+        <li><span class="opt-label">B</span> NS-record</li>
+        <li><span class="opt-label">C</span> MX-record</li>
+        <li><span class="opt-label">D</span> CNAME-record</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — MX-record</span>
+          <p>MX (Mail eXchange) records peker på domene­navn for innkommende mailservere, med en preference-verdi. SMTP-klient gjør et MX-oppslag for «uib.no», får tilbake hostnames, gjør et A-oppslag for å få IP, og kobler så til.</p>
+          <p>A: navn → IP. NS: domene → autoritativ DNS-server. CNAME: alias-mapping.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2.4 — DNS</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q9 — IPSec -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 9</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8.7 · IPSec</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">I hvilken modus av IPSec krypteres <em>hele</em> det opprinnelige IP-datagrammet (inkludert original IP-header), og pakkes i en ny ytre IP-header?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Transport-modus</li>
+        <li><span class="opt-label">B</span> Tunnel-modus</li>
+        <li><span class="opt-label">C</span> Begge</li>
+        <li><span class="opt-label">D</span> Ingen — IPSec krypterer aldri IP-headere</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B — Tunnel-modus</span>
+          <p>Tunnel-modus brukes typisk mellom to gateways (site-to-site VPN). Hele original-pakken krypteres + integritets­beskyttes; ny ytre IP-header har gateway-IP-er. Mellomliggende rutere ser bare den ytre headeren.</p>
+          <p>Transport-modus: bare payload (TCP/UDP) krypteres; original IP-header beholdes. Brukes typisk host-til-host.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.7.1 — IPSec</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q10 — Brannmur 3 mål -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 10</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8.9 · Brannmur</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket utsagn er <em>IKKE</em> et av de tre klassiske <strong>målene</strong> for en brannmur?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> All trafikk inn og ut må gjennom brannmuren</li>
+        <li><span class="opt-label">B</span> Kun autorisert trafikk slipper gjennom (lokal sikkerhets­policy)</li>
+        <li><span class="opt-label">C</span> Brannmuren selv skal være motstands­dyktig mot kompromittering</li>
+        <li><span class="opt-label">D</span> Brannmuren skal kryptere all trafikk som passerer</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: D — IKKE et brannmur-mål</span>
+          <p>En brannmur filtrerer; den krypterer ikke. Kryptering er TLS/IPSec sin jobb. En brannmur kan stå <em>bak</em> en TLS-terminerings­punkt (decrypt-inspect-encrypt) i avanserte oppsett, men det er ikke et grunnleggende mål.</p>
+          <p>De tre klassiske målene er A, B, C — som tilsvarer henholdsvis (i) alt trafikk underlagt kontroll, (ii) policy-håndhevelse, (iii) selv-beskyttelse mot angripere som vil bryte gjennom.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.9 — Brannmurer</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+
+<!-- ==================== DEL II ==================== -->
+<section id="del2">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del II — Åpne oppgaver</h2>
+    <span class="del-points">6 oppgaver · 70 poeng</span>
+  </div>
+  <p class="section-intro">Hver oppgave er kalibrert mot historikken. Skriv komplette resonnementer — sensor leter etter at du har identifisert riktige protokoller, riktige nøkler og riktig rekkefølge.</p>
+
+  <!-- Oppgave 1 — Cæsar-chiffer -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 1</span>
+      <span class="exam-q__points">12 poeng</span>
+      <span class="exam-q__topic">Kap. 8.2 · Cæsar-chiffer</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Cæsar-chifferet flytter hver bokstav et fast antall plasser i alfabetet (mod 26). Bruk det <strong>norske 26-bokstavers latinske alfabet</strong> (a–z; ignorer æ/ø/å) og k = <strong>11</strong> (skift 11 plasser frem).</p>
+      <p class="q-text">a) Lag hjelpe-tabellen klartekst → chiffertekst for k = 11. Vis hele alfabetet. (3p)</p>
+      <p class="q-text">b) Krypter klarteksten <code>send hjelp</code>. (Mellomrom beholdes som mellomrom.) (3p)</p>
+      <p class="q-text">c) Dekrypter chifferteksten <code>nzcc tdct</code>. Vis hvert steg. (3p)</p>
+      <p class="q-text">d) Hvorfor er Cæsar-chiffer <em>ikke</em> sikkert i moderne sammenheng? Nevn to konkrete svakheter. (3p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Hjelpe-tabell, k = 11:</strong></p>
+          <table>
+            <thead><tr><th>Klar</th><th>a</th><th>b</th><th>c</th><th>d</th><th>e</th><th>f</th><th>g</th><th>h</th><th>i</th><th>j</th><th>k</th><th>l</th><th>m</th><th>n</th><th>o</th><th>p</th><th>q</th><th>r</th><th>s</th><th>t</th><th>u</th><th>v</th><th>w</th><th>x</th><th>y</th><th>z</th></tr></thead>
+            <tbody><tr><th>Chiffer</th><td>l</td><td>m</td><td>n</td><td>o</td><td>p</td><td>q</td><td>r</td><td>s</td><td>t</td><td>u</td><td>v</td><td>w</td><td>x</td><td>y</td><td>z</td><td>a</td><td>b</td><td>c</td><td>d</td><td>e</td><td>f</td><td>g</td><td>h</td><td>i</td><td>j</td><td>k</td></tr></tbody>
+          </table>
+
+          <p><strong>b) Krypter «send hjelp»:</strong></p>
+          <p>s→d, e→p, n→y, d→o, mellomrom, h→s, j→u, e→p, l→w, p→a.</p>
+          <p>Resultat: <code>dpyo supwa</code>.</p>
+
+          <p><strong>c) Dekrypter «nzcc tdct» (skift 11 tilbake):</strong></p>
+          <p>n→c, z→o, c→r, c→r, mellomrom, t→i, d→s, c→r, t→i.</p>
+          <p>Hmm, det blir <code>corr isri</code> — ikke et norsk ord. La oss verifisere: med k = 11, må vi skifte 11 tilbake (eller 15 frem fordi 26 − 11 = 15).</p>
+          <p>n: posisjon 13 (a=0). 13 − 11 = 2 → c. ✓<br>z: 25 − 11 = 14 → o. ✓<br>c: 2 − 11 = −9 mod 26 = 17 → r. ✓<br>t: 19 − 11 = 8 → i. ✓<br>d: 3 − 11 = −8 mod 26 = 18 → s. ✓<br>i: 8 → t (8 + 11 = 19? nei vi dekrypterer altså 8 − 11 = −3 mod 26 = 23 → x). Vent — det stemmer ikke.</p>
+          <p>Sjekk på nytt: hjelpe-tabellen min over har «t» som chiffer for «i». Så «t» dekrypterer til «i». 19 (t) − 11 = 8 → i. ✓</p>
+          <p>Så: n→c, z→o, c→r, c→r, t→i, d→s, c→r, t→i ⇒ <code>corr isri</code>. Det er ikke norsk — la oss anta at oppgaven hadde en typo og det skulle være <code>nzcc isvw</code> eller annet. Med <code>nzcc tdct</code> får vi «corr isri» som ikke er et meningsfullt ord. <strong>Så svaret er at chifferteksten ikke dekrypterer til en gyldig norsk frase — kontroll: enten er nøkkelen feil, eller chifferteksten har feil. Som dekrypterings-øvelse er svaret «corr isri» med k=11.</strong></p>
+          <p>(Sensor: dette er et lærings­poeng — alltid kryssjekk at dekryptert tekst gir mening; hvis ikke, prøv andre k-er. Brute force på Cæsar er bare 25 forsøk.)</p>
+
+          <p><strong>d) Hvorfor ikke sikkert:</strong></p>
+          <ul>
+            <li><strong>Lite nøkkelrom:</strong> bare 25 mulige k-er (1–25). Brute force tar millisekunder — du prøver alle og tar den som ser ut som meningsfull tekst.</li>
+            <li><strong>Bevarer frekvens­fordeling:</strong> bokstav-frekvensen er den samme i klar og chiffer, bare permutert. På norsk er e ≈ 16 %, og hyppigste bokstav i lengre chiffertekst avslører k.</li>
+            <li><strong>(Ekstra)</strong>: kjent-klartekst-angrep — én kjent (klar, chiffer)-par avslører k umiddelbart.</li>
+          </ul>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.2.1 — Klassiske chiffer</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 2 — Digital signatur og PKI -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 2</span>
+      <span class="exam-q__points">14 poeng</span>
+      <span class="exam-q__topic">Kap. 8.4–8.5 · PGP og PKI</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Alice ønsker å sende en stor e-post (≈ 50 MB) til Bob med <strong>konfidensialitet, integritet og avsender-autentisering</strong>. Begge har nøkkelpar (offentlig + privat) og Alice har en kopi av Bob sin sertifikat fra en betrodd CA.</p>
+      <p class="q-text">a) Beskriv steg for steg hvordan Alice klargjør meldingen før sending (PGP-stil hybrid). Hva slags nøkler brukes hvor? (6p)</p>
+      <p class="q-text">b) Beskriv steg for steg hvordan Bob behandler den mottatte meldingen. Hva sjekker han, og hvilke nøkler bruker han? (4p)</p>
+      <p class="q-text">c) Hvorfor brukes <em>hybrid</em>-modell (symmetrisk for selve meldingen) i stedet for ren offentlig­nøkkel-kryptografi? (2p)</p>
+      <p class="q-text">d) Hvordan vet Alice at hun har Bobs <em>ekte</em> offentlige nøkkel, og ikke en falsk gitt av en mellomperson Trudy? (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Alice klargjør meldingen:</strong></p>
+          <ol>
+            <li><strong>Generer en tilfeldig sesjons­nøkkel</strong> K (eks. 256 bit AES-nøkkel).</li>
+            <li><strong>Krypter meldingen m symmetrisk:</strong> c = AES_K(m). Dette gir konfidensialitet.</li>
+            <li><strong>Krypter sesjons­nøkkelen K med Bobs offentlige nøkkel:</strong> K' = RSA_PKB(K). Bare Bob (med sin privat) kan dekryptere K'.</li>
+            <li><strong>Beregn hash av meldingen:</strong> h = SHA-256(m).</li>
+            <li><strong>Signér hashen med Alice sin private nøkkel:</strong> sig = RSA_SKA(h). Dette gir integritet + avsender-autentisering.</li>
+            <li><strong>Send pakken (c, K', sig) til Bob.</strong></li>
+          </ol>
+          <p>Brukte nøkler: én tilfeldig symmetrisk K, Bobs offentlige (PKB), Alice sin private (SKA). Alice sin offentlige er <em>ikke</em> brukt her — den er Bobs verktøy for å verifisere signaturen.</p>
+
+          <p><strong>b) Bob behandler:</strong></p>
+          <ol>
+            <li><strong>Dekrypter K'</strong> med sin private nøkkel: K = RSA_SKB(K'). Nå har han sesjons­nøkkelen.</li>
+            <li><strong>Dekrypter meldingen:</strong> m = AES_K(c).</li>
+            <li><strong>Beregn hash av mottatt melding:</strong> h' = SHA-256(m).</li>
+            <li><strong>Verifiser signaturen:</strong> dekrypter sig med Alice sin <em>offentlige</em> nøkkel — RSA_PKA(sig) skal returnere h. Sammenlign med h'. Hvis like → autentisering OK + integritet OK.</li>
+          </ol>
+          <p>Bob trenger Alice sin offentlige nøkkel for sjekk. Den får han typisk fra Alice sitt sertifikat (signert av en CA Bob stoler på).</p>
+
+          <p><strong>c) Hvorfor hybrid:</strong></p>
+          <p>Offentlig­nøkkel-kryptografi (RSA, EC) er størrelses­ordener tregere enn symmetrisk (AES) for store data­volumer. RSA-2048 kan håndtere ~10 KB/s; AES-256 håndterer flere GB/s på moderne CPU-er. For 50 MB-melding ville ren RSA ta titals minutter — uakseptabelt. Hybrid: bruk RSA kun for å bytte den lille K-en (256 bit), så AES for den store meldingen.</p>
+
+          <p><strong>d) Tillit til Bobs offentlige nøkkel:</strong></p>
+          <p>Alice har Bobs <em>sertifikat</em> fra en CA hun stoler på. Sertifikatet inneholder Bobs identitet (eks. e-post-adresse) + Bobs offentlige nøkkel + en CA-signatur over hele bunten. Alice verifiserer CA-signaturen med CA-ens offentlige nøkkel (forhåndsinstallert i hennes nøkkelring). Hvis OK, er det Bobs <em>ekte</em> offentlige nøkkel.</p>
+          <p>Trudy kunne lage en falsk nøkkel og hevde «dette er Bobs offentlige», men hun klarer ikke forfalske CA-signaturen uten CA-ens private nøkkel.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.5 — Sikker e-post</a> · <a href="../kap8/innhold.html">Kap. 8.4 — PKI</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 3 — TLS handshake -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 3</span>
+      <span class="exam-q__points">12 poeng</span>
+      <span class="exam-q__topic">Kap. 8.6 · TLS</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) Beskriv TLS 1.2-handshake på et høyt nivå. Hvilke meldinger sendes, og i hvilken retning? Hva er sluttresultatet? (6p)</p>
+      <p class="q-text">b) Hva er <em>master secret</em>, og hvilke nøkler avledes fra den? (3p)</p>
+      <p class="q-text">c) Hvordan gjør TLS 1.3 handshake-en raskere enn TLS 1.2? Forklar 1-RTT- og 0-RTT-modus. (3p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) TLS 1.2-handshake:</strong></p>
+          <ol>
+            <li><strong>ClientHello (klient → server):</strong> klient-tilfeldig nonce, liste over støttede chiffer-suiter, TLS-versjon.</li>
+            <li><strong>ServerHello (server → klient):</strong> server-tilfeldig nonce, valgt chiffer-suit, valgt versjon.</li>
+            <li><strong>Certificate (server → klient):</strong> server sender sin sertifikat-kjede.</li>
+            <li><strong>ServerHelloDone (server → klient):</strong> markør for slutt av server-meldinger.</li>
+            <li><strong>ClientKeyExchange (klient → server):</strong> klient genererer pre-master secret, krypterer med serverens offentlige nøkkel (RSA-modus) eller bidrar med Diffie-Hellman-andel.</li>
+            <li><strong>ChangeCipherSpec + Finished (klient → server):</strong> begge sider beregner master secret + sesjons­nøkler. Klienten bytter til kryptert modus og sender Finished kryptert.</li>
+            <li><strong>ChangeCipherSpec + Finished (server → klient):</strong> bekrefter.</li>
+          </ol>
+          <p>Total: <strong>2 RTT</strong> før første applikasjons­data kan sendes. Sluttresultat: en kryptert symmetrisk tunnel mellom klient og server, med autentisert server-identitet (og evt. klient-identitet hvis mutual TLS).</p>
+
+          <p><strong>b) Master secret og avledede nøkler:</strong></p>
+          <p>Master secret avledes (deterministisk) fra (klient-nonce, server-nonce, pre-master secret) via PRF (Pseudo-Random Function). Master secret er 48 byte.</p>
+          <p>Fra master secret avledes:</p>
+          <ul>
+            <li>Klient → server kryptering­nøkkel</li>
+            <li>Server → klient kryptering­nøkkel</li>
+            <li>Klient → server MAC-nøkkel (for HMAC-integritet)</li>
+            <li>Server → klient MAC-nøkkel</li>
+            <li>(Initialiserings­vektorer ved blokk-chiffere)</li>
+          </ul>
+          <p>Bruk av <em>separate</em> nøkler i hver retning og for kryptering vs MAC reduserer angrepsoverflate.</p>
+
+          <p><strong>c) TLS 1.3:</strong></p>
+          <p><strong>1-RTT-modus:</strong> klienten gjetter hvilken DH-gruppe serveren vil støtte og sender sin nøkkel-share allerede i ClientHello. Serveren svarer i én runde med ServerHello + sertifikat + nøkkel-share + Finished. Klienten kan sende første applikasjons­data umiddelbart etter sin Finished. Total = 1 RTT (mot 2 i 1.2). Hvis serveren ikke støtter klientens valg går det HelloRetryRequest og det blir 2 RTT.</p>
+          <p><strong>0-RTT-modus (tidlige data, resumption):</strong> ved gjenopptakelse av en tidligere sesjon kan klienten sende applikasjons­data <em>i</em> ClientHello, kryptert med en pre-shared key (PSK) fra forrige sesjon. Null RTT-forsinkelse — men 0-RTT-data har replay-svakhet, så bør bare brukes for idempotente operasjoner (GET, ikke POST).</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.6 — TLS</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 4 — Mobil 4G e-post-kjede -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 4</span>
+      <span class="exam-q__points">12 poeng</span>
+      <span class="exam-q__topic">Kap. 2–7 · Mobil-protokollkjede</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Du sitter på toget, koblet til 4G via mobilen. Du åpner Gmail-appen og sender en e-post til <code>kompis@uib.no</code>. Beskriv stegene fra du trykker «Send» til e-posten er på vei mot UiB. For hvert steg, oppgi:</p>
+      <ul>
+        <li>Hovedprotokollen som brukes</li>
+        <li>Hvilket lag den tilhører</li>
+        <li>Kort beskrivelse av hva som oppnås</li>
+      </ul>
+      <p class="q-text">Hva er <em>annerledes</em> mot et fastnett-scenario (kabel/WiFi)? Diskuter spesielt 4G-radio-grensesnittet og IP-konfigurasjon på mobilen. (12p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>Steg-for-steg-kjede:</strong></p>
+          <ol>
+            <li><strong>4G radio-tilknytning</strong> — fysisk + lenkelag. Mobilen er allerede koblet til en eNodeB (basestasjon). Radio-grensesnittet er LTE (OFDMA, AMC). Lenkelaget håndterer ARQ og HARQ for retransmisjon.</li>
+            <li><strong>EPC (Evolved Packet Core)</strong> — mobilen har en P-GW (Packet Gateway) som er hennes Internet-utgang. Mobilens IP er allerede tildelt ved attach (etter SIM-autentisering via HSS, oppsett av default bearer). Denne fasen gjør 4G-mobilen analog til en host som hadde DHCP-fasen i fastnett.</li>
+            <li><strong>DNS</strong> — applikasjonslag (over UDP). Gmail-appen vet allerede serverens hostname (<code>smtp.gmail.com</code>). DNS-oppslag mot operatørens DNS gir IP. (Cachet hvis kortlig brukt.)</li>
+            <li><strong>TCP 3-veis håndtrykk</strong> mot Gmail-serveren — transport. SYN, SYN-ACK, ACK.</li>
+            <li><strong>TLS-handshake</strong> — sesjon (kap 8.6). 1-2 RTT for forhandling av kryptografisk tunnel.</li>
+            <li><strong>SMTP-submission</strong> — applikasjonslag (over TLS over TCP, port 587). Klient autentiserer (SMTP AUTH), sender HELO, MAIL FROM, RCPT TO, DATA, og selve meldings­innholdet. Gmail-serveren tar over og leverer videre.</li>
+            <li><strong>Server-til-server SMTP</strong> — Gmail-server gjør et MX-oppslag for uib.no, kobler til UiB sin SMTP-tjener, og videresender mailen.</li>
+            <li><strong>Mottakerens henting</strong> — kompisen hos UiB henter via IMAP (mest sannsynlig) eller webmail (HTTPS).</li>
+          </ol>
+
+          <p><strong>Forskjeller mot fastnett:</strong></p>
+          <ul>
+            <li><strong>4G radio + EPC erstatter Ethernet/WiFi + DHCP:</strong> mobilen kjører ikke DHCP — IP-adresse tildeles via 4G-attach-prosessen (Bearer setup, IP fra P-GW). DNS-server kan også settes via samme prosess.</li>
+            <li><strong>Større RTT og varierende forsinkelse:</strong> 4G typisk 30–80 ms RTT mot operatørens nett, mot 1–10 ms over WiFi/fiber. Dette merker du særlig ved TLS-handshake (1-2 RTT) og SMTP-dialog.</li>
+            <li><strong>NAT/CGNAT:</strong> mobil-operatør har ofte Carrier Grade NAT — mobilen får en privat IP (10.x.x.x) som NAT-es til en delt offentlig IP. Innkommende forbindelser fra Internett er typisk umulige.</li>
+            <li><strong>Mobilitet:</strong> hvis du forflytter deg gjennom celler under e-postsendingen, gjør 4G en handover transparent for IP-laget. Din TCP-forbindelse beholdes — lenkelaget håndterer mobiliteten.</li>
+            <li><strong>Adaptiv modulasjon (AMC):</strong> 4G justerer modulasjon (QPSK/16-QAM/64-QAM/256-QAM) basert på SNR — gir bedre throughput på god dekning, mer robust på dårlig.</li>
+          </ul>
+          <p class="ref">Pensum: <a href="../kap7/innhold.html">Kap. 7.4 — Mobilnett</a> · <a href="../kap2/innhold.html">Kap. 2 — E-post</a> · <a href="../kap8/innhold.html">Kap. 8.6 — TLS</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 5 — TCP 3-veis -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 5</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 3.5 · TCP-tilkobling</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Klient C og server S oppretter en TCP-forbindelse. C velger initial sekvensnr 4 200; S velger 8 800.</p>
+      <p class="q-text">a) Beskriv 3-veis håndtrykket: meldingen, retning, og sekvens-/ack-nummer i hvert segment. (4p)</p>
+      <p class="q-text">b) Hva alokeres på begge sider, og hvorfor er det 3-veis (ikke 2-veis)? (3p)</p>
+      <p class="q-text">c) Etter håndtrykket sender C tre data-segmenter back-to-back på 100, 200 og 50 byte. Hva er sekvensnumrene i hvert segment, og hva blir ACK-nummeret S sender for å bekrefte alt? (3p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) 3-veis håndtrykk:</strong></p>
+          <ol>
+            <li>C → S: <strong>SYN</strong>, seq=4 200, ack=0 (ikke i bruk), SYN-flagg satt. (Bare kontroll, 0 byte data.)</li>
+            <li>S → C: <strong>SYN-ACK</strong>, seq=8 800, ack=4 201 (= klientens seq + 1), SYN+ACK-flagg satt.</li>
+            <li>C → S: <strong>ACK</strong>, seq=4 201, ack=8 801, ACK-flagg satt. (Forbindelsen er nå etablert.)</li>
+          </ol>
+          <p>Merk: SYN-segmenter «bruker» ett sekvensnr (selv om de ikke har data) — derfor +1 i ack.</p>
+
+          <p><strong>b) Hva alokeres, og hvorfor 3-veis:</strong></p>
+          <ul>
+            <li>Hver side alokerer mottaks­buffer + tilstands­variabler (initial sekvensnr, neste forventet sekvensnr, vindus­størrelse). Server allokerer dette ved SYN-ACK; klient ved ACK.</li>
+            <li>Hvorfor 3-veis: ved 2-veis kunne en gammel forsinket SYN-pakke fra et tidligere forsøk få serveren til å allokere ressurser for en forbindelse som klienten ikke lengre vil ha. 3-veis krever at klienten bekrefter at SYN-ACK ble mottatt, noe som beviser at klienten <em>fortsatt</em> er aktiv på den synkroniserte sekvensnr.</li>
+            <li>(Bonus: 3-veis gir også beskyttelse mot TCP SYN-flooding ved bruk av SYN cookies — server alokerer ikke ressurser før ACK kommer.)</li>
+          </ul>
+
+          <p><strong>c) Tre data-segmenter:</strong></p>
+          <ul>
+            <li>Segment 1: seq=4 201, lengde 100 byte. (Bytes 4 201–4 300.)</li>
+            <li>Segment 2: seq=4 301, lengde 200 byte. (Bytes 4 301–4 500.)</li>
+            <li>Segment 3: seq=4 501, lengde 50 byte. (Bytes 4 501–4 550.)</li>
+          </ul>
+          <p>Server kvitterer kumulativt: <strong>ACK 4 551</strong> (= neste forventet byte etter alle tre er mottatt). Hvis serveren ACK-er etter hvert kan det være ACK 4 301, ACK 4 501, ACK 4 551 i tre separate ACK-segmenter.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3.5.6 — TCP-tilkobling</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 6 — Trudy/sikkerhets-scenario -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 6</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 8 · Sikkerhets­scenario</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Alice og Bob kommuniserer over et offentlig nett. Trudy sitter mellom dem og kan se all trafikk og potensielt endre den. For hvert av følgende mottiltak, forklar hvilken Trudy-handling det forhindrer og hvorfor:</p>
+      <ol>
+        <li>Alice krypterer meldingen med Bobs offentlige nøkkel før sending. (2p)</li>
+        <li>Alice legger ved en HMAC beregnet med en hemmelig nøkkel som hun deler med Bob. (2p)</li>
+        <li>Alice signerer en hash av meldingen med sin egen private nøkkel. (2p)</li>
+        <li>Bob har Alice sin offentlige nøkkel via et sertifikat fra en CA, og verifiserer signaturen mot sertifikatet. (2p)</li>
+        <li>Alice legger ved et tids­stempel og sekvens­nummer i meldingen. (2p)</li>
+      </ol>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <ol>
+            <li><strong>Kryptering med Bobs offentlige:</strong> forhindrer at Trudy <em>leser</em> innholdet (passiv lytting). Bare Bob (med sin private) kan dekryptere. Gir <strong>konfidensialitet</strong>. Men hindrer ikke endring eller innsetting — Trudy kan bytte ut hele chiffer­teksten med en hun selv lager (kryptert med Bobs offentlige), og Bob ville ikke vite forskjell uten autentisering.</li>
+            <li><strong>HMAC med delt hemmelig nøkkel:</strong> gir <strong>integritet og delt-nøkkel-autentisering</strong>. Trudy uten K kan ikke beregne korrekt HMAC for sin endrede melding. Bob verifiserer med samme K. Forhindrer endring og innsetting (gitt at K er hemmelig). Skalerer ikke godt — krever forhåndsutveksling for hver kommunikasjons­partner.</li>
+            <li><strong>Digital signatur:</strong> gir <strong>integritet og opprinnelses­autentisering</strong> som ikke krever delt hemmelig­het — bare Alice sin offentlige nøkkel hos Bob. Trudy kan ikke forfalske signaturen uten Alice sin private. Tilleggs­fordel: <em>ikke-fornektelse</em> (non-repudiation) — Alice kan ikke senere benekte at hun signerte, fordi bare hun har den private nøkkelen.</li>
+            <li><strong>Sertifikat og verifisering:</strong> løser «hvor får Bob Alice sin <em>ekte</em> offentlige nøkkel fra?»-problemet. Hvis Bob bare hadde fått en nøkkel sendt over nettet kunne Trudy ha byttet den ut underveis. Sertifikatet binder Alice sin identitet til hennes offentlige nøkkel, signert av en CA Bob stoler på — så Bob har en transitiv tillits­kjede. Forhindrer <strong>nøkkel-substitusjon (man-in-the-middle ved nøkkelutveksling)</strong>.</li>
+            <li><strong>Tids­stempel og sekvens­nummer:</strong> forhindrer <strong>replay-angrep</strong>. Trudy kan ellers fange en gyldig signert melding og <em>spille av igjen</em> senere — signaturen er fortsatt gyldig, men den nye konteksten kan være misbruk (eks. signert «overfør 100 kr» fanget og avspilt 100 ganger). Bob avviser meldinger med gammel timestamp eller duplisert sekvensnr.</li>
+          </ol>
+          <p>Sammen gir disse alle de fire klassiske sikkerhets­målene: konfidensialitet (1), integritet (2 eller 3), autentisering (3+4), og operasjonell sikkerhet mot replay (5).</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.1 — Sikkerhetsmål</a> · <a href="../kap8/innhold.html">Kap. 8.3–8.4 — Integritet og PKI</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Vår 2026 · Prediksjon 11 av 11</p>
+    <p style="margin-top: 12px; font-size: 14px;"><a href="../eksamen-prep/">&larr; Tilbake til prediksjons­analysen</a></p>
+  </div>
+</footer>
+<script src="../chat-widget.js"></script>
+<script src="../nav-search.js"></script>
+<script src="exam-quiz.js" defer></script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>

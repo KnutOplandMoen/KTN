@@ -711,6 +711,660 @@
     </div>
   </article>
 
+  <!-- Q26 — HTTP/2 multipleksing -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 26</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · HTTP/2</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er hovedforbedringen i HTTP/2 sammenlignet med HTTP/1.1?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> HTTP/2 bruker UDP i stedet for TCP for å unngå hode-blokkering på transport­laget</li>
+        <li><span class="opt-label">B</span> HTTP/2 lar flere strømmer multiplekses over én TCP-forbindelse uten app-lag-HOL</li>
+        <li><span class="opt-label">C</span> HTTP/2 reduserer nedlastings­tiden ved å erstatte TLS med en raskere handshake</li>
+        <li><span class="opt-label">D</span> HTTP/2 fjerner behovet for kryptering ved å pakke svaret i komprimerte rammer</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>HTTP/2 deler en TCP-forbindelse i mange uavhengige streams med rammer som kan flettes — løser app-lag head-of-line. (HTTP/3 går videre til UDP/QUIC, men det er ikke HTTP/2.)</p>
+          <p class="ref">Pensum: <a href="../kap2/http-og-web.html">Kap. 2 — HTTP/2</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q27 — CDN -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 27</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · CDN</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Et Content Distribution Network (CDN) gir hovedsakelig...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> automatisk kryptering av alt medieinnhold før det publiseres ut til brukere</li>
+        <li><span class="opt-label">B</span> replikering av innhold på servere nær brukerne, for lavere latens og lastfordeling</li>
+        <li><span class="opt-label">C</span> oversettelse av URL-er til portnumre dynamisk på applikasjons­nivå</li>
+        <li><span class="opt-label">D</span> en alternativ adresseringsplan til IPv4 og IPv6 spesielt for video­strømming</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>CDN = «kopier nærmere brukeren». Reduserer RTT, sparer båndbredde i kjernen, og fordeler last mellom mange edge-servere. DNS brukes for å sende klient til nærmeste node.</p>
+          <p class="ref">Pensum: <a href="../kap2/p2p-video-cdn.html">Kap. 2 — CDN</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q28 — DASH -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 28</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · DASH</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er kjernen i DASH (Dynamic Adaptive Streaming over HTTP)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Tjeneren prioriterer lyd over video via DSCP-felter i nettverkslaget</li>
+        <li><span class="opt-label">B</span> Klienten bytter mellom kvalitets­varianter ut fra estimert tilgjengelig båndbredde</li>
+        <li><span class="opt-label">C</span> Klienten åpner mange parallelle UDP-strømmer for å overgå TCPs throughput</li>
+        <li><span class="opt-label">D</span> Tjeneren transkoder video i sanntid for hver klient ut fra deres skjerm­oppløsning</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>DASH = klient-styrt adaptiv bitrate over HTTP. Manifestet (MPD) lister kvaliteter; klienten ber om neste segment i kvalitet som matcher målt båndbredde.</p>
+          <p class="ref">Pensum: <a href="../kap2/p2p-video-cdn.html">Kap. 2 — DASH</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- ============ KAPITTEL 3 — TRANSPORTLAG ============ -->
+
+  <!-- Q29 — Multipleksing/demultipleksing -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 29</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · Mux/demux</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">«Demultipleksing» i transportlaget innebærer at...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> TCP-segmentet deles i flere mindre IP-pakker av nettverkslaget før forwarding</li>
+        <li><span class="opt-label">B</span> mottakeren bruker felter i segment-header til å levere data til riktig socket</li>
+        <li><span class="opt-label">C</span> avsender lar flere applikasjoner dele samme port uten å spore hver enkelt</li>
+        <li><span class="opt-label">D</span> nettverkslaget velger en ny rute for hvert segment uavhengig av forrige</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Demultiplexing = «hvilken socket?». For UDP: kun mål-port. For TCP: 4-tuppel (kilde-IP, kilde-port, mål-IP, mål-port). A er fragmentering, et helt annet konsept.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — Multipleksing og demultipleksing</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q30 — Pålitelig dataoverføring -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 30</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · RDT</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">«Pålitelig dataoverføring» som tjeneste innebærer at...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> alle pakker krypteres ende-til-ende med en symmetrisk øktnøkkel</li>
+        <li><span class="opt-label">B</span> data leveres i orden, uten tap, duplikater eller bitfeil til applikasjonen</li>
+        <li><span class="opt-label">C</span> forsinkelsen aldri overstiger en avtalt grense mellom endene</li>
+        <li><span class="opt-label">D</span> bredbåndet aldri synker under en avtalt minimums­rate i ende-til-ende</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Pålitelighet = de fire egenskapene: ingen tap, ingen duplikat, riktig rekkefølge, ingen korrupte bits. Sier <em>ingenting</em> om timing eller båndbredde.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — Pålitelig overføring</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q31 — Stop-and-wait -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 31</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · Stop-and-wait</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hovedulempen ved stop-and-wait sammenlignet med pipelining er at...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> stop-and-wait krever mer enn én ack per overført pakke for å garantere levering</li>
+        <li><span class="opt-label">B</span> stop-and-wait gir lav lenke­utnyttelse fordi avsender venter en RTT mellom pakker</li>
+        <li><span class="opt-label">C</span> stop-and-wait kan ikke detektere bitfeil i nyttelasten med noen sjekksum­algoritme</li>
+        <li><span class="opt-label">D</span> stop-and-wait krever betydelig mer minne på avsender enn pipelining gjør</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>S&amp;W: send 1 → vent på ack → send neste. Utilization = (L/R)/(L/R + RTT) som er ≪ 1 når RTT ≫ L/R. Pipelining lar avsender holde flere pakker på vingen samtidig.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — Pipelining</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q32 — GBN -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 32</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · Go-Back-N</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">I Go-Back-N, hva skjer når pakke n går tapt mens pakke n+1 og n+2 ankommer mottaker?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Avsender retransmitterer kun pakke n; n+1 og n+2 var allerede ack-et individuelt</li>
+        <li><span class="opt-label">B</span> Avsender retransmitterer pakke n og alle senere uacked pakker i vinduet</li>
+        <li><span class="opt-label">C</span> Mottaker buffrer alle pakker og venter på en SACK-melding fra avsender</li>
+        <li><span class="opt-label">D</span> Forbindelsen brytes umiddelbart og må re-etableres med ny handshake</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>GBN: kumulativ ack, mottaker forkaster alt etter manglende n. Ved timeout sender avsender hele vinduet på nytt. SR (alternativ) ville buffret n+1, n+2 og bare retransmittert n.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — GBN og SR</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q33 — Cumulative ack -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 33</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · TCP-ack</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">«Kumulativ ack» betyr at en ack med felt-verdi n bekrefter at mottaker har fått...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> kun pakken eller byten med sekvensnummer eksakt n, ingen andre</li>
+        <li><span class="opt-label">B</span> alle pakker/bytes opp til n−1, og forventer neste sekvens­nummer å være n</li>
+        <li><span class="opt-label">C</span> alle pakker mottatt i et sliding window, oppgitt ved felt-verdien n</li>
+        <li><span class="opt-label">D</span> en valgfri delmengde av sekvensnumre, valgt og merket av mottakeren</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Klassisk TCP-ack: «forventer n». Det vil si: alt før n er mottatt OK. D beskriver SACK (selective ack), en utvidelse.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — TCP-ack</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q34 — RTT-estimering -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 34</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · EstimatedRTT</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">EstimatedRTT i TCP regnes ut som...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> et rent middel av siste 10 målte RTT-verdier i et glidende vindu</li>
+        <li><span class="opt-label">B</span> et eksponentielt vektet glidende gjennomsnitt (EWMA) av målte RTT-er</li>
+        <li><span class="opt-label">C</span> differansen mellom maksimal og minimal RTT målt det siste sekundet</li>
+        <li><span class="opt-label">D</span> tidspunktet for siste retransmisjon minus tidspunkt for første sending</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>EstimatedRTT = (1−α)·EstimatedRTT + α·SampleRTT, typisk α = 0.125. Glatt fra eldre verdier, men reagerer på nye. C er nær DevRTT-konseptet, men er feil definert.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — RTT-estimering</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q35 — Karn -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 35</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · Karns algoritme</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Karns algoritme i TCP gir regelen at...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> man skal kun bruke RTT-målinger fra retransmitterte segmenter til estimering</li>
+        <li><span class="opt-label">B</span> man skal ikke bruke RTT-målinger fra retransmitterte segmenter til estimering</li>
+        <li><span class="opt-label">C</span> timeout halveres etter hver vellykket overføring uten retransmisjon involvert</li>
+        <li><span class="opt-label">D</span> timeout settes alltid lik EstimatedRTT eksakt, uten ekstra margin på toppen</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Problemet: når en retransmisjon ack-es, vet man ikke om ack-en gjaldt original eller retransmisjon. Bruker man målingen feil, blir EstimatedRTT skjev. Løsning: hopp over.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — Karn/Partridge</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q36 — Fast retransmit -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 36</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · Fast retransmit</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva utløser «fast retransmit» hos en TCP-avsender?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> At timeout-timeren utløper for første gang etter forrige ack-mottak</li>
+        <li><span class="opt-label">B</span> At avsender mottar tre dupliserte acks med samme bekreftelses­nummer</li>
+        <li><span class="opt-label">C</span> At nettverkslaget signaliserer kongesjon eksplisitt via et ECN-flagg i IP</li>
+        <li><span class="opt-label">D</span> At mottakeren setter PSH-flagget i sin første ack etter tap er detektert</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>3 dup-ack-er = sterkt signal om at akkurat én pakke mangler men senere kommer fram. Avsender retransmitterer uten å vente på timeout — derav «fast».</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — TCP fast retransmit</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q37 — AIMD -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 37</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · AIMD</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">AIMD (Additive Increase, Multiplicative Decrease) i TCP fungerer ved at...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> cwnd dobles ved hvert tap, og halveres ved hver vellykket ack mottatt</li>
+        <li><span class="opt-label">B</span> cwnd økes lineært (ca. 1 MSS per RTT) i kongesjons­unngåelse, halveres ved tap</li>
+        <li><span class="opt-label">C</span> cwnd er konstant gjennom hele forbindelsen; rwnd justeres etter trafikkmengde</li>
+        <li><span class="opt-label">D</span> cwnd endres aldri etter slow start er avsluttet i den første RTT-en av forbindelsen</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>I CA: +1 MSS per RTT (additive). Ved tap: cwnd → cwnd/2 (multiplicative). Sagtannmønster mot maks-mottatt før tap.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — Kongesjons­kontroll AIMD</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q38 — Slow start -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 38</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · Slow start</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">I TCP slow start vokser cwnd...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> lineært (med ett MSS per RTT) helt til en konfigurert øvre grense</li>
+        <li><span class="opt-label">B</span> eksponensielt (cwnd dobles per RTT) inntil ssthresh nås eller tap inntreffer</li>
+        <li><span class="opt-label">C</span> med en konstant rate uavhengig av acks som mottas underveis</li>
+        <li><span class="opt-label">D</span> ikke i det hele tatt; det er en flat fase før sliding window aktiveres</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Tross navnet vokser cwnd raskt — for hver ack øker cwnd med 1 MSS, så cwnd dobles per RTT. Når ssthresh nås, går vi over til AIMD.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — Slow start</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q39 — Flow vs congestion control -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 39</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · Flow vs congestion</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Forskjellen mellom <strong>flytkontroll</strong> og <strong>kongesjons­kontroll</strong> er at...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> flytkontroll beskytter nettverket mot overlast; kongesjons­kontroll beskytter mottakerens buffer</li>
+        <li><span class="opt-label">B</span> flytkontroll beskytter mottakerens buffer; kongesjons­kontroll beskytter nettverket mot overlast</li>
+        <li><span class="opt-label">C</span> begge mekanismene beskytter samme ressurs men implementeres på forskjellige lag</li>
+        <li><span class="opt-label">D</span> flytkontroll bruker kun cwnd som vindu; kongesjons­kontroll bruker kun rwnd</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Klassisk fellespørsmål. Flytkontroll = «ikke fyll mottakerens buffer» (rwnd). Kongesjons­kontroll = «ikke fyll nettverket» (cwnd). Effektivt vindu = min(rwnd, cwnd).</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — Flytkontroll vs kongesjons­kontroll</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q40 — TCP 3-way handshake -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 40</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · 3-veis handshake</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hovedformålet med TCPs 3-veis handshake er å...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> oversette domenenavnet i URL-en til en IP-adresse før forbindelsen åpnes</li>
+        <li><span class="opt-label">B</span> synkronisere innledende sekvensnumre og bekrefte at begge sider kan sende/motta</li>
+        <li><span class="opt-label">C</span> forhandle krypterings­nøkler som skal brukes på alle senere segmenter i økten</li>
+        <li><span class="opt-label">D</span> reservere båndbredde langs ruten frem til mottaker for forbindelsens varighet</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>SYN, SYN-ACK, ACK utveksler ISN-er og bekrefter at begge sider er klare. Kryptering (TLS) er en separat handshake oppå TCP. Ingen båndbredde reserveres.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — TCP-tilkobling</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q41 — UDP -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 41</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · UDP</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken tjeneste tilbyr UDP utover det IP allerede gir?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Pålitelig levering, flytkontroll og tilkoblings­oppsett før data sendes</li>
+        <li><span class="opt-label">B</span> Multipleksing/demultipleksing via portnumre, samt en valgfri sjekksum</li>
+        <li><span class="opt-label">C</span> Kongesjons­kontroll med slow start og AIMD-tilpasning over tid</li>
+        <li><span class="opt-label">D</span> Ordnet levering med sekvensnummer per segment levert til applikasjon</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>UDP gir nesten ingenting — bare port-nummer (mux/demux) og sjekksum (valgfritt i IPv4, obligatorisk i IPv6). Ingen pålitelighet eller kongesjons­kontroll.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — UDP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q42 — Selective Repeat -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 42</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · Selective Repeat</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">I Selective Repeat — hva skjer når pakke n går tapt mens n+1 og n+2 ankommer?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Avsender retransmitterer n, n+1 og n+2; mottaker forkaster n+1 og n+2 ved ankomst</li>
+        <li><span class="opt-label">B</span> Avsender retransmitterer kun n; mottaker har buffret n+1 og n+2 og leverer i orden senere</li>
+        <li><span class="opt-label">C</span> Avsender venter til timeout for hele vinduet, deretter resettes hele forbindelsen</li>
+        <li><span class="opt-label">D</span> Mottaker sender en NAK med en bit-mask som angir nøyaktig hvilke pakker mangler</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>SR er presis: bare den tapte pakken retransmitteres, ikke vinduet bak. Mottakeren bruker buffer for å håndtere ute-av-orden ankomster. Det er forskjellen fra GBN.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — Selective Repeat</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- ============ KAPITTEL 4 — NETTVERKSLAG ============ -->
+
+  <!-- Q43 — Forwarding vs routing -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 43</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · Forwarding vs routing</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">«Forwarding» og «routing» i en ruter — den klassiske distinksjonen er at...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> forwarding bygger rutetabellen mens routing bruker den til å sende hver pakke</li>
+        <li><span class="opt-label">B</span> forwarding er per-pakke handlingen mens routing er prosessen som bygger rutetabellen</li>
+        <li><span class="opt-label">C</span> forwarding skjer i kontroll-planet mens routing skjer i data-planet på pakke-nivå</li>
+        <li><span class="opt-label">D</span> de to begrepene er synonymer i moderne nettverks­litteratur og brukes om hverandre</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Forwarding (data-plane): «pakke inn på port 1, slå opp i tabell, send på port 3». Routing (control-plane): «hva skal stå i tabellen?» — beregnes via rute-protokoller. Helt ulike tidsskalaer.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — Forwarding og routing</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q44 — IPv4 vs IPv6 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 44</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · IPv6</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket utsagn om IPv6 sammenlignet med IPv4 er korrekt?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> IPv6 har 64-bits adresser og en mindre header med færre obligatoriske felter</li>
+        <li><span class="opt-label">B</span> IPv6 har 128-bits adresser og fjerner bl.a. fragmentering i ruterne underveis</li>
+        <li><span class="opt-label">C</span> IPv6 erstatter både TCP og UDP med en ny innebygd transport-protokoll</li>
+        <li><span class="opt-label">D</span> IPv6 bruker MAC-adresser direkte i stedet for nettverkslag-adresser globalt</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>IPv6 har 128-bit (ikke 64), fast header på 40 byte, ingen fragmentering i nettet (kun hos kilden), og et større adresserom. TCP/UDP brukes som vanlig over IPv6.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — IPv6</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q45 — NAT -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 45</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · NAT</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">NAT (Network Address Translation) løser primært hvilket problem?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Lar mange private hoster dele én offentlig IPv4-adresse via port­oversettelse</li>
+        <li><span class="opt-label">B</span> Krypterer trafikken mellom lokalnettet og resten av Internett automatisk</li>
+        <li><span class="opt-label">C</span> Velger korteste sti til mål basert på Dijkstras algoritme i ruter-tabellen</li>
+        <li><span class="opt-label">D</span> Garanterer en gitt minimums­båndbredde til hvert tilkoblet apparat på subnett</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A</span>
+          <p>NAT gir IPv4-adresseøkonomi. Ruteren skriver om kilde-IP (og kilde-port) på utgående pakker, holder en tabell, oversetter tilbake på innkommende. Ikke kryptering eller QoS.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — NAT</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q46 — CIDR -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 46</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · CIDR</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">CIDR-notasjonen <code>192.168.0.0/24</code> betyr...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 24 ledige adresser fra og med 192.168.0.0 i et tildelt block</li>
+        <li><span class="opt-label">B</span> et subnett med 24 prefiks-bits, dvs. 256 adresser totalt (254 brukbare for hoster)</li>
+        <li><span class="opt-label">C</span> en multicast-gruppe med ID 24 i nettet 192.168.0.0 av klasse A-typen</li>
+        <li><span class="opt-label">D</span> at 24 enheter er konfigurert med adressen 192.168.0.0 simultant av DHCP</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>/24 = 24 prefix-bits, 8 host-bits → 2<sup>8</sup> = 256 adresser, minus nett (.0) og broadcast (.255) = 254 brukbare.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — CIDR og subnetting</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q47 — Longest prefix match -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 47</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · Longest prefix match</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">«Longest prefix match» innebærer at en ruter velger ruten...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> som har høyest metrikk blant alle rutene som matcher destinasjons-IP-adressen</li>
+        <li><span class="opt-label">B</span> hvis prefiks matcher destinasjons-IP-en og samtidig har flest matchende bits</li>
+        <li><span class="opt-label">C</span> som har lavest TTL blant kandidatene som ikke har utløpt på vei i ruteren</li>
+        <li><span class="opt-label">D</span> hvis prefiks samsvarer eksakt med pakkens kilde-IP, ikke med destinasjons-IP-en</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Match destinasjons-IP mot alle prefikser i tabellen, velg den med lengst match. Mer spesifikk rute slår mer generell.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — Longest prefix match</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q48 — DHCP -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 48</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · DHCP</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">DHCPs hovedformål er å...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> oversette domenenavn til IP-adresser dynamisk ved hver ny applikasjons­start</li>
+        <li><span class="opt-label">B</span> tildele IP-adresse, subnett-maske, gateway og DNS til klienter automatisk ved oppstart</li>
+        <li><span class="opt-label">C</span> replikere innhold til geografisk distribuerte cacher for raskere nedlastning</li>
+        <li><span class="opt-label">D</span> konfigurere TCP-vinduestørrelser ut fra link-rate ved hver ny økt</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>DORA: Discover, Offer, Request, Acknowledge. Klienten får full IP-konfigurasjon — ikke bare adresse, men også subnett-maske, default gateway og lokal DNS-server.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — DHCP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q49 — IP-fragmentering -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 49</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · IPv4-fragmentering</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvor i nettet kan IPv4-fragmentering oppstå?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Kun ved kilden, basert på MSS som er forhandlet i TCPs 3-veis handshake</li>
+        <li><span class="opt-label">B</span> Ved kilden eller i en ruter underveis hvis pakken er større enn neste lenkes MTU</li>
+        <li><span class="opt-label">C</span> Kun ved siste ruter rett før mottakeren, ikke på øvrige hopp i nettet</li>
+        <li><span class="opt-label">D</span> Kun i lenkelaget, ikke i nettverkslaget; IP fragmenterer aldri på pakke­basis</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>I IPv4 kan rutere fragmentere underveis hvis MTU på neste lenke er mindre enn pakken. Sammensetting (reassembly) skjer kun hos endelig mottaker. (IPv6 fragmenterer kun hos kilden.)</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — IP-fragmentering</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q50 — Control plane vs data plane -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 50</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · Control vs data plane</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">I en moderne ruter er <strong>data-planet</strong> og <strong>kontroll-planet</strong> rollene at...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> data-planet er implementert i programvare; kontroll-planet er implementert i hardware</li>
+        <li><span class="opt-label">B</span> data-planet håndterer per-pakke videresending; kontroll-planet bygger rutetabellen</li>
+        <li><span class="opt-label">C</span> kontroll-planet er identisk med utgangskøen; data-planet er identisk med inngangskøen</li>
+        <li><span class="opt-label">D</span> data-planet er kun aktivt når kontroll-planet midlertidig er deaktivert i feilmodus</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Data-plane = «hver pakke, ASIC-rask». Control-plane = «en gang i sekundet, CPU bygger tabellen via OSPF/BGP». Helt ulike formål og hastigheter.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — Control plane vs data plane</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
 </div>
 </section>
 </main>
