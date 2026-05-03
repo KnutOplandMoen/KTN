@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prediksjon 8 — «Det lange regneverket I» — TTM4100</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Alle eksamener</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
+  </div>
+</nav>
+
+<main data-chapter="Prediksjon 8 — Det lange regneverket I">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Eksamensprediksjon 8 av 9 · våren 2026</div>
+  <h1>Prediksjon <em>8</em> — «Det lange regneverket I»</h1>
+  <p class="lede">P6 ga ett regneoppgave per familie i kort form. Dette settet er <strong>lengre</strong> og tar <em>hver familie i dybden</em>: forsinkelse, throughput, sockets, P2P/klient-server, HTTP-ytelse, TCP cwnd, TCP-sekvens, sjekksum, RTT-estimering, CRC, IP-binær og symmetriske nøkler. Tallene er endret fra både eks 1–5 og fra P6, slik at du må kjøre formelen — ikke gjenbruke utenat-svar. Del I: 16 spørsmål (48 p). Del II: 6 oppgaver (52 p).</p>
+
+  <div class="learn-box">
+    <span class="label">Strategi for dette settet</span>
+    <ul>
+      <li><strong>Skriv formel-banneret før du leser oppgaven:</strong> <code>L/R</code>, <code>N·L/R</code> (store-and-forward), <code>(N+P−1)·L/R</code> (pipelining), <code>2<sup>32−x</sup>−2</code>, <code>N(N−1)/2</code>, <code>F/u<sub>s</sub></code>, <code>F/d<sub>min</sub></code>, <code>NF/(u<sub>s</sub>+Σu<sub>i</sub>)</code>, <code>NF/u<sub>s</sub></code> (klient-server).</li>
+      <li><strong>Verifiser bottleneck før du regner:</strong> P2P og klient-server gir alltid <em>maks</em> av tre/to størrelser. Hvis det øverste er klart større enn de andre, dropp resten — det er flaskehalsen.</li>
+      <li><strong>Vis utregning i Del II:</strong> sensor gir delpoeng for korrekt metode selv ved tallfeil. Skriv mellomledd og enheter (Mbps vs Mbyte vs ms vs µs).</li>
+      <li><strong>Enheter er en felle:</strong> Mbyte → Mbit krever ×8. Mbps er Mb<em>it</em> per sekund. ms → s krever ÷1000. Sjekk alltid en enhet i hodet før du svarer.</li>
+    </ul>
+  </div>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">I</span><a href="#del1">Del I — Flervalg (48p)</a></li>
+    <li><span class="toc-num">II</span><a href="#del2">Del II — Åpne oppgaver (52p)</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ==================== DEL I ==================== -->
+<section id="del1">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del I — Automatisk rettede spørsmål</h2>
+    <span class="del-points">16 spørsmål · 3 poeng per spørsmål · 48 poeng totalt</span>
+  </div>
+  <p class="section-intro">Hver oppgave er ren tallregning. Bruk papir og blyant — ikke prøv å hode-regne flere multiplikasjoner samtidig.</p>
+
+  <!-- Q1 — Store-and-forward 2-link -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 1</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Store-and-forward</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En pakke på <strong>L = 4 000 bit</strong> sendes A → svitsj → B over to lenker med rater <strong>R<sub>1</sub> = 2 Mbps</strong> og <strong>R<sub>2</sub> = 8 Mbps</strong>. Svitsjen er store-and-forward. Propageringen er neglisjerbar. Hva er total ende-til-ende-tid for pakken?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 0,5 ms</li>
+        <li><span class="opt-label">B</span> 2,0 ms</li>
+        <li><span class="opt-label">C</span> 2,5 ms</li>
+        <li><span class="opt-label">D</span> 4,0 ms</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — 2,5 ms</span>
+          <p>Store-and-forward: pakken må mottas i sin helhet på svitsjen før den begynner videresendelsen.</p>
+          <p>L/R<sub>1</sub> = 4 000 / 2·10<sup>6</sup> = <strong>2 ms</strong>. L/R<sub>2</sub> = 4 000 / 8·10<sup>6</sup> = <strong>0,5 ms</strong>. Total = 2 + 0,5 = <strong>2,5 ms</strong>.</p>
+          <p>Felle: A teller bare den raske lenken; B teller bare den langsomme. Begge må summeres.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Store-and-forward</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q2 — End-to-end with propagation -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 2</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Ende-til-ende-forsinkelse</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En pakke på <strong>L = 8 000 bit</strong> går over tre lenker, hver med rate <strong>R = 100 Mbps</strong> og propageringsforsinkelse <strong>10 ms</strong>. Antall rutere er 2 (med ubetydelig prosesseringstid). Hva er ende-til-ende-tiden?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 0,24 ms</li>
+        <li><span class="opt-label">B</span> 30 ms</li>
+        <li><span class="opt-label">C</span> 30,24 ms</li>
+        <li><span class="opt-label">D</span> 90,24 ms</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — 30,24 ms</span>
+          <p>Tre lenker × (L/R + prop) = 3·(80 µs + 10 ms) = 240 µs + 30 ms = <strong>30,24 ms</strong>.</p>
+          <p>Observer: propagasjonen <em>dominerer</em> her. Når raten øker (større R), faller L/R, men propageringen er den samme. På lange transatlantiske lenker er det propageringen som setter taket på lavnings­latens.</p>
+          <p>Felle: B glemmer L/R; A glemmer prop.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Forsinkelses­komponenter</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q3 — Pipelining -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 3</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Pipelining</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text"><strong>P = 8</strong> pakker à <strong>L = 10 000 bit</strong> sendes back-to-back over <strong>4 lenker</strong> (3 rutere mellom kilde og mål). Hver lenke har rate <strong>R = 200 Mbps</strong>. Propageringen er neglisjerbar. Minste tid før alle pakkene er mottatt?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 200 µs</li>
+        <li><span class="opt-label">B</span> 400 µs</li>
+        <li><span class="opt-label">C</span> 550 µs</li>
+        <li><span class="opt-label">D</span> 2 000 µs</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — 550 µs</span>
+          <p>Pipelining: <code>(N + P − 1)·L/R</code>. N = antall lenker = 4.</p>
+          <p>L/R = 10 000 / 200·10<sup>6</sup> = 50 µs. (4 + 8 − 1) = 11. Total = 11·50 = <strong>550 µs</strong>.</p>
+          <p>Felle: D er det du får uten pipelining (4·8·50 = 1 600 µs ≠ 2 000 µs egentlig — hadde vært 1 600). Men poenget: med naivregnestykket overestimerer du betydelig.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Pipelining</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q4 — Cut-through hybrid -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 4</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Cut-through</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En pakke på <strong>L = 20 000 bit</strong> sendes A → svitsj → B. Begge lenker har rate <strong>R = 400 Mbps</strong>. Svitsjen bruker cut-through og begynner videresending så snart de første <strong>2 000 bit</strong> er mottatt. Propageringen er neglisjerbar. Hvor lenge går det fra første bit forlater A til siste bit ankommer B?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 50 µs</li>
+        <li><span class="opt-label">B</span> 55 µs</li>
+        <li><span class="opt-label">C</span> 100 µs</li>
+        <li><span class="opt-label">D</span> 200 µs</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B — 55 µs</span>
+          <p>A bruker L/R = 20 000/400·10<sup>6</sup> = 50 µs på å sende. Svitsjen begynner videresending etter 2 000/400·10<sup>6</sup> = 5 µs. Etter at videresendingen begynner, må svitsjen fortsatt sende hele L: tar 50 µs. Siste bit på B = 5 + 50 = <strong>55 µs</strong>.</p>
+          <p>Til sammenlikning: store-and-forward = 50 + 50 = 100 µs. Cut-through sparer 45 µs ved ikke å vente på hele pakken.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Cut-through</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q5 — Bottleneck/fairness -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 5</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · TCP-fairness</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Fire TCP-sesjoner deler en flaskehals-lenke <strong>R = 1 Gbps</strong> rettferdig. Klient­lenkene som leder til hver mottaker har hver rate <strong>R<sub>C</sub> = 300 Mbps</strong>. Hva er maks gjennom­strømning per sesjon?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 250 Mbps</li>
+        <li><span class="opt-label">B</span> 300 Mbps</li>
+        <li><span class="opt-label">C</span> 1 000 Mbps</li>
+        <li><span class="opt-label">D</span> 1 200 Mbps</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A — 250 Mbps</span>
+          <p>Flaskehals: 1 Gbps delt på 4 = 250 Mbps per sesjon. Klient­lenken (300 Mbps) er rikelig — den er ikke flaskehals.</p>
+          <p>Hvis klient­lenken hadde vært 200 Mbps, ville den bli flaskehalsen, og hver sesjon hadde fått 200 Mbps. Da ville flaskehals-lenken være underutnyttet (4·200 = 800 Mbps &lt; 1 Gbps).</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Throughput</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q6 — P2P -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 6</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · P2P</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Distribuér en fil <strong>F = 80 Mbit</strong> til <strong>N = 20 peers</strong> via P2P. Server­opplastning <code>u<sub>s</sub> = 80 Mbps</code>, hver peer har <code>u<sub>i</sub> = 2 Mbps</code> og <code>d<sub>i</sub> = 10 Mbps</code>. Minste distribusjons­tid?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 1 s</li>
+        <li><span class="opt-label">B</span> 8 s</li>
+        <li><span class="opt-label">C</span> 13,3 s</li>
+        <li><span class="opt-label">D</span> 40 s</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — 13,3 s</span>
+          <p>P2P: D = max(F/u<sub>s</sub>, F/d<sub>min</sub>, NF/(u<sub>s</sub>+Σu<sub>i</sub>)).</p>
+          <ul>
+            <li>F/u<sub>s</sub> = 80/80 = 1 s</li>
+            <li>F/d<sub>min</sub> = 80/10 = 8 s</li>
+            <li>NF/(u<sub>s</sub>+N·u<sub>i</sub>) = 20·80/(80 + 20·2) = 1 600/120 ≈ <strong>13,3 s</strong></li>
+          </ul>
+          <p>Maks ≈ 13,3 s. Den totale opplastnings­kapasiteten i systemet er flaskehals.</p>
+          <p>Felle: A og B er lokale flaskehalser som <em>ikke</em> dominerer her.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2.6 — P2P</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q7 — Klient-server -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 7</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · Klient-server</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Distribuér en fil <strong>F = 60 Mbit</strong> til <strong>N = 25 klienter</strong> via klient-server. Server­opplastning <code>u<sub>s</sub> = 100 Mbps</code>. Hver klients nedlastning <code>d<sub>i</sub> = 10 Mbps</code>. Minste distribusjons­tid?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 0,6 s</li>
+        <li><span class="opt-label">B</span> 6 s</li>
+        <li><span class="opt-label">C</span> 15 s</li>
+        <li><span class="opt-label">D</span> 25 s</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — 15 s</span>
+          <p>Klient-server: D<sub>cs</sub> = max(NF/u<sub>s</sub>, F/d<sub>min</sub>).</p>
+          <ul>
+            <li>NF/u<sub>s</sub> = 25·60/100 = <strong>15 s</strong></li>
+            <li>F/d<sub>min</sub> = 60/10 = 6 s</li>
+          </ul>
+          <p>Maks = 15 s. Server-opplastningen er flaskehals — den må sende fil-ekvivalenter til alle 25 klienter.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2.6 — Filfordeling</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q8 — UDP server sockets count -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 8</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · Sockets</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En <strong>UDP-server</strong> lytter på en port og mottar samtidige datagrammer fra <strong>5 klienter</strong>. Hvor mange sockets eksisterer på serverprosessen?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 1</li>
+        <li><span class="opt-label">B</span> 5</li>
+        <li><span class="opt-label">C</span> 6</li>
+        <li><span class="opt-label">D</span> 10</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A — 1</span>
+          <p>UDP er forbindelsesløs. Én socket på server holder mot alle klienter — kilden identifiseres av (kilde-IP, kilde-port) i hvert datagram. Derfor trengs <em>ikke</em> ny socket per klient.</p>
+          <p>Til sammenlikning: TCP-server med 5 klienter = 1 lyttende + 5 forbindelses-sockets = 6 sockets.</p>
+          <p>Felle: B er TCP-svaret minus lytte-socket; C er TCP-svaret. Husk at UDP <em>ikke</em> har <code>accept()</code>.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — Socket-programmering</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q9 — TCP server sockets count -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 9</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · Sockets</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En <strong>TCP-server</strong> har 9 aktive klient­forbindelser på samme port. Hvor mange sockets totalt på serverprosessen?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 1</li>
+        <li><span class="opt-label">B</span> 9</li>
+        <li><span class="opt-label">C</span> 10</li>
+        <li><span class="opt-label">D</span> 18</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — 10</span>
+          <p>1 lyttende socket + 9 connection sockets (én per <code>accept()</code>). Generelt: K aktive forbindelser → K + 1 sockets på server.</p>
+          <p>Hver TCP-forbindelse identifiseres av 4-tuple (kilde-IP, kilde-port, dest-IP, dest-port). Selv om alle bruker samme dest-port (80, 443 …), gir varierende kilde-side unike forbindelser.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — TCP-sockets</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q10 — HTTP non-persistent compute -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 10</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · HTTP</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En HTML-side på <strong>50 kbit</strong> har <strong>5 innebygde objekter</strong> à <strong>50 kbit</strong>. RTT = <strong>80 ms</strong>, lenke = <strong>10 Mbps</strong>. Total responstid med <strong>non-persistent HTTP, ingen parallelle</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 165 ms</li>
+        <li><span class="opt-label">B</span> 330 ms</li>
+        <li><span class="opt-label">C</span> 990 ms</li>
+        <li><span class="opt-label">D</span> 1 020 ms</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — 990 ms</span>
+          <p>L/R = 50 000 / 10·10<sup>6</sup> = 5 ms per objekt.</p>
+          <p>Per objekt non-persistent: 2·RTT + L/R = 160 + 5 = 165 ms.</p>
+          <p>Total: 6 objekter (1 base + 5 innebygde) · 165 = <strong>990 ms</strong>.</p>
+          <p>Til sammenlikning: med parallell ≈ 2·165 = 330 ms; med persistent uten pipelining = RTT (oppsett) + 6·(RTT+L/R) = 80 + 6·85 = 590 ms.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — HTTP-ytelse</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q11 — TCP seq number -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 11</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · TCP-sekvensnr</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Host A og B kommuniserer over TCP. B har mottatt alt opp til byte 800. A sender to segmenter back-to-back. Det første har sekvensnr=801, kilde-port=5000, dest-port=80, og 200 byte data. Det andre har 250 byte data. Hva er (sekvensnr, kilde-port, dest-port) i det andre segmentet?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> (1 001, 5000, 80)</li>
+        <li><span class="opt-label">B</span> (1 001, 80, 5000)</li>
+        <li><span class="opt-label">C</span> (1 251, 5000, 80)</li>
+        <li><span class="opt-label">D</span> (801, 5000, 80)</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A — (1 001, 5000, 80)</span>
+          <p>Sekvensnr i andre segment = sekvensnr<sub>1</sub> + lengde<sub>1</sub> = 801 + 200 = 1 001. Portene er uendret siden begge segmenter går samme retning A → B.</p>
+          <p>Felle: B er ACK-en B→A (motsatt retning); C teller med begge segmenters lengde (feil); D er det samme som første segment.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — TCP-segmenter</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q12 — Internet checksum -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 12</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · Sjekksum</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Beregn Internet-checksummen over de to 16-bits ordene <code>0101 0101 0101 0101</code> og <code>0001 0001 0001 0001</code>. Hva blir checksum-feltet?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 0110 0110 0110 0110</li>
+        <li><span class="opt-label">B</span> 1001 1001 1001 1001</li>
+        <li><span class="opt-label">C</span> 0100 0100 0100 0100</li>
+        <li><span class="opt-label">D</span> 1011 1011 1011 1011</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B — 1001 1001 1001 1001</span>
+          <p>Steg 1: addere ordene.</p>
+          <p><code>0101 0101 0101 0101</code> = 0x5555<br><code>+ 0001 0001 0001 0001</code> = 0x1111<br><code>= 0110 0110 0110 0110</code> = 0x6666 (ingen carry)</p>
+          <p>Steg 2: ones&apos; complement (flip alle bit):</p>
+          <p><code>NOT(0110 0110 0110 0110) = 1001 1001 1001 1001</code></p>
+          <p>Mottakeren regner samme uttrykk over <em>alle</em> ordene inkludert checksum — resultatet skal være alle ettall.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — Internet checksum</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q13 — RTT EWMA -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 13</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · TCP RTT-estimering</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">TCP estimerer RTT med EWMA: <code>EstRTT = (1−α)·EstRTT + α·SampleRTT</code>. Forrige <code>EstRTT = 35 ms</code>. Ny <code>SampleRTT = 30 ms</code>. Med <code>α = 1/8</code>, hva er ny <code>EstRTT</code>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 30,000 ms</li>
+        <li><span class="opt-label">B</span> 32,500 ms</li>
+        <li><span class="opt-label">C</span> 34,375 ms</li>
+        <li><span class="opt-label">D</span> 35,000 ms</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — 34,375 ms</span>
+          <p>EstRTT<sub>ny</sub> = (1 − 1/8)·35 + (1/8)·30 = (7/8)·35 + (1/8)·30 = 30,625 + 3,750 = <strong>34,375 ms</strong>.</p>
+          <p>Liten α (typisk 0,125) gir <em>treg</em> respons mot endringer — utjevnet estimat. Dette er gunstig fordi enkeltmålinger varierer mye.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3.5 — RTT-estimering</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q14 — CRC -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 14</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6 · CRC</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">For data <code>D = 110010</code> og generator <code>G = 1011</code>, hva blir CRC-resten R?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 011</li>
+        <li><span class="opt-label">B</span> 100</li>
+        <li><span class="opt-label">C</span> 101</li>
+        <li><span class="opt-label">D</span> 110</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — 101</span>
+          <p>Legg til |G|−1 = 3 nuller etter D: <code>110010000</code> (9 bit). Modulo-2-divisjon med G = 1011 (XOR, ingen carry):</p>
+          <pre style="font-family: var(--mono); font-size: 13px;">
+Trinn 1 — leading 1 ved bit 0, XOR G:
+   110010000
+   1011
+   ----
+   011110000
+
+Trinn 2 — leading 1 ved bit 1, XOR G ved bit 1..4:
+   011110000
+    1011
+    ----
+   001000000
+
+Trinn 3 — leading 1 ved bit 2, XOR G ved bit 2..5:
+   001000000
+     1011
+     ----
+   000011000
+
+Trinn 4 — leading 1 ved bit 4, XOR G ved bit 4..7:
+   000011000
+       1011
+       ----
+   000001110
+
+Trinn 5 — leading 1 ved bit 5, XOR G ved bit 5..8:
+   000001110
+        1011
+        ----
+   000000101
+
+Etter trinn 5: leading 1 ved bit 6 — for kort til ny
+divisjon (bare 3 bit igjen).
+
+Rest = de tre siste bitene = 101
+          </pre>
+          <p>Send <code>D || R = 110010 101</code>. Mottakeren regner samme divisjon — rest = 0 ⇒ ok.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — CRC</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q15 — IP→binær -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 15</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · IP-adressering</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er den binære representasjonen av IP-adressen <strong>158.110.234.7</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 10011110 01101110 11101010 00000111</li>
+        <li><span class="opt-label">B</span> 10011110 01110110 11101010 00000111</li>
+        <li><span class="opt-label">C</span> 10001110 01101110 11101010 00000111</li>
+        <li><span class="opt-label">D</span> 10011110 01101110 11100110 00000111</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A — 10011110 01101110 11101010 00000111</span>
+          <p>Konverter hver oktett til binær (8 bit):</p>
+          <ul>
+            <li>158 = 128 + 16 + 8 + 4 + 2 = 10011110</li>
+            <li>110 = 64 + 32 + 8 + 4 + 2 = 01101110</li>
+            <li>234 = 128 + 64 + 32 + 8 + 2 = 11101010</li>
+            <li>7 = 4 + 2 + 1 = 00000111</li>
+          </ul>
+          <p>Felle: B, C og D har én bit-feil hver (bytte to bits, vippe én bit). Sjekk hver oktett separat for å unngå.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — IP-adressering</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q16 — Symmetric keys -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 16</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8 · Nøkler</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En kohort på 9 personer skal kunne kommunisere parvis konfidensielt med <strong>symmetriske</strong> nøkler. Hvor mange nøkler trengs totalt?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 9</li>
+        <li><span class="opt-label">B</span> 18</li>
+        <li><span class="opt-label">C</span> 36</li>
+        <li><span class="opt-label">D</span> 72</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — 36</span>
+          <p>N(N−1)/2 = 9·8/2 = <strong>36 nøkler</strong>. Hver nøkkel deles av nøyaktig to personer.</p>
+          <p>Til kontrast: med <em>offentlig</em> nøkkel-kryptografi trenges bare 2N = 18 nøkler (et par per person), eller bare N = 9 nøkkel­par. Det er hvorfor PKI skalerer mye bedre.</p>
+          <p>Felle: D er N(N−1) = 72 (uten halvering — det ville vært to nøkler per par).</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8 — Symmetrisk kryptografi</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+
+<!-- ==================== DEL II ==================== -->
+<section id="del2">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del II — Åpne oppgaver</h2>
+    <span class="del-points">6 oppgaver · 52 poeng totalt</span>
+  </div>
+  <p class="section-intro">Vis utregning. Sensor gir delpoeng for korrekt metode selv ved tallfeil.</p>
+
+  <!-- Oppgave 1 — End-to-end full delay -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 1</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Forsinkelse</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">A → R<sub>1</sub> → R<sub>2</sub> → B er en sti med tre lenker, hver med rate <strong>R = 20 Mbps</strong>, propagering <strong>10 ms</strong> per lenke. Hver ruter har prosesseringstid <strong>1 ms</strong>. Pakke­størrelsen er <strong>L = 8 000 bit</strong>.</p>
+      <p class="q-text">a) Beregn ende-til-ende-tid for én pakke (uten kø). (3p)</p>
+      <p class="q-text">b) Hvis P = 6 pakker sendes back-to-back, hva er tiden før den siste er mottatt? (3p)</p>
+      <p class="q-text">c) Hva endrer seg hvis R økes til 100 Mbps på alle lenker? Beregn ny verdi for én pakke. (2p)</p>
+      <p class="q-text">d) Sammenlikne med et linjesvitsjet alternativ med oppsetts­tid <strong>100 ms</strong> og dedikert ende-til-ende-rate på 20 Mbps. Hva er total tid for én pakke der? (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Én pakke ende-til-ende:</strong></p>
+          <p>L/R = 8 000 / 20·10<sup>6</sup> = 400 µs = 0,4 ms per lenke.</p>
+          <p>3 lenker · L/R + 3 lenker · prop + 2 rutere · proc = 3·0,4 + 3·10 + 2·1 = 1,2 + 30 + 2 = <strong>33,2 ms</strong>.</p>
+
+          <p><strong>b) Pipelining 6 pakker:</strong></p>
+          <p>Første pakke: 33,2 ms. Hver påfølgende pakke kommer L/R = 0,4 ms etter den forrige (lik rate på alle lenker).</p>
+          <p>Total = 33,2 + 5·0,4 = <strong>35,2 ms</strong>.</p>
+
+          <p><strong>c) R = 100 Mbps:</strong></p>
+          <p>L/R = 8 000 / 100·10<sup>6</sup> = 80 µs.</p>
+          <p>3·0,08 + 30 + 2 = 0,24 + 30 + 2 = <strong>32,24 ms</strong>.</p>
+          <p>Observer: en 5x rate-økning sparer bare ~1 ms. <em>Propageringen dominerer</em> totalt forsinkelses­regnskap når L/R &lt;&lt; prop.</p>
+
+          <p><strong>d) Linjesvitsjet:</strong></p>
+          <p>Setup + L/R (én gang for hele kretsen, ikke per lenke fordi krets er dedikert ende-til-ende). Setup 100 ms + 0,4 ms = <strong>100,4 ms</strong>.</p>
+          <p>Mer enn 3x lengre enn pakkesvitsjet (33,2 ms). Linjesvitsjing taper for korte forbindelser; det vinner først når data­volumet er stort eller forutsigbar.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Forsinkelse, pipelining, krets-vs-pakkesvitsj</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 2 — HTTP all 3 modes -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 2</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · HTTP-ytelse</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Du klikker en lenke. Nettleseren laster en HTML-side på <strong>200 kbit</strong> som har <strong>8 innebygde objekter à 100 kbit</strong>. RTT = <strong>100 ms</strong>, lenke = <strong>50 Mbps</strong>. GET-meldingen har neglisjerbar tid. Inkluder TCP-oppsett (1 RTT) for hver ny forbindelse, og 1 RTT for persistent.</p>
+      <p class="q-text">a) Beregn responstid med <strong>non-persistent HTTP, ingen parallelle forbindelser</strong>. (3p)</p>
+      <p class="q-text">b) Med <strong>non-persistent HTTP, parallelle forbindelser</strong> (én per innebygd objekt, base først). (3p)</p>
+      <p class="q-text">c) Med <strong>persistent HTTP uten pipelining</strong>. (2p)</p>
+      <p class="q-text">d) Med <strong>persistent HTTP med pipelining</strong>. (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>Forarbeid:</strong></p>
+          <ul>
+            <li>L<sub>base</sub>/R = 200·10<sup>3</sup>/50·10<sup>6</sup> = 4 ms</li>
+            <li>L<sub>obj</sub>/R = 100·10<sup>3</sup>/50·10<sup>6</sup> = 2 ms</li>
+          </ul>
+
+          <p><strong>a) Non-persistent uten parallell:</strong></p>
+          <p>Per objekt: 2·RTT + L/R. Base: 200 + 4 = 204 ms. Per innebygd: 200 + 2 = 202 ms.</p>
+          <p>Total = 204 + 8·202 = 204 + 1 616 = <strong>1 820 ms</strong>.</p>
+
+          <p><strong>b) Non-persistent med parallell:</strong></p>
+          <p>Base først: 204 ms. Så 8 innebygde i parallell, som tar samme 202 ms (begrenset av per-objekt-tid, ikke av båndbredde-summen).</p>
+          <p>Total = 204 + 202 = <strong>406 ms</strong>.</p>
+
+          <p><strong>c) Persistent uten pipelining:</strong></p>
+          <p>1 TCP-oppsett (RTT = 100) + base (RTT + L/R = 104) + 8·(RTT + L/R = 102).</p>
+          <p>Total = 100 + 104 + 8·102 = 100 + 104 + 816 = <strong>1 020 ms</strong>.</p>
+
+          <p><strong>d) Persistent med pipelining:</strong></p>
+          <p>1 TCP-oppsett (RTT) + 1 RTT for å få respons + tids­bruk for å overføre alle objekter (sekvensielt på lenken):</p>
+          <p>Total = RTT + RTT + L<sub>base</sub>/R + 8·L<sub>obj</sub>/R = 100 + 100 + 4 + 16 = <strong>220 ms</strong>.</p>
+
+          <p><strong>Oppsummering:</strong> a 1 820 → b 406 → c 1 020 → d 220 ms. Pipelining halverer ytterligere fra c. Kostnaden av nye TCP-forbindelser dominerer i a (8·100 = 800 ms av totalen).</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — HTTP-ytelse</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 3 — TCP cwnd graph -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 3</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · TCP cwnd</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Tegn (eller beskriv) en TCP cwnd-graf med følgende hendelser:</p>
+      <ul>
+        <li>I runde 0 starter cwnd på 1 MSS, ssthresh = 16.</li>
+        <li>Slow start kjører til cwnd ≥ ssthresh. Deretter AIMD (lineær +1 per RTT).</li>
+        <li>I slutten av runde 8 (cwnd = 20) inntreffer <strong>3 duplikat-ACK</strong> (Reno): ssthresh settes til cwnd/2 = 10, cwnd reduseres til 10, fortsetter AIMD.</li>
+        <li>I slutten av runde 15 (cwnd = 16) inntreffer <strong>timeout</strong>: ssthresh settes til 8, cwnd resettes til 1, slow start igjen.</li>
+      </ul>
+      <p class="q-text">a) List cwnd-verdien for hver runde fra 0 til 20. Marker fasen (slow start, AIMD, fast recovery, slow start etter timeout). (5p)</p>
+      <p class="q-text">b) Hvor mange MSS har TCP totalt sendt over de 21 rundene (sum av cwnd)? (2p)</p>
+      <p class="q-text">c) Forklar forskjellen i hvordan Reno reagerer på 3 dup ACK versus timeout, og hvorfor reaksjonene er ulike. (3p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Cwnd per runde:</strong></p>
+          <table>
+            <thead><tr><th>Runde</th><th>cwnd</th><th>Fase</th></tr></thead>
+            <tbody>
+              <tr><td>0</td><td>1</td><td>Slow start</td></tr>
+              <tr><td>1</td><td>2</td><td>Slow start</td></tr>
+              <tr><td>2</td><td>4</td><td>Slow start</td></tr>
+              <tr><td>3</td><td>8</td><td>Slow start</td></tr>
+              <tr><td>4</td><td>16</td><td>Slow start (når ssthresh)</td></tr>
+              <tr><td>5</td><td>17</td><td>AIMD</td></tr>
+              <tr><td>6</td><td>18</td><td>AIMD</td></tr>
+              <tr><td>7</td><td>19</td><td>AIMD</td></tr>
+              <tr><td>8</td><td>20</td><td>AIMD (3 dup ACK her)</td></tr>
+              <tr><td>9</td><td>10</td><td>Fast recovery → AIMD</td></tr>
+              <tr><td>10</td><td>11</td><td>AIMD</td></tr>
+              <tr><td>11</td><td>12</td><td>AIMD</td></tr>
+              <tr><td>12</td><td>13</td><td>AIMD</td></tr>
+              <tr><td>13</td><td>14</td><td>AIMD</td></tr>
+              <tr><td>14</td><td>15</td><td>AIMD</td></tr>
+              <tr><td>15</td><td>16</td><td>AIMD (timeout her)</td></tr>
+              <tr><td>16</td><td>1</td><td>Slow start (ssthresh = 8)</td></tr>
+              <tr><td>17</td><td>2</td><td>Slow start</td></tr>
+              <tr><td>18</td><td>4</td><td>Slow start</td></tr>
+              <tr><td>19</td><td>8</td><td>Slow start (når ssthresh)</td></tr>
+              <tr><td>20</td><td>9</td><td>AIMD</td></tr>
+            </tbody>
+          </table>
+
+          <p><strong>b) Sum cwnd:</strong></p>
+          <p>Slow start 0–4: 1+2+4+8+16 = 31. AIMD 5–8: 17+18+19+20 = 74. AIMD 9–15: 10+11+12+13+14+15+16 = 91. Slow start 16–19: 1+2+4+8 = 15. AIMD 20: 9. Sum = 31 + 74 + 91 + 15 + 9 = <strong>220 MSS</strong>.</p>
+
+          <p><strong>c) 3 dup ACK vs timeout:</strong></p>
+          <p>Ved 3 dup ACK halveres cwnd (Reno) og fortsetter i AIMD (fast recovery). Ved timeout settes cwnd til 1 og slow start starter på nytt.</p>
+          <p>Begrunnelse: 3 dup ACK indikerer at <em>noen</em> pakker fortsatt går igjennom — bare én er tapt. Timeout antyder at <em>hele forbindelsen</em> kan ha brutt sammen — start forsiktig fordi nettets tilstand er ukjent.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3.7 — TCP congestion control</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 4 — P2P vs CS comparison -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 4</span>
+      <span class="exam-q__points">8 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · Filfordeling</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En fil <strong>F = 1 Gbit</strong> skal distribueres til <strong>N = 200 brukere</strong>. Server­opplastning <code>u<sub>s</sub> = 100 Mbps</code>. Hver bruker har <code>u<sub>i</sub> = 1 Mbps</code> og <code>d<sub>i</sub> = 5 Mbps</code>.</p>
+      <p class="q-text">a) Beregn minste distribusjons­tid med <strong>klient-server</strong>. (3p)</p>
+      <p class="q-text">b) Beregn minste distribusjons­tid med <strong>P2P</strong>. (3p)</p>
+      <p class="q-text">c) Hvor mye raskere er P2P? Hvilken arkitektur skalerer bedre når N øker? Forklar kort. (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Klient-server:</strong></p>
+          <p>D<sub>cs</sub> = max(NF/u<sub>s</sub>, F/d<sub>min</sub>).</p>
+          <ul>
+            <li>NF/u<sub>s</sub> = 200·1 000/100 = <strong>2 000 s</strong> (≈ 33 min)</li>
+            <li>F/d<sub>min</sub> = 1 000/5 = 200 s</li>
+          </ul>
+          <p>Maks = <strong>2 000 s</strong>. Server-opplastningen er flaskehals.</p>
+
+          <p><strong>b) P2P:</strong></p>
+          <p>D<sub>p2p</sub> = max(F/u<sub>s</sub>, F/d<sub>min</sub>, NF/(u<sub>s</sub>+Σu<sub>i</sub>)).</p>
+          <ul>
+            <li>F/u<sub>s</sub> = 1 000/100 = 10 s</li>
+            <li>F/d<sub>min</sub> = 200 s</li>
+            <li>NF/(u<sub>s</sub>+N·u<sub>i</sub>) = 200·1 000/(100 + 200) = 200 000/300 ≈ <strong>666,7 s</strong></li>
+          </ul>
+          <p>Maks ≈ <strong>667 s</strong> (≈ 11 min).</p>
+
+          <p><strong>c) Sammenlikning og skalering:</strong></p>
+          <p>P2P er ca. 2 000/667 ≈ <strong>3 ganger raskere</strong>. P2P skalerer bedre fordi peers <em>bidrar med opplastings­kapasitet</em> ettersom N øker — total system-opplastning vokser med N. I klient-server er u<sub>s</sub> fast uansett N, så NF/u<sub>s</sub> vokser lineært med N.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2.6 — Filfordeling</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 5 — 4-noder wireless -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 5</span>
+      <span class="exam-q__points">8 poeng</span>
+      <span class="exam-q__topic">Kap. 6 · Trådløse noder</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Fire trådløse noder A, B, C, D ligger på en linje, slik at:</p>
+      <ul>
+        <li>Når A sender, hører bare B.</li>
+        <li>Når B sender, hører A og C.</li>
+        <li>Når C sender, hører B og D.</li>
+        <li>Når D sender, hører bare C.</li>
+      </ul>
+      <p class="q-text">Tid er slottet (én melding per slot). Hvis to sendere overlapper innen mottakerens hørevidde, kolliderer de. Du har en omniscient kontroller som kan beordre hver node.</p>
+      <p class="q-text">a) Hva er maks rate fra C til A (uten andre flows)? Forklar relayet. (2p)</p>
+      <p class="q-text">b) Hva er kombinert maks rate når A → B og D → C samtidig? (2p)</p>
+      <p class="q-text">c) Hva er kombinert maks rate når A → B og C → D samtidig? (2p)</p>
+      <p class="q-text">d) Hvis hver mottatt datapakke krever en ACK (egen slot), hva er ny rate i (b)? (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) C → A:</strong></p>
+          <p>A er ikke i C's hørevidde. Må relay via B: slot 1 C→B, slot 2 B→A. Krever to slots per melding.</p>
+          <p>Rate = <strong>0,5 melding/slot</strong>.</p>
+
+          <p><strong>b) A → B og D → C:</strong></p>
+          <p>A sender → bare B hører. D sender → bare C hører. Ingen interferens i hørevidde.</p>
+          <p>Begge kan sende samtidig hvert slot. Rate = <strong>2 meldinger/slot</strong>.</p>
+
+          <p><strong>c) A → B og C → D:</strong></p>
+          <p>Når A sender: B hører A. Når C sender: B og D hører C.</p>
+          <p>Hvis begge sender samtidig, oppfatter B både A og C — kollisjon ved B → A's melding går tapt.</p>
+          <p>Må alternere: slot 1 A→B, slot 2 C→D. Rate = 2 meldinger / 2 slot = <strong>1 melding/slot</strong>.</p>
+
+          <p><strong>d) A→B og D→C med ACK:</strong></p>
+          <p>Slot 1: A→B og D→C parallelt. Slot 2: B→A (ACK) og C→D (ACK).</p>
+          <p>Sjekk ACK-slot for kollisjoner: B→A betyr A og C hører B. C→D betyr B og D hører C. A hører kun B → ok. D hører kun C → ok. B hører C, og C hører B — men B og C er sendere, ikke mottakere. Ingen kollisjoner.</p>
+          <p>2 meldinger per 2 slots = <strong>1 melding/slot</strong> (halvert fra 2). ACK-runden halverer effektiv data­rate.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — Trådløse noder, hidden terminal</a> · eks1 Q1.4.7, eks2 Q5</p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 6 — Subnetting med 4 størrelser -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 6</span>
+      <span class="exam-q__points">6 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · Subnetting</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Du har fått tildelt blokken <strong><code>192.168.0.0/19</code></strong>. Du skal lage fire subnett:</p>
+      <ul>
+        <li>A: minst 800 verts­grensesnitt</li>
+        <li>B: minst 300 grensesnitt</li>
+        <li>C: minst 100 grensesnitt</li>
+        <li>D: minst 50 grensesnitt</li>
+      </ul>
+      <p class="q-text">a) Hvilken /x trengs for hvert? (2p)</p>
+      <p class="q-text">b) Tildel konkrete adresseblokker fra <code>192.168.0.0/19</code>. Vis at de ikke overlapper. (3p)</p>
+      <p class="q-text">c) Hvor mange adresser er ledige etter tildelingen? (1p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Bestem prefiks-lengde for hvert:</strong></p>
+          <ul>
+            <li>A 800 verter: 2<sup>k</sup>−2 ≥ 800 → k ≥ 10 → <strong>/22</strong> (1 022 brukbare).</li>
+            <li>B 300 verter: 2<sup>k</sup>−2 ≥ 300 → k ≥ 9 → <strong>/23</strong> (510 brukbare).</li>
+            <li>C 100 verter: 2<sup>k</sup>−2 ≥ 100 → k ≥ 7 → <strong>/25</strong> (126 brukbare).</li>
+            <li>D 50 verter: 2<sup>k</sup>−2 ≥ 50 → k ≥ 6 → <strong>/26</strong> (62 brukbare).</li>
+          </ul>
+
+          <p><strong>b) Tildeling fra 192.168.0.0/19 (8 192 adresser, 192.168.0.0 – 192.168.31.255):</strong></p>
+          <ul>
+            <li><strong>A /22:</strong> <code>192.168.0.0/22</code> — dekker 0.0–3.255 (1 024 adresser).</li>
+            <li><strong>B /23:</strong> <code>192.168.4.0/23</code> — dekker 4.0–5.255 (512 adresser).</li>
+            <li><strong>C /25:</strong> <code>192.168.6.0/25</code> — dekker 6.0–6.127 (128 adresser).</li>
+            <li><strong>D /26:</strong> <code>192.168.6.128/26</code> — dekker 6.128–6.191 (64 adresser).</li>
+          </ul>
+          <p>Ingen overlapp. Tildelt = 1 024 + 512 + 128 + 64 = 1 728 adresser.</p>
+
+          <p><strong>c) Ledige adresser:</strong></p>
+          <p>8 192 − 1 728 = <strong>6 464 adresser</strong> (192.168.6.192 – 192.168.31.255). Disse kan reserveres for fremtidig vekst eller deles videre.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — Subnetting og CIDR</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Vår 2026 · Prediksjon 8 av 9</p>
+    <p style="margin-top: 12px; font-size: 14px;"><a href="../eksamen-prep/">&larr; Tilbake til prediksjons­analysen</a></p>
+  </div>
+</footer>
+<script src="../chat-widget.js"></script>
+<script src="../nav-search.js"></script>
+<script src="exam-quiz.js" defer></script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>
