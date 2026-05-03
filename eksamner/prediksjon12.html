@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prediksjon 12 — «Begrepskontrollen» — TTM4100</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Alle eksamener</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
+  </div>
+</nav>
+
+<main data-chapter="Prediksjon 12 — Begrepskontrollen">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Eksamensprediksjon 12 av 12 · våren 2026</div>
+  <h1>Prediksjon <em>12</em> — «Begrepskontrollen»</h1>
+  <p class="lede">100 begreps­spørsmål — kun Del I, ingen regne­oppgaver. Alle fire alternativer er omtrent like lange og samme grammatiske form, så du kan ikke gjette riktig fra svar­lengden alene. Settet tester nyanser: <em>hva</em> ting er, ikke <em>hvor mye</em>. Hvis du svarer riktig her uten å ha pugget noe utenat, har du forstått pensum på begreps­nivå.</p>
+
+  <div class="learn-box">
+    <span class="label">Slik leser du settet</span>
+    <ul>
+      <li><strong>Spør deg selv «hva er forskjellen?»</strong> — de fleste fellene er to begreper som ligner, der en av dem har en presis nyanse den andre ikke har (f.eks. <em>integritet</em> vs <em>autentisering</em>, <em>flytkontroll</em> vs <em>kongesjons­kontroll</em>, <em>forwarding</em> vs <em>routing</em>).</li>
+      <li><strong>Husk lag-skillet:</strong> mange feller bygger på at studenter blander hvilket lag noe gjør seg gjeldende på (DNS er app-lag, ARP er lenkelag; portnumre er transport, IP er nettverk).</li>
+      <li><strong>Definisjons­spørsmål er ikke «huske utenat»:</strong> hvert spørsmål kan løses ved å gå tilbake til hva begrepet faktisk <em>løser</em>. Hvis du ikke vet det, skriv ned ett-setnings-definisjonen før du leser alternativene.</li>
+      <li><strong>Lengde-symmetri:</strong> det riktige alternativet er <em>ikke</em> alltid det lengste eller mest detaljerte. Vi har bevisst skrevet feile alternativer like lange og presise som det riktige.</li>
+    </ul>
+  </div>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">I</span><a href="#del1">Del I — 100 begrepsspørsmål (100p)</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ==================== DEL I ==================== -->
+<section id="del1">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del I — Begrepskontroll</h2>
+    <span class="del-points">100 spørsmål · 1 poeng per spørsmål · 100 poeng totalt</span>
+  </div>
+  <p class="section-intro">Spørsmål 1–12 tar Kap. 1 (intro). Spørsmål 13–28 tar Kap. 2 (applikasjonslag). Spørsmål 29–42 tar Kap. 3 (transport). Spørsmål 43–55 tar Kap. 4–5 (nettverkslag/ICMP). Spørsmål 56–67 tar Kap. 6 (lenkelag). Spørsmål 68–79 tar Kap. 7 (trådløs/mobil). Spørsmål 80–94 tar Kap. 8 (sikkerhet). Spørsmål 95–100 dekker Kap. 9 (multimedia) og kryss-lag-feller.</p>
+
+  <!-- ============ KAPITTEL 1 — INTRO ============ -->
+
+  <!-- Q1 — Pakkesvitsjing vs kretssvitsjing -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 1</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Pakkesvitsjing</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva kjennetegner <strong>pakkesvitsjing</strong> som ressurs­modell, sammenlignet med kretssvitsjing?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Ressurser reserveres ende-til-ende for hele samtalens varighet</li>
+        <li><span class="opt-label">B</span> Lenkerater deles statistisk; pakker fra ulike kilder kan blande seg</li>
+        <li><span class="opt-label">C</span> Hver pakke følger samme forhåndsbestemte rute mellom ende­vertene</li>
+        <li><span class="opt-label">D</span> Båndbredden deles i faste tids­luker uavhengig av om en sender</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Statistisk multipleksing er kjernen i pakke­svitsjing — ingen forhåndsreservasjon. A og D beskriver kretssvitsjing (ressurs­reservasjon hhv. TDM). C er feil: pakker kan ta ulike ruter.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Pakke- vs kretssvitsjing</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q2 — Lagdeling/innkapsling -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 2</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Innkapsling</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Når en HTTP-melding sendes med TCP og IP, hva blir IP-pakkens nyttelast?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Hele HTTP-meldingen, uten noen header lagt på i transportlaget</li>
+        <li><span class="opt-label">B</span> Hele TCP-segmentet, dvs. HTTP-melding pluss TCP-header</li>
+        <li><span class="opt-label">C</span> TCP-segmentet med header, men minus eventuell padding lagt til</li>
+        <li><span class="opt-label">D</span> HTTP-meldingen med port-feltet fra TCP plassert som første ord</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Innkapsling: hvert lag legger sin header på det som leveres ovenfra. IP-pakkens nyttelast er hele TCP-segmentet (header + applikasjons­data). A hopper over TCP-laget; C og D blander felt-roller.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Lagdeling</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q3 — Overføring vs propagering -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 3</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Forsinkelse</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva skiller <strong>overførings­forsinkelse</strong> (transmission) fra <strong>propagerings­forsinkelse</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Overføring er tid mellom rutere; propagering er tiden i utgangskøen</li>
+        <li><span class="opt-label">B</span> Overføring er L/R (pakkestørrelse/rate); propagering er fysisk avstand/signalfart</li>
+        <li><span class="opt-label">C</span> Overføring er lik for alle pakker; propagering avhenger av pakkestørrelse</li>
+        <li><span class="opt-label">D</span> Overføring og propagering er to navn på samme størrelse i ulike kilder</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Overføringsforsinkelse er <code>L/R</code> — hvor lang tid det tar å «klemme bitsene ut på lenken». Propagasjon er hvor lang tid signalet bruker fra ene enden til den andre, gitt avstand og signalhastighet. Helt uavhengige størrelser.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Forsinkelses­komponenter</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q4 — Køforsinkelse trafikkintensitet -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 4</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Trafikk­intensitet</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken forsinkelses­komponent vokser kraftigst når trafikkintensiteten La/R nærmer seg 1?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Behandlings­forsinkelsen — ruteren må gjøre flere oppslag</li>
+        <li><span class="opt-label">B</span> Overførings­forsinkelsen — pakker blir lengre under høy last</li>
+        <li><span class="opt-label">C</span> Propagerings­forsinkelsen — signalet svekkes ved kø-trykk</li>
+        <li><span class="opt-label">D</span> Kø­forsinkelsen — pakker hoper seg opp bak lenkens kapasitet</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: D</span>
+          <p>Når La/R → 1 vokser kø­forsinkelsen mot uendelig (M/M/1-formel). De andre tre er enten konstante eller endres ikke med last. Pakker blir <em>ikke</em> lengre under last (B); signaler «svekkes ikke av kø-trykk» (C).</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Køforsinkelse og trafikkintensitet</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q5 — End-to-end vs hop-by-hop -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 5</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · End-to-end</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva skiller en <strong>end-to-end</strong> tjeneste fra en <strong>hop-by-hop</strong> tjeneste?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Hop-by-hop ytes lokalt mellom nabonoder; end-to-end ytes mellom de to ende­vertene</li>
+        <li><span class="opt-label">B</span> End-to-end gjelder kun pålitelig levering; hop-by-hop kun bitfeil­håndtering</li>
+        <li><span class="opt-label">C</span> Hop-by-hop krever at alle rutere kjenner ende­vertenes IP-adresse</li>
+        <li><span class="opt-label">D</span> End-to-end er identisk med rute­operasjoner i nettverkslaget</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A</span>
+          <p>End-to-end: kun de to endene snakker (TCP, TLS). Hop-by-hop: hver lenke gjør jobben lokalt (lenkelag-CRC, MAC-svitsjing). De andre alternativene blander roller eller er feil.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Tjeneste-modell og lagdeling</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q6 — Throughput vs båndbredde -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 6</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Throughput</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Den viktigste forskjellen mellom «båndbredde» og «throughput» er at...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> båndbredde måles i bits-per-sekund mens throughput måles i bytes-per-sekund</li>
+        <li><span class="opt-label">B</span> båndbredde er nominell maks-kapasitet; throughput er faktisk leveranse­hastighet</li>
+        <li><span class="opt-label">C</span> båndbredde brukes ved fil­overføring; throughput brukes for sanntid</li>
+        <li><span class="opt-label">D</span> båndbredde gjelder fiber­lenker; throughput gjelder kun radio­lenker</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Båndbredde = lenken sin nominelle rate (det den «kan»). Throughput = det du faktisk får levert ende-til-ende, begrenset av flaskehalsen og delt med andre. Begge kan måles i bps.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Throughput</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q7 — Best-effort -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 7</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Best-effort</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">At IP er en «best-effort»-tjeneste betyr at...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> IP gjør sitt beste for å garantere lav forsinkelse, men ikke pakketap</li>
+        <li><span class="opt-label">B</span> IP forsøker å levere, men gir ingen garantier for levering, rekkefølge eller forsinkelse</li>
+        <li><span class="opt-label">C</span> IP leverer i rekkefølge, men kan tape pakker hvis ruter er overbelastet</li>
+        <li><span class="opt-label">D</span> IP garanterer levering så lenge avsenderen velger riktig fragmenterings­størrelse</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>«Best-effort» er definert som <em>ingen garantier i noen retning</em>. Pakker kan tapes, omstokkes, dupliseres, forsinkes vilkårlig. A, C og D smugler inn garantier som ikke finnes.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Tjenestemodell</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q8 — Aksessnett vs kjernenett -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 8</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Aksessnett</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva skiller «aksessnett» fra «nettverkets kjerne» (network core)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Aksessnett er fysiske lenker som knytter ende­verter til første ruter; kjernen er nettet av sammenkoblede rutere</li>
+        <li><span class="opt-label">B</span> Aksessnett er internt i et selskap; kjernenettet er det offentlige Internett globalt</li>
+        <li><span class="opt-label">C</span> Aksessnett bruker kobber­kabel; kjernenettet bruker uten unntak optisk fiber</li>
+        <li><span class="opt-label">D</span> Aksessnett betjener kun klient­hoster; kjernenett betjener kun servere</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A</span>
+          <p>Aksessnett = «første hopp» (DSL, kabel, fiber, WiFi, 4G/5G). Kjernen = ruter-til-ruter mellom ISP-er. B/C/D er irrelevante eller feil distinksjoner.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Nettverkets kjerne og kant</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q9 — Forbindelses-orientert -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 9</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Tjenestetyper</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">«Forbindelses­orientert» tjeneste i transportlaget innebærer at...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> tjenesten bruker kretssvitsjing i stedet for pakkesvitsjing under panseret</li>
+        <li><span class="opt-label">B</span> avsender og mottaker etablerer logisk tilstand (handshake) før data­utveksling</li>
+        <li><span class="opt-label">C</span> hver pakke inneholder eksplisitt kilde- og mål­adresse i transport­headeren</li>
+        <li><span class="opt-label">D</span> en forbindelse garanterer at pakker leveres uten tap eller om-rekkefølge</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Forbindelses­orientering = tilstand i endepunktene (TCP). Det innebærer ikke kretssvitsjing (A). D er en separat egenskap (pålitelighet), som henger ofte med, men ikke per definisjon.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Tjenester fra transportlaget</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q10 — Statistisk multipleksing vs TDM -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 10</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Statistisk mux</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket utsagn beskriver <strong>statistisk multipleksing</strong> korrekt?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Hver kilde tildeles en fast tids­luke uavhengig av om den har data</li>
+        <li><span class="opt-label">B</span> Lenken deles dynamisk; pakker fra hvilken som helst kilde får tilgang når klare</li>
+        <li><span class="opt-label">C</span> En sentral planlegger tildeler båndbredde i forveien per kilde og tid</li>
+        <li><span class="opt-label">D</span> Det er identisk med Time Division Multiplexing (TDM) bare med nytt navn</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Statistisk = on-demand, ingen reservasjon. A og D er TDM. C er pre-allocated kretssvitsjing.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Pakkesvitsjing og statistisk mux</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q11 — Jitter -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 11</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Jitter</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">«Jitter» refererer til...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> gjennomsnittlig forsinkelse mellom avsender og mottaker over en gitt periode</li>
+        <li><span class="opt-label">B</span> variasjonen i forsinkelse mellom påfølgende pakker fra samme kilde</li>
+        <li><span class="opt-label">C</span> pakketap som skyldes elektrisk støy eller fading på lenken</li>
+        <li><span class="opt-label">D</span> maksimal forsinkelse en pakke kan ha før den droppes av en QoS-kø</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Jitter = forsinkelses­variasjon. Viktig for sanntids­media; løses med playout-buffer. A er bare gjennomsnittet, ikke variasjonen.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Forsinkelse og jitter</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q12 — Protokoll-definisjon -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 12</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Protokoll</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En protokoll er per Kurose &amp; Ross definert ved å spesifisere...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> kun formatet på meldingene som utveksles, ikke når de skal sendes</li>
+        <li><span class="opt-label">B</span> format og rekkefølge på meldinger, samt handlinger ved sending/mottak</li>
+        <li><span class="opt-label">C</span> kun handlingene som utføres ved mottak, ikke selve meldings­formatet</li>
+        <li><span class="opt-label">D</span> hvilke applikasjoner som har lov til å bruke nettverkets ressurser</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Klassisk Kurose-definisjon: format + rekkefølge (timing) + handlinger ved sending/mottak. Alle tre må være med.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Hva er en protokoll?</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- ============ KAPITTEL 2 — APPLIKASJONSLAG ============ -->
+
+  <!-- Q13 — HTTP stateless -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 13</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · HTTP stateless</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">At HTTP er en «stateless»-protokoll betyr at...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> hver TCP-forbindelse må lukkes etter eksakt én forespørsel og respons</li>
+        <li><span class="opt-label">B</span> serveren vedlikeholder ikke selv informasjon om tidligere forespørsler fra klienten</li>
+        <li><span class="opt-label">C</span> klienten kan ikke sende data sammen med forespørselen i samme melding</li>
+        <li><span class="opt-label">D</span> serveren glemmer alle data i minnet umiddelbart etter at responsen er sendt</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Stateless = serveren husker ikke klient-tilstand mellom forespørsler. Tilstand legges på via cookies / sessions, men selve HTTP-protokollen er tilstandsløs. A blander med non-persistent connection.</p>
+          <p class="ref">Pensum: <a href="../kap2/http-og-web.html">Kap. 2 — HTTP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q14 — Persistent vs non-persistent -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 14</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · Persistent HTTP</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Forskjellen mellom <strong>non-persistent</strong> og <strong>persistent</strong> HTTP er at...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> non-persistent oppretter én TCP-forbindelse per objekt; persistent gjenbruker forbindelsen for flere</li>
+        <li><span class="opt-label">B</span> non-persistent støtter ikke pipelining; persistent bruker alltid pipelining for hvert nytt objekt</li>
+        <li><span class="opt-label">C</span> persistent bruker UDP for raskere oppstart mens non-persistent bruker TCP som vanlig</li>
+        <li><span class="opt-label">D</span> persistent krypterer trafikken med TLS automatisk; non-persistent gjør det aldri</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A</span>
+          <p>Persistent gjenbruker TCP-forbindelsen for å unngå nye 3-veis handshakes. Pipelining er en separat egenskap som kan brukes oppå persistent (B). C og D er feil.</p>
+          <p class="ref">Pensum: <a href="../kap2/http-og-web.html">Kap. 2 — HTTP-forbindelser</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q15 — Pipelining -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 15</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · HTTP-pipelining</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">HTTP-pipelining lar klienten...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> opprette flere parallelle TCP-forbindelser samtidig til samme server</li>
+        <li><span class="opt-label">B</span> sende neste forespørsel før svar på forrige har returnert</li>
+        <li><span class="opt-label">C</span> dele ett HTTP-svar over flere TCP-segmenter for raskere visning</li>
+        <li><span class="opt-label">D</span> cache alle svar lokalt før de leveres til nettleseren for rendering</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Pipelining = sende flere requests «back-to-back» på samme persistent forbindelse uten å vente. Reduserer total RTT-kostnad. A er parallelle forbindelser, en annen optimalisering.</p>
+          <p class="ref">Pensum: <a href="../kap2/http-og-web.html">Kap. 2 — Persistent HTTP og pipelining</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q16 — Conditional GET -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 16</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · Conditional GET</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Formålet med en «conditional GET» (med <code>If-Modified-Since</code>) er at...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> serveren skal kryptere svaret hvis filen er nyere enn et gitt tidsstempel</li>
+        <li><span class="opt-label">B</span> serveren skal returnere 304 Not Modified om cachet versjon fortsatt er gyldig</li>
+        <li><span class="opt-label">C</span> klienten ber om kun en del av en større fil ut fra et bytes-område</li>
+        <li><span class="opt-label">D</span> klienten autentiseres med en server-utstedt nøkkel før innholdet leveres</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Conditional GET sparer båndbredde: hvis caching er gyldig svarer serveren bare 304 (uten body). C beskriver Range-requests, en annen mekanisme.</p>
+          <p class="ref">Pensum: <a href="../kap2/http-og-web.html">Kap. 2 — Web-caching og conditional GET</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q17 — Cookies -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 17</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · Cookies</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Cookies løser hovedsakelig hvilket problem i HTTP?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> De gir HTTP-trafikken kryptografisk integritet på applikasjons­nivå</li>
+        <li><span class="opt-label">B</span> De gir tilstand til en stateless protokoll ved at klienten bærer en identifikator</li>
+        <li><span class="opt-label">C</span> De erstatter behovet for autentisering ved å lagre passord lokalt på klienten</li>
+        <li><span class="opt-label">D</span> De komprimerer responsen for å spare båndbredde mellom klient og server</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Cookien er en liten ID som klienten sender tilbake ved hver request — det lar serveren koble forespørsler til samme bruker uten å lagre tilstand i selve protokollen. Cookies gir verken integritet (A) eller komprimering (D).</p>
+          <p class="ref">Pensum: <a href="../kap2/http-og-web.html">Kap. 2 — Cookies</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q18 — Web cache -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 18</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · Web-cache</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hovedeffekten av en web-cache (proxy) er...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> redusert responstid for klienten og lavere båndbredde-bruk på opplinken</li>
+        <li><span class="opt-label">B</span> kryptering av all trafikk mellom klient og opprinnelses­server uten konfig</li>
+        <li><span class="opt-label">C</span> oversettelse av domenenavn til IP-adresser nær brukeren for raskere oppslag</li>
+        <li><span class="opt-label">D</span> balansering av forespørsler mellom flere opprinnelses­servere via DNS</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A</span>
+          <p>Cache holder kopier av populære objekter nær brukerne — sparer både tid og båndbredde. C er DNS, D er global server-load-balancing.</p>
+          <p class="ref">Pensum: <a href="../kap2/http-og-web.html">Kap. 2 — Web-caching</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q19 — SMTP push vs IMAP/POP3 pull -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 19</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · SMTP vs IMAP/POP3</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En sentral forskjell mellom <strong>SMTP</strong> og <strong>IMAP/POP3</strong> i e-post-systemet er at...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> SMTP er kryptert som standard mens IMAP/POP3 ikke har noen kryptering</li>
+        <li><span class="opt-label">B</span> SMTP brukes til å sende (push) mens IMAP/POP3 brukes til å hente (pull) post</li>
+        <li><span class="opt-label">C</span> SMTP kjører over UDP for hastighet mens IMAP/POP3 kjører over TCP</li>
+        <li><span class="opt-label">D</span> SMTP fungerer kun internt i én organisasjon mens IMAP/POP3 fungerer globalt</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>SMTP er en push-protokoll (avsender skyver post til mottakers mailserver). IMAP/POP3 er pull (klient henter fra sin egen mailserver). Begge bruker TCP. Kryptering er tilgjengelig for begge (TLS).</p>
+          <p class="ref">Pensum: <a href="../kap2/epost-dns-sockets.html">Kap. 2 — Elektronisk post</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q20 — DNS -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 20</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · DNS</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">DNS gjør primært hva?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Oversetter IP-adresser til MAC-adresser innenfor samme subnett ved oppslag</li>
+        <li><span class="opt-label">B</span> Oversetter vertsnavn til IP-adresser (samt enkelte tilleggs-poster som MX)</li>
+        <li><span class="opt-label">C</span> Oversetter portnumre til prosessnavn for diagnostiske formål i OS-et</li>
+        <li><span class="opt-label">D</span> Oversetter TCP-flagg til menneskelesbar tekst i nettverks-verktøy</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>DNS = navn → IP. Klassisk felle: A er ARP (lenkelag, helt annet lag og scope). DNS gir også andre poster (MX for mail, NS, AAAA for IPv6, etc.).</p>
+          <p class="ref">Pensum: <a href="../kap2/epost-dns-sockets.html">Kap. 2 — DNS</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q21 — Iterativ vs rekursiv DNS -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 21</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · DNS-spørringer</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Forskjellen mellom <strong>iterativ</strong> og <strong>rekursiv</strong> DNS-spørring er at...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> i en iterativ får klienten endelig svar; i en rekursiv flere mellom­svar i serie</li>
+        <li><span class="opt-label">B</span> i en iterativ får forespørren henvisning til neste server; i en rekursiv går serveren selv videre og returnerer endelig svar</li>
+        <li><span class="opt-label">C</span> iterativ brukes kun for IPv6-poster mens rekursiv brukes kun for IPv4-poster</li>
+        <li><span class="opt-label">D</span> iterativ krever DNSSEC-validering mens rekursiv kjører uten signaturkontroll</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Rekursiv: «du finner det ut for meg». Iterativ: «si hvem jeg må spørre videre». Lokal DNS-resolver gjør oftest rekursive spørringer mot klienter, og iterative oppover i hierarkiet.</p>
+          <p class="ref">Pensum: <a href="../kap2/epost-dns-sockets.html">Kap. 2 — DNS-spørringstyper</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q22 — Authoritative -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 22</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · Authoritative DNS</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En «authoritative» DNS-server er den som...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> returnerer alle svar fra sin lokale cache uten å spørre videre opp i treet</li>
+        <li><span class="opt-label">B</span> holder original-data for et navne­område og kan svare definitivt for det</li>
+        <li><span class="opt-label">C</span> er rotpunktet i DNS-treet som styrer alle topp­domener globalt</li>
+        <li><span class="opt-label">D</span> utelukkende videresender forespørsler til andre servere uten å svare selv</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Authoritative = «kilden til sannhet» for en sone (f.eks. ntnu.no). Alt annet er kopier eller resolvers. C beskriver root-serverne, et undersett.</p>
+          <p class="ref">Pensum: <a href="../kap2/epost-dns-sockets.html">Kap. 2 — DNS-hierarki</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q23 — P2P vs klient-server -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 23</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · P2P</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Den definerende forskjellen mellom <strong>klient-server</strong> og <strong>P2P</strong> fildistribusjon er at...</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> i klient-server bidrar alle deltakere med opplastnings­kapasitet, ikke bare serveren</li>
+        <li><span class="opt-label">B</span> i P2P bidrar deltakerne selv med opplastnings­kapasitet, ikke bare en sentral server</li>
+        <li><span class="opt-label">C</span> P2P er alltid raskere enn klient-server uavhengig av parameterne i scenarioet</li>
+        <li><span class="opt-label">D</span> klient-server bruker UDP for raskt tilkoblings­oppsett mens P2P bruker TCP</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>P2P-poenget: når peers laster opp, vokser systemets total­kapasitet med antall peers. Klient-server: kun u<sub>s</sub>. C er en vanlig overforenkling — P2P er bedre for store N, ikke alltid.</p>
+          <p class="ref">Pensum: <a href="../kap2/p2p-video-cdn.html">Kap. 2 — P2P-fildistribusjon</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q24 — Socket -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 24</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · Socket</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er en «socket» i nettverks­programmering?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> En fysisk port på datamaskinen, nummerert fra 0 til 65535 i hardware</li>
+        <li><span class="opt-label">B</span> Programmerings­grensesnittet mellom applikasjons­prosess og transportlaget</li>
+        <li><span class="opt-label">C</span> En spesiell pakke i transportlaget som bærer portnummer som payload</li>
+        <li><span class="opt-label">D</span> En MAC-adresse som er bundet til en bestemt prosess på operativsystemet</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Socket = APIet. «Door» mellom applikasjon og transport. Ikke en fysisk port (A) — port-nummer er bare en del av identifiseringen.</p>
+          <p class="ref">Pensum: <a href="../kap2/epost-dns-sockets.html">Kap. 2 — Socket-programmering</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q25 — UDP socket vs TCP socket -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 25</span>
+      <span class="exam-q__points">1 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · Sockets</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket utsagn skiller en <strong>UDP-server-socket</strong> fra en <strong>TCP-server-socket</strong> riktig?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> UDP trenger én socket per klient mens TCP trenger kun én socket totalt på serveren</li>
+        <li><span class="opt-label">B</span> UDP-serveren har én lytte-socket for alle klienter; TCP-serveren har lytte-socket pluss en pr. forbindelse</li>
+        <li><span class="opt-label">C</span> UDP-sockets støtter ikke binding til en spesifikk port mens TCP-sockets gjør det</li>
+        <li><span class="opt-label">D</span> TCP-sockets kan kun motta data mens UDP-sockets kan motta og sende toveis</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>TCP: <code>accept()</code> lager en ny forbindelses-socket per klient. UDP: én socket holder mot alle, kilde-IP/-port leses ut av hvert datagram. A bytter om rollene; D er feil for begge.</p>
+          <p class="ref">Pensum: <a href="../kap2/epost-dns-sockets.html">Kap. 2 — UDP- og TCP-sockets</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Vår 2026</p>
+  </div>
+</footer>
+<script src="../chat-widget.js"></script>
+<script src="../nav-search.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>
