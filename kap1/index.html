@@ -498,6 +498,72 @@
           <p><strong>Hvorfor cut-through er raskere:</strong> Du sparer (L − header)/R i ventetid per hopp. Brukes i moderne datasenter-svitsjer der lav latens er kritisk. <strong>Ulempen:</strong> hvis pakken har bitfeil oppdages det først helt på slutten — svitsjen har da allerede sendt halve pakken videre og kan ikke "ta tilbake" det den allerede har transmittert.</p>
         </div>
       </li>
+
+      <li data-card>
+        <div data-fc-front>Hva betyr "best effort"-tjenestemodellen i Internett, og hvilke fire ting er det <em>ikke</em> garanti for?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Best effort er den grunnleggende tjenestemodellen til IP — nettverket prøver så godt det kan å levere pakker, men gir ingen garantier. Konkret er disse fire tingene <em>ikke</em> garantert:</p>
+          <p>1. <strong>Levering</strong> — pakker kan droppes (full ruterkø, bitfeil, lenkefeil).<br>
+             2. <strong>Rekkefølge</strong> — pakker kan ankomme i annen rekkefølge enn de ble sendt (ulike ruter gjennom nettet).<br>
+             3. <strong>Forsinkelse</strong> — køforsinkelsen varierer; ingen øvre tidsgrense.<br>
+             4. <strong>Båndbredde</strong> — gjennomstrømning avhenger av flaskehals og kryssende trafikk.</p>
+          <p><strong>Hvorfor:</strong> Internett ble designet enkelt og robust ved å la nettverkslaget gjøre minst mulig. Trenger applikasjonen pålitelighet, må den be om det selv: <strong>TCP</strong> retransmitterer, sorterer i rekkefølge og styrer flyt/overbelastning, mens <strong>UDP</strong> gir deg den rå best-effort-tjenesten. Begrepet kommer tilbake i nesten hver eksamen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Nevn <em>tre konkrete</em> forskjeller mellom ruting og videresending (forwarding).</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>1. <strong>Tidsskala</strong> — videresending skjer per pakke i nanosekunder; ruting kjører i bakgrunnen og oppdateres i sekunder/minutter.<br>
+             2. <strong>Plassering</strong> — videresending er en lokal handling i datapath i hver enkelt ruter; ruting er en global prosess der rutere snakker sammen i kontrollplanet for å bli enige om stier gjennom hele nettet.<br>
+             3. <strong>Avhengighet</strong> — videresending bruker tabellen som rutingen <em>fyller</em>. Uten ruting blir tabellene tomme; uten videresending kommer ingen pakker fram selv om alle ruter er kjent.</p>
+          <p><strong>Hvorfor:</strong> Eks_5 Q4.6 ber eksplisitt om "three key differences" — pugg listen som tre punkter, ikke bare som én setning. Tenk på det som "ruting bestemmer hvor pakker <em>burde</em> gå (planlegging); videresending utfører det <em>her og nå</em> (handling)".</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>En server sender til én klient via én ruter. Lenkene har rate R₁ (server→ruter) og R₂ (ruter→klient). Hva er maks gjennomstrømning fra server til klient?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <code>min(R₁, R₂)</code>. Den tregeste lenken er flaskehalsen.</p>
+          <p><strong>Hvorfor ikke (R₁+R₂)/2 eller R₁+R₂:</strong> Pakker går <em>i serie</em> gjennom de to lenkene, ikke i parallell. De kan ikke pumpes ut av ruterens utgangsport raskere enn R₂ tillater, og kan ikke pumpes inn i ruteren raskere enn R₁ tillater. Siden hver pakke må gjennom begge, begrenses raten av den tregeste. Dette er den enkleste varianten av flaskehalsprinsippet og kommer ord for ord på eks_5 Q1.1.2.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Én pakke med L bits sendes fra kilde gjennom én svitsj til mål. Lenkene har raten R₁ og R₂. Hva blir total ende-til-ende-forsinkelse (kun transmisjon — ignorer kø og propagering)?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <code>L/R₁ + L/R₂</code>.</p>
+          <p><strong>Hvorfor:</strong> Store-and-forward — svitsjen må motta hele pakken (L/R₁ sekunder) før den kan begynne å sende videre (deretter L/R₂ sekunder). Hver lenke er en separat L/R-kostnad, og raten på den ene lenken gjelder ikke for den andre.</p>
+          <p><strong>Vanlige feilsvar å unngå:</strong> Ikke L/(R₁+R₂) — det er ikke parallell sending. Ikke 2L/min(R₁,R₂) — bare den tregeste delen bruker tregeste rate. Ikke 2L/(R₁+R₂) — gir ikke mening fysisk. Eks2 Q1.1.2 spør nøyaktig dette mønsteret.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>1 million bytes sendes som pakker à 1000 bytes over en sti med 2 svitsjer (alle 3 lenkene 10 Mbps). Propagering er null. Hvor lang tid tar det minst?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> ca. <strong>0,8016 s</strong>.</p>
+          <p><strong>Steg for steg:</strong></p>
+          <p>1. <em>Antall pakker</em>: P = 1·10⁶ bytes / 1000 bytes per pakke = <strong>1000 pakker</strong>.<br>
+             2. <em>Antall lenker</em>: N = 3 (kilde→sw1, sw1→sw2, sw2→mål) — to svitsjer = tre lenker.<br>
+             3. <em>L/R per lenke</em>: 1000 · 8 / 10·10⁶ = 8000 / 10⁷ = <strong>0,8 ms</strong>.<br>
+             4. <em>Pipelining-formelen</em>: <code>(N + P − 1) · L/R</code> = (3 + 1000 − 1) · 0,8 ms = 1002 · 0,8 ms ≈ <strong>0,8016 s</strong>.</p>
+          <p><strong>Hvorfor:</strong> To trinn — først konverter filstørrelse til antall pakker (filstørrelse / payload), så bruk pipelining-formelen. Vanlige feller: glemme byte→bit-konvertering, eller regne <em>P·N·L/R</em> (som ville gitt ~2,4 s — det er svaret hvis pakkene <em>ikke</em> kunne overlappes). Eks_5 Q1.1.4 stilles nesten ord for ord.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva heter dataenheten (PDU) på hvert av Internettets fem lag — applikasjon, transport, nettverk, lenke, fysisk?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>5 — Applikasjon: <strong>melding</strong> (message)<br>
+             4 — Transport: <strong>segment</strong> (TCP) eller <strong>datagram</strong> (UDP)<br>
+             3 — Nettverk: <strong>datagram</strong> (IP-datagram), ofte bare kalt "pakke"<br>
+             2 — Lenke: <strong>ramme</strong> (frame)<br>
+             1 — Fysisk: <strong>bits</strong></p>
+          <p><strong>Hvorfor det er viktig:</strong> Vokabularet er selve "språket" til lagdelingen og brukes overalt — i Wireshark, eksamensoppgaver og forelesninger. Når en oppgave nevner <em>"segment"</em>, er det transportlaget; <em>"datagram"</em> er typisk nettverkslaget; <em>"ramme"</em> er lenkelaget. Forveksling av disse begrepene er klassisk poengtap. Hver PDU = forrige PDU + headeren for det laget — det er enkapsuleringen i praksis.</p>
+        </div>
+      </li>
     </ol>
   </div>
 </div>

@@ -238,6 +238,11 @@
   <pre><code>Trafikk-intensitet = (L × a) / R</code></pre>
   <p>Der <em>a</em> er gjennomsnittlig antall pakker som ankommer per sekund. Når trafikk-intensiteten nærmer seg 1, vokser køforsinkelsen mot uendelig. Over 1 vokser køen raskere enn den tømmes — pakker <em>droppes</em> fordi bufferet er fullt. Dette er <strong>pakketap</strong>.</p>
 
+  <div class="callout">
+    <span class="label">"Best effort" — Internettets tjenestemodell</span>
+    <p>At pakker kan droppes, ankomme i feil rekkefølge eller henge i kø, er ikke en feil — det er den fundamentale tjenestemodellen til IP-laget: <strong>best effort</strong>. Nettverket prøver så godt det kan, men gir <em>ingen</em> garantier for <strong>levering</strong>, <strong>rekkefølge</strong>, <strong>forsinkelse</strong> eller <strong>båndbredde</strong>. Trenger applikasjonen pålitelighet, må den be om det selv: TCP retransmitterer og setter pakkene i rekkefølge, UDP gjør det ikke. Begrepet kommer tilbake i nesten hver eksamen — pugg de fire tingene som <em>ikke</em> er garantert.</p>
+  </div>
+
   <h3>Ende-til-ende-forsinkelse</h3>
   <p>Over en hel rute med N linker (og N-1 rutere) summeres forsinkelsene. Hvis alle linker er like:</p>
   <pre><code>d_end-to-end = N × (d_proc + d_queue + d_trans + d_prop)</code></pre>
