@@ -176,9 +176,84 @@
   .legend span { display: inline-flex; align-items: center; gap: 6px; }
   .legend .freq-pill { margin: 0; }
 
+  /* Free-bets panel: high-frequency topics callout */
+  .free-bets {
+    border: 2px solid var(--rust);
+    background: var(--paper-dark);
+    padding: 24px 28px;
+    margin: 28px 0 36px;
+    border-radius: 4px;
+    position: relative;
+  }
+  .free-bets .fb-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--rust-dark);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .free-bets h3 {
+    font-size: 26px;
+    margin: 0 0 8px;
+    line-height: 1.2;
+  }
+  .free-bets .fb-intro {
+    color: var(--ink-soft);
+    font-style: italic;
+    margin-bottom: 22px;
+  }
+  .free-bets .fb-tier {
+    margin: 18px 0;
+    padding: 14px 18px;
+    background: var(--paper);
+    border-left: 4px solid var(--rust);
+    border-radius: 0 2px 2px 0;
+  }
+  .free-bets .fb-tier.gold { border-left-color: var(--rust-dark); }
+  .free-bets .fb-tier h4 {
+    font-family: var(--mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--rust-dark);
+    margin: 0 0 8px;
+  }
+  .free-bets .fb-tier h4 .fb-count {
+    background: var(--rust);
+    color: var(--paper);
+    padding: 2px 8px;
+    border-radius: 2px;
+    margin-right: 8px;
+    font-size: 11px;
+  }
+  .free-bets .fb-tier ul { margin: 0; padding-left: 22px; }
+  .free-bets .fb-tier li { margin-bottom: 4px; line-height: 1.5; }
+  .free-bets .fb-tier li strong { color: var(--ink); }
+
+  /* X/5 frequency badge inline in the high-freq table */
+  .freq-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 2px;
+    background: var(--paper-dark);
+    color: var(--ink-faded);
+    border: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  .freq-badge.t5 { background: var(--rust); color: var(--paper); border-color: var(--rust); font-weight: 600; }
+  .freq-badge.t4 { background: var(--ochre); color: var(--ink); border-color: var(--ochre); font-weight: 600; }
+  .freq-badge.t3 { background: var(--paper-dark); color: var(--rust-dark); border-color: var(--rust); }
+  .freq-badge.t2 { background: var(--paper); color: var(--ink-soft); }
+  .freq-badge.t1 { background: var(--paper); color: var(--ink-faded); font-style: italic; }
+
   @media (max-width: 640px) {
     .mk-item { padding: 18px; }
     .mk-table th, .mk-table td { padding: 10px 8px; font-size: 13px; }
+    .free-bets { padding: 18px; }
   }
 </style>
 </head>
@@ -200,7 +275,7 @@
 <div class="container">
   <div class="eyebrow">Eksamensforberedelse · TTM4100</div>
   <h1>Må <em>kunne</em></h1>
-  <p class="lede">Tema og oppgavetyper som har gått igjen på de fem siste eksamenene (Eks 1–5) — det du absolutt bør sitte med på ryggmargen før du går inn i eksamenslokalet. Wireshark-spørsmål er <em>ikke</em> med i år, så de er deprioritert her.</p>
+  <p class="lede">Tema og oppgavetyper som har gått igjen på de fem siste eksamenene (Eks 1–5) — det du absolutt bør sitte med på ryggmargen før du går inn i eksamenslokalet. Frekvensanalysen er gjort på alle fem sett, og du finner <strong>«vedd som nesten er gratis»</strong> (4–5 av 5) markert øverst i hver seksjon. Wireshark-spørsmål er <em>ikke</em> med i år, så de er deprioritert her.</p>
 </div>
 </header>
 
@@ -1690,9 +1765,57 @@
   </div>
 
   <div class="legend">
-    <span><span class="freq-pill">Høy</span> 2–5 eksamener</span>
-    <span><span class="freq-pill med">Med</span> 1 eksamen, men sentralt</span>
-    <span><span class="freq-pill lav">Lav</span> Periferi — øv hvis tid</span>
+    <span><span class="freq-badge t5">5/5</span> Hver eneste eksamen — gratis vedd</span>
+    <span><span class="freq-badge t4">4/5</span> Nesten gratis</span>
+    <span><span class="freq-badge t3">3/5</span> Høy</span>
+    <span><span class="freq-badge t2">2/5</span> Medium</span>
+    <span><span class="freq-badge t1">1/5</span> Lav (men kan være sentralt nytt)</span>
+  </div>
+
+  <div class="free-bets">
+    <div class="fb-eyebrow">Frekvensanalyse · Eks 1–5</div>
+    <h3>Veddet som er <em>nesten gratis</em></h3>
+    <p class="fb-intro">Disse temaene har dukket opp i 4 eller alle 5 av de fem siste eksamenene. Hvis du bare har tid til å pugge én ting, så pugg disse — sannsynligheten for at de kommer igjen er <em>svært</em> høy.</p>
+
+    <div class="fb-tier gold">
+      <h4><span class="fb-count">5/5</span> Perfekt frekvens — kommer i hver eneste eksamen</h4>
+      <ul>
+        <li><strong>UDP vs TCP-tjenester:</strong> hvilke tjenester gir/gir ikke hver av dem (best effort, flytkontroll, congestion, throughput-garanti). <em>Aldri</em> falt ut.</li>
+        <li><strong>Forsinkelse og ende-til-ende-ytelse:</strong> <code>L/R</code>, store-and-forward, pipelining-formelen <code>(N+P−1)·L/R</code>, flaskehals/min(R₁,R₂), link-utilisering. Alltid en eller flere flervalg.</li>
+        <li><strong>Internett-arkitektur og lagdeling:</strong> nuts-and-bolts vs tjenesteplattform, encapsulation, lagene og deres protokoller. Ofte i intro-spørsmål eller drag-and-drop.</li>
+      </ul>
+    </div>
+
+    <div class="fb-tier">
+      <h4><span class="fb-count">4/5</span> Nesten gratis — bare ett av fem sett gikk uten</h4>
+      <ul>
+        <li><strong>Sockets:</strong> <code>SOCK_STREAM</code> vs <code>SOCK_DGRAM</code>, antall sockets ved N klienter, ServerSocket vs ConnectionSocket. Eks 1, 2, 3, 4.</li>
+        <li><strong>Subnetting / CIDR:</strong> maskeoperasjon, brukbare verter (2^(32−x)−2), broadcast-adresse, splitte i undernett. Eks 1, 2, 3, 5.</li>
+        <li><strong>DNS:</strong> RR-format (Name, Value, Type, TTL), hva klienten får, transport (UDP/TCP), hierarki Root → TLD → autoritativ. Eks 2, 3, 4, 5.</li>
+      </ul>
+    </div>
+
+    <div class="fb-tier">
+      <h4><span class="fb-count">3/5</span> Høy frekvens — kom i tre eksamener, sterke kandidater for retur</h4>
+      <ul>
+        <li><strong>Pakke- vs linjesvitsj</strong> (Eks 2, 4, 5) — garantier, oppsettstid, ressursutnyttelse.</li>
+        <li><strong>TCP cwnd / slow start</strong> (Eks 1, 2, 4) — graf-tolking, AIMD vs slow start.</li>
+        <li><strong>Flow control vs congestion control</strong> (Eks 2, 3, 5) — tre forskjeller; lignende konsept på lenkelaget.</li>
+        <li><strong>Forwarding vs routing</strong> (Eks 2, 3, 5) — tre forskjeller; lengste prefiks-match.</li>
+        <li><strong>Svitsj vs ruter</strong> (Eks 2, 3, 4) — lag 2 vs lag 3, MAC vs IP, self-learning.</li>
+        <li><strong>DHCP</strong> (Eks 2, 3, 5) — UDP, 4 steg, gir IP+maske+GW+DNS, sticky lease.</li>
+        <li><strong>Sikkerhetsegenskaper</strong> (Eks 1, 2, 5) — konfidensialitet, integritet, autentisering, opsec. <em>Ikke</em> «høy båndbredde», <em>ikke</em> «public key cryptography» (det er et middel).</li>
+        <li><strong>Symmetriske nøkler N(N−1)/2</strong> (Eks 1, 2, 5) — pugg formelen.</li>
+        <li><strong>2D-paritet</strong> (Eks 1, 2, 5) — detekter og rett 1-bit, detekter (ofte) 2-bit.</li>
+        <li><strong>HTTP- vs UDP-streaming</strong> (Eks 2, 3, 5) — brannmur, retransmisjon, ordning.</li>
+        <li><strong>Brannmur</strong> (Eks 3, 4, 5) — tre mål, tre kategorier (stateless / stateful / app gateway).</li>
+      </ul>
+    </div>
+
+    <div class="fb-tier">
+      <h4><span class="fb-count">1–2/5</span> Husk også: nye tema fra Eks 5</h4>
+      <p style="margin: 0; line-height: 1.6;">Eks 5 introduserte flere tema som ikke har dukket opp før — disse er <em>ferske</em>, så fagstaben kan godt gjenta dem: <strong>P2P-fildistribusjon</strong>, <strong>HTTP responstid</strong> (non-persistent / parallell / persistent), <strong>IP→binær</strong>, <strong>802.11 MAC-elementer</strong> (DIFS), <strong>4G/5G mobilnett</strong>, <strong>video playout-buffer</strong>, <strong>protokoll-lagdeling — hvorfor</strong>. Se egen seksjon i Prediksjon 4.</p>
+    </div>
   </div>
 </div>
 </section>
@@ -1705,63 +1828,72 @@
 
   <table class="mk-table">
     <thead>
-      <tr><th style="width: 26%">Tema</th><th>Hva som testes</th><th style="width: 22%">Funnet i</th></tr>
+      <tr><th style="width: 8%">Frek.</th><th style="width: 22%">Tema</th><th>Hva som testes</th><th style="width: 22%">Funnet i</th></tr>
     </thead>
     <tbody>
-      <tr><td><strong>Internett-arkitektur</strong></td><td>«Nuts and bolts» vs tjenesteplattform, network of networks, kapsling, lagdeling</td><td class="src">Eks1·Q1.1.1, Eks1·Q1.1.4, Eks1·Q1.1.6, Eks2·Q1.1.4, Eks3·P2/Q2, Eks4·Q2.1a, Eks5·Q1.1.1</td></tr>
-      <tr><td><strong>Protokoll-lagdeling — hvorfor</strong></td><td>Re-bruk og oppdatering av komponenter, modularitet — <em>ikke</em> «raskere nett» eller «encapsulation er mest effektivt»</td><td class="src">Eks5·Q1.1.5</td></tr>
-      <tr><td><strong>Forsinkelse og ytelse</strong></td><td>L/R-formel, store-and-forward, (N+P−1)L/R, flaskehals, link-utilisering, FIFO-køforsinkelse</td><td class="src">Eks1·Q1.1.5–9, Eks2·Q1.1.2–5, Eks2·Q1.3.4, Eks3·P2/Q2, Eks4·Q1.3, Eks5·Q1.1.2–4, Eks5·Q1.3.5</td></tr>
-      <tr><td><strong>Pakke- vs linjesvitsj</strong></td><td>Garantier, delay-variasjon, ressursutnyttelse, kretskobling-oppsettstid</td><td class="src">Eks2·Q1.1.1, Eks4·Q1.3, Eks5·Q1.1.1, Eks5·Q1.1.3</td></tr>
-      <tr><td><strong>HTTP-ytelse (response time)</strong></td><td>Non-persistent vs parallelle TCP vs persistent — regne ut total tid for base + N embedded</td><td class="src">Eks5·Q5.1, Q5.2, Q5.3</td></tr>
-      <tr><td><strong>UDP vs TCP-tjenester</strong></td><td>Best effort, flow control, congestion control — hva UDP og TCP <em>gjør og ikke gjør</em>; UDP-fordeler (sanntid, FEC, ingen oppkobling); FTP er TCP, ikke UDP</td><td class="src">Eks1·Q1.2.1, Eks1·Q1.2.2, Eks2·Q1.2.4, Eks3·P1/Q3, Eks3·P1/Q13, Eks4·Q2.1c, Eks5·Q1.2.5</td></tr>
-      <tr><td><strong>Sockets (UDP &amp; TCP)</strong></td><td>SOCK_STREAM/SOCK_DGRAM, accept(), antall sockets ved N klienter, ServerSocket vs ConnectionSocket</td><td class="src">Eks1·Q1.2.6, Eks1·Q1.2.7, Eks2·Q1.2.3, Eks3·P2/Q4, Eks4·Q1.1</td></tr>
-      <tr><td><strong>TCP back-to-back-segmenter</strong></td><td>Sekvensnr i andre segment = sekvensnr<sub>1</sub> + lengde<sub>1</sub>. Kilde/dest-port byttes <em>ikke</em> i samme retning.</td><td class="src">Eks5·Q1.2.4</td></tr>
-      <tr><td><strong>HTTP / web cache</strong></td><td>GET-formål, caching-fordeler, port 80, persistent</td><td class="src">Eks1·Q1.2.3, Eks1·Q1.2.4, Eks2·Q1.2.2, Eks5·Q1.2.5</td></tr>
-      <tr><td><strong>HTTP vs SMTP</strong></td><td>Push/pull, port 80 vs 25, persistent connection</td><td class="src">Eks1·Q1.2.5</td></tr>
-      <tr><td><strong>DNS</strong></td><td>UDP/TCP, RR-format, hva klienten får, hovedoppgave (directory + protokoll); DNS er applikasjonslag</td><td class="src">Eks2·Q6, Eks3·P1/Q2, Eks4·Q1.2a, Eks5·Q1.2.1, Eks5·Q1.2.2</td></tr>
-      <tr><td><strong>DNS-hierarki &amp; registrering</strong></td><td>Root → TLD → autoritative servere; registrar-prosess for nytt domene</td><td class="src">Eks4·Q1.2b, Eks4·Q1.2c</td></tr>
-      <tr><td><strong>P2P-fildistribusjon</strong></td><td>Min tid = max(F/u<sub>s</sub>, F/d<sub>min</sub>, N·F/(u<sub>s</sub>+Σu<sub>i</sub>)); skalerer mye bedre enn klient-server ved stor N</td><td class="src">Eks5·Q1.2.3</td></tr>
-      <tr><td><strong>Klient-server filfordeling</strong></td><td>Min tid = max(N·F/u<sub>s</sub>, F/d<sub>min</sub>); server er nesten alltid flaskehals</td><td class="src">Eks2·Q1.2.5</td></tr>
-      <tr><td><strong>TCP-handshake</strong></td><td>3-veis (SYN → SYN-ACK → ACK), buffere allokeres på server før klient</td><td class="src">Eks4·Q2.2a</td></tr>
-      <tr><td><strong>TCP/UDP-sjekksum</strong></td><td>Samme type sjekksum i begge — 1's complement over 16-bit ord</td><td class="src">Eks1·Q1.2.8, Eks4·Q2.1b</td></tr>
-      <tr><td><strong>Pakketap i nettet</strong></td><td>Bitfeil, bufferoverflyt, lenke-/nodefeil, kollisjon i delt media</td><td class="src">Eks4·Q2.3</td></tr>
-      <tr><td><strong>CRC</strong></td><td>Modulo-2-divisjon, legg til G−1 nuller, rest = CRC</td><td class="src">Eks4·Q3.1</td></tr>
-      <tr><td><strong>Internet checksum</strong></td><td>16-bits addisjon med carry-wrap</td><td class="src">Eks1·Q1.2.8</td></tr>
-      <tr><td><strong>TCP cwnd / slow start</strong></td><td>Identifisere intervaller for slow start vs AIMD i graf, flytkontroll-scenario</td><td class="src">Eks1·Q1.2.9, Eks2·Q2, Eks4·Q2.2b</td></tr>
-      <tr><td><strong>Flow vs congestion control</strong></td><td>Tre nøkkelforskjeller (hvem styres, signal, hva beskyttes); lignende konsept finnes også på lenkelaget (sliding window m.m.)</td><td class="src">Eks2·Q2, Eks3·P1/Q3, Eks5·Q2</td></tr>
-      <tr><td><strong>IP-adresse til binær</strong></td><td>Konvertere desimal punktnotasjon til 32-bits binær (oktett for oktett)</td><td class="src">Eks5·Q1.3.1</td></tr>
-      <tr><td><strong>Subnetting / CIDR</strong></td><td>Maskeoperasjon, gyldige adresser i /29, antall brukbare verter, broadcast i /21, splitte /23 til /24</td><td class="src">Eks1·Q1.3.4, Eks2·Q1.3.1, Eks2·Q4, Eks3·P1/Q5, Eks3·P1/Q12, Eks5·Q1.3.2</td></tr>
-      <tr><td><strong>Longest prefix match</strong></td><td>Velge ut-port fra forwarding-tabell</td><td class="src">Eks1·Q1.3.3, Eks5·Q4.1–4.5</td></tr>
-      <tr><td><strong>Forwarding vs routing — 3 forskjeller</strong></td><td>Tidsskala (per-pakke vs sekunder), plassering (datapath vs kontrollplan), avhengighet (forwarding bruker tabellen routing fyller)</td><td class="src">Eks2·Q1.3.5, Eks3·P2/Q1, Eks5·Q4.6</td></tr>
-      <tr><td><strong>NAT</strong></td><td>Lese tabell, fylle inn IP/port på utsiden</td><td class="src">Eks1·Q1.3.10</td></tr>
-      <tr><td><strong>ICMP</strong></td><td>Bæres i IP, brukes til feil/diagnose, traceroute</td><td class="src">Eks1·Q1.3.6, Eks2·Q1.3.3</td></tr>
-      <tr><td><strong>DHCP</strong></td><td>UDP, 4-stegs prosess, dynamisk IP + DNS + GW; lenkelags-broadcast brukes; <em>kan</em> gi samme IP hver gang (sticky lease)</td><td class="src">Eks2·Q1.3.2, Eks3·P1/Q4(5), Eks5·Q1.3.3</td></tr>
-      <tr><td><strong>IPv4 vs IPv6</strong></td><td>Flow label kun i IPv6; IPv4 har header checksum, IPv6 ikke; IPv6 fragmenterer ikke i mellomliggende rutere; begge er forbindelsesløse</td><td class="src">Eks1·Q1.3.5, Eks5·Q1.3.4</td></tr>
-      <tr><td><strong>Best effort</strong></td><td>Ingen garantier — kryss av alle «ikke garantert»</td><td class="src">Eks1·Q1.3.7</td></tr>
-      <tr><td><strong>Svitsj vs ruter</strong></td><td>Lag 2 vs lag 3, MAC vs IP, switch-tabell, self-learning, plug-and-play</td><td class="src">Eks2·Q1.4.1, Eks3·P1/Q4(2,4,7,9), Eks4·Q3.2</td></tr>
-      <tr><td><strong>ARP</strong></td><td>Oversetter IP ↔ MAC lokalt i et subnett; ARP-tabeller i hosts og rutere</td><td class="src">Eks4·Q3.3, Eks5·Q1.4.1</td></tr>
-      <tr><td><strong>Multiple access (klassif.)</strong></td><td>Channel partitioning vs random access vs taking turns</td><td class="src">Eks3·P1/Q6</td></tr>
-      <tr><td><strong>CSMA tidslinje</strong></td><td>Bestemme hvilke pakker som lykkes ved gitt propageringstid</td><td class="src">Eks1·Q1.4.3, Eks1·Q1.4.4, Eks3·P2/Q7</td></tr>
-      <tr><td><strong>CSMA/CD vs CSMA/CA</strong></td><td>Backoff-counter, IFS, hvorfor CD ikke fungerer i WiFi, eksplisitt ACK</td><td class="src">Eks4·Q4.2, Eks4·Q4.3</td></tr>
-      <tr><td><strong>802.11 MAC-elementer</strong></td><td>CSMA/CA + ACK + RTS/CTS (valgfritt) + DIFS — <em>ikke</em> CSMA/CD</td><td class="src">Eks5·Q1.4.4</td></tr>
-      <tr><td><strong>Infrastructure vs ad hoc (802.11)</strong></td><td>Med basestasjon vs uten — ad hoc krever ruting/DNS/adressering selv</td><td class="src">Eks4·Q4.1</td></tr>
-      <tr><td><strong>4G / 5G mobilnett</strong></td><td>5G &gt; 4G peak bitrate; <em>ikke</em> fys-lag-kompatibel; begge støtter mobilitet; begge har kontroll-/brukerplan-separasjon i kjernenettet</td><td class="src">Eks5·Q1.4.5</td></tr>
-      <tr><td><strong>Pure / slotted ALOHA</strong></td><td>Effektivitet (~18% vs ~37%), synkronisering</td><td class="src">Eks1·Q1.4.2, Eks2·Q1.4.5</td></tr>
-      <tr><td><strong>2D-paritet</strong></td><td>Detekter/rett 1-bit, detekter (ofte) 2-bit</td><td class="src">Eks1·Q1.4.5, Eks2·Q1.4.2, Eks5·Q1.4.2</td></tr>
-      <tr><td><strong>RTS/CTS, skjult terminal</strong></td><td>Hva CTS gjør, hidden node-problemet</td><td class="src">Eks1·Q1.4.6, Eks2·Q1.4.4</td></tr>
-      <tr><td><strong>4-noder topologi (A–B–C–D)</strong></td><td>Max rate C→A, A→B + D→C, A→B + C→D, og samme med ACK</td><td class="src">Eks1·Q1.4.7, Eks2·Q5</td></tr>
-      <tr><td><strong>SNR / BER / modulasjon</strong></td><td>Lavere SNR → høyere BER, høyere bitrate-modulasjon → høyere BER ved samme SNR; adaptiv modulasjon &amp; koding i WiFi/4G/5G</td><td class="src">Eks2·Q1.4.3, Eks5·Q1.4.3</td></tr>
-      <tr><td><strong>Sikkerhet — ønskede egenskaper</strong></td><td>Konfidensialitet, integritet, autentisering, operasjonell sikkerhet (ikke «høy båndbredde», ikke «public key cryptography» som er et middel)</td><td class="src">Eks1·Q1.4.8, Eks2·Q1.5.1, Eks5·Q1.5.1</td></tr>
-      <tr><td><strong>Symmetriske nøkler</strong></td><td>N(N−1)/2 ved N personer parvis</td><td class="src">Eks1·Q1.4.9, Eks2·Q1.5.2, Eks5·Q1.5.2</td></tr>
-      <tr><td><strong>Trudy: avlytte/endre/slette/sette inn</strong></td><td>Hvilke handlinger en aktiv angriper kan ta</td><td class="src">Eks1·Q1.4.10, Eks2·Q1.5.5</td></tr>
-      <tr><td><strong>Meldingsintegritet</strong></td><td>Hash vs checksum, hvorfor hash er bedre; trenger <em>ikke</em> TCP — kan brukes over UDP</td><td class="src">Eks2·Q1.5.3, Eks5·Q1.5.3</td></tr>
-      <tr><td><strong>HTTP- vs UDP-streaming</strong></td><td>Brannmur, retransmisjon, ordning</td><td class="src">Eks2·Q1.5.4, Eks3·P1/Q1, Eks5·Q1.5.5</td></tr>
-      <tr><td><strong>Multimedia: playout-buffer</strong></td><td>Server sender blokk i ved t₀ + iΔ; klient starter avspilling ved t₁ + Δ — hvilke blokker rekker frem i tide</td><td class="src">Eks5·Q1.5.4</td></tr>
-      <tr><td><strong>Cæsar-cipher</strong></td><td>Beskrivelse + kode/dekode med gitt k</td><td class="src">Eks3·P2/Q5</td></tr>
-      <tr><td><strong>Symmetrisk vs offentlig nøkkel</strong></td><td>Én delt vs nøkkelpar — bruk og forskjell; algoritme er kjent, nøkkel er hemmelig</td><td class="src">Eks3·P2/Q6, Eks4·Q5.1</td></tr>
-      <tr><td><strong>Digital signatur</strong></td><td>Krypter med privat nøkkel, verifiser med offentlig; trenger sertifikat (TTP)</td><td class="src">Eks4·Q5.2</td></tr>
-      <tr><td><strong>Brannmur</strong></td><td>Tre mål (all trafikk gjennom, kun autorisert, motstandsdyktig); tre kategorier (traditional / stateful / application gateway)</td><td class="src">Eks3·P1/Q14, Eks4·Q5.3, Eks5·Q6</td></tr>
-      <tr><td><strong>Stor «protokollkjede»-oppgave</strong></td><td>Fra plug-in → DHCP → DNS → SMTP → IMAP/HTTP. Lag og protokoller per steg</td><td class="src">Eks3·P2/Q3</td></tr>
+      <!-- ===== 5/5 — gratis vedd ===== -->
+      <tr><td><span class="freq-badge t5">5/5</span></td><td><strong>Internett-arkitektur</strong></td><td>«Nuts and bolts» vs tjenesteplattform, network of networks, kapsling, lagdeling</td><td class="src">Eks1·Q1.1.1, Eks1·Q1.1.4, Eks1·Q1.1.6, Eks2·Q1.1.4, Eks3·P2/Q2, Eks4·Q2.1a, Eks5·Q1.1.1</td></tr>
+      <tr><td><span class="freq-badge t5">5/5</span></td><td><strong>Forsinkelse og ytelse</strong></td><td>L/R-formel, store-and-forward, (N+P−1)L/R, flaskehals, link-utilisering, FIFO-køforsinkelse</td><td class="src">Eks1·Q1.1.5–9, Eks2·Q1.1.2–5, Eks2·Q1.3.4, Eks3·P2/Q2, Eks4·Q1.3, Eks5·Q1.1.2–4, Eks5·Q1.3.5</td></tr>
+      <tr><td><span class="freq-badge t5">5/5</span></td><td><strong>UDP vs TCP-tjenester</strong></td><td>Best effort, flow control, congestion control — hva UDP og TCP <em>gjør og ikke gjør</em>; UDP-fordeler (sanntid, FEC, ingen oppkobling); FTP er TCP, ikke UDP</td><td class="src">Eks1·Q1.2.1, Eks1·Q1.2.2, Eks2·Q1.2.4, Eks3·P1/Q3, Eks3·P1/Q13, Eks4·Q2.1c, Eks5·Q1.2.5</td></tr>
+
+      <!-- ===== 4/5 — nesten gratis ===== -->
+      <tr><td><span class="freq-badge t4">4/5</span></td><td><strong>Sockets (UDP &amp; TCP)</strong></td><td>SOCK_STREAM/SOCK_DGRAM, accept(), antall sockets ved N klienter, ServerSocket vs ConnectionSocket</td><td class="src">Eks1·Q1.2.6, Eks1·Q1.2.7, Eks2·Q1.2.3, Eks3·P2/Q4, Eks4·Q1.1</td></tr>
+      <tr><td><span class="freq-badge t4">4/5</span></td><td><strong>Subnetting / CIDR</strong></td><td>Maskeoperasjon, gyldige adresser i /29, antall brukbare verter, broadcast i /21, splitte /23 til /24</td><td class="src">Eks1·Q1.3.4, Eks2·Q1.3.1, Eks2·Q4, Eks3·P1/Q5, Eks3·P1/Q12, Eks5·Q1.3.2</td></tr>
+      <tr><td><span class="freq-badge t4">4/5</span></td><td><strong>DNS</strong></td><td>UDP/TCP, RR-format, hva klienten får, hovedoppgave (directory + protokoll); DNS er applikasjonslag</td><td class="src">Eks2·Q6, Eks3·P1/Q2, Eks4·Q1.2a, Eks5·Q1.2.1, Eks5·Q1.2.2</td></tr>
+
+      <!-- ===== 3/5 — høy frekvens ===== -->
+      <tr><td><span class="freq-badge t3">3/5</span></td><td><strong>Pakke- vs linjesvitsj</strong></td><td>Garantier, delay-variasjon, ressursutnyttelse, kretskobling-oppsettstid</td><td class="src">Eks2·Q1.1.1, Eks4·Q1.3, Eks5·Q1.1.1, Eks5·Q1.1.3</td></tr>
+      <tr><td><span class="freq-badge t3">3/5</span></td><td><strong>TCP cwnd / slow start</strong></td><td>Identifisere intervaller for slow start vs AIMD i graf, flytkontroll-scenario</td><td class="src">Eks1·Q1.2.9, Eks2·Q2, Eks4·Q2.2b</td></tr>
+      <tr><td><span class="freq-badge t3">3/5</span></td><td><strong>Flow vs congestion control</strong></td><td>Tre nøkkelforskjeller (hvem styres, signal, hva beskyttes); lignende konsept finnes også på lenkelaget (sliding window m.m.)</td><td class="src">Eks2·Q2, Eks3·P1/Q3, Eks5·Q2</td></tr>
+      <tr><td><span class="freq-badge t3">3/5</span></td><td><strong>Forwarding vs routing — 3 forskjeller</strong></td><td>Tidsskala (per-pakke vs sekunder), plassering (datapath vs kontrollplan), avhengighet (forwarding bruker tabellen routing fyller)</td><td class="src">Eks2·Q1.3.5, Eks3·P2/Q1, Eks5·Q4.6</td></tr>
+      <tr><td><span class="freq-badge t3">3/5</span></td><td><strong>Svitsj vs ruter</strong></td><td>Lag 2 vs lag 3, MAC vs IP, switch-tabell, self-learning, plug-and-play</td><td class="src">Eks2·Q1.4.1, Eks3·P1/Q4(2,4,7,9), Eks4·Q3.2</td></tr>
+      <tr><td><span class="freq-badge t3">3/5</span></td><td><strong>DHCP</strong></td><td>UDP, 4-stegs prosess, dynamisk IP + DNS + GW; lenkelags-broadcast brukes; <em>kan</em> gi samme IP hver gang (sticky lease)</td><td class="src">Eks2·Q1.3.2, Eks3·P1/Q4(5), Eks5·Q1.3.3</td></tr>
+      <tr><td><span class="freq-badge t3">3/5</span></td><td><strong>2D-paritet</strong></td><td>Detekter/rett 1-bit, detekter (ofte) 2-bit</td><td class="src">Eks1·Q1.4.5, Eks2·Q1.4.2, Eks5·Q1.4.2</td></tr>
+      <tr><td><span class="freq-badge t3">3/5</span></td><td><strong>Sikkerhet — ønskede egenskaper</strong></td><td>Konfidensialitet, integritet, autentisering, operasjonell sikkerhet (ikke «høy båndbredde», ikke «public key cryptography» som er et middel)</td><td class="src">Eks1·Q1.4.8, Eks2·Q1.5.1, Eks5·Q1.5.1</td></tr>
+      <tr><td><span class="freq-badge t3">3/5</span></td><td><strong>Symmetriske nøkler</strong></td><td>N(N−1)/2 ved N personer parvis</td><td class="src">Eks1·Q1.4.9, Eks2·Q1.5.2, Eks5·Q1.5.2</td></tr>
+      <tr><td><span class="freq-badge t3">3/5</span></td><td><strong>HTTP- vs UDP-streaming</strong></td><td>Brannmur, retransmisjon, ordning</td><td class="src">Eks2·Q1.5.4, Eks3·P1/Q1, Eks5·Q1.5.5</td></tr>
+      <tr><td><span class="freq-badge t3">3/5</span></td><td><strong>Brannmur</strong></td><td>Tre mål (all trafikk gjennom, kun autorisert, motstandsdyktig); tre kategorier (traditional / stateful / application gateway)</td><td class="src">Eks3·P1/Q14, Eks4·Q5.3, Eks5·Q6</td></tr>
+
+      <!-- ===== 2/5 — medium ===== -->
+      <tr><td><span class="freq-badge t2">2/5</span></td><td><strong>HTTP / web cache</strong></td><td>GET-formål, caching-fordeler, port 80, persistent</td><td class="src">Eks1·Q1.2.3, Eks1·Q1.2.4, Eks2·Q1.2.2</td></tr>
+      <tr><td><span class="freq-badge t2">2/5</span></td><td><strong>TCP/UDP-sjekksum</strong></td><td>Samme type sjekksum i begge — 1's complement over 16-bit ord</td><td class="src">Eks1·Q1.2.8, Eks4·Q2.1b</td></tr>
+      <tr><td><span class="freq-badge t2">2/5</span></td><td><strong>Longest prefix match</strong></td><td>Velge ut-port fra forwarding-tabell</td><td class="src">Eks1·Q1.3.3, Eks5·Q4.1–4.5</td></tr>
+      <tr><td><span class="freq-badge t2">2/5</span></td><td><strong>ICMP</strong></td><td>Bæres i IP, brukes til feil/diagnose, traceroute</td><td class="src">Eks1·Q1.3.6, Eks2·Q1.3.3</td></tr>
+      <tr><td><span class="freq-badge t2">2/5</span></td><td><strong>IPv4 vs IPv6</strong></td><td>Flow label kun i IPv6; IPv4 har header checksum, IPv6 ikke; IPv6 fragmenterer ikke i mellomliggende rutere; begge er forbindelsesløse</td><td class="src">Eks1·Q1.3.5, Eks5·Q1.3.4</td></tr>
+      <tr><td><span class="freq-badge t2">2/5</span></td><td><strong>ARP</strong></td><td>Oversetter IP ↔ MAC lokalt i et subnett; ARP-tabeller i hosts og rutere</td><td class="src">Eks4·Q3.3, Eks5·Q1.4.1</td></tr>
+      <tr><td><span class="freq-badge t2">2/5</span></td><td><strong>CSMA tidslinje</strong></td><td>Bestemme hvilke pakker som lykkes ved gitt propageringstid</td><td class="src">Eks1·Q1.4.3, Eks1·Q1.4.4, Eks3·P2/Q7</td></tr>
+      <tr><td><span class="freq-badge t2">2/5</span></td><td><strong>Pure / slotted ALOHA</strong></td><td>Effektivitet (~18% vs ~37%), synkronisering</td><td class="src">Eks1·Q1.4.2, Eks2·Q1.4.5</td></tr>
+      <tr><td><span class="freq-badge t2">2/5</span></td><td><strong>RTS/CTS, skjult terminal</strong></td><td>Hva CTS gjør, hidden node-problemet</td><td class="src">Eks1·Q1.4.6, Eks2·Q1.4.4</td></tr>
+      <tr><td><span class="freq-badge t2">2/5</span></td><td><strong>4-noder topologi (A–B–C–D)</strong></td><td>Max rate C→A, A→B + D→C, A→B + C→D, og samme med ACK</td><td class="src">Eks1·Q1.4.7, Eks2·Q5</td></tr>
+      <tr><td><span class="freq-badge t2">2/5</span></td><td><strong>SNR / BER / modulasjon</strong></td><td>Lavere SNR → høyere BER, høyere bitrate-modulasjon → høyere BER ved samme SNR; adaptiv modulasjon &amp; koding i WiFi/4G/5G</td><td class="src">Eks2·Q1.4.3, Eks5·Q1.4.3</td></tr>
+      <tr><td><span class="freq-badge t2">2/5</span></td><td><strong>Trudy: avlytte/endre/slette/sette inn</strong></td><td>Hvilke handlinger en aktiv angriper kan ta</td><td class="src">Eks1·Q1.4.10, Eks2·Q1.5.5</td></tr>
+      <tr><td><span class="freq-badge t2">2/5</span></td><td><strong>Meldingsintegritet</strong></td><td>Hash vs checksum, hvorfor hash er bedre; trenger <em>ikke</em> TCP — kan brukes over UDP</td><td class="src">Eks2·Q1.5.3, Eks5·Q1.5.3</td></tr>
+      <tr><td><span class="freq-badge t2">2/5</span></td><td><strong>Symmetrisk vs offentlig nøkkel</strong></td><td>Én delt vs nøkkelpar — bruk og forskjell; algoritme er kjent, nøkkel er hemmelig</td><td class="src">Eks3·P2/Q6, Eks4·Q5.1</td></tr>
+
+      <!-- ===== 1/5 — kun ett sett, men kan komme igjen ===== -->
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>Protokoll-lagdeling — hvorfor</strong></td><td>Re-bruk og oppdatering av komponenter, modularitet — <em>ikke</em> «raskere nett» eller «encapsulation er mest effektivt»</td><td class="src">Eks5·Q1.1.5</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>HTTP-ytelse (response time)</strong> · <em>nytt fra Eks 5</em></td><td>Non-persistent vs parallelle TCP vs persistent — regne ut total tid for base + N embedded</td><td class="src">Eks5·Q5.1, Q5.2, Q5.3</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>P2P-fildistribusjon</strong> · <em>nytt fra Eks 5</em></td><td>Min tid = max(F/u<sub>s</sub>, F/d<sub>min</sub>, N·F/(u<sub>s</sub>+Σu<sub>i</sub>)); skalerer mye bedre enn klient-server ved stor N</td><td class="src">Eks5·Q1.2.3</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>Klient-server filfordeling</strong></td><td>Min tid = max(N·F/u<sub>s</sub>, F/d<sub>min</sub>); server er nesten alltid flaskehals</td><td class="src">Eks2·Q1.2.5</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>TCP back-to-back-segmenter</strong> · <em>nytt fra Eks 5</em></td><td>Sekvensnr i andre segment = sekvensnr<sub>1</sub> + lengde<sub>1</sub>. Kilde/dest-port byttes <em>ikke</em> i samme retning.</td><td class="src">Eks5·Q1.2.4</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>HTTP vs SMTP</strong></td><td>Push/pull, port 80 vs 25, persistent connection</td><td class="src">Eks1·Q1.2.5</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>DNS-hierarki &amp; registrering</strong></td><td>Root → TLD → autoritative servere; registrar-prosess for nytt domene</td><td class="src">Eks4·Q1.2b, Eks4·Q1.2c</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>TCP-handshake</strong></td><td>3-veis (SYN → SYN-ACK → ACK), buffere allokeres på server før klient</td><td class="src">Eks4·Q2.2a</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>Pakketap i nettet</strong></td><td>Bitfeil, bufferoverflyt, lenke-/nodefeil, kollisjon i delt media</td><td class="src">Eks4·Q2.3</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>CRC</strong></td><td>Modulo-2-divisjon, legg til G−1 nuller, rest = CRC</td><td class="src">Eks4·Q3.1</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>Internet checksum</strong></td><td>16-bits addisjon med carry-wrap</td><td class="src">Eks1·Q1.2.8</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>IP-adresse til binær</strong> · <em>nytt fra Eks 5</em></td><td>Konvertere desimal punktnotasjon til 32-bits binær (oktett for oktett)</td><td class="src">Eks5·Q1.3.1</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>NAT</strong></td><td>Lese tabell, fylle inn IP/port på utsiden</td><td class="src">Eks1·Q1.3.10</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>Best effort</strong></td><td>Ingen garantier — kryss av alle «ikke garantert»</td><td class="src">Eks1·Q1.3.7</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>Multiple access (klassif.)</strong></td><td>Channel partitioning vs random access vs taking turns</td><td class="src">Eks3·P1/Q6</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>CSMA/CD vs CSMA/CA</strong></td><td>Backoff-counter, IFS, hvorfor CD ikke fungerer i WiFi, eksplisitt ACK</td><td class="src">Eks4·Q4.2, Eks4·Q4.3</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>802.11 MAC-elementer</strong> · <em>nytt fra Eks 5</em></td><td>CSMA/CA + ACK + RTS/CTS (valgfritt) + DIFS — <em>ikke</em> CSMA/CD</td><td class="src">Eks5·Q1.4.4</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>Infrastructure vs ad hoc (802.11)</strong></td><td>Med basestasjon vs uten — ad hoc krever ruting/DNS/adressering selv</td><td class="src">Eks4·Q4.1</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>4G / 5G mobilnett</strong> · <em>nytt fra Eks 5</em></td><td>5G &gt; 4G peak bitrate; <em>ikke</em> fys-lag-kompatibel; begge støtter mobilitet; begge har kontroll-/brukerplan-separasjon i kjernenettet</td><td class="src">Eks5·Q1.4.5</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>Multimedia: playout-buffer</strong> · <em>nytt fra Eks 5</em></td><td>Server sender blokk i ved t₀ + iΔ; klient starter avspilling ved t₁ + Δ — hvilke blokker rekker frem i tide</td><td class="src">Eks5·Q1.5.4</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>Cæsar-cipher</strong></td><td>Beskrivelse + kode/dekode med gitt k</td><td class="src">Eks3·P2/Q5</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>Digital signatur</strong></td><td>Krypter med privat nøkkel, verifiser med offentlig; trenger sertifikat (TTP)</td><td class="src">Eks4·Q5.2</td></tr>
+      <tr><td><span class="freq-badge t1">1/5</span></td><td><strong>Stor «protokollkjede»-oppgave</strong></td><td>Fra plug-in → DHCP → DNS → SMTP → IMAP/HTTP. Lag og protokoller per steg</td><td class="src">Eks3·P2/Q3</td></tr>
     </tbody>
   </table>
 </div>
