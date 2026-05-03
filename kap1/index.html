@@ -564,6 +564,50 @@
           <p><strong>Hvorfor det er viktig:</strong> Vokabularet er selve "språket" til lagdelingen og brukes overalt — i Wireshark, eksamensoppgaver og forelesninger. Når en oppgave nevner <em>"segment"</em>, er det transportlaget; <em>"datagram"</em> er typisk nettverkslaget; <em>"ramme"</em> er lenkelaget. Forveksling av disse begrepene er klassisk poengtap. Hver PDU = forrige PDU + headeren for det laget — det er enkapsuleringen i praksis.</p>
         </div>
       </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor er forsinkelsesvariasjonen (<em>jitter</em>) mellom pakker generelt mindre i et linjesvitsjet nett enn i et pakkesvitsjet nett?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> I et <strong>linjesvitsjet</strong> nett er ressursene reservert (eget frekvensbånd eller fast tidsluke i hver ramme), så hver "pakke" møter samme dedikerte rate uten å konkurrere med andres trafikk. Forsinkelsen er derfor nesten konstant. I et <strong>pakkesvitsjet</strong> nett deler alle pakker det samme bufferet i hver ruter; køforsinkelsen avhenger av momentan trafikk, og to pakker like etter hverandre kan oppleve helt ulik kø.</p>
+          <p><strong>Hvorfor det betyr noe i praksis:</strong> Jitter er nettopp det "best effort"-pakkesvitsjing ikke styrer godt. Sanntidsapplikasjoner (telefoni, videosamtale) bruker derfor <em>playout-buffer</em> som henter inn flere sekunder med data og spiller ut jevnt — for å skjule jitteren. Eks_5 Q1.1.1 tester dette eksplisitt med formuleringen "the delay variation among packets/messages in a circuit-switched network is smaller than that in a packet-switched network".</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>En pakke på 12 000 bits sendes over én lenke med rate 100 Mbps, lengde 600 km, signalhastighet 2·10⁸ m/s. Hva er total ende-til-ende-forsinkelse (kø og prosessering = 0)?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>≈ 3,12 ms</strong>.</p>
+          <p>d_trans = L/R = 12 000 / 10⁸ = 1,2·10⁻⁴ s = <strong>120 µs</strong><br>
+             d_prop = d/v = 600 000 / 2·10⁸ = 3·10⁻³ s = <strong>3000 µs</strong><br>
+             Total: 120 + 3000 = <strong>3120 µs ≈ 3,12 ms</strong>.</p>
+          <p><strong>Hvorfor:</strong> To helt uavhengige komponenter. Transmisjon styres av <em>(L, R)</em>; propagering av <em>(avstand, signalhastighet)</em>. Vanlige feller: (1) bruke 3·10⁸ m/s (lyshastighet i vakuum) i stedet for ~2·10⁸ m/s (signal i fiber/kobber), (2) forveksle d/R med L/R, (3) glemme km→m. På 600 km er propageringen <em>25× større</em> enn transmisjonen — typisk over lange strekk: prop dominerer.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Pakkesvitsjing krever <em>ikke</em> oppkobling — hva betyr det, og hvilken praktisk konsekvens har det?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> En avsender kan sende den første pakken umiddelbart, uten at det er etablert noen ende-til-ende-rute eller reservert noen ressurser på forhånd. Hver pakke rutes uavhengig basert på sin destinasjons-IP. I <strong>linjesvitsjing</strong> må derimot hele kretsen settes opp i alle svitsjer underveis før første nyttebit kan sendes (typisk hundrevis av millisekunder oppsettstid).</p>
+          <p><strong>Konsekvensene:</strong></p>
+          <p>1. <strong>Sparer tid for kort trafikk</strong> — DNS-oppslag, små HTTP-forespørsler, ICMP-pakker har ingen oppkoblings­overhead.<br>
+             2. <strong>Robusthet</strong> — hvis en lenke faller ut, finner pakker en ny vei automatisk; kretssvitsjet ville mistet "samtalen".<br>
+             3. <strong>Prisen:</strong> ingen garantier — pakker kan tape, omrokkeres eller henge i kø (best effort).</p>
+          <p>Eks_5 Q1.1.3 illustrerer dette konkret: en kretsbasert overføring bruker 0,5 s ekstra på oppkobling, mens pakkesvitsjet ville startet umiddelbart.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Når vi sier at Internett er et "nettverk av nettverk" — hvilke fire typer nettverk består det egentlig av?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong></p>
+          <p>1. <strong>Aksess-ISP-er</strong> — kobler endesystemer til (Telenor, Altibox, lokal fiberleverandør, mobiloperatører).<br>
+             2. <strong>Regionale ISP-er</strong> — binder aksess-ISP-ene sammen innenfor et land eller region.<br>
+             3. <strong>Tier-1-ISP-er</strong> — globalt rekkevidde (Lumen, NTT, Telia Carrier); peerer med hverandre kostnadsfritt.<br>
+             4. <strong>Content provider networks</strong> — Google, Netflix, Amazon, Meta — egne private globale nett som kobler seg direkte til store aksess-ISP-er via <em>peering</em> for å nå brukere uten å gå via tier-1.</p>
+          <p>Pluss <strong>IXP-er</strong> (Internet Exchange Points): fysiske knutepunkt der mange ISP-er møtes og utveksler trafikk direkte.</p>
+          <p><strong>Hvorfor:</strong> Eks1 Q1.1.4 sjekker om man kjenner alle disse fire (formuleringen er "access networks at the edge, tier-1 networks at the core, and interconnected regional and content provider networks as well"). Innholdsleverandørnett er den minst kjente kategorien, men står i dag for en betydelig andel av Internetts trafikk — og forklarer hvorfor Netflix og YouTube føles "nære" selv om hovedkontoret ligger i USA.</p>
+        </div>
+      </li>
     </ol>
   </div>
 </div>
