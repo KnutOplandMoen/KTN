@@ -1,6 +1,10 @@
 {
   "buildCommand": "",
   "outputDirectory": ".",
+  "redirects": [
+    { "source": "/protokoller-brannmur.html", "destination": "/kap8/protokoller-brannmur.html", "permanent": true },
+    { "source": "/kryptografi.html", "destination": "/kap8/kryptografi.html", "permanent": true }
+  ],
   "functions": {
     "api/chat.js": {
       "maxDuration": 120
