@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prediksjon 7 — «Pensum-eksperimentene» — TTM4100</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Alle eksamener</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
+  </div>
+</nav>
+
+<main data-chapter="Prediksjon 7 — Pensum-eksperimentene">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Eksamensprediksjon 7 av 7 · våren 2026</div>
+  <h1>Prediksjon <em>7</em> — «Pensum-eksperimentene»</h1>
+  <p class="lede">Etter fem eksamener begynner et mønster å bli slitt. Fagstaben må <em>skifte</em>. Dette settet henter fra deler av pensum som er <strong>tydelig i innholdsfortegnelsen</strong> (kap 2 conditional GET, kap 3 Selective Repeat / cwnd-graf, kap 5.6 ICMP-typer, kap 6 Spanning Tree, kap 8.6 TLS, kap 8.7.1 IPSec/VPN, kap 8.8 WPA/WPA3, kap 9.3 VoIP/RTP), men som <em>aldri eller knapt</em> har vært på eksamen 2023–2025. Sannsynligheten for at <em>noe</em> herfra dukker opp er høy. Del I: 14 spørsmål (42 p). Del II: 5 oppgaver (58 p).</p>
+
+  <div class="learn-box">
+    <span class="label">Strategi for dette settet</span>
+    <ul>
+      <li><strong>Pensum-pekere du bør pugge:</strong> kap 8.6 TLS-handshake, kap 8.7.1 IPSec, kap 8.5.1 PGP, kap 5.6 ICMP-typer, kap 3.4 SR vs GBN.</li>
+      <li><strong>«Aldri vært, men i pensum»:</strong> Conditional GET (304), TCP fast retransmit, IPv4-fragmenterings­felt, Spanning Tree, WPA-evolusjon. Hver gang en eksaminator skifter ut én oppgave er sjansen stor for at noe herfra inntar plassen.</li>
+      <li><strong>Husk:</strong> Pensum-listen ekskluderer Bittorrent, ECN, SDN, VLAN — så ikke pugg de.</li>
+    </ul>
+  </div>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">I</span><a href="#del1">Del I — Flervalg (42p)</a></li>
+    <li><span class="toc-num">II</span><a href="#del2">Del II — Åpne oppgaver (58p)</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ==================== DEL I ==================== -->
+<section id="del1">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del I — Automatisk rettede spørsmål</h2>
+    <span class="del-points">14 spørsmål · 3 poeng per spørsmål · 42 poeng totalt</span>
+  </div>
+  <p class="section-intro">Tema som er i pensum, men har vært stille på eksamen — overmodne for ny historie.</p>
+
+  <!-- Q1 — HTTP conditional GET (304) -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 1</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · Conditional GET</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En klient sender en HTTP GET med <code>If-Modified-Since: ...</code>-header for et objekt den allerede har i cache. Hvis serveren ser at objektet ikke er endret, hva sender den tilbake?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 200 OK med hele objektet på nytt</li>
+        <li><span class="opt-label">B</span> 304 Not Modified — uten objektet i kroppen</li>
+        <li><span class="opt-label">C</span> 404 Not Found — objektet er stale</li>
+        <li><span class="opt-label">D</span> 301 Moved Permanently</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B — 304 Not Modified</span>
+          <p>Conditional GET er kjernen i web-cache-effektiviteten. Klienten (eller proxy-cache) sjekker om kopien er fersk — server svarer raskt med 304 og <em>ingen</em> objekt-payload, slik at båndbredde og latens spares. Klienten serverer den lokale kopien til brukeren.</p>
+          <p>Felle: A er hva en server uten conditional-GET-støtte ville gjort; B er <em>standard</em> oppførsel og bærer pensumet i kap. 2.2.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2.2 — HTTP Conditional GET</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q2 — IMAP vs POP3 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 2</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · E-post­henting</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket utsagn skiller <strong>IMAP</strong> fra <strong>POP3</strong> korrekt?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> POP3 lagrer e-posten på serveren og lar brukeren bla mellom mapper; IMAP laster ned alt og sletter på server</li>
+        <li><span class="opt-label">B</span> IMAP holder meldingene på serveren og støtter mappestruktur og delvis nedlasting; POP3 laster ned og fjerner typisk fra server</li>
+        <li><span class="opt-label">C</span> IMAP og POP3 er identiske — bare to navn for samme protokoll</li>
+        <li><span class="opt-label">D</span> POP3 bruker UDP, IMAP bruker TCP</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>POP3 er enkel: «last ned, slett, ferdig» — passet en tid med PC-er som var offline mesteparten av dagen. IMAP er rikere: meldingene bor på server, klienten viser dem dynamisk, mapper synkroniseres mellom enheter, klienten kan be om bare header eller kun en del av en melding.</p>
+          <p>Begge bruker TCP. POP3 = port 110 (alt 995 over TLS); IMAP = port 143 (alt 993 over TLS).</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2.3 — E-postprotokoller</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q3 — TCP slow start vs congestion avoidance -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 3</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · TCP cwnd</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva karakteriserer <strong>slow start</strong>-fasen til TCP?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> cwnd vokser lineært (ett MSS per RTT)</li>
+        <li><span class="opt-label">B</span> cwnd vokser eksponentielt (dobles per RTT) frem til ssthresh nås, eller tap inntreffer</li>
+        <li><span class="opt-label">C</span> cwnd holdes konstant, mens rwnd justeres</li>
+        <li><span class="opt-label">D</span> cwnd halveres hver RTT for å være «forsiktig»</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B — eksponentiell vekst</span>
+          <p>Slow start: cwnd starter på 1 MSS, dobler per RTT (legger til 1 MSS per ACK). Ved cwnd = ssthresh skifter TCP til AIMD (lineær vekst, +1 MSS per RTT). Navnet er misvisende: slow start er faktisk <em>raskere</em> enn AIMD. «Slow» refererte til at det starter <em>fra</em> 1.</p>
+          <p>Felle: D er hva som skjer ved 3 dup ACK i Reno (cwnd halveres), ikke en del av slow start.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3.7 — TCP congestion control</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q4 — Selective Repeat vs Go-Back-N -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 4</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · SR vs GBN</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">I et Selective Repeat-skjema får mottakeren pakke 5 i orden, men pakke 3 og 4 har ikke ankommet. Hva gjør mottakeren?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Forkaster pakke 5 — bare den neste forventede pakken aksepteres</li>
+        <li><span class="opt-label">B</span> Sender ACK 5 og bufrer pakken til 3 og 4 ankommer; ACK-en bekrefter spesifikt pakke 5</li>
+        <li><span class="opt-label">C</span> Sender ACK 2 (siste i orden) og forkaster pakke 5</li>
+        <li><span class="opt-label">D</span> Re-transmitterer pakke 3 og 4 selv</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>SR aksepterer og bufrer pakker som er innenfor mottakers vindu — selv om noen forangående mangler. Hver ACK bekrefter <em>en spesifikk pakke</em> (ikke kumulativ).</p>
+          <p>Til kontrast: <strong>Go-Back-N</strong> ville gjort C — kun kumulativ ACK på siste i orden, alle out-of-order pakker forkastes. SR er mer effektiv ved enkelt-pakke-tap, men trenger mer minne i mottakers buffer.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3.4.4 — Selective Repeat</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q5 — Distance vector vs link state -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 5</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 5 · Routing</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket utsagn er <strong>korrekt</strong> om forskjellen mellom <em>distance vector</em>- og <em>link-state</em>-routing?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Link-state-rutere kjenner bare avstanden til naboene; distance-vector-rutere har full topologi</li>
+        <li><span class="opt-label">B</span> Distance-vector-rutere utveksler informasjon om <em>distansen til alle destinasjoner</em> kun med naboer; link-state-rutere kringkaster <em>topologi-informasjon</em> til alle, og hver kjører selv et korteste-vei-algoritme (typisk Dijkstra)</li>
+        <li><span class="opt-label">C</span> Begge algoritmene krever sentralisert beregning av rutene</li>
+        <li><span class="opt-label">D</span> Distance-vector kan bare brukes innenfor ett autonomt system; link-state kun mellom AS-er</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Distance vector (RIP): hver ruter sier til naboene «jeg kan nå X med kostnad Y». Iterativt sprer informasjonen seg. Konvergerer langsommere; lider av «count to infinity».</p>
+          <p>Link state (OSPF): hver ruter måler kostnad til naboer, kringkaster denne info via flooding. Alle har samme topologi-bilde og kjører Dijkstra lokalt. Mer båndbredde-tunge oppdateringer, men raskere konvergens.</p>
+          <p>D er feil: RIP og OSPF er begge intra-AS-protokoller. BGP er inter-AS og er en variant av path vector.</p>
+          <p class="ref">Pensum: <a href="../kap5/innhold.html">Kap. 5.2 — Routing-algoritmer</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q6 — IPv4 fragmentering felt -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 6</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · IP-fragmentering</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket felt i IPv4-headeren brukes til å holde alle fragmenter av samme original­datagram sammen ved reassembly?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Total Length</li>
+        <li><span class="opt-label">B</span> Time-to-Live</li>
+        <li><span class="opt-label">C</span> Identifier</li>
+        <li><span class="opt-label">D</span> Header Checksum</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — Identifier</span>
+          <p>Avsender setter samme 16-bit Identifier i alle fragmenter av samme original­datagram. Mottakeren grupperer fragmenter med samme (kilde-IP, dest-IP, protokoll, identifier) og bruker <strong>Fragment Offset</strong> + <strong>More Fragments</strong>-flag til å sortere og avgjøre når alt er mottatt.</p>
+          <p>Felle: Total Length angir bare det enkelte fragmentets størrelse.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4.3 — IPv4-fragmentering</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q7 — ICMP message types -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 7</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 5.6 · ICMP</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken ICMP-meldingstype utløses når TTL i et datagram når 0 ved en ruter, og som <code>traceroute</code> utnytter til å kartlegge stien?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Echo Reply (type 0)</li>
+        <li><span class="opt-label">B</span> Destination Unreachable (type 3)</li>
+        <li><span class="opt-label">C</span> Time Exceeded (type 11)</li>
+        <li><span class="opt-label">D</span> Redirect (type 5)</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — Time Exceeded</span>
+          <p>Når TTL går til 0 kaster ruteren pakken og sender ICMP Time Exceeded tilbake til kilden — med kilde-IP fra <em>ruteren</em> selv. Traceroute sender pakker med TTL = 1, 2, 3, ... og samler ICMP-svarene for å lære stien hopp for hopp.</p>
+          <p>Echo Request (type 8) / Reply (type 0) er det <code>ping</code> bruker. Destination Unreachable kommer ved nettverk/host/port-uoppnåelig (UDP-port stengt — også brukt av traceroute for å detektere endepunktet).</p>
+          <p class="ref">Pensum: <a href="../kap5/innhold.html">Kap. 5.6 — ICMP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q8 — Spanning Tree -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 8</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6 · STP</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er hovedformålet med Spanning Tree Protocol (STP) i et bryter-nettverk?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Velge en raskere vei mellom rutere</li>
+        <li><span class="opt-label">B</span> Hindre uendelige loops av broadcast-rammer ved å deaktivere redundante lenker logisk, mens en aktiv «tre»-topologi opprettholdes</li>
+        <li><span class="opt-label">C</span> Kryptere lenkelags-trafikk</li>
+        <li><span class="opt-label">D</span> Tildele MAC-adresser dynamisk</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>I et bryter-nett uten loop-forebygging vil en broadcast-ramme (eks. ARP-request) sirkulere i evighet og dupliseres. STP velger ut en root-bridge og deaktiverer logisk de redundante lenkene slik at det aktive grafen blir et tre — ingen loop. Hvis en aktiv lenke faller, kan en deaktivert tas i bruk.</p>
+          <p>Til kontrast: rutere bruker TTL i IP-headeren for å unngå evige loops.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6.4 — Lenkelag-svitsjer</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q9 — TLS handshake -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 9</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8.6 · TLS</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken funksjon har <strong>serverens X.509-sertifikat</strong> i TLS-handshakingen?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Det inneholder den symmetriske sesjons­nøkkelen klienten skal bruke</li>
+        <li><span class="opt-label">B</span> Det binder en offentlig nøkkel til serverens identitet, signert av en betrodd CA — slik at klienten kan autentisere serveren og trygt utveksle nøkkel-materialet</li>
+        <li><span class="opt-label">C</span> Det krypterer all senere trafikk mellom klient og server</li>
+        <li><span class="opt-label">D</span> Det inneholder en SHA-256-hash av all data klienten skal sende</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Sertifikatet = (offentlig nøkkel, identitet, gyldighet, signatur). CA-en signerer det med <em>sin</em> private nøkkel; klienten har CA-ens offentlige nøkkel forhåndsinstallert og kan dermed verifisere at sertifikatet ikke er forfalsket. Resultat: server-autentisering.</p>
+          <p>Selve sesjons­nøkkelen (symmetrisk) etableres separat — typisk via Diffie-Hellman eller (ved RSA) ved at klienten krypterer en pre-master secret med serverens offentlige nøkkel.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.6 — TLS</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q10 — IPSec transport vs tunnel -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 10</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8.7 · IPSec</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket utsagn om IPSec er <strong>korrekt</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> IPSec opererer på applikasjons­laget og krever endring av hver applikasjon</li>
+        <li><span class="opt-label">B</span> IPSec opererer på nettverks­laget og kan brukes til å bygge VPN-tunneler mellom to gateways — typisk transparent for applikasjonene</li>
+        <li><span class="opt-label">C</span> IPSec er en variant av TLS som kjører over UDP</li>
+        <li><span class="opt-label">D</span> IPSec krever at alle rutere langs stien støtter den</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>IPSec sikrer IP-datagrammer direkte. To moduser:</p>
+          <ul>
+            <li><strong>Transport mode:</strong> bare payload krypteres/integritets­beskyttes; original IP-header beholdes. Brukes typisk host-til-host.</li>
+            <li><strong>Tunnel mode:</strong> hele original IP-pakken krypteres og pakkes inn i en ny IP-header. Brukes typisk mellom to gateways for site-to-site VPN.</li>
+          </ul>
+          <p>Mellomliggende rutere ser bare den ytre IP-headeren — derfor er D feil.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.7.1 — IPSec og VPN</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q11 — Secure email / PGP -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 11</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8.5 · Sikker e-post</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Alice vil sende en e-post til Bob med <strong>konfidensialitet, integritet og autentisering</strong>. Hva er den vanlige rekkefølgen av kryptografiske operasjoner (à la PGP)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Alice signerer hash av meldingen med <em>Bobs</em> private nøkkel; krypterer meldingen med <em>egen</em> offentlig</li>
+        <li><span class="opt-label">B</span> Alice signerer hash med <em>egen privat</em>; krypterer meldingen med en symmetrisk sesjons­nøkkel; krypterer den symmetriske nøkkelen med <em>Bobs offentlige</em> nøkkel</li>
+        <li><span class="opt-label">C</span> Alice sender meldingen i klartekst — autentisering oppnås ved IP-adresse</li>
+        <li><span class="opt-label">D</span> Alice krypterer meldingen direkte med RSA og Bobs offentlig — symmetrisk kryptografi er ikke nødvendig</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Hybridmodellen: symmetrisk kryptografi for selve meldingen (rask, selv ved store data), offentlig nøkkel kun for å bytte sesjons­nøkkelen. Signaturen (hash + Alice&apos;s privat) gir integritet + opprinnelses­autentisering. Bob dekrypterer den symmetriske nøkkelen med <em>sin egen private</em>, dekrypterer meldingen, og verifiserer signaturen med <em>Alice&apos;s offentlige</em>.</p>
+          <p>D er upraktisk fordi RSA er tregt for store data — derfor brukes hybrid.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.5.1 — Sikker e-post</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q12 — WPA evolution -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 12</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8.8 · WiFi-sikkerhet</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket utsagn om WPA-utviklingen er <strong>korrekt</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> WEP er sikrere enn WPA fordi den er eldre og mer testet</li>
+        <li><span class="opt-label">B</span> WPA2 (basert på 802.11i) bruker AES-CCMP for kryptering og gir vesentlig sterkere sikkerhet enn WEP og WPA</li>
+        <li><span class="opt-label">C</span> WPA3 fjerner kravet til pre-shared key — alle nettverk er åpne uten passord</li>
+        <li><span class="opt-label">D</span> WPA2-standarden er identisk med WPA bortsett fra navnet</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>WEP (1997) var grunnleggende ødelagt — RC4 + svake initialiserings­vektorer. WPA (2003) fikset det meste midlertidig (TKIP). WPA2 (2004, 802.11i) introduserte AES-CCMP og er fortsatt utbredt. WPA3 (2018) la til SAE/Dragonfly-håndtrykk som motstår offline-ordbok­angrep og forward secrecy — men beholder PSK-konseptet i WPA3-Personal.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.8 — Sikre trådløse LAN</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q13 — RTP -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 13</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 9 · RTP</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken funksjon har <strong>tidsstempelet (timestamp)</strong> i en RTP-header?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Det forteller mottakeren <em>klokketiden</em> da pakken ble sendt</li>
+        <li><span class="opt-label">B</span> Det indikerer når media-prøven (audio sample, video frame) ble laget hos avsenderen — slik at mottaker kan spille av media på riktig tidspunkt og synke flere strømmer</li>
+        <li><span class="opt-label">C</span> Det er et sekvensnummer som identifiserer pakken</li>
+        <li><span class="opt-label">D</span> Det brukes til kryptografisk integritets­beskyttelse av pakken</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>RTP-timestamp har en media-spesifikk klokke (eks. 8 000 Hz for 8 kHz audio). Mottakers playout-buffer bruker timestamps til å reprodusere riktig timing til tross for jitter, og til å synke audio + video som har separate RTP-strømmer.</p>
+          <p>Felle: A sammenblander wall-clock og media-time. Sekvensnummer (C) er et eget felt i RTP-headeren.</p>
+          <p class="ref">Pensum: <a href="../kap9/innhold.html">Kap. 9.4.1 — RTP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q14 — TCP fast retransmit -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 14</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · TCP fast retransmit</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvorfor reagerer TCP på <strong>tre dupliserte ACK-er</strong> ved å gjenoverføre segmentet umiddelbart, i stedet for å vente på timeout?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Tre dup ACK-er er et sterkt tegn på at <em>én</em> spesifikk pakke er tapt mens senere pakker har kommet frem — derfor er rask gjenoverføring trygg</li>
+        <li><span class="opt-label">B</span> Tre dup ACK-er antyder at hele forbindelsen er nede, så TCP starter i slow start umiddelbart</li>
+        <li><span class="opt-label">C</span> Det er tilfeldig — bare en optimalisering uten teoretisk begrunnelse</li>
+        <li><span class="opt-label">D</span> Tre dup ACK-er signaliserer at mottakers buffer er full</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A</span>
+          <p>Hvis bare én pakke (sekvensnr X) gikk tapt og resten kom frem, vil mottakeren sende ACK X for hver påfølgende pakke (siden ACK er kumulativ — den siste i orden er fortsatt X−1 → ACK X). Tre slike duplikater → høyt sannsynlig tap. TCP gjenoverfører X umiddelbart (fast retransmit), halverer cwnd, og fortsetter i AIMD (fast recovery i Reno).</p>
+          <p>B er feil — det er hva timeout signaliserer.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3.7 — Fast retransmit</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+
+<!-- ==================== DEL II ==================== -->
+<section id="del2">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del II — Åpne oppgaver</h2>
+    <span class="del-points">5 oppgaver · 58 poeng totalt</span>
+  </div>
+  <p class="section-intro">Vekt på pensum-tema som har vært stille på eksamen — vis at du kan dem.</p>
+
+  <!-- Oppgave 1 — Cwnd-graf med fast retransmit + timeout -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 1</span>
+      <span class="exam-q__points">14 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · TCP cwnd</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En TCP Reno-forbindelse har følgende historikk for cwnd (i MSS) gjennom 20 RTT-runder:</p>
+      <ul>
+        <li>Runde 0: cwnd = 1, ssthresh = 16</li>
+        <li>Runde 0–4: dobler hver runde (slow start)</li>
+        <li>Runde 4: cwnd = 16; ssthresh nås. AIMD starter (lineær +1 per runde).</li>
+        <li>Runde 10: cwnd = 22. <strong>3 dup ACK</strong> inntreffer. ssthresh = 11; cwnd = 11; AIMD fortsetter.</li>
+        <li>Runde 16: cwnd = 17. <strong>Timeout</strong>. ssthresh = 8; cwnd = 1; slow start.</li>
+        <li>Runde 16–19: slow start dobler (1→2→4→8). Når ssthresh = 8 nås, AIMD starter.</li>
+      </ul>
+      <p class="q-text">a) Tegn (eller beskriv ledd for ledd) cwnd-grafen fra runde 0 til runde 20. (5p)</p>
+      <p class="q-text">b) Identifiser intervaller der TCP er i slow start, AIMD, og fast recovery. (4p)</p>
+      <p class="q-text">c) Forklar hvorfor reaksjonen på 3 dup ACK er <em>mindre</em> aggressiv (cwnd = ssthresh, ikke 1) enn reaksjonen på timeout (cwnd = 1). (3p)</p>
+      <p class="q-text">d) Hva er gjennomsnittlig cwnd over de 20 rundene? Hvilken intuitiv «sage-tooth»-form gir TCP Reno? (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) cwnd-tabell:</strong></p>
+          <table>
+            <thead><tr><th>Runde</th><th>cwnd</th><th>Hendelse</th></tr></thead>
+            <tbody>
+              <tr><td>0</td><td>1</td><td>Start, slow start</td></tr>
+              <tr><td>1</td><td>2</td><td>SS</td></tr>
+              <tr><td>2</td><td>4</td><td>SS</td></tr>
+              <tr><td>3</td><td>8</td><td>SS</td></tr>
+              <tr><td>4</td><td>16</td><td>Når ssthresh, skifter til AIMD</td></tr>
+              <tr><td>5–10</td><td>17–22</td><td>AIMD (+1 per runde)</td></tr>
+              <tr><td>10</td><td>22</td><td>3 dup ACK → ssthresh = 11, cwnd = 11</td></tr>
+              <tr><td>11–16</td><td>11–17</td><td>AIMD (fast recovery)</td></tr>
+              <tr><td>16</td><td>17</td><td>Timeout → ssthresh = 8, cwnd = 1</td></tr>
+              <tr><td>17</td><td>2</td><td>SS</td></tr>
+              <tr><td>18</td><td>4</td><td>SS</td></tr>
+              <tr><td>19</td><td>8</td><td>SS når ssthresh, AIMD</td></tr>
+              <tr><td>20</td><td>9</td><td>AIMD</td></tr>
+            </tbody>
+          </table>
+
+          <p><strong>b) Intervaller:</strong></p>
+          <ul>
+            <li><strong>Slow start:</strong> runde 0–4, og runde 16–19.</li>
+            <li><strong>AIMD (congestion avoidance):</strong> runde 4–10, og 11–16, og 19–20.</li>
+            <li><strong>Fast recovery:</strong> runde 10–11 (umiddelbart etter 3 dup ACK; cwnd halveres og AIMD fortsetter).</li>
+          </ul>
+
+          <p><strong>c) Hvorfor mindre aggressiv ved 3 dup ACK:</strong></p>
+          <p>3 dup ACK-er betyr at noen pakker fortsatt går igjennom — bare én er tapt. Forbindelsen er fortsatt levende. Halvering av cwnd (ikke reset til 1) holder ytelsen oppe.</p>
+          <p>Timeout antyder at <em>hele</em> forbindelsen kan ha brutt sammen (ingen ACK-er kommer i det hele tatt). Da er det tryggere å starte forsiktig fra cwnd = 1 og finne nettverkets nye kapasitet på nytt.</p>
+
+          <p><strong>d) Sage-tooth:</strong></p>
+          <p>Sum av cwnd over alle 21 rundene (0–20) ≈ 1+2+4+8+16+17+18+19+20+21+22+11+12+13+14+15+16+17+1+2+4+8+9 = ca. 270. Snitt ≈ 12,9 MSS.</p>
+          <p>Sage-tooth: cwnd vokser lineært, blir kuttet ned, vokser igjen. Mønsteret er typisk for AIMD og er grunnen til at TCP holder seg «rettferdig» med andre TCP-strømmer.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3.7 — TCP Reno</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 2 — SR vs GBN scenario -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 2</span>
+      <span class="exam-q__points">12 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · Reliable transfer</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Avsender sender 6 pakker med sekvensnumre 0, 1, 2, 3, 4, 5 — i den rekkefølgen. <strong>Pakke 2</strong> går tapt. Vinduet er av størrelse 4.</p>
+      <p class="q-text">a) Beskriv hva som skjer ved <strong>Go-Back-N</strong>: hva sender mottakeren, og hva må avsenderen gjøre? (5p)</p>
+      <p class="q-text">b) Beskriv hva som skjer ved <strong>Selective Repeat</strong>: hva sender mottakeren, og hva må avsenderen gjøre? (5p)</p>
+      <p class="q-text">c) Hvilken er mer effektiv ved enkelt-pakke-tap, og hva er prisen for det? (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Go-Back-N:</strong></p>
+          <p>Mottakeren har kumulative ACK-er. Etter 0 og 1: ACK 1. Pakke 2 tapt. Pakker 3, 4, 5 ankommer ut av orden — mottakeren forkaster alle og sender ACK 1 tre ganger til (duplikat-ACK).</p>
+          <p>Avsender venter på timeout for pakke 2 (eller fast retransmit ved 3 dup ACK). Når den oppstår, gjen­overfører avsender <em>alle</em> ubekreftede pakker fra og med 2: altså 2, 3, 4, 5.</p>
+          <p>Bortkastet bånd­bredde: 3 og 4 og 5 sendes på nytt selv om de allerede har kommet frem.</p>
+
+          <p><strong>b) Selective Repeat:</strong></p>
+          <p>Mottakeren ACK-er hver pakke individuelt. Etter 0, 1, 3, 4, 5 ankommer: ACK 0, ACK 1, ACK 3, ACK 4, ACK 5. Mottakeren bufrer 3, 4, 5 i mottaks­vinduet (de er innenfor vinduet — antar SR med vindu 4).</p>
+          <p>Avsender ser at ACK 2 mangler. Etter timeout for pakke 2 alene: gjen­overfør <em>kun</em> pakke 2.</p>
+          <p>Mottaker mottar pakke 2, leverer 2, 3, 4, 5 til applikasjonen i orden, og sender ACK 2.</p>
+
+          <p><strong>c) Effektivitet og pris:</strong></p>
+          <p>SR er mer effektiv: bare den tapte pakken sendes på nytt. Prisen er kompleksitet — mottakers buffer må kunne holde ut-av-orden-pakker innen vinduet, og mottaker må kunne ACK individuelt. GBN holder mottaker enkel (tilstandsløs i praksis), men sløser bånd­bredde ved tap.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3.4 — Reliable data transfer</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 3 — IPv4 fragmentering konkret -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 3</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · IP-fragmentering</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Et IP-datagram på <strong>3 700 byte</strong> (inkludert 20-byte header) skal sendes over en lenke med <strong>MTU = 1 200 byte</strong>. ID-feltet er 0xABCD.</p>
+      <p class="q-text">a) Hvor mange fragmenter blir det? Hva er total length og payload-størrelse for hvert? (4p)</p>
+      <p class="q-text">b) Hva er Fragment Offset (i 8-byte-enheter) og MF-flag for hvert fragment? (4p)</p>
+      <p class="q-text">c) Hvis fragment 2 går tapt, hva skjer hos mottakeren etter en stund? (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Antall fragmenter:</strong></p>
+          <p>Hvert fragment har 20-byte IP-header. Maks payload per fragment = MTU − 20 = 1 180 byte. Men payload må være delelig med 8 (fragment offset er i 8-byte-enheter): 1 180 / 8 = 147,5 — runder ned til 1 176 byte payload (147 × 8).</p>
+          <p>Original payload = 3 700 − 20 = 3 680 byte.</p>
+          <p>3 680 / 1 176 ≈ 3,12 → trenger <strong>4 fragmenter</strong>:</p>
+          <ul>
+            <li>Fragment 1: total = 1 196 byte (20 header + 1 176 payload)</li>
+            <li>Fragment 2: total = 1 196 byte</li>
+            <li>Fragment 3: total = 1 196 byte</li>
+            <li>Fragment 4: total = 172 byte (20 header + 152 payload). 1 176 × 3 = 3 528, gjenstår 3 680 − 3 528 = 152 byte.</li>
+          </ul>
+
+          <p><strong>b) Offset og MF:</strong></p>
+          <table>
+            <thead><tr><th>Fragment</th><th>Offset (8-byte-enheter)</th><th>MF</th><th>ID</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>0</td><td>1</td><td>0xABCD</td></tr>
+              <tr><td>2</td><td>147 (1 176/8)</td><td>1</td><td>0xABCD</td></tr>
+              <tr><td>3</td><td>294 (2 352/8)</td><td>1</td><td>0xABCD</td></tr>
+              <tr><td>4</td><td>441 (3 528/8)</td><td>0</td><td>0xABCD</td></tr>
+            </tbody>
+          </table>
+
+          <p><strong>c) Hvis fragment 2 tapes:</strong></p>
+          <p>Mottakeren kan ikke reassemblere det fullstendige datagrammet — det starter en reassembly-timer. Når timeren utløper (typisk 60 sekunder), blir alle fragmentene kastet, og mottakeren sender ICMP «Time Exceeded — Fragment Reassembly Time Exceeded» (type 11, code 1) tilbake til avsender.</p>
+          <p>IP gjenoverfører <em>ikke</em> selv. Det er TCP/applikasjonens ansvar å oppdage og handle.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4.3 — IP-fragmentering</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 4 — TLS handshake -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 4</span>
+      <span class="exam-q__points">12 poeng</span>
+      <span class="exam-q__topic">Kap. 8.6 · TLS</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) Beskriv stegene i en TLS 1.2-handshaking på et høyt nivå. Hvilke meldinger sendes hver vei? (6p)</p>
+      <p class="q-text">b) Hvorfor signerer CA-en sertifikatet med <em>sin</em> private nøkkel, og hva sjekker klienten for å verifisere det? (3p)</p>
+      <p class="q-text">c) Hva er forskjellen på TLS 1.2 og TLS 1.3 i RTT-kostnad ved oppsett, og hvorfor? (3p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) TLS 1.2-handshake (på høyt nivå):</strong></p>
+          <ol>
+            <li><strong>ClientHello (klient → server):</strong> klient-tilfeldig nonce, støttede chiffer­suiter, TLS-versjon.</li>
+            <li><strong>ServerHello (server → klient):</strong> server-tilfeldig nonce, valgt chiffersuit, valgt TLS-versjon.</li>
+            <li><strong>Certificate (server → klient):</strong> server sender sin sertifikat-kjede (signert av CA).</li>
+            <li><strong>ServerHelloDone (server → klient).</strong></li>
+            <li><strong>ClientKeyExchange (klient → server):</strong> klient genererer pre-master secret, krypterer med serverens offentlige nøkkel (RSA), eller bidrar med Diffie-Hellman-data.</li>
+            <li><strong>ChangeCipherSpec + Finished (klient → server):</strong> begge sider beregner master secret + sesjons­nøkler fra de tilfeldige nonsene + pre-master.</li>
+            <li><strong>ChangeCipherSpec + Finished (server → klient):</strong> bekrefter.</li>
+          </ol>
+          <p>Total: 2 RTT før første applikasjons­data kan sendes.</p>
+
+          <p><strong>b) Hvorfor signerer CA-en:</strong></p>
+          <p>Sertifikatet inneholder serverens offentlige nøkkel, identitet (DNS-navn, organisasjon), gyldighets­periode. CA-en signerer hele bunten med <em>sin</em> private nøkkel. Klienten har CA-ens offentlige nøkkel forhåndsinstallert (i nettlesernes / OS-ets root store) og verifiserer signaturen — hvis riktig, vet klienten at sertifikatet er ekte og at navnet hører til den offentlige nøkkelen.</p>
+          <p>Klienten sjekker også: navn-match med URL, gyldighets­periode, sertifikatet er ikke revokert (CRL/OCSP).</p>
+
+          <p><strong>c) TLS 1.2 vs TLS 1.3:</strong></p>
+          <p>TLS 1.2: 2 RTT for full handshake. TLS 1.3: <strong>1 RTT</strong> for full handshake — klienten sender sin nøkkel-share i ClientHello (anslår hvilken DH-gruppe serveren støtter), og servern svarer med sin share + sertifikat + Finished i én runde. Klienten sender Finished + første applikasjons­data på neste melding.</p>
+          <p>Pluss TLS 1.3 0-RTT (resumption): kan sende applikasjons­data direkte med PSK fra forrige sesjon — null RTT-forsinkelse, men har replay-svakheter for non-idempotente operasjoner.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.6 — TLS</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 5 — ICMP og traceroute -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 5</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 5.6 · ICMP</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) Forklar tre <em>distinkte</em> ICMP-meldinger og når de utløses. (4p)</p>
+      <p class="q-text">b) Beskriv hvordan <code>traceroute</code> bruker TTL og ICMP til å kartlegge stien fra A til B. Hvorfor får vi typisk to typer ICMP-respons under én traceroute-kjøring? (4p)</p>
+      <p class="q-text">c) En noter at ICMP-pakker «bæres direkte i IP» — hva betyr det, og hvorfor er ikke ICMP en transportprotokoll? (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Tre ICMP-meldinger:</strong></p>
+          <ul>
+            <li><strong>Echo Request / Reply (type 8 / 0):</strong> brukes av <code>ping</code>. Klienten sender Echo Request, mottakeren svarer Echo Reply. Måler RTT og verifiserer at hosten er nåbar.</li>
+            <li><strong>Time Exceeded (type 11):</strong> sendes av en ruter når TTL i et IP-datagram når 0. Brukes av <code>traceroute</code>.</li>
+            <li><strong>Destination Unreachable (type 3):</strong> sendes når en ruter eller endenoden ikke kan levere pakken (network unreachable, host unreachable, port unreachable, fragment reassembly time exceeded).</li>
+          </ul>
+
+          <p><strong>b) Traceroute-mekanikk:</strong></p>
+          <p>Traceroute sender pakker med TTL = 1, 2, 3, ... Hver gang TTL = N, kommer pakken til ruter N + 1 (relativ til kilden), TTL går til 0, ruteren kaster pakken og sender ICMP <strong>Time Exceeded</strong> tilbake. Kilde-IP i den ICMP-meldingen avslører ruterens IP. Slik kartlegges stien hopp for hopp.</p>
+          <p>Når pakken endelig når <em>destinasjonen</em>, vil destinasjonen ikke gi Time Exceeded (TTL var stor nok). I klassisk traceroute (UDP-basert) sendes pakkene til en høy UDP-port der ingen lytter — destinasjonen svarer <strong>ICMP Destination Unreachable, code 3 (Port Unreachable)</strong>. Dette signaliserer slutten på sti-traversen.</p>
+          <p>(Windows-tracert bruker ICMP Echo Request i stedet — der kommer Echo Reply tilbake fra destinasjonen i stedet.)</p>
+
+          <p><strong>c) ICMP og IP:</strong></p>
+          <p>ICMP-meldinger pakkes direkte inn i IP-datagrammer (protokoll-felt = 1) — ingen TCP eller UDP-header mellom. ICMP regnes som en del av <em>nettverkslaget</em> selv om det ligger over IP, fordi det fyller kontroll- og diagnose-rollen for IP. Ingen porter, ingen pålitelighet, ingen forbindelse — derfor er det ikke en transportprotokoll.</p>
+          <p class="ref">Pensum: <a href="../kap5/innhold.html">Kap. 5.6 — ICMP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Vår 2026 · Prediksjon 7 av 7</p>
+    <p style="margin-top: 12px; font-size: 14px;"><a href="../eksamen-prep/">&larr; Tilbake til prediksjons­analysen</a></p>
+  </div>
+</footer>
+<script src="../chat-widget.js"></script>
+<script src="../nav-search.js"></script>
+<script src="exam-quiz.js" defer></script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>
