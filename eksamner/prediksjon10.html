@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prediksjon 10 — «Det lange regneverket II — lenke, trådløst, multimedia» — TTM4100</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Alle eksamener</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
+  </div>
+</nav>
+
+<main data-chapter="Prediksjon 10 — Det lange regneverket II">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Eksamensprediksjon 10 av 11 · våren 2026</div>
+  <h1>Prediksjon <em>10</em> — «Det lange regneverket II — lenke, trådløst, multimedia»</h1>
+  <p class="lede">P8 dekket transport- og applikasjons­regnestykker i dybden. <strong>Dette er fortsettelsen</strong> som tar lenkelag, trådløst og multimedia i tilsvarende dybde — temaer som ofte gir <em>kortere men tett-pakkede</em> oppgaver med gitt tidslinje, hørevidde-kart eller jitter-tabell. Hver oppgave krever at du tegner et lite scenario før du svarer. Mestre disse, og du har dekket den «andre halvparten» av regnestykker som har dukket opp på eksamen — CSMA-tidslinjer, ALOHA-effektivitet, 4-noder-wireless, 2D-paritet, playout-buffer, FIFO-kø.</p>
+
+  <div class="learn-box">
+    <span class="label">Strategi for dette settet</span>
+    <ul>
+      <li><strong>Tegn først, regn etterpå.</strong> En CSMA-tidslinje på papir sparer minutter — uten den taper du oversikt. Bruk én linje per node, marker prop og overførings­tid med ulik tegning.</li>
+      <li><strong>Husk konstanter:</strong> Pure ALOHA effektivitet ≈ <code>1/(2e) ≈ 0,18</code>. Slotted ALOHA ≈ <code>1/e ≈ 0,37</code>. CSMA/CD-prop = 0,2 i klassiske eksempler. Playout-buffer = avspillingstid − planlagt ankomst.</li>
+      <li><strong>4-noder-wireless (A-B-C-D på linje):</strong> husk de fire klassiske svarene (0,5 / 2 / 1 / 1 — siste med ACK). Tegn hørevidde-kartet før du svarer.</li>
+      <li><strong>SNR/BER/modulasjon:</strong> for fast modulasjon — høyere SNR ⇒ lavere BER. For fast SNR — høyere bitrate-modulasjon ⇒ høyere BER. Adaptiv modulasjon brukes i <em>WiFi, 4G og 5G</em>.</li>
+    </ul>
+  </div>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">I</span><a href="#del1">Del I — Flervalg + sant/usant (47p)</a></li>
+    <li><span class="toc-num">II</span><a href="#del2">Del II — Åpne oppgaver (53p)</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ==================== DEL I ==================== -->
+<section id="del1">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del I — Automatisk rettede spørsmål</h2>
+    <span class="del-points">14 flervalg (3p) + 1 sant/usant-blokk (5p) · 47 poeng</span>
+  </div>
+  <p class="section-intro">Hver oppgave krever et lite tankesteg. Tegn et scenario hvis du står fast — det er det som skiller en sliten eksamenshjerne fra en presis en.</p>
+
+  <!-- Q1 — Multiple access klassifisering -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 1</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6 · Multiple access</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken kombinasjon klassifiserer protokollene <em>korrekt</em>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> CSMA/CD = kanalpartisjonering, TDM = tilfeldig tilgang, Bluetooth (polling) = taking turns</li>
+        <li><span class="opt-label">B</span> TDM = kanalpartisjonering, CSMA/CA = tilfeldig tilgang, Token Ring = taking turns</li>
+        <li><span class="opt-label">C</span> Slotted ALOHA = taking turns, FDM = tilfeldig tilgang, CSMA/CD = kanalpartisjonering</li>
+        <li><span class="opt-label">D</span> CDMA = tilfeldig tilgang, Pure ALOHA = kanalpartisjonering, FDDI = taking turns</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>De tre klassiske multiple-access-klassene:</p>
+          <ul>
+            <li><strong>Kanalpartisjonering:</strong> TDM (tid), FDM (frekvens), CDMA (kode). Ressurs deles fast/eksklusivt.</li>
+            <li><strong>Tilfeldig tilgang:</strong> Pure ALOHA, Slotted ALOHA, CSMA, CSMA/CD (Ethernet), CSMA/CA (WiFi). Hver node tar sjansen og håndterer kollisjon i etterkant.</li>
+            <li><strong>Taking turns:</strong> polling (Bluetooth), token passing (Token Ring, FDDI). Eksplisitt tur-tildeling.</li>
+          </ul>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6.3 — Multiple-access-protokoller</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q2 — Pure vs slotted ALOHA effektivitet -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 2</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6 · ALOHA</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er omtrent forholdet mellom maks effektivitet i <strong>slotted ALOHA</strong> og <strong>pure ALOHA</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 1:1 — de er like effektive</li>
+        <li><span class="opt-label">B</span> 2:1 — slotted dobler effektiviteten (≈ 37 % vs ≈ 18 %)</li>
+        <li><span class="opt-label">C</span> 1:2 — pure er bedre fordi den ikke krever synkronisering</li>
+        <li><span class="opt-label">D</span> 4:1 — slotted firdobler effektiviteten</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B — 2:1</span>
+          <p>Slotted ALOHA: maks effektivitet = <code>1/e ≈ 0,368</code>. Pure ALOHA: maks effektivitet = <code>1/(2e) ≈ 0,184</code>. Forholdet er nøyaktig 2.</p>
+          <p>Intuisjon: i pure kan en pakke kollidere både med pakker som starter <em>før</em> den (i et halvt vindu før) og <em>etter</em> den (i et halvt vindu etter). Det dobler kollisjons­vinduet. Slotted krever synkroniserte slot-grenser, men halverer kollisjons­vinduet.</p>
+          <p>Felle: C er feil — synkroniseringen er prisen, ikke en svakhet.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6.3.2 — ALOHA</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q3 — 4-noder C→A -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 3</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 7 · Trådløse noder</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Fire trådløse noder A–B–C–D ligger på linje. Når A sender hører bare B; når B sender hører A og C; når C sender hører B og D; når D sender hører bare C. Tid er slottet. Hva er maks rate fra <strong>C til A</strong> (uten andre flows)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 0,25 melding/slot</li>
+        <li><span class="opt-label">B</span> 0,5 melding/slot</li>
+        <li><span class="opt-label">C</span> 1 melding/slot</li>
+        <li><span class="opt-label">D</span> 2 meldinger/slot</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B — 0,5 melding/slot</span>
+          <p>A er ikke i C's hørevidde. Pakken må relayes via B: slot 1 = C→B, slot 2 = B→A. Så det kreves 2 slot per melding.</p>
+          <p>Rate = 1/2 = <strong>0,5 melding/slot</strong>.</p>
+          <p>Felle: D er det vi får ved A→B og D→C parallelt — to <em>separate</em> flows.</p>
+          <p class="ref">Pensum: <a href="../kap7/innhold.html">Kap. 7 — Trådløse noder</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q4 — 4-noder A→B og D→C -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 4</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 7 · Trådløse noder</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Samme oppsett. Hva er kombinert maks rate når <strong>A→B og D→C</strong> sender samtidig?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 0,5 melding/slot</li>
+        <li><span class="opt-label">B</span> 1 melding/slot</li>
+        <li><span class="opt-label">C</span> 1,5 meldinger/slot</li>
+        <li><span class="opt-label">D</span> 2 meldinger/slot</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: D — 2 meldinger/slot</span>
+          <p>A sender → bare B hører. D sender → bare C hører. B er <em>ikke</em> i D's hørevidde, og C er <em>ikke</em> i A's hørevidde. Ingen interferens.</p>
+          <p>Begge sendinger lykkes hver slot → <strong>2 meldinger/slot</strong>.</p>
+          <p>Til kontrast: A→B og C→D ville gitt bare 1 (B hører C, så C kan ikke sende mens A sender til B uten å forstyrre). Hvor «midten» er.</p>
+          <p class="ref">Pensum: <a href="../kap7/innhold.html">Kap. 7 — Trådløse noder, parallell kapasitet</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q5 — RTS/CTS -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 5</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 7 · RTS/CTS</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er hovedfunksjonen til <strong>RTS/CTS</strong> i 802.11?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Å kryptere data­rammen før sending</li>
+        <li><span class="opt-label">B</span> Å løse <em>skjult terminal</em>-problemet ved å reservere kanalen og få nabo-noder til å være stille</li>
+        <li><span class="opt-label">C</span> Å erstatte ACK-mekanismen i WiFi</li>
+        <li><span class="opt-label">D</span> Å forhandle frem en ny rate basert på SNR</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Skjult terminal: A og C er begge i B's hørevidde, men ikke i hverandres. A vil sende til B, og C vil samtidig sende til B → kollisjon ved B, men A og C kan ikke detektere at de kolliderer.</p>
+          <p>RTS/CTS-løsningen: A sender en kort RTS («request to send») til B. B svarer med CTS («clear to send»). C hører CTS-en (siden C er innen B's hørevidde) og holder seg stille i den annonserte tiden. Nå kan A sende uten kollisjon ved B.</p>
+          <p>RTS/CTS er valgfritt og brukes typisk bare for store rammer.</p>
+          <p class="ref">Pensum: <a href="../kap7/innhold.html">Kap. 7.3.2 — Skjult terminal og RTS/CTS</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q6 — 2D-paritet -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 6</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6 · 2D-paritet</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva er <strong>korrekt</strong> om 2D-paritet (jevn paritet)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Den kan detektere men <em>ikke</em> korrigere enkelt­bits-feil</li>
+        <li><span class="opt-label">B</span> Den kan detektere <em>og</em> korrigere enkelt­bits-feil; den kan også detektere mange (ikke alle) 2-bits-feil</li>
+        <li><span class="opt-label">C</span> Den kan korrigere alle 2-bits-feil</li>
+        <li><span class="opt-label">D</span> Den krever Hamming-koder for å fungere</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>2D-paritet legger en paritets­bit på hver rad og hver kolonne i en bits-matrise. En enkelt­bits-feil får én rad og én kolonne til å vise feil paritet — krysset peker direkte på feil-biten, som kan flippes.</p>
+          <p>2-bits-feil: detekterbar hvis de to feilene ligger i forskjellig rad <em>og</em> forskjellig kolonne (4 paritets­brudd). Hvis de ligger i samme rad — to brudd i kolonne­paritet, ingen i rad­paritet → kan ikke alltid skille fra 2 feil i kolonner. Korrigering ikke garantert.</p>
+          <p>Felle: C er for sterk; D er feil — 2D-paritet er <em>en form for</em> blokk-kode, ikke avhengig av Hamming.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6.2.1 — 2D-paritet</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q7 — SNR/BER/modulasjon -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 7</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 7 · SNR/BER</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket utsagn om SNR, BER og modulasjon i trådløse nett er <strong>korrekt</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> For en gitt modulasjon: høyere SNR gir høyere BER.</li>
+        <li><span class="opt-label">B</span> For en gitt SNR: en modulasjon med høyere bitrate gir lavere BER.</li>
+        <li><span class="opt-label">C</span> For en gitt SNR: en modulasjon med høyere bitrate gir høyere BER. Adaptiv modulasjon og koding brukes i WiFi, 4G og 5G.</li>
+        <li><span class="opt-label">D</span> SNR har ingen effekt på BER — bare modulasjonen avgjør.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C</span>
+          <p>Mer informasjon per symbol (høyere bitrate) krever finere skille mellom symbol-nivåer i konstellasjons­diagrammet. Ved fast SNR blir det vanskeligere å skille — flere bit-feil. For fast modulasjon: høyere SNR ⇒ lettere å skille ⇒ lavere BER.</p>
+          <p>Adaptiv modulasjon og koding (AMC) er en standard moderne mekanisme: når SNR er høy, bruk høyere modulasjon (mer throughput). Når SNR er lav, gå ned til mer robust modulasjon. Brukes i WiFi (rate adaptation), LTE (4G) og 5G.</p>
+          <p class="ref">Pensum: <a href="../kap7/innhold.html">Kap. 7.2 — Trådløse lenker</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q8 — 4G/5G -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 8</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 7 · 4G/5G</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken kombinasjon av utsagn om <strong>4G og 5G</strong> er <em>alle</em> korrekte?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 5G er fysisk-lag-kompatibel med 4G; begge gir mobilitet; bare 5G har kontroll/bruker-plan-separasjon</li>
+        <li><span class="opt-label">B</span> 5G gir høyere peak-bitrate enn 4G; 5G fysisk lag er <em>ikke</em> kompatibel med 4G; begge støtter mobilitet; <em>begge</em> kjernenett har kontroll/bruker-plan-separasjon</li>
+        <li><span class="opt-label">C</span> 4G og 5G er identiske bortsett fra navnet</li>
+        <li><span class="opt-label">D</span> Bare 4G støtter mobilitet; 5G er kun for fast tilgang</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>5G NR (New Radio) bruker høyere frekvenser, OFDMA med fleksibel sub-carrier-bredde, og massive MIMO — gir typisk 1–10 Gbps peak (mot 4G LTE som peaker rundt 100 Mbps – 1 Gbps avhengig av versjon). 5G fysisk lag deler ikke radio-rammen med 4G — derfor ikke fysisk-lag-kompatibel.</p>
+          <p>Begge støtter sømløs mobilitet. Begge har kontroll-/brukerplan-separasjon i kjernenettet (4G EPC og 5G core); det er en arkitektonisk evolusjon som startet i 4G.</p>
+          <p class="ref">Pensum: <a href="../kap7/innhold.html">Kap. 7.4 — Mobilnett</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q9 — Switch self-learning -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 9</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6 · Switch</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En lenkelags-svitsj mottar en ramme på port 3 med kilde-MAC <code>aa:11</code> og dest-MAC <code>bb:22</code>. Switch-tabellen er tom. Hva gjør svitsjen?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Forkaster rammen — ukjent destinasjon</li>
+        <li><span class="opt-label">B</span> Lærer at <code>aa:11</code> er på port 3, og <strong>flooder</strong> rammen ut på alle andre porter (siden bb:22 er ukjent)</li>
+        <li><span class="opt-label">C</span> Sender ramme tilbake ut samme port for å «teste» linja</li>
+        <li><span class="opt-label">D</span> Sender en ARP-request for <code>bb:22</code></li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Selvlærende switch: hver innkommende ramme oppdaterer tabellen med (kilde-MAC, port). Hvis dest-MAC er ukjent — flood på alle porter unntatt den rammen kom inn på. Når en ramme senere kommer fra <code>bb:22</code>, lærer svitsjen <code>bb:22</code>'s port og kan slutte å floode.</p>
+          <p>Felle: D er feil — svitsjen ber <em>aldri</em> om ARP. ARP-spørring kommer fra hosten som vil sende, ikke fra svitsjen. Svitsjen er transparent og har ikke selv en MAC-adresse for vanlig forwarding.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6.4.3 — Lenkelag-svitsjer</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q10 — Infrastructure vs ad hoc -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 10</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 7 · 802.11-topologi</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hva skiller en <strong>802.11 infrastructure-modus</strong> fra <strong>ad hoc-modus</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Infrastructure bruker en <em>access point (AP)</em> som koordinerer all trafikk og typisk gir DHCP/DNS/ruting-tjenester. Ad hoc har ingen AP — hostene snakker direkte og må selv ta hånd om disse tjenestene.</li>
+        <li><span class="opt-label">B</span> Ad hoc er sikrere fordi det ikke har basestasjon</li>
+        <li><span class="opt-label">C</span> Infrastructure støtter ikke flere klienter samtidig</li>
+        <li><span class="opt-label">D</span> Ad hoc krever Bluetooth som underliggende teknologi</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A</span>
+          <p>Infrastructure: alle klienter assosierer seg med én AP. APen er gateway til kabel-LAN og kan kjøre DHCP-server og bridge til Internett. Standard for hjem/kontor-WiFi.</p>
+          <p>Ad hoc (IBSS — Independent Basic Service Set): peer-to-peer mellom klienter. Brukes ved direkte-overføring (eks. AirDrop-stil), katastrofe­scenarier, eller mesh-nett. Klientene må selv kjøre ev. ruting og IP-tildeling.</p>
+          <p class="ref">Pensum: <a href="../kap7/innhold.html">Kap. 7.3 — 802.11-arkitektur</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q11 — Playout buffer scenario -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 11</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 9 · Playout-buffer</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Servern sender blokk i på tid <code>t<sub>0</sub> + iΔ</code>. Klienten starter avspilling på tid <code>t<sub>1</sub> + Δ</code> (1 Δ buffer). Blokk i ankommer klienten på tid <code>t<sub>1</sub> + iΔ + j<sub>i</sub></code>, der jitter <code>j<sub>i</sub></code> for blokkene 1–6 er hhv. (i tids­enheter Δ): 0, 0,5, 2, 0,3, 1,2, 0,8. Hvilke blokker rekker frem i tide?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Bare blokk 1</li>
+        <li><span class="opt-label">B</span> Blokkene 1, 2, 4, 6</li>
+        <li><span class="opt-label">C</span> Blokkene 1, 2, 4 og 6 (alle med j ≤ 1Δ)</li>
+        <li><span class="opt-label">D</span> Alle 6 blokker</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — Blokkene 1, 2, 4 og 6 (note: dette er samme svar som B)</span>
+          <p>Avspillingstid for blokk i = <code>t<sub>1</sub> + Δ + (i−1)Δ = t<sub>1</sub> + iΔ</code>. Forventet ankomst = <code>t<sub>1</sub> + iΔ + j<sub>i</sub></code>. En blokk rekker frem hvis ankomst ≤ avspilling, dvs. j<sub>i</sub> ≤ 1Δ (faktisk 0; men siden buffer er <em>1Δ</em>, faktisk ankomsten er forskjøvet med samme 1Δ buffer-forsinkelse — la oss sette opp på nytt).</p>
+          <p>Egentlig: avspillings-deadline = <code>t<sub>1</sub> + Δ + (i−1)·Δ</code>. Ankomst = <code>t<sub>1</sub> + (i−1)·Δ + j<sub>i</sub></code> (siden første blokk ankommer på t<sub>1</sub>, ikke på t<sub>1</sub>+Δ). Buffer = avspilling − ankomst = <strong>Δ</strong>.</p>
+          <ul>
+            <li>Blokk 1: j=0 ≤ Δ ✓</li>
+            <li>Blokk 2: j=0,5Δ ≤ Δ ✓</li>
+            <li>Blokk 3: j=2Δ &gt; Δ ✗</li>
+            <li>Blokk 4: j=0,3Δ ≤ Δ ✓</li>
+            <li>Blokk 5: j=1,2Δ &gt; Δ ✗</li>
+            <li>Blokk 6: j=0,8Δ ≤ Δ ✓</li>
+          </ul>
+          <p>Rekker frem: 1, 2, 4, 6. Svaret er C (= B i innholdet).</p>
+          <p class="ref">Pensum: <a href="../kap9/innhold.html">Kap. 9.3.1 — Playout-buffer</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q12 — HTTP vs UDP streaming -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 12</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 9 · Streaming</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvorfor er <strong>HTTP-streaming</strong> oftere brukt enn ren <strong>UDP-streaming</strong> for video til sluttbrukere?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> HTTP gir lavere latens enn UDP</li>
+        <li><span class="opt-label">B</span> Brannmurer og NAT-er er ofte konfigurert til å blokkere det meste av UDP-trafikk men slippe gjennom HTTP — pluss HTTP gir pålitelighet via TCP og lar avspilleren bruke vanlig CDN-infrastruktur</li>
+        <li><span class="opt-label">C</span> UDP-streaming er ulovlig i de fleste land</li>
+        <li><span class="opt-label">D</span> HTTP-streaming gjør sanntids­video (toveis interaktivt) lettere</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>De praktiske grunnene: (i) brannmur og NAT-vennlighet — HTTP/HTTPS er nesten alltid tillatt; UDP blir ofte droppet eller har vanskelig NAT-traversal; (ii) gjenbruk av CDN-infrastruktur som er bygget for HTTP; (iii) pålitelig levering av video-segmenter via TCP, slik at klienten kan stole på at hver chunk er komplett.</p>
+          <p>Felle: A er feil — UDP gir <em>lavere</em> latens (ingen ACK, ingen retransmisjon). For toveis sanntid (videokonferanse) brukes UDP/RTP nettopp av denne grunnen. Men for én-veis streaming dominerer HTTP-basert (DASH, HLS).</p>
+          <p class="ref">Pensum: <a href="../kap9/innhold.html">Kap. 9.2 — Streaming-arkitekturer</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q13 — FIFO kø -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 13</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · FIFO-kø</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En output-port behandler én pakke per slot (FIFO). Pakker ankommer (ankomstslot, pakkenummer): (1, P1), (1, P2), (2, P3), (4, P4), (4, P5), (4, P6). Hva er køforsinkelsen for <strong>P5</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 0 slot</li>
+        <li><span class="opt-label">B</span> 1 slot</li>
+        <li><span class="opt-label">C</span> 2 slot</li>
+        <li><span class="opt-label">D</span> 3 slot</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B — 1 slot</span>
+          <p>Service-tidslinje: P1 sendes i slot 1, P2 i slot 2, P3 i slot 3 (kom slot 2, kø 1 slot). Slot 4 er ledig så P4 sendes umiddelbart i slot 4 (ankom slot 4 — ingen kø). Men P5 ankom også slot 4, må vente til P4 er ferdig — sendes i slot 5. <strong>Køforsinkelse for P5 = 5 − 4 = 1 slot</strong>.</p>
+          <p>Hvis du beregnet for P6: ankom slot 4, sendes i slot 6 → kø = 2 slot. (Distraktor C.)</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4.2 — FIFO-køforsinkelse</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q14 — Hvorfor ikke CSMA/CD i WiFi -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 14</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 7 · WiFi MAC</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvorfor bruker 802.11 (WiFi) <strong>CSMA/CA</strong> i stedet for CSMA/CD som i kabel-Ethernet?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> CSMA/CA er enklere å implementere</li>
+        <li><span class="opt-label">B</span> Det skyldes (i) signal-asymmetri — mottatt signal er typisk mye svakere enn sendt, så det er kostbart å detektere kollisjon mens man sender; (ii) skjult terminal og fading betyr at en kollisjon ved mottakeren ikke nødvendigvis kan oppdages av senderne selv</li>
+        <li><span class="opt-label">C</span> CSMA/CD er ikke tillatt i lisensiert frekvensbånd</li>
+        <li><span class="opt-label">D</span> CSMA/CD krever en sentral kontrollenhet (AP) — og WiFi har ofte ikke det</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Punkt (i): radio-front-end har stor dynamisk rekkevidde. Et eget signal som sendes maskerer evt. svakt mottatt kollisjons­signal. Detekterings­elektronikk på begge frekvenser samtidig er dyrt.</p>
+          <p>Punkt (ii): selv om vi kunne lytte mens vi sendte, er det <em>kollisjon ved mottakeren</em> som teller. To skjulte sendere kan ikke høre hverandre, men kollidere ved den felles mottakeren. CSMA/CD ved senderen ville ikke fanget dette opp uansett.</p>
+          <p>Resultat: WiFi bruker CSMA/CA + eksplisitt ACK + valgfri RTS/CTS. Hvis ACK uteblir, retransmiterer senderen.</p>
+          <p class="ref">Pensum: <a href="../kap7/innhold.html">Kap. 7.3.1 — Hvorfor CSMA/CA</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q15 — Sant/Usant-blokk -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 15</span>
+      <span class="exam-q__points">5 poeng</span>
+      <span class="exam-q__topic">Kap. 6–9 · Pensum</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Avgjør om hver påstand er <strong>sann</strong> eller <strong>usann</strong>. 1 poeng per riktig svar.</p>
+      <ul class="exam-q__tf">
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-p10-s1-label">
+            <div class="exam-q__tf-legend" id="tf-p10-s1-label"><span class="tf-num">1.</span> En lenkelag-svitsj har en egen IP-adresse som brukes ved videresending av rammer.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p10-s1" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p10-s1" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-p10-s2-label">
+            <div class="exam-q__tf-legend" id="tf-p10-s2-label"><span class="tf-num">2.</span> Adaptiv modulasjon og koding (AMC) brukes både i WiFi, 4G og 5G.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p10-s2" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p10-s2" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-p10-s3-label">
+            <div class="exam-q__tf-legend" id="tf-p10-s3-label"><span class="tf-num">3.</span> CSMA/CD brukes i 802.11 (WiFi) sammen med eksplisitt ACK.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p10-s3" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p10-s3" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-p10-s4-label">
+            <div class="exam-q__tf-legend" id="tf-p10-s4-label"><span class="tf-num">4.</span> Pure ALOHA har omtrent dobbelt så høy maks-effektivitet som slotted ALOHA.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p10-s4" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p10-s4" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="exam-q__tf-field" role="radiogroup" aria-labelledby="tf-p10-s5-label">
+            <div class="exam-q__tf-legend" id="tf-p10-s5-label"><span class="tf-num">5.</span> Playout-buffer på klienten gjør at jitter under buffer-størrelsen tolereres uten at avspillingen stopper.</div>
+            <div class="exam-q__tf-choices" role="presentation">
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p10-s5" value="true"> Sant</label>
+              <label class="exam-q__tf-label"><input type="radio" name="tf-p10-s5" value="false"> Usant</label>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><span class="fasit-correct">Riktige svar</span></p>
+          <ol>
+            <li><strong>Usant</strong> — en lenkelag-svitsj er transparent. Den har ingen IP og ingen MAC som synes i forwarding (managed switch har en management-IP, men den brukes ikke i forwarding-stien).</li>
+            <li><strong>Sant</strong> — AMC er en kjerne-teknikk i alle tre teknologiene.</li>
+            <li><strong>Usant</strong> — WiFi bruker CSMA/CA, ikke CD. ACK er korrekt (eksplisitt på lenkelaget i WiFi).</li>
+            <li><strong>Usant</strong> — det er motsatt: <em>slotted</em> ALOHA har dobbel maks-effektivitet (≈37 % vs ≈18 %).</li>
+            <li><strong>Sant</strong> — det er hele poenget med playout-buffer. Jitter ≤ buffer-størrelse tolereres; jitter &gt; buffer gir glipp.</li>
+          </ol>
+          <p class="ref">Pensum: kap 6.4, 7.2, 7.3, 9.3</p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+
+<!-- ==================== DEL II ==================== -->
+<section id="del2">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del II — Åpne oppgaver</h2>
+    <span class="del-points">4 oppgaver · 53 poeng totalt</span>
+  </div>
+  <p class="section-intro">Vis alle utregninger og tegn et lite scenario før du regner — sensor gir delpoeng for korrekt metode.</p>
+
+  <!-- Oppgave 1 — CSMA tidslinje -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 1</span>
+      <span class="exam-q__points">14 poeng</span>
+      <span class="exam-q__topic">Kap. 6 · CSMA og CSMA/CD</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Fem noder N1, N2, N3, N4, N5 deler en bus med propagasjons­tid <strong>t<sub>prop</sub> = 0,2</strong> tids­enheter mellom enhver to noder, og hver pakke har overførings­tid <strong>1</strong> tids­enhet. Hver node ankommer med én pakke å sende på ankomst­tidspunktene:</p>
+      <table>
+        <thead><tr><th>Node</th><th>Ankomsttid</th></tr></thead>
+        <tbody>
+          <tr><td>N1</td><td>0,0</td></tr>
+          <tr><td>N2</td><td>0,1</td></tr>
+          <tr><td>N3</td><td>0,3</td></tr>
+          <tr><td>N4</td><td>1,2</td></tr>
+          <tr><td>N5</td><td>1,5</td></tr>
+        </tbody>
+      </table>
+      <p class="q-text">a) Med <strong>ren CSMA (uten kollisjons­deteksjon)</strong>: hvilke pakker lykkes (ankommer alle nodene uskadet) før t = 5? Vis tidslinjen og forklar. Hver kollisjon betyr at nodene fullfører hele 1-tids overføringen før de oppdager problemet via manglende ACK e.l. (8p)</p>
+      <p class="q-text">b) Med <strong>CSMA/CD</strong>: tilsvarende — hvilke pakker lykkes? Hva er forskjellen? (6p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Ren CSMA tidslinje:</strong></p>
+          <p><strong>t = 0,0:</strong> N1 ankommer, lytter — kanalen er ledig. N1 begynner å sende. Pakken slutter å sendes på t = 1,0. Pakken når alle andre noder senest på t = 1,0 + 0,2 = 1,2.</p>
+          <p><strong>t = 0,1:</strong> N2 ankommer. N2 lytter. Men siden N1 begynte for bare 0,1 t siden, og prop fra N1 til N2 = 0,2, har N2 <em>ennå ikke hørt</em> N1. N2 oppfatter kanalen som ledig og begynner også å sende. <strong>Kollisjon!</strong> Begge fullfører hele sendingen (ren CSMA = ingen CD), så begge er ferdige på t = 1,1. Begge pakker er ødelagte.</p>
+          <p><strong>t = 0,3:</strong> N3 ankommer. N3 lytter. Har signal fra N1 nådd N3? N1 er like langt fra N3 som fra N2 — antar prop = 0,2 fra hvilken som helst node. Signal fra N1 nådde N3 på t = 0,2. Så N3 hører N1 sin overføring. N3 venter til kanalen er ledig.</p>
+          <p>N1 (kollidert) er ferdig på t = 1,0; signalet «klarer» N3 på t = 1,2. N3 begynner deretter på t = 1,2.</p>
+          <p>Men: N2 (kollidert) er ferdig på t = 1,1, signalet klarer N3 på t = 1,3. Så N3 hører fortsatt opptatt til t = 1,3. Faktisk begynnelse av N3-sending = <strong>t = 1,3</strong>. Slutt = 2,3. Pakken når alle på t = 2,5.</p>
+          <p><strong>t = 1,2:</strong> N4 ankommer. N4 hører signal fra N3 (signal nådde t = 1,5). Men ved t = 1,2 har N3 ikke begynt enda (begynner 1,3) — N4 hører kanalen som ledig <em>akkurat da</em> hvis vi tolker prop strikt. Faktisk: N4 begynner å sende, men før N4 fullfører hører N4 N3-signalet — i ren CSMA ignoreres dette og pakken sendes uansett. <strong>Kollisjon mellom N3 og N4.</strong></p>
+          <p><strong>t = 1,5:</strong> N5 ankommer. N5 hører kanalen — den er opptatt fra N3 og N4. N5 venter.</p>
+          <p>Etter at N3-N4-kollisjonen er ferdig (begge fullfører over 1 t pluss prop), kan N5 sende. Men kanalen blir ikke ledig før ca. t = 2,5. N5 begynner ca. t = 2,5, ferdig 3,5, alle har på 3,7.</p>
+          <p><strong>Lykkes før t = 5: N5</strong>. (N1, N2 kolliderte; N3, N4 kolliderte.)</p>
+
+          <p><strong>b) CSMA/CD:</strong></p>
+          <p>CD-en lar nodene avbryte umiddelbart ved deteksjon av kollisjon. N1 og N2: N1 begynner t = 0,0; N2 begynner t = 0,1. N1 hører kollisjons-signal fra N2 på t = 0,1 + 0,2 = 0,3 og avbryter. N2 hører kollisjon fra N1 på t = 0,1 + (egen begynnelse — sendt før seg selv det) — egentlig N2 ser at signalet sitt egne kommer tilbake forskjellig fra forventet, oppdager raskt. La oss anta at begge avbryter på ca. t = 0,3. Tomgang fra ca. t = 0,5 (siste bit av siste skadet signal har klarert).</p>
+          <p>N3 (ankom t = 0,3) finner kanalen ledig snart, kan sende — sender suksessfullt fra t ≈ 0,5 til 1,5. Pakken når alle på t = 1,7.</p>
+          <p>N4 (ankom 1,2) ser kanalen opptatt av N3 frem til t = 1,7. Sender fra 1,7 til 2,7. Når alle på 2,9.</p>
+          <p>N5 (ankom 1,5) ser opptatt fra N3, så N4 — sender fra t = 2,9. Ferdig 3,9, når alle 4,1.</p>
+          <p><strong>Lykkes før t = 5: N3, N4, N5</strong>. CSMA/CD reddet to ekstra pakker ved å begrense kollisjons­tiden.</p>
+
+          <p>Forskjellen: ved CD oppdager man kollisjon raskt og frigjør kanalen. Uten CD må man fullføre hele kollisjons-rammen — øker bortkastet tid betydelig.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6.3.2 — CSMA og CSMA/CD</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 2 — 4-noder wireless full -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 2</span>
+      <span class="exam-q__points">12 poeng</span>
+      <span class="exam-q__topic">Kap. 7 · Trådløse noder</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Fire trådløse noder A, B, C, D ligger på en linje med hørevidde slik at: A↔B og B↔C og C↔D er innenfor hørevidde, men A↔C, A↔D, B↔D er utenfor. Tid er slottet (1 melding per slot per sender). Hvis to sendere overlapper innen mottakerens hørevidde, kolliderer de.</p>
+      <p class="q-text">a) Maks rate <strong>C → A</strong> alene? (Forklar relayet.) (2p)</p>
+      <p class="q-text">b) Maks <em>kombinert</em> rate når <strong>A → B</strong> og <strong>D → C</strong> kjøres samtidig? (3p)</p>
+      <p class="q-text">c) Maks <em>kombinert</em> rate når <strong>A → B</strong> og <strong>C → D</strong> kjøres samtidig? (3p)</p>
+      <p class="q-text">d) Anta nå at hver datapakke krever en ACK i sitt eget slot. Hva blir ratene i (b) og (c)? (4p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) C → A alene:</strong></p>
+          <p>A hører <em>ikke</em> C direkte. Pakken må relayes via B: slot 1 = C→B, slot 2 = B→A. To slot per melding ⇒ rate = <strong>0,5 melding/slot</strong>.</p>
+
+          <p><strong>b) A→B og D→C parallelt:</strong></p>
+          <p>A's signal når bare B (ikke C, D). D's signal når bare C (ikke A, B). Mottakeren B får bare A's signal; mottakeren C får bare D's signal. Ingen interferens. Begge sender hver slot.</p>
+          <p>Rate = <strong>2 meldinger/slot</strong>.</p>
+
+          <p><strong>c) A→B og C→D parallelt:</strong></p>
+          <p>A's signal når B. C's signal når B og D. Mottakeren B får A og C samtidig — kollisjon ved B; A's pakke til B går tapt. Vi kan derfor ikke kjøre disse to flow-ene parallelt. Må alternere.</p>
+          <p>Slot 1: A→B. Slot 2: C→D. Rate = 2 meldinger / 2 slot = <strong>1 melding/slot</strong>.</p>
+          <p>Hvorfor er dette ulikt (b)? Forskjellen er at i (b) snakker «ytterkantene» (A og D) — deres signaler når ikke hverandre. I (c) snakker «midten» (C) sammen med «ytterkanten» (A) — C er nærmere B enn D er. C's signal når B → kollisjon ved B.</p>
+
+          <p><strong>d) Med ACK-slot:</strong></p>
+          <ul>
+            <li><strong>(b) med ACK:</strong> slot 1 — A→B og D→C (parallelt). Slot 2 — B→A (ACK) og C→D (ACK). Sjekk for kollisjon i ACK-slottet: B sender til A → C hører også B; C sender til D → B hører også C. <em>Men</em> både B og C er sendere — A og D er mottakerne. Kollisjon krever <em>to sendere</em> i samme mottakers hørevidde. Så ingen kollisjon. 2 datapakker per 2 slot = <strong>1 melding/slot</strong>.</li>
+            <li><strong>(c) med ACK:</strong> kjøremønster blir A→B (slot 1), B→A ACK (slot 2), C→D (slot 3), D→C ACK (slot 4). 2 datapakker per 4 slot = <strong>0,5 melding/slot</strong>.</li>
+          </ul>
+          <p>ACK halverer i begge tilfeller (men startratene er forskjellige).</p>
+          <p class="ref">Pensum: <a href="../kap7/innhold.html">Kap. 7 — Trådløst, hidden terminal</a> · eks1 Q1.4.7, eks2 Q5</p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 3 — Playout buffer beregning -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 3</span>
+      <span class="exam-q__points">14 poeng</span>
+      <span class="exam-q__topic">Kap. 9 · Playout-buffer</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En videoserver sender videoblokker med inter-blokk-avstand <strong>Δ = 40 ms</strong>. Server sender blokk i på serversiden ved tidspunkt <code>iΔ</code> (relativ til t<sub>0</sub>). Klienten observerer ankomsttider for blokkene 1–10 (tidspunkt etter <code>t<sub>1</sub></code>, der t<sub>1</sub> = klientens tidspunkt da blokk 1 ankom):</p>
+      <table>
+        <thead><tr><th>Blokk i</th><th>Forventet ankomst (ms)</th><th>Faktisk ankomst (ms)</th><th>Jitter (ms)</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+          <tr><td>2</td><td>40</td><td>50</td><td>10</td></tr>
+          <tr><td>3</td><td>80</td><td>140</td><td>60</td></tr>
+          <tr><td>4</td><td>120</td><td>125</td><td>5</td></tr>
+          <tr><td>5</td><td>160</td><td>200</td><td>40</td></tr>
+          <tr><td>6</td><td>200</td><td>205</td><td>5</td></tr>
+          <tr><td>7</td><td>240</td><td>290</td><td>50</td></tr>
+          <tr><td>8</td><td>280</td><td>295</td><td>15</td></tr>
+          <tr><td>9</td><td>320</td><td>340</td><td>20</td></tr>
+          <tr><td>10</td><td>360</td><td>400</td><td>40</td></tr>
+        </tbody>
+      </table>
+      <p class="q-text">a) Hvis klienten starter avspilling 30 ms etter at blokk 1 ankom (buffer = 30 ms), hvilke blokker rekker frem i tide? (5p)</p>
+      <p class="q-text">b) Hvis bufferet økes til 60 ms, hvilke blokker rekker frem i tide? (3p)</p>
+      <p class="q-text">c) Hva er minimum buffer som lar <em>alle</em> 10 blokker rekke frem? (3p)</p>
+      <p class="q-text">d) Hva er trade-off mellom kort og langt buffer? (3p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Buffer = 30 ms:</strong></p>
+          <p>En blokk rekker frem hvis jitter ≤ buffer.</p>
+          <ul>
+            <li>1 (jitter 0) ✓, 2 (10) ✓, 3 (60) ✗, 4 (5) ✓, 5 (40) ✗, 6 (5) ✓, 7 (50) ✗, 8 (15) ✓, 9 (20) ✓, 10 (40) ✗</li>
+          </ul>
+          <p>Rekker frem: 1, 2, 4, 6, 8, 9 (6 av 10).</p>
+
+          <p><strong>b) Buffer = 60 ms:</strong></p>
+          <ul>
+            <li>1, 2, 3 (60 ≤ 60 — akkurat), 4, 5, 6, 7, 8, 9, 10 — alle ✓.</li>
+          </ul>
+          <p>Alle 10 rekker frem.</p>
+
+          <p><strong>c) Minimum buffer for å få alle:</strong></p>
+          <p>Maks jitter i tabellen = 60 (blokk 3). Så minimum buffer = <strong>60 ms</strong>.</p>
+
+          <p><strong>d) Trade-off:</strong></p>
+          <ul>
+            <li>Lite buffer ⇒ lav startup-forsinkelse, men flere blokker mister deadline ved jitter — synlig hakking eller dropp.</li>
+            <li>Stort buffer ⇒ jevn avspilling selv ved varierende jitter, men brukeren venter lenger fra «trykk play» til avspilling starter. For interaktive applikasjoner (videokonferanse) er stort buffer uakseptabelt; for én-veis streaming (Netflix) er buffer på 10+ sekunder vanlig.</li>
+            <li>Adaptive playout (DASH, HLS): klienten kan justere bufferet dynamisk basert på observert nettverk.</li>
+          </ul>
+          <p class="ref">Pensum: <a href="../kap9/innhold.html">Kap. 9.3 — Playout-buffer og DASH</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 4 — 2D-paritet -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 4</span>
+      <span class="exam-q__points">13 poeng</span>
+      <span class="exam-q__topic">Kap. 6 · 2D-paritet</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En 4×4 datamatrise er gitt nedenfor. Senderen bruker <strong>jevn paritet</strong> per rad og per kolonne, og legger til en ekstra rad nederst (kolonne­paritet) og en kolonne til høyre (rad­paritet):</p>
+      <pre style="font-family: var(--mono); font-size: 14px; line-height: 1.5;">
+Data:
+1 1 0 1   | 1   ← rad-paritet
+0 1 1 0   | 0
+1 0 1 1   | 1
+1 1 0 0   | 0
+---------+---
+1 1 0 0   | (kryss-paritet)
+↑
+kolonne-paritet
+      </pre>
+      <p class="q-text">a) Verifiser kort at både rad- og kolonne-paritet er beregnet korrekt over data­matrisen. (3p)</p>
+      <p class="q-text">b) Mottakeren mottar samme matrise, men element <strong>(rad 2, kolonne 3)</strong> har flippet (var 1, nå 0). Hvilke paritets­bit er feil hos mottakeren? Hvor finner mottakeren feilen, og hvordan rettes den? (5p)</p>
+      <p class="q-text">c) Anta i stedet at <em>to</em> bits har flippet: (rad 2, kolonne 3) og (rad 4, kolonne 1). Hva ser mottakeren? Kan feilen rettes? Hva detekteres? (5p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Verifisering:</strong></p>
+          <p>Rad 1: 1+1+0+1 = 3 (odde) → paritets­bit må være 1 for jevn (totalt 4) ✓.<br>Rad 2: 0+1+1+0 = 2 (jevn) → paritet 0 ✓.<br>Rad 3: 1+0+1+1 = 3 (odde) → paritet 1 ✓.<br>Rad 4: 1+1+0+0 = 2 (jevn) → paritet 0 ✓.</p>
+          <p>Kolonne 1: 1+0+1+1 = 3 (odde) → paritet 1 ✓.<br>Kolonne 2: 1+1+0+1 = 3 (odde) → paritet 1 ✓.<br>Kolonne 3: 0+1+1+0 = 2 (jevn) → paritet 0 ✓.<br>Kolonne 4: 1+0+1+0 = 2 (jevn) → paritet 0 ✓.</p>
+
+          <p><strong>b) Element (2, 3) flippet (var 1, nå 0):</strong></p>
+          <p>Ny rad 2: 0+1+0+0 = 1 (odde). Paritets­bit er 0, men skulle vært 1 → <strong>rad 2 paritet er feil</strong>.</p>
+          <p>Ny kolonne 3: 0+0+1+0 = 1 (odde). Paritets­bit er 0, men skulle vært 1 → <strong>kolonne 3 paritet er feil</strong>.</p>
+          <p>Mottakeren ser én feil-rad (rad 2) og én feil-kolonne (kolonne 3). Skjæringspunktet (rad 2, kol 3) er feil-biten. Flip den (0 → 1) for å rette.</p>
+          <p>Det er denne <em>krysset peker på feilen</em>-egenskapen som gjør 2D-paritet til en korrigerings­kode for enkelt­bits-feil.</p>
+
+          <p><strong>c) To bits flippet: (2, 3) og (4, 1):</strong></p>
+          <p>(2, 3): rad 2 paritet feil, kol 3 paritet feil (som i b).<br>(4, 1): rad 4 var 1+1+0+0 = 2 (jevn) → blir 0+1+0+0 = 1 (odde). Rad 4 paritet er 0 men skulle vært 1 → <strong>rad 4 paritet feil</strong>. Kolonne 1 var 1+0+1+1 = 3 (odde) → blir 1+0+1+0 = 2 (jevn). Kol 1 paritet er 1 men skulle vært 0 → <strong>kol 1 paritet feil</strong>.</p>
+          <p>Sett av feil: rader {2, 4}, kolonner {1, 3}. To rader feil + to kolonner feil = mottakeren <em>vet</em> at det er minst 2 feil — men vet ikke om de er på (2,1)+(4,3) eller (2,3)+(4,1). To mulige feil-mønstre — <strong>kan detekteres, men ikke rettes</strong>.</p>
+          <p>Konklusjon: 2D-paritet detekterer alle dobbel-bits-feil hvor de er i <em>forskjellige</em> rad og <em>forskjellige</em> kolonner. Hvis begge feil er i samme rad — bare 2 kolonne­brudd, ingen rad­brudd → 2-feil i én rad er detekterbar (kolonner viser anomalien), men igjen — kan ikke rettes.</p>
+          <p>I tilfeller med 2-bits feil i samme kolonne men forskjellige rader (eller motsatt) — fortsatt detekterbar via kolonne­paritet (eller rad­paritet) som er ok, men noen rader feil. Oppsummering: 2D-paritet kan <em>detektere</em> alle 1-bit og de fleste 2-bit-feil; <em>korrigere</em> bare 1-bit.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6.2 — Feildeteksjon og korreksjon</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Vår 2026 · Prediksjon 10 av 11</p>
+    <p style="margin-top: 12px; font-size: 14px;"><a href="../eksamen-prep/">&larr; Tilbake til prediksjons­analysen</a></p>
+  </div>
+</footer>
+<script src="../chat-widget.js"></script>
+<script src="../nav-search.js"></script>
+<script src="exam-quiz.js" defer></script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>
