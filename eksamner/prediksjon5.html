@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prediksjon 5 — «Tverrsnitts-settet» — TTM4100</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Alle eksamener</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
+  </div>
+</nav>
+
+<main data-chapter="Prediksjon 5 — Tverrsnitts-settet">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Eksamensprediksjon 5 av 7 · våren 2026</div>
+  <h1>Prediksjon <em>5</em> — «Tverrsnitts-settet»</h1>
+  <p class="lede">P1–P4 testet hvert tema isolert. Men en eksaminator som har sett de samme temaene fem år på rad vil <em>vri vinkelen</em>: i stedet for å spørre «hva er ARP?», spør hen «når i en HTTP-forespørsel skjer ARP, og hva oversettes der?». Dette settet tester forståelse av hvordan lagene <strong>spiller sammen</strong> — synteseoppgaver som har gitt 15 og 8 poeng tidligere (eks3 Q3, eks_5 Q2). Del I: 14 spørsmål (42 p). Del II: 5 oppgaver (58 p).</p>
+
+  <div class="learn-box">
+    <span class="label">Strategi for dette settet</span>
+    <ul>
+      <li><strong>Begreps-feller:</strong> «Inneholder TCP-segmentet IP-adresser?» (eks_4 2.1a — feilen er å si ja). «Trenger meldings­integritet TCP?» (oving 5 — nei). «Bruker DHCP TCP?» (eks2/eks3 — nei).</li>
+      <li><strong>Stor protokoll-kjede:</strong> eks3 Q3 ga 15 poeng for å beskrive DHCP→DNS→SMTP→IMAP-flyten. Oppgave 1 her er den samme typen, men for en HTTPS-bestilling.</li>
+      <li><strong>Sammenligning på tvers av lag:</strong> ARP vs DNS, IP vs MAC, switch vs ruter, flow vs congestion control — alle har dukket opp i øvingene og er overmodne for ny eksamenshistorie.</li>
+    </ul>
+  </div>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">I</span><a href="#del1">Del I — Flervalg (42p)</a></li>
+    <li><span class="toc-num">II</span><a href="#del2">Del II — Åpne oppgaver (58p)</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ==================== DEL I ==================== -->
+<section id="del1">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del I — Automatisk rettede spørsmål</h2>
+    <span class="del-points">14 spørsmål · 3 poeng per spørsmål · 42 poeng totalt</span>
+  </div>
+  <p class="section-intro">Vekt på begreps-feller og konsepter som kobler lagene sammen.</p>
+
+  <!-- Q1 — TCP-segment payload (eks_4 2.1a, klassisk feller) -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 1</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Lagdeling</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket utsagn er <strong>korrekt</strong> om hvordan TCP-segmenter relaterer seg til IP-adresser?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> TCP-segmentets nyttelast inneholder kilde- og dest-IP slik at nettverkslaget kan hente dem ut</li>
+        <li><span class="opt-label">B</span> TCP-segmentets nyttelast er fra applikasjonslaget; IP-adressene legges på først av nettverkslaget, der hele TCP-segmentet blir nyttelast</li>
+        <li><span class="opt-label">C</span> TCP-segmenter har egne IP-felt i headeren ved siden av portnumrene</li>
+        <li><span class="opt-label">D</span> Bare ved bruk av NAT skrives IP-adresser inn i TCP-segmentet</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Hvert lag legger sin egen header på det laget over leverte. Applikasjonsdata → +TCP-header → +IP-header (med IP-adressene) → +rammehode. TCP-segmentet vet ingenting om IP-adresser; transport- og nettverkslagene er separasjoner med egne ansvarsområder.</p>
+          <p>Felle: A er en vanlig misforståelse. C blander port og IP. D er feil — NAT endrer IP-feltene i <em>nettverkslag</em>-headeren, ikke i TCP-payloaden.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Lagdeling</a> · eks_4 2.1a</p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q2 — Internet checksum TCP/UDP same -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 2</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · Sjekksum</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvordan skiller Internet-sjekksum-algoritmen seg mellom TCP og UDP?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> TCP bruker en kryptografisk hash; UDP bruker addisjons-checksum</li>
+        <li><span class="opt-label">B</span> UDP regner over hele segmentet; TCP regner kun over headeren</li>
+        <li><span class="opt-label">C</span> Algoritmen er identisk — addisjon av 16-bits ord med carry-wrap, deretter ones&apos; complement</li>
+        <li><span class="opt-label">D</span> TCP gjør sjekksumming valgfritt; UDP gjør det obligatorisk</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C</span>
+          <p>Begge bruker den samme «Internet checksum» — addere alle 16-bits ord, vrap-around carry, deretter komplementere. Mottaker gjør samme regnestykke; resultatet skal være alle ettall.</p>
+          <p>D er omvendt: i IPv4 er UDP-checksum valgfritt (ofte satt til 0 hvis avsender ikke bryr seg), TCP-checksum er obligatorisk. Men selve <em>algoritmen</em> er den samme.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — Internet checksum</a> · eks_4 2.1b</p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q3 — Best effort vs unreliable -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 3</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Tjenestemodell</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">«IP gir en best effort-tjeneste.» Hva betyr <em>ikke</em> det?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Ingen garanti for at pakker leveres</li>
+        <li><span class="opt-label">B</span> Ingen garanti for rekkefølge på levering</li>
+        <li><span class="opt-label">C</span> Ingen garanti for minimum båndbredde eller maksimal forsinkelse</li>
+        <li><span class="opt-label">D</span> Pakker droppes alltid før de når et fullt buffer</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: D</span>
+          <p>«Best effort» betyr <em>ingen garantier</em> i hverken retning. Det er ikke et utsagn om hva nettet <em>aldri</em> klarer å gjøre — bare at det ikke <em>lover</em> noe. Derfor er D feil-formulert: pakker droppes <em>noen ganger</em> ved fullt buffer, men ikke alltid før det.</p>
+          <p>A, B og C er alle korrekte beskrivelser av hva best effort innebærer.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Tjenestemodell</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q4 — DNS vs ARP — øving 3 angle -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 4</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · 6 — DNS vs ARP</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket utsagn beskriver forskjellen mellom <strong>DNS</strong> og <strong>ARP</strong> korrekt?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> DNS oversetter hostnames til MAC-adresser; ARP oversetter IP-adresser til hostnames</li>
+        <li><span class="opt-label">B</span> DNS oversetter hostnames til IP for hosts hvor som helst på Internett; ARP oversetter IP til MAC kun innenfor samme subnett</li>
+        <li><span class="opt-label">C</span> DNS oversetter hostnames lokalt; ARP gjør det globalt</li>
+        <li><span class="opt-label">D</span> Begge protokollene løser samme problem — DNS er bare en moderne erstatter for ARP</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>DNS = applikasjonslag, hostnames ↔ IP, globalt hierarki. ARP = lenkelag, IP ↔ MAC, kun lokalt subnett. Helt forskjellige formål; ingen kan erstatte den andre.</p>
+          <p>Felle: husk rekkefølgen. Når du skriver <code>ntnu.no</code> i nettleseren: først DNS for å få IP-en, deretter ARP for å få MAC til neste hopp (default gateway hvis IP-en er utenfor subnettet).</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — ARP</a> · øving 3 task 3</p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q5 — Meldingsintegritet trenger ikke TCP (oving 5 task 2) -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 5</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8 · Integritet</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket utsagn om meldings­integritet er <strong>korrekt</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Meldings­integritet handler om at avsenderens identitet kan bekreftes</li>
+        <li><span class="opt-label">B</span> Meldings­integritet kan oppnås med både hash-funksjoner og MAC (Message Authentication Code)</li>
+        <li><span class="opt-label">C</span> For å sikre meldings­integritet må applikasjonen bruke TCP, ikke UDP</li>
+        <li><span class="opt-label">D</span> En vanlig sjekksum (Internet checksum) gir samme grad av integritets­garanti som en kryptografisk hash</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Integritet = mottaker kan oppdage at meldingen ble endret underveis. Implementeres med hash, MAC eller HMAC — uavhengig av hvilken transportprotokoll under.</p>
+          <p>Felle: A er <em>autentisering</em>, ikke integritet. C er feil — integritet kan godt brukes over UDP (RTP-pakker, DNS-svar med DNSSEC, m.m.). D er feil — Internet checksum oppdager bare tilfeldige bitfeil; en kryptografisk hash motstår også <em>tilsiktede</em> endringer.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.3 — Meldingsintegritet</a> · øving 5 task 2</p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q6 — UDP-fordeler (eks_4 2.1c) -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 6</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · UDP</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken egenskap er <strong>ikke</strong> en grunn til å velge UDP i stedet for TCP?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Ingen oppsetts­forsinkelse (ingen 3-veis håndtrykk)</li>
+        <li><span class="opt-label">B</span> Mindre header-overhead per pakke</li>
+        <li><span class="opt-label">C</span> Pålitelig levering med automatisk gjen­overføring</li>
+        <li><span class="opt-label">D</span> Ingen overbelastnings­kontroll som bremser sending under tap</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C</span>
+          <p>UDP gir nettopp <em>ikke</em> pålitelig levering — det er TCPs hovedfunksjon. UDP velges typisk for sanntidsapplikasjoner (VoIP, video­konferanse, spill) der tap er bedre enn forsinkelse, og for korte transaksjoner (DNS-spørringer) der oppsett ville koste mer enn selve forespørselen.</p>
+          <p>A, B og D er alle gyldige grunner til å foretrekke UDP.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — UDP</a> · eks_4 2.1c</p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q7 — IP vs MAC adresser sammenlign (oving 3 task 2) -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 7</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · 6 — IP vs MAC</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket utsagn om IP- og MAC-adresser er <strong>korrekt</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> IP-adresser er flate; MAC-adresser er hierarkiske</li>
+        <li><span class="opt-label">B</span> En enhets MAC-adresse endres når enheten flyttes til et nytt nettverk; IP-adressen er konstant</li>
+        <li><span class="opt-label">C</span> En enhets IP-adresse kan endres når enheten flyttes til et nytt nettverk; MAC-adressen er normalt konstant</li>
+        <li><span class="opt-label">D</span> Bare en av de to adressene trengs for kommunikasjon over Internett</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C</span>
+          <p>IP er hierarkisk (subnet-prefiks → host) og <em>kontekstavhengig</em>: når PC-en din kobler seg til et nytt subnett (kafé-WiFi, jobb, hjemme) får den ny IP via DHCP. MAC-adressen er burnt-in i nettverkskortet — den endrer seg ikke (med mindre du eksplisitt overrider).</p>
+          <p>Begge brukes faktisk: IP for ende-til-ende-ruting på tvers av nett, MAC for hopp-for-hopp på lokalt subnett.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6.4 — Adresser</a> · øving 3 task 2</p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q8 — DHCP transport -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 8</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · DHCP</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken transportprotokoll bruker DHCP, og hvorfor?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> TCP — fordi pålitelig levering er kritisk for IP-tildeling</li>
+        <li><span class="opt-label">B</span> UDP — fordi klienten ennå ikke har en IP-adresse å sette inn i en TCP-forbindelse, og lenkelags-broadcast kreves</li>
+        <li><span class="opt-label">C</span> DHCP er en applikasjonslag-protokoll og bruker ikke transportlag</li>
+        <li><span class="opt-label">D</span> Både TCP og UDP — klienten velger</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>DHCP DISCOVER må sendes som broadcast (kilde 0.0.0.0, dest 255.255.255.255) — TCP ville krevd at klienten allerede hadde en IP og kunne gjøre 3-veis håndtrykk. UDP er forbindelsesløs og passer scenarioet.</p>
+          <p>Felle: C blander lag — DHCP er applikasjonslag-protokoll, men det betyr ikke at den unngår transportlaget; den bruker UDP-portene 67 (server) og 68 (klient).</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4 — DHCP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q9 — ICMP layer placement -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 9</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 5 · ICMP</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket utsagn om ICMP er <strong>korrekt</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> ICMP er en transportprotokoll på linje med TCP og UDP, og bruker port 86</li>
+        <li><span class="opt-label">B</span> ICMP-meldinger bæres direkte i IP-datagrammet — ICMP regnes som nettverkslag selv om det ligger over IP</li>
+        <li><span class="opt-label">C</span> ICMP er en applikasjonsprotokoll som <code>ping</code> bruker</li>
+        <li><span class="opt-label">D</span> ICMP er kun definert for IPv4 og brukes ikke i IPv6</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>ICMP-protokollnummeret er 1 i IP-headeren (transport-feltet «protocol»). Det fyller en kontroll- og diagnose-rolle for nettverkslaget — feilrapportering, traceroute via TTL-expired, ping via Echo Request/Reply.</p>
+          <p>D er feil: ICMPv6 finnes og er kritisk i IPv6 (Neighbor Discovery, Router Advertisement m.m.).</p>
+          <p class="ref">Pensum: <a href="../kap5/innhold.html">Kap. 5 — ICMP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q10 — Switch vs router (lag 2 vs 3) -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 10</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6 · Svitsj vs ruter</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En lenkelags-svitsj og en ruter står begge i en bedrifts­nettverk. Hvilket utsagn beskriver forskjellen <strong>korrekt</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Svitsjen videresender pakker basert på destinasjons-IP; ruteren basert på MAC</li>
+        <li><span class="opt-label">B</span> Svitsjen opererer på lenkelaget (lag 2) og er transparent — har normalt verken egen IP eller MAC. Ruteren opererer på nettverkslaget (lag 3) og har IP per grensesnitt</li>
+        <li><span class="opt-label">C</span> Begge enhetene fungerer på lenkelaget, men svitsjen har fullversjon-OS</li>
+        <li><span class="opt-label">D</span> En svitsj kan koble sammen flere subnett; en ruter kun ett subnett</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Svitsjen er plug-and-play, lærer MAC-tabellen ved å se kilde-MAC i innkommende rammer, og videresender til riktig port basert på dest-MAC. Ruteren slår opp dest-IP i forwarding-tabellen og har et grensesnitt mot hvert subnett den kobler.</p>
+          <p>Felle: D snur det — det er ruteren som kobler sammen subnett. Svitsjen lever <em>innenfor</em> ett subnett.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — Svitsj vs ruter</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q11 — TCP flow control vs congestion: who -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 11</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · TCP-kontroll</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En applikasjon på serveren leser data fra TCP-mottaks­bufferet svært tregt. Hvilken mekanisme bremser klienten?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Overbelastnings­kontroll — <code>cwnd</code> krymper</li>
+        <li><span class="opt-label">B</span> Flytkontroll — mottakers <code>rwnd</code>-felt i ACK-meldinger annonserer mindre vindu</li>
+        <li><span class="opt-label">C</span> Ingen — TCP håndterer ikke dette tilfellet</li>
+        <li><span class="opt-label">D</span> ICMP source quench fra mottakeren</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B</span>
+          <p>Flytkontroll handler om at <em>mottakers</em> buffer ikke skal renne over. Mottaker beregner <code>rwnd = ledig plass i buffer</code> og sender det med hver ACK. Avsender begrenser sitt vindu til <code>min(cwnd, rwnd)</code>.</p>
+          <p>Overbelastnings­kontroll (<code>cwnd</code>) reagerer på tap og forsinkelse i <em>nettverket</em> — andre problem, andre signaler.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — Flow control</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q12 — Trudy actions -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 12</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8 · Trusler</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Trudy ligger som man-in-the-middle mellom Alice og Bob. Hvilke handlinger kan hun typisk utføre? (Velg alle som passer.)</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Lytte og lagre data­meldinger på kanalen</li>
+        <li><span class="opt-label">B</span> Lytte og lagre kontrollmeldinger på kanalen</li>
+        <li><span class="opt-label">C</span> Endre eller sette inn nye meldinger</li>
+        <li><span class="opt-label">D</span> Slette meldinger eller deler av meldinger</li>
+        <li><span class="opt-label">E</span> Bryte AES-256 kryptering ved ren regnekraft i sanntid</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktige svar: A, B, C, D</span>
+          <p>Den klassiske Trudy-modellen: passiv (lytte, lagre) <em>og</em> aktiv (endre, slette, sette inn). Det er disse handlings­settene konfidensialitet, integritet og autentisering må forsvare seg mot.</p>
+          <p>E er en ren styrke-anta­kelse om kryptografien — modellen forutsetter at moderne kryptografi <em>ikke</em> brytes i sanntid; sårbarhet ligger i nøkkel­håndtering, protokoll-design og endepunkter, ikke i AES selv.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8 — Sikkerhetsmål</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q13 — Pakketap (eks_4 2.3) -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 13</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Pakketap</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilke av følgende er <strong>ikke</strong> en typisk årsak til at en datapakke forsvinner i et pakkesvitsjet nett?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Buffer­overflyt ved kø i en ruter</li>
+        <li><span class="opt-label">B</span> Bitfeil oppdaget av ruteren (pakken kastes for å spare ressurser)</li>
+        <li><span class="opt-label">C</span> Lenke- eller node-feil (kabelbrudd, ruter-restart)</li>
+        <li><span class="opt-label">D</span> Kollisjon på et delt media (klassisk Ethernet, WiFi)</li>
+        <li><span class="opt-label">E</span> Pakker som ankommer i feil rekkefølge til mottakeren</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: E</span>
+          <p>Pakker i feil rekkefølge er <em>ikke</em> tap — de er bare omarrangerte. TCP gjenoppretter rekke­følgen via sekvens­nummer; UDP-applikasjonen må håndtere det selv. De fire <em>faktiske</em> taps­årsakene er A, B, C og D.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Pakketap</a> · eks_4 2.3</p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q14 — Encapsulation: hvilken header på hvert lag -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 14</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Kapsling</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En HTTP-forespørsel sendes fra en bærbar via WiFi til en webserver. Pakken passerer flere ledd. Hvilket lag-header kan <em>byttes ut</em> hopp for hopp uten at de andre lagene merker det?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Applikasjonslag (HTTP-headere)</li>
+        <li><span class="opt-label">B</span> Transportlag (TCP-headere — porter, sekvensnumre)</li>
+        <li><span class="opt-label">C</span> Nettverkslag (IP-headere — kilde- og dest-IP)</li>
+        <li><span class="opt-label">D</span> Lenkelag (Ethernet-/WiFi-rammehoder med MAC-adresser)</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: D</span>
+          <p>MAC-adressene er <em>hopp-for-hopp</em>. På bærbarens WiFi-segment er kilde-MAC din PC og dest-MAC default gateway. Etter ruteren er kilde-MAC ruterens utgående grensesnitt og dest-MAC neste hopp. IP-adressene er ende-til-ende og endres <em>ikke</em> (utenom NAT) — TCP-portene heller ikke.</p>
+          <p>Konseptet er sentralt for å forstå hvorfor ARP er nødvendig på hvert subnett.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — Lenkelag og adresser</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+
+<!-- ==================== DEL II ==================== -->
+<section id="del2">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del II — Åpne oppgaver</h2>
+    <span class="del-points">5 oppgaver · 58 poeng totalt</span>
+  </div>
+  <p class="section-intro">Begrunn alle svar. Vis hvordan lagene henger sammen.</p>
+
+  <!-- Oppgave 1 — Stor protokollkjede (eks3 Q3-stil men HTTPS, ikke e-post) -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 1</span>
+      <span class="exam-q__points">15 poeng</span>
+      <span class="exam-q__topic">Tverrsnitt · Kap. 2–8</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Du tar med en frisk-installert bærbar PC til en kafé. Du kobler deg til kafé-WiFi-en og åpner nettleseren mot <code>https://www.ntnu.no</code>. Beskriv steg for steg hvilke <strong>protokoller</strong> som kjører, og på hvilket <strong>lag</strong> de befinner seg, fra kabelen er koblet til siden er lastet ned.</p>
+      <p class="q-text">a) De tre første prosesser før ditt første HTTP-pakke kan sendes. (5p)</p>
+      <p class="q-text">b) Hvilken protokoll oversetter <code>www.ntnu.no</code> til en IP-adresse, og hvor i hierarkiet starter / slutter oppslaget? (3p)</p>
+      <p class="q-text">c) Når du har IP-en, hvordan vet PC-en MAC-adressen til <em>første hopp</em> (kafé-AP/ruter)? (3p)</p>
+      <p class="q-text">d) Etter dette: hvilke to runder håndtrykk skjer før den første HTTP-byte sendes, og hvor mange RTT-er koster det totalt? (4p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Tre første prosesser:</strong></p>
+          <ol>
+            <li><strong>WiFi-assosiering (lenkelag):</strong> 802.11 association med AP-en, etterfulgt av WPA2/WPA3-handshake for nøkkel­utveksling.</li>
+            <li><strong>DHCP (applikasjonslag, over UDP):</strong> 4-stegs DORA-handshake (Discover, Offer, Request, Ack). PC-en får IP-adresse, subnetmaske, default gateway, og DNS-server.</li>
+            <li><strong>(Klar for IP-trafikk).</strong> Eventuelt kjører OS-en NTP for å synke klokken, men det er ikke kritisk for HTTP-trafikken.</li>
+          </ol>
+
+          <p><strong>b) DNS-oppslag:</strong></p>
+          <p>Klienten spør sin lokale DNS-resolver (gitt av DHCP). Hvis ikke cachet, sender resolveren rekursivt:</p>
+          <ol>
+            <li><strong>Root DNS-server</strong> — peker på <code>.no</code>-TLD-server.</li>
+            <li><strong>TLD-server (.no)</strong> — peker på autoritativ DNS for <code>ntnu.no</code>.</li>
+            <li><strong>Autoritativ for ntnu.no</strong> — returnerer A-record (IP-adresse) for <code>www.ntnu.no</code>.</li>
+          </ol>
+          <p>Resolveren cacher resultatet basert på TTL og leverer IP-en til klienten. Transportlag: UDP port 53 (TCP hvis svaret er stort).</p>
+
+          <p><strong>c) ARP for første hopp:</strong></p>
+          <p>IP-en til <code>www.ntnu.no</code> er <em>utenfor</em> kafé-subnettet, så pakken må til default gateway. PC-en sjekker ARP-tabellen for default gateway-IP-en. Hvis ikke i tabellen: sender ARP-request som lenkelags-broadcast («hvem har 192.168.1.1?»). Default gateway svarer unicast med sin MAC. Lokal ARP-tabell oppdateres.</p>
+          <p>ARP er lenkelag — kjører bare innenfor kafé-subnettet, ikke på de hoppene videre i Internett.</p>
+
+          <p><strong>d) Håndtrykk før HTTP:</strong></p>
+          <ol>
+            <li><strong>TCP 3-veis håndtrykk</strong> til <code>www.ntnu.no:443</code>: SYN → SYN-ACK → ACK. Koster <strong>1 RTT</strong> før første dataforespørsel kan sendes (ACK-en kan piggybacke første data­byte hos noen implementasjoner).</li>
+            <li><strong>TLS-handshake</strong> over den etablerte TCP-forbindelsen: klient hilsen, server-hilsen + sertifikat, nøkkel­utveksling, ferdig. TLS 1.2: 2 RTT. TLS 1.3: 1 RTT (eller 0-RTT ved gjenopptakelse).</li>
+          </ol>
+          <p>Total kost før første HTTP-byte med TLS 1.3: <strong>2 RTT</strong> (1 for TCP, 1 for TLS). Med TLS 1.2: 3 RTT. Etter det: HTTP GET sendes kryptert.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — DNS, HTTP</a> · <a href="../kap3/innhold.html">Kap. 3 — TCP</a> · <a href="../kap6/innhold.html">Kap. 6 — ARP, DHCP</a> · <a href="../kap8/innhold.html">Kap. 8 — TLS</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 2 — Multiple access matching + 802.11 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 2</span>
+      <span class="exam-q__points">12 poeng</span>
+      <span class="exam-q__topic">Kap. 6 · Multiple access</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) Klassifiser hver av disse multiple access-protokollene som <em>kanal­partisjonering</em>, <em>tilfeldig tilgang</em>, eller <em>taking turns</em>: TDM, slotted ALOHA, CSMA/CD (klassisk Ethernet), token-passing (FDDI/Token Ring), CDMA, CSMA/CA (802.11), polling (Bluetooth piconet). (4p)</p>
+      <p class="q-text">b) Forklar to <em>fundamentale</em> grunner til at 802.11 ikke kan bruke CSMA/CD. (4p)</p>
+      <p class="q-text">c) Hvordan vet en avsender i 802.11 at en dataramme har kommet frem, siden CD ikke brukes? Hva skiller 802.11-MAC fra Ethernet-MAC i dette punktet? (4p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Klassifisering:</strong></p>
+          <ul>
+            <li><strong>Kanalpartisjonering:</strong> TDM, CDMA</li>
+            <li><strong>Tilfeldig tilgang:</strong> slotted ALOHA, CSMA/CD, CSMA/CA</li>
+            <li><strong>Taking turns:</strong> token-passing (FDDI), polling (Bluetooth)</li>
+          </ul>
+
+          <p><strong>b) Hvorfor ikke CSMA/CD i 802.11:</strong></p>
+          <ol>
+            <li><strong>Signal-asymmetri:</strong> WiFi-adapteren kan ikke samtidig sende og motta med rimelig kostnad — eget signal er typisk mye sterkere enn mottatt. Å bygge maskinvare som detekterer kollisjon mens den selv sender, ville være dyrt.</li>
+            <li><strong>Skjult terminal og fading:</strong> selv hvis adapteren kunne sende+lytte, ville ikke alle kollisjoner være detekterbare. To noder utenfor hverandres rekkevidde kan kollidere ved AP-en uten at noen av dem kan høre den andre.</li>
+          </ol>
+
+          <p><strong>c) ACK i 802.11:</strong></p>
+          <p>Hver vellykket dataramme får eksplisitt <strong>ACK-frame</strong> tilbake fra mottaker etter en SIFS (Short Inter-Frame Space) — kort nok til at ingen annen står klar med en sending. Hvis avsender ikke får ACK innen tidsgrensen, anses rammen som tapt og retransmisjoner skjer.</p>
+          <p>Forskjellen fra Ethernet: klassisk Ethernet (CSMA/CD) har <em>ingen lag-2-ACK</em> — det er TCP eller andre høyere-lag-mekanismer som håndterer eventuelt tap. 802.11 har lag-2-ACK fordi tap er hyppigere på trådløs.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — Multiple access</a> · <a href="../kap7/innhold.html">Kap. 7 — 802.11 MAC</a> · eks_4 4.2</p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 3 — Adresser hopp for hopp -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 3</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · 6 — Adresser</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Host A har IP <code>192.168.1.10</code> og MAC <code>aa:00:01:02:03:04</code>. Default gateway G har IP <code>192.168.1.1</code> og MAC <code>bb:00:00:00:00:01</code> på subnett-siden, og IP <code>10.20.30.40</code> + MAC <code>cc:00:00:00:00:02</code> på utgående side. Pakken skal til server S med IP <code>8.8.8.8</code> og MAC <code>dd:00:00:00:00:03</code>, som ligger ett hopp etter G via en mellomliggende ruter R (utenfor scope her — anta direkte etter G).</p>
+      <p class="q-text">a) Hva er kilde-IP, dest-IP, kilde-MAC og dest-MAC i pakken på <strong>kafé-segmentet</strong> (mellom A og G)? (4p)</p>
+      <p class="q-text">b) Hva er de samme fire feltene på <strong>segmentet etter G</strong> (mellom G og S)? (4p)</p>
+      <p class="q-text">c) Hvilke felt har endret seg? Hvorfor er det forskjell på behandlingen av IP og MAC? (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Kafé-segment (A → G):</strong></p>
+          <ul>
+            <li>Kilde-IP: <code>192.168.1.10</code> (A)</li>
+            <li>Dest-IP: <code>8.8.8.8</code> (S — ende-til-ende)</li>
+            <li>Kilde-MAC: <code>aa:00:01:02:03:04</code> (A)</li>
+            <li>Dest-MAC: <code>bb:00:00:00:00:01</code> (G på subnett-siden — neste hopp, ikke S!)</li>
+          </ul>
+
+          <p><strong>b) Etter G (G → S):</strong></p>
+          <ul>
+            <li>Kilde-IP: <code>192.168.1.10</code> (uendret — A er fortsatt kilden)</li>
+            <li>Dest-IP: <code>8.8.8.8</code> (uendret)</li>
+            <li>Kilde-MAC: <code>cc:00:00:00:00:02</code> (G på utgående side)</li>
+            <li>Dest-MAC: <code>dd:00:00:00:00:03</code> (S)</li>
+          </ul>
+          <p><em>(I praksis ville kilde-IP bli oversatt av NAT på G hvis A er bak en hjemme-NAT, men oppgaven ignorerer det.)</em></p>
+
+          <p><strong>c) Hva endrer seg, og hvorfor:</strong></p>
+          <p>IP-adressene endres <em>ikke</em> hopp for hopp — de er ende-til-ende. MAC-adressene <em>byttes ut</em> ved hver ruter, fordi lenkelaget bare ser ett hopp av gangen. Hvert lenkesegment har sitt eget adresse-rom (Ethernet-MAC, WiFi-MAC) og ruteren oversetter aktivt mellom dem.</p>
+          <p>Dette er grunnen til at ARP er nødvendig på <em>hvert</em> subnett: hvert hopp må slå opp den lokale MAC til neste hopp.</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6 — Lenkelag-adressering</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 4 — UDP-fordeler og use cases -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 4</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · UDP</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">UDP gir verken pålitelighet, flytkontroll eller overbelastningskontroll. Likevel er den valgt over TCP i flere viktige protokoller.</p>
+      <p class="q-text">a) Forklar <em>tre</em> distinkte fordeler UDP gir over TCP. (3p)</p>
+      <p class="q-text">b) For hver av disse tre applikasjonene, forklar hvorfor UDP er valgt: DNS, sanntids-VoIP, og DHCP. (6p)</p>
+      <p class="q-text">c) Hva er en typisk situasjon der UDP-streaming er <em>dårlig</em> egnet, og hvorfor velges HTTP/TCP-streaming i stedet? (1p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Tre fordeler:</strong></p>
+          <ol>
+            <li><strong>Ingen oppsetts­forsinkelse:</strong> UDP har ingen 3-veis håndtrykk. Første pakke kan sendes umiddelbart. Verdifullt for korte transaksjoner og sanntid.</li>
+            <li><strong>Mindre overhead:</strong> 8-byte UDP-header vs 20+ byte TCP-header. Også ingen tilstand i ende­noden — server må ikke holde forbindelses­tilstand per klient.</li>
+            <li><strong>Ingen overbelastnings­kontroll:</strong> applikasjonen styrer raten selv. Bra for sanntid (man vil heller droppe en lyd-pakke enn å bremses ned), dårlig for «snill» nettverks­oppførsel.</li>
+          </ol>
+
+          <p><strong>b) Bruksområder:</strong></p>
+          <ul>
+            <li><strong>DNS:</strong> én kort spørring + ett kort svar. TCP-håndtrykk ville koste mer enn selve transaksjonen. Hvis UDP-svaret tapes, prøver klienten igjen — billigere enn forbindelses­tilstand på server. (TCP brukes ved store svar / soneoverføringer.)</li>
+            <li><strong>VoIP:</strong> sanntids­tale tåler ikke retransmisjoner — en gjenoverført lyd-frame kommer for sent uansett. Bedre å fylle inn med stillhet eller forrige verdi enn å vente.</li>
+            <li><strong>DHCP:</strong> klient har ennå ikke IP-adresse — kan ikke gjøre 3-veis TCP-håndtrykk. Lenkelags-broadcast er nødvendig. UDP er eneste valg.</li>
+          </ul>
+
+          <p><strong>c) UDP-streaming dårlig egnet:</strong></p>
+          <p>Brannmurer i bedriftsnett blokkerer ofte UDP-trafikk (kun port 53 og 67/68 åpne). HTTP over TCP slipper alltid gjennom port 80/443. Dessuten gir TCP automatisk gjennomstrømnings­kontroll og pålitelighet — noe som er gunstig for video­streaming der sluttbrukeren tåler 1–2 sekunders buffer for å unngå hakking.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3 — UDP</a> · <a href="../kap2/innhold.html">Kap. 2 — DNS</a> · eks_4 2.1c</p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 5 — Encapsulation + IP fragmentering -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 5</span>
+      <span class="exam-q__points">11 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · 4 — Kapsling</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) Tegn (eller beskriv i tabell) hvordan en HTTP-GET kapsles ned gjennom alle fire lag, og angi hva slags «header» hvert lag legger til. Skriv navn på minst ett karakteristisk felt per header. (5p)</p>
+      <p class="q-text">b) Anta MTU = 1500 byte på en lenke. Et IP-datagram på 4000 byte (inklusiv 20-byte header) skal sendes. Hvor mange fragmenter blir det, og hva er størrelsen på hvert? (4p)</p>
+      <p class="q-text">c) Hva er forskjellen mellom IPv4- og IPv6-fragmentering, og hvor i nettet skjer den? (2p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Kapsling nedover:</strong></p>
+          <table>
+            <thead><tr><th>Lag</th><th>Header (lagt til)</th><th>Karakteristiske felt</th></tr></thead>
+            <tbody>
+              <tr><td>Applikasjon</td><td>HTTP-meldingen er selv en «header» med metode, URI, header-linjer</td><td><code>GET /</code>, <code>Host:</code>, <code>User-Agent:</code></td></tr>
+              <tr><td>Transport</td><td>TCP-header (20 byte+)</td><td>Kilde-port, dest-port, sekvensnr, ACK-nr, flagg</td></tr>
+              <tr><td>Nettverk</td><td>IP-header (20 byte i IPv4)</td><td>Kilde-IP, dest-IP, TTL, protokoll, total length</td></tr>
+              <tr><td>Lenke</td><td>Ethernet/WiFi-rammehode + trailer</td><td>Kilde-MAC, dest-MAC, EtherType (0x0800 for IPv4), CRC i trailer</td></tr>
+            </tbody>
+          </table>
+          <p>Hvert lag ser bare laget over som «sin payload» — det vet ikke hva den inneholder.</p>
+
+          <p><strong>b) Fragmentering ved MTU 1500:</strong></p>
+          <p>Per fragment kan IP-payload være 1500 − 20 = 1480 byte. Original payload = 4000 − 20 = 3980 byte.</p>
+          <p>3980 / 1480 ≈ 2,69 → trenger <strong>3 fragmenter</strong>:</p>
+          <ul>
+            <li>Fragment 1: 1500 byte total (20 header + 1480 payload), Fragment Offset = 0, More Fragments=1</li>
+            <li>Fragment 2: 1500 byte total, Fragment Offset = 185 (dvs. 1480/8), MF=1</li>
+            <li>Fragment 3: 1060 byte total (20 header + 1040 payload), Offset = 370, MF=0</li>
+          </ul>
+          <p>(Offset uttrykkes i 8-byte enheter, derfor må payload-størrelsen være delelig med 8.)</p>
+
+          <p><strong>c) IPv4 vs IPv6:</strong></p>
+          <p>IPv4 tillater fragmentering ved <em>mellomliggende rutere</em> hvis pakken ikke får plass innenfor MTU. IPv6 tillater <em>kun avsender­fragmentering</em> via en Fragmentation Extension Header — mellomliggende rutere kaster pakken og sender ICMPv6 «Packet Too Big» tilbake. Avsender bruker Path MTU Discovery for å finne minste MTU på stien.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1 — Lagdeling</a> · <a href="../kap4/innhold.html">Kap. 4 — IP-fragmentering</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Vår 2026 · Prediksjon 5 av 7</p>
+    <p style="margin-top: 12px; font-size: 14px;"><a href="../eksamen-prep/">&larr; Tilbake til prediksjons­analysen</a></p>
+  </div>
+</footer>
+<script src="../chat-widget.js"></script>
+<script src="../nav-search.js"></script>
+<script src="exam-quiz.js" defer></script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>
