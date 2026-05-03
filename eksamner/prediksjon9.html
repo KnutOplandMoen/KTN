@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prediksjon 9 — «Mock vår 2026 — eks_5-skinnen» — TTM4100</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container">
+    <a href="../" class="brand">TTM4100</a>
+    <a href="./" class="nav-back">&larr; Alle eksamener</a>
+    <div class="nav-search-wrapper">
+      <svg class="nav-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="nav-search" placeholder="Laster…" autocomplete="off" disabled>
+      <div id="nav-search-results"></div>
+    </div>
+  </div>
+</nav>
+
+<main data-chapter="Prediksjon 9 — Mock vår 2026">
+<header class="hero">
+<div class="container">
+  <div class="eyebrow">Eksamensprediksjon 9 av 11 · våren 2026 · MOCK</div>
+  <h1>Prediksjon <em>9</em> — «Mock vår 2026 — eks_5-skinnen»</h1>
+  <p class="lede">Hvis fagstaben har en fast skinne — og det har de — så er det <strong>eks_5 (vår 2025)</strong> som er malen for vår 2026. Strukturen er nesten identisk år for år: én stor flervalgsblokk, så fire–fem åpne oppgaver i en bestemt rekkefølge. Dette settet kopierer <em>strukturen</em> til eks_5 nøyaktig, men bytter alle tall, navn og scenarier slik at du ikke kan svare fra hukommelse — du må kjøre formelen. Wireshark er fjernet (eks-info bekrefter at det <em>ikke</em> kommer i år) og erstattet med en NTNU-protokollkjede-oppgave. Total: 100 poeng på 4 timer.</p>
+
+  <div class="learn-box">
+    <span class="label">Strategi for dette settet</span>
+    <ul>
+      <li><strong>Tid:</strong> 4 timer for 100 poeng = 2,4 min/poeng. Del I (48p) skal ta ca. 60 min — 4 min per spørsmål. Hvis du står fast: gjett, marker, gå videre.</li>
+      <li><strong>Skriv formel-bannerne:</strong> <code>L/R</code>, <code>(N+P−1)·L/R</code>, <code>2<sup>32−x</sup>−2</code>, <code>N(N−1)/2</code>, <code>F/u<sub>s</sub></code>, <code>F/d<sub>min</sub></code>, <code>NF/(u<sub>s</sub>+Σu<sub>i</sub>)</code>, <code>NF/u<sub>s</sub></code>. Legg dem synlig på pulten først.</li>
+      <li><strong>De fem returoppgavene</strong> i Del II: Flow vs Congestion (8p), NTNU-protokollkjede (12p), Lengste prefiks-match + forwarding/routing-forskjeller (12p), HTTP-ytelse i tre modi (12p), Brannmur (6p). Disse fem dekker mer enn 50 % av Del II-poengene historisk.</li>
+      <li><strong>Realitetssjekk:</strong> hvis svaret ditt på en P2P-oppgave er &lt; 0,1 s eller &gt; flere timer for normale tall — du har sannsynligvis blandet enheter (Mbit vs Mbyte vs MB).</li>
+    </ul>
+  </div>
+</div>
+</header>
+
+<nav class="chapter-toc">
+<div class="container">
+  <ol class="chapter-toc-list">
+    <li><span class="toc-num">I</span><a href="#del1">Del I — Flervalg (48p)</a></li>
+    <li><span class="toc-num">II</span><a href="#del2">Del II — Åpne oppgaver (52p)</a></li>
+  </ol>
+</div>
+</nav>
+
+<!-- ==================== DEL I ==================== -->
+<section id="del1">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del I — Flervalg (Q1)</h2>
+    <span class="del-points">16 spørsmål · 3 poeng per spørsmål · 48 poeng</span>
+  </div>
+  <p class="section-intro">Eks_5 hadde 25 flervalg i Q1 (50p). Vi har komprimert til 16 (3p hver) som dekker samme bredden — fire per kapittel-blokk: Kap 1, Kap 2–3, Kap 4–5, Kap 6–7, Kap 8–9.</p>
+
+  <!-- Q1 — Pakke- vs kretskobling -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 1</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Pakke- vs kretskobling</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket utsagn om pakkesvitsjede vs kretssvitsjede nett er <strong>korrekt</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Et kretssvitsjet nett kan ikke garantere endelig båndbredde for varigheten av en samtale; et pakkesvitsjet nett kan.</li>
+        <li><span class="opt-label">B</span> Forsinkelses­variasjonen mellom pakker i et kretssvitsjet nett er typisk <em>større</em> enn i et pakkesvitsjet nett.</li>
+        <li><span class="opt-label">C</span> Både kretssvitsjede og pakkesvitsjede nett kan tilby forbindelses­orienterte tjenester.</li>
+        <li><span class="opt-label">D</span> Pakkesvitsjing og kretssvitsjing bruker ende­system­adressen på samme måte.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C</span>
+          <p>Kretsen i kretssvitsjing er forbindelses­orientert per definisjon (krever oppsett før data sendes). TCP er forbindelses­orientert <em>over</em> et pakkesvitsjet nett — så pakkesvitsjede nett kan også tilby forbindelses­orienterte tjenester på transportlaget.</p>
+          <p>A er motsatt: <em>kretssvitsjede</em> nett gir båndbredde­garanti, ikke pakkesvitsjede. B er motsatt: kretsens dedikerte ressurs gir <em>liten</em> jitter; det er pakkesvitsjede nett som har stor varias­jon. D er feil — pakkesvitsjing bruker destinasjons­adresse i hver pakke; kretssvitsjing bruker den bare ved oppsett.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1.3 — Pakke- vs kretskobling</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q2 — Flaskehals/throughput -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 2</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Throughput</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En klient laster ned en fil fra en server gjennom én ruter. La <strong>R<sub>1</sub></strong> være raten mellom server og ruter, og <strong>R<sub>2</sub></strong> raten mellom ruter og klient. Server-til-klient maks gjennom­strømning er:</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> (R<sub>1</sub> + R<sub>2</sub>) / 2</li>
+        <li><span class="opt-label">B</span> R<sub>1</sub> + R<sub>2</sub></li>
+        <li><span class="opt-label">C</span> max(R<sub>1</sub>, R<sub>2</sub>)</li>
+        <li><span class="opt-label">D</span> min(R<sub>1</sub>, R<sub>2</sub>)</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: D — min(R<sub>1</sub>, R<sub>2</sub>)</span>
+          <p>Båndbredden langs en sti er bestemt av <em>flaske­halsen</em> — den minste lenken. Hvis R<sub>1</sub> = 1 Gbps og R<sub>2</sub> = 100 Mbps, kan hele stien aldri levere mer enn 100 Mbps i steady state, fordi ruteren ikke får sendt raskere enn R<sub>2</sub>.</p>
+          <p>Felle: A og B antar at ressursene «summerer seg» — det gjør de bare ved parallelle stier (multipath), ikke en enkelt sti.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1.4 — Throughput</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q3 — Krets-tid -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 3</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Linjesvitsj-tid</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En fil på <strong>2 millioner byte</strong> sendes over et kretssvitsjet nett. Det tar <strong>0,8 s</strong> å sette opp en ende-til-ende-krets. Kretsen går gjennom 3 lenker, og hver lenke gir kretsen en rate på <strong>200 kbps</strong>. Propagering ignoreres. Minste tid?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 80,8 s</li>
+        <li><span class="opt-label">B</span> 240 s</li>
+        <li><span class="opt-label">C</span> 240,8 s</li>
+        <li><span class="opt-label">D</span> 0,8 + 6,67 s ≈ 7,5 s</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A — 80,8 s</span>
+          <p>I en krets er raten dedikert ende-til-ende — du betaler L/R kun <strong>én gang</strong> for hele filen, ikke per lenke (kretsen sender kontinuerlig).</p>
+          <p>Setup = 0,8 s. L/R = 2·10<sup>6</sup>·8 / 200·10<sup>3</sup> = 16·10<sup>6</sup> / 200·10<sup>3</sup> = 80 s. Total = 0,8 + 80 = <strong>80,8 s</strong>.</p>
+          <p>Felle: B og C ganger med antall lenker (3·80 = 240) — det ville være pakke­svitsjet store-and-forward, ikke krets.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1.3 — Krets-svitsjing</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q4 — Lagdelings-grunn -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 4</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 1 · Lagdeling</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvorfor brukes <strong>protokoll-lagdeling</strong> i datanett?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Det forhindrer at ett lag dupliserer funksjonalitet fra et lavere lag.</li>
+        <li><span class="opt-label">B</span> Kapsling er den mest effektive måten å overføre data på.</li>
+        <li><span class="opt-label">C</span> Det gjør gjenbruk og oppdatering av komponenter enkelt — modulær struktur.</li>
+        <li><span class="opt-label">D</span> Det holder nettet strukturert slik at det kjører raskere.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C</span>
+          <p>Lagdeling = modulær abstraksjon. Hvert lag løser sin oppgave, eksponerer et grensesnitt opp, bruker tjenestene under. Du kan bytte ut TCP med en annen transport uten å røre HTTP — eller bytte ut WiFi med Ethernet uten å røre IP. Dette gjør utvikling og evolusjon mulig.</p>
+          <p>Felle: D er en utbredt misforståelse. Lagdeling gir <em>strukturell</em> klarhet, men kan faktisk være en <em>ytelses­overhead</em> (kapsling/dekapsling per lag). Den gjør <em>ikke</em> nettet raskere.</p>
+          <p class="ref">Pensum: <a href="../kap1/innhold.html">Kap. 1.5 — Protokoll-lagdeling</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q5 — Applikasjonslag-protokoller -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 5</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · Applikasjonsprotokoller</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken av følgende er <em>ikke</em> en applikasjonslag-protokoll?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> SMTP</li>
+        <li><span class="opt-label">B</span> DNS</li>
+        <li><span class="opt-label">C</span> ARP</li>
+        <li><span class="opt-label">D</span> FTP</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — ARP</span>
+          <p>ARP (Address Resolution Protocol) sitter i lenkelaget — det oversetter IP til MAC innen et lokalt subnett. ICMP er <em>også</em> ikke applikasjon (det er nettverkslag, bæres direkte i IP).</p>
+          <p>SMTP, DNS og FTP er applikasjons­protokoller. Andre eksempler: HTTP, IMAP, POP3, SSH, BitTorrent.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — Applikasjons­laget</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q6 — P2P-tid -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 6</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · P2P</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Distribuér en fil <strong>F = 200 Mbit</strong> til <strong>N = 50 peers</strong> i et P2P-nett. Server­opplastning <code>u<sub>s</sub> = 50 Mbps</code>, hver peer har <code>u<sub>i</sub> = 4 Mbps</code> og <code>d<sub>i</sub> = 8 Mbps</code>. Minste distribusjons­tid?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 4 s</li>
+        <li><span class="opt-label">B</span> 25 s</li>
+        <li><span class="opt-label">C</span> 40 s</li>
+        <li><span class="opt-label">D</span> 200 s</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — 40 s</span>
+          <p>D<sub>p2p</sub> = max(F/u<sub>s</sub>, F/d<sub>min</sub>, NF/(u<sub>s</sub>+Σu<sub>i</sub>)).</p>
+          <ul>
+            <li>F/u<sub>s</sub> = 200/50 = 4 s</li>
+            <li>F/d<sub>min</sub> = 200/8 = 25 s</li>
+            <li>NF/(u<sub>s</sub>+N·u<sub>i</sub>) = 50·200/(50 + 50·4) = 10 000/250 = <strong>40 s</strong></li>
+          </ul>
+          <p>Maks = 40 s. Total system­opplastning er flaskehalsen her.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2.6 — P2P-fildistribusjon</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q7 — TCP back-to-back -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 7</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · TCP-segmenter</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Host A og B kommuniserer over TCP. B har mottatt alle byte opp til byte 600. A sender to segmenter back-to-back. Første segment: sekvensnr=601, kilde-port=4000, dest-port=80, og 80 byte data. Andre segment: 120 byte data. Hva er (sekvensnr, kilde-port, dest-port) i andre segment?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> (681, 4000, 80)</li>
+        <li><span class="opt-label">B</span> (681, 80, 4000)</li>
+        <li><span class="opt-label">C</span> (801, 4000, 80)</li>
+        <li><span class="opt-label">D</span> (601, 4000, 80)</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A — (681, 4000, 80)</span>
+          <p>Sekvensnr i andre segment = sekvensnr<sub>1</sub> + lengde<sub>1</sub> = 601 + 80 = 681. Begge segmenter går samme retning (A→B), så portene er uendret.</p>
+          <p>Felle: B er ACK-en B→A (motsatt retning); C teller med begge segment­lengder; D er identisk med første.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3.5 — TCP-segmenter</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q8 — UDP/TCP usanne påstander -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 8</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · UDP/TCP</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilken av følgende påstander er <strong>SANN</strong>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> FTP bruker UDP som underliggende transport.</li>
+        <li><span class="opt-label">B</span> Både UDP og TCP gir pålitelig data­overføring.</li>
+        <li><span class="opt-label">C</span> Både UDP og TCP er forbindelses­orienterte protokoller.</li>
+        <li><span class="opt-label">D</span> I Go-Back-N kan avsenderen sende flere pakker (når tilgjengelig) uten å vente på ACK fra mottakeren.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: D</span>
+          <p>GBN er nettopp et glide­vindu-skjema: avsenderen kan ha N usent-bekreftede pakker «in flight» samtidig. Det er det som skiller det fra Stop-and-Wait.</p>
+          <p>A er feil — FTP bruker TCP. B er feil — UDP gir best effort, ikke pålitelighet. C er feil — UDP er forbindelses­løs.</p>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3.4 — Reliable Transfer / GBN</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q9 — IP→binær -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 9</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · IP-adressering</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Den binære representasjonen av IP-adressen <strong>129.241.103.12</strong> er:</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 10000001 11110001 01100111 00001100</li>
+        <li><span class="opt-label">B</span> 10000001 11110001 01100110 00001100</li>
+        <li><span class="opt-label">C</span> 10000001 11100001 01100111 00001100</li>
+        <li><span class="opt-label">D</span> 10000001 11110001 01100111 00001000</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A</span>
+          <ul>
+            <li>129 = 128 + 1 = 10000001</li>
+            <li>241 = 128 + 64 + 32 + 16 + 1 = 11110001</li>
+            <li>103 = 64 + 32 + 4 + 2 + 1 = 01100111</li>
+            <li>12 = 8 + 4 = 00001100</li>
+          </ul>
+          <p>Felle: C bytter én bit i andre oktett (241 vs 225); B endrer tredje (103 vs 102); D endrer fjerde (12 vs 8).</p>
+          <p>Tips: husk vekting 128-64-32-16-8-4-2-1 og bygg hver oktett separat.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4.3 — IP-adressering</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q10 — VLSM /23 split -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 10</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · Subnetting</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Du har fått blokken <strong><code>200.23.16.0/23</code></strong>. Du vil tildele et subnett som rommer minst <strong>120 grensesnitt</strong>. Hvilken /x-tildeling fungerer (a.b.c/x)?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> 200.23.16.0/26</li>
+        <li><span class="opt-label">B</span> 200.23.16.0/25</li>
+        <li><span class="opt-label">C</span> 200.23.17.0/25</li>
+        <li><span class="opt-label">D</span> Både B og C</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: D — Både B og C</span>
+          <p>Behovet er minst 120 brukbare verts­adresser. /25 gir 2<sup>7</sup>−2 = 126 brukbare. /26 gir bare 62. Så det må være minst /25.</p>
+          <p>Begge B (200.23.16.0/25) og C (200.23.17.0/25) er gyldige tildelinger innenfor 200.23.16.0/23 (som dekker 16.0 – 17.255 = 512 adresser, splittbar i to /25-er).</p>
+          <p>Felle: A har for få verter (62 &lt; 120).</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4.3 — CIDR og VLSM</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q11 — DHCP -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 11</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · DHCP</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket utsagn om <strong>DHCP</strong> er <em>FEIL</em>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> DHCP er en klient-server-protokoll.</li>
+        <li><span class="opt-label">B</span> DHCP lar en host motta en IP-adresse automatisk.</li>
+        <li><span class="opt-label">C</span> DHCP gjør det <em>umulig</em> for en host å motta samme IP hver gang den kobles til.</li>
+        <li><span class="opt-label">D</span> DHCP bruker lenkelags-broadcast ved oppstart.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — DET ER FEIL</span>
+          <p>DHCP gir typisk samme IP til samme host ved «sticky» lease (basert på MAC). Det <em>er</em> mulig å få samme IP hver gang. Påstand C er altså <em>usann</em> — derfor er den «feil»-utsagnet.</p>
+          <p>A, B, D er alle korrekte. DHCP discover sendes som broadcast fordi klienten ikke har IP enda.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4.3 — DHCP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q12 — IPv4/IPv6 -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 12</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 4 · IPv4/IPv6</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket utsagn om <strong>IPv4 og IPv6</strong> er <em>FEIL</em>?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> IPv6 har et mye større adresserom enn IPv4.</li>
+        <li><span class="opt-label">B</span> IPv4-headeren har et checksum-felt; IPv6-headeren har det ikke.</li>
+        <li><span class="opt-label">C</span> IPv6 er mindre pålitelig enn IPv4 til å transportere datagrammer.</li>
+        <li><span class="opt-label">D</span> Både IPv4 og IPv6 er forbindelses­løse.</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: C — DET ER FEIL</span>
+          <p>Begge er forbindelses­løse, begge gir best effort. IPv6 er ikke <em>mindre</em> pålitelig — den er like best-effort som IPv4. Pålitelighet er TCPs ansvar i begge tilfeller.</p>
+          <p>A, B, D er alle korrekte. IPv6 lar heller ikke <em>mellomliggende</em> rutere fragmentere; det er kun avsenderen som kan, basert på Path MTU Discovery.</p>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4.3 — IPv6</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q13 — ARP -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 13</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 6 · ARP</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Det er <strong>____</strong> sin oppgave å oversette mellom IP-adresser og MAC-adresser.</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> ARP (Address Resolution Protocol)</li>
+        <li><span class="opt-label">B</span> DNS (Domain Name System)</li>
+        <li><span class="opt-label">C</span> NAT (Network Address Translator)</li>
+        <li><span class="opt-label">D</span> ICMP</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: A — ARP</span>
+          <p>ARP er en lenkelag-protokoll som vedlikeholder en lokal IP→MAC-tabell. Når en host vil sende til IP X i samme subnett, ARP-broadcaster den «hvem har IP X?». Hosten med IP X svarer med sin MAC. Så kan rammen sendes lag-2 med korrekt MAC.</p>
+          <p>Felle: DNS oversetter <em>navn</em> til IP, ikke IP til MAC. NAT oversetter mellom IP-adresser (privat/offentlig).</p>
+          <p class="ref">Pensum: <a href="../kap6/innhold.html">Kap. 6.4 — ARP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q14 — 802.11 MAC elementer -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 14</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 7 · 802.11 MAC</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket av følgende elementer er <strong>IKKE</strong> en del av 802.11 MAC for trådløse LAN?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> CSMA/CA (Carrier Sense Multiple Access with Collision Avoidance)</li>
+        <li><span class="opt-label">B</span> CSMA/CD (Carrier Sense Multiple Access with Collision Detection)</li>
+        <li><span class="opt-label">C</span> Eksplisitt ACK</li>
+        <li><span class="opt-label">D</span> RTS/CTS (Request-to-Send / Clear-to-Send)</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B — CSMA/CD</span>
+          <p>WiFi bruker <em>CSMA/CA</em>, ikke CSMA/CD. To grunner: (1) signal-asymmetri — mottatt signal er typisk mye svakere enn sendt, så det er kostbart å detektere kollisjon mens man sender, og (2) skjult terminal og fading betyr at en kollisjon ved mottakeren ikke nødvendigvis kan oppdages av senderne.</p>
+          <p>CSMA/CD er for kabel-Ethernet, hvor sender kan lytte mens den sender og avbryte raskt ved kollisjon.</p>
+          <p>A, C og D er alle del av 802.11. DIFS (Distributed Inter-Frame Space) er også med.</p>
+          <p class="ref">Pensum: <a href="../kap7/innhold.html">Kap. 7.3 — 802.11 MAC</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q15 — Sikkerhetsegenskaper -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 15</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 8 · Sikkerhetsmål</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Hvilket av følgende er <strong>IKKE</strong> en ønsket egenskap for sikker kommunikasjon?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Konfidensialitet</li>
+        <li><span class="opt-label">B</span> Meldings­integritet</li>
+        <li><span class="opt-label">C</span> Endepunkt-autentisering</li>
+        <li><span class="opt-label">D</span> Offentlig­nøkkel-kryptografi</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: D — Offentlig­nøkkel-kryptografi</span>
+          <p>Offentlig nøkkel er et <em>verktøy</em> til å oppnå konfidensialitet/integritet/autentisering — ikke et mål i seg selv. Du kan også oppnå disse målene med <em>symmetrisk</em> kryptografi.</p>
+          <p>De fire klassiske sikkerhetsmålene er: konfidensialitet, meldings­integritet, autentisering, og operasjonell sikkerhet (tilgjengelighet, beskyttelse mot DoS).</p>
+          <p>Felle: D «høres bra ut» fordi PKI er sentralt i moderne sikkerhet, men spørsmålet ber om mål, ikke teknikker.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.1 — Hva er sikkerhet</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Q16 — Playout-buffer -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Spørsmål 16</span>
+      <span class="exam-q__points">3 poeng</span>
+      <span class="exam-q__topic">Kap. 9 · Playout-buffer</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En videoserver sender første blokk på tid <code>t<sub>0</sub></code>, andre på <code>t<sub>0</sub>+Δ</code>, tredje på <code>t<sub>0</sub>+2Δ</code>, … Når klienten har plukket opp avspilling skal hver blokk spilles av Δ tids­enheter etter forrige. Klient starter avspilling ved <code>t<sub>1</sub>+2Δ</code> — altså med 2Δ playout-forsinkelse mer enn første blokks ankomsttid <code>t<sub>1</sub></code>. Hvilke av blokkene 1–8 (1-indekserte) <strong>rekker frem</strong> i tide for sin avspilling, gitt at blokk i ankommer i intervallet <code>[t<sub>1</sub> + (i−1)Δ, t<sub>1</sub> + (i−1)Δ + jitter<sub>i</sub>]</code> der jitter (i tids­enheter Δ) for de 8 blokkene er hhv. 0, 1, 4, 1, 2, 0, 3, 1?</p>
+      <ul class="exam-q__opts">
+        <li><span class="opt-label">A</span> Bare blokk 1</li>
+        <li><span class="opt-label">B</span> Blokkene 1, 2, 4, 5, 6, 8 (alle med jitter ≤ 2Δ)</li>
+        <li><span class="opt-label">C</span> Blokkene 1, 2, 4, 6, 8</li>
+        <li><span class="opt-label">D</span> Alle 8 blokkene</li>
+      </ul>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <span class="fasit-correct">Riktig svar: B — Blokkene 1, 2, 4, 5, 6, 8</span>
+          <p>Avspillingstid for blokk i = <code>t<sub>1</sub> + 2Δ + (i−1)Δ</code>. Forventet ankomst = <code>t<sub>1</sub> + (i−1)Δ</code>. Tilgjengelig buffer = avspilling − forventet ankomst = <strong>2Δ</strong>.</p>
+          <p>En blokk «rekker frem» hvis jitter ≤ 2Δ:</p>
+          <ul>
+            <li>Blokk 1 (jitter 0): ✓</li>
+            <li>Blokk 2 (jitter 1): ✓</li>
+            <li>Blokk 3 (jitter 4): ✗ for sent</li>
+            <li>Blokk 4 (jitter 1): ✓</li>
+            <li>Blokk 5 (jitter 2): ✓ (akkurat på grensen)</li>
+            <li>Blokk 6 (jitter 0): ✓</li>
+            <li>Blokk 7 (jitter 3): ✗ for sent</li>
+            <li>Blokk 8 (jitter 1): ✓</li>
+          </ul>
+          <p>Tips: playout-buffer = «forsinkelses­putten» som tillater jitter opp til buffer­størrelsen.</p>
+          <p class="ref">Pensum: <a href="../kap9/innhold.html">Kap. 9.3 — Playout-buffer</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+
+<!-- ==================== DEL II ==================== -->
+<section id="del2">
+<div class="container">
+
+  <div class="exam-del-header">
+    <h2>Del II — Åpne oppgaver</h2>
+    <span class="del-points">5 oppgaver · 52 poeng totalt</span>
+  </div>
+  <p class="section-intro">Følger eks_5-skinnen: Q2 Flow vs Cong, Q3 protokoll-kjede (erstatter Wireshark), Q4 forwarding/routing, Q5 HTTP, Q6 brannmur. Vis utregning — sensor gir delpoeng for korrekt metode selv ved tallfeil.</p>
+
+  <!-- Oppgave 1 (Q2) — Flow vs Congestion control -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 1</span>
+      <span class="exam-q__points">10 poeng</span>
+      <span class="exam-q__topic">Kap. 3 · Flow vs Congestion</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) Forklar kort <strong>tre nøkkelforskjeller</strong> mellom flytkontroll og overbelastnings­kontroll i TCP. (6p)</p>
+      <p class="q-text">b) Foruten transport­laget — hvilke andre lag (fysisk, lenke, nettverk) har lignende konsept(er)? Begrunn kort. (4p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Tre forskjeller flow vs congestion control:</strong></p>
+          <ol>
+            <li><strong>Hvem styres:</strong> flytkontroll regulerer avsenderen mot <em>mottakeren</em> (mottakers buffer skal ikke fylles); overbelastnings­kontroll regulerer avsenderen mot <em>nettverket</em> (rutere/lenker skal ikke overbelastes).</li>
+            <li><strong>Signal:</strong> flytkontroll bruker <code>rwnd</code>-feltet i ACK-headeren — mottakeren sier eksplisitt hvor mye plass den har. Overbelastnings­kontroll bruker indirekte signaler — pakketap (timeout/3 dup ACK) og evt. ECN.</li>
+            <li><strong>Mekanisme:</strong> flytkontroll er en hard øvre grense (sender følger <code>rwnd</code> direkte). Overbelastnings­kontroll er probing — TCP øker <code>cwnd</code> til den ser tap, så reduserer (AIMD: additive increase, multiplicative decrease).</li>
+          </ol>
+          <p><strong>b) Andre lag:</strong></p>
+          <ul>
+            <li><strong>Lenke­laget</strong> har flytkontroll i pålitelige protokoller — Stop-and-Wait, Go-Back-N, Selective Repeat — der mottakers vindu begrenser senderen. Overbelastnings­kontroll-lignende konsept finnes i ATM-ABR (Available Bit Rate), som var et tidlig eksempel på eksplisitt rate-feedback. Også 802.11 har back-off ved kollisjon, som er en form for adaptive rate-regulering.</li>
+            <li><strong>Nettverkslaget</strong> har <em>ECN</em> (Explicit Congestion Notification) som et signal som rutere kan sette i IP-headeren — TCP-mottakeren reflekterer dette tilbake til avsender. Klassisk drop-tail og RED i ruter-køer er også «trafikk­regulering» i en bredere forstand.</li>
+            <li><strong>Fysisk lag</strong> har ingen direkte analog. Adaptiv modulasjon og koding (WiFi/4G/5G) er <em>rate-tilpasning</em> til kanal­kvalitet, ikke trengsels­håndtering i streng forstand.</li>
+          </ul>
+          <p class="ref">Pensum: <a href="../kap3/innhold.html">Kap. 3.7 — TCP overbelastnings­kontroll</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 2 (Q3) — NTNU-protokollkjede -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 2</span>
+      <span class="exam-q__points">12 poeng</span>
+      <span class="exam-q__topic">Kap. 2–8 · Protokollkjede</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Du er nyansatt på NTNU og kommer til kontoret for første gang. Du plugger inn nettverks­kabelen i veggen, åpner Outlook og sender en e-post til <code>kompis@uib.no</code>. Beskriv stegene fra du plugger inn kabelen til e-posten er på vei mot UiB. For hvert steg, oppgi:</p>
+      <ul>
+        <li>Hovedprotokollen som brukes</li>
+        <li>Hvilket lag protokollen tilhører</li>
+        <li>Hva som oppnås</li>
+      </ul>
+      <p class="q-text">Inkluder minst de stegene som trengs for å få: (i) IP-konfigurasjon, (ii) lenkelags-adresse til første hopp, (iii) IP-adresse til UiB sin mailserver, (iv) selve e-post-overføringen. Hvordan henter mottakeren ut e-posten?</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>Steg-for-steg-kjede:</strong></p>
+          <ol>
+            <li><strong>DHCP</strong> — applikasjonslag (over UDP). Klienten broadcaster DHCP discover på lenke­laget. NTNU sin DHCP-server svarer med tilbud (offer); klient ber om (request); server bekrefter (ack). Klient mottar IP-adresse, subnet-maske, default gateway-IP og IP til DNS-server. (4-stegs handshake.)</li>
+            <li><strong>ARP</strong> — lenkelag. Klienten skal sende ut til DNS-server eller default gateway, men har bare deres IP, ikke MAC. ARP-broadcast «hvem har IP X?» og hosten/ruteren svarer med MAC. ARP-tabellen blir cachet.</li>
+            <li><strong>DNS</strong> — applikasjonslag (over UDP). Klienten spør sin DNS-server: «hva er MX-recordet for uib.no?» (mailserver-record). Lokal DNS-server kontakter rotservere → no-TLD-server → autoritativ DNS for uib.no → returnerer mailserverens hostname og IP. Klienten kan nå nå SMTP-serveren for utsendelse.</li>
+            <li><strong>SMTP</strong> — applikasjonslag (over TCP, port 25/587). Outlook (eller NTNU sin SMTP-relayer) åpner TCP til <code>smtp.uib.no</code> og bruker SMTP-kommandoer (HELO, MAIL FROM, RCPT TO, DATA). Vanligvis går mailen via NTNU sin egen SMTP-tjener først, som gjør et nytt SMTP-oppslag mot uib.no sin innkommende SMTP/MX.</li>
+            <li><strong>(Valgfritt)</strong>: Hvis NTNU bruker autentisering på SMTP-relayen og kryptering — det skjer typisk via SMTP submission på port 587 + STARTTLS, eller via SMTPS på port 465. Da brukes <strong>TLS</strong> (kap 8.6) på toppen av TCP for konfidensialitet.</li>
+            <li><strong>IMAP</strong> eller <strong>POP3</strong> (eller <strong>HTTP</strong> over webmail) — applikasjonslag, over TCP. Mottakeren på UiB henter mailen fra sin egen mailserver enten ved hjelp av IMAP (lar mailen ligge på server, mappe-orientert), POP3 (last ned + slett), eller HTTPS hvis han bruker webmail.</li>
+          </ol>
+          <p><strong>Lag-oversikt (fra topp):</strong></p>
+          <ul>
+            <li><em>Applikasjon:</em> DHCP, DNS, SMTP, IMAP/POP3/HTTP</li>
+            <li><em>Transport:</em> UDP (DHCP, DNS), TCP (SMTP, IMAP, HTTP)</li>
+            <li><em>Nettverk:</em> IP, ICMP</li>
+            <li><em>Lenke:</em> Ethernet/802.3 (eller WiFi/802.11), ARP</li>
+          </ul>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2 — E-post</a> · <a href="../kap4/innhold.html">Kap. 4.3 — DHCP</a> · <a href="../kap6/innhold.html">Kap. 6.4 — ARP</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 3 (Q4) — Forwarding/Routing -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 3</span>
+      <span class="exam-q__points">12 poeng</span>
+      <span class="exam-q__topic">Kap. 4–5 · Forwarding & Routing</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">En ruter har følgende videresendings­tabell:</p>
+      <table>
+        <thead><tr><th>Adresse/maske</th><th>Neste hopp</th></tr></thead>
+        <tbody>
+          <tr><td>129.241.0.0/16</td><td>Interface 0</td></tr>
+          <tr><td>129.241.100.0/22</td><td>Interface 1</td></tr>
+          <tr><td>129.241.103.0/24</td><td>Interface 2</td></tr>
+          <tr><td>10.0.0.0/8</td><td>Interface 3</td></tr>
+          <tr><td>Default</td><td>Interface 4</td></tr>
+        </tbody>
+      </table>
+      <p class="q-text">a) For hver av følgende destinasjons-IP, hvilket interface velges? Vis hvilket prefiks som matcher og hvorfor det er lengst. (6p)</p>
+      <ol>
+        <li>129.241.103.55</li>
+        <li>129.241.101.10</li>
+        <li>129.241.50.5</li>
+        <li>10.20.30.40</li>
+        <li>8.8.8.8</li>
+      </ol>
+      <p class="q-text">b) List <strong>tre</strong> nøkkelforskjeller mellom <em>forwarding</em> og <em>routing</em>. (6p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Lengste prefiks-match:</strong></p>
+          <table>
+            <thead><tr><th>IP</th><th>Matchende prefiks(er)</th><th>Lengst</th><th>Interface</th></tr></thead>
+            <tbody>
+              <tr><td>129.241.103.55</td><td>/16, /22, /24</td><td>/24</td><td><strong>Interface 2</strong></td></tr>
+              <tr><td>129.241.101.10</td><td>/16, /22</td><td>/22</td><td><strong>Interface 1</strong></td></tr>
+              <tr><td>129.241.50.5</td><td>/16</td><td>/16</td><td><strong>Interface 0</strong></td></tr>
+              <tr><td>10.20.30.40</td><td>/8</td><td>/8</td><td><strong>Interface 3</strong></td></tr>
+              <tr><td>8.8.8.8</td><td>(ingen)</td><td>default</td><td><strong>Interface 4</strong></td></tr>
+            </tbody>
+          </table>
+          <p>Forklaring 129.241.101.10: 101 er ikke i 103.0/24, men 101 er i 100.0/22 (som dekker 100, 101, 102, 103). Så /22 matcher, /24 ikke.</p>
+
+          <p><strong>b) Tre nøkkelforskjeller forwarding vs routing:</strong></p>
+          <ol>
+            <li><strong>Tids­skala:</strong> forwarding skjer per pakke i nanosekunder (datapath, ASIC/maskinvare). Routing kjører i bakgrunnen i sekunder eller minutter (kontroll­plan, programvare).</li>
+            <li><strong>Lokasjon i ruteren:</strong> forwarding skjer i datapath (input port → switch fabric → output port). Routing skjer i kontroll­planet, hvor ruteren snakker med andre rutere via OSPF/BGP/RIP og bygger ruting­tabellen.</li>
+            <li><strong>Avhengighets­retning:</strong> routing <em>fyller</em> videresendings­tabellen; forwarding <em>bruker</em> den. Forwarding er lokal (denne ruterens valg av utport for én pakke). Routing er global (banevalg gjennom hele nettet).</li>
+          </ol>
+          <p class="ref">Pensum: <a href="../kap4/innhold.html">Kap. 4.1 — Forwarding</a> · <a href="../kap5/innhold.html">Kap. 5 — Routing</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 4 (Q5) — HTTP-ytelse -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 4</span>
+      <span class="exam-q__points">12 poeng</span>
+      <span class="exam-q__topic">Kap. 2 · HTTP-ytelse</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">Du klikker en lenke. Side er <strong>300 kbit</strong> og inneholder <strong>10 innebygde objekter à 100 kbit</strong>. Server har <strong>RTT = 200 ms</strong> til klienten. Lenke = <strong>50 Mbps</strong>. GET-meldingen har neglisjerbar overførings­tid. Inkluder TCP-håndtrykket (1 RTT) for hver ny forbindelse.</p>
+      <p class="q-text">a) <strong>Non-persistent HTTP, ingen parallelle</strong>. Vis utregningen for total responstid. (4p)</p>
+      <p class="q-text">b) <strong>Non-persistent HTTP, parallelle</strong> (én forbindelse per innebygd objekt; base først). (4p)</p>
+      <p class="q-text">c) <strong>Persistent HTTP uten pipelining</strong>. (4p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>Forarbeid:</strong></p>
+          <ul>
+            <li>L<sub>base</sub>/R = 300·10<sup>3</sup> / 50·10<sup>6</sup> = 6 ms</li>
+            <li>L<sub>obj</sub>/R = 100·10<sup>3</sup> / 50·10<sup>6</sup> = 2 ms</li>
+          </ul>
+          <p>Per objekt non-persistent: 1 RTT (TCP-oppsett) + 1 RTT (request-respons setup) + L/R = 2·RTT + L/R. Det er den klassiske formelen: <strong>2·RTT + L/R</strong>.</p>
+
+          <p><strong>a) Non-persistent uten parallell:</strong></p>
+          <p>Total = (2·RTT + L<sub>base</sub>/R) + 10·(2·RTT + L<sub>obj</sub>/R) = (400 + 6) + 10·(400 + 2) = 406 + 4 020 = <strong>4 426 ms</strong> ≈ 4,4 s.</p>
+
+          <p><strong>b) Non-persistent med parallell:</strong></p>
+          <p>Base hentes alene (ingen alternativ): 2·RTT + L<sub>base</sub>/R = 406 ms. Så åpnes 10 parallelle forbindelser samtidig for de 10 innebygde objektene. Hver tar 2·RTT + L<sub>obj</sub>/R = 402 ms (parallell tid = max-tid for én av dem, ikke sum).</p>
+          <p>Total = 406 + 402 = <strong>808 ms</strong>.</p>
+          <p><em>Forenkling:</em> her tilgir vi at de 10 parallelle TCP-strømmene må dele 50 Mbps-lenken. Hvis vi tar høyde for at båndbredde deles, kan total overførings­tid for innebygde objekter justeres opp.</p>
+
+          <p><strong>c) Persistent uten pipelining:</strong></p>
+          <p>1 TCP-oppsett (1 RTT = 200 ms) + base (1 RTT + L<sub>base</sub>/R = 206) + 10·(1 RTT + L<sub>obj</sub>/R = 202).</p>
+          <p>Total = 200 + 206 + 10·202 = 200 + 206 + 2 020 = <strong>2 426 ms</strong> ≈ 2,4 s.</p>
+
+          <p><strong>Oppsummering:</strong> Non-persistent uten parallell (4 426) → med parallell (808) → persistent uten pipelining (2 426). Med <em>pipelining</em> ville persistent vært enda kjappere: 200 + 200 + 6 + 10·2 = 426 ms.</p>
+          <p class="ref">Pensum: <a href="../kap2/innhold.html">Kap. 2.2 — HTTP-ytelse</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- Oppgave 5 (Q6) — Brannmur -->
+  <article class="exam-q">
+    <header class="exam-q__head">
+      <span class="exam-q__num">Oppgave 5</span>
+      <span class="exam-q__points">6 poeng</span>
+      <span class="exam-q__topic">Kap. 8.9 · Brannmur</span>
+    </header>
+    <div class="exam-q__body">
+      <p class="q-text">a) En brannmur har <strong>tre mål</strong>. Hva er de? (3p)</p>
+      <p class="q-text">b) Forklar kort forskjellen mellom <strong>traditional (stateless) packet filter</strong> og <strong>stateful packet filter</strong>. Hvorfor er stateful tryggere mot scenarier der angriperen prøver å «sneake inn» på en eksisterende forbindelse? (3p)</p>
+      <details class="fasit-details">
+        <summary>Vis fasit</summary>
+        <div class="fasit-body">
+          <p><strong>a) Tre mål for en brannmur:</strong></p>
+          <ol>
+            <li><strong>All trafikk inn/ut må gjennom brannmuren</strong> — det skal ikke være alternative stier rundt.</li>
+            <li><strong>Bare autorisert trafikk slipper gjennom</strong> — definert av en lokal sikkerhets­policy (ACL: tillat HTTP/HTTPS inn til DMZ-server, blokker SMB inn fra Internett, …).</li>
+            <li><strong>Brannmuren selv må være motstands­dyktig mot kompromittering</strong> — herdet OS, minimalt med kode, oppdatert, ikke offentlig­vendt admin-grensesnitt.</li>
+          </ol>
+
+          <p><strong>b) Stateless vs stateful packet filter:</strong></p>
+          <ul>
+            <li><strong>Stateless</strong>: hver pakke evalueres isolert mot ACL-en. ACL ser typisk på (kilde-IP, dest-IP, kilde-port, dest-port, TCP-flagg, protokoll). Det vet <em>ikke</em> om pakken hører til en eksisterende forbindelse.</li>
+            <li><strong>Stateful</strong>: brannmuren holder en <strong>connection table</strong> over etablerte forbindelser. Når en TCP SYN går ut innenfra, registreres flow-en. Returpakker (med ACK) sjekkes mot tabellen — bare pakker som hører til en kjent flyt slipper inn.</li>
+          </ul>
+          <p>Hvorfor stateful er tryggere: en angriper utenfra kan sette TCP-flagg som ACK manuelt for å imitere «svar på etablert forbindelse». En stateless-filter som tillater «alle pakker med ACK-flagg» slipper dem inn. Stateful sjekker i tillegg om det faktisk <em>finnes</em> en flyt — og blokkerer ellers.</p>
+          <p class="ref">Pensum: <a href="../kap8/innhold.html">Kap. 8.9 — Brannmurer</a></p>
+        </div>
+      </details>
+    </div>
+  </article>
+
+</div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="ornament">&#10043; &#10043; &#10043;</div>
+    <p>NTNU · TTM4100 · Vår 2026 · Prediksjon 9 av 11 — Mock-eksamen</p>
+    <p style="margin-top: 12px; font-size: 14px;"><a href="../eksamen-prep/">&larr; Tilbake til prediksjons­analysen</a></p>
+  </div>
+</footer>
+<script src="../chat-widget.js"></script>
+<script src="../nav-search.js"></script>
+<script src="exam-quiz.js" defer></script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>
