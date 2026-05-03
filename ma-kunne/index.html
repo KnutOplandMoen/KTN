@@ -200,7 +200,7 @@
 <div class="container">
   <div class="eyebrow">Eksamensforberedelse · TTM4100</div>
   <h1>Må <em>kunne</em></h1>
-  <p class="lede">Tema og oppgavetyper som har gått igjen på de fire siste eksamenene (Eks 1–4) — det du absolutt bør sitte med på ryggmargen før du går inn i eksamenslokalet. Wireshark-spørsmål er <em>ikke</em> med i år, så de er deprioritert her.</p>
+  <p class="lede">Tema og oppgavetyper som har gått igjen på de fem siste eksamenene (Eks 1–5) — det du absolutt bør sitte med på ryggmargen før du går inn i eksamenslokalet. Wireshark-spørsmål er <em>ikke</em> med i år, så de er deprioritert her.</p>
 </div>
 </header>
 
@@ -1367,6 +1367,312 @@
       </li>
 
       <!-- ====== ▲ END EKS 4 ▲ ====== -->
+
+      <!-- ============ ▼ EKS 5 ▼ ============ -->
+
+      <li data-card>
+        <div data-fc-front>Hovedgrunnen til at <strong>protokoll-lagdeling</strong> brukes i datanett?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> Det <em>tillater enkel re-bruk og oppdatering av komponenter</em> i implementasjonen. Modulær struktur med klare grensesnitt mellom lag.</p>
+          <p><strong>Feller:</strong></p>
+          <ul>
+            <li>«Hindrer at ett lag dupliserer funksjonalitet under» — ikke hovedgrunnen.</li>
+            <li>«Encapsulation er den mest effektive måten å overføre data på» — feil.</li>
+            <li>«Holder strukturen så nettet kjører raskere» — feil; ikke en ytelsesfordel.</li>
+          </ul>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>1 MB fil, kretskoblet nett. Oppsett 0,5 s, 2 lenker à 100 kbps. Minimum tid?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>80,5 s</strong>.</p>
+          <p><strong>Regn:</strong> Tid = oppsettstid + L/R for hele filen.</p>
+          <ul>
+            <li>L/R = 10⁶ · 8 / (100·10³) = 8·10⁶/10⁵ = 80 s.</li>
+            <li>+ 0,5 s oppsett = 80,5 s.</li>
+          </ul>
+          <p><strong>Felle:</strong> Linjesvitsj <em>ikke</em> pakkesvitsj — du legger ikke på L/R per lenke.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>1 MB fil pakkesvitsjet, 1000 byte/payload per pakke, 2 svitsjer mellom A og B, alle lenker 10 Mbps. Minimum tid?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>0,8008 s</strong>.</p>
+          <p><strong>Regn:</strong> P = 1000 pakker, N = 3 lenker (A→sw1, sw1→sw2, sw2→B), L = 8000 bits.</p>
+          <p>Tid = (N + P − 1) · L/R = (3 + 1000 − 1) · 8000 / 10⁷ = 1002 · 0,0008 ≈ <strong>0,8016 s</strong>.</p>
+          <p>Eks 5 har «2 svitsjer» = 2 hopp i pipelining-formelen avhengig av tolking — sjekk at antall lenker stemmer med tegningen.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke av disse er <strong>applikasjonslag</strong>-protokoller? ICMP · DNS · SMTP · ARP · FTP</div>
+        <div data-fc-back>
+          <p><strong>Applikasjonslag:</strong> DNS, SMTP, FTP.</p>
+          <p><strong>Andre lag:</strong></p>
+          <ul>
+            <li>ICMP — nettverkslag (bæres i IP for feil/diagnose).</li>
+            <li>ARP — lenkelag (oversetter IP ↔ MAC).</li>
+          </ul>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilken protokoll har som hovedoppgave å oversette <strong>hostnames til IP-adresser</strong>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>DNS</strong> (Domain Name System).</p>
+          <p><strong>Felle-alternativer:</strong></p>
+          <ul>
+            <li>ARP — IP ↔ MAC, ikke navn.</li>
+            <li>NAT — bytter IP/port, ikke navn.</li>
+            <li>FTP — filoverføring.</li>
+            <li>ICMP — feil/diagnose.</li>
+          </ul>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front><strong>P2P-fildistribusjon:</strong> 125 MB til 100 peers. Server u<sub>s</sub>=100 Mbps. Hver peer u<sub>i</sub>=d<sub>i</sub>=10 Mbps. Minimum tid?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>≈ 100 s</strong> (begrenset av tregeste peer-nedlasting).</p>
+          <p>F = 125·8 = 1000 Mbit. Formel: <code>D = max(F/u<sub>s</sub>, F/d<sub>min</sub>, N·F/(u<sub>s</sub>+Σu<sub>i</sub>))</code>.</p>
+          <ul>
+            <li>F/u<sub>s</sub> = 1000/100 = 10 s.</li>
+            <li>F/d<sub>min</sub> = 1000/10 = 100 s.</li>
+            <li>N·F/(u<sub>s</sub>+Nu<sub>i</sub>) = 100·1000/(100+1000) ≈ 90,9 s.</li>
+            <li>Maks = <strong>100 s</strong>.</li>
+          </ul>
+          <p><strong>Sammenlign klient-server:</strong> 100·1000/100 = 1000 s. P2P er 10× raskere her.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Host A sender to TCP-segmenter back-to-back til B. Første: seq=249, src=502, dst=80, 48 byte data. Hva er (seq, src, dst) i det andre segmentet (med 64 byte data)?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> (seq=297, src=502, dst=80).</p>
+          <p><strong>Hvorfor:</strong> Sekvensnr i andre segment = sekvensnr<sub>1</sub> + lengde<sub>1</sub> = 249 + 48 = 297. Source/dest-port byttes <em>ikke</em> i samme retning (A→B), så de er fortsatt 502 og 80.</p>
+          <p><strong>Felle:</strong> Bytte src/dst (de byttes om i ACK-retningen B→A, ikke i samme retning).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke av disse er <strong>usanne</strong>? a) FTP bruker UDP. b) Både UDP og TCP er pålitelige. c) Både er forbindelsesorienterte. d) Nonpersistent HTTP kan bære to GET-meldinger på én TCP-forbindelse. e) Go-back-N tillater flere pakker uten ACK.</div>
+        <div data-fc-back>
+          <p><strong>Usann:</strong> a, b, c, d.</p>
+          <ul>
+            <li>a) FTP bruker <em>TCP</em>, ikke UDP.</li>
+            <li>b) UDP er <em>ikke</em> pålitelig.</li>
+            <li>c) UDP er <em>forbindelsesløs</em>.</li>
+            <li>d) Nonpersistent betyr <em>én GET per TCP-forbindelse</em> — ikke to.</li>
+            <li>e) Sann — Go-back-N er pipelinet.</li>
+          </ul>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Konverter IP-adressen <code>193.32.216.9</code> til 32-bits binær.</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <code>11000001 00100000 11011000 00001001</code>.</p>
+          <ul>
+            <li>193 = 128+64+1 → <code>11000001</code></li>
+            <li>32 = 32 → <code>00100000</code></li>
+            <li>216 = 128+64+16+8 → <code>11011000</code></li>
+            <li>9 = 8+1 → <code>00001001</code></li>
+          </ul>
+          <p><strong>Felle:</strong> Pass på 9 vs 8 i siste oktett (00001001 vs 00001000).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Du har <code>214.97.254.0/23</code> og må støtte 250 interfaces. Hvilke av disse er gyldige tildelinger? a) 214.97.253/24 b) 214.97.254/24 c) 214.97.255/24 d) 214.97.253/25 e) 214.97.254/25</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> b og c.</p>
+          <p><strong>Hvorfor:</strong> /23 dekker tredje-oktett 254 og 255 (de to /24-blokkene). 253 er utenfor blokken. /25 gir bare 126 brukbare adresser — ikke nok for 250.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>DHCP — sann/usann: a) Klient-server. b) Auto-tildeler IP. c) En host kan <em>ikke</em> få samme IP igjen. d) Avhengig av lenkelags-broadcast.</div>
+        <div data-fc-back>
+          <p><strong>Sant:</strong> a, b, d.</p>
+          <p><strong>Usant:</strong> c — sticky lease kan gi samme IP igjen og igjen.</p>
+          <p><strong>Hvorfor d:</strong> DHCP Discover sendes som broadcast siden klienten ikke har IP enda.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>IPv4 vs IPv6 — hvilke er <em>sanne</em>? a) IPv6 har større adresserom. b) IPv4 har checksum, IPv6 ikke. c) IPv6 mindre pålitelig. d) IPv6 tillater ikke fragmentering ved mellomliggende rutere. e) Begge er forbindelsesløse.</div>
+        <div data-fc-back>
+          <p><strong>Sanne:</strong> a, b, d, e.</p>
+          <p><strong>Usann:</strong> c — leveringsegenskapene er like (begge best-effort).</p>
+          <p><strong>d-utdyping:</strong> I IPv6 kan kun avsenderen fragmentere (med Fragmentation extension header). Mellomliggende rutere kaster pakker som ikke passer MTU og sender ICMPv6 «Packet Too Big» tilbake.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke av disse er del av <strong>802.11 MAC</strong>? a) CSMA/CA b) CSMA/CD c) ACK d) RTS/CTS e) DIFS</div>
+        <div data-fc-back>
+          <p><strong>Del av 802.11 MAC:</strong> a (CSMA/CA), c (ACK), d (RTS/CTS — valgfritt), e (DIFS).</p>
+          <p><strong>IKKE del av:</strong> b — CSMA/CD brukes <em>ikke</em> i WiFi (kan ikke detektere kollisjon trådløst).</p>
+          <p><strong>DIFS</strong> = Distributed Inter-Frame Space — minimum tid stasjoner må vente etter at kanalen blir ledig før de kan sende.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke påstander om 4G og 5G er <em>sanne</em>? a) 5G har høyere peak-bitrate. b) 5G fysisk lag er kompatibelt med 4G. c) Begge støtter mobilitet. d) Begge har kontroll-/brukerplan-separasjon i kjernenettet.</div>
+        <div data-fc-back>
+          <p><strong>Sanne:</strong> a, c, d.</p>
+          <p><strong>Usann:</strong> b — 5G NR (New Radio) er et helt nytt luftgrensesnitt, ikke kompatibelt med 4G på fysisk lag.</p>
+          <p><strong>d-utdyping:</strong> CUPS (Control and User Plane Separation) — innført i sen 4G-evolusjon (EPC), kjerne-arkitektur fra start i 5G (5GC).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke er <em>sanne</em> om SNR / BER / modulasjon? a) Høyere SNR → lavere BER (gitt modulasjon). b) Høyere SNR → høyere BER. c) Ved samme SNR: høyere bitrate-modulasjon → høyere BER. d) Adaptiv modulasjon &amp; koding brukes i WiFi, 4G og 5G.</div>
+        <div data-fc-back>
+          <p><strong>Sanne:</strong> a, c, d.</p>
+          <p><strong>Usann:</strong> b — det er motsatt; mer signal i forhold til støy gir færre bitfeil.</p>
+          <p><strong>d:</strong> AMC velger en mer robust (lavere bitrate) modulasjon når SNR faller, og en raskere modulasjon når SNR er godt.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>10 personer, symmetrisk kryptografi, parvis hemmelig kommunikasjon. Hvor mange nøkler totalt?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <code>10·9/2 = 45</code>.</p>
+          <p>Generelt: <code>N(N−1)/2</code>. Med public key trenger du bare 2N nøkler (1 par per person) — skalerer mye bedre.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvilke er <em>ønskede egenskaper</em> ved sikker kommunikasjon? a) Konfidensialitet b) Meldingsintegritet c) Endepunkts­autentisering d) Operasjonell sikkerhet e) Public key cryptography</div>
+        <div data-fc-back>
+          <p><strong>Riktige (egenskaper):</strong> a, b, c, d.</p>
+          <p><strong>e er feil:</strong> Public key cryptography er et <em>middel</em> (en teknikk), ikke en egenskap. Det er CIA-triaden + autentisering + opsec som er egenskapene.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Meldingsintegritet — hvilke er <em>sanne</em>? a) Bekrefter avsenders identitet. b) Mottaker kan oppdage at meldingen er endret. c) Både checksum og hash kan brukes. d) Hash er bedre. e) Krever TCP.</div>
+        <div data-fc-back>
+          <p><strong>Sanne:</strong> b, c, d.</p>
+          <ul>
+            <li>a er <em>autentisering</em>, ikke integritet.</li>
+            <li>e er feil — integritet kan oppnås over UDP også.</li>
+          </ul>
+          <p><strong>Hvorfor hash &gt; checksum:</strong> hash er kryptografisk (hard å konstruere kollisjoner). Checksum er bare design for <em>uintendert</em> bitfeil.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hvorfor er HTTP-streaming mer populært enn UDP-streaming? Hvilke er <em>sanne grunner</em>? a) UDP er forbindelsesløs. b) UDP er upålitelig. c) UDP-streaming bruker klient-side bufring som forårsaker forsinkelse. d) Brannmurer blokkerer ofte UDP men slipper HTTP.</div>
+        <div data-fc-back>
+          <p><strong>Hovedgrunner:</strong> b og d.</p>
+          <p><strong>c er feil:</strong> Det er <em>HTTP-streaming</em> som typisk bruker stor bufring (TCP retransmisjon krever det). UDP-streaming har normalt mindre bufring.</p>
+          <p><strong>a:</strong> Sant om UDP, men ikke i seg selv en grunn til å foretrekke HTTP.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front><strong>Playout-buffer:</strong> Server sender blokk i ved t₀ + i·Δ. Klient starter avspilling ved t₁ + Δ. Hver blokk skal spilles av Δ etter forrige. Hvordan vurdere om blokk i rekker fram?</div>
+        <div data-fc-back>
+          <p><strong>Regel:</strong> Blokk i rekker fram hvis <em>ankomsttid ved klient ≤ planlagt avspillingstid</em> for samme blokk.</p>
+          <p>Tegn tre kurver: sendekurve (start t₀, stigning Δ), ankomstkurve (faktisk, kan være forsinket/hakket), avspillingskurve (start t₁+Δ, stigning Δ).</p>
+          <p>Hver blokk i: marker punktet på ankomstkurven og se om det er på eller før avspillingskurven for samme i.</p>
+          <p><strong>Eks 5:</strong> spør hvilke av blokk 1–7 rekker frem. Visuell oppgave — les av kurver.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forwarding-tabell: <code>135.46.128.0/22 → I0</code>; <code>135.46.0.0/22 → I1</code>; <code>192.53.40.0/23 → I2</code>; <code>192.128.0.0/13 → I3</code>; default → I4. Hvilken interface for <code>135.46.129.10</code>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>I0</strong>.</p>
+          <p><strong>Regn:</strong> /22 betyr at de første 22 bits matcher. 135.46.128.0/22 dekker 135.46.128.0 – 135.46.131.255. 135.46.129.10 er innenfor → match. Andre prefiks matcher ikke.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forwarding-tabell som over. Hvilken interface for <code>129.241.200.11</code>?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> <strong>I4 (default)</strong>.</p>
+          <p><strong>Hvorfor:</strong> 129.241 starter med <code>10000001 11110001</code>. 192.128.0.0/13 starter med <code>11000000 1000</code> — første bit er 1 vs 1, andre er 0 vs 1 → ikke match. 135.46-blokkene starter med <code>10000111</code> — heller ikke match. Default-regel.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Tre <em>nøkkelforskjeller</em> mellom <strong>forwarding</strong> og <strong>routing</strong>?</div>
+        <div data-fc-back>
+          <ol>
+            <li><strong>Tidsskala:</strong> forwarding per pakke i nanosekunder; routing kjører i bakgrunnen i sekunder/minutter.</li>
+            <li><strong>Plassering:</strong> forwarding i datapath (HW); routing i kontrollplan (SW + protokoll-utveksling).</li>
+            <li><strong>Avhengighet:</strong> forwarding bruker tabellen; routing fyller tabellen via OSPF/BGP/RIP.</li>
+          </ol>
+          <p>Andre vinkler: lokal vs global beslutning · per pakke vs per nett-tilstand · ingen kommunikasjon vs protokoll-utveksling.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>HTTP responstid — non-persistent uten parallelle: side med base + 5 embedded objekter, RTT = 300 ms, R = 100 Mbps, hvert objekt 200 kbit. Total tid?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> ≈ <strong>3,61 s</strong>.</p>
+          <p><strong>Per objekt:</strong> 2·RTT (TCP-oppsett + GET/response-RT) + L/R = 600 + 2 = 602 ms.</p>
+          <p><strong>Total:</strong> 6 objekter · 602 ms = 3 612 ms.</p>
+          <p>Ev. legg til en­vegs propagering (150 ms) for siste bit hvis oppgaven krever det.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>HTTP responstid — non-persistent med <em>parallelle</em> TCP. Side med base + 5 embedded à 200 kbit, RTT = 300 ms, R = 100 Mbps. Total tid?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> ≈ <strong>1,20 s</strong>.</p>
+          <p>Base først: 2·RTT + L/R = 602 ms. Deretter 5 parallelle: 602 ms. Totalt: 1 204 ms.</p>
+          <p><strong>Hvorfor:</strong> 5 parallelle TCP-forbindelser kjører samtidig, så de blir ferdige etter samme 602 ms (forutsatt nok båndbredde til alle).</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>HTTP responstid — <em>persistent</em> uten pipelining. Base + 5 embedded à 200 kbit, RTT = 300 ms, R = 100 Mbps. Total tid?</div>
+        <div data-fc-back>
+          <p><strong>Svar:</strong> ≈ <strong>2,11 s</strong>.</p>
+          <p>1 TCP-oppsett (300 ms) + base (1·RTT + L/R = 302 ms) + 5 sekvensielle (1·RTT + L/R = 302 ms hver) = 300 + 6·302 = 2 112 ms.</p>
+          <p><strong>Sparer (N) TCP-oppsett:</strong> persistent vinner over non-persistent uansett.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Hva er de <strong>tre målene</strong> for en brannmur?</div>
+        <div data-fc-back>
+          <ol>
+            <li><strong>All trafikk inn/ut må passere brannmuren</strong> — ingen bakdør rundt den.</li>
+            <li><strong>Kun autorisert trafikk slipper igjennom</strong> — definert av en lokal sikkerhetspolicy.</li>
+            <li><strong>Brannmuren selv må være motstandsdyktig mot kompromittering</strong> — herdet OS, minimum tjenester, fysisk beskyttet.</li>
+          </ol>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Forskjell mellom <strong>traditional (stateless) packet filter</strong> og <strong>stateful packet filter</strong>?</div>
+        <div data-fc-back>
+          <p><strong>Stateless:</strong> Beslutning per pakke <em>isolert</em>. Ser bare på header-felt (IP, port, TCP-flags). Implementeres som ACL.</p>
+          <p><strong>Stateful:</strong> Sporer i tillegg <em>aktive forbindelser</em> i en connection table. Kan kreve at innkommende TCP-pakker hører til en allerede etablert utgående forbindelse — fanger spoofede pakker bedre, blokkerer scanning.</p>
+          <p><strong>Tillegg (Eks 4):</strong> Application gateway går videre — sjekker også <em>applikasjonsdata</em> (kan kreve username/passord). Per-app, ikke per-pakke eller per-forbindelse.</p>
+        </div>
+      </li>
+
+      <li data-card>
+        <div data-fc-front>Flow control vs congestion control — <em>tre</em> nøkkelforskjeller?</div>
+        <div data-fc-back>
+          <ol>
+            <li><strong>Hvem styrer:</strong> mottaker styrer flow; nettverket / avsender-estimat styrer congestion.</li>
+            <li><strong>Signal-mekanisme:</strong> rwnd-felt i ACK (flow) vs tap, timeout, duplikat-ACK eller ECN (congestion).</li>
+            <li><strong>Hva som beskyttes:</strong> mottakerens motta-buffer (flow) vs ruterkøer / lenkebåndbredde (congestion).</li>
+          </ol>
+          <p><strong>Andre lag med lignende konsept:</strong> lenkelag (Stop-and-wait, sliding-window), nettverkslag (ICMP source quench / ECN). Fysisk lag har det <em>ikke</em>.</p>
+        </div>
+      </li>
+
+      <!-- ====== ▲ END EKS 5 ▲ ====== -->
     </ol>
   </div>
 </div>
@@ -1376,7 +1682,7 @@
 <section id="metode">
 <div class="container">
   <h2>Slik er listen <em>laget</em></h2>
-  <p class="section-intro">Fire tidligere eksamener (Eks 1, Eks 2, Eks 3, Eks 4) ble lest gjennom og krysslest. Tema som dukket opp i flere av settene er markert som «høy frekvens». Ett sett alene er «medium». Eksamen­sinfoen sier at det <em>ikke</em> blir Wireshark-spørsmål denne gangen — den biten er deprioritert.</p>
+  <p class="section-intro">Fem tidligere eksamener (Eks 1, Eks 2, Eks 3, Eks 4, Eks 5) ble lest gjennom og krysslest. Tema som dukket opp i flere av settene er markert som «høy frekvens». Ett sett alene er «medium». Eksamen­sinfoen sier at det <em>ikke</em> blir Wireshark-spørsmål denne gangen — den biten er deprioritert.</p>
 
   <div class="callout callout-blue">
     <span class="label">Kildemerking</span>
@@ -1384,7 +1690,7 @@
   </div>
 
   <div class="legend">
-    <span><span class="freq-pill">Høy</span> 2–4 eksamener</span>
+    <span><span class="freq-pill">Høy</span> 2–5 eksamener</span>
     <span><span class="freq-pill med">Med</span> 1 eksamen, men sentralt</span>
     <span><span class="freq-pill lav">Lav</span> Periferi — øv hvis tid</span>
   </div>
@@ -1395,55 +1701,66 @@
 <section id="gjentar-seg">
 <div class="container">
   <h2>Tema som <em>går igjen</em></h2>
-  <p class="section-intro">Disse er hentet fra alle fire eksamenene — de utgjør grunnstammen i pensum.</p>
+  <p class="section-intro">Disse er hentet fra alle fem eksamenene — de utgjør grunnstammen i pensum.</p>
 
   <table class="mk-table">
     <thead>
       <tr><th style="width: 26%">Tema</th><th>Hva som testes</th><th style="width: 22%">Funnet i</th></tr>
     </thead>
     <tbody>
-      <tr><td><strong>Internett-arkitektur</strong></td><td>«Nuts and bolts» vs tjenesteplattform, network of networks, kapsling, lagdeling</td><td class="src">Eks1·Q1.1.1, Eks1·Q1.1.4, Eks1·Q1.1.6, Eks2·Q1.1.4, Eks3·P2/Q2, Eks4·Q2.1a</td></tr>
-      <tr><td><strong>Forsinkelse og ytelse</strong></td><td>L/R-formel, store-and-forward, (N+P−1)L/R, flaskehals, link-utilisering, FIFO-køforsinkelse</td><td class="src">Eks1·Q1.1.5–9, Eks2·Q1.1.2–5, Eks2·Q1.3.4, Eks3·P2/Q2, Eks4·Q1.3</td></tr>
-      <tr><td><strong>Pakke- vs linjesvitsj</strong></td><td>Garantier, delay-variasjon, ressursutnyttelse, kretskobling-oppsettstid</td><td class="src">Eks2·Q1.1.1, Eks4·Q1.3</td></tr>
-      <tr><td><strong>UDP vs TCP-tjenester</strong></td><td>Best effort, flow control, congestion control — hva UDP og TCP <em>gjør og ikke gjør</em>; UDP-fordeler (sanntid, FEC, ingen oppkobling)</td><td class="src">Eks1·Q1.2.1, Eks1·Q1.2.2, Eks2·Q1.2.4, Eks3·P1/Q3, Eks3·P1/Q13, Eks4·Q2.1c</td></tr>
+      <tr><td><strong>Internett-arkitektur</strong></td><td>«Nuts and bolts» vs tjenesteplattform, network of networks, kapsling, lagdeling</td><td class="src">Eks1·Q1.1.1, Eks1·Q1.1.4, Eks1·Q1.1.6, Eks2·Q1.1.4, Eks3·P2/Q2, Eks4·Q2.1a, Eks5·Q1.1.1</td></tr>
+      <tr><td><strong>Protokoll-lagdeling — hvorfor</strong></td><td>Re-bruk og oppdatering av komponenter, modularitet — <em>ikke</em> «raskere nett» eller «encapsulation er mest effektivt»</td><td class="src">Eks5·Q1.1.5</td></tr>
+      <tr><td><strong>Forsinkelse og ytelse</strong></td><td>L/R-formel, store-and-forward, (N+P−1)L/R, flaskehals, link-utilisering, FIFO-køforsinkelse</td><td class="src">Eks1·Q1.1.5–9, Eks2·Q1.1.2–5, Eks2·Q1.3.4, Eks3·P2/Q2, Eks4·Q1.3, Eks5·Q1.1.2–4, Eks5·Q1.3.5</td></tr>
+      <tr><td><strong>Pakke- vs linjesvitsj</strong></td><td>Garantier, delay-variasjon, ressursutnyttelse, kretskobling-oppsettstid</td><td class="src">Eks2·Q1.1.1, Eks4·Q1.3, Eks5·Q1.1.1, Eks5·Q1.1.3</td></tr>
+      <tr><td><strong>HTTP-ytelse (response time)</strong></td><td>Non-persistent vs parallelle TCP vs persistent — regne ut total tid for base + N embedded</td><td class="src">Eks5·Q5.1, Q5.2, Q5.3</td></tr>
+      <tr><td><strong>UDP vs TCP-tjenester</strong></td><td>Best effort, flow control, congestion control — hva UDP og TCP <em>gjør og ikke gjør</em>; UDP-fordeler (sanntid, FEC, ingen oppkobling); FTP er TCP, ikke UDP</td><td class="src">Eks1·Q1.2.1, Eks1·Q1.2.2, Eks2·Q1.2.4, Eks3·P1/Q3, Eks3·P1/Q13, Eks4·Q2.1c, Eks5·Q1.2.5</td></tr>
       <tr><td><strong>Sockets (UDP &amp; TCP)</strong></td><td>SOCK_STREAM/SOCK_DGRAM, accept(), antall sockets ved N klienter, ServerSocket vs ConnectionSocket</td><td class="src">Eks1·Q1.2.6, Eks1·Q1.2.7, Eks2·Q1.2.3, Eks3·P2/Q4, Eks4·Q1.1</td></tr>
-      <tr><td><strong>HTTP / web cache</strong></td><td>GET-formål, caching-fordeler, port 80, persistent</td><td class="src">Eks1·Q1.2.3, Eks1·Q1.2.4, Eks2·Q1.2.2</td></tr>
+      <tr><td><strong>TCP back-to-back-segmenter</strong></td><td>Sekvensnr i andre segment = sekvensnr<sub>1</sub> + lengde<sub>1</sub>. Kilde/dest-port byttes <em>ikke</em> i samme retning.</td><td class="src">Eks5·Q1.2.4</td></tr>
+      <tr><td><strong>HTTP / web cache</strong></td><td>GET-formål, caching-fordeler, port 80, persistent</td><td class="src">Eks1·Q1.2.3, Eks1·Q1.2.4, Eks2·Q1.2.2, Eks5·Q1.2.5</td></tr>
       <tr><td><strong>HTTP vs SMTP</strong></td><td>Push/pull, port 80 vs 25, persistent connection</td><td class="src">Eks1·Q1.2.5</td></tr>
-      <tr><td><strong>DNS</strong></td><td>UDP/TCP, RR-format, hva klienten får, hovedoppgave (directory + protokoll)</td><td class="src">Eks2·Q6, Eks3·P1/Q2, Eks4·Q1.2a</td></tr>
+      <tr><td><strong>DNS</strong></td><td>UDP/TCP, RR-format, hva klienten får, hovedoppgave (directory + protokoll); DNS er applikasjonslag</td><td class="src">Eks2·Q6, Eks3·P1/Q2, Eks4·Q1.2a, Eks5·Q1.2.1, Eks5·Q1.2.2</td></tr>
       <tr><td><strong>DNS-hierarki &amp; registrering</strong></td><td>Root → TLD → autoritative servere; registrar-prosess for nytt domene</td><td class="src">Eks4·Q1.2b, Eks4·Q1.2c</td></tr>
+      <tr><td><strong>P2P-fildistribusjon</strong></td><td>Min tid = max(F/u<sub>s</sub>, F/d<sub>min</sub>, N·F/(u<sub>s</sub>+Σu<sub>i</sub>)); skalerer mye bedre enn klient-server ved stor N</td><td class="src">Eks5·Q1.2.3</td></tr>
+      <tr><td><strong>Klient-server filfordeling</strong></td><td>Min tid = max(N·F/u<sub>s</sub>, F/d<sub>min</sub>); server er nesten alltid flaskehals</td><td class="src">Eks2·Q1.2.5</td></tr>
       <tr><td><strong>TCP-handshake</strong></td><td>3-veis (SYN → SYN-ACK → ACK), buffere allokeres på server før klient</td><td class="src">Eks4·Q2.2a</td></tr>
       <tr><td><strong>TCP/UDP-sjekksum</strong></td><td>Samme type sjekksum i begge — 1's complement over 16-bit ord</td><td class="src">Eks1·Q1.2.8, Eks4·Q2.1b</td></tr>
       <tr><td><strong>Pakketap i nettet</strong></td><td>Bitfeil, bufferoverflyt, lenke-/nodefeil, kollisjon i delt media</td><td class="src">Eks4·Q2.3</td></tr>
       <tr><td><strong>CRC</strong></td><td>Modulo-2-divisjon, legg til G−1 nuller, rest = CRC</td><td class="src">Eks4·Q3.1</td></tr>
       <tr><td><strong>Internet checksum</strong></td><td>16-bits addisjon med carry-wrap</td><td class="src">Eks1·Q1.2.8</td></tr>
       <tr><td><strong>TCP cwnd / slow start</strong></td><td>Identifisere intervaller for slow start vs AIMD i graf, flytkontroll-scenario</td><td class="src">Eks1·Q1.2.9, Eks2·Q2, Eks4·Q2.2b</td></tr>
-      <tr><td><strong>Subnetting / CIDR</strong></td><td>Maskeoperasjon, gyldige adresser i /29, antall brukbare verter, broadcast i /21</td><td class="src">Eks1·Q1.3.4, Eks2·Q1.3.1, Eks2·Q4, Eks3·P1/Q5, Eks3·P1/Q12</td></tr>
-      <tr><td><strong>Longest prefix match</strong></td><td>Velge ut-port fra forwarding-tabell</td><td class="src">Eks1·Q1.3.3</td></tr>
+      <tr><td><strong>Flow vs congestion control</strong></td><td>Tre nøkkelforskjeller (hvem styres, signal, hva beskyttes); lignende konsept finnes også på lenkelaget (sliding window m.m.)</td><td class="src">Eks2·Q2, Eks3·P1/Q3, Eks5·Q2</td></tr>
+      <tr><td><strong>IP-adresse til binær</strong></td><td>Konvertere desimal punktnotasjon til 32-bits binær (oktett for oktett)</td><td class="src">Eks5·Q1.3.1</td></tr>
+      <tr><td><strong>Subnetting / CIDR</strong></td><td>Maskeoperasjon, gyldige adresser i /29, antall brukbare verter, broadcast i /21, splitte /23 til /24</td><td class="src">Eks1·Q1.3.4, Eks2·Q1.3.1, Eks2·Q4, Eks3·P1/Q5, Eks3·P1/Q12, Eks5·Q1.3.2</td></tr>
+      <tr><td><strong>Longest prefix match</strong></td><td>Velge ut-port fra forwarding-tabell</td><td class="src">Eks1·Q1.3.3, Eks5·Q4.1–4.5</td></tr>
+      <tr><td><strong>Forwarding vs routing — 3 forskjeller</strong></td><td>Tidsskala (per-pakke vs sekunder), plassering (datapath vs kontrollplan), avhengighet (forwarding bruker tabellen routing fyller)</td><td class="src">Eks2·Q1.3.5, Eks3·P2/Q1, Eks5·Q4.6</td></tr>
       <tr><td><strong>NAT</strong></td><td>Lese tabell, fylle inn IP/port på utsiden</td><td class="src">Eks1·Q1.3.10</td></tr>
       <tr><td><strong>ICMP</strong></td><td>Bæres i IP, brukes til feil/diagnose, traceroute</td><td class="src">Eks1·Q1.3.6, Eks2·Q1.3.3</td></tr>
-      <tr><td><strong>DHCP</strong></td><td>UDP, 4-stegs prosess, dynamisk IP + DNS + GW</td><td class="src">Eks2·Q1.3.2, Eks3·P1/Q4(5)</td></tr>
-      <tr><td><strong>IPv4 vs IPv6</strong></td><td>Flow label kun i IPv6, fjernet checksum/options</td><td class="src">Eks1·Q1.3.5</td></tr>
+      <tr><td><strong>DHCP</strong></td><td>UDP, 4-stegs prosess, dynamisk IP + DNS + GW; lenkelags-broadcast brukes; <em>kan</em> gi samme IP hver gang (sticky lease)</td><td class="src">Eks2·Q1.3.2, Eks3·P1/Q4(5), Eks5·Q1.3.3</td></tr>
+      <tr><td><strong>IPv4 vs IPv6</strong></td><td>Flow label kun i IPv6; IPv4 har header checksum, IPv6 ikke; IPv6 fragmenterer ikke i mellomliggende rutere; begge er forbindelsesløse</td><td class="src">Eks1·Q1.3.5, Eks5·Q1.3.4</td></tr>
       <tr><td><strong>Best effort</strong></td><td>Ingen garantier — kryss av alle «ikke garantert»</td><td class="src">Eks1·Q1.3.7</td></tr>
       <tr><td><strong>Svitsj vs ruter</strong></td><td>Lag 2 vs lag 3, MAC vs IP, switch-tabell, self-learning, plug-and-play</td><td class="src">Eks2·Q1.4.1, Eks3·P1/Q4(2,4,7,9), Eks4·Q3.2</td></tr>
-      <tr><td><strong>ARP</strong></td><td>Oversetter IP ↔ MAC lokalt i et subnett; ARP-tabeller i hosts og rutere</td><td class="src">Eks4·Q3.3</td></tr>
+      <tr><td><strong>ARP</strong></td><td>Oversetter IP ↔ MAC lokalt i et subnett; ARP-tabeller i hosts og rutere</td><td class="src">Eks4·Q3.3, Eks5·Q1.4.1</td></tr>
       <tr><td><strong>Multiple access (klassif.)</strong></td><td>Channel partitioning vs random access vs taking turns</td><td class="src">Eks3·P1/Q6</td></tr>
       <tr><td><strong>CSMA tidslinje</strong></td><td>Bestemme hvilke pakker som lykkes ved gitt propageringstid</td><td class="src">Eks1·Q1.4.3, Eks1·Q1.4.4, Eks3·P2/Q7</td></tr>
       <tr><td><strong>CSMA/CD vs CSMA/CA</strong></td><td>Backoff-counter, IFS, hvorfor CD ikke fungerer i WiFi, eksplisitt ACK</td><td class="src">Eks4·Q4.2, Eks4·Q4.3</td></tr>
+      <tr><td><strong>802.11 MAC-elementer</strong></td><td>CSMA/CA + ACK + RTS/CTS (valgfritt) + DIFS — <em>ikke</em> CSMA/CD</td><td class="src">Eks5·Q1.4.4</td></tr>
       <tr><td><strong>Infrastructure vs ad hoc (802.11)</strong></td><td>Med basestasjon vs uten — ad hoc krever ruting/DNS/adressering selv</td><td class="src">Eks4·Q4.1</td></tr>
+      <tr><td><strong>4G / 5G mobilnett</strong></td><td>5G &gt; 4G peak bitrate; <em>ikke</em> fys-lag-kompatibel; begge støtter mobilitet; begge har kontroll-/brukerplan-separasjon i kjernenettet</td><td class="src">Eks5·Q1.4.5</td></tr>
       <tr><td><strong>Pure / slotted ALOHA</strong></td><td>Effektivitet (~18% vs ~37%), synkronisering</td><td class="src">Eks1·Q1.4.2, Eks2·Q1.4.5</td></tr>
-      <tr><td><strong>2D-paritet</strong></td><td>Detekter/rett 1-bit, detekter (ofte) 2-bit</td><td class="src">Eks1·Q1.4.5, Eks2·Q1.4.2</td></tr>
+      <tr><td><strong>2D-paritet</strong></td><td>Detekter/rett 1-bit, detekter (ofte) 2-bit</td><td class="src">Eks1·Q1.4.5, Eks2·Q1.4.2, Eks5·Q1.4.2</td></tr>
       <tr><td><strong>RTS/CTS, skjult terminal</strong></td><td>Hva CTS gjør, hidden node-problemet</td><td class="src">Eks1·Q1.4.6, Eks2·Q1.4.4</td></tr>
       <tr><td><strong>4-noder topologi (A–B–C–D)</strong></td><td>Max rate C→A, A→B + D→C, A→B + C→D, og samme med ACK</td><td class="src">Eks1·Q1.4.7, Eks2·Q5</td></tr>
-      <tr><td><strong>SNR / BER / modulasjon</strong></td><td>Lavere SNR → høyere BER, høyere bitrate-modulasjon → høyere BER ved samme SNR</td><td class="src">Eks2·Q1.4.3</td></tr>
-      <tr><td><strong>Sikkerhet — ønskede egenskaper</strong></td><td>Konfidensialitet, integritet, autentisering, operasjonell sikkerhet (ikke «høy båndbredde»)</td><td class="src">Eks1·Q1.4.8, Eks2·Q1.5.1</td></tr>
-      <tr><td><strong>Symmetriske nøkler</strong></td><td>N(N−1)/2 ved N personer parvis</td><td class="src">Eks1·Q1.4.9, Eks2·Q1.5.2</td></tr>
+      <tr><td><strong>SNR / BER / modulasjon</strong></td><td>Lavere SNR → høyere BER, høyere bitrate-modulasjon → høyere BER ved samme SNR; adaptiv modulasjon &amp; koding i WiFi/4G/5G</td><td class="src">Eks2·Q1.4.3, Eks5·Q1.4.3</td></tr>
+      <tr><td><strong>Sikkerhet — ønskede egenskaper</strong></td><td>Konfidensialitet, integritet, autentisering, operasjonell sikkerhet (ikke «høy båndbredde», ikke «public key cryptography» som er et middel)</td><td class="src">Eks1·Q1.4.8, Eks2·Q1.5.1, Eks5·Q1.5.1</td></tr>
+      <tr><td><strong>Symmetriske nøkler</strong></td><td>N(N−1)/2 ved N personer parvis</td><td class="src">Eks1·Q1.4.9, Eks2·Q1.5.2, Eks5·Q1.5.2</td></tr>
       <tr><td><strong>Trudy: avlytte/endre/slette/sette inn</strong></td><td>Hvilke handlinger en aktiv angriper kan ta</td><td class="src">Eks1·Q1.4.10, Eks2·Q1.5.5</td></tr>
-      <tr><td><strong>Meldingsintegritet</strong></td><td>Hash vs checksum, hvorfor hash er bedre</td><td class="src">Eks2·Q1.5.3</td></tr>
-      <tr><td><strong>HTTP- vs UDP-streaming</strong></td><td>Brannmur, retransmisjon, ordning</td><td class="src">Eks2·Q1.5.4, Eks3·P1/Q1</td></tr>
+      <tr><td><strong>Meldingsintegritet</strong></td><td>Hash vs checksum, hvorfor hash er bedre; trenger <em>ikke</em> TCP — kan brukes over UDP</td><td class="src">Eks2·Q1.5.3, Eks5·Q1.5.3</td></tr>
+      <tr><td><strong>HTTP- vs UDP-streaming</strong></td><td>Brannmur, retransmisjon, ordning</td><td class="src">Eks2·Q1.5.4, Eks3·P1/Q1, Eks5·Q1.5.5</td></tr>
+      <tr><td><strong>Multimedia: playout-buffer</strong></td><td>Server sender blokk i ved t₀ + iΔ; klient starter avspilling ved t₁ + Δ — hvilke blokker rekker frem i tide</td><td class="src">Eks5·Q1.5.4</td></tr>
       <tr><td><strong>Cæsar-cipher</strong></td><td>Beskrivelse + kode/dekode med gitt k</td><td class="src">Eks3·P2/Q5</td></tr>
       <tr><td><strong>Symmetrisk vs offentlig nøkkel</strong></td><td>Én delt vs nøkkelpar — bruk og forskjell; algoritme er kjent, nøkkel er hemmelig</td><td class="src">Eks3·P2/Q6, Eks4·Q5.1</td></tr>
       <tr><td><strong>Digital signatur</strong></td><td>Krypter med privat nøkkel, verifiser med offentlig; trenger sertifikat (TTP)</td><td class="src">Eks4·Q5.2</td></tr>
-      <tr><td><strong>Brannmur</strong></td><td>Hovedformål: blokkere uautorisert tilgang; tre kategorier (traditional / stateful / application gateway)</td><td class="src">Eks3·P1/Q14, Eks4·Q5.3</td></tr>
+      <tr><td><strong>Brannmur</strong></td><td>Tre mål (all trafikk gjennom, kun autorisert, motstandsdyktig); tre kategorier (traditional / stateful / application gateway)</td><td class="src">Eks3·P1/Q14, Eks4·Q5.3, Eks5·Q6</td></tr>
       <tr><td><strong>Stor «protokollkjede»-oppgave</strong></td><td>Fra plug-in → DHCP → DNS → SMTP → IMAP/HTTP. Lag og protokoller per steg</td><td class="src">Eks3·P2/Q3</td></tr>
     </tbody>
   </table>
@@ -1487,12 +1804,40 @@
   <div class="mk-item">
     <div class="mk-head">
       <h3>Flaskehals og maks gjennomstrømning<span class="freq-pill">Høy</span></h3>
-      <span class="mk-src">Eks1·Q1.1.7, Q1.1.9</span>
+      <span class="mk-src">Eks1·Q1.1.7, Q1.1.9 · Eks5·Q1.1.2</span>
     </div>
     <div class="mk-must">Må kunne</div>
     <p>Identifisere den minste raten på stien. Hvis K TCP-økter deler en lenke med rate R, får hver økt <code>R/K</code> (fair share). Sjekk så om aksesslenken (Rs eller Rc) er lavere — da er <em>den</em> flaskehalsen.</p>
+    <p><strong>Klassisk Eks 5-svar:</strong> server → ruter → klient med rater R₁ og R₂. <em>Maks gjennomstrømning = min(R₁, R₂)</em> — ikke summen, og ikke gjennomsnittet.</p>
     <p>Link-utilisering = faktisk rate / linkrate, oppgitt som desimal (0,xx).</p>
     <div class="mk-why"><strong>Hvorfor:</strong> Eks 1 hadde tre slike rett etter hverandre. Tegn alltid en liten skisse og merk ratene før du regner.</div>
+  </div>
+
+  <div class="mk-item">
+    <div class="mk-head">
+      <h3>Linjesvitsj-tid (kretskoblet)<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks4·Q1.3 · Eks5·Q1.1.3</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Total tid = <em>oppsettstid</em> + L/R for hele filen. Raten R er den <em>samme</em> over hele kretsen — du legger <strong>ikke</strong> på L/R per lenke (ingen store-and-forward).</p>
+    <p><strong>Eks 5-eksempel:</strong> 1 MB fil, oppsett 0,5 s, 2 lenker à 100 kbps. Tid = 0,5 + (10⁶·8)/(100·10³) = 0,5 + 80 = <strong>80,5 s</strong>.</p>
+    <div class="mk-why"><strong>Hvorfor:</strong> Klassisk felle: studenten regner som pakkesvitsj og legger på L/R per lenke. Linjesvitsj = dedikert «leiet linje» fra ende til ende.</div>
+  </div>
+
+  <div class="mk-item">
+    <div class="mk-head">
+      <h3>Protokoll-lagdeling — hvorfor<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks5·Q1.1.5</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Hovedgrunnen er at det <em>tillater enkel re-bruk og oppdatering av komponenter</em> i implementasjonen — modulær struktur, klare grensesnitt mellom lagene.</p>
+    <p><strong>Feller å unngå:</strong></p>
+    <ul>
+      <li>«Hindrer at ett lag dupliserer funksjonalitet under» — ikke hovedgrunnen.</li>
+      <li>«Encapsulation er den mest effektive måten å overføre data på» — feil.</li>
+      <li>«Holder nettet strukturert så det kjører raskere» — feil, ikke en ytelsesfordel.</li>
+    </ul>
+    <div class="mk-why"><strong>Hvorfor:</strong> Multiple choice der distraktorene er nesten-riktige formuleringer. Det er <em>vedlikehold/modularitet</em> som er den ekte grunnen.</div>
   </div>
 
   <h3>Kapittel 2–3 — Applikasjon og transport</h3>
@@ -1517,13 +1862,20 @@
   <div class="mk-item green">
     <div class="mk-head">
       <h3>Flow control vs congestion control<span class="freq-pill">Høy</span></h3>
-      <span class="mk-src">Eks2·Q2 · Eks3·P1/Q3</span>
+      <span class="mk-src">Eks2·Q2 · Eks3·P1/Q3 · Eks5·Q2</span>
     </div>
     <div class="mk-must">Må kunne</div>
     <p><em>Flow control:</em> mellom <strong>avsender og mottaker</strong>. Beskytter mottakers buffer. Styres av <code>rwnd</code>-feltet i ACK.</p>
     <p><em>Congestion control:</em> mellom <strong>avsender og nettverket</strong>. Beskytter rutere fra overbelastning. Styres av <code>cwnd</code> (slow start, AIMD).</p>
     <p>Klassisk eksempel-spørsmål: <em>«A sender 1 Gbps inn, B leser 600 Mbps ut — hva skjer?»</em> Svar: rwnd → 0, sender stopper. Det er <em>flow control</em>, ikke congestion.</p>
-    <div class="mk-why"><strong>Hvorfor:</strong> Eks 2 hadde dette som åpen 6-poengsoppgave. Eks 3 hadde sann/usann «de er det samme» (svar: nei).</div>
+    <p><strong>Eks 5-formulering — tre nøkkelforskjeller:</strong></p>
+    <ol>
+      <li><strong>Hvem styrer:</strong> mottaker (flow) vs nettverket / avsenderens egen estimat av nettet (congestion).</li>
+      <li><strong>Signal-mekanisme:</strong> rwnd-feltet i hver ACK (flow) vs tap, timeout, dup-ACK eller ECN (congestion).</li>
+      <li><strong>Hva som beskyttes:</strong> mottakerens motta-buffer (flow) vs ruterkøer / lenkebåndbredde (congestion).</li>
+    </ol>
+    <p><strong>Eks 5 Q2.2 — finnes lignende konsepter på andre lag?</strong> <em>Lenkelaget</em> har det klart sterkest: hopp-for-hopp flytkontroll (Stop-and-wait, Go-back-N, sliding window-protokoller — sender venter ikke evig på mottakerens ACK). Network layer kan ha overbelastnings­indikatorer (ICMP source quench historisk, ECN moderne). Fysisk lag har det <em>ikke</em> — der er det bare bits over et medium.</p>
+    <div class="mk-why"><strong>Hvorfor:</strong> Eks 2 hadde dette som åpen 6-poengsoppgave; Eks 3 hadde sann/usann «de er det samme» (svar: nei); Eks 5 ber om tre forskjeller pluss «hvilke andre lag har lignende konsept».</div>
   </div>
 
   <div class="mk-item green">
@@ -1555,7 +1907,52 @@
       <li><code>d<sub>min</sub></code>: minste nedlastningsrate blant klientene.</li>
       <li>Eksempel: F=10 Gbit, N=100, u<sub>s</sub>=1 Gbps, d<sub>i</sub>=200 Mbps. → max(100·10/1, 10/0,2) = max(1000, 50) = <strong>1000 s</strong>.</li>
     </ul>
-    <div class="mk-why"><strong>Hvorfor:</strong> Server er som regel flaskehalsen i klient-server. P2P-formelen er mer kompleks (kommer sjelden), så fokuser på client-server.</div>
+    <div class="mk-why"><strong>Hvorfor:</strong> Server er som regel flaskehalsen i klient-server. P2P-formelen er mer kompleks, men dukker opp på Eks 5.</div>
+  </div>
+
+  <div class="mk-item green">
+    <div class="mk-head">
+      <h3>P2P-fildistribusjon<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks5·Q1.2.3</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Minimum tid med P2P-arkitektur (alle peers laster opp <em>og</em> ned):</p>
+    <p style="text-align:center; font-family: var(--mono); font-size: 16px;"><code>D<sub>P2P</sub> = max(F/u<sub>s</sub>, &nbsp; F/d<sub>min</sub>, &nbsp; N·F / (u<sub>s</sub> + Σu<sub>i</sub>))</code></p>
+    <ul>
+      <li><strong>Term 1</strong> (F/u<sub>s</sub>): server må sende ut filen minst én gang.</li>
+      <li><strong>Term 2</strong> (F/d<sub>min</sub>): tregeste klient kan ikke få filen raskere enn sin egen nedlastingskapasitet.</li>
+      <li><strong>Term 3</strong> (N·F/(u<sub>s</sub> + Σu<sub>i</sub>)): den samlede opplastings­kapasiteten må kunne levere N kopier av F.</li>
+    </ul>
+    <p><strong>Eks 5-eksempel:</strong> F = 125 MB = 1000 Mbit, N = 100, u<sub>s</sub> = 100 Mbps, hver peer: u<sub>i</sub> = d<sub>i</sub> = 10 Mbps.</p>
+    <ul>
+      <li>F/u<sub>s</sub> = 1000/100 = 10 s.</li>
+      <li>F/d<sub>min</sub> = 1000/10 = 100 s.</li>
+      <li>N·F/(u<sub>s</sub>+N·u<sub>i</sub>) = 100·1000/(100+1000) = 100 000/1100 ≈ 91 s.</li>
+      <li>Maks = <strong>100 s</strong>.</li>
+    </ul>
+    <div class="mk-why"><strong>Hvorfor P2P er bedre enn klient-server ved stor N:</strong> samlet opplastings­kapasitet vokser med antall peers (Σu<sub>i</sub>), så server slutter å være flaskehals. Sammenlign med klient-server: 100·1000/100 = 1000 s — 10× tregere.</div>
+  </div>
+
+  <div class="mk-item green">
+    <div class="mk-head">
+      <h3>HTTP responstid (non-persistent / parallell / persistent)<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks5·Q5.1, Q5.2, Q5.3</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>For en side med <em>base</em> + <em>N embedded</em> objekter, der hvert objekt er <code>L</code> bits, RTT er kjent og link-rate er <code>R</code>:</p>
+    <ul>
+      <li><strong>Non-persistent, ingen parallelle:</strong> 1 TCP-oppsett (1·RTT) + henting av base (1·RTT + L/R) + N gjentakelser av (TCP-oppsett 1·RTT + henting 1·RTT + L/R) = <strong>(N+1) · (2·RTT + L/R)</strong>.</li>
+      <li><strong>Non-persistent + parallelle TCP-forbindelser:</strong> Base hentes først som over (2·RTT + L/R). Deretter åpnes <em>N</em> parallelle TCP-forbindelser samtidig — alle ferdige etter ytterligere (2·RTT + L/R). Totalt: <strong>2 · (2·RTT + L/R)</strong>.</li>
+      <li><strong>Persistent uten pipelining:</strong> 1 TCP-oppsett (1·RTT) + base (1·RTT + L/R) + N sekvensielle (1·RTT + L/R). Totalt: <strong>RTT + (N+1) · (RTT + L/R)</strong>.</li>
+      <li>Husk å legge til ev. <em>propageringen</em> for siste bit til klient. Eks 5 spesifiserte 150 ms en-vei prop.</li>
+    </ul>
+    <p><strong>Eks 5-tall:</strong> base + 5 embedded à 200 kbit (= L), RTT = 300 ms, R = 100 Mbps. L/R = 200·10³ / 10⁸ = <strong>2 ms</strong> (svært lite ift RTT). Per objekt non-persistent ≈ 2·300 + 2 = 602 ms.</p>
+    <ul>
+      <li>Q5.1 (non-persistent, sekvensielt): 6 · 602 ms ≈ <strong>3,61 s</strong>.</li>
+      <li>Q5.2 (non-persistent, parallelt for embedded): base først (602 ms) + 5 parallelle (602 ms) ≈ <strong>1,20 s</strong>.</li>
+      <li>Q5.3 (persistent uten pipelining): 2·RTT + L/R (base) + 5·(RTT + L/R) (resten sekvensielt) ≈ 602 + 5·302 ≈ <strong>2,11 s</strong>.</li>
+    </ul>
+    <div class="mk-why"><strong>Hvorfor:</strong> Eks 5 hadde dette som 11-poengsoppgave med tre underpunkter. Sett alltid opp formelen <em>generelt</em> først, så plug inn tall — det gir delpoeng selv ved regnefeil. Husk at parallelt typisk slår persistent når L/R er liten; persistent slår non-persistent uansett fordi du sparer (N) TCP-oppsett.</div>
   </div>
 
   <div class="mk-item">
@@ -1665,8 +2062,26 @@
 
   <div class="mk-item blue">
     <div class="mk-head">
+      <h3>IP-adresse → binær<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks5·Q1.3.1</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Konverter hver av de fire oktettene <em>uavhengig</em> til 8-bits binær. Bruk verditabellen 128, 64, 32, 16, 8, 4, 2, 1 — sett bit = 1 der summen treffer.</p>
+    <p><strong>Eks 5-eksempel:</strong> 193.32.216.9</p>
+    <ul>
+      <li>193 = 128 + 64 + 1 → <code>11000001</code></li>
+      <li>32 = 32 → <code>00100000</code></li>
+      <li>216 = 128 + 64 + 16 + 8 → <code>11011000</code></li>
+      <li>9 = 8 + 1 → <code>00001001</code></li>
+      <li>Svar: <code>11000001 00100000 11011000 00001001</code></li>
+    </ul>
+    <div class="mk-why"><strong>Hvorfor:</strong> Multiple choice — 4 av alternativene har subtile bit-feil (typisk i siste oktett: 8 → 00001000 vs 9 → 00001001). Tell to ganger.</div>
+  </div>
+
+  <div class="mk-item blue">
+    <div class="mk-head">
       <h3>Subnetting til punkt og prikke<span class="freq-pill">Høy</span></h3>
-      <span class="mk-src">Eks1·Q1.3.4 · Eks2·Q1.3.1, Q4 · Eks3·P1/Q5, P1/Q12</span>
+      <span class="mk-src">Eks1·Q1.3.4 · Eks2·Q1.3.1, Q4 · Eks3·P1/Q5, P1/Q12 · Eks5·Q1.3.2</span>
     </div>
     <div class="mk-must">Må kunne</div>
     <ul>
@@ -1681,12 +2096,29 @@
 
   <div class="mk-item blue">
     <div class="mk-head">
-      <h3>Longest prefix matching<span class="freq-pill med">Med</span></h3>
-      <span class="mk-src">Eks1·Q1.3.3</span>
+      <h3>Longest prefix matching<span class="freq-pill">Høy</span></h3>
+      <span class="mk-src">Eks1·Q1.3.3 · Eks5·Q4.1–Q4.5</span>
     </div>
     <div class="mk-must">Må kunne</div>
-    <p>For hver dest-IP: finn alle prefiks i tabellen som matcher → velg det <em>lengste</em>. Det gir ut-porten.</p>
-    <p>Tips: konverter dest-IP og prefiks til binær side om side, sammenlign topp-bits.</p>
+    <p>For hver dest-IP: finn alle prefiks i tabellen som matcher → velg det <em>lengste</em>. Det gir ut-porten. Hvis ingen matcher → default-regel.</p>
+    <p>Tips: konverter både IP og hver prefiks-rad til binær side om side, sammenlign topp-bits. Husk at /22 dekker 4 påfølgende /24-blokker (siste 2 bit i tredje oktett er host).</p>
+    <p><strong>Eks 5-tabell-felle:</strong> både <code>135.46.128.0/22</code> og <code>192.128.0.0/13</code> kan virke nær — sjekk at <em>alle</em> prefiks-bits stemmer, ikke bare de første.</p>
+  </div>
+
+  <div class="mk-item blue">
+    <div class="mk-head">
+      <h3>Forwarding vs routing — 3 forskjeller<span class="freq-pill">Høy</span></h3>
+      <span class="mk-src">Eks5·Q4.6</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Listen tre <em>uavhengige</em> akser:</p>
+    <ol>
+      <li><strong>Tidsskala:</strong> forwarding skjer per pakke i nanosekunder; routing kjører i bakgrunnen i sekunder/minutter.</li>
+      <li><strong>Plassering:</strong> forwarding ligger i datapath (raskt hardware-oppslag); routing ligger i kontrollplan (programvare som utveksler topologi-info).</li>
+      <li><strong>Avhengighet:</strong> forwarding bruker <em>tabellen</em>; routing <em>fyller</em> tabellen via protokoller (OSPF, BGP).</li>
+    </ol>
+    <p>Andre gyldige forskjeller du kan nevne: lokal vs global beslutning; per pakke vs per nett-tilstand; krever ingen kommunikasjon (forwarding) vs krever protokoll-utveksling (routing).</p>
+    <div class="mk-why"><strong>Hvorfor:</strong> Eks 5 spør eksplisitt om <em>tre</em> forskjeller. Husk: routing fyller forwarding-tabellen — uten routing-protokoller har en ruter ingen tabell å slå opp i.</div>
   </div>
 
   <div class="mk-item blue">
@@ -1716,22 +2148,37 @@
   <div class="mk-item blue">
     <div class="mk-head">
       <h3>DHCP-fakta<span class="freq-pill med">Med</span></h3>
-      <span class="mk-src">Eks2·Q1.3.2 · Eks3·P1/Q4(5)</span>
+      <span class="mk-src">Eks2·Q1.3.2 · Eks3·P1/Q4(5) · Eks5·Q1.3.3</span>
     </div>
     <div class="mk-must">Må kunne</div>
-    <p>UDP, ikke TCP. 4 steg (Discover/Offer/Request/ACK). Tildeler IP, subnettmaske, gateway, DNS. Brukes <em>ikke</em> til å rute datapakker.</p>
+    <p>UDP, ikke TCP. Klient-server-protokoll. 4 steg (Discover/Offer/Request/ACK). Tildeler IP, subnettmaske, gateway, DNS. Brukes <em>ikke</em> til å rute datapakker.</p>
+    <p><strong>Eks 5-detaljer:</strong></p>
+    <ul>
+      <li>«DHCP er en klient-server-protokoll» — <em>sant</em>.</li>
+      <li>«DHCP lar host få en IP-adresse automatisk» — <em>sant</em>.</li>
+      <li>«Det er <em>ikke</em> mulig at en gitt host får samme IP hver gang» — <em>usant</em>! En sticky lease kan gi samme IP igjen og igjen.</li>
+      <li>«DHCP er avhengig av lenkelags-broadcast for å virke» — <em>sant</em> (Discover-meldingen er broadcast).</li>
+    </ul>
   </div>
 
   <div class="mk-item blue">
     <div class="mk-head">
       <h3>IPv4 vs IPv6 — hva er nytt og hva er fjernet<span class="freq-pill med">Med</span></h3>
-      <span class="mk-src">Eks1·Q1.3.5</span>
+      <span class="mk-src">Eks1·Q1.3.5 · Eks5·Q1.3.4</span>
     </div>
     <div class="mk-must">Må kunne</div>
     <ul>
       <li>Nytt i IPv6: <em>flow label</em>, 128-bits adresser.</li>
-      <li>Fjernet: header checksum, header length, fragmenteringsfelt, options.</li>
+      <li>Fjernet i IPv6: header checksum, header length, fragmenteringsfelt, options.</li>
       <li>I begge: TTL/hop limit, version, source/dest, upper-layer-protocol/next-header.</li>
+    </ul>
+    <p><strong>Eks 5-utvidelse:</strong></p>
+    <ul>
+      <li>«IPv6 har mye større adresserom enn IPv4» — <em>sant</em>.</li>
+      <li>«IPv4 har checksum-felt som hjelper ruteren å oppdage bitfeil; IPv6 har ikke» — <em>sant</em>.</li>
+      <li>«IPv6 er mindre pålitelig enn IPv4 i å transportere datagrammer» — <em>usant</em>. Begge er best-effort med tilsvarende leveringsegenskaper.</li>
+      <li>«IPv6 tillater ikke fragmentering og reassembly i mellomliggende rutere» — <em>sant</em> (kun avsender kan fragmentere i IPv6).</li>
+      <li>«Både IPv4 og IPv6 er forbindelsesløse» — <em>sant</em>.</li>
     </ul>
   </div>
 
@@ -1746,11 +2193,12 @@
 
   <div class="mk-item blue">
     <div class="mk-head">
-      <h3>FIFO-køforsinkelse<span class="freq-pill lav">Lav</span></h3>
-      <span class="mk-src">Eks2·Q1.3.4</span>
+      <h3>FIFO-køforsinkelse<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks2·Q1.3.4 · Eks5·Q1.3.5</span>
     </div>
     <div class="mk-must">Må kunne</div>
-    <p>Køforsinkelse = (start-tid for transmisjon) − (ankomsttid). Regn snitt over de aktuelle pakkene.</p>
+    <p>Køforsinkelse = (start-tid for transmisjon) − (ankomsttid). For Pakke <em>i</em> i FIFO: hvis kanalen er opptatt når Pakke <em>i</em> ankommer, må den vente til alle tidligere pakker er ferdig. Avles direkte på et slot-diagram.</p>
+    <p><strong>Eks 5:</strong> figur viser pakker i ulike slot-er. For Pakke 6 spør oppgaven «hva er kø­forsinkelsen mellom ankomst og start av slot for transmisjon». Svar avleses ved å telle antall slot fra ankomst til start av sending.</p>
   </div>
 
   <h3>Kapittel 6–7 — Lenkelag og trådløst</h3>
@@ -1895,11 +2343,45 @@
 
   <div class="mk-item ochre">
     <div class="mk-head">
-      <h3>SNR / BER / modulasjon<span class="freq-pill lav">Lav</span></h3>
-      <span class="mk-src">Eks2·Q1.4.3</span>
+      <h3>802.11 MAC-elementer<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks5·Q1.4.4</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Hva som <em>er</em> del av 802.11 MAC (kryss av flere):</p>
+    <ul>
+      <li><strong>CSMA/CA</strong> ✓ — Collision Avoidance med back-off-teller.</li>
+      <li><strong>CSMA/CD</strong> ✗ — brukes <em>ikke</em> i WiFi (kan ikke detektere kollisjon trådløst).</li>
+      <li><strong>ACK</strong> ✓ — eksplisitt kvittering for hver mottatt dataramme.</li>
+      <li><strong>RTS/CTS</strong> ✓ — valgfritt, brukes mot skjult terminal.</li>
+      <li><strong>DIFS</strong> (Distributed Inter-Frame Space) ✓ — minimum tid stasjoner må vente før de kan sende etter at kanalen blir ledig.</li>
+    </ul>
+    <p><strong>Andre IFS-er du kan se:</strong> SIFS (Short IFS) — kortest, brukes mellom data og ACK for å gi ACK prioritert tilgang. PIFS — for spesielle nodetilstander.</p>
+    <div class="mk-why"><strong>Hvorfor:</strong> «Hvilke av disse» med flere riktige svar. CSMA/CD er den fellen — pugg at WiFi alltid bruker CA, aldri CD.</div>
+  </div>
+
+  <div class="mk-item ochre">
+    <div class="mk-head">
+      <h3>4G og 5G mobilnett<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks5·Q1.4.5</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <ul>
+      <li><strong>Sant:</strong> 5G gir høyere peak-bitrate enn 4G.</li>
+      <li><strong>Usant:</strong> «Det fysiske laget i 5G er kompatibelt med 4G» — nei, 5G NR (New Radio) er en helt ny luftgrensesnitt.</li>
+      <li><strong>Sant:</strong> Både 4G og 5G støtter mobilitet (handover mellom celler).</li>
+      <li><strong>Sant:</strong> Både 4G- og 5G-kjernenett er designet for <em>fullstendig kontroll- og bruker­plan-separasjon</em> (CUPS — Control and User Plane Separation). I 4G ble dette innført som tillegg; i 5G er det kjerne-arkitektur fra start.</li>
+    </ul>
+    <p><strong>Mnemonisk:</strong> peak-bitrate ↑, fysisk lag ulikt, mobilitet i begge, kontroll-/brukerplan-separasjon i begge.</p>
+  </div>
+
+  <div class="mk-item ochre">
+    <div class="mk-head">
+      <h3>SNR / BER / modulasjon<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks2·Q1.4.3 · Eks5·Q1.4.3</span>
     </div>
     <div class="mk-must">Må kunne</div>
     <p>Lavere SNR → høyere BER (gitt modulasjon). Ved samme SNR: høyere bitrate-modulasjon → høyere BER (mer informasjon per symbol = mer sårbart for støy).</p>
+    <p><strong>Adaptiv modulasjon og koding</strong> brukes i WiFi, 4G og 5G — systemet velger en lavere bitrate-modulasjon (mer robust) når SNR faller, og en høyere bitrate-modulasjon når SNR er godt.</p>
   </div>
 
   <h3>Kapittel 8–9 — Sikkerhet og multimedia</h3>
@@ -1945,7 +2427,7 @@
   <div class="mk-item">
     <div class="mk-head">
       <h3>HTTP-streaming over UDP-streaming<span class="freq-pill med">Med</span></h3>
-      <span class="mk-src">Eks2·Q1.5.4 · Eks3·P1/Q1</span>
+      <span class="mk-src">Eks2·Q1.5.4 · Eks3·P1/Q1 · Eks5·Q1.5.5</span>
     </div>
     <div class="mk-must">Må kunne</div>
     <ul>
@@ -1954,6 +2436,24 @@
       <li>HTTP/TCP gjenbruker eksisterende infrastruktur (CDN, caching, lastbalansering).</li>
     </ul>
     <p>Multimedia: distribuere innhold geografisk via CDN er bedre enn én sentral server.</p>
+    <p><strong>Felle på Eks 5:</strong> «UDP-streaming bruker klient-side applikasjons­bufring som forårsaker forsinkelse» — feil. Det er <em>HTTP-streaming</em> som typisk bruker stor bufring (TCP retransmisjon krever det); UDP er normalt mindre bufret.</p>
+  </div>
+
+  <div class="mk-item">
+    <div class="mk-head">
+      <h3>Playout-buffer for video-streaming<span class="freq-pill med">Med</span></h3>
+      <span class="mk-src">Eks5·Q1.5.4</span>
+    </div>
+    <div class="mk-must">Må kunne</div>
+    <p>Server sender blokk <em>i</em> ved tid <code>t₀ + i·Δ</code>. Hver blokk skal spilles av Δ tids­enheter etter forrige. Klient starter avspilling ved <code>t₁ + Δ</code>.</p>
+    <p>For at en blokk skal «rekke fram i tide» må: <em>ankomsttid ved klient ≤ planlagt avspillings­tid</em>. Tegn to akser:</p>
+    <ul>
+      <li>Sendekurve: lineær med stigning Δ per blokk, start t₀.</li>
+      <li>Ankomstkurve: faktisk ankomst (kan være forsinket, ujevn).</li>
+      <li>Avspillingskurve: lineær med stigning Δ per blokk, start t₁ + Δ.</li>
+    </ul>
+    <p>Blokk i rekker fram hvis ankomstkurven for den blokken ligger <em>til venstre/under</em> avspillingskurven på samme indeks. Marker hver av de første 7 blokkene én etter én.</p>
+    <div class="mk-why"><strong>Hvorfor:</strong> Eks 5 viser figur og spør hvilke av blokk 1–7 som rekker fram. Sjelden ren regning — visuell oppgave hvor du leser av kurvene.</div>
   </div>
 
   <div class="mk-item">
@@ -1995,18 +2495,29 @@
 
   <div class="mk-item">
     <div class="mk-head">
-      <h3>Brannmur — hovedformål &amp; tre kategorier<span class="freq-pill med">Med</span></h3>
-      <span class="mk-src">Eks3·P1/Q14 · Eks4·Q5.3</span>
+      <h3>Brannmur — tre mål &amp; kategorier<span class="freq-pill">Høy</span></h3>
+      <span class="mk-src">Eks3·P1/Q14 · Eks4·Q5.3 · Eks5·Q6</span>
     </div>
     <div class="mk-must">Må kunne</div>
-    <p><strong>Hovedformål:</strong> Blokkere uautorisert tilgang. <em>Ikke</em> «kryptere data» (det er TLS/IPsec). <em>Ikke</em> «overvåke ytelse» (det er andre verktøy).</p>
-    <p><strong>Tre kategorier (Eks 4):</strong></p>
+    <p><strong>Eks 5 — tre mål for en brannmur:</strong></p>
+    <ol>
+      <li><strong>All trafikk inn/ut må passere brannmuren</strong> — ingen bakdør rundt.</li>
+      <li><strong>Kun autorisert trafikk slipper igjennom</strong> — definert av en lokal sikkerhetspolicy.</li>
+      <li><strong>Brannmuren selv må være motstandsdyktig mot kompromittering</strong> — herdet OS, minimum tjenester, fysisk beskyttet.</li>
+    </ol>
+    <p>«Hovedformål» (Eks 3/4-formulering): blokkere uautorisert tilgang. <em>Ikke</em> «kryptere data» (TLS/IPsec) eller «overvåke ytelse» (andre verktøy).</p>
+    <p><strong>Stateless vs stateful (Eks 5 Q6.2):</strong></p>
     <ul>
-      <li><strong>Traditional packet filters:</strong> Filter på alle ruter-innganger til organisasjonens nett, basert på en regelpolicy. Beslutninger tas <em>per pakke isolert</em> — typisk på adresser + portnumre, kan inkludere TCP ACK-bit. Implementeres som en access control list (ACL).</li>
-      <li><strong>Stateful packet filters:</strong> Som over, men sporer i tillegg <em>forbindelser</em> (en connection table) for mer effektiv og sikker filtrering. Kombinerer ACL + tilstandstabell.</li>
+      <li><strong>Traditional (stateless) packet filter:</strong> Beslutninger tas <em>per pakke isolert</em>, basert på header-felt (IP, port, TCP-flags). Holder ingen historikk om tidligere pakker. Implementeres som ACL.</li>
+      <li><strong>Stateful packet filter:</strong> Sporer i tillegg <em>aktive forbindelser</em> (en connection table). Kan kreve at en innkommende TCP-pakke hører til en allerede etablert utgående forbindelse — fanger spoofede pakker bedre og blokkerer scanning.</li>
+    </ul>
+    <p><strong>Tre kategorier (Eks 4-formulering):</strong></p>
+    <ul>
+      <li><strong>Traditional packet filters:</strong> per pakke isolert (som over).</li>
+      <li><strong>Stateful packet filters:</strong> ACL + tilstandstabell.</li>
       <li><strong>Application gateways:</strong> Applikasjons­spesifikke tjenere som <em>all</em> trafikk for den applikasjonen må gå igjennom. Beslutninger basert på applikasjonsdata i tillegg til pakkefilter — kan f.eks. kreve brukernavn/passord. Trenger én gateway per applikasjon (men kan kjøre på samme host).</li>
     </ul>
-    <div class="mk-why"><strong>Hvorfor:</strong> Eks 4 ber om kort forklaring av <em>alle tre</em> med fokus på forskjellene. Nøkkelen: pakkefilter ser per-pakke, stateful ser forbindelse, app gateway ser <em>innholdet</em> per applikasjon.</div>
+    <div class="mk-why"><strong>Hvorfor:</strong> Eks 4 ber om <em>alle tre kategorier</em>, Eks 5 ber om <em>tre mål</em> + forskjell stateless/stateful. Pugg begge listene — de tester ulike spørsmål, ikke det samme.</div>
   </div>
 
   <h3>Den «store oppgaven» — protokollkjede</h3>
@@ -2092,6 +2603,10 @@
       <tr><td>Pure ALOHA maks effektivitet</td><td><code>1/(2e) ≈ 0,18</code> (~18 %)</td></tr>
       <tr><td>TCP-sockets på server med <em>K</em> aktive forbindelser</td><td><code>K + 1</code> (1 lyttende + K aktive)</td></tr>
       <tr><td>Klient-server filfordeling, min. tid</td><td><code>max(N·F/u<sub>s</sub>, &nbsp; F/d<sub>min</sub>)</code></td></tr>
+      <tr><td>P2P-fildistribusjon, min. tid</td><td><code>max(F/u<sub>s</sub>, &nbsp; F/d<sub>min</sub>, &nbsp; N·F/(u<sub>s</sub>+Σu<sub>i</sub>))</code></td></tr>
+      <tr><td>HTTP non-persistent, ingen parallell</td><td><code>(N+1) · (2·RTT + L/R)</code> for base + N embedded</td></tr>
+      <tr><td>HTTP non-persistent, parallelle TCP</td><td><code>2 · (2·RTT + L/R)</code></td></tr>
+      <tr><td>HTTP persistent, ingen pipelining</td><td><code>RTT + (N+1) · (RTT + L/R)</code></td></tr>
       <tr><td>4-noder C→A uten / med ACK</td><td><strong>0,5</strong> / <strong>0,25</strong> msg/slot</td></tr>
       <tr><td>4-noder A→B + D→C kombinert</td><td><strong>2</strong> msg/slot</td></tr>
       <tr><td>4-noder A→B + C→D kombinert</td><td><strong>1</strong> msg/slot</td></tr>
@@ -2218,22 +2733,35 @@
 
   <ol class="checklist">
     <li><strong>Forsinkelser:</strong> <code>d_trans = L/R</code>; én svitsj S&amp;F = <code>L/R₁ + L/R₂</code>; P pakker, N rutere = <code>(N+P−1)·L/R</code>. Husk byte → bit.</li>
+    <li><strong>Linjesvitsj:</strong> oppsettstid + L/R for hele filen (raten er konstant over hele kretsen). Ikke pakkesvitsj-tenking!</li>
+    <li><strong>Maks gjennomstrømning:</strong> <em>min</em> av ratene på stien. Server → ruter → klient: <code>min(R₁, R₂)</code>.</li>
     <li><strong>UDP vs TCP:</strong> UDP = best effort + porter, ingenting mer. TCP = pålitelig + flow control + congestion control. <em>Ingen</em> har throughput-garanti eller real-time.</li>
-    <li><strong>Flow vs congestion:</strong> flow = mottakers buffer (rwnd). Congestion = nettverkets kapasitet (cwnd). Ulike problemer.</li>
-    <li><strong>Ruting vs forwarding:</strong> ruting = global (finne stier). Forwarding = lokal (én ruter, tabell-oppslag).</li>
+    <li><strong>Applikasjonslag-protokoller:</strong> DNS, SMTP, FTP, HTTP, IMAP, POP3. <em>Ikke</em> ICMP eller ARP.</li>
+    <li><strong>Flow vs congestion:</strong> flow = mottakers buffer (rwnd). Congestion = nettverkets kapasitet (cwnd). Ulike problemer. Lignende konsept finnes på lenkelag (sliding window).</li>
+    <li><strong>HTTP responstid:</strong> non-persistent ≈ N·(2·RTT + L/R); parallell ≈ 2·(2·RTT + L/R); persistent uten pipelining ≈ 2·RTT + L/R + (N−1)(RTT + L/R).</li>
+    <li><strong>P2P-fildistribusjon:</strong> <code>max(F/u<sub>s</sub>, F/d<sub>min</sub>, N·F/(u<sub>s</sub>+Σu<sub>i</sub>))</code> — skalerer med antall peers.</li>
+    <li><strong>Klient-server filfordeling:</strong> <code>max(N·F/u<sub>s</sub>, F/d<sub>min</sub>)</code> — server er nesten alltid flaskehals.</li>
+    <li><strong>TCP back-to-back:</strong> seq i andre segment = seq<sub>1</sub> + lengde<sub>1</sub>; src/dst-port byttes <em>ikke</em> i samme retning.</li>
+    <li><strong>Ruting vs forwarding — 3 forskjeller:</strong> tidsskala (ns vs sek), plassering (datapath vs kontrollplan), avhengighet (forwarding bruker tabellen routing fyller).</li>
+    <li><strong>IP til binær:</strong> hver oktett uavhengig. 193 = 11000001, 32 = 00100000, 216 = 11011000, 9 = 00001001.</li>
     <li><strong>Subnetting:</strong> IP AND maske → nett-adresse. Brukbare verter = 2^(32−x) − 2.</li>
-    <li><strong>Longest prefix:</strong> velg lengste matchende prefiks i tabell.</li>
+    <li><strong>Longest prefix:</strong> velg lengste matchende prefiks i tabell. Default hvis ingen match.</li>
     <li><strong>NAT:</strong> bytter <em>kilde</em> IP/port på vei ut; uendret dest. Tabell-oppslag på vei inn.</li>
     <li><strong>ICMP:</strong> i IP, brukt til feil/diagnose, traceroute via TTL. Ikke transport.</li>
-    <li><strong>DHCP:</strong> UDP, 4 steg, gir IP+maske+GW+DNS.</li>
-    <li><strong>IPv6 unik ting:</strong> flow label.</li>
-    <li><strong>CSMA-tidslinje:</strong> propagering 0,2 → kollisjoner mellom pakker som starter < 0,2 fra hverandre.</li>
+    <li><strong>DHCP:</strong> UDP, 4 steg, gir IP+maske+GW+DNS. Klient-server, bruker lenkelags-broadcast. Sticky lease kan gi samme IP igjen.</li>
+    <li><strong>IPv4 vs IPv6:</strong> flow label kun i IPv6. IPv4 har checksum, IPv6 ikke. IPv6 fragmenterer ikke i mellomliggende rutere. Begge forbindelsesløse.</li>
+    <li><strong>CSMA-tidslinje:</strong> propagering 0,2 → kollisjoner mellom pakker som starter &lt; 0,2 fra hverandre.</li>
     <li><strong>4-noder A–B–C–D:</strong> C→A = 0,5 (uten ACK), 0,25 (med ACK). A→B + D→C = <strong>2</strong>. A→B + C→D = <strong>1</strong>.</li>
-    <li><strong>Klient-server filfordeling:</strong> <code>max(N·F/u<sub>s</sub>, F/d<sub>min</sub>)</code> — server er nesten alltid flaskehals.</li>
+    <li><strong>802.11 MAC:</strong> CSMA/CA + ACK + RTS/CTS (valgfritt) + DIFS. <em>Ikke</em> CSMA/CD.</li>
+    <li><strong>4G vs 5G:</strong> 5G &gt; 4G peak-bitrate, fys-lag <em>ikke</em> kompatibelt, begge støtter mobilitet og kontroll-/bruker­plan-separasjon.</li>
+    <li><strong>SNR/BER:</strong> høyere SNR → lavere BER. Høyere bitrate-modulasjon → høyere BER ved samme SNR. Adaptiv mod &amp; koding i WiFi/4G/5G.</li>
     <li><strong>Pure ALOHA:</strong> 18 %. Slotted: 37 %. Slotted krever synk.</li>
-    <li><strong>Sikkerhet:</strong> konfidensialitet, integritet, autentisering, opsec — <em>ikke</em> båndbredde.</li>
+    <li><strong>Sikkerhet:</strong> konfidensialitet, integritet, autentisering, opsec — <em>ikke</em> båndbredde, <em>ikke</em> «public key cryptography» som er et middel.</li>
     <li><strong>Symmetriske nøkler:</strong> <code>N(N−1)/2</code>.</li>
-    <li><strong>Brannmur:</strong> blokkere uautorisert tilgang.</li>
+    <li><strong>Meldingsintegritet:</strong> hash &gt; checksum (kryptografisk). Trenger <em>ikke</em> TCP — kan brukes over UDP.</li>
+    <li><strong>Playout-buffer:</strong> blokk i rekker fram hvis <em>ankomsttid ≤ avspillingstid</em> for samme blokk. Tegn kurver.</li>
+    <li><strong>Brannmur — tre mål:</strong> all trafikk gjennom, kun autorisert, motstandsdyktig mot kompromittering.</li>
+    <li><strong>Brannmur-typer:</strong> stateless (per pakke) / stateful (sporer forbindelse) / application gateway (per app, sjekker innhold).</li>
     <li><strong>Cæsar k=7:</strong> hver bokstav 7 plasser fram, mod 26. Vis utregningen.</li>
     <li><strong>Protokollkjede:</strong> Ethernet → DHCP → ARP → DNS → SMTP → IMAP/HTTPS. Lag-merking gir poeng.</li>
     <li><strong>TCP 3-veis handshake:</strong> SYN (seq=A) → SYN-ACK (seq=B, ack=A+1, server allokerer buffere) → ACK (ack=B+1, klient allokerer).</li>
@@ -2241,7 +2769,6 @@
     <li><strong>Linklags-svitsj:</strong> Self-learning, plug-and-play, transparent (ingen IP/MAC selv), bare innenfor subnett.</li>
     <li><strong>ARP:</strong> IP ↔ MAC i lokalt subnett. ARP-tabell i hver host og ruter.</li>
     <li><strong>WiFi vs Ethernet:</strong> CSMA/CA (ikke CD) pga. signal-asymmetri + skjult terminal. Bruker eksplisitt ACK + back-off-teller.</li>
-    <li><strong>Brannmur-typer:</strong> traditional (per pakke) / stateful (sporer forbindelse) / application gateway (per app, sjekker innhold).</li>
     <li><strong>Digital signatur:</strong> Krypter med privat nøkkel, verifiser med offentlig + sertifikat fra TTP.</li>
   </ol>
 
